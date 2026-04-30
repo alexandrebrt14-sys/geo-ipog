@@ -55,6 +55,8 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
 **Saídas esperadas:** Baseline Report v1, Audit Report técnico, Share-of-Voice Snapshot 1 nos três clusters, lista de lacunas priorizada por alavanca dominante (conteúdo, schema, autoridade externa).
 
+**Artefatos de execução vigentes:** `audits/PLAYBOOK-AUDITORIA-NAIA.md`, `audits/SCHEMA-PATTERNS.md`, `audits/LLMS-TXT-TEMPLATE.md`, `audits/ROBOTS-SITEMAP-CHECKLIST.md`, `dashboards/RUNBOOK-COLETA-LLM.md`, `dashboards/METRICAS-CANONICAS.md`.
+
 ---
 
 ## Fase 2 — Engenharia de citação e kit de prompts
@@ -75,6 +77,8 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
 **Saídas esperadas:** IPOG GEO Prompt Kit v1 (com foco em MBA Psicologia), Gap Map v1, plano de fechamento de gaps com priorização explícita.
 
+**Artefatos de execução vigentes:** `prompts/KIT-PROMPTS-V0.md` (66 prompts canônicos prontos para uso), `prompts/PAPEIS-DE-COLETA.md`, `prompts/PROMPT-PESQUISA.md`, `prompts/PROMPT-REDACAO.md`, `prompts/PROMPT-ANALISE.md`, `prompts/PROMPT-CLASSIFICACAO.md`, `prompts/PROMPT-REVISAO.md`, `prompts/CALIBRACAO-MENSAL.md`.
+
 ---
 
 ## Fase 3 — Execução de conteúdo HBR-grade e Schema
@@ -87,6 +91,8 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 - Coordenar citation engineering: PR e parcerias com veículos confiáveis de educação e psicologia (Estadão Educação, Folha Equilíbrio, Quero Bolsa, Conselho Federal de Psicologia, ABEP, ABRAPSO), atualização de fichas em rankings e diretórios de pós-graduação.
 
 **Saídas esperadas:** 6 a 10 peças HBR-grade publicadas, Schema cobertura ampliada e validada, llms.txt no ar, plano de PR ativo, matriz de parcerias com veículos.
+
+**Artefatos de execução vigentes:** `content/PADRAO-EDITORIAL.md`, `content/VOICE-GUIDE.md`, `content/BLOOM-KNOWLES.md`, `content/CLICHES-PROIBIDOS.md`, `content/ACENTUACAO-PT-BR.md`, `content/GLOSSARIO-PSICOLOGIA.md`, `content/BRIEFING-TEMPLATE.md`, `content/EXERCICIO-TEMPLATE.md`, `content/CHECKLIST-AUTOAVALIACAO.md`, `content/CHECKLIST-PUBLICACAO.md`, `docs/framework/02-quality-gate-5-camadas.md`, `docs/framework/03-pipeline-5-llms.md`.
 
 ---
 
@@ -101,6 +107,8 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 - Revisão executiva mensal com Ronan Maia para decisão de continuidade, expansão de escopo (outras áreas IPOG) ou recalibração.
 
 **Saídas esperadas:** Dashboard GEO IPOG (ao vivo), Relatório Mensal de Performance, plano de calibração da onda seguinte, plano de captação 2027.1 com lições aprendidas do ciclo 2026.2.
+
+**Artefatos de execução vigentes:** `dashboards/METRICAS-CANONICAS.md`, `dashboards/RUNBOOK-COLETA-LLM.md`, `dashboards/FINOPS-DISCIPLINA.md`, `docs/framework/04-client-context-abstraction.md`.
 
 ---
 

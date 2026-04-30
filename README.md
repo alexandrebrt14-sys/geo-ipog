@@ -66,13 +66,60 @@ geo-ipog/
 
 ## Documentos vivos
 
+### Marcos e governança
+
 - `docs/01-kickoff-30-04-2026.md` — registro do kickoff (dia 1).
 - `docs/02-contexto-mba-online-psicologia.md` — contexto estratégico do recorte de produto.
 - `docs/03-reunioes-e-cadencia-ipog.md` — cadência de reuniões com IPOG e framework de relatórios.
-- `docs/framework/01-rotinas-e-missoes-geo.md` — framework conceitual de GEO aplicado a vertical educação superior.
 - `docs/relatorios-semanais/` — relatórios semanais entregues à IPOG.
 - `docs/atas/` — atas das reuniões de status com IPOG.
 - `ROADMAP.md` — roadmap em 4 fases com janelas alinhadas ao calendário de captação 2026.2 e 2027.1.
+
+### Framework conceitual
+
+- `docs/framework/01-rotinas-e-missoes-geo.md` — framework GEO aplicado a vertical educação superior.
+- `docs/framework/02-quality-gate-5-camadas.md` — quality gate em 5 camadas (acentuação, conteúdo, links, schema, voice guard) + camada 6 compliance MEC/CFP.
+- `docs/framework/03-pipeline-5-llms.md` — princípios de orquestração de 5 LLMs (Pesquisador, Redator, Analisador, Classificador, Revisor).
+- `docs/framework/04-client-context-abstraction.md` — abstração ClientContext para multi-tenant; instância IPOG documentada.
+
+### Padrões editoriais (`content/`)
+
+Padrões obrigatórios para qualquer peça editorial produzida sob a marca IPOG e qualquer conteúdo público assinado por Alexandre Caramaschi.
+
+- `content/PADRAO-EDITORIAL.md` — adaptação HBR/HSM/MIT Sloan: 6 elementos obrigatórios + tamanhos por tipo de peça.
+- `content/VOICE-GUIDE.md` — voice guard parametrizado em 4 dimensões (clichê 30%, Bloom+andragogia 30%, naming 25%, HBR 15%); score mínimo 70.
+- `content/BLOOM-KNOWLES.md` — verbos Bloom 3+ aceitos, princípios Knowles obrigatórios, checklist de auditoria.
+- `content/CLICHES-PROIBIDOS.md` — três deny-lists (17 clichés + 8 rhetoric openers + 7 ai-disclaimers) com substituições.
+- `content/ACENTUACAO-PT-BR.md` — 100+ palavras canônicas (cotidianas + Psicologia + educação + regulatório).
+- `content/GLOSSARIO-PSICOLOGIA.md` — 25+ termos canônicos da vertical com contexto de uso.
+- `content/BRIEFING-TEMPLATE.md` — template de 14 campos para briefar peça HBR-grade.
+- `content/EXERCICIO-TEMPLATE.md` — template de exercício Bloom 3+ com 3 exemplos preenchidos.
+- `content/CHECKLIST-AUTOAVALIACAO.md` — 14 itens binários para o autor antes de submeter.
+- `content/CHECKLIST-PUBLICACAO.md` — 5 camadas de quality gate antes de publicar; matriz de aprovação.
+
+### Auditoria técnica e Schema (`audits/`)
+
+- `audits/PLAYBOOK-AUDITORIA-NAIA.md` — protocolo de auditoria com 100+ checks NAIA-XXX em 10 categorias e severidade P0-P3.
+- `audits/SCHEMA-PATTERNS.md` — 6 tipos canônicos (`EducationalOrganization`, `Course`, `EducationalOccupationalProgram`, `FAQPage`, `Article`, `Person`) com JSON-LD pronto.
+- `audits/LLMS-TXT-TEMPLATE.md` — template e diretrizes para `llms.txt` em `ipog.edu.br`.
+- `audits/ROBOTS-SITEMAP-CHECKLIST.md` — checklist de robots.txt, sitemaps, canonicals e redirects com exemplos.
+
+### Kit de prompts e papéis (`prompts/`)
+
+- `prompts/KIT-PROMPTS-V0.md` — 66 prompts-âncora canônicos × 3 clusters × 7 personas × 4 jornadas.
+- `prompts/PAPEIS-DE-COLETA.md` — matriz dos 5 papéis canônicos com LLM padrão e fallback.
+- `prompts/PROMPT-PESQUISA.md` — prompt completo do Pesquisador (Perplexity sonar-pro).
+- `prompts/PROMPT-REDACAO.md` — prompt completo do Redator (GPT-4o), HBR-grade.
+- `prompts/PROMPT-ANALISE.md` — prompt completo do Analisador (Gemini), 7 dimensões.
+- `prompts/PROMPT-CLASSIFICACAO.md` — prompt completo do Classificador (Groq).
+- `prompts/PROMPT-REVISAO.md` — prompt completo do Revisor (Claude).
+- `prompts/CALIBRACAO-MENSAL.md` — protocolo de recalibração mensal e versionamento do kit.
+
+### Mensuração e disciplina operacional (`dashboards/`)
+
+- `dashboards/METRICAS-CANONICAS.md` — definição operacional, fórmula, cadência e owner de cada KPI.
+- `dashboards/RUNBOOK-COLETA-LLM.md` — runbook da coleta diária cross-LLM com circuit breaker, retry, fallback, drift detection.
+- `dashboards/FINOPS-DISCIPLINA.md` — preços 2026, budget guards, alocação por LLM, otimizações.
 
 ## Governança operacional
 

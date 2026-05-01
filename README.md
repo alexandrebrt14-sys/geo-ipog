@@ -106,14 +106,16 @@ Padrões obrigatórios para qualquer peça editorial produzida sob a marca IPOG 
 
 ### Benchmarking de concorrentes (`audits/benchmarking/`)
 
-Diagnóstico inicial dos 5 concorrentes prioritários do IPOG na vertical de pós-graduação online em Psicologia. Insumo da Fase 1.
+Diagnóstico dos 10 concorrentes prioritários do IPOG na vertical de pós-graduação online em Psicologia, em duas ondas complementares.
 
-- `audits/benchmarking/README.md` — índice e roteiro de leitura por audiência.
-- `audits/benchmarking/SINTESE-EXECUTIVA.md` — leitura de uma página para checkpoint com Ronan Maia.
-- `audits/benchmarking/pontos-fortes-a-superar.md` — matriz comparativa por dimensão estratégica + 15 pontos fortes consolidados a superar com a estratégia explícita do IPOG para cada um.
-- `audits/benchmarking/matriz-presenca-llm.md` — inferência cross-LLM com 15 prompts-âncora × 5 concorrentes.
-- `audits/benchmarking/matriz-tecnica-schema-seo.md` — coleta direta de robots.txt, llms.txt, sitemap dos 5 sites + análise de Schema, autoridade externa e rankings.
-- `audits/benchmarking/concorrente-{estacio,anhanguera,uninter,unicesumar,puc-minas-virtual}.md` — 5 dossiês individuais com 11 seções cada (identidade, atuação online/offline, oferta Psicologia, marca, satisfação, autoridade externa, pontos fortes, vulnerabilidades, hipóteses cross-LLM, fontes).
+- `audits/benchmarking/README.md` — índice e roteiro de leitura por audiência (Ondas 1 + 2 integradas).
+- `audits/benchmarking/SINTESE-EXECUTIVA.md` — leitura de uma página para checkpoint com Ronan Maia (cobre Onda 1; integração Onda 2 pendente).
+- `audits/benchmarking/pontos-fortes-a-superar.md` — matriz comparativa por dimensão estratégica + 15 pontos fortes consolidados a superar com a estratégia explícita do IPOG para cada um (cobre Onda 1; integração Onda 2 pendente).
+- `audits/benchmarking/matriz-presenca-llm.md` — inferência cross-LLM com 15 prompts-âncora × 10 concorrentes (seções 1-7 Onda 1; seção 9 estende para Onda 2).
+- `audits/benchmarking/matriz-tecnica-schema-seo.md` — coleta direta de robots.txt, llms.txt, sitemap dos 10 sites + análise de Schema, autoridade externa e rankings (seções 1-6 Onda 1; seção 8 estende para Onda 2).
+- `audits/benchmarking/ONDA-2-CORRECOES-PREMISSA.md` — registro canônico das correções de identidade institucional descobertas na pesquisa primária (IBNeuro ≠ IBNeC; wPós ≠ Anhembi; Conexia ≠ Saint Paul). Leitura obrigatória antes de operar sobre dossiês da Onda 2.
+- `audits/benchmarking/concorrente-{estacio,anhanguera,uninter,unicesumar,puc-minas-virtual}.md` — 5 dossiês da Onda 1 (concorrentes massivos do EAD).
+- `audits/benchmarking/concorrente-{cetcc,ibneuro,sirio-libanes-iep,wpos-anhembi,conexia-saint-paul}.md` — 5 dossiês da Onda 2 (especialistas verticais e premium executiva).
 
 ### Kit de prompts e papéis (`prompts/`)
 

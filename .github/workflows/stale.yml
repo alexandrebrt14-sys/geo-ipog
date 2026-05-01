@@ -1,0 +1,59 @@
+# Workflow: Gerenciamento de Issues e PRs Parados
+# Responsavel: Brasil GEO — Head: alexandrebrt14-sys
+# Issues sem atividade por 60 dias recebem label "stale" e fecham em 14 dias adicionais.
+# PRs: 30 dias para stale, 7 dias adicionais para fechar.
+# Issues com prioridade-alta, monitoramento ou pinned sao ignoradas (operacao continua do programa).
+
+name: "Gerenciar Issues e PRs Parados"
+
+on:
+  schedule:
+    # Diariamente as 09h UTC (06h BRT)
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: "Marcar e fechar issues/PRs sem atividade"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Executar acao stale"
+        uses: actions/stale@v9
+        with:
+          # --- Configuracao de Issues ---
+          days-before-issue-stale: 60
+          days-before-issue-close: 14
+          stale-issue-label: "stale"
+          stale-issue-message: >
+            Esta issue esta sem atividade ha 60 dias e foi marcada como inativa.
+            Sera fechada automaticamente em 14 dias caso nenhuma acao seja tomada.
+            Para reabrir a discussao, adicione um comentario ou remova a label `stale`.
+          close-issue-message: >
+            Esta issue foi fechada automaticamente por inatividade.
+            Caso ainda seja relevante, reabra com um comentario explicando o contexto
+            e a fase do programa GEO IPOG em que se enquadra.
+
+          # --- Configuracao de PRs ---
+          days-before-pr-stale: 30
+          days-before-pr-close: 7
+          stale-pr-label: "stale"
+          stale-pr-message: >
+            Este PR esta sem atividade ha 30 dias e foi marcado como inativo.
+            Sera fechado automaticamente em 7 dias caso nenhuma acao seja tomada.
+            Para retomar, adicione um comentario ou remova a label `stale`.
+          close-pr-message: >
+            Este PR foi fechado automaticamente por inatividade.
+            Pode ser reaberto a qualquer momento caso o trabalho seja retomado.
+
+          # --- Labels que impedem marcacao como stale ---
+          # Issues operacionais continuas e prioritarias do programa GEO IPOG
+          # nao sao consideradas stale, independente da inatividade.
+          exempt-issue-labels: "prioridade-alta,monitoramento,gating-ipog,pinned,fase-3,fase-4"
+          exempt-pr-labels: "prioridade-alta,pinned"
+
+          # Limite de operacoes por execucao para evitar rate limit
+          operations-per-run: 100

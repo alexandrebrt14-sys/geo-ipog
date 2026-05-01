@@ -1,0 +1,137 @@
+# Workflow: Monitoramento Quinzenal dos Concorrentes do Programa GEO IPOG
+# Responsavel: Brasil GEO — Head: alexandrebrt14-sys
+# Captura quinzenalmente robots.txt, llms.txt e sitemap dos 10 concorrentes
+# do benchmarking (5 da Onda 1 + 5 da Onda 2). Cria PR com diff vs ultimo
+# snapshot para detectar mudancas competitivas (novo llms.txt publicado,
+# WAF desbloqueado, sitemap reorganizado).
+#
+# Rastreado pelas issues #15 (re-fetch quinzenal) e #16 (monitoramento WAF).
+# NAO captura ipog.edu.br — este workflow monitora a CONCORRENCIA, nao a
+# pegada propria.
+
+name: "Audit — Snapshot Quinzenal dos Concorrentes IPOG"
+
+on:
+  schedule:
+    # Dias 1 e 15 de cada mes as 12h UTC (09h BRT)
+    - cron: "0 12 1,15 * *"
+  workflow_dispatch:
+    inputs:
+      data_manual:
+        description: "Data manual para o snapshot (YYYY-MM-DD). Deixe em branco para usar hoje."
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  snapshot:
+    name: "Capturar snapshot dos 10 concorrentes"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout do repositorio"
+        uses: actions/checkout@v4
+
+      - name: "Definir data do snapshot"
+        id: data
+        run: |
+          if [ -n "${{ github.event.inputs.data_manual }}" ]; then
+            DATA="${{ github.event.inputs.data_manual }}"
+          else
+            DATA=$(date -u +%Y-%m-%d)
+          fi
+          echo "data=${DATA}" >> "$GITHUB_OUTPUT"
+          echo "branch=audit/concorrentes-snapshot-${DATA}" >> "$GITHUB_OUTPUT"
+          echo "dir=audits/concorrentes-monitoring/${DATA}" >> "$GITHUB_OUTPUT"
+
+      - name: "Criar diretorio do snapshot"
+        run: mkdir -p "${{ steps.data.outputs.dir }}"
+
+      - name: "Capturar arquivos publicos dos 10 concorrentes"
+        run: |
+          DIR="${{ steps.data.outputs.dir }}"
+          DATA="${{ steps.data.outputs.data }}"
+
+          # Lista canonica dos 10 concorrentes (5 Onda 1 + 5 Onda 2)
+          declare -A CONCORRENTES=(
+            ["onda1-estacio"]="https://estacio.br"
+            ["onda1-anhanguera"]="https://www.anhanguera.com"
+            ["onda1-uninter"]="https://www.uninter.com"
+            ["onda1-unicesumar"]="https://www.unicesumar.edu.br"
+            ["onda1-pucminas"]="https://www.pucminas.br"
+            ["onda2-cetcc"]="https://www.cetcc.com.br"
+            ["onda2-ibneuro"]="https://ibneuro.com.br"
+            ["onda2-sirio-libanes-fsl"]="https://www.faculdadesiriolibanes.org.br"
+            ["onda2-wpos-unyleya"]="https://wpos.com.br"
+            ["onda2-anhembi-morumbi"]="https://portal.anhembi.br"
+            ["onda2-saint-paul"]="https://www.saintpaul.com.br"
+          )
+
+          # Header do meta-arquivo
+          echo "# Snapshot quinzenal dos concorrentes IPOG — ${DATA}" > "${DIR}/_meta.md"
+          echo "" >> "${DIR}/_meta.md"
+          echo "Snapshot gerado por workflow automatico em $(date -u)." >> "${DIR}/_meta.md"
+          echo "Cobertura: 10 concorrentes (5 Onda 1 + 5 Onda 2 + Saint Paul)." >> "${DIR}/_meta.md"
+          echo "" >> "${DIR}/_meta.md"
+          echo "## Status de captura" >> "${DIR}/_meta.md"
+          echo "" >> "${DIR}/_meta.md"
+          echo "| Concorrente | robots.txt | llms.txt | sitemap.xml |" >> "${DIR}/_meta.md"
+          echo "|---|---|---|---|" >> "${DIR}/_meta.md"
+
+          for KEY in "${!CONCORRENTES[@]}"; do
+            BASE="${CONCORRENTES[$KEY]}"
+            SUBDIR="${DIR}/${KEY}"
+            mkdir -p "${SUBDIR}"
+
+            # robots.txt
+            ROBOTS_STATUS=$(curl -s -o "${SUBDIR}/robots.txt" -w "%{http_code}" --max-time 30 "${BASE}/robots.txt" || echo "ERR")
+
+            # llms.txt
+            LLMS_STATUS=$(curl -s -o "${SUBDIR}/llms.txt" -w "%{http_code}" --max-time 30 "${BASE}/llms.txt" || echo "ERR")
+
+            # sitemap
+            SITEMAP_STATUS=$(curl -s -o "${SUBDIR}/sitemap.xml" -w "%{http_code}" --max-time 30 "${BASE}/sitemap.xml" || echo "ERR")
+
+            echo "| ${KEY} | ${ROBOTS_STATUS} | ${LLMS_STATUS} | ${SITEMAP_STATUS} |" >> "${DIR}/_meta.md"
+          done
+
+          # Anti-padroes monitorados
+          echo "" >> "${DIR}/_meta.md"
+          echo "## Alertas a inspecionar" >> "${DIR}/_meta.md"
+          echo "" >> "${DIR}/_meta.md"
+          echo "1. **llms.txt apareceu (HTTP 200)** em algum concorrente — janela competitiva fechando, escalada R-002." >> "${DIR}/_meta.md"
+          echo "2. **WAF desbloqueado (Anhanguera ou Sirio-Libanes mudou de 403 para 200)** — escalada R-003." >> "${DIR}/_meta.md"
+          echo "3. **robots.txt restritivo a IA crawlers** em concorrente que era aberto — recalibrar matriz tecnica." >> "${DIR}/_meta.md"
+
+      - name: "Abrir PR com snapshot"
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: "${{ steps.data.outputs.branch }}"
+          commit-message: "audit: snapshot quinzenal dos 10 concorrentes IPOG ${{ steps.data.outputs.data }}"
+          title: "audit: snapshot quinzenal dos concorrentes IPOG ${{ steps.data.outputs.data }}"
+          body: |
+            ## Snapshot Quinzenal dos Concorrentes — Programa GEO IPOG
+
+            **Data:** ${{ steps.data.outputs.data }}
+            **Cobertura:** 10 concorrentes (5 da Onda 1 + 5 da Onda 2 + Saint Paul/EXAME)
+            **Gerado por:** Brasil GEO / workflow automatico
+
+            Este PR contem snapshot dos artefatos publicos (robots.txt, llms.txt, sitemap.xml) dos 10 concorrentes mapeados no benchmarking GEO IPOG.
+
+            Inspecionar `_meta.md` para alertas:
+            1. **llms.txt apareceu** em algum concorrente — escalada Risco R-002.
+            2. **WAF desbloqueado** (Anhanguera ou Sirio-Libanes 403 -> 200) — escalada R-003.
+            3. **robots.txt restritivo** novo em concorrente que era aberto.
+
+            @alexandrebrt14-sys — revisar diff vs snapshot anterior, atualizar `audits/benchmarking/matriz-tecnica-schema-seo.md` se houver mudanca, e incorporar no proximo relatorio semanal.
+
+            Issues vinculadas: #15 (re-fetch quinzenal), #16 (monitoramento WAF), #2 (llms.txt IPOG).
+          labels: |
+            auditoria
+            benchmarking
+            monitoramento
+            robots-waf
+            llms-txt
+          add-paths: "audits/concorrentes-monitoring/**"

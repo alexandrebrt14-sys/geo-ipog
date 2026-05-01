@@ -1,0 +1,132 @@
+# Workflow: Construtor de Relatorio Semanal Automatico
+# Responsavel: Brasil GEO — Head: alexandrebrt14-sys
+# Toda sexta-feira as 20h UTC (17h BRT), lista issues fechadas e PRs mergeados
+# na semana, gerando rascunho automatico que o Head incorpora no relatorio
+# semanal IPOG entregue antes da reuniao com Bruno Azambuja.
+
+name: "Construtor de Relatorio Semanal IPOG"
+
+on:
+  schedule:
+    # Toda sexta-feira as 20h UTC (17h BRT)
+    - cron: "0 20 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  report-builder:
+    name: "Gerar rascunho do relatorio semanal IPOG"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout do repositorio"
+        uses: actions/checkout@v4
+
+      - name: "Calcular periodo da semana"
+        id: periodo
+        run: |
+          HOJE=$(date -u +%Y-%m-%d)
+          INICIO=$(date -u -d "monday this week" +%Y-%m-%d 2>/dev/null \
+            || date -u -v-mon +%Y-%m-%d)
+          SEMANA=$(date -u +%Y-W%V)
+          echo "hoje=${HOJE}" >> "$GITHUB_OUTPUT"
+          echo "inicio=${INICIO}" >> "$GITHUB_OUTPUT"
+          echo "semana=${SEMANA}" >> "$GITHUB_OUTPUT"
+          echo "branch=report/auto-${SEMANA}" >> "$GITHUB_OUTPUT"
+          echo "arquivo=docs/relatorios-semanais/.auto/closed-issues-${SEMANA}.md" >> "$GITHUB_OUTPUT"
+
+      - name: "Criar diretorio de relatorios automaticos"
+        run: mkdir -p docs/relatorios-semanais/.auto
+
+      - name: "Listar issues fechadas e PRs mergeados na semana"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          INICIO="${{ steps.periodo.outputs.inicio }}"
+          SEMANA="${{ steps.periodo.outputs.semana }}"
+          HOJE="${{ steps.periodo.outputs.hoje }}"
+          ARQUIVO="${{ steps.periodo.outputs.arquivo }}"
+
+          cat > "${ARQUIVO}" << HEADER
+          # Rascunho Automatico — Relatorio Semanal IPOG — ${SEMANA}
+
+          **Periodo:** ${INICIO} a ${HOJE}
+          **Gerado em:** ${HOJE} (sexta-feira, 17h BRT)
+          **Gerado por:** Brasil GEO / workflow automatico
+          **Destinatario do relatorio oficial:** Bruno Azambuja (IPOG) — entrega segunda 09h BRT
+
+          > Este arquivo e um rascunho automatico. @alexandrebrt14-sys deve revisar,
+          > complementar com contexto qualitativo, KPIs cross-LLM e decisoes pendentes,
+          > e incorporar no relatorio semanal oficial (\`_TEMPLATE.md\`).
+
+          ---
+
+          ## Issues Fechadas na Semana
+
+          HEADER
+
+          gh issue list \
+            --state closed \
+            --search "closed:>=${INICIO}" \
+            --json number,title,labels,closedAt,assignees \
+            --jq '.[] | "- #\(.number) \(.title) | fechada: \(.closedAt[:10]) | labels: \([.labels[].name] | join(", ")) | responsaveis: \([.assignees[].login] | join(", "))"' \
+            >> "${ARQUIVO}" || echo "_(nenhuma issue fechada no periodo)_" >> "${ARQUIVO}"
+
+          cat >> "${ARQUIVO}" << FOOTER
+
+          ---
+
+          ## PRs Mergeados na Semana
+
+          FOOTER
+
+          gh pr list \
+            --state merged \
+            --search "merged:>=${INICIO}" \
+            --json number,title,labels,mergedAt,author \
+            --jq '.[] | "- #\(.number) \(.title) | merged: \(.mergedAt[:10]) | autor: \(.author.login) | labels: \([.labels[].name] | join(", "))"' \
+            >> "${ARQUIVO}" || echo "_(nenhum PR mergeado no periodo)_" >> "${ARQUIVO}"
+
+          cat >> "${ARQUIVO}" << END
+
+          ---
+
+          ## Lembretes operacionais
+
+          - Atualizar \`dashboards/KPI-DASHBOARD.md\` com a leitura semanal antes do envio.
+          - Verificar \`docs/05-risk-register.md\` — algum risco mudou de status?
+          - Verificar \`docs/06-marcos-criticos-2026.md\` — algum marco da semana seguinte precisa de gatilho?
+          - Aplicar Voice Guard ao sumario executivo se for assinado por Alexandre.
+
+          END
+
+      - name: "Abrir PR com relatorio rascunho"
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: "${{ steps.periodo.outputs.branch }}"
+          commit-message: "report: rascunho semanal automatico ${{ steps.periodo.outputs.semana }}"
+          title: "report: rascunho semanal IPOG ${{ steps.periodo.outputs.semana }} — revisao @alexandrebrt14-sys"
+          body: |
+            ## Rascunho de Relatorio Semanal IPOG — ${{ steps.periodo.outputs.semana }}
+
+            **Periodo coberto:** ${{ steps.periodo.outputs.inicio }} a ${{ steps.periodo.outputs.hoje }}
+            **Gerado por:** Brasil GEO / workflow automatico
+
+            Este PR contem o rascunho com issues fechadas e PRs da semana.
+
+            @alexandrebrt14-sys — por favor:
+            1. Revisar os dados em `docs/relatorios-semanais/.auto/`
+            2. Atualizar o dashboard de KPIs (`dashboards/KPI-DASHBOARD.md`) com leitura semanal
+            3. Complementar com contexto qualitativo, decisoes pendentes e riscos
+            4. Incorporar no relatorio semanal oficial (segue o `_TEMPLATE.md`)
+            5. Mergear ou fechar este PR apos incorporacao
+            6. Enviar relatorio oficial para `bruno.azambuja@ipog.edu.br` segunda 09h BRT
+
+            **Prazo:** entrega do relatorio final: segunda-feira proxima, 09h BRT
+          labels: |
+            monitoramento
+          add-paths: "docs/relatorios-semanais/.auto/**"

@@ -6,17 +6,23 @@ Atas de reuniões de status (semanais com Bruno Azambuja) e de checkpoints execu
 
 - Reunião semanal de status: `YYYY-MM-DD-ipog-status.md`
 - Checkpoint executivo mensal: `YYYY-MM-DD-ipog-checkpoint-executivo.md`
+- Revisão estratégica trimestral: `YYYY-MM-DD-ipog-revisao-trimestral.md`
 - Reuniões pontuais: `YYYY-MM-DD-ipog-<tema-curto-em-slug>.md`
 
-## Estrutura mínima de cada ata
+## Template canônico
 
-1. **Data, hora e duração**
-2. **Participantes** (nome completo e cargo)
-3. **Pauta executada**
-4. **Decisões tomadas** (com proprietário e prazo)
-5. **Pendências** (com proprietário e prazo)
-6. **Próxima reunião** (data, pauta prevista)
+Toda ata é gerada por cópia do `_TEMPLATE.md`:
+
+```bash
+cp _TEMPLATE.md AAAA-MM-DD-ipog-status.md
+```
+
+O template tem 11 seções obrigatórias com cross-links para `docs/03-reunioes-e-cadencia-ipog.md`, `docs/05-risk-register.md` e `dashboards/KPI-DASHBOARD.md`.
 
 ## Disciplina
 
-Toda ata é registrada no mesmo dia da reunião, em PR com label `docs` e revisão de @alexandrebrt14-sys antes do merge em `main`.
+- Ata registrada no **mesmo dia da reunião** em PR com label `monitoramento`.
+- Decisões com owner e prazo (ver `docs/04-definicao-de-done.md` seção 11).
+- Pendências `gating-ipog` cross-linkadas com issue do GitHub.
+- Aprovação por silêncio em até **2 dias úteis** após envio (ou correções registradas em commit subsequente).
+- Sem emojis (regra do programa).

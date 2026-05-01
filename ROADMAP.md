@@ -57,6 +57,8 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
 **Artefatos de execução vigentes:** `audits/PLAYBOOK-AUDITORIA-NAIA.md`, `audits/SCHEMA-PATTERNS.md`, `audits/LLMS-TXT-TEMPLATE.md`, `audits/ROBOTS-SITEMAP-CHECKLIST.md`, `dashboards/RUNBOOK-COLETA-LLM.md`, `dashboards/METRICAS-CANONICAS.md`.
 
+**Insumo prévio de benchmarking (vigente desde 2026-04-30):** o diretório `audits/benchmarking/` consolida diagnóstico inicial dos 5 concorrentes prioritários (Estácio, Anhanguera, UNINTER, UniCesumar, PUC-Minas Virtual) com dossiês individuais, matriz cross-LLM inferida, matriz técnica (robots/llms.txt/Schema/autoridade) e síntese executiva. A coleta cross-LLM da Fase 1 valida e calibra essa inferência. A síntese executiva (`audits/benchmarking/SINTESE-EXECUTIVA.md`) é a leitura prévia obrigatória de Ronan Maia no primeiro checkpoint executivo do programa.
+
 ---
 
 ## Fase 2 — Engenharia de citação e kit de prompts

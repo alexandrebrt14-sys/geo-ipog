@@ -104,6 +104,17 @@ Padrões obrigatórios para qualquer peça editorial produzida sob a marca IPOG 
 - `audits/LLMS-TXT-TEMPLATE.md` — template e diretrizes para `llms.txt` em `ipog.edu.br`.
 - `audits/ROBOTS-SITEMAP-CHECKLIST.md` — checklist de robots.txt, sitemaps, canonicals e redirects com exemplos.
 
+### Benchmarking de concorrentes (`audits/benchmarking/`)
+
+Diagnóstico inicial dos 5 concorrentes prioritários do IPOG na vertical de pós-graduação online em Psicologia. Insumo da Fase 1.
+
+- `audits/benchmarking/README.md` — índice e roteiro de leitura por audiência.
+- `audits/benchmarking/SINTESE-EXECUTIVA.md` — leitura de uma página para checkpoint com Ronan Maia.
+- `audits/benchmarking/pontos-fortes-a-superar.md` — matriz comparativa por dimensão estratégica + 15 pontos fortes consolidados a superar com a estratégia explícita do IPOG para cada um.
+- `audits/benchmarking/matriz-presenca-llm.md` — inferência cross-LLM com 15 prompts-âncora × 5 concorrentes.
+- `audits/benchmarking/matriz-tecnica-schema-seo.md` — coleta direta de robots.txt, llms.txt, sitemap dos 5 sites + análise de Schema, autoridade externa e rankings.
+- `audits/benchmarking/concorrente-{estacio,anhanguera,uninter,unicesumar,puc-minas-virtual}.md` — 5 dossiês individuais com 11 seções cada (identidade, atuação online/offline, oferta Psicologia, marca, satisfação, autoridade externa, pontos fortes, vulnerabilidades, hipóteses cross-LLM, fontes).
+
 ### Kit de prompts e papéis (`prompts/`)
 
 - `prompts/KIT-PROMPTS-V0.md` — 66 prompts-âncora canônicos × 3 clusters × 7 personas × 4 jornadas.

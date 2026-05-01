@@ -1,0 +1,55 @@
+name: Quality gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "**/*.md"
+      - ".github/workflows/quality.yml"
+  push:
+    branches: [main]
+    paths:
+      - "**/*.md"
+  schedule:
+    - cron: "0 11 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  markdown-link-check:
+    name: Markdown link check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --max-concurrency 8
+            --timeout 30
+            --retry-wait-time 2
+            --max-retries 2
+            --accept 200,206,301,302,403,429
+            --exclude-path ".git"
+            --exclude "linkedin.com|reclameaqui.com.br|wikipedia.org/wiki/Universidade_Anhembi"
+            './**/*.md'
+          fail: false
+
+  markdownlint:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run markdownlint-cli2
+        uses: DavidAnson/markdownlint-cli2-action@v18
+        with:
+          config: ".markdownlint.json"
+          globs: "**/*.md"
+        continue-on-error: true

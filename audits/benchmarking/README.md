@@ -20,15 +20,15 @@ A Onda 2 trouxe três correções de identidade institucional consolidadas em `O
 
 ## Catálogo de documentos
 
-### Síntese e priorização (Onda 1)
+### Síntese e priorização
 
-- `SINTESE-EXECUTIVA.md` — visão de uma página com a tese central, os top 5 movimentos prioritários do IPOG, o que NÃO disputar, riscos críticos e KPIs de sucesso. **Cobre apenas os 5 concorrentes da Onda 1**; a integração da Onda 2 é planejada para a próxima revisão.
-- `pontos-fortes-a-superar.md` — matriz comparativa por dimensão estratégica + 15 pontos fortes consolidados a superar com a estratégia explícita do IPOG para cada um + recomendações para a Onda 1. **Cobre apenas a Onda 1.**
+- `SINTESE-EXECUTIVA.md` — visão de uma página com a tese central, os top 5 movimentos prioritários do IPOG, o que NÃO disputar, riscos críticos e KPIs de sucesso. **Cobre apenas os 5 concorrentes da Onda 1**; a integração estratégica da Onda 2 deve ser feita na próxima revisão executiva (matrizes técnica e cross-LLM já cobrem os 10).
+- `pontos-fortes-a-superar.md` — matriz comparativa por dimensão estratégica + 15 pontos fortes consolidados a superar com a estratégia explícita do IPOG para cada um + recomendações para a Onda 1. **Cobre apenas a Onda 1**; a integração da Onda 2 está pendente.
 
-### Matrizes analíticas (Onda 1)
+### Matrizes analíticas (Onda 1 + Onda 2 integradas)
 
-- `matriz-presenca-llm.md` — inferência da presença em motores generativos cross-LLM (15 prompts-âncora × 5 concorrentes Onda 1 × 3 clusters semânticos), com janelas competitivas top 5 para o IPOG. Validação completa será feita na Fase 1 com coleta direta nos 6 LLMs canônicos.
-- `matriz-tecnica-schema-seo.md` — coleta direta de robots.txt, llms.txt, sitemap dos 5 sites Onda 1 + análise de Schema.org, autoridade externa e rankings. Identifica 5 janelas técnicas defensáveis para o IPOG.
+- `matriz-presenca-llm.md` — inferência da presença em motores generativos cross-LLM. **Seções 1-7 cobrem os 5 concorrentes da Onda 1**; **Seção 9 estende para os 5 concorrentes da Onda 2**, com cobertura por cluster, presença esperada nos 15 prompts-âncora, análise por concorrente, 5 janelas adicionais e 8 confirmações pendentes para a Fase 1. Validação completa será feita na Fase 1 com coleta direta nos 6 LLMs canônicos.
+- `matriz-tecnica-schema-seo.md` — coleta direta de robots.txt, llms.txt, sitemap, Schema.org, autoridade externa e rankings. **Seções 1-6 cobrem os 5 da Onda 1**; **Seção 8 estende para os 5 da Onda 2** com fetches diretos executados em 2026-05-01, tabelas mestre estendidas, análise técnica por concorrente Onda 2 e 4 janelas técnicas adicionais. Identifica vulnerabilidades autoinfligidas e gaps Schema dos 10 concorrentes.
 
 ### Dossiês individuais — Onda 1 (concorrentes massivos)
 
@@ -89,7 +89,11 @@ A Onda 2 trouxe três correções de identidade institucional consolidadas em `O
 - **Saint Paul/EXAME não tem nenhum curso intitulado Psicologia Organizacional, Psicologia do Trabalho, Saúde Mental Corporativa ou Riscos Psicossociais.** O cluster Organizacional premium-executivo de Psicologia está sem ocupante claro: Saint Paul cobre liderança genérica; Anhembi cobre Psi Org. mas sem o selo premium.
 - **Especialistas verticais (CETCC e IBNeuro) recusam o naming "MBA" deliberadamente** — para o público que valoriza a credencial executiva, esse é um vácuo aproveitável.
 - **Sírio-Libanês domina inquestionavelmente Psicologia Hospitalar** — não é terreno a disputar de frente; o flanco aberto é cluster amplo de Psicologia + transparência de preço/financiamento + capilaridade fora de SP-DF.
-- **Vulnerabilidades técnicas comuns:** nenhum dos 10 concorrentes mapeados tem llms.txt, `EducationalOccupationalProgram` ou `Person` Schema vinculado a Lattes/ORCID.
+- **Sírio-Libanês FSL bloqueia crawlers IA via WAF** (HTTP 403) — confirmado em fetch direto 2026-05-01. Segundo grande player com vulnerabilidade autoinfligida (após Anhanguera).
+- **IBNeuro usa Shopify Product Schema no lugar de Course Schema canônico** — vende cursos como produto e-commerce, LLMs não identificam como pós-graduação canônica.
+- **Saint Paul/EXAME tem URLs canônicas em 404 pós-aquisição EXAME** (`/curso/pos-graduacao-saint-paul`, `/curso/mba-executivo-saint-paul`) — janela técnica curta enquanto reorganização editorial não estabiliza (3-6 meses estimados).
+- **Fragmentação de domínios é vulnerabilidade comum**: 5+ dos 10 concorrentes operam fragmentação severa (Sírio com 7+ domínios, IBNeuro com 5+, Anhembi com 5+, Saint Paul com 5+, Unyleya com 4+). LLMs preferem hubs canônicos.
+- **Vulnerabilidades técnicas comuns aos 10 concorrentes:** nenhum tem llms.txt, `EducationalOccupationalProgram` ou `Person` Schema vinculado a Lattes/ORCID. Apenas Hospital Sírio-Libanês e Universidade Anhembi Morumbi têm Wikipedia denso (os outros 8 estão sem verbete ou com verbete fraco).
 
 ## Cadência de atualização
 
@@ -111,3 +115,10 @@ A Onda 2 trouxe três correções de identidade institucional consolidadas em `O
 - Validar parceria Saint Paul × FIA-USP (atualmente marcada como `[a confirmar]` em `ONDA-2-CORRECOES-PREMISSA.md`).
 - Coletar dado real cross-LLM nos 15 prompts da matriz × 6 LLMs canônicos para todos os 10 concorrentes (Ondas 1 + 2 integradas).
 - Auditoria Schema.org página-a-página dos 10 concorrentes (NAIA-200 a NAIA-299), substituindo a inferência da matriz técnica por dado coletado.
+- Confirmar tamanho atual do verbete Wikipedia IPOG vs. Anhembi Morumbi e Hospital Sírio-Libanês — definir baseline para o plano de expansão.
+- Recheck mensal das URLs em 404 da Saint Paul/EXAME (janela técnica curta de 3-6 meses).
+- Mapear quais subdomínios IBNeuro têm Schema diferente (Shopify storefront vs. domínios `cursos.ibneuro.org`) — Shopify limita estrutura.
+
+## Trabalho pendente de integração
+
+- **`SINTESE-EXECUTIVA.md` e `pontos-fortes-a-superar.md` ainda cobrem apenas a Onda 1** — integração estratégica da Onda 2 deve ser feita na próxima revisão executiva, antes do checkpoint mensal com Ronan Maia. Insumos para essa integração já estão consolidados na seção 9 da matriz cross-LLM e na seção 8 da matriz técnica.

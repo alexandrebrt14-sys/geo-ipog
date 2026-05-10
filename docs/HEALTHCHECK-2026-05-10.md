@@ -34,6 +34,32 @@ A leitura é prescritiva: cada gap mapeado abaixo tem ação, owner e prazo. Gap
 4. **Publicar primeiro relatório semanal** — ainda sem entregar a IPOG após kickoff de 30-04. Quebra de cadência mata a relação operacional.
 5. **Configurar workflow concorrentes-monitoring** — primeira execução agendada (01-05) não gerou diretório `audits/concorrentes-monitoring/2026-05-01/`. Investigar se workflow rodou e falhou silenciosamente ou se nunca disparou.
 
+### 1.3 Achados materiais da pesquisa de mercado 2026 (`audits/benchmarking/MERCADO-2026-NOTICIAS.md`)
+
+5 sinais de mercado descobertos em 10-05 que devem reposicionar o programa nas próximas 4 semanas:
+
+1. **Cogna perdeu 32,2% das matrículas EAD no 1T26** após Decreto 12.456/2025 (graduação Psicologia EAD proibida com prazo até 19-05-2027). Pós-graduação Lato Sensu segue autorizada — terreno onde IPOG joga. **Janela 30 dias** para mensagem "alternativa pós-Cogna" antes de UniCesumar/Estácio capturarem.
+2. **IBNeuro anunciou uso de LLMs em diagnóstico no curso 2026** — vertical "IA + Psicologia" sendo ocupado em 60-90 dias. IPOG não tem trilha equivalente publicamente.
+3. **78% das buscas educacionais retornam AI Overview** (BrightEdge fev/2026), CTR Google caiu 30% em 12 meses, 17% dos calouros já usam ChatGPT na pesquisa de universidade. Wikipedia explica 26-48% das citações em ChatGPT; Reddit ~40% na Perplexity. **IPOG não tem verbete Wikipedia (a confirmar) nem presença Reddit Brasil** — gargalo crítico de Entity Consistency.
+4. **UniCesumar industrializou** (50 cursos novos em out/2025, matrícula contínua, 43 em saúde, pós Avaliação Psicológica semipresencial em nov/2025). IPOG não tem como competir em catálogo — precisa diferenciar como premium regional anti-consolidação (Mapa Semesp 2026: 1,4% das mantenedoras concentram 47,1% das matrículas).
+5. **Saint Paul/EXAME entra em graduação em 2026** — concorrência indireta nos verticais de gestão.
+
+**4 riscos novos detectados** (R-013 a R-016, complementando R-001 a R-012):
+
+- **R-013** — Wikipedia/Reddit gap permitirá concorrentes serem citados mais que IPOG em LLMs. Prazo crítico 60 dias.
+- **R-014** — UniCesumar matrícula contínua + 50 cursos/trimestre é fábrica que IPOG não tem como replicar. Mitigação: posicionar como premium regional + presencial, não brigar em catálogo.
+- **R-015** — Decreto 12.456 segunda onda — possível extensão a lato sensu em áreas críticas em 12-24 meses.
+- **R-016** — Plataformas de telepsicologia (Vittude, Zenklub, Eurekka) virando edtechs próprias. Convergência com IBNeuro+LLMs.
+
+**6 oportunidades de janela curta** (30-90 dias) registradas em `audits/benchmarking/MERCADO-2026-NOTICIAS.md` seção "Oportunidades de janela curta":
+
+- O-1 (30 dias) — capturar fuga Cogna -32,2%
+- O-2 (60 dias) — lançar trilha "IA aplicada à Psicologia" antes de IBNeuro consolidar
+- O-3 (60-90 dias) — verbete Wikipedia + sub-páginas de polos
+- O-4 (90 dias) — carona em Decreto 12.456 com mensagem "pós Lato Sensu permitida"
+- O-5 (90 dias) — pré-empacotar produto NR-1 + Saúde Mental Corporativa
+- O-6 (60 dias) — adotar modelo matrícula contínua antes do pico 2026.2
+
 ---
 
 ## 2. Inventário de artefatos

@@ -26,7 +26,7 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
 
 | Número | Valor | Comentário |
 |---|---|---|
-| Issues abertas | 31 | 9 órfãs de milestone — corrigir nesta sprint |
+| Issues abertas | 43 | 12 novas criadas em 10-05 (#38-#49) cobrindo gaps + janelas curtas |
 | Decisões IPOG bloqueantes | 11 | 4 riscos em escalada + 7 decisões abertas |
 | Atas registradas | 0 | Crítico — bootstrappar nesta semana |
 | Relatórios semanais entregues | 0 | Crítico — primeiro entregue em 11-05 |
@@ -49,9 +49,11 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
 - Reconciliação roadmap dual (Fases vs CTO Quarters)
 - Bootstrap `STATUS.md` e `docs/ROADMAP_2026Q2-Q4.md`
 - Atualização `README.md`, `ROADMAP.md`, `.github/PROJECT.md`
-- 8 issues de gap criadas
-- 9 issues órfãs vinculadas a milestones
+- 12 issues novas criadas (#38-#49) — gaps operacionais + oportunidades de janela curta
+- 8 issues órfãs vinculadas a milestones (#29 a #36)
+- Comentário em #19 (Wikipedia) cruzando R-013 com gap de Entity Consistency em LLMs
 - Ampliação benchmarking com pesquisa de mercado, notícias e reports 2026 (`audits/benchmarking/MERCADO-2026-NOTICIAS.md`)
+- 4 riscos novos detectados (R-013 a R-016) — issue #47 catalogada para incorporar ao risk register
 
 ## 6. O que precisa rodar 11-17/05
 

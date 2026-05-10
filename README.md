@@ -125,6 +125,7 @@ Diagnóstico dos 10 concorrentes prioritários do IPOG na vertical de pós-gradu
 - `audits/benchmarking/concorrente-{cetcc,ibneuro,sirio-libanes-iep,wpos-anhembi,conexia-saint-paul}.md` — 5 dossiês da Onda 2 (especialistas verticais e premium executiva).
 - `audits/benchmarking/MERCADO-2026-NOTICIAS.md` — ampliação contínua com notícias, movimentos competitivos, reports e regulação publicados em 2026 (atualização mensal).
 - `audits/benchmarking/REGIONAL-2026-ESTADOS-CIDADES.md` — aprofundamento estado-a-estado: cobertura física dos 10 concorrentes-base, mapa Frente Regional 51 cidades médias, regulação estadual e janelas regionais.
+- `audits/benchmarking/PAPERS-2025-2026-PROFUNDIDADE.md` — 77 papers acadêmicos catalogados em 7 dimensões (GEO/AI Search, Higher Ed AI behavior, Online Higher Ed Psychology, Regional LatAm Brasil, IA em Saúde Mental, NR-1 corporativa, Knowledge Graph/Wikipedia/Reddit) com sínteses cruzadas, implicações operacionais, metodologia citável e lacunas para papers próprios.
 
 ### Kit de prompts e papéis (`prompts/`)
 

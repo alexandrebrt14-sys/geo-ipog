@@ -78,6 +78,30 @@ A leitura é prescritiva: cada gap mapeado abaixo tem ação, owner e prazo. Gap
 
 **8 issues regionais sugeridas** (NAIA-310 a NAIA-317) cobrem confirmação das 51 cidades, mapeamento de concorrentes locais, Schema por unidade, parcerias CRPs, pricing tier, narrativa Ceará 81 polos, auditoria mention rate Reddit/Bing/Brave, e vínculo Lattes/ORCID dos docentes regionais.
 
+### 1.5 Achados acadêmicos materiais (`audits/benchmarking/PAPERS-2025-2026-PROFUNDIDADE.md`)
+
+77 papers catalogados em 7 seções cobrindo GEO/AI Search, Higher Ed AI behavior, Online Higher Ed Psychology, Regional/LatAm Brasil, IA em Saúde Mental, NR-1 corporativa, Knowledge Graph/Wikipedia/Reddit. 5 papers que reposicionam decisões dos próximos 90 dias:
+
+1. **Aggarwal et al. (KDD 2024) — "GEO: Generative Engine Optimization"** (arXiv 2311.09735). Define formalmente GEO com 9 enriquecimentos validados (citations, statistics, quotations, fluency, authoritative, unique_words, simple_language, technical_terms, easy_to_understand) que elevam visibilidade GEO em até 40%. **Implicação:** virar gate de Voice Guard 2.0 antes de publicar qualquer peça HBR.
+2. **Brown University (ICML out/2025) — "AI chatbots systematically violate mental health ethics standards"**. Mapeia 15 riscos éticos em 5 categorias e demonstra que LLMs "abandonam" usuário em ideação suicida. **Munição editorial pesada para diferenciar IPOG de IBNeuro:** posicionamento canônico "IPOG ensina psicólogo a operar IA com julgamento — não a delegar diagnóstico".
+3. **Pew Research Center (jul/2025) — "Google users are less likely to click when AI summary appears"**. Estudo de 68.879 buscas reais; CTR cai 46,7% relativo. **Cifra emocional para destravar D-05 com Ronan:** GEO é defensivo, não opcional.
+4. **Santos et al. (Reben SciELO 2025) — "Impacto das alterações da NR-1"**. Primeira referência peer-reviewed brasileira sobre NR-1 atualizada. **Persona P0 "RH não-psicólogo" tem driver legal mandatório com prazo 25-mai-2026** (T-15 dias).
+5. **arXiv 2503.02879 — "Wikipedia in the Era of LLMs: Evolution and Risks"**. Demonstra degradação bidirecional: Wikipedia editada por LLM perde precisão fatual em RAG downstream. **Janela de entrada na Wikipedia com voz humana certificada está se fechando** — verbete IPOG até 30-07-2026.
+
+**15 implicações operacionais novas** documentadas em `audits/benchmarking/PAPERS-2025-2026-PROFUNDIDADE.md` seção 9 (não duplicam MERCADO/REGIONAL).
+
+**5 sínteses cruzadas:**
+
+- GEO + Higher Ed AI Search: estudante já decide com base em LLM, e LLM cita Wikipedia/Reddit
+- Higher Ed Online + IA em Saúde Mental: blended supera presencial puro, mas com supervisão clínica humana obrigatória
+- Concentração privada + Modelos regionais + NR-1: moat anti-consolidação com driver legal
+- Wikipedia degradação + Knowledge Graph customizado: janela de entrada agora ou perda permanente
+- NR-1 + persona RH + IA em mental health: produto B2B híbrido
+
+**7 lacunas de literatura** identificadas como oportunidade de criar conhecimento original Brasil GEO (papers próprios assinados por Alexandre).
+
+**3 issues acadêmicas sugeridas:** Voice Guard 2.0 com 9 enriquecimentos GEO (P0); Pipeline Wikipedia + Wikidata IPOG até 30-07 (P0); Trilha MBA "IA em Saúde Mental com Supervisão Clínica Humana" (P1) — diferencial vs IBNeuro com base em literatura.
+
 ---
 
 ## 2. Inventário de artefatos

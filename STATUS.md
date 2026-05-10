@@ -69,6 +69,7 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
   - `KNOWLEDGE-GRAPH-IPOG.md` — grafo Mermaid + claims Wikidata canônicos + pipeline quinzenal de manutenção
   - `SCHEMA-IPOG-CANONICAL.md` — JSON-LD concreto pronto para deploy (8 blocos de instâncias)
 - `audits/SCHEMA-PATTERNS.md` referenciando a camada ontologia
+- **Cockpit estratégico multi-abas publicado:** `https://brasilgeo.ai/ipoggeoroadmap` (confidencial, noindex) — 11 abas (Visão Executiva, Now/Next/Later, Pilares Estratégicos, GEO, SEO, Conversão, UX, Analytics, Backlog, Riscos, Changelog) consolidando todo o programa GEO IPOG (5 vetores, 6 frameworks F1-F6, 8 marcos, 22 sprints, 19 riscos, 22 epics, 16 clusters SEO, 12 lead magnets, 5 MBAs). Repo: `alexandrebrt14-sys/brasilgeo-worker` · commit f886445.
 - **Roadmap operacional incrementado** com 2 documentos novos:
   - `docs/GEO-FRAMEWORK-CANONICO.md` — síntese dos 6 frameworks GEO acoplados (F1 a F6) com papers-âncora 2024-2026 e pipeline operacional
   - `docs/ROADMAP-SPRINTS-2026-2027.md` — 22 sprints quinzenais cobrindo todos os 5 vetores e 6 frameworks com 125+ tasks programadas até pico 2027.1 (28-02-2027)

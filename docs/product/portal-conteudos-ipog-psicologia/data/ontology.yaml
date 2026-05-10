@@ -1,0 +1,328 @@
+# Ontologia canônica — Portal de Conteúdos IPOG Psicologia
+# Versão: 1.0 (Wave 2 · 2026-05-10)
+# Cross-link: 03-ontologia.md
+# Compatibilidade: estende docs/ontologia/ONTOLOGIA-CANONICA.md
+
+entities:
+  Course:
+    schema_org: [Course, EducationalOccupationalProgram]
+    required:
+      - id
+      - slug
+      - name
+      - alternateName
+      - short_description
+      - full_description
+      - modality              # ao-vivo|ead|hibrido
+      - duration              # ISO 8601 (P12M)
+      - target_personas
+      - primary_topics
+      - related_skills
+      - career_outcomes
+      - primary_cta
+      - lead_form_id
+      - seo_title
+      - seo_description
+      - canonical_url
+      - course_category
+      - schema_org_type
+      - program_type          # MBA|Especializacao
+      - educational_credential_awarded
+      - mec_authorization
+      - cfp_compliance_notes
+      - is_flagship
+    optional:
+      - professor_ids
+      - testimonials
+      - case_studies
+      - related_content
+      - faq_ids
+      - competitor_comparisons
+      - state_specific_variants
+      - city_specific_variants
+      - prerequisites
+      - certificate_template
+      - tuition_payment_options
+      - international_modules
+      - capstone_template
+      - language_of_instruction
+      - international_validity
+      - data_validade
+
+  CourseCategory:
+    required: [id, slug, name, description, parent_category, related_topics]
+    examples: [Organizacional, Clinica-Neuropsi, Pessoas-Lideranca, Avaliacao-Pericia]
+
+  MBA:
+    extends: Course
+    fixed_attributes:
+      program_type: MBA
+      educational_credential_awarded: "Especialização Lato Sensu — MBA"
+
+  Specialization:
+    extends: Course
+    fixed_attributes:
+      program_type: Especialização
+
+  Module:
+    schema_org: [Chapter, LearningResource]
+    required: [id, course_id, title, order, lessons, duration, learning_objectives]
+    optional: [tools, checkpoints, assessments]
+
+  Topic:
+    schema_org: [Thing]
+    required: [id, slug, name, description, related_subtopics, search_volume_brazil, search_intent]
+    optional: [is_trend_2025_2026, regulatory_anchor]
+
+  Subtopic:
+    schema_org: [Thing]
+    required: [id, slug, name, parent_topic, description]
+
+  Persona:
+    schema_org: [Audience, EducationalAudience]
+    required:
+      - id
+      - slug
+      - name
+      - profile_summary
+      - pains
+      - jobs_to_be_done
+      - objections
+      - decision_triggers
+      - recommended_courses_priority  # array ordenada
+      - priority_content_types
+      - ideal_ctas_by_journey_stage
+
+  UserJourneyStage:
+    required: [id, slug, name, description, expected_intent, recommended_content_types, recommended_ctas]
+    canonical_values: [awareness, problem-discovery, solution-discovery, consideration, comparison, decision, enrollment, post-enrollment, alumni-advocacy]
+
+  PainPoint:
+    required: [id, slug, name, description, related_personas, related_topics, related_courses]
+
+  CareerGoal:
+    required: [id, slug, name, description, related_skills, supporting_courses]
+
+  Skill:
+    schema_org: [DefinedTerm]
+    required: [id, slug, name, definition, category, courses_that_teach]
+
+  Competency:
+    schema_org: [DefinedTerm]
+    required: [id, slug, name, definition, composing_skills]
+
+  ContentItem:
+    schema_org: [Article, HowTo, BlogPosting, LearningResource]
+    required:
+      - id
+      - slug
+      - title
+      - summary
+      - body
+      - author_id
+      - editorial_owner_id
+      - publish_date
+      - last_updated
+      - data_validade
+      - canonical_url
+      - content_type
+      - target_personas
+      - primary_topics
+      - secondary_topics
+      - subject_courses
+      - journey_stages
+      - search_intent
+      - seo_title
+      - seo_description
+      - reading_time_minutes
+      - schema_markup
+      - sources
+      - evidence_strength
+    optional:
+      - related_content
+      - related_ctas
+      - lead_magnet_id
+      - faq_attached
+      - state_variants
+      - city_variants
+
+  ContentType:
+    canonical_values:
+      - artigo
+      - guia-completo
+      - pilar-seo
+      - landing-page
+      - pagina-curso
+      - pagina-estado
+      - pagina-cidade
+      - pagina-comparativa
+      - faq
+      - checklist
+      - quiz
+      - e-book
+      - webinar
+      - aula-aberta
+      - case
+      - entrevista
+      - glossario
+      - ferramenta
+      - diagnostico
+      - calculadora
+      - infografico
+      - roteiro-carreira
+
+  LandingPage:
+    extends: ContentItem
+    schema_org: [WebPage, CollectionPage]
+    required_extras: [primary_courses_promoted, primary_cta, secondary_cta, conversion_goal]
+
+  StatePage:
+    extends: LandingPage
+    required_extras: [state_uf, state_name, region, courses_offered_by_priority, local_topics, local_competitors_mentioned]
+
+  CityPage:
+    extends: LandingPage
+    required_extras: [city_name, city_slug, parent_state, has_cnpj_local_unit, ipog_unit_id_if_applicable]
+
+  Region:
+    schema_org: [AdministrativeArea]
+    canonical_values: [norte, nordeste, centro-oeste, sudeste, sul]
+
+  State:
+    schema_org: [AdministrativeArea]
+    required: [id, uf_code, name, region, slug, capital, ipog_units_count, priority_courses]
+
+  Competitor:
+    schema_org: [EducationalOrganization]
+    required:
+      - id
+      - name
+      - website
+      - country
+      - cluster              # G1-G5 (ver MBA-PSICOLOGIA-MERCADO-2026-EXPANDIDO.md)
+      - courses_identified
+      - modality
+      - strengths
+      - weaknesses
+      - validation_status    # validated|partial|pending
+    optional: [price_range, duration, seo_positioning, content_strategy, conversion_strategy, differentiators, last_audit_date]
+
+  ComparisonPage:
+    extends: ContentItem
+    required_extras: [primary_subject_course, comparison_targets_competitors, comparison_criteria, comparison_matrix, ipog_advantage_summary, evidence_sources]
+
+  FAQ:
+    schema_org: [FAQPage, Question, Answer]
+    required: [id, question, answer, related_courses, related_topics, journey_stage, last_validated_date]
+
+  CTA:
+    schema_org: [Action]
+    required: [id, label, action_type, conversion_goal, target_url_or_action, journey_stage, persona_relevance]
+    canonical_action_types: [baixar-material, fazer-quiz, assistir-aula-aberta, inscrever-webinar, falar-whatsapp, agendar-conversa, solicitar-grade, comparar-cursos, ver-investimento, fazer-inscricao, iniciar-matricula]
+
+  LeadMagnet:
+    schema_org: [DigitalDocument]
+    required: [id, title, description, format, target_personas, journey_stage, lead_form_id, file_url_or_landing_url]
+
+  Webinar:
+    schema_org: [Event]
+    required: [id, title, description, scheduled_date, duration, speakers, target_personas, related_courses, lead_form_id, recording_url_after]
+
+  Event:
+    schema_org: [Event]
+    required: [id, title, description, event_type, scheduled_date, duration, location, target_personas]
+
+  Professor:
+    schema_org: [Person]
+    required:
+      - id
+      - name
+      - bio
+      - hasCredential        # array de Credential
+      - sameAs                # Lattes URL + ORCID URL
+      - knowsAbout           # subset de skills
+      - courses_taught
+      - worksFor             # unit/cidade
+
+  Testimonial:
+    schema_org: [Review]
+    required: [id, person_id_or_anonymous_persona, course_id, quote, outcome_described, validation_status]
+
+  CaseStudy:
+    schema_org: [Article, CaseStudy_custom]
+    required: [id, slug, title, company_name_or_anonymized, sector, challenge, solution, indicators_before, indicators_after, lessons, related_courses, permission_to_publish]
+
+  Regulation:
+    schema_org: [LegalDocument]
+    required: [id, name, full_name, regulatory_body, publication_date, last_update, scope_summary, related_topics, evidence_url]
+    examples: [NR-1, Portaria-MEC-506-2025, Decreto-12-456-2025, Resolucao-CFP-09-2024]
+
+  Trend:
+    schema_org: [Thing]
+    required: [id, name, description, hot_score_2025_2026, related_topics, related_courses, last_updated]
+
+  Metric:
+    schema_org: [PropertyValue]
+    required: [id, name, formula, unit, good_range, related_courses, related_topics]
+
+  AnalyticsEvent:
+    required: [id, name, description, payload_schema, pages_where_fires, persona_relevance, kpi_impact]
+
+  SEOKeyword:
+    required: [id, keyword, search_intent, search_volume_estimate, current_ranking, target_page, cluster]
+
+  SearchIntent:
+    canonical_values: [informacional, comercial, comparativa, transacional, local, navegacional, carreira, regulatorio, tendencia, como-fazer, melhor-curso, curso-online, pos-graduacao, mba]
+
+  InternalLink:
+    required: [id, source_page_id, target_page_id, anchor_text, link_context, relation_type]
+
+  EditorialOwner:
+    schema_org: [Person]
+    required: [id, name, role, areas_of_responsibility]
+
+  Source:
+    schema_org: [CreativeWork]
+    required: [id, title, author, url, publication_date, source_type, credibility_tier]
+    canonical_credibility_tiers: [tier-1-paper-peer-reviewed, tier-2-mídia-tier-1, tier-3-relatorio-industrial, tier-4-blog-empresa, tier-5-rede-social]
+
+  Evidence:
+    required: [id, claim, supporting_sources, evidence_strength, last_validated_date, related_content_items]
+
+relationships:
+  - {source: Course, relation: belongs_to, target: CourseCategory}
+  - {source: Course, relation: hasPart, target: Module}
+  - {source: Course, relation: audience, target: Persona}
+  - {source: Course, relation: solves, target: PainPoint}
+  - {source: Course, relation: teaches, target: Skill}
+  - {source: Skill, relation: composes, target: Competency}
+  - {source: Course, relation: enables, target: CareerGoal}
+  - {source: Topic, relation: hasPart, target: Subtopic}
+  - {source: ContentItem, relation: about, target: Topic}
+  - {source: ContentItem, relation: audience, target: Persona}
+  - {source: ContentItem, relation: at_journey_stage, target: UserJourneyStage}
+  - {source: ContentItem, relation: cites, target: Source}
+  - {source: ContentItem, relation: supports_with, target: Evidence}
+  - {source: LandingPage, relation: promotes, target: Course}
+  - {source: StatePage, relation: localizes, target: Course}
+  - {source: StatePage, relation: in_state, target: State}
+  - {source: CityPage, relation: in_city, target: State}
+  - {source: ComparisonPage, relation: compares, target: Competitor}
+  - {source: ComparisonPage, relation: compares_subject, target: Course}
+  - {source: LeadMagnet, relation: captures_at, target: UserJourneyStage}
+  - {source: CTA, relation: converts_to, target: ConversionGoal}
+  - {source: SEOKeyword, relation: has_intent, target: SearchIntent}
+  - {source: Regulation, relation: relates_to, target: Topic}
+  - {source: AnalyticsEvent, relation: measures, target: ContentItem_or_Course_or_CTA}
+  - {source: Course, relation: differentiated_from, target: Competitor}
+  - {source: ContentItem, relation: linked_internally_to, target: ContentItem}
+
+queries_ontology_must_answer:
+  - "Qual MBA é melhor para psicóloga clínica que quer migrar para organizações?"
+  - "Qual curso é mais indicado para RH lidar com saúde mental e NR-1?"
+  - "Quais conteúdos devem aparecer para visitantes de São Paulo interessados em Psicologia Organizacional?"
+  - "Quais páginas devem ranquear para 'MBA Psicologia Organizacional online'?"
+  - "Quais conteúdos são adequados para awareness, consideration e decision?"
+  - "Quais CTAs são melhores para visitantes em estágio de decisão?"
+  - "Quais concorrentes devem ser comparados por curso ou tema?"
+  - "Quais temas estão em alta em 2025 e 2026?"

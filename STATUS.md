@@ -26,8 +26,12 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
 
 | Número | Valor | Comentário |
 |---|---|---|
-| Issues abertas | 53 | 23 novas criadas em 10-05 (#38-#60) — 6 gaps operacionais + 6 janelas curtas mercado + 8 regionais NAIA-310 a NAIA-317 + 3 acadêmicas |
+| Issues abertas | 61 | 31 novas criadas em 10-05 (#38-#69) — 6 gaps + 6 janelas mercado + 8 regionais + 3 acadêmicas + 8 epics |
 | Documentos ontologia/taxonomia | 4 | `docs/ontologia/` — fonte de verdade para Schema canônico, naming, labels GitHub e Knowledge Graph |
+| Documentos gestão operacional | 7 | `docs/gestao/` — squads + skills matrix + DoD + concorrentes status + resultados + roadmap curto-médio |
+| Milestones GitHub | 13 | 5 Fases (originais) + 8 Marcos M1-M8 (novos) cobrindo até maio 2027 |
+| Epics canônicos | 8 | #61-#69 agregando issues por marco/vetor |
+| Labels GitHub canônicas | 100+ | 14 dimensões ortogonais (priority, phase, quarter, vetor, cluster, persona, horizon, janela, framework, marco, risk, concorrente, squad, status) |
 | Decisões IPOG bloqueantes | 11 | 4 riscos em escalada + 7 decisões abertas |
 | Atas registradas | 0 | Crítico — bootstrappar nesta semana |
 | Relatórios semanais entregues | 0 | Crítico — primeiro entregue em 11-05 |
@@ -71,6 +75,21 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
 - **Relatório semanal W19 fechado e apresentação visual prontos:**
   - `docs/relatorios-semanais/2026-W19-04-a-10-maio.md` — 12 seções canônicas; envio para Bruno em 11-05 às 08h
   - `docs/relatorios-semanais/2026-W19-04-a-10-maio.html` — apresentação visual autocontida (HBR style) com gantt 8 marcos, 6 frameworks GEO, KPIs, 11 bloqueantes, riscos top 3, resultados Q2/Q3/Q4 2026 e Q1 2027 — pronta para apresentação 11-05 09h00 BRT
+- **Camada de gestão operacional publicada** (`docs/gestao/`):
+  - 7 squads (5 vetoriais V1-V5 + 2 transversais) com skills + capacidade + cadência operacional
+  - Skills Matrix com identificação de single points of failure e gaps
+  - Definition of Done canônico em 12 categorias (A1-A12) para PRs e issues
+  - Status atual dos 12 concorrentes-base com semáforo + mapa regional
+  - Resultados Pretendidos com KPIs por horizonte + modelo de receita
+  - Roadmap Curto e Médio Prazo (síntese executiva)
+- **GitHub config overhaul** aplicado via gh CLI (não-versionado, reflexão direta no repo):
+  - **Settings:** Discussions habilitadas, delete-branch-on-merge ativado, homepage apontando para STATUS.md
+  - **Topics:** 20 topics (limite GitHub) cobrindo geo, ai-search, knowledge-graph, frente-regional, voice-guard, wikipedia-pt-br, geo-framework, nr-1, saúde-mental-corporativa
+  - **Labels:** 64+ labels canônicas criadas em 9 dimensões (vetor, persona, horizon, janela, framework, marco, risk, concorrente, squad, status, epic) — taxonomia completa em `docs/ontologia/TAXONOMIA-CONTEUDO.md`
+  - **Milestones:** 8 marcos novos (M1 Bootstrap a M8 Pós-pico 2027.1) somando aos 5 Fases originais = 13 milestones cobrindo até maio 2027
+  - **Epic issues:** 8 epics guarda-chuva criados (#61-#69) agregando todas as 60+ issues do programa por marco/vetor
+  - **4 issue templates novos:** sprint-task.yml, epic.yml, regional-task.yml, risk-mitigation.yml
+  - **PR template** atualizado com DoD canônico, 8 marcos, 5 vetores, 6 frameworks, squad responsável e KPIs a impactar
 
 ## 6. O que precisa rodar 11-17/05
 

@@ -73,6 +73,18 @@ geo-ipog/
 - `docs/CONTEXTO-AMPLIADO-2026-05-10.md` — visão estratégica integrada (mercado + regional + tese de moat + 5 vetores do programa).
 - `docs/GEO-FRAMEWORK-CANONICO.md` — síntese dos 6 frameworks GEO acoplados (F1 9 enriquecimentos Aggarwal KDD 2024, F2 AutoGEO, F3 Structural Feature Engineering, F4 AgenticGEO, F5 Wikipedia+Knowledge Graph, F6 Citation Mechanics by Engine) com pipeline operacional + métricas alvo.
 - `docs/ROADMAP-SPRINTS-2026-2027.md` — 22 sprints quinzenais cobrindo todos os 5 vetores e 6 frameworks do bootstrap (11-05-2026) até fim do pico 2027.1 (28-02-2027); 125+ tasks programadas com DoD por sprint.
+
+### Gestão operacional (`docs/gestao/`)
+
+Camada de gestão operacional do programa: squads, skills, sprints, epics, DoD, status competitivo, resultados pretendidos, roadmap curto/médio prazo. Toda issue, label, milestone e PR no GitHub se ancora nesta camada.
+
+- `docs/gestao/README.md` — entrada da pasta + audiências.
+- `docs/gestao/SQUADS-E-SKILLS.md` — composição operacional em 7 squads (5 vetoriais + 2 transversais) + skills mínimos + cadência + métricas de saúde.
+- `docs/gestao/SKILLS-MATRIX.md` — matriz Skill × Pessoa × Cobertura com identificação de single points of failure e gaps de competência.
+- `docs/gestao/DEFINITION-OF-DONE-CANONICO.md` — DoD em formato compacto para uso em PRs e issue templates (12 categorias A1-A12).
+- `docs/gestao/CONCORRENTES-STATUS.md` — status atual dos 12 concorrentes-base com semáforo + movimentos críticos + mapa de calor regional + tracking automatizado.
+- `docs/gestao/RESULTADOS-PRETENDIDOS.md` — KPIs por horizonte (curto/médio/longo) + modelo de receita + resultados de moat estrutural.
+- `docs/gestao/ROADMAP-CURTO-MEDIO-PRAZO.md` — síntese executiva 30 dias + 90 dias + Q3/Q4 2026 + Q1 2027 com decisões críticas Bruno e Ronan.
 - `docs/01-kickoff-30-04-2026.md` — registro do kickoff (dia 1).
 - `docs/02-contexto-mba-online-psicologia.md` — contexto estratégico do recorte de produto.
 - `docs/03-reunioes-e-cadencia-ipog.md` — cadência de reuniões com IPOG e framework de relatórios.

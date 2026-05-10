@@ -70,6 +70,7 @@ geo-ipog/
 
 - `STATUS.md` — snapshot semanal vivo do programa (atualizado toda segunda-feira até as 09h00 BRT).
 - `docs/HEALTHCHECK-2026-05-10.md` — auditoria estrutural do repositório (próxima 24-05-2026).
+- `docs/CONTEXTO-AMPLIADO-2026-05-10.md` — visão estratégica integrada (mercado + regional + tese de moat + 5 vetores do programa).
 - `docs/01-kickoff-30-04-2026.md` — registro do kickoff (dia 1).
 - `docs/02-contexto-mba-online-psicologia.md` — contexto estratégico do recorte de produto.
 - `docs/03-reunioes-e-cadencia-ipog.md` — cadência de reuniões com IPOG e framework de relatórios.
@@ -123,6 +124,7 @@ Diagnóstico dos 10 concorrentes prioritários do IPOG na vertical de pós-gradu
 - `audits/benchmarking/concorrente-{estacio,anhanguera,uninter,unicesumar,puc-minas-virtual}.md` — 5 dossiês da Onda 1 (concorrentes massivos do EAD).
 - `audits/benchmarking/concorrente-{cetcc,ibneuro,sirio-libanes-iep,wpos-anhembi,conexia-saint-paul}.md` — 5 dossiês da Onda 2 (especialistas verticais e premium executiva).
 - `audits/benchmarking/MERCADO-2026-NOTICIAS.md` — ampliação contínua com notícias, movimentos competitivos, reports e regulação publicados em 2026 (atualização mensal).
+- `audits/benchmarking/REGIONAL-2026-ESTADOS-CIDADES.md` — aprofundamento estado-a-estado: cobertura física dos 10 concorrentes-base, mapa Frente Regional 51 cidades médias, regulação estadual e janelas regionais.
 
 ### Kit de prompts e papéis (`prompts/`)
 

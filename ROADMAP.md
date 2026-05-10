@@ -2,6 +2,7 @@
 
 > **Última revisão:** 10-05-2026 (durante healthcheck — `docs/HEALTHCHECK-2026-05-10.md`)
 > **Snapshot operacional ativo:** `STATUS.md`
+> **Contexto estratégico integrado:** `docs/CONTEXTO-AMPLIADO-2026-05-10.md`
 > **Visão cross-repo (Brasil GEO):** `docs/ROADMAP_2026Q2-Q4.md` — masterplan CTO Q2/Q3/Q4
 
 Início: 30 de abril de 2026.

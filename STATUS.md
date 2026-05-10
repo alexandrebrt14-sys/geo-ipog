@@ -54,6 +54,8 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
 - Comentário em #19 (Wikipedia) cruzando R-013 com gap de Entity Consistency em LLMs
 - Ampliação benchmarking com pesquisa de mercado, notícias e reports 2026 (`audits/benchmarking/MERCADO-2026-NOTICIAS.md`)
 - 4 riscos novos detectados (R-013 a R-016) — issue #47 catalogada para incorporar ao risk register
+- Contexto ampliado integrado em `docs/CONTEXTO-AMPLIADO-2026-05-10.md` (12 seções: tese ampliada, stakeholders, 5 vetores, personas refinadas, 5 grupos de concorrência, janelas curtas/médias/longas, KPIs derivados, mecânicas de moat, 3 horizontes do roadmap, decisões P0/P1/P2)
+- Aprofundamento regional em curso (`audits/benchmarking/REGIONAL-2026-ESTADOS-CIDADES.md`) — cobertura estado-a-estado + Frente 51 cidades + janelas regionais
 
 ## 6. O que precisa rodar 11-17/05
 

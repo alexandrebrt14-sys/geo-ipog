@@ -254,6 +254,84 @@ A lógica é prescritiva: risco sem mitigação ativa explícita é decisão pen
 
 ---
 
+## R-013 — Gap Wikipedia/Reddit permite concorrentes serem citados mais que IPOG
+
+**Descrição:** análise empírica do corpus de treinamento dos LLMs em 2026 confirma que Wikipedia explica 26-48% das citações em ChatGPT e Reddit explica aproximadamente 40% das citações em Perplexity. IPOG tem verbete Wikipedia raso ou ausente e presença mínima em Reddit (r/Psicologia, r/EAD, r/MBA), enquanto Anhembi Morumbi e Hospital Sírio-Libanês têm verbetes densos. A janela de absorção paramétrica dos LLMs é lenta (12-18 meses) — atraso material aqui ecoa por dois ciclos de captação.
+
+**Probabilidade:** Alta · **Impacto:** Alto · **Status:** Em escalada
+
+**KPIs afetados:** KPI 1 (Mention Rate em ChatGPT e Perplexity prioritariamente), KPI 2 (SoV nos três clusters), KPI 5 (Cobertura de fontes externas confiáveis).
+
+**Owner mitigação:** Bruno Azambuja + Alexandre Caramaschi · **Owner decisão:** Ronan Maia (verba PR + Wikipedia).
+
+**Mitigação ativa:**
+- Issue #19 e #60 (Wikipedia + Knowledge Graph) com baseline mensurado e plano de expansão.
+- Issue #57 (Auditoria de menção em Reddit, Bing AI Performance e Brave) com cadência mensal.
+- 6 peças HBR Fase 2 servem como sustentação para verbete Wikipedia (precondição editorial).
+- D06 do Board: aprovação de verba inicial R$ 50-100k em 12 meses para PR tier 1 + Wikipedia.
+
+**Gatilho de escalonamento:** prazo crítico 60 dias para baseline confirmado + plano editorial Wikipedia em curso. Sem verba aprovada até 30-05-2026, mitigação parcial usando apenas peças HBR + 1 release.
+
+---
+
+## R-014 — UniCesumar matrícula contínua + 50 cursos por trimestre é fábrica não-replicável
+
+**Descrição:** UniCesumar (Vitru Nasdaq VTRU3) opera modelo de matrícula contínua com aproximadamente 50 novos cursos lato sensu por trimestre. Volume e velocidade que IPOG não consegue replicar em escopo de catálogo. Risco competitivo se IPOG tentar brigar em volume — equivale a perder na assimetria.
+
+**Probabilidade:** Alta · **Impacto:** Alto · **Status:** Aceito (com mitigação por reposicionamento)
+
+**KPIs afetados:** KPI 2 (SoV em queries genéricas tipo "qual o melhor MBA online em Psicologia") onde UniCesumar pode ter recall dominante por volume de catálogo indexado.
+
+**Owner:** Alexandre Caramaschi + Bruno Azambuja.
+
+**Mitigação ativa:**
+- Reposicionamento explícito do IPOG como premium regional com modalidade Ao Vivo síncrono — não disputa catálogo massivo.
+- Schema canônico marca `Course.courseMode: "online (Ao Vivo síncrono)"` + `EducationalOccupationalProgram.programType: "MBA"`, atributos que UniCesumar não declara.
+- Person Schema com Lattes/ORCID consentido em 3 docentes piloto até 30-05 — diferencial não-replicável em sprint curto.
+- Conteúdo editorial HBR-grade focado em decisão de carreira e diferenciação metodológica, não em volume de catálogo.
+
+**Gatilho de escalonamento:** se UniCesumar publicar `llms.txt` ou declarar `EducationalOccupationalProgram` Schema antes de 30-06-2026, acelerar Lançamentos 2-3 e aumentar densidade editorial em Cluster 1 (Organizacional).
+
+---
+
+## R-015 — Decreto 12.456 segunda onda pode estender vedação a lato sensu em áreas críticas
+
+**Descrição:** o Decreto 12.456/2025 atual veda EAD em graduação de Psicologia, Medicina, Enfermagem, Odontologia e Direito mas explicitamente preserva lato sensu. Cenário de segunda onda regulatória (12-24 meses): ampliação da vedação para lato sensu em áreas com forte demanda profissional regulada. Probabilidade baixa-média, mas impacto crítico — invalida o portfólio inteiro de MBA Online de Psicologia.
+
+**Probabilidade:** Média · **Impacto:** Crítico · **Status:** Mitigado (monitoramento ativo + plano B presencial)
+
+**KPIs afetados:** todos. Em caso de materialização, programa muda de pista (online → híbrido/presencial em polos).
+
+**Owner monitoramento:** Diretoria Acadêmica IPOG + jurídico IPOG · **Owner contingência:** Ronan Maia.
+
+**Mitigação ativa:**
+- Monitoramento mensal de `gov.br/mec`, ABMES, SEMESP e portais especializados (Conjur, Carta Educação) — owner Bruno Azambuja com SLA 7 dias úteis para sinalizar publicação relevante.
+- Plano B presencial documentado: oferta híbrida com até 30% presencial em polos próprios (Goiânia + Brasília + 3-5 capitais), aproveitando a rede CNPJ-próprio de 51 cidades como vantagem estrutural.
+- Schema declara `EducationalOrganization.address` por unidade já no piloto — sinaliza capacidade de oferta presencial sem refactor estrutural.
+
+**Gatilho de escalonamento:** publicação de Portaria MEC, Parecer CNE/CES ou nova Portaria SERES restringindo lato sensu EAD em Psicologia → acionamento imediato do plano B presencial + comunicação coordenada com aluno corrente.
+
+---
+
+## R-016 — Plataformas de telepsicologia virando edtechs próprias (convergência IBNeuro + LLMs)
+
+**Descrição:** Vittude, Zenklub, Eurekka e outras plataformas de telepsicologia estão verticalizando para educação (formação continuada para psicólogos da rede, capacitação de coordenadores de saúde mental corporativa, formação para pedagogos). Convergência prevista com IBNeuro (vertical Neuropsi) e com LLMs (corpus de psicologia digital). Risco competitivo no Cluster 2 (Clínica/Avaliação/Neuro) e no produto P5 (Saúde Mental Corporativa B2B).
+
+**Probabilidade:** Média · **Impacto:** Alto · **Status:** Em monitoramento (sem mitigação ativa contratada)
+
+**KPIs afetados:** KPI 2 (SoV Cluster Clínica), KPI 7 (Conversion Lift se essas plataformas ganharem mention rate cross-LLM).
+
+**Owner:** Alexandre Caramaschi + Bruno Azambuja.
+
+**Mitigação ativa:**
+- Inclusão de Vittude, Zenklub e Eurekka na Onda 4 do benchmarking (issue #18) para mapear pegada técnica, Schema, presença em LLMs e catálogo de produtos educacionais existentes.
+- Avaliação de parcerias preventivas com Vittude e Zenklub como canal de captação B2B (RH corporativo + saúde mental corporativa) — proposta a apresentar a Ronan Maia no checkpoint executivo de 30-06-2026.
+- Diferenciação editorial: peças HBR cobrem o flanco "supervisão clínica humana + IA aplicada à Psicologia" (issue #59) como diferencial vs plataformas verticais.
+
+**Gatilho de escalonamento:** se Vittude, Zenklub ou Eurekka lançarem produto lato sensu EAD em Psicologia ou aparecerem em 3+ prompts canônicos dos 75 do kit (`prompts/KIT-PROMPTS-V0.md`), acionar avaliação de parceria comercial em até 30 dias.
+
+---
+
 ## Riscos retirados ou materializados (arquivo histórico)
 
 Quando um risco é materializado (vira incidente) ou definitivamente retirado (mitigação completa, condição estrutural mudou), o registro é movido para esta seção com data e justificativa.
@@ -268,7 +346,7 @@ Quando um risco é materializado (vira incidente) ou definitivamente retirado (m
 
 | Atividade | Cadência | Owner |
 |---|---|---|
-| Revisão dos 12 riscos ativos | Mensal no checkpoint executivo | Alexandre Caramaschi + Bruno Azambuja |
+| Revisão dos 16 riscos ativos | Mensal no checkpoint executivo | Alexandre Caramaschi + Bruno Azambuja |
 | Atualização de probabilidade/impacto | Mensal | Alexandre Caramaschi |
 | Adição de risco novo | Ad hoc (na semana em que emerge) | Alexandre Caramaschi |
 | Recalibração de gatilhos | Trimestral | Alexandre Caramaschi + Ronan Maia |

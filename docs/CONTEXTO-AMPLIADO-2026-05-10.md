@@ -109,11 +109,16 @@ A inclusão do G5 muda a leitura competitiva: Vittude tem milhões de pacientes 
 | Janela | Tema | Issue | Prazo |
 |---|---|---|---|
 | 30 dias | Capturar fuga Cogna -32,2% EAD 1T26 | #44 | 10-06-2026 |
+| 30 dias | Confirmar lista oficial das 51 cidades da Frente Regional | NAIA-310 | 10-06-2026 |
+| 30 dias | Iniciar parcerias com 3 CRPs regionais (CRP-09, CRP-03, CRP-18) | NAIA-313 | 10-06-2026 |
+| 30 dias | Comunicar publicamente o moat regulatório CNPJ-próprio vs Decreto 12.456 | NAIA-315 | 10-06-2026 |
 | 60 dias | Trilha "IA aplicada à Psicologia" antes de IBNeuro consolidar | #45 | 10-07-2026 |
+| 60 dias | Adotar matrícula contínua antes do pico 2026.2 | (a abrir) | 10-07-2026 |
+| 60-90 dias | Prova-de-conceito Frente Regional em Cuiabá e Palmas (vácuo Psi premium) | NAIA-311 | 10-08-2026 |
+| 60-90 dias | Acelerar Frente Regional na Bahia antes Inspirali expandir Psi do UniFG | (a abrir) | 10-08-2026 |
 | 60-90 dias | Verbete Wikipedia IPOG + sub-páginas de polos | #19 (atualizado) | 10-08-2026 |
 | 90 dias | Mensagem "pós Lato Sensu Psicologia ainda permitida" pós-Decreto 12.456 | #48 | 10-08-2026 |
 | 90 dias | Pré-empacotar produto NR-1 + Saúde Mental Corporativa B2B regional | #49 | 10-08-2026 |
-| 60 dias | Adotar matrícula contínua antes do pico 2026.2 | (a abrir) | 10-07-2026 |
 
 ### 6.2 Médias (90-180 dias) — Fase 3
 
@@ -239,7 +244,7 @@ A operação do programa GEO IPOG já catalogou 4 anti-padrões materiais. Docum
 - `audits/benchmarking/MERCADO-2026-NOTICIAS.md` — sinais 2026 (regulação + AI search + concorrência)
 - `audits/benchmarking/REGIONAL-2026-ESTADOS-CIDADES.md` — cobertura por estado/região (em produção)
 - `docs/HEALTHCHECK-2026-05-10.md` — auditoria estrutural completa
-- `docs/05-risk-register.md` — 16 riscos catalogados (R-001 a R-016)
+- `docs/05-risk-register.md` — 16 riscos catalogados (R-001 a R-016) + 3 riscos regionais (R-017 a R-019) detectados em `audits/benchmarking/REGIONAL-2026-ESTADOS-CIDADES.md`
 - `docs/06-marcos-criticos-2026.md` — calendário consolidado com gatilhos
 - `dashboards/KPI-DASHBOARD.md` — métricas ao vivo
 - `STATUS.md` — snapshot semanal

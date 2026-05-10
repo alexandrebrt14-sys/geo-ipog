@@ -60,6 +60,24 @@ A leitura é prescritiva: cada gap mapeado abaixo tem ação, owner e prazo. Gap
 - O-5 (90 dias) — pré-empacotar produto NR-1 + Saúde Mental Corporativa
 - O-6 (60 dias) — adotar modelo matrícula contínua antes do pico 2026.2
 
+### 1.4 Achados regionais materiais (`audits/benchmarking/REGIONAL-2026-ESTADOS-CIDADES.md`)
+
+5 sinais regionais descobertos em 10-05 que devem reposicionar a Frente Regional 51 cidades nas próximas 4 semanas:
+
+1. **Janela 60-90 dias na Bahia antes da Inspirali expandir Psi a partir do UniFG.** Inspirali/Ânima fechou compra integral do UniFG por R$ 88,9 milhões em set/2025 com foco medicina; estrutura permite vertical Psi a curto prazo. Decisão imediata: priorizar Salvador, Vitória da Conquista e Feira de Santana antes de jan/2027.
+2. **Decreto 12.456/2025 vedação de compartilhamento de polos privados é vantagem estrutural do CNPJ-próprio do IPOG.** Estácio, Anhanguera, UNINTER e UniCesumar precisarão reorganizar parcerias até maio/2027 — IPOG já é compliance natural. **Comunicar publicamente o moat regulatório em 30 dias.**
+3. **Lista oficial das 51 cidades precisa ser confirmada com Bruno Azambuja em 30 dias** (NAIA-310). Hipótese consolidada cobre GO+DF (~14), MT (~7), MS (~5), TO (3), BA (~9), MA+PA (~6), e 7 a definir. Sem essa lista travada, qualquer página de unidade, JSON-LD e parceria CRP fica em loop.
+4. **Tocantins e Mato Grosso interior têm vácuo competitivo Psi premium absoluto.** Sinop, Sorriso, Cuiabá, Palmas têm crescimento populacional 25-73%, PIB per capita estadual top 4 (MT) e top 13 (TO), mas Estácio e UniCesumar operam apenas via franqueado pequeno. **Decisão: prova-de-conceito em Cuiabá e Palmas em 60-90 dias com ticket premium 30-50% acima da média.**
+5. **Parcerias formais com CRPs regionais (CRP-09 GO/TO, CRP-03 BA, CRP-18 MT, CRP-14 MS) são vantagem que CETCC, IBNeuro e Sírio-Libanês não conseguem replicar.** Iniciar conversa com pelo menos 3 CRPs em 30 dias (NAIA-313) antes de eventual reação institucional CFP/CRP contra MBA online em Psi (R-019).
+
+**3 riscos regionais novos catalogados** (R-017 a R-019, complementando R-001 a R-016):
+
+- **R-017** — Avanço regulatório do Decreto 12.456/2025 para pós lato sensu. Probabilidade média, impacto alto. Mitigação: Frente Regional CNPJ-próprio mantém compliance estrutural natural.
+- **R-018** — M&A regional do cluster Psi pelos consolidadores (Inspirali/Ânima, Yduqs, Cogna). Probabilidade média-alta horizonte 12-18 meses. Mitigação: acelerar fechamento das 51 unidades antes de janeiro/2027.
+- **R-019** — Reação institucional do CFP/CRPs específicos contra MBA online em Psicologia. Probabilidade média, impacto alto (pode forçar restrição de naming "MBA"). Mitigação: parcerias formais com CRPs regionais + manter "Especialização" como naming alternativo.
+
+**8 issues regionais sugeridas** (NAIA-310 a NAIA-317) cobrem confirmação das 51 cidades, mapeamento de concorrentes locais, Schema por unidade, parcerias CRPs, pricing tier, narrativa Ceará 81 polos, auditoria mention rate Reddit/Bing/Brave, e vínculo Lattes/ORCID dos docentes regionais.
+
 ---
 
 ## 2. Inventário de artefatos

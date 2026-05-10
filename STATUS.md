@@ -65,6 +65,9 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
   - `KNOWLEDGE-GRAPH-IPOG.md` — grafo Mermaid + claims Wikidata canônicos + pipeline quinzenal de manutenção
   - `SCHEMA-IPOG-CANONICAL.md` — JSON-LD concreto pronto para deploy (8 blocos de instâncias)
 - `audits/SCHEMA-PATTERNS.md` referenciando a camada ontologia
+- **Roadmap operacional incrementado** com 2 documentos novos:
+  - `docs/GEO-FRAMEWORK-CANONICO.md` — síntese dos 6 frameworks GEO acoplados (F1 a F6) com papers-âncora 2024-2026 e pipeline operacional
+  - `docs/ROADMAP-SPRINTS-2026-2027.md` — 22 sprints quinzenais cobrindo todos os 5 vetores e 6 frameworks com 125+ tasks programadas até pico 2027.1 (28-02-2027)
 
 ## 6. O que precisa rodar 11-17/05
 

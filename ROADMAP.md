@@ -4,6 +4,8 @@
 > **Snapshot operacional ativo:** `STATUS.md`
 > **Contexto estratégico integrado:** `docs/CONTEXTO-AMPLIADO-2026-05-10.md`
 > **Visão cross-repo (Brasil GEO):** `docs/ROADMAP_2026Q2-Q4.md` — masterplan CTO Q2/Q3/Q4
+> **Detalhamento por sprint quinzenal:** `docs/ROADMAP-SPRINTS-2026-2027.md` — 22 sprints até fim do pico 2027.1
+> **Frameworks GEO acoplados:** `docs/GEO-FRAMEWORK-CANONICO.md` — F1 a F6 (Aggarwal KDD 2024 + AutoGEO + Structural + AgenticGEO + Wikipedia/KG + Citation Mechanics)
 
 Início: 30 de abril de 2026.
 Cadência: ondas quinzenais com checkpoint executivo mensal de calibração com Ronan Maia (CEO IPOG).

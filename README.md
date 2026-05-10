@@ -71,6 +71,8 @@ geo-ipog/
 - `STATUS.md` — snapshot semanal vivo do programa (atualizado toda segunda-feira até as 09h00 BRT).
 - `docs/HEALTHCHECK-2026-05-10.md` — auditoria estrutural do repositório (próxima 24-05-2026).
 - `docs/CONTEXTO-AMPLIADO-2026-05-10.md` — visão estratégica integrada (mercado + regional + tese de moat + 5 vetores do programa).
+- `docs/GEO-FRAMEWORK-CANONICO.md` — síntese dos 6 frameworks GEO acoplados (F1 9 enriquecimentos Aggarwal KDD 2024, F2 AutoGEO, F3 Structural Feature Engineering, F4 AgenticGEO, F5 Wikipedia+Knowledge Graph, F6 Citation Mechanics by Engine) com pipeline operacional + métricas alvo.
+- `docs/ROADMAP-SPRINTS-2026-2027.md` — 22 sprints quinzenais cobrindo todos os 5 vetores e 6 frameworks do bootstrap (11-05-2026) até fim do pico 2027.1 (28-02-2027); 125+ tasks programadas com DoD por sprint.
 - `docs/01-kickoff-30-04-2026.md` — registro do kickoff (dia 1).
 - `docs/02-contexto-mba-online-psicologia.md` — contexto estratégico do recorte de produto.
 - `docs/03-reunioes-e-cadencia-ipog.md` — cadência de reuniões com IPOG e framework de relatórios.

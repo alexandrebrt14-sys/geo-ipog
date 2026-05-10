@@ -68,6 +68,9 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
 - **Roadmap operacional incrementado** com 2 documentos novos:
   - `docs/GEO-FRAMEWORK-CANONICO.md` — síntese dos 6 frameworks GEO acoplados (F1 a F6) com papers-âncora 2024-2026 e pipeline operacional
   - `docs/ROADMAP-SPRINTS-2026-2027.md` — 22 sprints quinzenais cobrindo todos os 5 vetores e 6 frameworks com 125+ tasks programadas até pico 2027.1 (28-02-2027)
+- **Relatório semanal W19 fechado e apresentação visual prontos:**
+  - `docs/relatorios-semanais/2026-W19-04-a-10-maio.md` — 12 seções canônicas; envio para Bruno em 11-05 às 08h
+  - `docs/relatorios-semanais/2026-W19-04-a-10-maio.html` — apresentação visual autocontida (HBR style) com gantt 8 marcos, 6 frameworks GEO, KPIs, 11 bloqueantes, riscos top 3, resultados Q2/Q3/Q4 2026 e Q1 2027 — pronta para apresentação 11-05 09h00 BRT
 
 ## 6. O que precisa rodar 11-17/05
 

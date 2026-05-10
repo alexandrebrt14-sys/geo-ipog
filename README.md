@@ -74,6 +74,12 @@ geo-ipog/
 - `docs/GEO-FRAMEWORK-CANONICO.md` — síntese dos 6 frameworks GEO acoplados (F1 9 enriquecimentos Aggarwal KDD 2024, F2 AutoGEO, F3 Structural Feature Engineering, F4 AgenticGEO, F5 Wikipedia+Knowledge Graph, F6 Citation Mechanics by Engine) com pipeline operacional + métricas alvo.
 - `docs/ROADMAP-SPRINTS-2026-2027.md` — 22 sprints quinzenais cobrindo todos os 5 vetores e 6 frameworks do bootstrap (11-05-2026) até fim do pico 2027.1 (28-02-2027); 125+ tasks programadas com DoD por sprint.
 
+### Especificação de produto — Portal de Conteúdos IPOG Psicologia (`docs/product/portal-conteudos-ipog-psicologia/`)
+
+Documentação completa de produto, arquitetura, ontologia, taxonomia, menus, roadmap e backlog para o **Portal de Conteúdos sobre MBAs em Psicologia do IPOG** — plataforma editorial e de aquisição que combina conteúdo educacional + SEO nacional/local + comparação competitiva + jornadas por persona + captação de leads + conversão para matrícula.
+
+22 arquivos canônicos: 16 markdown numerados (00 README + 01-16 covering contexto, personas, ontologia, taxonomia, AI, menus, RF, RNF, SEO programático, roadmap em 6 fases, backlog 16 épicos, governança, métricas + Playbook de Conversão, benchmark, riscos, DoD) + 6 YAMLs (`data/ontology.yaml`, `taxonomy.yaml`, `content-types.yaml`, `menu-map.yaml`, `seo-page-types.yaml`, `state-pages.yaml`) cobrindo 27 UFs + Frente Regional 51 cidades.
+
 ### Gestão operacional (`docs/gestao/`)
 
 Camada de gestão operacional do programa: squads, skills, sprints, epics, DoD, status competitivo, resultados pretendidos, roadmap curto/médio prazo. Toda issue, label, milestone e PR no GitHub se ancora nesta camada.

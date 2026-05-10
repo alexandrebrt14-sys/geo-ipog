@@ -252,6 +252,7 @@ A operação do programa GEO IPOG já catalogou 4 anti-padrões materiais. Docum
 - `audits/benchmarking/PAPERS-2025-2026-PROFUNDIDADE.md` — 77 papers em 7 dimensões
 - `docs/GEO-FRAMEWORK-CANONICO.md` — 6 frameworks GEO acoplados (F1 a F6) com papers-âncora
 - `docs/ROADMAP-SPRINTS-2026-2027.md` — 22 sprints quinzenais com 125+ tasks programadas
+- `audits/benchmarking/MBA-PSICOLOGIA-MERCADO-2026-EXPANDIDO.md` — síntese estratégica MBA Psicologia Brasil + mundo + SWOT + flagship product proposto "MBA em Psicologia Organizacional, Riscos Psicossociais e People Analytics"
 - `docs/06-marcos-criticos-2026.md` — calendário consolidado com gatilhos
 - `dashboards/KPI-DASHBOARD.md` — métricas ao vivo
 - `STATUS.md` — snapshot semanal

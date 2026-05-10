@@ -34,14 +34,18 @@ Além dos campos padrão do GitHub (Title, Assignees, Status, Labels, Milestone,
 
 ## Mapeamento de issues por fase
 
-Distribuição das 18 issues canônicas do programa em 2026-05-01:
+Distribuição vigente em 2026-05-10 após healthcheck (`docs/HEALTHCHECK-2026-05-10.md`):
 
 | Fase | Issues |
 |---|---|
-| Fase 1 — Baseline + Schema piloto | #2, #3, #4, #5, #6, #10, #19 |
-| Fase 2 — Primeira leva HBR | #7, #8, #9, #17 |
-| Fase 3 — Pico GEO captação 2026.2 | #18 |
-| Continuo — monitoramento e validações | #11, #12, #13, #14, #15, #16 |
+| Fase 1 — Baseline + Schema piloto | #2, #3, #4, #5, #6, #10, #19, #20, #21, #22, #29, #30, #35, #36 |
+| Fase 2 — Primeira leva HBR | #7, #8, #9, #14, #17, #31 |
+| Fase 3 — Pico GEO captação 2026.2 | #18, #32 |
+| Fase 4 — Operação contínua + pré-pico 2027.1 | #33, #34 |
+| Operação contínua | #11, #12, #13, #15, #16 |
+| Tracking transversal (sem milestone — guarda-chuva CTO) | #28 |
+
+**Issues criadas pelo `/cto` em 04-05-2026** (#28 a #36) recebem milestone Fase 1 a Fase 4 conforme o período da onda CTO + mantêm labels `quarter:q2-2026`/`quarter:q4-2026` para visão cross-repo. Reconciliação completa em `docs/ROADMAP_2026Q2-Q4.md`.
 
 ---
 

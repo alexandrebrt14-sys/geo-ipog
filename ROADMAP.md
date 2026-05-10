@@ -1,8 +1,14 @@
 # Roadmap GEO IPOG
 
+> **Última revisão:** 10-05-2026 (durante healthcheck — `docs/HEALTHCHECK-2026-05-10.md`)
+> **Snapshot operacional ativo:** `STATUS.md`
+> **Visão cross-repo (Brasil GEO):** `docs/ROADMAP_2026Q2-Q4.md` — masterplan CTO Q2/Q3/Q4
+
 Início: 30 de abril de 2026.
 Cadência: ondas quinzenais com checkpoint executivo mensal de calibração com Ronan Maia (CEO IPOG).
 Subcontexto vertical: **MBA Online de Psicologia** como recorte prioritário de produto para o ciclo 2026.
+
+Este documento organiza o programa GEO IPOG na **visão do cliente** em 4 fases. A visão complementar de engenharia cross-repo da Brasil GEO em ondas trimestrais (Q2-W4 a Q4-W2) está em `docs/ROADMAP_2026Q2-Q4.md`. Ambas convergem nas mesmas issues e nos mesmos marcos — ver tabela de reconciliação no documento CTO.
 
 ---
 

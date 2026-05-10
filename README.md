@@ -68,12 +68,18 @@ geo-ipog/
 
 ### Marcos e governança
 
+- `STATUS.md` — snapshot semanal vivo do programa (atualizado toda segunda-feira até as 09h00 BRT).
+- `docs/HEALTHCHECK-2026-05-10.md` — auditoria estrutural do repositório (próxima 24-05-2026).
 - `docs/01-kickoff-30-04-2026.md` — registro do kickoff (dia 1).
 - `docs/02-contexto-mba-online-psicologia.md` — contexto estratégico do recorte de produto.
 - `docs/03-reunioes-e-cadencia-ipog.md` — cadência de reuniões com IPOG e framework de relatórios.
+- `docs/04-definicao-de-done.md` — DoD por tipo de artefato.
+- `docs/05-risk-register.md` — 12 riscos catalogados (R-001 a R-012) com gatilhos.
+- `docs/06-marcos-criticos-2026.md` — calendário consolidado com gatilhos D-7/D-3/D-Day.
 - `docs/relatorios-semanais/` — relatórios semanais entregues à IPOG.
 - `docs/atas/` — atas das reuniões de status com IPOG.
 - `ROADMAP.md` — roadmap em 4 fases com janelas alinhadas ao calendário de captação 2026.2 e 2027.1.
+- `docs/ROADMAP_2026Q2-Q4.md` — masterplan CTO Q2/Q3/Q4 (visão cross-repo Brasil GEO).
 
 ### Framework conceitual
 
@@ -116,6 +122,7 @@ Diagnóstico dos 10 concorrentes prioritários do IPOG na vertical de pós-gradu
 - `audits/benchmarking/ONDA-2-CORRECOES-PREMISSA.md` — registro canônico das correções de identidade institucional descobertas na pesquisa primária (IBNeuro ≠ IBNeC; wPós ≠ Anhembi; Conexia ≠ Saint Paul). Leitura obrigatória antes de operar sobre dossiês da Onda 2.
 - `audits/benchmarking/concorrente-{estacio,anhanguera,uninter,unicesumar,puc-minas-virtual}.md` — 5 dossiês da Onda 1 (concorrentes massivos do EAD).
 - `audits/benchmarking/concorrente-{cetcc,ibneuro,sirio-libanes-iep,wpos-anhembi,conexia-saint-paul}.md` — 5 dossiês da Onda 2 (especialistas verticais e premium executiva).
+- `audits/benchmarking/MERCADO-2026-NOTICIAS.md` — ampliação contínua com notícias, movimentos competitivos, reports e regulação publicados em 2026 (atualização mensal).
 
 ### Kit de prompts e papéis (`prompts/`)
 
@@ -144,3 +151,5 @@ Diagnóstico dos 10 concorrentes prioritários do IPOG na vertical de pós-gradu
 ## Status
 
 Início oficial dos trabalhos: **30 de abril de 2026** (ver `docs/01-kickoff-30-04-2026.md`).
+Snapshot atual do programa: ver `STATUS.md` (atualizado semanalmente).
+Auditoria estrutural mais recente: `docs/HEALTHCHECK-2026-05-10.md` (próxima 24-05-2026).

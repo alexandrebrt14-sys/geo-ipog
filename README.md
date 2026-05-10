@@ -104,10 +104,20 @@ Padrões obrigatórios para qualquer peça editorial produzida sob a marca IPOG 
 - `content/CHECKLIST-AUTOAVALIACAO.md` — 14 itens binários para o autor antes de submeter.
 - `content/CHECKLIST-PUBLICACAO.md` — 5 camadas de quality gate antes de publicar; matriz de aprovação.
 
+### Ontologia e taxonomia (`docs/ontologia/`)
+
+Arquitetura conceitual canônica que unifica entidades, relacionamentos, naming, labels e Schema do programa. Toda peça de conteúdo, página IPOG, perfil docente, issue do GitHub, label, slug e Schema referencia esta camada.
+
+- `docs/ontologia/README.md` — entrada da pasta + 5 princípios.
+- `docs/ontologia/ONTOLOGIA-CANONICA.md` — 12 catálogos de entidades canônicas (IPOG, 51 unidades, 3 programas MBA, 7 personas, corpo docente, 12 concorrentes-base, 19 riscos, 8 KPIs, termos `knowsAbout`) + 28 relacionamentos Schema.org canônicos + 8 casos de uso.
+- `docs/ontologia/TAXONOMIA-CONTEUDO.md` — hierarquia de pastas + naming convention de arquivos + labels GitHub em 14 dimensões ortogonais (priority, phase, quarter, vetor, cluster, persona, horizon, janela, tipo, owner, gate, blocker, concorrente, risco) + plano de migração de labels antigas + taxonomia de URL/slug.
+- `docs/ontologia/KNOWLEDGE-GRAPH-IPOG.md` — grafo Mermaid + claims Wikidata canônicos (P31, P571, P159, P137, P1830 etc.) + edges entity-link + pipeline de manutenção quinzenal em 5 checks.
+- `docs/ontologia/SCHEMA-IPOG-CANONICAL.md` — JSON-LD concreto pronto para deploy (não mais template) cobrindo IPOG raiz, unidades regionais, EducationalOccupationalProgram, Course, Person docente, Article assinado por Alexandre, FAQPage, Service B2B NR-1.
+
 ### Auditoria técnica e Schema (`audits/`)
 
 - `audits/PLAYBOOK-AUDITORIA-NAIA.md` — protocolo de auditoria com 100+ checks NAIA-XXX em 10 categorias e severidade P0-P3.
-- `audits/SCHEMA-PATTERNS.md` — 6 tipos canônicos (`EducationalOrganization`, `Course`, `EducationalOccupationalProgram`, `FAQPage`, `Article`, `Person`) com JSON-LD pronto.
+- `audits/SCHEMA-PATTERNS.md` — 6 tipos canônicos (`EducationalOrganization`, `Course`, `EducationalOccupationalProgram`, `FAQPage`, `Article`, `Person`) com JSON-LD pronto. Para instâncias canônicas IPOG concretas, ver `docs/ontologia/SCHEMA-IPOG-CANONICAL.md`.
 - `audits/LLMS-TXT-TEMPLATE.md` — template e diretrizes para `llms.txt` em `ipog.edu.br`.
 - `audits/ROBOTS-SITEMAP-CHECKLIST.md` — checklist de robots.txt, sitemaps, canonicals e redirects com exemplos.
 

@@ -1,6 +1,8 @@
 # Padrões Schema.org Canônicos — IPOG
 
-> **Status:** vigente desde 2026-04-30
+> **Templates genéricos.** Para **instâncias canônicas IPOG concretas** (com `@id` da ontologia, dados-base IPOG e estrutura cross-página coerente), ver `docs/ontologia/SCHEMA-IPOG-CANONICAL.md`. Para entidades, relacionamentos e propriedades canônicos, ver `docs/ontologia/ONTOLOGIA-CANONICA.md`.
+
+> **Status:** vigente desde 2026-04-30 (atualizado 10-05-2026 com link para camada ontologia)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Última revisão:** 2026-04-30

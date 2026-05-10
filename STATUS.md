@@ -26,7 +26,8 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
 
 | Número | Valor | Comentário |
 |---|---|---|
-| Issues abertas | 50 | 20 novas criadas em 10-05 (#38-#57) — gaps operacionais + 6 janelas curtas + 8 regionais NAIA-310 a NAIA-317 |
+| Issues abertas | 53 | 23 novas criadas em 10-05 (#38-#60) — 6 gaps operacionais + 6 janelas curtas mercado + 8 regionais NAIA-310 a NAIA-317 + 3 acadêmicas |
+| Documentos ontologia/taxonomia | 4 | `docs/ontologia/` — fonte de verdade para Schema canônico, naming, labels GitHub e Knowledge Graph |
 | Decisões IPOG bloqueantes | 11 | 4 riscos em escalada + 7 decisões abertas |
 | Atas registradas | 0 | Crítico — bootstrappar nesta semana |
 | Relatórios semanais entregues | 0 | Crítico — primeiro entregue em 11-05 |
@@ -56,7 +57,14 @@ A lógica é prescritiva: STATUS é um documento vivo. Se não bate com a realid
 - Aprofundamento regional estado-a-estado + Frente 51 cidades (`audits/benchmarking/REGIONAL-2026-ESTADOS-CIDADES.md`)
 - 7 riscos novos detectados (R-013 a R-019) — issue #47 catalogada para incorporar ao risk register
 - Contexto ampliado integrado em `docs/CONTEXTO-AMPLIADO-2026-05-10.md` (12 seções: tese ampliada, stakeholders, 5 vetores, personas refinadas, 5 grupos de concorrência, janelas curtas/médias/longas, KPIs derivados, mecânicas de moat, 3 horizontes do roadmap, decisões P0/P1/P2)
-- Pesquisa de papers acadêmicos 2025-2026 em curso (`audits/benchmarking/PAPERS-2025-2026-PROFUNDIDADE.md`)
+- Pesquisa de papers acadêmicos 2025-2026 entregue (`audits/benchmarking/PAPERS-2025-2026-PROFUNDIDADE.md` — 77 papers em 7 dimensões + sínteses cruzadas + 15 implicações)
+- 3 issues acadêmicas criadas (#58 Wikipedia+Wikidata, #59 Voice Guard 2.0 com 9 enriquecimentos GEO, #60 Trilha IA+Saúde Mental com supervisão humana vs IBNeuro)
+- **Ontologia e taxonomia canônicas** publicadas em `docs/ontologia/` (4 docs):
+  - `ONTOLOGIA-CANONICA.md` — 12 catálogos de entidades + 28 relacionamentos Schema.org + 8 casos de uso
+  - `TAXONOMIA-CONTEUDO.md` — pastas + naming + labels GitHub em 14 dimensões ortogonais + plano de migração
+  - `KNOWLEDGE-GRAPH-IPOG.md` — grafo Mermaid + claims Wikidata canônicos + pipeline quinzenal de manutenção
+  - `SCHEMA-IPOG-CANONICAL.md` — JSON-LD concreto pronto para deploy (8 blocos de instâncias)
+- `audits/SCHEMA-PATTERNS.md` referenciando a camada ontologia
 
 ## 6. O que precisa rodar 11-17/05
 

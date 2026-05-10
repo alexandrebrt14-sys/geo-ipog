@@ -245,6 +245,11 @@ A operação do programa GEO IPOG já catalogou 4 anti-padrões materiais. Docum
 - `audits/benchmarking/REGIONAL-2026-ESTADOS-CIDADES.md` — cobertura por estado/região (em produção)
 - `docs/HEALTHCHECK-2026-05-10.md` — auditoria estrutural completa
 - `docs/05-risk-register.md` — 16 riscos catalogados (R-001 a R-016) + 3 riscos regionais (R-017 a R-019) detectados em `audits/benchmarking/REGIONAL-2026-ESTADOS-CIDADES.md`
+- `docs/ontologia/ONTOLOGIA-CANONICA.md` — entidades + relacionamentos + propriedades canônicas
+- `docs/ontologia/TAXONOMIA-CONTEUDO.md` — hierarquia + naming + labels GitHub em 14 dimensões
+- `docs/ontologia/KNOWLEDGE-GRAPH-IPOG.md` — grafo Wikidata-ready + pipeline manutenção
+- `docs/ontologia/SCHEMA-IPOG-CANONICAL.md` — JSON-LD concreto IPOG pronto para deploy
+- `audits/benchmarking/PAPERS-2025-2026-PROFUNDIDADE.md` — 77 papers em 7 dimensões
 - `docs/06-marcos-criticos-2026.md` — calendário consolidado com gatilhos
 - `dashboards/KPI-DASHBOARD.md` — métricas ao vivo
 - `STATUS.md` — snapshot semanal

@@ -1,0 +1,279 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+
+const arvoreDecisao = [
+  {
+    pergunta: 'O cargo que eu pretendo ocupar nos próximos 3 a 5 anos é executivo, gestor de equipe ou consultor corporativo?',
+    se_sim: 'Inclina para MBA. O posicionamento executivo do MBA, com corpo docente em parte com trajetória de mercado e grade orientada a decisão de gestão, é mais alinhado a cargos corporativos.',
+    se_nao: 'Inclina para especialização. Cargos técnicos, clínicos, acadêmicos ou em saúde pública costumam recompensar o posicionamento de aprofundamento da especialização.'
+  },
+  {
+    pergunta: 'A rede de colegas que eu quero formar é multissetorial e corporativa, ou técnica e setorial?',
+    se_sim: 'Multissetorial e corporativa: MBA. A turma de MBA típica reúne executivos e gestores de setores variados — RH, finanças, operações, vendas. A rede formada serve a quem quer trafegar entre setores.',
+    se_nao: 'Técnica e setorial: especialização. A turma de especialização típica reúne profissionais do mesmo campo — psicólogos clínicos, escolares, hospitalares. A rede formada serve a quem quer aprofundar dentro de um campo.'
+  },
+  {
+    pergunta: 'O conteúdo que eu quero estudar é mais sobre estratégia, gestão e liderança, ou mais sobre método, teoria e técnica clínica?',
+    se_sim: 'Estratégia, gestão e liderança: MBA. A grade de MBA prioriza decisão, estratégia, finanças aplicadas, liderança, cultura organizacional, gestão de mudança.',
+    se_nao: 'Método, teoria e técnica clínica: especialização. A grade de especialização prioriza fundamentação teórica, técnica de intervenção, supervisão de caso, refinamento de prática.'
+  },
+  {
+    pergunta: 'A maneira como eu aprendo melhor é por discussão de caso e debate, ou por leitura densa e supervisão técnica?',
+    se_sim: 'Discussão de caso e debate: MBA. O método pedagógico predominante em MBA é discussão de caso — adaptado do método Harvard. Quem prefere debate generalista e abstração estratégica funciona.',
+    se_nao: 'Leitura densa e supervisão técnica: especialização. O método pedagógico predominante em especialização é leitura teórica acompanhada de supervisão de prática — exige rotina de estudo individual.'
+  },
+  {
+    pergunta: 'Eu quero, com o investimento desta pós, sinalizar ao mercado uma narrativa de "passei pela formação executiva" ou de "aprofundei a técnica do meu campo"?',
+    se_sim: 'Sinalização executiva: MBA. O título de MBA, no mercado corporativo brasileiro, é lido como sinal de repertório de gestão — mesmo com posicionamento regulatório idêntico ao da especialização.',
+    se_nao: 'Sinalização técnica: especialização. O título de especialização, no mercado clínico, acadêmico e de saúde pública, é lido como sinal de profundidade técnica e domínio metodológico.'
+  }
+];
+
+const exemplosMba = [
+  'Psicólogo organizacional que mira cargo de diretor de RH ou business partner senior',
+  'Profissional de RH em transição para consultoria de gestão de pessoas',
+  'Gestor de equipe em empresa de tecnologia que precisa fluência em estratégia',
+  'Consultor independente que quer ampliar repertório de gestão para clientes corporativos',
+  'Profissional de carreira corporativa que migra para área de pessoas',
+  'Executivo de área operacional que assume gestão de cultura ou de liderança positiva'
+];
+
+const exemplosEspecializacao = [
+  'Psicólogo clínico que quer aprofundar abordagem específica (TCC, psicanálise, terapia familiar)',
+  'Psicólogo escolar que quer atuar em rede pública com método consolidado',
+  'Psicólogo hospitalar em equipe multiprofissional que busca refinamento técnico',
+  'Perito em vara de família ou criminal com necessidade de fundamentação metodológica',
+  'Pesquisador aplicado em laboratório clínico de comportamento ou neuropsicologia',
+  'Psicólogo em rede SUS que quer especialização em saúde mental ou em saúde coletiva'
+];
+
+const faqs = [
+  {
+    q: 'É possível fazer os dois ao longo da carreira?',
+    a: 'É possível, e em carreiras longas costuma fazer sentido. A combinação mais comum é: especialização técnica primeiro (12 a 24 meses), prática de mercado depois (5 a 10 anos), MBA executivo na sequência (18 a 24 meses). O profissional adquire profundidade técnica primeiro e repertório executivo depois — equilíbrio raro no mercado. O caminho inverso (MBA antes, especialização depois) também funciona, mas é menos comum.'
+  },
+  {
+    q: 'Qual deles é "mais cara"?',
+    a: 'Não há regra. MBAs de instituições com marca executiva consolidada tendem ao topo da faixa (R$ 30.000 a R$ 50.000 totais [a confirmar com instituição]). Especializações técnicas em instituições do mesmo porte costumam ficar no meio da faixa. Há exceções nos dois sentidos. O preço final depende muito mais da instituição escolhida do que da categoria — MBA ou especialização.'
+  },
+  {
+    q: 'MBA conta como pré-requisito para mestrado depois?',
+    a: 'Em regra, sim — é pós-graduação reconhecida pelo MEC. Mas o que conta para mestrado é, antes de tudo, o histórico acadêmico de graduação, a produção intelectual em andamento e a aderência ao projeto de pesquisa pretendido. MBA sinaliza repertório executivo; pode contribuir, mas não é o critério principal de aprovação em mestrado stricto sensu.'
+  },
+  {
+    q: 'A especialização ajuda mais que o MBA para um psicólogo clínico que quer abrir clínica?',
+    a: 'Em regra, para a prática clínica em si: sim, a especialização. Para a gestão da clínica (modelo de negócio, finanças, marketing, contratação de equipe): o MBA ajuda mais. Quem abre clínica costuma precisar das duas coisas em sequência — especialização para a prática técnica e MBA mais tarde, quando o negócio cresce e a gestão demanda repertório executivo.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'MBA em Psicologia vs Especialização em Psicologia — diferença real e quando escolher cada',
+  description: 'Como decidir entre MBA e especialização em Psicologia — árvore de decisão, perfis ideais de cada um, exemplos de carreira e perguntas frequentes para a decisão correta.',
+  author: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="MBA em Psicologia vs Especialização em Psicologia — diferença real e quando escolher cada"
+  description="Como decidir entre MBA e especialização em Psicologia: árvore de decisão com cinco perguntas, perfis ideais de cada um, exemplos concretos de carreira e perguntas frequentes.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Pós-graduação em Psicologia', href: '/pos-graduacao-psicologia' },
+        { label: 'MBA vs Especialização — qual escolher' }
+      ]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Página filha · 03</span>
+        <h1 class="section-h text-3xl sm:text-4xl mt-2">MBA em Psicologia vs Especialização em Psicologia — diferença real e quando escolher cada</h1>
+        <p class="mt-3 text-ink-700 text-lg">
+          Cinco perguntas em sequência resolvem 80% dos casos. O título regulatório é o mesmo; o posicionamento de mercado é distinto. A escolha certa nasce da pergunta certa — não do nome do certificado.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          MBA e especialização em Psicologia são, do ponto de vista regulatório, idênticos — ambos pós lato sensu pelo MEC, conforme Resolução CNE/CES 1/2018. A diferença é de posicionamento de mercado. <strong>Escolha MBA</strong> se o cargo pretendido é executivo, gestor ou consultor corporativo — a sinalização executiva é o que destrava a próxima posição. <strong>Escolha especialização</strong> se o cargo pretendido é técnico, clínico, acadêmico ou em saúde pública — o aprofundamento metodológico é o que recompensa o investimento. A escolha equivocada custa dois anos e dezenas de milhares de reais. A árvore de decisão abaixo resolve cinco perguntas em sequência.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Por que a comparação confunde</h2>
+        <p class="mt-3 text-ink-700">
+          A confusão entre MBA e especialização em Psicologia tem três causas. A primeira é o senso comum, que trata MBA como "passo seguinte" à especialização — quando, regulatoriamente, são iguais. A segunda é a sobreposição de oferta — muitas instituições ofertam MBA e especialização em áreas próximas, com grades parcialmente sobrepostas. A terceira é o vocabulário corporativo brasileiro, que privilegia "MBA" mesmo onde, regulatoriamente, "especialização" seria o termo técnico.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Para sair da confusão, dois pontos precisam ficar claros antes da decisão. Primeiro: do ponto de vista do MEC, MBA e especialização são pós lato sensu — mesma carga horária mínima (360 horas), mesmo trabalho de conclusão exigido, mesmo perfil de corpo docente requisitado pela Resolução CNE/CES 1/2018. Não há hierarquia formal. Segundo: do ponto de vista do CFP, nem MBA nem especialização concedem automaticamente título de especialista em Psicologia — o registro segue regulação própria, com comprovação de experiência e formação teórico-metodológica.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O que diferencia, portanto, é o posicionamento de mercado. MBA virou marca de "formação executiva" — corpo docente em parte com trajetória de mercado, grade orientada a decisão de gestão, fluência em finanças e estratégia, rede multissetorial e corporativa. Especialização virou marca de "aprofundamento técnico" — corpo docente com peso acadêmico ou clínico, grade orientada a método e teoria, supervisão de prática, rede técnica e setorial. Quem decide pelo nome leva o curso errado. Quem decide pelo posicionamento certo.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Para o comparativo neutro entre os dois — sem foco na escolha — leia também o <a href="/comparativos/mba-vs-especializacao" class="text-brand-700 font-medium hover:underline">comparativo no eixo dedicado</a>. Esta página vai direto à pergunta operacional: qual escolher.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Árvore de decisão: cinco perguntas em sequência</h2>
+        <p class="mt-3 text-ink-700">
+          A árvore abaixo não é teste cego — é estrutura de reflexão. Responda as cinco perguntas com honestidade, sem o que você acha que "soa melhor" no LinkedIn. Se três ou mais das suas respostas inclinam para o mesmo lado, a escolha está clara. Se ficar 3-2 ou 2-3, leia o detalhamento das perguntas que ficaram ambíguas — a resposta real costuma estar no plano de carreira concreto.
+        </p>
+        <div class="space-y-4 mt-5">
+          {arvoreDecisao.map((q, i) => (
+            <div class="card p-6">
+              <p class="text-xs uppercase tracking-wider font-semibold text-brand-700 mb-1">Pergunta {i + 1}</p>
+              <h3 class="font-display font-semibold text-lg text-ink-900">{q.pergunta}</h3>
+              <div class="mt-3 grid sm:grid-cols-2 gap-3">
+                <div class="rounded-xl bg-brand-50 border border-brand-100 p-3">
+                  <p class="text-xs uppercase font-semibold text-brand-700 mb-1">Se sim / inclinação MBA</p>
+                  <p class="text-sm text-ink-700">{q.se_sim}</p>
+                </div>
+                <div class="rounded-xl bg-sun-500/10 border border-sun-500/30 p-3">
+                  <p class="text-xs uppercase font-semibold text-sun-600 mb-1">Se não / inclinação especialização</p>
+                  <p class="text-sm text-ink-700">{q.se_nao}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perfis típicos que escolhem MBA</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700 list-disc list-inside marker:text-brand-700">
+          {exemplosMba.map(e => (<li>{e}</li>))}
+        </ul>
+        <p class="mt-3 text-ink-700">
+          O denominador comum desses perfis é a centralidade da gestão. Em todos, o profissional vive de decidir, de coordenar pessoas e de articular agendas de áreas distintas. O MBA serve como repertório formal para essas três competências.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perfis típicos que escolhem especialização</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700 list-disc list-inside marker:text-sun-500">
+          {exemplosEspecializacao.map(e => (<li>{e}</li>))}
+        </ul>
+        <p class="mt-3 text-ink-700">
+          O denominador comum desses perfis é a centralidade da técnica. Em todos, o profissional vive de praticar com profundidade — atender, avaliar, intervir, supervisionar. A especialização serve como aprofundamento formal dessa prática.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-brand-100 bg-brand-50/50 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Caso de fronteira</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Quando o perfil é misto — gerente clínico, coordenador acadêmico, consultor técnico</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Há perfis que ficam na fronteira. Coordenador de equipe clínica em hospital. Diretor pedagógico de instituto de psicologia. Consultor que combina supervisão técnica com proposta comercial. Nesses casos, a regra é: comece pelo lado mais fraco da sua trajetória. Se você é forte tecnicamente mas frágil em gestão, comece pelo MBA. Se você é forte em gestão mas frágil tecnicamente, comece pela especialização. A segunda formação, se vier, complementa a primeira em horizonte de 5 a 10 anos.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">A coordenadora clínica que aplicou a árvore e mudou a ordem do plano</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Helena, psicóloga clínica de quarenta anos, coordena equipe de oito psicólogos em clínica multiprofissional. Trabalha em consultório próprio em paralelo. Após dez anos de prática, decide investir em pós. Primeiro impulso: MBA em Gestão da Saúde — atraída pelo prestígio do nome e pela percepção de que "gerir uma equipe pede MBA".
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Aplica a árvore. Pergunta 1 (cargo executivo?): inclina MBA — gerencia equipe. Pergunta 2 (rede multissetorial?): ambígua — sua rede é técnica, mas precisa ampliar. Pergunta 3 (estratégia ou método?): inclina especialização — quer aprofundar abordagem clínica para supervisionar a equipe melhor. Pergunta 4 (caso ou leitura?): inclina especialização — prefere leitura densa e supervisão. Pergunta 5 (sinalização executiva ou técnica?): ambígua — depende do cargo seguinte.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Score 2-2 com uma ambiguidade. Helena conversa com mentor — psicóloga senior que coordenou clínica grande por quinze anos. A mentora aponta o erro de timing: "Você é forte tecnicamente e quer ficar mais forte. A gestão você já faz, ainda que sem MBA. Especialize-se primeiro — três anos depois, com a clínica estabilizada e a equipe maior, faça MBA em Gestão da Saúde." Helena reordena o plano. Faz especialização em Terapia Familiar primeiro. Três anos depois, com a clínica triplicada em receita e a equipe em quinze pessoas, faz MBA em Gestão da Saúde. Os dois títulos, na ordem certa, foram úteis. Na ordem inversa, o MBA primeiro teria chegado antes do problema certo.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          A lição: a ordem importa. MBA antes de hora chega cedo demais para o problema certo; especialização antes de hora deixa a gestão sem repertório. A árvore ajuda a calibrar a ordem, não só a escolha.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Escolha pelo cargo, não pelo nome — e considere a ordem</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>MBA e especialização são iguais regulatoriamente; diferem no posicionamento.</li>
+          <li>Cargo executivo, gestor ou consultor corporativo: MBA.</li>
+          <li>Cargo técnico, clínico, acadêmico ou em saúde pública: especialização.</li>
+          <li>Perfis de fronteira: comece pelo lado mais fraco da sua trajetória.</li>
+          <li>Em carreiras longas, faça os dois — em ordem que respeite a maturidade da carreira.</li>
+        </ul>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3">
+          <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary">
+            Ver MBAs no IPOG
+            <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+          </a>
+          <a href="/comparativos/mba-vs-especializacao" class="btn btn-ghost text-white border-white/30 hover:bg-white/10">
+            Ver comparativo neutro
+          </a>
+        </div>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Pilar</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação em Psicologia</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Esta página é parte do guia completo de pós em Psicologia. Volte ao pilar para ver as 15 seções e o panorama completo de decisão.
+        </p>
+        <a href="/pos-graduacao-psicologia" class="btn btn-primary mt-4 w-full">Voltar ao pilar</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outras páginas filhas</p>
+        <ul class="space-y-1">
+          <li><a href="/pos-graduacao-psicologia/tipos" class="mega-link"><strong class="text-ink-900 text-sm">Tipos de pós em Psicologia</strong></a></li>
+          <li><a href="/pos-graduacao-psicologia/como-escolher" class="mega-link"><strong class="text-ink-900 text-sm">Como escolher em 2026 — checklist</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Conteúdo relacionado</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/mba-vs-especializacao" class="mega-link"><strong class="text-ink-900 text-sm">Comparativo neutro MBA vs especialização</strong></a></li>
+          <li><a href="/comparativos" class="mega-link"><strong class="text-ink-900 text-sm">Todos os comparativos</strong></a></li>
+          <li><a href="/mbas" class="mega-link"><strong class="text-ink-900 text-sm">Todos os MBAs</strong></a></li>
+          <li><a href="/regulacao" class="mega-link"><strong class="text-ink-900 text-sm">Regulação, ética e escopo</strong></a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+</Base>

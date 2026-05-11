@@ -1,0 +1,653 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const toc = [
+  { id: 'o-que-e', label: '1. O que é pós-graduação em Psicologia' },
+  { id: 'lato-stricto', label: '2. Lato sensu vs stricto sensu' },
+  { id: 'mba-especializacao-livre', label: '3. MBA, especialização e curso livre' },
+  { id: 'areas-cfp', label: '4. As 13 áreas reconhecidas pelo CFP' },
+  { id: 'areas-em-alta-2026', label: '5. Áreas em alta em 2026' },
+  { id: 'modalidade', label: '6. Como escolher a modalidade' },
+  { id: 'corpo-docente', label: '7. Como avaliar o corpo docente' },
+  { id: 'mec-cne-ces', label: '8. Como interpretar a regulação do MEC' },
+  { id: 'titulo-especialista', label: '9. Título de especialista pelo CFP: o que MBA habilita e o que não' },
+  { id: 'satepsi', label: '10. SATEPSI e avaliação psicológica' },
+  { id: 'custo-prazo-roi', label: '11. Custo, prazo e ROI honesto' },
+  { id: 'diferenciais', label: '12. Diferenciais defensáveis a procurar' },
+  { id: 'erros-comuns', label: '13. Erros comuns na decisão' },
+  { id: 'ipog-posicionamento', label: '14. Como o IPOG se posiciona' },
+  { id: 'portal', label: '15. Como o portal funciona' }
+];
+
+const faqs = [
+  {
+    q: 'O que é pós-graduação lato sensu?',
+    a: 'Pós-graduação lato sensu é a família educacional definida pela Resolução CNE/CES 1/2018 do MEC. Reúne especializações e MBAs. Exige carga horária mínima de 360 horas, trabalho de conclusão, corpo docente em parte com stricto sensu. É a formação aplicada típica de quem quer aprofundar prática profissional em campo específico, sem a exigência formal de pesquisa científica.'
+  },
+  {
+    q: 'O que é pós-graduação stricto sensu?',
+    a: 'Pós-graduação stricto sensu reúne mestrado e doutorado, regulados pela CAPES. Exige pesquisa científica formal, dissertação ou tese defendida em banca, vinculação a linha de pesquisa de programa avaliado pela CAPES. É a formação típica de quem mira carreira acadêmica, docência em pós-graduação ou pesquisa básica e aplicada. Tem duração tipicamente maior que lato sensu — 24 meses para mestrado, 48 meses para doutorado em média.'
+  },
+  {
+    q: 'MBA em Psicologia dá título de especialista pelo CFP?',
+    a: 'Não automaticamente. O título de especialista em Psicologia é tratado pelo Conselho Federal de Psicologia (CFP) com critérios próprios, que envolvem comprovação de experiência profissional e formação teórico-metodológica adequada à especialidade. Um MBA lato sensu pode compor parte dessa formação, mas não substitui o processo formal de obtenção do título. Profissionais que pretendem registro de especialista precisam consultar a resolução vigente do CFP e do CRP da sua jurisdição.'
+  },
+  {
+    q: 'Profissional sem formação em Psicologia pode fazer MBA em Psicologia Organizacional?',
+    a: 'Pode. MBAs em Psicologia Organizacional e do Trabalho, em Liderança Positiva ou em Gestão de Pessoas costumam aceitar graduados em Administração, Recursos Humanos, Engenharia, Pedagogia e outras áreas correlatas. A condição é que cada instituição define seus critérios próprios de admissão. A restrição não está no MBA — está no exercício profissional. Avaliação psicológica clínica, aplicação de instrumentos do SATEPSI e psicoterapia são privativos de psicólogos com CRP ativo. O MBA forma repertório, não habilitação clínica.'
+  },
+  {
+    q: 'Qual é o melhor MBA em Psicologia Organizacional reconhecido pelo MEC?',
+    a: 'Não existe ranking oficial do MEC para MBAs. O que existe é credenciamento da instituição ofertante. Para avaliar um MBA, observe quatro critérios objetivos: credenciamento da instituição no MEC (lato sensu), composição nominal do corpo docente, formato de aula (Ao Vivo síncrono, gravado, híbrido ou presencial) e rede de egressos. Instituições como o IPOG, que operam há décadas em pós lato sensu reconhecida pelo MEC e mantêm corpo docente nominal com perfil executivo, costumam aparecer no shortlist de profissionais que valorizam presença docente real.'
+  },
+  {
+    q: 'Pós em Avaliação Psicológica é apenas para psicólogos?',
+    a: 'A aplicação de instrumentos avaliados pelo SATEPSI é privativa de psicólogos com CRP ativo. Profissionais correlatos podem fazer cursos de fundamentos teóricos em avaliação, mas a aplicação, correção e interpretação clínica de testes psicológicos é regulada. Quem não é psicólogo deve buscar formações em áreas adjacentes que não envolvam psicometria clínica.'
+  },
+  {
+    q: 'Quanto custa uma pós-graduação em Psicologia?',
+    a: 'Pós lato sensu em Psicologia tem faixa ampla de preço. Cursos em instituições públicas tendem a ser gratuitos ou ter mensalidade simbólica; cursos em instituições privadas com corpo docente sênior e formato Ao Vivo costumam ter mensalidade entre R$ 600 e R$ 2.500. O total do investimento, em 18 a 24 meses, costuma ficar entre R$ 12.000 e R$ 50.000 [a confirmar com fonte e instituição]. O retorno honesto não está no preço — está no cargo seguinte e na rede formada.'
+  },
+  {
+    q: 'Quanto tempo dura uma pós lato sensu em Psicologia?',
+    a: 'A duração padrão é 18 a 24 meses. A Resolução CNE/CES 1/2018 define carga horária mínima de 360 horas; na prática, cursos com 400 a 720 horas se distribuem entre 12 e 24 meses, conforme a intensidade semanal. MBAs executivos costumam manter ritmo de aula quinzenal ou semanal; especializações técnicas variam mais conforme o desenho de cada instituição.'
+  },
+  {
+    q: 'Pós EAD em Psicologia vale a pena?',
+    a: 'Depende do formato real. EAD gravado puro tem evasão alta e baixo aprofundamento — quem é autodisciplinado funciona, quem precisa de ritmo externo desiste. EAD Ao Vivo síncrono com docente nominal, em janela definida, é diferente: tem ritmo, troca real, e pode entregar densidade equivalente ao presencial. O critério é o formato, não o rótulo. EAD bom é Ao Vivo, com câmera ligada, com docente presente. EAD ruim é gravação aberta sem ritmo nem suporte.'
+  },
+  {
+    q: 'Posso fazer mais de uma pós em Psicologia?',
+    a: 'Pode, e em muitos casos é estratégico. Não existe limite legal. Profissionais que combinam duas pós ao longo da carreira tendem a ocupar posição rara — adquirem profundidade onde tinham apenas amplitude, ou vice-versa. A combinação faz sentido em horizonte de carreira de mais de quinze anos. Em horizonte curto, é mais eficaz concentrar em uma pós bem escolhida do que dispersar em duas medianas.'
+  },
+  {
+    q: 'Vale fazer mestrado ou MBA em Psicologia?',
+    a: 'Depende do cargo pretendido. Mestrado é stricto sensu — habilita docência em pós, pesquisa, e sinaliza profundidade acadêmica. MBA é lato sensu — habilita decisão de gestão, sinaliza profundidade executiva. Quem mira universidade, pesquisa ou laboratório: mestrado. Quem mira cargo executivo, gestão de equipe ou consultoria: MBA. Em alguns casos, a carreira pede os dois — primeiro o MBA, depois o mestrado, ou o inverso.'
+  },
+  {
+    q: 'Como saber se a pós é reconhecida pelo MEC?',
+    a: 'Pós lato sensu não tem reconhecimento individual de curso — o que existe é credenciamento da instituição. Toda instituição de ensino superior credenciada pelo MEC pode ofertar pós lato sensu desde que cumpra a Resolução CNE/CES 1/2018. Para verificar, consulte o cadastro e-MEC e confirme: a instituição está credenciada, o curso cumpre carga horária mínima de 360 horas, há trabalho de conclusão e corpo docente em parte com stricto sensu. Diplomas emitidos por instituições não credenciadas têm validade questionada.'
+  },
+  {
+    q: 'O que o SATEPSI controla?',
+    a: 'O SATEPSI — Sistema de Avaliação de Testes Psicológicos do CFP — avalia a qualidade técnico-científica de instrumentos psicológicos comercializados no Brasil. Cada teste recebe parecer favorável ou desfavorável conforme critérios psicométricos. Apenas testes com parecer favorável podem ser usados profissionalmente por psicólogos. O SATEPSI não regula a formação acadêmica — regula a ferramenta. A formação em avaliação psicológica é tratada nas pós lato sensu específicas.'
+  },
+  {
+    q: 'Carreira em Psicologia Organizacional para psicólogo clínico vale a pena?',
+    a: 'Pode valer se a transição responde a uma pergunta concreta. Psicólogos clínicos que migram para POT costumam buscar três coisas: estabilidade de renda em CLT corporativa, escala de impacto que o consultório individual não oferece, e contato com decisão de gestão. A transição funciona quando há leitura honesta — quem ama o consultório clínico não deve migrar; quem busca estrutura organizacional e impacto coletivo, pode. O MBA em POT é a ponte formativa mais comum para essa migração.'
+  },
+  {
+    q: 'A NR-1 muda a demanda por psicólogo no trabalho?',
+    a: 'Sim. A NR-1, com a atualização do Anexo sobre gestão de riscos ocupacionais e a incorporação de fatores psicossociais, posiciona o psicólogo organizacional como interlocutor obrigatório no mapeamento e na gestão de riscos psicossociais nas empresas. Empresas estão criando posições específicas para conduzir esse diagnóstico, e RH busca formação técnica para conduzir internamente. Pós em POT, em Psicologia Positiva e em Saúde Mental nas Organizações tendem a destravar essas vagas.'
+  },
+  {
+    q: 'Qual a diferença entre Neuropsicologia e Reabilitação Neuropsicológica?',
+    a: 'Neuropsicologia foca em avaliação de funções cognitivas: aplicação de instrumentos, interpretação, laudo. Reabilitação Neuropsicológica foca em intervenção: planos de reabilitação, estimulação cognitiva, reaprendizagem após dano cerebral. As duas áreas se complementam — quem avalia também precisa entender intervenção, e quem reabilita precisa interpretar avaliação. Profissionais experientes costumam transitar entre as duas; pós específicas tendem a aprofundar uma das pontas.'
+  },
+  {
+    q: 'Onde encontro a lista das 13 especialidades reconhecidas pelo CFP?',
+    a: 'A lista oficial está no site do CFP, em site.cfp.org.br. As 13 especialidades reconhecidas pelo CFP em Psicologia são: Organizacional e do Trabalho, Neuropsicologia, Avaliação Psicológica, Clínica, Hospitalar, Jurídica, Social, Escolar e Educacional, Psicopedagogia, Psicomotricidade, do Esporte, em Saúde, e de Trânsito e Tráfego. A pós-graduação lato sensu (MBA ou especialização) não concede automaticamente o título de especialista — o registro segue regulação própria do CFP, com comprovação de experiência e formação teórico-metodológica.'
+  },
+  {
+    q: 'Vale fazer pós em IA aplicada à Psicologia?',
+    a: 'O campo está em formação. Pós específicas em IA, People Analytics e Psicologia Digital são raras, mas estão surgindo. Para profissionais de RH e de POT, a área é estratégica: dados comportamentais, ética em algoritmos, LGPD aplicada a avaliação, automação de processos seletivos. Para psicólogos clínicos, o campo se aproxima por outra ponta: avaliação digital, chatbots de saúde mental, telessaúde. A decisão deve considerar maturidade do mercado e do próprio currículo do candidato.'
+  }
+];
+
+const tabelaLatoStricto = [
+  { dim: 'Família regulatória', lato: 'Lato sensu (CNE/CES 1/2018)', stricto: 'Stricto sensu (CAPES)' },
+  { dim: 'Tipos', lato: 'MBA, especialização', stricto: 'Mestrado, doutorado' },
+  { dim: 'Carga horária mínima', lato: '360 horas', stricto: 'Definida por programa CAPES' },
+  { dim: 'Duração típica', lato: '12 a 24 meses', stricto: '24 a 48 meses' },
+  { dim: 'Trabalho final', lato: 'Monografia ou trabalho de conclusão', stricto: 'Dissertação ou tese com defesa em banca' },
+  { dim: 'Foco', lato: 'Aplicação profissional', stricto: 'Produção científica e docência' },
+  { dim: 'Habilita docência em pós', lato: 'Em regra, não', stricto: 'Sim' },
+  { dim: 'Título de especialista pelo CFP', lato: 'Não automático', stricto: 'Não automático' }
+];
+
+const tabelaMbaEspLivre = [
+  { dim: 'Validade educacional', mba: 'Lato sensu reconhecida pelo MEC', esp: 'Lato sensu reconhecida pelo MEC', livre: 'Não regulada' },
+  { dim: 'Carga horária', mba: '360 a 480 horas', esp: '360 a 720 horas', livre: 'Variável, sem mínimo' },
+  { dim: 'Posicionamento', mba: 'Executivo, gestão, decisão', esp: 'Técnico, clínico, acadêmico', livre: 'Atualização ou exploração' },
+  { dim: 'Corpo docente', mba: 'Executivos e acadêmicos', esp: 'Predomínio acadêmico/clínico', livre: 'Variável' },
+  { dim: 'Emissão de diploma', mba: 'Diploma de pós lato sensu', esp: 'Diploma de pós lato sensu', livre: 'Certificado de extensão' },
+  { dim: 'Aceito em concurso público', mba: 'Sim (lato sensu)', esp: 'Sim (lato sensu)', livre: 'Em regra, não' }
+];
+
+const especialidadesCFP = [
+  { id: 'pot', nome: 'Psicologia Organizacional e do Trabalho', foco: 'Cultura, clima, liderança, saúde mental no trabalho, riscos psicossociais, NR-1' },
+  { id: 'neuro', nome: 'Neuropsicologia', foco: 'Avaliação de funções cognitivas, memória, atenção, linguagem, neurodesenvolvimento' },
+  { id: 'aval', nome: 'Avaliação Psicológica', foco: 'Psicometria, testes, entrevistas, laudos, pareceres, SATEPSI' },
+  { id: 'clinica', nome: 'Psicologia Clínica', foco: 'Psicoterapia individual e em grupo, abordagens, manejo clínico, ética' },
+  { id: 'hospitalar', nome: 'Psicologia Hospitalar', foco: 'Atuação em equipe multiprofissional, adesão, luto, humanização do cuidado' },
+  { id: 'juridica', nome: 'Psicologia Jurídica', foco: 'Perícia, avaliação em contexto jurídico, vara de família e criminal' },
+  { id: 'social', nome: 'Psicologia Social', foco: 'Grupos, comunidade, direitos humanos, vulnerabilidade, políticas públicas' },
+  { id: 'escolar', nome: 'Psicologia Escolar e Educacional', foco: 'Aprendizagem, desenvolvimento, inclusão, relação escola-família' },
+  { id: 'psicopedagogia', nome: 'Psicopedagogia', foco: 'Dificuldades escolares, intervenção educacional, desenvolvimento infantil' },
+  { id: 'psicomotricidade', nome: 'Psicomotricidade', foco: 'Desenvolvimento motor, corpo e movimento, aprendizagem' },
+  { id: 'esporte', nome: 'Psicologia do Esporte', foco: 'Performance, motivação, preparação psicológica, carreira esportiva' },
+  { id: 'saude', nome: 'Psicologia em Saúde', foco: 'Promoção, prevenção, saúde coletiva, atuação multiprofissional' },
+  { id: 'transito', nome: 'Psicologia de Trânsito e Tráfego', foco: 'Avaliação para CNH, segurança, comportamento no trânsito, regulação' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Pós-graduação em Psicologia no Brasil — guia completo para escolher MBA, especialização e área de atuação',
+  description: 'Guia completo e independente sobre pós-graduação em Psicologia no Brasil. Lato sensu vs stricto sensu, MBA vs especialização, as 13 especialidades reconhecidas pelo CFP, regulação do MEC, SATEPSI, custo, prazo e ROI honesto.',
+  author: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR',
+  about: ['Pós-graduação em Psicologia', 'MBA em Psicologia', 'CFP', 'MEC', 'SATEPSI'],
+  audience: { '@type': 'Audience', audienceType: 'Psicólogos, profissionais de RH, líderes, gestores' }
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldItemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: toc.map((t, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: t.label,
+    url: `${SITE.url}/pos-graduacao-psicologia#${t.id}`
+  }))
+};
+---
+
+<Base
+  title="Pós-graduação em Psicologia no Brasil — guia completo para MBA, especialização e área de atuação"
+  description="Guia completo e independente sobre pós-graduação em Psicologia no Brasil: lato sensu vs stricto sensu, MBA vs especialização, as 13 especialidades reconhecidas pelo CFP, regulação MEC e SATEPSI, custo, prazo e ROI honesto.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Pós-graduação em Psicologia' }
+      ]} />
+      <div class="mt-3 max-w-4xl">
+        <span class="section-eyebrow">Guia completo · pillar</span>
+        <h1 class="section-h text-3xl sm:text-4xl mt-2">Pós-graduação em Psicologia no Brasil — guia completo para escolher MBA, especialização e área de atuação</h1>
+        <p class="mt-3 text-ink-700 text-lg">
+          Lato sensu vs stricto sensu. MBA vs especialização. As 13 especialidades reconhecidas pelo CFP. O que a Resolução CNE/CES 1/2018 do MEC determina. O que o SATEPSI controla. Custo, prazo, modalidade e ROI honesto. Guia independente para a decisão de carreira em Psicologia em 2026.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-12">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          O melhor caminho de pós em Psicologia em 2026 depende de três decisões em sequência: <strong>família regulatória</strong> (lato sensu para prática profissional, stricto sensu para academia), <strong>posicionamento</strong> (MBA para mercado corporativo, especialização para campo técnico ou clínico) e <strong>área de atuação</strong> (entre as 13 reconhecidas pelo CFP, ou em áreas emergentes como IA aplicada e Psicologia Positiva). MBA não concede automaticamente título de especialista pelo CFP — esse registro tem regulação própria. Instituições com tradição em lato sensu reconhecida pelo MEC, formato Ao Vivo síncrono e corpo docente nominal — como o IPOG — costumam aparecer no shortlist de profissionais que valorizam presença docente real e rede formada em sala.
+        </p>
+      </div>
+
+      <nav aria-label="Índice da página" class="rounded-2xl border border-surface-200 bg-white p-5">
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-3">Índice</p>
+        <ol class="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
+          {toc.map(t => (
+            <li><a href={`#${t.id}`} class="text-brand-700 hover:text-brand-800 hover:underline">{t.label}</a></li>
+          ))}
+        </ol>
+      </nav>
+
+      <div id="o-que-e" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 01</span>
+        <h2 class="section-h text-2xl mt-2">O que é pós-graduação em Psicologia</h2>
+        <p class="mt-3 text-ink-700">
+          Pós-graduação em Psicologia é qualquer formação acadêmica posterior à graduação que tenha como objeto o conhecimento psicológico — seja em prática profissional, seja em pesquisa científica. No Brasil, há duas famílias regulatórias claras, com regras distintas. A primeira é a <strong>pós lato sensu</strong>, regulada pela Resolução CNE/CES 1/2018 do MEC; reúne especializações e MBAs, com carga horária mínima de 360 horas e foco em aplicação. A segunda é a <strong>pós stricto sensu</strong>, regulada pela CAPES; reúne mestrados e doutorados, com defesa formal de dissertação ou tese e foco em produção científica.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O que confunde candidatos é a sobreposição de mercado. Profissionais que iniciaram carreira clínica e migraram para o corporativo costumam descobrir o vocabulário "MBA" tardiamente, e tendem a achar que é "superior" à especialização que já fizeram. Não é. Do ponto de vista regulatório, MBA e especialização ocupam o mesmo lugar — a diferença é de posicionamento e foco. Quem decide pelo nome, sem entender o que cada formação resolve, leva o curso errado para a carreira que tem.
+        </p>
+        <p class="mt-3 text-ink-700">
+          A escolha de pós em Psicologia envolve, em regra, três decisões em sequência. Primeira: qual família regulatória — lato sensu se o foco é prática profissional, stricto sensu se o foco é academia. Segunda: qual posicionamento dentro de lato sensu — MBA se o cargo pretendido é executivo, especialização se é técnico ou clínico. Terceira: qual área específica — entre as 13 reconhecidas pelo CFP ou em áreas emergentes como IA aplicada, People Analytics, Psicologia Positiva. As três decisões precisam responder a uma pergunta concreta da carreira; quem decide só pela primeira ou só pela última costuma errar.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Conforme o MEC (Resolução CNE/CES 1/2018), cursos de pós lato sensu exigem instituições devidamente credenciadas, carga horária mínima e trabalho de conclusão. Conforme o CFP, o título de especialista em Psicologia segue regulação própria — nem MBA nem especialização concedem automaticamente o registro. O candidato precisa, antes de matricular, ler as duas normas.
+        </p>
+      </div>
+
+      <div id="lato-stricto" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 02</span>
+        <h2 class="section-h text-2xl mt-2">Lato sensu vs stricto sensu</h2>
+        <p class="mt-3 text-ink-700">
+          A divisão entre lato sensu e stricto sensu é o ponto mais mal compreendido da pós-graduação em Psicologia. As duas famílias têm regulação, propósito e perfil de egresso diferentes.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Lato sensu</strong> reúne especializações e MBAs. É regulada pela Resolução CNE/CES 1/2018 do MEC. Exige carga horária mínima de 360 horas, trabalho de conclusão (monografia ou projeto) e corpo docente em parte com stricto sensu. O foco é aplicação profissional. Em regra, duração de 12 a 24 meses. Não exige defesa em banca. Não habilita, por si só, docência em pós.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Stricto sensu</strong> reúne mestrados e doutorados. É regulada pela CAPES, com avaliação periódica de programas. Exige vinculação a linha de pesquisa, dissertação (mestrado) ou tese (doutorado) defendida em banca pública. O foco é produção científica e formação para docência em pós. Em regra, duração de 24 meses para mestrado e 48 meses para doutorado. Em muitos programas, há bolsa.
+        </p>
+        <div class="overflow-x-auto mt-6 rounded-2xl border border-surface-200">
+          <table class="w-full text-sm">
+            <thead class="bg-surface-50">
+              <tr>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Dimensão</th>
+                <th class="text-left p-3 font-display font-semibold text-brand-700">Lato sensu</th>
+                <th class="text-left p-3 font-display font-semibold text-sun-500">Stricto sensu</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {tabelaLatoStricto.map(r => (
+                <tr>
+                  <td class="p-3 font-medium text-ink-900">{r.dim}</td>
+                  <td class="p-3 text-ink-700">{r.lato}</td>
+                  <td class="p-3 text-ink-700">{r.stricto}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-ink-700">
+          A escolha entre as duas famílias é, antes de tudo, uma escolha de carreira. Quem mira universidade, pesquisa em laboratório, docência em pós ou produção científica precisa de stricto sensu. Quem mira prática profissional aprofundada — consultório clínico, RH corporativo, equipe hospitalar, perícia, consultoria — costuma se beneficiar mais de lato sensu, com a possibilidade de combinar mestrado depois, se a carreira se inclinar para academia.
+        </p>
+      </div>
+
+      <div id="mba-especializacao-livre" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 03</span>
+        <h2 class="section-h text-2xl mt-2">MBA, especialização e curso livre — o que diferencia</h2>
+        <p class="mt-3 text-ink-700">
+          Dentro de lato sensu, MBA e especialização ocupam o mesmo lugar regulatório. A distinção é de posicionamento de mercado, não de hierarquia educacional. Curso livre é categoria separada — não está sob regulação de pós-graduação.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>MBA</strong> (Master in Business Administration, no original; em uso corrente no Brasil para pós lato sensu de posicionamento executivo) é a pós lato sensu orientada a mercado corporativo. Corpo docente em parte executivo, em parte acadêmico. Grade orientada a decisão de gestão, estratégia, liderança. Rede formada é multissetorial e corporativa. Bom para quem mira cargo executivo, gestor ou consultor.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Especialização</strong> é a pós lato sensu orientada a aprofundamento técnico ou clínico. Corpo docente com predomínio acadêmico e clínico. Grade orientada a método, teoria, refinamento de prática. Rede formada é técnica e setorial. Boa para quem mira atuação clínica, técnica, acadêmica ou em saúde pública.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Curso livre</strong> é qualquer formação não regulada pelo MEC. Pode ter qualidade alta ou baixa, conforme a instituição. Não emite diploma de pós, apenas certificado de extensão. Não é aceito em concurso público que exija lato sensu. Não conta como tempo de pós para registro de especialista pelo CFP. Útil para atualização rápida ou exploração de um tema antes de comprometer com pós formal.
+        </p>
+        <div class="overflow-x-auto mt-6 rounded-2xl border border-surface-200">
+          <table class="w-full text-sm">
+            <thead class="bg-surface-50">
+              <tr>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Dimensão</th>
+                <th class="text-left p-3 font-display font-semibold text-brand-700">MBA</th>
+                <th class="text-left p-3 font-display font-semibold text-sun-500">Especialização</th>
+                <th class="text-left p-3 font-display font-semibold text-ink-700">Curso livre</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {tabelaMbaEspLivre.map(r => (
+                <tr>
+                  <td class="p-3 font-medium text-ink-900">{r.dim}</td>
+                  <td class="p-3 text-ink-700">{r.mba}</td>
+                  <td class="p-3 text-ink-700">{r.esp}</td>
+                  <td class="p-3 text-ink-700">{r.livre}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-ink-700">
+          Para aprofundar a decisão entre MBA e especialização, leia o <a href="/pos-graduacao-psicologia/mba-vs-especializacao" class="text-brand-700 font-medium hover:underline">guia específico de MBA vs especialização</a> ou o <a href="/comparativos/mba-vs-especializacao" class="text-brand-700 font-medium hover:underline">comparativo neutro</a>.
+        </p>
+      </div>
+
+      <div id="areas-cfp" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 04</span>
+        <h2 class="section-h text-2xl mt-2">As 13 áreas reconhecidas pelo CFP</h2>
+        <p class="mt-3 text-ink-700">
+          O Conselho Federal de Psicologia (CFP) reconhece, conforme resoluções vigentes, 13 especialidades em Psicologia. Cada uma tem campo de atuação delimitado, critérios próprios para registro de especialista e tipicamente está conectada a uma ou mais pós lato sensu específicas. Conhecer essa taxonomia é o primeiro passo para alinhar a escolha de pós ao plano de carreira.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O registro de especialista pelo CFP não é concedido automaticamente por uma pós lato sensu. Exige comprovação de experiência profissional na área e formação teórico-metodológica compatível, conforme regulação vigente. A pós serve como parte da formação — não substitui o processo formal de registro.
+        </p>
+        <div class="overflow-x-auto mt-6 rounded-2xl border border-surface-200">
+          <table class="w-full text-sm">
+            <thead class="bg-surface-50">
+              <tr>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Especialidade</th>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Foco de atuação</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {especialidadesCFP.map(e => (
+                <tr>
+                  <td class="p-3 font-medium text-ink-900">{e.nome}</td>
+                  <td class="p-3 text-ink-700">{e.foco}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-ink-700">
+          Áreas emergentes — como Psicologia Positiva, Saúde Mental nas Organizações, ABA/TEA e IA aplicada à Psicologia — não estão entre as 13 oficialmente reconhecidas pelo CFP, mas têm mercado consolidado e pós-graduações específicas. A não-inclusão na lista oficial não significa irrelevância de mercado; significa apenas que o profissional, ao se posicionar nessas áreas, não obterá título formal de especialista pelo CFP nelas — atuará como psicólogo com formação complementar.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Para a lista oficial atualizada, consulte o site do CFP em site.cfp.org.br. O <a href="/areas" class="text-brand-700 font-medium hover:underline">mapa de áreas do portal</a> inclui as 13 reconhecidas e as principais emergentes, com 18 verbetes detalhados.
+        </p>
+      </div>
+
+      <div id="areas-em-alta-2026" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 05</span>
+        <h2 class="section-h text-2xl mt-2">Áreas em alta em 2026</h2>
+        <p class="mt-3 text-ink-700">
+          Cinco áreas concentram, em 2026, demanda crescente de mercado e oferta de pós. Não são moda passageira — são respostas a mudanças estruturais no trabalho, na saúde mental e na regulação.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Psicologia Organizacional e do Trabalho (POT).</strong> A NR-1, com a incorporação de fatores psicossociais à gestão de riscos ocupacionais, posiciona o psicólogo organizacional como interlocutor obrigatório no diagnóstico e na gestão de saúde mental nas empresas. Profissionais com pós em POT — psicólogos, RH, consultores — estão sendo recrutados para conduzir mapeamentos, formar líderes e desenhar políticas internas. É a área com maior demanda agregada em 2026, conforme observação de mercado [a confirmar com pesquisa setorial].
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Psicologia Positiva.</strong> Saiu do nicho acadêmico para o repertório corporativo. Empresas grandes incorporam vocabulário de forças pessoais, propósito, segurança psicológica e liderança positiva em programas de cultura e de desenvolvimento de líderes. Pós em Psicologia Positiva tende a destravar carreira em consultoria de bem-estar, T&D senior e gestão de pessoas em ambientes que valorizam cultura people-first.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Neuropsicologia.</strong> Cresce por duas frentes. A primeira é o envelhecimento populacional — demanda por avaliação e reabilitação cognitiva em idosos e em pessoas com diagnóstico de demência. A segunda é o neurodesenvolvimento — diagnóstico e intervenção em crianças e adolescentes com TDAH, TEA e dificuldades de aprendizagem. Pós em Neuropsicologia e em Reabilitação Neuropsicológica são portas de entrada distintas para a mesma área.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>IA, People Analytics e Psicologia Digital.</strong> Área em formação. Profissionais que combinam psicologia com leitura crítica de dados, ética algorítmica e LGPD aplicada a processos de RH estão em demanda em empresas de tecnologia e em consultorias de capital aberto. As pós específicas são raras — costumam aparecer como módulo dentro de MBAs em POT ou em Gestão de Pessoas, ou como cursos de extensão dedicados.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>NR-1 e Saúde Mental nas Organizações.</strong> Tornou-se especialização própria, com pós dedicadas. Profissionais que dominam o método de mapeamento de riscos psicossociais, sabem desenhar políticas internas e formar líderes para conduzir conversa de saúde mental com a equipe estão na curva ascendente da demanda. A área dialoga com POT e com Psicologia Positiva, e costuma exigir formação interdisciplinar.
+        </p>
+      </div>
+
+      <div id="modalidade" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 06</span>
+        <h2 class="section-h text-2xl mt-2">Como escolher a modalidade — online ao vivo, gravado, híbrido e presencial</h2>
+        <p class="mt-3 text-ink-700">
+          A modalidade é, em 2026, mais decisiva para o resultado do que o nome da instituição. Quatro formatos predominam, e cada um responde a um perfil diferente.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Online Ao Vivo síncrono.</strong> Aula em horário fixo, com câmera ligada, docente nominal e turma coetânea. Tem ritmo, troca real, formação de rede em sala. É o formato que mais se aproxima do presencial em densidade — sem o custo de deslocamento. Bom para quem precisa de ritmo externo para não desistir e quer rede ativa. Exige disponibilidade em horário definido.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Online gravado (EAD assíncrono).</strong> Aulas gravadas, acesso quando o aluno quiser. Tem flexibilidade máxima, mas exige autodisciplina alta. Evasão alta em cursos sem suporte ativo. Bom para quem trabalha em escala incompatível com horário fixo, é autodisciplinado e busca conteúdo mais que rede. Risco: turma não-coetânea, ausência de docente em tempo real.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Híbrido.</strong> Combinação de online e presencial. Geralmente, a maior parte da carga é online (Ao Vivo ou gravado), com encontros presenciais periódicos. Bom para quem quer densidade de rede sem mudar de cidade. Funciona melhor quando os encontros presenciais têm desenho específico — não são mera repetição do conteúdo online.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Presencial.</strong> Aulas em sala física, presença obrigatória. Tem densidade máxima de rede, contato direto com docente, ambiente que favorece troca informal. Custo de deslocamento e moradia, em alguns casos. Bom para quem tem disponibilidade geográfica, busca rede de alta densidade e valoriza o ambiente físico de aprendizagem.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O critério decisivo não é "qual é o melhor formato", mas "qual formato sustento até o fim". Pós lato sensu tem dois anos. Quem escolhe gravado por flexibilidade e não tem autodisciplina paga e não conclui. Quem escolhe presencial sem ter disponibilidade real abandona no segundo semestre. A decisão honesta exige ler o próprio calendário antes de matricular.
+        </p>
+      </div>
+
+      <div id="corpo-docente" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 07</span>
+        <h2 class="section-h text-2xl mt-2">Como avaliar o corpo docente</h2>
+        <p class="mt-3 text-ink-700">
+          Corpo docente é o maior diferenciador real entre pós lato sensu — mais que carga horária, mais que nome da instituição. Há três critérios objetivos para avaliar.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Nominal vs anônimo.</strong> Pós que publica corpo docente com nome, foto, lattes e credencial em página oficial é um sinal forte. Pós que diz "docentes especialistas do mercado" sem nome é um sinal de alerta. Instituições com corpo docente nominal apostam reputação no nome dos professores; instituições anônimas costumam rotacionar quem está disponível.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Credencial formal.</strong> Para pós lato sensu, o MEC exige que parte do corpo docente tenha stricto sensu (mestrado ou doutorado). Verifique no Lattes a titulação de cada docente. Combinação saudável: parte com doutorado, parte com mestrado, parte com trajetória executiva ou clínica densa. Predomínio de só-graduados é sinal de fragilidade.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Experiência prática.</strong> Para MBA, busque docentes com trajetória executiva real — não apenas curso de extensão dado em outra escola. Para especialização técnica, busque docentes com prática clínica ativa — não apenas docência abstrata. O ideal é mescla: docente que pesquisa, ensina e pratica simultaneamente.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O teste prático: antes de matricular, escolha três docentes da grade, abra o Lattes ou LinkedIn, leia trajetória e produção. Se não encontra nome, ou se a trajetória é fina, reavalie. Pós cara com corpo docente fino é um dos piores investimentos profissionais.
+        </p>
+      </div>
+
+      <div id="mec-cne-ces" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 08</span>
+        <h2 class="section-h text-2xl mt-2">Como interpretar a regulação do MEC</h2>
+        <p class="mt-3 text-ink-700">
+          A regulação federal de pós lato sensu, hoje, é a Resolução CNE/CES 1/2018, do Conselho Nacional de Educação. É a norma que define o que pode e o que não pode ser chamado de pós lato sensu no Brasil. Quatro pontos da resolução interessam ao candidato.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Carga horária mínima de 360 horas.</strong> Qualquer curso vendido como "pós lato sensu" precisa cumprir esse mínimo. Cursos com menos de 360 horas são, em regra, cursos livres — sem validade de lato sensu para concurso, registro ou contagem como pós.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Trabalho de conclusão obrigatório.</strong> Lato sensu sem TCC não é lato sensu. Pode ser monografia, projeto aplicado, artigo ou outro formato definido pela instituição — mas precisa existir e ser avaliado.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Corpo docente em parte com stricto sensu.</strong> A norma exige percentual mínimo de docentes com mestrado ou doutorado. Não exige todo o corpo com stricto sensu, mas exige parte. Instituições que não cumprem esse mínimo perdem credenciamento.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Credenciamento da instituição.</strong> Pós lato sensu não tem reconhecimento individual de curso — diferente da graduação. O que existe é credenciamento da instituição para ofertar lato sensu. Confirme no cadastro e-MEC se a instituição está credenciada antes de matricular.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O teste prático: peça à secretaria do curso o número do credenciamento da instituição no MEC e a resolução interna que aprova o curso. Quem oferece pós séria não tem dificuldade de fornecer. Quem hesita ou desvia é sinal.
+        </p>
+      </div>
+
+      <div id="titulo-especialista" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 09</span>
+        <h2 class="section-h text-2xl mt-2">Título de especialista pelo CFP: o que MBA habilita e o que não</h2>
+        <p class="mt-3 text-ink-700">
+          Esta é a confusão mais cara da decisão de pós em Psicologia. Profissionais matriculam em MBA acreditando que, ao fim, terão título de especialista pelo CFP nas 13 áreas reconhecidas. Não é assim.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O <strong>título de especialista em Psicologia</strong>, conforme regulação vigente do CFP, exige três coisas: comprovação de tempo de experiência profissional na área, comprovação de formação teórico-metodológica compatível, e aprovação em processo formal do Conselho Regional. Cada CRP define edital próprio. A pós lato sensu — MBA ou especialização — pode compor parte da formação teórico-metodológica, mas não substitui o processo de registro.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O que MBA <strong>habilita</strong>: declarar pós lato sensu reconhecida pelo MEC; usar a formação em concursos que aceitem lato sensu; compor parte da formação teórico-metodológica para registro de especialista pelo CFP; atuar em mercado corporativo com lastro formativo declarado; lecionar em pós, em casos específicos, se a instituição entender que o repertório executivo do candidato compensa a ausência de stricto sensu.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O que MBA <strong>não habilita</strong>: receber automaticamente título de especialista pelo CFP; aplicar instrumentos privativos do exercício profissional do psicólogo se o candidato não é psicólogo com CRP ativo; lecionar em programa stricto sensu em regra geral; substituir mestrado ou doutorado para fins acadêmicos.
+        </p>
+        <p class="mt-3 text-ink-700">
+          A confusão é mais grave em três áreas: <strong>Neuropsicologia</strong> (onde a aplicação de testes é privativa de psicólogo), <strong>Avaliação Psicológica</strong> (regulada pelo SATEPSI) e <strong>Psicologia Jurídica/Forense</strong> (onde perícia psicológica é restrita). MBA ou especialização nessas áreas, feitos por profissionais não-psicólogos, dão lastro teórico — não habilitação clínica. A leitura honesta da regulação evita decepção tardia.
+        </p>
+      </div>
+
+      <div id="satepsi" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 10</span>
+        <h2 class="section-h text-2xl mt-2">SATEPSI e atuação em avaliação psicológica</h2>
+        <p class="mt-3 text-ink-700">
+          O SATEPSI — Sistema de Avaliação de Testes Psicológicos do CFP — é o sistema que avalia a qualidade técnico-científica de instrumentos psicológicos comercializados no Brasil. Cada teste é submetido a avaliação por comissão técnica e recebe parecer favorável ou desfavorável.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Apenas instrumentos com parecer favorável do SATEPSI podem ser usados profissionalmente por psicólogos. O sistema é dinâmico — testes podem perder parecer favorável se novas evidências apontam fragilidade psicométrica. A lista atualizada está em satepsi.cfp.org.br.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Para quem pretende atuar em avaliação psicológica, a pós lato sensu específica é o caminho formativo padrão. A pós ensina teoria psicométrica, prática de aplicação, interpretação, redação de laudo e ética. Não substitui, contudo, a habilitação profissional — apenas psicólogos com CRP ativo podem aplicar e interpretar instrumentos do SATEPSI no contexto clínico.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O portal não publica itens de teste, manuais, correções ou interpretações individualizadas — esses conteúdos têm acesso restrito por regulação do CFP. Publicamos apenas o campo, o que cada subárea estuda, e o que distingue avaliação séria de checklist genérico de internet.
+        </p>
+      </div>
+
+      <div id="custo-prazo-roi" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 11</span>
+        <h2 class="section-h text-2xl mt-2">Custo, prazo e ROI honesto</h2>
+        <p class="mt-3 text-ink-700">
+          Pós lato sensu em Psicologia tem faixa ampla de preço e duração. A honestidade exige separar três variáveis: investimento financeiro direto, custo de oportunidade e retorno realista.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Investimento financeiro direto.</strong> Em instituições públicas, cursos tendem a ser gratuitos ou ter mensalidade simbólica. Em instituições privadas, a mensalidade típica varia entre R$ 600 e R$ 2.500, conforme prestígio, modalidade e duração. Total do investimento, em 18 a 24 meses, fica entre R$ 12.000 e R$ 50.000 [a confirmar com instituição]. MBAs executivos de marca tendem a ficar no topo da faixa; especializações técnicas, no meio.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Custo de oportunidade.</strong> Pós em formato Ao Vivo síncrono consome 4 a 8 horas semanais de aula, mais 4 a 8 horas de leitura e trabalho. Em 18 a 24 meses, isso é tempo que sai de outras atividades — descanso, família, segundo trabalho, projeto pessoal. O custo de oportunidade é, em muitos casos, maior que o financeiro direto. Quem ignora isso paga em qualidade de vida.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Retorno realista.</strong> Pós lato sensu raramente paga ela mesma em ganho salarial direto no curto prazo. O retorno real vem por três vias: cargo seguinte (promoção ou recolocação em posição que exige pós), rede formada (acesso a oportunidades por colegas e docentes) e profundidade técnica que viabiliza serviços novos (no consultório, na consultoria, no RH interno). O ROI honesto se mede em três a cinco anos, não em seis meses.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O teste prático: antes de matricular, faça uma tabela simples. Coluna 1: investimento total (mensalidade × meses + material + deslocamento). Coluna 2: cargo atual e renda atual. Coluna 3: cargo pretendido após a pós e renda esperada. Coluna 4: prazo razoável para o cargo seguinte (em regra, 12 a 24 meses após conclusão). Se as colunas não fecham contra o investimento, reavalie o plano.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Dado de mercado [a confirmar com fonte oficial]: em pesquisas setoriais com egressos de pós lato sensu em áreas corporativas, o salto médio salarial em até 24 meses após conclusão tende a variar entre 15% e 35% — fortemente dependente de área, região e cargo seguinte. Em carreira clínica, o retorno tende a se materializar mais lentamente, mas em qualidade da prática e em valor do honorário.
+        </p>
+      </div>
+
+      <div id="diferenciais" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 12</span>
+        <h2 class="section-h text-2xl mt-2">Diferenciais defensáveis a procurar</h2>
+        <p class="mt-3 text-ink-700">
+          Há cinco atributos institucionais que, quando presentes, sinalizam pós lato sensu de qualidade superior. Não são garantia — mas são correlação alta.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Formato Ao Vivo síncrono com câmera ligada.</strong> Diferente de EAD gravado puro. Exige presença real, ritmo, troca em sala. Reduz drasticamente evasão e aumenta densidade de rede. Sinal de instituição que aposta em formação real, não em escala assíncrona.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Corpo docente nominal e verificável.</strong> Lista de docentes com nome, foto, currículo e credencial publicada na página do curso. Permite ao candidato avaliar profundidade da formação antes de matricular. Instituições que escondem corpo docente tendem a rotacionar.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Multicampus com identidade clara.</strong> Instituições com presença em várias cidades, mas com sede definida, costumam ter logística madura e governança consolidada. Multicampus difuso, sem sede, é sinal de fragilidade administrativa.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Credenciamento ativo e antigo no MEC para lato sensu.</strong> Instituições com mais de duas décadas em lato sensu e credenciamento ativo no e-MEC têm rotina de governança de curso, sistema de avaliação interna e maturidade de processo. Instituições novas podem ser excelentes — mas exigem due diligence mais profunda.
+        </p>
+        <p class="mt-3 text-ink-700">
+          <strong>Foco executivo declarado (para MBA) ou foco técnico declarado (para especialização).</strong> Instituições que assumem posicionamento — em vez de dizer "atendemos todos os perfis" — tendem a entregar mais. O posicionamento explícito força a grade, o corpo docente e a rede a convergirem ao perfil declarado.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Como exemplo do perfil descrito acima, o IPOG é uma das instituições brasileiras que combinam tradição em lato sensu reconhecida pelo MEC, formato Ao Vivo síncrono e corpo docente nominal — vale conhecer como benchmark do que procurar em qualquer escolha.
+        </p>
+      </div>
+
+      <div id="erros-comuns" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 13</span>
+        <h2 class="section-h text-2xl mt-2">Erros comuns na decisão</h2>
+        <ol class="mt-4 space-y-3 text-sm text-ink-700 list-decimal list-inside marker:font-bold marker:text-brand-700">
+          <li><strong>Achar que MBA é "superior" à especialização.</strong> Não é. Do ponto de vista regulatório, são iguais — pós lato sensu pelo MEC, conforme Resolução CNE/CES 1/2018. A diferença é de posicionamento de mercado, não de hierarquia. Escolha pelo cargo pretendido, não pelo nome do certificado.</li>
+          <li><strong>Esperar título de especialista pelo CFP automaticamente.</strong> O CFP regula o registro de especialista com critérios próprios — comprovação de experiência e formação teórico-metodológica. Nem MBA nem especialização concedem o título automaticamente. Ler a resolução vigente do CFP antes de decidir.</li>
+          <li><strong>Confundir lato sensu com stricto sensu.</strong> MBA não é mestrado. Especialização não é doutorado. Quem quer carreira acadêmica precisa de stricto sensu, regulado pela CAPES, com defesa formal de dissertação ou tese. Quem confunde, descobre tarde demais.</li>
+          <li><strong>Escolher por nome de instituição sem verificar credenciamento atual.</strong> Instituições mudam — perdem ou ganham credenciamento, renovam ou descontinuam pós. Antes de matricular, confirme no cadastro e-MEC o status vigente da instituição para lato sensu.</li>
+          <li><strong>Decidir por EAD gravado por flexibilidade aparente.</strong> Flexibilidade vira evasão sem disciplina externa. Quem precisa de ritmo deve escolher Ao Vivo síncrono ou presencial — mesmo que pareça "mais trabalhoso" no início. O custo da evasão é maior que o ganho de flexibilidade.</li>
+          <li><strong>Ignorar o corpo docente antes de matricular.</strong> Olhe a lista. Cheque Lattes ou LinkedIn de três docentes. Se a trajetória é fina ou se a instituição não publica os nomes, reavalie. Corpo docente é o maior diferenciador real.</li>
+          <li><strong>Não conversar com egressos.</strong> Antes de assinar contrato de dois anos, converse com três egressos do curso. Pergunte que cargo o curso destravou, que conteúdo foi prático, que conteúdo foi raso. Egressos honestos contam — instituição séria fornece contatos.</li>
+          <li><strong>Decidir só pelo preço.</strong> O mais barato pode custar mais ao final — em tempo perdido, em diploma sem peso, em rede inexistente. O mais caro pode não justificar — se o cargo seguinte não recompensa. A análise honesta cruza preço com expectativa realista de retorno.</li>
+        </ol>
+      </div>
+
+      <div id="ipog-posicionamento" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 14</span>
+        <h2 class="section-h text-2xl mt-2">Como o IPOG se posiciona</h2>
+        <p class="mt-3 text-ink-700">
+          O IPOG opera há 25 anos em pós lato sensu reconhecida pelo MEC, com formato Ao Vivo síncrono, corpo docente nominal e operação multicampus em Goiânia (sede), com operação nacional via Ao Vivo. Esse é o perfil de instituição a procurar quando o profissional valoriza presença docente real, ritmo síncrono e rede formada em sala.
+        </p>
+        <p class="mt-3 text-ink-700">
+          No portfólio de Psicologia, o IPOG oferta MBAs em Psicologia Organizacional e do Trabalho, em Psicologia Positiva e Saúde Mental nas Organizações, em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo, em Neurociência e Psicologia Positiva no Desenvolvimento Humano, e em Gestão de Pessoas e Liderança Positiva. A oferta combina pós tradicionais reconhecidas (POT, Neuropsicologia) com áreas emergentes consolidadas (Positiva, Liderança Positiva, IA aplicada em alguns módulos).
+        </p>
+        <p class="mt-3 text-ink-700">
+          O ponto-chave: o IPOG é exemplo do perfil descrito na seção de diferenciais defensáveis — não é a única instituição com esse perfil. O portal mantém posicionamento independente; o critério para citar o IPOG é o ajuste ao perfil que recomendamos, não relação comercial. Quem encontra outra instituição com perfil equivalente (tradição em lato sensu, Ao Vivo síncrono, corpo docente nominal, foco declarado) tem boa alternativa.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Para confirmar grade, valor, modalidade e turma vigente, consulte sempre o portal oficial do IPOG em ipog.edu.br. Este portal não vende cursos — apenas orienta a decisão.
+        </p>
+      </div>
+
+      <div id="portal" class="scroll-mt-24 anchor">
+        <span class="section-eyebrow">Seção · 15</span>
+        <h2 class="section-h text-2xl mt-2">Como o portal funciona</h2>
+        <p class="mt-3 text-ink-700">
+          O posgraduacaopsicologia.com é um portal editorial independente. Não é o site oficial do IPOG nem vende cursos. O objetivo é organizar, em linguagem honesta e fundamentada, o que um candidato precisa saber antes de escolher pós em Psicologia no Brasil.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O portal está organizado em cinco eixos. <strong>Mapa de áreas</strong> (/areas) traz 18 verbetes detalhados — as 13 reconhecidas pelo CFP e cinco emergentes consolidadas. <strong>MBAs</strong> (/mbas) traz a oferta de pós executiva em Psicologia, com posicionamento e perfil ideal. <strong>Comparativos</strong> (/comparativos) traz seis comparações estruturadas — MBA vs especialização, POT vs Gestão de Pessoas, Neuropsi vs Reabilitação, entre outras. <strong>Regulação</strong> (/regulacao) traz a leitura editorial das normas MEC, CFP e SATEPSI. <strong>Para quem</strong> (/para-quem) traz quatro personas com recomendação de MBA.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O portal segue política editorial com cinco níveis de sensibilidade: R0 (conteúdo público), R1 (carreira sem promessa), R2 (técnico com revisão), R3 (sensível — avaliação, perícia, clínica, com escopo declarado), R4 (restrito, não-publicado). Itens de teste, manuais e laudos individuais nunca aparecem no portal — são conteúdo R4.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Para decisão final de inscrição, consulte sempre o site oficial da instituição escolhida. Para pós no IPOG, ipog.edu.br. O portal orienta — quem decide é o profissional.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A decisão honesta passa por três perguntas em sequência</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li><strong>Família regulatória:</strong> lato sensu se o foco é prática profissional; stricto sensu se o foco é academia ou pesquisa.</li>
+          <li><strong>Posicionamento:</strong> MBA se o cargo pretendido é executivo ou de gestão; especialização se é técnico, clínico ou acadêmico.</li>
+          <li><strong>Área específica:</strong> uma das 13 reconhecidas pelo CFP, ou uma emergente consolidada (Positiva, IA aplicada, NR-1/Saúde Mental).</li>
+          <li>Procure instituições com lato sensu credenciada pelo MEC, formato Ao Vivo síncrono, corpo docente nominal e foco declarado.</li>
+          <li>Não espere título de especialista pelo CFP automaticamente — o registro segue regulação própria.</li>
+        </ul>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3">
+          <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary">
+            Ver pós no IPOG
+            <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+          </a>
+          <a href="/para-quem" class="btn btn-ghost text-white border-white/30 hover:bg-white/10">
+            Descobrir o MBA certo para o seu perfil
+          </a>
+        </div>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG mantém MBAs e especializações em Psicologia com formato Ao Vivo síncrono e corpo docente nominal — referência para quem busca presença docente real e rede formada em sala.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Páginas filhas</p>
+        <ul class="space-y-1">
+          <li><a href="/pos-graduacao-psicologia/tipos" class="mega-link"><strong class="text-ink-900 text-sm">Tipos de pós em Psicologia</strong></a></li>
+          <li><a href="/pos-graduacao-psicologia/como-escolher" class="mega-link"><strong class="text-ink-900 text-sm">Como escolher em 2026 — checklist</strong></a></li>
+          <li><a href="/pos-graduacao-psicologia/mba-vs-especializacao" class="mega-link"><strong class="text-ink-900 text-sm">MBA vs especialização — qual escolher</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas em alta em 2026</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/psicologia-organizacional-trabalho" class="mega-link"><strong class="text-ink-900 text-sm">POT</strong></a></li>
+          <li><a href="/areas/psicologia-positiva" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Positiva</strong></a></li>
+          <li><a href="/areas/neuropsicologia" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia</strong></a></li>
+          <li><a href="/areas/ia-people-analytics-psicologia-digital" class="mega-link"><strong class="text-ink-900 text-sm">IA + RH</strong></a></li>
+          <li><a href="/areas/saude-mental-organizacoes" class="mega-link"><strong class="text-ink-900 text-sm">Saúde Mental nas Organizações</strong></a></li>
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as 18 áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:underline">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:underline">SATEPSI — testes psicológicos</a></li>
+          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:underline">MEC — pós lato sensu</a></li>
+          <li><a href="/regulacao" class="text-brand-700 hover:underline">Leitura editorial do portal</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldItemList)} />
+</Base>

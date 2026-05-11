@@ -1,0 +1,279 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+
+const criterios = [
+  {
+    id: 'cargo-pretendido',
+    nome: 'Cargo pretendido',
+    peso: 25,
+    descricao: 'A pergunta mais importante — e a primeira. Qual cargo você pretende ocupar nos próximos cinco anos? Executivo, gestor ou consultor corporativo? Especialista técnico, clínico ou em saúde pública? Pesquisador ou docente? A resposta direciona a família regulatória e o posicionamento. Quem decide pós antes de definir o cargo decide errado.',
+    sinal_forte: 'Tenho clareza do cargo seguinte e da rota de carreira para os próximos cinco anos.',
+    sinal_alerta: 'Estou em pós só para "ter pós" ou para postergar decisão de carreira.'
+  },
+  {
+    id: 'modalidade',
+    nome: 'Modalidade que você sustenta até o fim',
+    peso: 20,
+    descricao: 'Pós lato sensu tem 18 a 24 meses. A modalidade precisa caber no seu calendário real, não no calendário ideal. Online Ao Vivo síncrono dá ritmo e rede; gravado dá flexibilidade mas exige autodisciplina alta; presencial dá densidade máxima de rede mas custa em deslocamento; híbrido é o meio-termo. Leia o seu próprio calendário antes de matricular.',
+    sinal_forte: 'Tenho disponibilidade real para o formato escolhido — em horário, em deslocamento, em energia.',
+    sinal_alerta: 'Estou escolhendo gravado porque pareceu mais flexível, mas não tenho histórico de autodisciplina.'
+  },
+  {
+    id: 'corpo-docente',
+    nome: 'Corpo docente nominal e verificável',
+    peso: 20,
+    descricao: 'O maior diferenciador real entre pós lato sensu. Verifique no site oficial da instituição se a lista de docentes é nominal (com nome, foto, credencial) ou anônima ("docentes especialistas do mercado"). Para três docentes que mais te interessam, abra Lattes ou LinkedIn e leia a trajetória. Predomínio de docentes com stricto sensu e prática real é sinal forte.',
+    sinal_forte: 'Vejo nome, foto, credencial e Lattes de pelo menos 60% dos docentes do curso.',
+    sinal_alerta: 'A página do curso fala em "professores convidados" sem listar nomes ou trajetória.'
+  },
+  {
+    id: 'credenciamento-mec',
+    nome: 'Credenciamento atual da instituição no MEC',
+    peso: 15,
+    descricao: 'Pós lato sensu não tem reconhecimento individual de curso — o que existe é credenciamento da instituição. Confirme no cadastro e-MEC se a instituição está credenciada para ofertar lato sensu. Verifique se a Resolução CNE/CES 1/2018 é cumprida: carga horária mínima de 360 horas, trabalho de conclusão obrigatório, corpo docente em parte com stricto sensu.',
+    sinal_forte: 'Instituição com credenciamento ativo no e-MEC e mais de uma década em lato sensu.',
+    sinal_alerta: 'Não encontro o credenciamento da instituição no cadastro e-MEC.'
+  },
+  {
+    id: 'rede-egressos',
+    nome: 'Rede de egressos acessível',
+    peso: 10,
+    descricao: 'Antes de matricular, converse com três egressos do curso de seu interesse. Pergunte que cargo o curso destravou, que conteúdo foi prático e que conteúdo foi raso, quanto da rede formada continuou em contato após o fim do curso. Egressos honestos contam. Instituição séria fornece contatos — ou tem grupo aberto onde a conversa acontece.',
+    sinal_forte: 'A instituição fornece contatos de egressos ou tem comunidade ativa onde ex-alunos conversam.',
+    sinal_alerta: 'Não consigo encontrar egressos para conversar — nem por LinkedIn, nem por grupo da instituição.'
+  },
+  {
+    id: 'foco-declarado',
+    nome: 'Foco declarado da instituição',
+    peso: 5,
+    descricao: 'Instituições que assumem posicionamento — "somos pós executiva" ou "somos pós clínica" — tendem a entregar mais que instituições que dizem atender todos os perfis. O posicionamento explícito força a grade, o corpo docente e a rede a convergirem ao perfil declarado. Posicionamento difuso costuma significar média baixa em tudo.',
+    sinal_forte: 'A página do curso assume posicionamento claro — executivo, técnico, clínico, acadêmico.',
+    sinal_alerta: 'A página tenta atender todos os perfis simultaneamente, sem definição de público.'
+  },
+  {
+    id: 'orcamento-real',
+    nome: 'Orçamento total e custo de oportunidade',
+    peso: 5,
+    descricao: 'Calcule investimento total (mensalidade × meses + material + deslocamento + tempo). Compare com renda atual e renda esperada após o cargo seguinte. Pós lato sensu raramente paga ela mesma em ganho salarial direto no curto prazo — o retorno honesto vem em três a cinco anos. Se o orçamento aperta a vida cotidiana, ou se o custo de oportunidade é maior que o ganho previsível, reavalie o timing.',
+    sinal_forte: 'O investimento total cabe no orçamento sem comprometer reservas de emergência ou qualidade de vida.',
+    sinal_alerta: 'Estou financiando integralmente e o pagamento mensal aperta o orçamento corrente.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Em quanto tempo devo decidir uma pós?',
+    a: 'Dois a quatro meses de leitura, conversa com egressos, comparação de grade e visita virtual a aula aberta costumam ser suficientes. Decidir em menos de um mês aumenta o risco de descoberta tardia de desencaixe. Decidir em mais de seis meses costuma indicar que a pergunta de carreira não está clara ainda — e a pós não é a resposta.'
+  },
+  {
+    q: 'Devo escolher pós antes ou depois de mudar de cargo?',
+    a: 'Em regra, depois de ter clareza do cargo seguinte — mas antes de tentar destravar a mudança. Pós escolhida antes da clareza do cargo costuma ser pós errada; pós escolhida depois da mudança costuma chegar tarde demais para apoiar a transição. O timing ideal é: 6 a 12 meses antes da transição pretendida.'
+  },
+  {
+    q: 'Vale a pena pós no exterior?',
+    a: 'Pode valer, em três condições: o cargo pretendido recompensa a marca da instituição estrangeira; o investimento total cabe no orçamento (incluindo deslocamento, moradia, custo de vida); a rede internacional faz sentido para o setor de atuação. Para a maioria dos psicólogos e profissionais de RH brasileiros, pós em instituição brasileira sólida é mais eficiente em retorno por real investido.'
+  },
+  {
+    q: 'Como sei se a pós que escolhi é a certa?',
+    a: 'O teste honesto é o "teste do egresso": converse com três egressos. Se dois dos três contam histórias parecidas com a sua aspiração de carreira e dizem que o curso ajudou, é sinal forte. Se a maioria dos egressos virou rota distinta da sua, talvez a pós não seja a ponte certa. A decisão precede a matrícula — não acontece dentro do curso.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como escolher uma pós em Psicologia em 2026 — checklist de decisão',
+  description: 'Sete critérios de decisão com peso ponderado para escolher pós lato sensu em Psicologia. Sinais fortes e sinais de alerta, mini-caso e perguntas frequentes.',
+  author: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="Como escolher uma pós em Psicologia em 2026 — checklist de decisão"
+  description="Sete critérios de decisão com peso para escolher pós lato sensu em Psicologia em 2026. Cargo pretendido, modalidade, corpo docente, credenciamento, rede, foco, orçamento — sinais fortes e de alerta.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Pós-graduação em Psicologia', href: '/pos-graduacao-psicologia' },
+        { label: 'Como escolher' }
+      ]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Página filha · 02</span>
+        <h1 class="section-h text-3xl sm:text-4xl mt-2">Como escolher uma pós em Psicologia em 2026 — checklist de decisão</h1>
+        <p class="mt-3 text-ink-700 text-lg">
+          Sete critérios com peso, sinais fortes e sinais de alerta. A diferença entre pós que paga e pós que pesa não está no nome do certificado — está na sequência de perguntas que o candidato faz antes de matricular.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A escolha honesta de pós em Psicologia em 2026 segue uma sequência clara: definir o cargo pretendido (25% do peso), avaliar modalidade que se sustenta até o fim (20%), verificar corpo docente nominal (20%), confirmar credenciamento atual no MEC (15%), buscar rede de egressos acessível (10%), checar foco declarado da instituição (5%) e fechar contas com orçamento real (5%). Quem decide na ordem inversa — começa pelo preço ou pelo nome — costuma errar a escolha por seis pontos do checklist.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Por que checklist, não intuição</h2>
+        <p class="mt-3 text-ink-700">
+          A decisão de pós-graduação é cara em dois sentidos. Cara em dinheiro — entre R$ 12.000 e R$ 50.000 para pós lato sensu privada [a confirmar com instituição]. Cara em tempo — 18 a 24 meses de calendário ocupado em horário fixo. Cara em custo de oportunidade — energia que sai de família, descanso, segundo projeto, segunda renda.
+        </p>
+        <p class="mt-3 text-ink-700">
+          Decisão cara não cabe em intuição. Cabe em checklist — sete critérios que, somados com peso ponderado, evitam o erro mais frequente: matricular em pós cujo nome impressiona mas cujo desenho não responde à pergunta concreta da carreira. Os sete critérios abaixo foram destilados de centenas de conversas com egressos e gestores que entrevistam candidatos com pós.
+        </p>
+        <p class="mt-3 text-ink-700">
+          A regra prática: somar os sinais fortes em cada critério, ponderar pelo peso e comparar instituições no mesmo formato. Decisão certa não é "a pós dos sonhos" — é a pós que pontua acima de 70 no checklist, com sinais de alerta inexistentes ou justificáveis.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os sete critérios, em detalhe</h2>
+        {criterios.map(c => (
+          <div id={c.id} class="scroll-mt-24 card p-6">
+            <div class="flex items-center justify-between gap-3 mb-2">
+              <h3 class="font-display font-semibold text-lg text-ink-900">{c.nome}</h3>
+              <span class="text-xs font-semibold text-brand-700 bg-brand-50 px-3 py-1 rounded-full">Peso {c.peso}%</span>
+            </div>
+            <p class="text-sm text-ink-700 leading-relaxed">{c.descricao}</p>
+            <div class="mt-3 grid sm:grid-cols-2 gap-3">
+              <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-3">
+                <p class="text-xs uppercase font-semibold text-emerald-700 mb-1">Sinal forte</p>
+                <p class="text-sm text-ink-700">{c.sinal_forte}</p>
+              </div>
+              <div class="rounded-xl bg-rose-50 border border-rose-200 p-3">
+                <p class="text-xs uppercase font-semibold text-rose-700 mb-1">Sinal de alerta</p>
+                <p class="text-sm text-ink-700">{c.sinal_alerta}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela peso × critério (resumo)</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="w-full text-sm">
+            <thead class="bg-surface-50">
+              <tr>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Critério</th>
+                <th class="text-left p-3 font-display font-semibold text-brand-700">Peso</th>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Pergunta-chave</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="p-3 font-medium text-ink-900">Cargo pretendido</td><td class="p-3 text-ink-700">25%</td><td class="p-3 text-ink-700">Qual cargo pretendo ocupar em 3 a 5 anos?</td></tr>
+              <tr><td class="p-3 font-medium text-ink-900">Modalidade sustentável</td><td class="p-3 text-ink-700">20%</td><td class="p-3 text-ink-700">Tenho disponibilidade real para esse formato?</td></tr>
+              <tr><td class="p-3 font-medium text-ink-900">Corpo docente nominal</td><td class="p-3 text-ink-700">20%</td><td class="p-3 text-ink-700">Consigo verificar trajetória de 60% dos docentes?</td></tr>
+              <tr><td class="p-3 font-medium text-ink-900">Credenciamento MEC</td><td class="p-3 text-ink-700">15%</td><td class="p-3 text-ink-700">A instituição está credenciada no e-MEC para lato sensu?</td></tr>
+              <tr><td class="p-3 font-medium text-ink-900">Rede de egressos</td><td class="p-3 text-ink-700">10%</td><td class="p-3 text-ink-700">Consigo conversar com três egressos antes de decidir?</td></tr>
+              <tr><td class="p-3 font-medium text-ink-900">Foco declarado</td><td class="p-3 text-ink-700">5%</td><td class="p-3 text-ink-700">A instituição assume posicionamento explícito?</td></tr>
+              <tr><td class="p-3 font-medium text-ink-900">Orçamento real</td><td class="p-3 text-ink-700">5%</td><td class="p-3 text-ink-700">O investimento total cabe sem comprometer reservas?</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">A profissional de RH que aplicou o checklist e mudou de instituição</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Camila, 34 anos, business partner em multinacional de bens de consumo, decide cursar pós em POT. Primeira escolha: instituição A, com mensalidade R$ 1.200, formato gravado, sem lista nominal de docentes, sem credenciamento ativo claro no e-MEC. Já está a ponto de matricular — atraída pelo preço acessível e pela flexibilidade do gravado.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Decide aplicar o checklist antes. Pontua: cargo pretendido (25% × forte), modalidade (20% × alerta — não tem disciplina histórica para gravado), corpo docente (20% × alerta — não consegue verificar trajetória), credenciamento (15% × alerta — sem confirmação no e-MEC), rede (10% × alerta — não encontra egressos), foco (5% × alerta — página tenta atender todos os perfis), orçamento (5% × forte). Score: 30 de 100. Cinco sinais de alerta.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Camila reabre a busca. Instituição B, com mensalidade R$ 1.700, formato Ao Vivo síncrono, corpo docente nominal com Lattes, credenciamento ativo, três egressos contatáveis via LinkedIn, foco executivo declarado. Pontua: cargo (forte), modalidade (forte — tem disponibilidade), corpo docente (forte), credenciamento (forte), rede (forte), foco (forte), orçamento (limite, mas cabe sem comprometer reservas). Score: 95 de 100.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A diferença de R$ 500 ao mês é real. O risco da instituição A, contudo, era maior: dois anos investidos com chance alta de evasão (gravado sem disciplina) e diploma de validade duvidosa (sem credenciamento confirmado). Camila escolhe a B, conclui em 22 meses, é promovida a HR Manager seis meses após o término. O cargo seguinte cobre, em três meses, a diferença de mensalidade do curso inteiro.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          A lição: checklist disciplina decisão cara. Quem decide por preço ou por nome economiza no curto prazo e paga no longo.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Decisão cara cabe em checklist, não em intuição</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Cargo pretendido e modalidade sustentável valem 45% da decisão.</li>
+          <li>Corpo docente nominal e credenciamento MEC ativo valem 35% — o lastro técnico.</li>
+          <li>Rede de egressos, foco declarado e orçamento valem 20% — o ajuste fino.</li>
+          <li>Score honesto para matricular: acima de 70 sem sinais de alerta críticos.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Próximo passo: confirme grade, modalidade e turma vigente no portal oficial do IPOG.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4">Ver pós no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Pilar</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação em Psicologia</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Esta página é parte do guia completo de pós em Psicologia. Volte ao pilar para ver as 15 seções, com aprofundamento em regulação, custo, áreas em alta e diferenciais defensáveis.
+        </p>
+        <a href="/pos-graduacao-psicologia" class="btn btn-primary mt-4 w-full">Voltar ao pilar</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outras páginas filhas</p>
+        <ul class="space-y-1">
+          <li><a href="/pos-graduacao-psicologia/tipos" class="mega-link"><strong class="text-ink-900 text-sm">Tipos de pós em Psicologia</strong></a></li>
+          <li><a href="/pos-graduacao-psicologia/mba-vs-especializacao" class="mega-link"><strong class="text-ink-900 text-sm">MBA vs especialização — qual escolher</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Conteúdo relacionado</p>
+        <ul class="space-y-1">
+          <li><a href="/regulacao" class="mega-link"><strong class="text-ink-900 text-sm">Regulação, ética e escopo</strong></a></li>
+          <li><a href="/para-quem" class="mega-link"><strong class="text-ink-900 text-sm">Para quem é cada MBA</strong></a></li>
+          <li><a href="/mbas" class="mega-link"><strong class="text-ink-900 text-sm">Todos os MBAs</strong></a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+</Base>

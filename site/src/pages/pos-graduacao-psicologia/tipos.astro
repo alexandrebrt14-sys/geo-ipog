@@ -1,0 +1,260 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+
+const tipos = [
+  {
+    id: 'lato-sensu',
+    nome: 'Pós-graduação lato sensu',
+    sub: 'O guarda-chuva que reúne especialização e MBA',
+    descricao: 'É a família educacional regulada pela Resolução CNE/CES 1/2018 do MEC. Carga horária mínima de 360 horas, trabalho de conclusão obrigatório, corpo docente em parte com stricto sensu. Reúne especializações e MBAs. Foco: aplicação profissional. Em regra, duração de 12 a 24 meses. Não exige defesa em banca. Não habilita, por si só, docência em pós.',
+    indicacao: 'Indicada para quem busca aprofundamento de prática profissional — clínica, técnica, gerencial ou executiva.'
+  },
+  {
+    id: 'stricto-sensu',
+    nome: 'Pós-graduação stricto sensu',
+    sub: 'A família acadêmica — mestrado e doutorado',
+    descricao: 'É a família regulada pela CAPES, com avaliação periódica de programas. Reúne mestrado (acadêmico ou profissional) e doutorado. Exige vinculação a linha de pesquisa, dissertação ou tese defendida em banca pública. Foco: produção científica e formação para docência em pós. Duração típica: 24 meses (mestrado), 48 meses (doutorado).',
+    indicacao: 'Indicada para quem mira carreira acadêmica, docência em pós-graduação, pesquisa em laboratório ou produção científica formal.'
+  },
+  {
+    id: 'mba',
+    nome: 'MBA em Psicologia',
+    sub: 'Pós lato sensu de posicionamento executivo',
+    descricao: 'Categoria dentro de lato sensu. Não tem regulação separada — segue a Resolução CNE/CES 1/2018. O que diferencia o MBA é o posicionamento de mercado: corpo docente em parte executivo, em parte acadêmico; grade orientada a decisão de gestão, estratégia, liderança; rede de egressos multissetorial e corporativa. Carga horária típica: 360 a 480 horas. Duração: 18 a 24 meses.',
+    indicacao: 'Indicado para quem mira cargo executivo, gestor de equipe, consultor corporativo ou business partner senior.'
+  },
+  {
+    id: 'especializacao',
+    nome: 'Especialização em Psicologia',
+    sub: 'Pós lato sensu de posicionamento técnico',
+    descricao: 'Categoria dentro de lato sensu. Mesma regulação do MBA — Resolução CNE/CES 1/2018. O que diferencia é o posicionamento: corpo docente com predomínio acadêmico e clínico; grade orientada a método, teoria e refinamento de prática; rede de egressos técnica e setorial. Carga horária típica: 360 a 720 horas. Duração: 12 a 24 meses.',
+    indicacao: 'Indicada para quem mira atuação clínica, acadêmica, técnica ou em saúde pública — psicólogos clínicos, escolares, hospitalares, peritos, pesquisadores aplicados.'
+  },
+  {
+    id: 'curso-livre',
+    nome: 'Curso livre e extensão',
+    sub: 'Atualização ou exploração — fora de regulação de pós',
+    descricao: 'Categoria não regulada pelo MEC como pós-graduação. Pode ter qualidade alta ou baixa, conforme a instituição. Não emite diploma de pós — apenas certificado de extensão. Não é aceito em concurso público que exija lato sensu. Não conta como pós para registro de especialista pelo CFP. Carga horária e duração livres.',
+    indicacao: 'Útil para atualização rápida em tema específico, exploração antes de comprometer com pós formal ou complemento a uma pós já feita.'
+  }
+];
+
+const tabela = [
+  { dim: 'Regulação',           lato: 'CNE/CES 1/2018 (MEC)', stricto: 'CAPES', livre: 'Não regulada' },
+  { dim: 'Subtipos principais', lato: 'MBA, especialização',   stricto: 'Mestrado, doutorado', livre: 'Curso livre, extensão' },
+  { dim: 'Carga horária mínima', lato: '360 horas', stricto: 'Definida por programa', livre: 'Sem mínimo' },
+  { dim: 'Duração típica',      lato: '12 a 24 meses', stricto: '24 a 48 meses', livre: 'Variável' },
+  { dim: 'Trabalho final',      lato: 'Monografia ou TCC',   stricto: 'Dissertação ou tese',   livre: 'Em regra, não exigido' },
+  { dim: 'Defesa em banca',     lato: 'Não exigida',         stricto: 'Obrigatória',           livre: 'Não' },
+  { dim: 'Diploma de pós',      lato: 'Sim',                 stricto: 'Sim',                   livre: 'Não — certificado de extensão' },
+  { dim: 'Aceito em concurso público',  lato: 'Sim',         stricto: 'Sim',                   livre: 'Em regra, não' },
+  { dim: 'Habilita docência em pós', lato: 'Em regra, não',  stricto: 'Sim',                   livre: 'Não' },
+  { dim: 'Título de especialista pelo CFP', lato: 'Não automático', stricto: 'Não automático', livre: 'Não compõe' }
+];
+
+const faqs = [
+  {
+    q: 'Qual a diferença prática entre MBA e especialização?',
+    a: 'Do ponto de vista regulatório, são iguais — ambas pós lato sensu pelo MEC. A diferença é de posicionamento de mercado: MBA é orientado a cargo executivo e gestão; especialização é orientada a aprofundamento técnico ou clínico. O título regulatório é o mesmo; a narrativa de carreira é diferente.'
+  },
+  {
+    q: 'Curso livre vale para concurso público?',
+    a: 'Em regra, não. Concursos que exigem "pós-graduação" geralmente especificam lato sensu (com carga mínima de 360 horas e diploma) ou stricto sensu. Curso livre emite certificado de extensão — categoria diferente. Antes de matricular em curso livre com expectativa de uso em concurso, leia o edital com atenção.'
+  },
+  {
+    q: 'Posso fazer mestrado e MBA ao mesmo tempo?',
+    a: 'Tecnicamente é possível, mas raramente é a melhor escolha. Mestrado stricto sensu exige dedicação a pesquisa formal; MBA lato sensu exige aplicação a contexto corporativo. As duas famílias têm linguagens e rotinas distintas. Em carreiras longas, a estratégia mais comum é fazer um após o outro — com pausa para amadurecer o aprendizado de cada um.'
+  },
+  {
+    q: 'Especialização é melhor que MBA para psicólogo clínico?',
+    a: 'Em regra, sim — se o objetivo é aprofundar prática clínica. Especialização tende a ter corpo docente clínico, grade orientada a método e rede de colegas clínicos. MBA tende a ser desnecessário ou desalinhado para quem permanece no consultório. Se há intenção de migrar para corporativo ou para gestão de clínica, o MBA passa a fazer sentido — em complemento, não em substituição.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Tipos de pós-graduação em Psicologia — lato sensu, stricto sensu, MBA, especialização e curso livre',
+  description: 'Os cinco tipos de pós-graduação em Psicologia, suas regulações, carga horária, duração e quando escolher cada um.',
+  author: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="Tipos de pós-graduação em Psicologia — lato sensu, stricto sensu, MBA, especialização e curso livre"
+  description="Os cinco tipos de pós-graduação em Psicologia no Brasil: lato sensu vs stricto sensu, diferença entre MBA, especialização e curso livre, regulação MEC/CAPES, carga horária e quando escolher cada um.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Pós-graduação em Psicologia', href: '/pos-graduacao-psicologia' },
+        { label: 'Tipos' }
+      ]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Página filha · 01</span>
+        <h1 class="section-h text-3xl sm:text-4xl mt-2">Tipos de pós-graduação em Psicologia — lato sensu, stricto sensu, MBA, especialização e curso livre</h1>
+        <p class="mt-3 text-ink-700 text-lg">
+          Cinco tipos de pós-graduação em Psicologia, com regulação, carga horária e propósito distintos. Confundir os tipos é o erro mais frequente e mais caro da decisão de carreira.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A pós-graduação em Psicologia no Brasil se organiza em duas grandes famílias regulatórias: <strong>lato sensu</strong> (MBA e especialização, regulada pelo MEC via Resolução CNE/CES 1/2018) e <strong>stricto sensu</strong> (mestrado e doutorado, regulada pela CAPES). MBA e especialização ocupam o mesmo lugar regulatório — a diferença entre eles é de posicionamento de mercado, não de hierarquia. Curso livre é categoria à parte, sem validade de pós para concurso ou registro. Conhecer os cinco tipos é a base para qualquer decisão de pós em Psicologia.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Por que a distinção importa</h2>
+        <p class="mt-3 text-ink-700">
+          A maior parte dos candidatos a pós em Psicologia entra na decisão com um equívoco básico: acha que MBA é "um passo acima" da especialização, ou que mestrado é apenas "um MBA mais demorado". Não é. Cada tipo tem regulação própria, propósito profissional distinto e perfil de egresso que se posiciona em mercado diferente.
+        </p>
+        <p class="mt-3 text-ink-700">
+          O preço do equívoco é alto. Profissionais que matriculam em MBA esperando "título de especialista pelo CFP" descobrem, dois anos depois, que o título exige processo separado. Candidatos que matriculam em mestrado esperando "salto salarial corporativo" descobrem que stricto sensu sinaliza profundidade acadêmica, não executiva. Profissionais que pagam por curso livre acreditando que vale como pós descobrem, em concurso, que o certificado não é aceito.
+        </p>
+        <p class="mt-3 text-ink-700">
+          A decisão honesta começa por entender o que cada tipo é, o que cada um habilita e o que cada um não habilita. Em seguida, vem a pergunta concreta da carreira: qual cargo pretendo, em quanto tempo, em que setor. As respostas se cruzam — e o tipo certo aparece.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        <h2 class="section-h text-2xl">Os cinco tipos, em detalhe</h2>
+        {tipos.map(t => (
+          <div id={t.id} class="scroll-mt-24 card p-6">
+            <p class="text-xs uppercase tracking-wider font-semibold text-brand-700">{t.sub}</p>
+            <h3 class="font-display font-semibold text-lg text-ink-900 mt-1">{t.nome}</h3>
+            <p class="mt-3 text-sm text-ink-700 leading-relaxed">{t.descricao}</p>
+            <p class="mt-3 text-sm text-ink-700 leading-relaxed"><strong>Quando escolher:</strong> {t.indicacao}</p>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela comparativa</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="w-full text-sm">
+            <thead class="bg-surface-50">
+              <tr>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Dimensão</th>
+                <th class="text-left p-3 font-display font-semibold text-brand-700">Lato sensu (MBA / especialização)</th>
+                <th class="text-left p-3 font-display font-semibold text-sun-500">Stricto sensu (mestrado / doutorado)</th>
+                <th class="text-left p-3 font-display font-semibold text-ink-700">Curso livre / extensão</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {tabela.map(r => (
+                <tr>
+                  <td class="p-3 font-medium text-ink-900">{r.dim}</td>
+                  <td class="p-3 text-ink-700">{r.lato}</td>
+                  <td class="p-3 text-ink-700">{r.stricto}</td>
+                  <td class="p-3 text-ink-700">{r.livre}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">O psicólogo organizacional que confundiu mestrado com MBA</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Rafael, psicólogo organizacional com sete anos de experiência em RH corporativo, decide investir em pós. A empresa cobre parte do investimento. Sem leitura cuidadosa, matricula em mestrado profissional em Administração — atraído pelo título "mestre" e pela percepção de que "mestrado é melhor". Aceita a carga de pesquisa porque acha que "depois tudo se acomoda".
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          No segundo semestre, percebe o desencaixe. O conteúdo é orientado a método científico, revisão sistemática, escrita acadêmica. Pouca discussão de aplicação corporativa direta. Os colegas são pesquisadores aspirantes, não pares executivos. A dissertação exige dedicação semanal de pesquisa que ele não tem — trabalha cinquenta horas por semana no RH corporativo.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Rafael conclui o mestrado depois de prorrogação, com dificuldade. Recebe o título. Tenta usá-lo na carreira corporativa — mas o impacto direto na promoção é menor do que esperava. O cargo seguinte de senior business partner que ele mira valoriza repertório executivo, casos de aplicação, rede corporativa — não dissertação. Em conversa franca com mentor, descobre que o MBA em POT teria sido o caminho mais direto. O mestrado é útil, mas para um cargo que Rafael não pretende ocupar: docência em pós ou pesquisa aplicada em laboratório de comportamento organizacional.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          A lição: a escolha do tipo precede a escolha da área. Quem decide pelo prestígio do nome, sem entender o propósito do tipo, costuma pagar mais e ganhar menos.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Tipo certo, depois área certa</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Lato sensu (MBA ou especialização): prática profissional aprofundada.</li>
+          <li>Stricto sensu (mestrado ou doutorado): academia, pesquisa, docência em pós.</li>
+          <li>Curso livre: atualização ou exploração — não substitui pós.</li>
+          <li>MBA e especialização são iguais no MEC; diferem no posicionamento de mercado.</li>
+          <li>Nenhum tipo concede automaticamente título de especialista pelo CFP.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Próximo passo: leia o guia <a href="/pos-graduacao-psicologia/como-escolher" class="underline decoration-sun-500 underline-offset-2 font-semibold">como escolher uma pós em 2026</a> para o checklist completo de decisão.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4">Ver pós no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Pilar</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação em Psicologia</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Esta página é parte do guia completo de pós em Psicologia. Volte ao pilar para ver as 15 seções, incluindo regulação MEC/CFP, SATEPSI, custo e ROI honesto.
+        </p>
+        <a href="/pos-graduacao-psicologia" class="btn btn-primary mt-4 w-full">Voltar ao pilar</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outras páginas filhas</p>
+        <ul class="space-y-1">
+          <li><a href="/pos-graduacao-psicologia/como-escolher" class="mega-link"><strong class="text-ink-900 text-sm">Como escolher em 2026 — checklist</strong></a></li>
+          <li><a href="/pos-graduacao-psicologia/mba-vs-especializacao" class="mega-link"><strong class="text-ink-900 text-sm">MBA vs especialização — qual escolher</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Conteúdo relacionado</p>
+        <ul class="space-y-1">
+          <li><a href="/regulacao" class="mega-link"><strong class="text-ink-900 text-sm">Regulação, ética e escopo</strong></a></li>
+          <li><a href="/comparativos/mba-vs-especializacao" class="mega-link"><strong class="text-ink-900 text-sm">Comparativo MBA vs especialização</strong></a></li>
+          <li><a href="/mbas" class="mega-link"><strong class="text-ink-900 text-sm">Todos os MBAs em Psicologia</strong></a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+</Base>

@@ -1,0 +1,70 @@
+name: Cloudflare zone ops — posgraduacaopsicologia.com
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Operação a executar
+        required: true
+        default: verify-token
+        type: choice
+        options:
+          - verify-token
+          - list-dns
+          - purge-cache
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/cloudflare-zone-ops.yml
+      - docs/governance/dominios/posgraduacaopsicologia.com.md
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-zone-ops-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  cloudflare:
+    name: ${{ github.event.inputs.action || 'verify-token' }}
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+    steps:
+      - name: Sanity check — secrets presentes
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::CLOUDFLARE_API_TOKEN ausente"; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::CLOUDFLARE_ACCOUNT_ID ausente"; exit 1; }
+          test -n "$CLOUDFLARE_ZONE_ID" || { echo "::error::CLOUDFLARE_ZONE_ID ausente"; exit 1; }
+          echo "Secrets ok"
+
+      - name: verify-token
+        if: ${{ github.event_name == 'push' || github.event.inputs.action == 'verify-token' }}
+        run: |
+          set -euo pipefail
+          curl -sS -o /tmp/verify.json -w 'HTTP %{http_code}\n' \
+            "https://api.cloudflare.com/client/v4/user/tokens/verify" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
+          jq '.success, .messages[0].message' /tmp/verify.json
+
+      - name: list-dns
+        if: ${{ github.event.inputs.action == 'list-dns' }}
+        run: |
+          set -euo pipefail
+          curl -sS "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/dns_records?per_page=100" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+          | jq '.result[] | {type, name, content, proxied, ttl}'
+
+      - name: purge-cache
+        if: ${{ github.event.inputs.action == 'purge-cache' }}
+        run: |
+          set -euo pipefail
+          curl -sS -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}' \
+          | jq

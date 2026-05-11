@@ -1,0 +1,141 @@
+---
+import { SITE } from '@lib/data';
+import '@styles/global.css';
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+import MobileBottomNav from '@components/MobileBottomNav.tsx';
+import SearchOverlay from '@components/SearchOverlay.tsx';
+import { ViewTransitions } from 'astro:transitions';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  pageType?: 'website' | 'article';
+  showSearchInHeader?: boolean;
+  bodyClass?: string;
+}
+
+const {
+  title = 'Pós-graduação em Psicologia — guia independente para escolher MBA, especialização e área de atuação',
+  description = SITE.description,
+  canonical = SITE.url + Astro.url.pathname,
+  ogImage = SITE.url + '/og-image.jpg',
+  pageType = 'website',
+  showSearchInHeader = true,
+  bodyClass = ''
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F2543" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+
+  <meta property="og:type" content={pageType} />
+  <meta property="og:site_name" content={SITE.name} />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:secure_url" content={ogImage} />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Capa do guia independente de pós-graduação em Psicologia" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+  <link rel="image_src" href={ogImage} />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/favicon.svg" color="#0F2543" />
+  <meta name="apple-mobile-web-app-title" content="Pós Psicologia" />
+  <meta name="application-name" content="posgraduacaopsicologia" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <ViewTransitions />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE.name,
+    url: SITE.url,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: SITE.url + '/?q={search_term}',
+      'query-input': 'required name=search_term'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE.publisher,
+      url: SITE.url,
+      disambiguatingDescription: 'Portal independente. Não é o site oficial do IPOG (ipog.edu.br).'
+    }
+  })} />
+</head>
+<body class={`bg-white text-ink-900 ${bodyClass}`}>
+  <a href="#main" class="visually-hidden focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-brand-800 focus:text-white focus:px-3 focus:py-2 focus:rounded focus:z-50">
+    Pular para o conteúdo principal
+  </a>
+
+  <!-- Top utility bar: aviso de portal independente -->
+  <div role="region" aria-label="Aviso de portal não oficial" class="bg-brand-900 text-white text-xs sm:text-sm">
+    <div class="container-page py-2 flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+      <span class="inline-flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-sun-500" aria-hidden="true"></span>
+        <strong class="font-semibold">Portal independente.</strong>
+        <span class="opacity-90">Não é o site oficial do IPOG.</span>
+      </span>
+      <span aria-hidden="true" class="hidden sm:inline opacity-30">|</span>
+      <span>Matrículas e ofertas oficiais em
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="font-semibold underline decoration-sun-500 underline-offset-2 hover:text-sun-500">
+          ipog.edu.br <span aria-hidden="true">→</span>
+        </a>
+      </span>
+    </div>
+  </div>
+
+  <Header showSearch={showSearchInHeader} />
+
+  <main id="main" class="pb-24 lg:pb-0">
+    <slot />
+  </main>
+
+  <Footer />
+
+  <!-- Mobile bottom navigation (React island for state) -->
+  <MobileBottomNav client:load />
+
+  <!-- Search overlay (React island) -->
+  <SearchOverlay client:idle />
+
+  <script>
+    // Sticky header shadow on scroll
+    const onScroll = () => {
+      const h = document.getElementById('main-header');
+      if (!h) return;
+      if (window.scrollY > 6) h.classList.add('shadow-soft', 'is-scrolled');
+      else h.classList.remove('shadow-soft', 'is-scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('astro:after-swap', onScroll);
+    onScroll();
+  </script>
+</body>
+</html>

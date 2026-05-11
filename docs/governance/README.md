@@ -9,6 +9,9 @@ Documentos canônicos sobre titularidade, ativos digitais, contas operacionais e
 | Domínios registrados | [`dominios/`](dominios/README.md) |
 | Conta no registrador (Cloudflare) | [`registrador-cloudflare.md`](registrador-cloudflare.md) |
 | CI Cloudflare (token, secrets, workflow) | [`ci-cloudflare.md`](ci-cloudflare.md) |
+| Frontend stack canônico (Astro + React + TS) | [`../engineering/frontend-stack.md`](../engineering/frontend-stack.md) |
+| Catálogo de padrões de UI | [`../engineering/ui-patterns.md`](../engineering/ui-patterns.md) |
+| ADR-0001 — escolha do stack frontend | [`../engineering/adr/0001-frontend-stack-astro-react-tailwind.md`](../engineering/adr/0001-frontend-stack-astro-react-tailwind.md) |
 
 ## Convenções
 

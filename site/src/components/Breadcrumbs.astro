@@ -1,0 +1,30 @@
+---
+interface Crumb { label: string; href?: string; }
+interface Props { items: Crumb[]; }
+const { items } = Astro.props;
+
+const ldJson = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: c.href ? new URL(c.href, 'https://posgraduacaopsicologia.com').toString() : undefined
+  }))
+});
+---
+
+<nav aria-label="Breadcrumb" class="text-sm flex items-center flex-wrap gap-1.5 text-ink-500">
+  {items.map((c, i) => (
+    <>
+      {i > 0 && <span class="text-ink-300" aria-hidden="true">/</span>}
+      {c.href ? (
+        <a href={c.href} class="crumb">{c.label}</a>
+      ) : (
+        <span class="text-ink-700 font-medium">{c.label}</span>
+      )}
+    </>
+  ))}
+</nav>
+<script type="application/ld+json" set:html={ldJson} />

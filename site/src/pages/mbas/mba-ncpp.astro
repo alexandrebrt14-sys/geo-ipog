@@ -1,0 +1,318 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mba = MBAS.find(m => m.id === 'mba-ncpp')!;
+const others = MBAS.filter(m => m.id !== 'mba-ncpp');
+
+const title = 'MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano — análise do programa do IPOG';
+const description = 'Análise editorial independente do MBA do IPOG que combina neurociência aplicada e psicologia positiva. Para quem é, competências, limites, carreira e como distinguir de neurociência em curso livre.';
+
+const FAQS_PAGINA = [
+  {
+    q: 'Qual a diferença entre esse MBA e neurociência em curso livre?',
+    a: 'Curso livre em neurociência popular costuma ter carga horária de fim de semana, sem reconhecimento do MEC, e foca em vocabulário científico aplicado a contexto motivacional. Um MBA reconhecido pelo MEC, de 360 a 480 horas, com corpo docente nominal e bibliografia primária, opera em outra densidade. Treina o profissional a ler artigo científico, distinguir evidência consolidada de hipótese exploratória, identificar inferência indevida e construir intervenção com base em mecanismo, não em metáfora neurocientífica. A diferença é de método, não só de duração.'
+  },
+  {
+    q: 'Posso fazer sem ser psicólogo?',
+    a: 'Pode. O programa é aberto a graduados em qualquer área. O ganho varia por perfil: psicólogos amplificam a base científica que já trazem da graduação; profissionais de educação ganham método para desenhar aprendizagem; líderes e profissionais de RH adquirem repertório técnico para distinguir intervenção com evidência da que tem só marketing. A regulação clínica continua valendo: aplicação de instrumentos do SATEPSI e prática psicoterapêutica seguem privativas de psicólogos com CRP ativo.'
+  },
+  {
+    q: 'Como diferenciar coach baseado em pseudo-ciência de profissional com base científica?',
+    a: 'Há três sinais práticos. Primeiro, o profissional com base científica refere literatura primária, com autor e ano, e tolera contraditório sobre a evidência. Pseudo-ciência cita "a neurociência diz" como autoridade vaga, sem fonte. Segundo, profissional com base científica admite limites de transferência: o que funcionou em laboratório nem sempre funciona em contexto organizacional. Pseudo-ciência promete certeza. Terceiro, profissional com base científica desconfia de modelos populares com marca registrada (cérebro reptiliano, programação neurolinguística clássica), tratando-os com cuidado clínico, não como verdade pronta.'
+  },
+  {
+    q: 'Esse MBA serve para coach profissional?',
+    a: 'Serve, com a ressalva de que coaching no Brasil é prática não regulamentada. O MBA não dá título de coach nem certificação de federação privada. O que ele entrega é base técnica que diferencia o profissional sério do mercado de massa. Coach que conclui esse programa passa a operar com vocabulário e método mais defensáveis, mas continua sujeito aos limites éticos sobre prática clínica: coaching não é psicoterapia, não trata transtorno mental, e o profissional precisa saber encaminhar quando o caso ultrapassa o escopo de desenvolvimento.'
+  }
+];
+
+const ldProgram = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOccupationalProgram',
+  name: mba.name,
+  programType: 'MBA',
+  educationalProgramMode: 'online (Ao Vivo síncrono ou híbrido conforme IPOG)',
+  occupationalCategory: 'Profissional de Desenvolvimento Humano, Líder, Educador, Consultor, Coach, Profissional de RH',
+  description: mba.description,
+  provider: {
+    '@type': 'EducationalOrganization',
+    name: 'IPOG — Instituto de Pós-Graduação',
+    url: 'https://ipog.edu.br/'
+  }
+});
+
+const ldBreadcrumb = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'MBAs', item: `${SITE.url}/mbas` },
+    { '@type': 'ListItem', position: 3, name: mba.shortName, item: `${SITE.url}/mbas/${mba.id}` }
+  ]
+});
+
+const ldFaq = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS_PAGINA.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+});
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'MBAs', href: '/mbas' }, { label: mba.shortName }]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">MBA · {mba.tag}</span>
+          <h1 class="section-h text-3xl sm:text-4xl">{title}</h1>
+          <p class="mt-2 text-ink-700">Análise editorial independente do programa do IPOG que combina neurociência aplicada e psicologia positiva. O foco é o que esse MBA entrega de método, não de vocabulário.</p>
+        </div>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver grade vigente no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-12 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-5 sm:p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-700 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 font-medium leading-relaxed">MBA voltado a profissionais que aplicam neurociência e psicologia positiva no desenvolvimento humano em ambiente corporativo, educacional ou de consultoria. Forma repertório técnico para distinguir evidência científica de hype, projetar intervenção com mecanismo explicável e mensurar impacto. Saída típica: liderança de aprendizagem corporativa, consultoria em desenvolvimento humano, autoria de conteúdo educacional, posições em educação executiva.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Ciência da motivação virou commodity. MBA sério entrega o oposto: método para distinguir evidência de hype</h2>
+        <p>Nas últimas duas décadas, o mercado brasileiro de desenvolvimento humano foi inundado por workshops vendendo neurociência como vocabulário motivacional. "Cérebro reptiliano", "programação neurolinguística", "neurociência da liderança". A maioria desses produtos não passa pelo crivo da literatura científica primária. Operam por metáfora, não por mecanismo. O MIT Sloan Management Review classificou esse fenômeno como neurobabble corporativo: uso de jargão neurocientífico desconectado de evidência, com efeito puramente retórico (MIT Sloan, 2024).</p>
+        <p>A tese contraintuitiva deste MBA é justamente o oposto do mercado que ele atravessa. Não é um curso para acumular jargão científico, é um curso para construir filtro científico. Ao final, o profissional deveria ser capaz de ler um artigo primário em neurociência, identificar o que a evidência permite afirmar e o que não permite, e desenhar intervenção em desenvolvimento humano com mecanismo explicável e mensurável. Esse deslocamento, de consumidor de jargão para usuário crítico de evidência, é o que justifica fazer uma pós-graduação reconhecida pelo MEC em vez de acumular cursos livres de fim de semana (Damasio, 2018).</p>
+        <p>Daniel Pink, em sua síntese sobre motivação, mostra que autonomia, mestria e propósito têm base experimental robusta como motivadores intrínsecos, enquanto incentivos extrínsecos elaborados frequentemente reduzem desempenho em tarefas complexas (Pink, 2009). Martin Seligman, com sua psicologia positiva científica, ofereceu modelos teóricos testáveis para o que constitui floresimento humano (Seligman, 2011). Esses dois corpos de literatura, articulados a achados da neurociência cognitiva contemporânea, são a base de um MBA com esse posicionamento. Esta página organiza o que esperar do programa, para quem ele faz sentido, e onde estão os limites éticos e regulatórios.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Para quem é (e quem não deveria fazer)</h2>
+        <p class="text-ink-700 mb-4">É um MBA com perfil claro: profissional curioso, com vocação para método, disposto a ler literatura primária. O filtro abaixo é direto.</p>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Faz sentido para você se</p>
+            <ul class="mt-2 space-y-1 text-sm text-ink-700 list-disc pl-5">
+              <li>É psicólogo organizacional, educacional ou clínico com curiosidade por base científica de desenvolvimento</li>
+              <li>É líder que precisa decidir sobre formação e desenvolvimento de equipes com critério mais rigoroso</li>
+              <li>É profissional de RH em frente de aprendizagem corporativa ou universidade interna</li>
+              <li>É educador, professor ou autor de conteúdo educacional com vocação para evidência</li>
+              <li>É coach ou consultor que quer migrar de discurso intuitivo para método científico</li>
+              <li>Tolera ler Damasio, Seligman, Kahneman, revisões metanalíticas e ensaios clínicos</li>
+            </ul>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-rose-700">Provavelmente não é para você se</p>
+            <ul class="mt-2 space-y-1 text-sm text-ink-700 list-disc pl-5">
+              <li>Busca certificação rápida em modelo motivacional com marca registrada</li>
+              <li>Quer formação clínica para atender pacientes em consultório</li>
+              <li>Procura técnica isolada (cérebro reptiliano, PNL, mapas mentais) como produto final</li>
+              <li>Não está disposto a ler literatura primária em inglês</li>
+              <li>Pretende usar o MBA apenas como diferenciador retórico em vendas</li>
+              <li>Tem aversão a contraditório científico e tolerância a incerteza</li>
+            </ul>
+          </div>
+        </div>
+        <p class="text-sm text-ink-600 mt-4">O perfil canônico é o profissional generalista de desenvolvimento humano com vocação para método, que precisa parar de improvisar e começar a operar com base científica defensável. O IPOG hospeda esse MBA com formato Ao Vivo síncrono, presença multicampus e corpo docente nominal de especialistas, o que permite discussão crítica de literatura em tempo real e debate de casos durante a aula.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Competências desenvolvidas</h2>
+        <p class="text-ink-700 mb-4">Foco em fluência científica e desenho de intervenção mensurável, não em acumulação de jargão.</p>
+        <ul class="grid sm:grid-cols-2 gap-3 text-sm">
+          <li class="card p-4"><strong class="text-brand-800">Fundamentos de neurociência cognitiva.</strong> Anatomia funcional, sistemas neurais relevantes ao desenvolvimento, neuroplasticidade dependente de experiência.</li>
+          <li class="card p-4"><strong class="text-brand-800">Leitura crítica de literatura primária.</strong> Como distinguir achado robusto de hipótese exploratória, identificar inferência indevida, ler revisão sistemática.</li>
+          <li class="card p-4"><strong class="text-brand-800">Psicologia positiva científica.</strong> PERMA, autodeterminação, propósito, evidência experimental e limites de transferência.</li>
+          <li class="card p-4"><strong class="text-brand-800">Motivação humana com base científica.</strong> Pink, Ryan e Deci, motivação intrínseca versus extrínseca, design de incentivo.</li>
+          <li class="card p-4"><strong class="text-brand-800">Aprendizagem adulta e ciência da memória.</strong> Recuperação espaçada, prática deliberada, retroalimentação, consolidação durante sono.</li>
+          <li class="card p-4"><strong class="text-brand-800">Atenção, foco e gestão cognitiva.</strong> Carga cognitiva, multitarefa, ambiente de trabalho profundo, rituais de atenção.</li>
+          <li class="card p-4"><strong class="text-brand-800">Tomada de decisão humana.</strong> Kahneman, heurísticas, vieses, decisão sob incerteza e ruído cognitivo.</li>
+          <li class="card p-4"><strong class="text-brand-800">Desenho de programa de desenvolvimento humano.</strong> Da hipótese científica ao desenho prático com baseline, intervenção e mensuração.</li>
+          <li class="card p-4"><strong class="text-brand-800">Comunicação científica em ambiente corporativo.</strong> Traduzir evidência para audiência executiva sem perder rigor.</li>
+          <li class="card p-4"><strong class="text-brand-800">Ética em uso de neurociência aplicada.</strong> Limites do que se pode prometer, neuro-hype, neuromarketing, transparência sobre evidência.</li>
+          <li class="card p-4"><strong class="text-brand-800">Aprendizagem em escala corporativa.</strong> Modelos modernos de universidade corporativa, microaprendizagem, currículo baseado em competência.</li>
+          <li class="card p-4"><strong class="text-brand-800">Avaliação de impacto de intervenção formativa.</strong> Kirkpatrick aprimorado, indicadores de comportamento e de resultado, controle quando viável.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Eixos temáticos do programa</h2>
+        <p class="text-ink-700 mb-4">Síntese editorial. Grade vigente em ipog.edu.br.</p>
+        <ol class="space-y-3">
+          <li class="card p-5"><strong class="text-brand-800">1. Fundamentos de neurociência aplicada ao desenvolvimento.</strong> Anatomia funcional, neuroplasticidade, sistemas neurais relevantes a aprendizagem, motivação e emoção.</li>
+          <li class="card p-5"><strong class="text-brand-800">2. Psicologia Positiva científica.</strong> Seligman, Csikszentmihalyi, Fredrickson, modelos teóricos, evidência experimental, limites do campo.</li>
+          <li class="card p-5"><strong class="text-brand-800">3. Motivação humana baseada em evidência.</strong> Autodeterminação, motivação intrínseca, design de incentivo, gestão de propósito.</li>
+          <li class="card p-5"><strong class="text-brand-800">4. Aprendizagem adulta e ciência da memória.</strong> Mecanismos de consolidação, prática deliberada, retroalimentação, ambiente de aprendizagem profundo.</li>
+          <li class="card p-5"><strong class="text-brand-800">5. Atenção, foco e gestão cognitiva.</strong> Carga cognitiva, multitarefa, distração digital, design de rotina cognitiva.</li>
+          <li class="card p-5"><strong class="text-brand-800">6. Tomada de decisão e raciocínio humano.</strong> Kahneman, heurísticas, vieses, ruído, design de decisão organizacional.</li>
+          <li class="card p-5"><strong class="text-brand-800">7. Desenvolvimento humano ao longo da vida.</strong> Infância, adolescência, vida adulta, envelhecimento ativo, reserva cognitiva.</li>
+          <li class="card p-5"><strong class="text-brand-800">8. Aprendizagem corporativa baseada em evidência.</strong> Universidade interna, microaprendizagem, currículo por competência, avaliação de impacto.</li>
+          <li class="card p-5"><strong class="text-brand-800">9. Leitura crítica de literatura científica.</strong> Como ler artigo primário, revisão sistemática, ensaio clínico, identificar inferência indevida.</li>
+          <li class="card p-5"><strong class="text-brand-800">10. Ética em neurociência aplicada e desenvolvimento humano.</strong> Limites do que se pode prometer, transparência, distinção entre intervenção com evidência e marketing.</li>
+        </ol>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Como escolher entre este MBA e alternativas adjacentes</h2>
+        <p class="text-ink-700 mb-4">Três caminhos próximos competem pelo mesmo perfil. A leitura comparativa é editorial.</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border border-surface-200 rounded-lg overflow-hidden">
+            <thead class="bg-surface-50 text-ink-700">
+              <tr>
+                <th class="text-left p-3 border-b border-surface-200">Critério</th>
+                <th class="text-left p-3 border-b border-surface-200">MBA Neurociência + Positiva (este)</th>
+                <th class="text-left p-3 border-b border-surface-200">Especialização em Neurociência</th>
+                <th class="text-left p-3 border-b border-surface-200">Especialização em Psicologia Positiva</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="p-3 align-top font-medium">Foco principal</td>
+                <td class="p-3 align-top">Aplicação de evidência ao desenvolvimento humano</td>
+                <td class="p-3 align-top">Base neurocientífica como conhecimento</td>
+                <td class="p-3 align-top">Aplicação clínica e organizacional de Psicologia Positiva</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Público-alvo</td>
+                <td class="p-3 align-top">Profissionais aplicados, líderes, educadores</td>
+                <td class="p-3 align-top">Estudantes, pesquisadores, profissionais da saúde</td>
+                <td class="p-3 align-top">Psicólogos, RH, profissionais de saúde</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Habilidade que mais cresce</td>
+                <td class="p-3 align-top">Filtro científico e desenho de intervenção</td>
+                <td class="p-3 align-top">Domínio teórico do campo</td>
+                <td class="p-3 align-top">Intervenção em bem-estar e propósito</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Quando escolher</td>
+                <td class="p-3 align-top">Para liderar desenvolvimento humano com método</td>
+                <td class="p-3 align-top">Para pesquisar ou ensinar neurociência</td>
+                <td class="p-3 align-top">Para intervenção clínica/organizacional específica</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-600 mt-3">Em síntese: se o objetivo é decidir sobre desenvolvimento humano em organização com base científica, este MBA. Se é dominar teoricamente o campo da neurociência, especialização específica. Se é intervir em bem-estar com base em Psicologia Positiva, especialização própria do campo.</p>
+      </div>
+
+      <div class="rounded-2xl border-l-4 border-sun-500 bg-sun-50/40 p-5 sm:p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso · padrão composto observado em campo</p>
+        <p class="text-ink-900 leading-relaxed">Um líder de produto em empresa de tecnologia com cerca de quatrocentos profissionais técnicos tinha um problema persistente: os rituais de feedback semanal entre líderes e times técnicos resultavam em desempenho desigual, fadiga emocional e percepção, por parte dos engenheiros, de que o feedback era político em vez de técnico. Durante o MBA, ao trabalhar literatura sobre atenção, carga cognitiva e tomada de decisão sob ruído, ele identificou o mecanismo. Os feedbacks semanais aconteciam ao final do dia, quando carga cognitiva acumulada já reduzia capacidade de processamento de informação complexa, e tinham formato de conversa aberta, sem âncoras escritas e sem separação entre conteúdo factual e interpretação. Reformulou o ritual em três decisões: feedback movido para a manhã, com energia cognitiva preservada; documento escrito previamente compartilhado, com base factual separada de interpretação; espaço explícito para o engenheiro contradizer a interpretação antes que ela virasse julgamento final. Em três meses, a percepção do feedback como político caiu drasticamente e a qualidade decisória sobre desenvolvimento individual subiu. A inflexão decisiva não foi importar técnica nova. Foi ler o mecanismo cognitivo do que estava acontecendo no ritual antigo e redesenhar com base em evidência. Esse é, em essência, o método que um MBA com esse posicionamento entrega.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Limites regulatórios e o que o MBA não habilita</h2>
+        <p class="text-ink-700">Por ter posicionamento amplo, o programa precisa de demarcação ética e regulatória explícita.</p>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Não é curso clínico.</strong> Não habilita atendimento psicoterapêutico, tratamento de transtorno mental, aplicação de testes do SATEPSI nem qualquer atividade clínica privativa do psicólogo com CRP.</span></li>
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Não confere título de neurocientista.</strong> Pesquisa e ensino acadêmico em neurociência exigem mestrado e doutorado em programa stricto sensu, geralmente em instituição pública.</span></li>
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Não substitui formação técnica em coaching reconhecida.</strong> Quem pretende atuar como coach precisa, em paralelo, buscar formação com supervisão prática e ética profissional sustentada.</span></li>
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Profissional não psicólogo segue com limites de atuação claros.</strong> Pode aplicar conteúdo de desenvolvimento humano em ambiente organizacional ou educacional, mas não pode operar como profissional de saúde mental.</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Carreira após o MBA</h2>
+        <p class="text-ink-700">A frente de desenvolvimento humano com base científica cresceu de forma estrutural no mercado brasileiro, em paralelo ao desgaste de produtos sem fundamentação. Os vetores abaixo são os mais frequentes.</p>
+        <div class="grid sm:grid-cols-2 gap-4 mt-4">
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 1 — Liderança de aprendizagem corporativa</p>
+            <p class="text-sm text-ink-700 mt-2">Posições em universidade interna, academia de líderes, área de talento. Mandato: desenhar currículo baseado em evidência, mensurar impacto, integrar com estratégia.</p>
+            <p class="text-xs text-ink-500 mt-3">Faixa salarial estimada (a confirmar em fonte secundária de mercado): coordenação R$ 12 a 18 mil, gerência R$ 22 a 32 mil, head a partir de R$ 32 mil.</p>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 2 — Consultoria em desenvolvimento humano</p>
+            <p class="text-sm text-ink-700 mt-2">Atuação independente ou em boutique. Cliente típico: empresas que precisam ressignificar programa de liderança, retreinar gestores e atualizar academia interna.</p>
+            <p class="text-xs text-ink-500 mt-3">Modelo de receita: combinação de projeto, mensal, capacitação e palestra. Para profissionais com rede e marca, receita pode ultrapassar com folga as faixas executivas tradicionais.</p>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 3 — Educação executiva e autoria</p>
+            <p class="text-sm text-ink-700 mt-2">Docente em programas de MBA e educação executiva, autor de livro técnico, criador de produto educacional digital. Costuma se sobrepor aos demais vetores.</p>
+            <p class="text-xs text-ink-500 mt-3">Receita por aula varia conforme a instituição e o histórico do docente. Autoria gera fluxo passivo modesto, mas alavanca consultoria e palestra.</p>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 4 — Coach profissional com base científica</p>
+            <p class="text-sm text-ink-700 mt-2">Coach que atua em executivos sêniores, equipes de alta performance ou cargos de board. O MBA diferencia o profissional do mercado de massa, sustenta tarifa premium e amplia rede de cliente corporativo.</p>
+            <p class="text-xs text-ink-500 mt-3">Modelo de receita: pacotes de coaching, mentoria coletiva, projeto em empresa. Coaching no Brasil é prática não regulamentada, com responsabilidade ética do próprio profissional.</p>
+          </div>
+        </div>
+        <p class="text-sm text-ink-600 mt-4">Em todos os vetores, o diferencial competitivo é a fluência científica somada à capacidade prática de aplicação. Profissionais que param na teoria perdem mercado. Profissionais que aplicam sem teoria perdem credibilidade. O MBA, quando bem cursado, calibra os dois eixos.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white">
+          {FAQS_PAGINA.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none font-semibold text-ink-900">
+                <span>{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6 sm:p-8">
+        <h2 class="font-display font-bold text-2xl">Síntese e próximo passo</h2>
+        <ul class="mt-4 space-y-2 text-white/85 text-sm">
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>MBA para profissionais aplicados que querem construir filtro científico em desenvolvimento humano.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Não é curso para acumular jargão neurocientífico, é curso para distinguir evidência de hype.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Habilita liderança de aprendizagem, consultoria, autoria e coaching com base científica.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Não habilita prática clínica nem confere título de neurocientista pesquisador.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Formato Ao Vivo síncrono é estruturalmente compatível com discussão crítica de literatura.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Próximo passo: validar grade vigente, modalidade e turma no portal oficial do IPOG.</span></li>
+        </ul>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-primary mt-5">Conhecer o programa no IPOG →</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Ver grade vigente no IPOG</h3>
+        <p class="text-sm text-ink-500 mt-2">Portal independente. Para grade detalhada, valor, modalidade e turma, acesse o site oficial.</p>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <p class="text-xs text-ink-500 mt-3">25 anos de pós-graduação reconhecida pelo MEC, formato Ao Vivo síncrono, presença multicampus, corpo docente nominal.</p>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/psicologia-positiva" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Positiva</strong></a></li>
+          <li><a href="/areas/neuropsicologia" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia</strong></a></li>
+          <li><a href="/areas/reabilitacao-neuropsicologica" class="mega-link"><strong class="text-ink-900 text-sm">Reabilitação Neuropsicológica</strong></a></li>
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros MBAs</p>
+        <ul class="space-y-1">
+          {others.map(o => (
+            <li><a href={`/mbas/${o.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{o.shortName}</strong><br/><span class="text-xs text-ink-500">{o.tag}</span></a></li>
+          ))}
+        </ul>
+        <a href="/mbas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os MBAs →</a>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={ldProgram} />
+  <script type="application/ld+json" set:html={ldBreadcrumb} />
+  <script type="application/ld+json" set:html={ldFaq} />
+</Base>

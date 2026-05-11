@@ -1,0 +1,324 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mba = MBAS.find(m => m.id === 'mba-neuro')!;
+const others = MBAS.filter(m => m.id !== 'mba-neuro');
+
+const title = 'MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo — análise do programa do IPOG';
+const description = 'Análise editorial independente do MBA do IPOG em Reabilitação Neuropsicológica: para quem é, competências clínicas desenvolvidas, limites regulatórios, carreira e como diferencia de avaliação e estimulação.';
+
+const FAQS_PAGINA = [
+  {
+    q: 'Posso fazer esse MBA sem ser psicólogo?',
+    a: 'Pode. O MBA é aberto a graduados em áreas correlatas da saúde — fonoaudiologia, terapia ocupacional, fisioterapia, educação física e enfermagem — bem como a educadores que atuam com deficits de aprendizagem. O que muda é o escopo de prática posterior. A aplicação e interpretação de instrumentos de avaliação neuropsicológica continua atividade privativa de psicólogos com formação específica. Profissional não psicólogo desenvolve repertório técnico para trabalho em equipe multiprofissional de reabilitação, sem assinar laudo neuropsicológico.'
+  },
+  {
+    q: 'Esse MBA habilita a emissão de laudo neuropsicológico?',
+    a: 'Não diretamente. A emissão de laudo neuropsicológico é atividade privativa de psicólogo com CRP ativo e formação específica em avaliação neuropsicológica. Esse MBA tem foco em reabilitação, ou seja, em planos de intervenção após o diagnóstico. Psicólogos que cursam o programa e já têm formação prévia em avaliação podem integrar avaliação e reabilitação em mesmo paciente. Os demais profissionais atuam na frente de reabilitação propriamente dita, sem produzir o documento avaliativo.'
+  },
+  {
+    q: 'Vale a pena se eu já sou neuropsicólogo?',
+    a: 'Tipicamente vale, mas pelo motivo certo. Formações tradicionais em Neuropsicologia no Brasil concentram conteúdo em avaliação, com módulos comparativamente menores em planejamento de reabilitação. Um MBA com foco específico em reabilitação adiciona, para o neuropsicólogo já formado em avaliação, repertório metodológico para construir planos de intervenção estruturados, articular equipe multiprofissional e mensurar progresso ao longo do tempo. Para quem só fará avaliação e laudo, o ganho é marginal. Para quem pretende ofertar serviço integrado de avaliação e reabilitação, o ganho é considerável.'
+  },
+  {
+    q: 'Qual a diferença entre estimulação cognitiva e reabilitação neuropsicológica?',
+    a: 'Estimulação cognitiva é prática genérica de exercitar funções mentais, frequentemente aplicada em envelhecimento saudável e em prevenção. Não pressupõe avaliação neuropsicológica prévia nem hipótese diagnóstica. Reabilitação neuropsicológica é processo clínico estruturado, sempre baseado em avaliação inicial, com objetivos específicos de recuperação ou compensação de funções cognitivas comprometidas por lesão, condição neurológica ou condição psiquiátrica. A reabilitação é técnica e regulada; a estimulação isolada é geralmente educacional ou preventiva.'
+  }
+];
+
+const ldProgram = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOccupationalProgram',
+  name: mba.name,
+  programType: 'MBA',
+  educationalProgramMode: 'online (Ao Vivo síncrono ou híbrido conforme IPOG)',
+  occupationalCategory: 'Psicólogo Clínico, Neuropsicólogo, Fonoaudiólogo, Terapeuta Ocupacional, Profissional de Saúde em Reabilitação',
+  description: mba.description,
+  provider: {
+    '@type': 'EducationalOrganization',
+    name: 'IPOG — Instituto de Pós-Graduação',
+    url: 'https://ipog.edu.br/'
+  }
+});
+
+const ldBreadcrumb = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'MBAs', item: `${SITE.url}/mbas` },
+    { '@type': 'ListItem', position: 3, name: mba.shortName, item: `${SITE.url}/mbas/${mba.id}` }
+  ]
+});
+
+const ldFaq = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS_PAGINA.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+});
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'MBAs', href: '/mbas' }, { label: mba.shortName }]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">MBA · {mba.tag}</span>
+          <h1 class="section-h text-3xl sm:text-4xl">{title}</h1>
+          <p class="mt-2 text-ink-700">Análise editorial independente do programa do IPOG voltado a profissionais clínicos e de saúde que atuam em reabilitação cognitiva. O foco é o que distingue reabilitação de avaliação e de estimulação.</p>
+        </div>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver grade vigente no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-12 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-5 sm:p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-700 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 font-medium leading-relaxed">MBA clínico voltado a profissionais que conduzem ou pretendem conduzir programas de reabilitação cognitiva. Forma repertório técnico em planejamento, execução e mensuração de planos de reabilitação após lesão neurológica, condição neuropsiquiátrica ou deficit de neurodesenvolvimento. Saída típica: prática clínica especializada, atuação em equipe hospitalar multiprofissional, clínica-escola, pesquisa aplicada e atuação em escolas com deficits de aprendizagem.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Reabilitação não recupera a função perdida. Constrói uma rota alternativa para a função</h2>
+        <p>Por décadas, o senso comum sobre reabilitação cognitiva foi o de que a tarefa era exercitar a função comprometida até ela voltar. Após AVC com afasia, treinar fala. Após traumatismo cranioencefálico com déficit atencional, exercitar atenção. Após início de Alzheimer, exercitar memória. A neurociência clínica das últimas três décadas mostrou que essa metáfora é parcial e, em muitos casos, equivocada. A reabilitação eficaz raramente recupera a função tal como ela existia. Constrói, em vez disso, caminhos cognitivos alternativos para que a pessoa execute a função na vida real (Wilson, 2017).</p>
+        <p>A tese contraintuitiva deste MBA é exatamente essa: reabilitação neuropsicológica não é treinar funções perdidas. É desenhar, com base em avaliação inicial, em mecanismo de neuroplasticidade e em contexto de vida do paciente, um plano que entrega função utilizável, mesmo quando a função original não retorna. Esse deslocamento metodológico, do treino de função para a construção de rota funcional, é o que separa reabilitação clínica de estimulação genérica vendida como reabilitação (Cicerone et al., 2019).</p>
+        <p>Muriel Lezak, referência canônica em neuropsicologia clínica, sempre insistiu que reabilitação só faz sentido como processo amarrado à avaliação inicial, à hipótese clínica e ao contexto ecológico do paciente — sua família, sua escola ou seu trabalho (Lezak, 2012). Esta página organiza o que esperar de um MBA com esse foco, para quem o programa faz sentido, e onde estão as fronteiras regulatórias e profissionais da área no Brasil.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Para quem é (e quem não deveria fazer)</h2>
+        <p class="text-ink-700 mb-4">É um programa clínico de densidade técnica relevante. A pior escolha é entrar nele sem o objetivo profissional claro.</p>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Faz sentido para você se</p>
+            <ul class="mt-2 space-y-1 text-sm text-ink-700 list-disc pl-5">
+              <li>É psicólogo clínico com interesse em integrar avaliação e reabilitação</li>
+              <li>É neuropsicólogo já formado em avaliação que quer aprofundar reabilitação</li>
+              <li>É fonoaudiólogo, TO, fisioterapeuta ou enfermeiro em equipe de reabilitação</li>
+              <li>É educador com foco em deficits de aprendizagem e neurodesenvolvimento</li>
+              <li>Trabalha em ambiente hospitalar, ambulatorial, clínica-escola ou consultório privado especializado</li>
+              <li>Tolera ler Wilson, Cicerone, Lezak e literatura de pesquisa clínica em reabilitação</li>
+            </ul>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-rose-700">Provavelmente não é para você se</p>
+            <ul class="mt-2 space-y-1 text-sm text-ink-700 list-disc pl-5">
+              <li>Busca apenas formação em avaliação neuropsicológica (nesse caso, pós em Neuropsicologia stricto sensu de avaliação)</li>
+              <li>Quer formar-se como aplicador de jogos cognitivos sem base clínica</li>
+              <li>Não pretende trabalhar com pacientes em sofrimento neurológico ou psiquiátrico</li>
+              <li>Não está disposto a articular trabalho multiprofissional</li>
+              <li>Tem aversão a mensuração padronizada de progresso clínico</li>
+              <li>Espera certificação rápida sem prática supervisionada</li>
+            </ul>
+          </div>
+        </div>
+        <p class="text-sm text-ink-600 mt-4">O perfil canônico é o profissional clínico ou de equipe de reabilitação com contato regular com pacientes em condições neurológicas, neurodesenvolvimentais ou neuropsiquiátricas, que precisa de método para transformar achados de avaliação em plano de intervenção mensurável. O IPOG, com formato Ao Vivo síncrono, presença multicampus e corpo docente nominal de especialistas, é exemplo de instituição que oferece esse MBA com modelo pedagógico que permite discussão clínica de caso em tempo real, o que é especialmente valioso em reabilitação.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Competências desenvolvidas</h2>
+        <p class="text-ink-700 mb-4">Repertório clínico aplicado, baseado em evidência, com método para mensurar progresso e ajustar plano ao longo do tempo.</p>
+        <ul class="grid sm:grid-cols-2 gap-3 text-sm">
+          <li class="card p-4"><strong class="text-brand-800">Fundamentos de neurociência clínica.</strong> Anatomia funcional, sistemas neurais, mecanismos de neuroplasticidade, evidência atual.</li>
+          <li class="card p-4"><strong class="text-brand-800">Leitura de avaliação neuropsicológica para reabilitação.</strong> Como traduzir achados em hipóteses funcionais e objetivos clínicos.</li>
+          <li class="card p-4"><strong class="text-brand-800">Planejamento de reabilitação por função.</strong> Atenção, memória, funções executivas, linguagem, percepção visuoespacial, cognição social.</li>
+          <li class="card p-4"><strong class="text-brand-800">Reabilitação em populações específicas.</strong> AVC, TCE, doenças neurodegenerativas, esquizofrenia, transtornos do neurodesenvolvimento.</li>
+          <li class="card p-4"><strong class="text-brand-800">Mensuração de progresso clínico.</strong> Linha de base, instrumentos repetíveis, ajuste de plano, leitura de plateau e de ganho.</li>
+          <li class="card p-4"><strong class="text-brand-800">Reabilitação cognitiva computadorizada.</strong> Evidência por plataforma, integração com terapia presencial, indicações e contraindicações.</li>
+          <li class="card p-4"><strong class="text-brand-800">Trabalho multiprofissional em reabilitação.</strong> Articulação com TO, fono, fisio, psiquiatra e neurologista, em hospital ou ambulatório.</li>
+          <li class="card p-4"><strong class="text-brand-800">Reabilitação em contexto ecológico.</strong> Trazer família, escola e trabalho como variáveis ativas do plano clínico.</li>
+          <li class="card p-4"><strong class="text-brand-800">Estimulação cognitiva em envelhecimento.</strong> Programas de prevenção, reserva cognitiva, comprometimento cognitivo leve.</li>
+          <li class="card p-4"><strong class="text-brand-800">Reabilitação em transtornos do neurodesenvolvimento.</strong> TEA, TDAH, dificuldades de aprendizagem, integração com escola.</li>
+          <li class="card p-4"><strong class="text-brand-800">Comunicação clínica com família e cuidadores.</strong> Expectativa realista, suporte psicoeducacional, prevenção de exaustão de cuidador.</li>
+          <li class="card p-4"><strong class="text-brand-800">Ética e regulação profissional.</strong> CFP, conselhos das demais profissões da saúde, limites de atuação, escrita técnica defensável.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Eixos temáticos do programa</h2>
+        <p class="text-ink-700 mb-4">Síntese editorial baseada na taxonomia consolidada em literatura internacional e brasileira. Grade vigente em ipog.edu.br.</p>
+        <ol class="space-y-3">
+          <li class="card p-5"><strong class="text-brand-800">1. Fundamentos de neurociência aplicada à clínica.</strong> Anatomia funcional, sistemas neurais, mecanismos de neuroplasticidade, marcadores atuais de evidência.</li>
+          <li class="card p-5"><strong class="text-brand-800">2. Avaliação neuropsicológica como ponto de partida.</strong> Leitura técnica de bateria, integração com história clínica, formulação de hipótese funcional.</li>
+          <li class="card p-5"><strong class="text-brand-800">3. Reabilitação de atenção e funções executivas.</strong> Modelos teóricos, instrumentos, programas clínicos, evidência atualizada.</li>
+          <li class="card p-5"><strong class="text-brand-800">4. Reabilitação de memória.</strong> Estratégias compensatórias, treinos específicos, integração com tecnologia, gestão de expectativa do paciente.</li>
+          <li class="card p-5"><strong class="text-brand-800">5. Reabilitação de linguagem e cognição social.</strong> Afasias, pragmática, comunicação não verbal, reabilitação em populações com TEA.</li>
+          <li class="card p-5"><strong class="text-brand-800">6. Reabilitação em populações neurológicas adultas.</strong> AVC, TCE, esclerose múltipla, Parkinson, demências.</li>
+          <li class="card p-5"><strong class="text-brand-800">7. Reabilitação em neurodesenvolvimento.</strong> TDAH, dislexia, discalculia, TEA, integração com escola e família.</li>
+          <li class="card p-5"><strong class="text-brand-800">8. Reabilitação em condições psiquiátricas.</strong> Esquizofrenia, transtorno bipolar, depressão grave, reabilitação cognitiva como adjuvante.</li>
+          <li class="card p-5"><strong class="text-brand-800">9. Pesquisa, evidência e prática clínica baseada em dados.</strong> Como ler revisão sistemática, distinguir intervenção com evidência da que não tem.</li>
+          <li class="card p-5"><strong class="text-brand-800">10. Ética, regulação e atuação multiprofissional.</strong> CFP, conselhos das demais profissões, limites de atuação, comunicação com plano de saúde.</li>
+        </ol>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Como escolher entre este MBA e alternativas adjacentes</h2>
+        <p class="text-ink-700 mb-4">Três caminhos costumam ser confundidos por profissionais que entram na área. A leitura comparativa abaixo é editorial.</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border border-surface-200 rounded-lg overflow-hidden">
+            <thead class="bg-surface-50 text-ink-700">
+              <tr>
+                <th class="text-left p-3 border-b border-surface-200">Critério</th>
+                <th class="text-left p-3 border-b border-surface-200">Reabilitação Neuropsicológica (este MBA)</th>
+                <th class="text-left p-3 border-b border-surface-200">Avaliação Neuropsicológica</th>
+                <th class="text-left p-3 border-b border-surface-200">Estimulação Cognitiva</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="p-3 align-top font-medium">Objetivo central</td>
+                <td class="p-3 align-top">Plano de intervenção para recuperar ou compensar função</td>
+                <td class="p-3 align-top">Diagnóstico funcional cognitivo</td>
+                <td class="p-3 align-top">Exercício preventivo ou de manutenção</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Pressupõe lesão ou condição</td>
+                <td class="p-3 align-top">Sim, condição neurológica ou neuropsiquiátrica</td>
+                <td class="p-3 align-top">Hipótese diagnóstica em investigação</td>
+                <td class="p-3 align-top">Não necessariamente</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Quem pode conduzir</td>
+                <td class="p-3 align-top">Equipe multiprofissional sob coordenação de psicólogo ou médico</td>
+                <td class="p-3 align-top">Psicólogo com formação específica em avaliação neuropsicológica</td>
+                <td class="p-3 align-top">Profissionais variados, geralmente sem laudo</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Saída clínica</td>
+                <td class="p-3 align-top">Plano de reabilitação com objetivos e mensuração</td>
+                <td class="p-3 align-top">Laudo neuropsicológico</td>
+                <td class="p-3 align-top">Relatório de atividade, sem efeito clínico individual mandatório</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Quando escolher essa formação</td>
+                <td class="p-3 align-top">Para atuar em reabilitação clínica estruturada</td>
+                <td class="p-3 align-top">Para atuar em diagnóstico neuropsicológico</td>
+                <td class="p-3 align-top">Para atuar em prevenção e envelhecimento ativo</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-600 mt-3">Em síntese: se o objetivo é conduzir plano clínico de reabilitação, este MBA. Se é produzir laudo neuropsicológico, formação específica em avaliação. Se é coordenar grupos de envelhecimento ativo sem caráter clínico individual, programa mais leve de estimulação.</p>
+      </div>
+
+      <div class="rounded-2xl border-l-4 border-sun-500 bg-sun-50/40 p-5 sm:p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso · padrão composto observado em campo</p>
+        <p class="text-ink-900 leading-relaxed">Uma neuropsicóloga de hospital público recebe um paciente de cinquenta e dois anos, três meses após um AVC isquêmico em território de artéria cerebral média esquerda. A avaliação inicial identificou déficit grave em funções executivas, lentificação atentiva e alteração leve em memória episódica. O paciente é engenheiro e a meta da família é retorno ao trabalho técnico. A profissional, recém-egressa do MBA em Reabilitação Neuropsicológica, abandonou o roteiro genérico de exercícios cognitivos que vinha aplicando antes do programa e estruturou um plano em três blocos. Bloco um, doze semanas, foco em treino de atenção sustentada com gradação de complexidade e treino metacognitivo de monitoramento de erro. Bloco dois, oito semanas, foco em planejamento de tarefa multi-etapa com material extraído do próprio trabalho do paciente, em parceria com TO. Bloco três, retorno gradual ao trabalho com cargos adaptados, comunicação com empregador e mensuração contínua de performance funcional. Aos seis meses, o paciente voltou em meio expediente com adaptação razoável e funções executivas significativamente melhores do que no baseline, embora abaixo do nível pré-AVC. A inflexão decisiva não foi o protocolo isolado de cada exercício. Foi a integração entre avaliação, mecanismo de neuroplasticidade, contexto real de uso e mensuração padronizada de progresso. Esse é o método que distingue reabilitação clínica de estimulação cognitiva genérica.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Limites regulatórios e o que o MBA não habilita</h2>
+        <p class="text-ink-700">Reabilitação é área multiprofissional, com regulação clara para cada profissão envolvida. Os limites abaixo são canônicos.</p>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Aplicação de instrumentos psicométricos do SATEPSI é privativa de psicólogos com CRP ativo.</strong> O MBA não muda isso. Profissional não psicólogo não aplica testes nem assina laudo neuropsicológico.</span></li>
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Coordenação de plano de reabilitação clínico individual costuma envolver psicólogo ou médico.</strong> Outros profissionais participam como executores de etapas específicas, conforme sua regulamentação profissional.</span></li>
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Não concede título de especialista pelo CFP automaticamente.</strong> Para registro como Especialista em Neuropsicologia no CRP, é necessário cumprir os requisitos da resolução vigente.</span></li>
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Não substitui formação clínica básica.</strong> Profissional sem experiência clínica anterior em saúde precisa, em paralelo, construir prática supervisionada para operar com pacientes em sofrimento.</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Carreira após o MBA</h2>
+        <p class="text-ink-700">A demanda por reabilitação cognitiva qualificada no Brasil acompanha duas curvas estruturais: envelhecimento populacional e aumento dos diagnósticos de TEA, TDAH e dificuldades de aprendizagem. Os vetores abaixo são os mais frequentes.</p>
+        <div class="grid sm:grid-cols-2 gap-4 mt-4">
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 1 — Prática clínica especializada</p>
+            <p class="text-sm text-ink-700 mt-2">Consultório próprio ou clínica multiprofissional. Receita combina avaliação (quando aplicável), plano de reabilitação seriado, supervisão clínica de terapeutas em treinamento.</p>
+            <p class="text-xs text-ink-500 mt-3">Modelo de receita: típico de profissional liberal, com fila construída em dois a quatro anos. Receita por sessão varia por região e por experiência (a confirmar em fonte secundária de mercado).</p>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 2 — Equipe hospitalar multiprofissional</p>
+            <p class="text-sm text-ink-700 mt-2">Hospitais com setor de reabilitação neurológica, em particular vinculados a AVC, TCE e doenças neurodegenerativas. Atuação em equipe com TO, fono, fisio, neurologista, psiquiatra.</p>
+            <p class="text-xs text-ink-500 mt-3">Vínculo: CLT, RPA ou cooperativa, conforme a instituição. Carga horária definida, com possibilidade de docência e pesquisa em paralelo.</p>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 3 — Reabilitação em neurodesenvolvimento e escola</p>
+            <p class="text-sm text-ink-700 mt-2">Clínicas especializadas em TEA, TDAH e dificuldades de aprendizagem, com forte articulação com escola. Demanda crescente no Brasil pós-2020.</p>
+            <p class="text-xs text-ink-500 mt-3">Modelo de atuação: equipe interdisciplinar, com plano clínico estruturado, devolutiva para escola e para família, mensuração de progresso ao longo do ano letivo.</p>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 4 — Pesquisa, docência e formação</p>
+            <p class="text-sm text-ink-700 mt-2">Atuação acadêmica em programas de pós-graduação, supervisão clínica, formação de terapeutas e participação em estudos clínicos. Costuma se sobrepor a algum dos vetores anteriores.</p>
+            <p class="text-xs text-ink-500 mt-3">Trajetória: o profissional sustenta pesquisa e formação a partir de prática clínica robusta, raramente o oposto.</p>
+          </div>
+        </div>
+        <p class="text-sm text-ink-600 mt-4">Em todos os vetores, a competência crítica é integrar avaliação, mecanismo neurocientífico, contexto de vida do paciente e mensuração padronizada de progresso. Profissionais que ficam só no protocolo perdem a leitura ecológica. Os que ficam só no relacional perdem o método. O equilíbrio entre os dois é o que o MBA, quando bem cursado, treina sistematicamente.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white">
+          {FAQS_PAGINA.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none font-semibold text-ink-900">
+                <span>{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6 sm:p-8">
+        <h2 class="font-display font-bold text-2xl">Síntese e próximo passo</h2>
+        <ul class="mt-4 space-y-2 text-white/85 text-sm">
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>MBA clínico de densidade técnica relevante, voltado a reabilitação cognitiva estruturada.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Tese central: reabilitação constrói rota alternativa para a função, não restaura a função tal como era.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Aberto a profissionais de saúde e educação, com escopo de prática regulado por profissão de origem.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Não habilita laudo neuropsicológico em quem não é psicólogo; não substitui formação clínica básica.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Formato Ao Vivo síncrono com discussão clínica de caso é especialmente compatível com a área.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Próximo passo: validar grade vigente, modalidade e turma no portal oficial do IPOG.</span></li>
+        </ul>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-primary mt-5">Conhecer o programa no IPOG →</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Ver grade vigente no IPOG</h3>
+        <p class="text-sm text-ink-500 mt-2">Portal independente. Para grade detalhada, valor, modalidade e turma, acesse o site oficial.</p>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <p class="text-xs text-ink-500 mt-3">25 anos de pós-graduação reconhecida pelo MEC, formato Ao Vivo síncrono, presença multicampus, corpo docente nominal.</p>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/neuropsicologia" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia</strong></a></li>
+          <li><a href="/areas/reabilitacao-neuropsicologica" class="mega-link"><strong class="text-ink-900 text-sm">Reabilitação Neuropsicológica</strong></a></li>
+          <li><a href="/areas/aba-tea-neurodesenvolvimento" class="mega-link"><strong class="text-ink-900 text-sm">ABA, TEA e Neurodesenvolvimento</strong></a></li>
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros MBAs</p>
+        <ul class="space-y-1">
+          {others.map(o => (
+            <li><a href={`/mbas/${o.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{o.shortName}</strong><br/><span class="text-xs text-ink-500">{o.tag}</span></a></li>
+          ))}
+        </ul>
+        <a href="/mbas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os MBAs →</a>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={ldProgram} />
+  <script type="application/ld+json" set:html={ldBreadcrumb} />
+  <script type="application/ld+json" set:html={ldFaq} />
+</Base>

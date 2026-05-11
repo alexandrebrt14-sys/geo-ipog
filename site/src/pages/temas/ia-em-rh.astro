@@ -1,0 +1,255 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+
+const faqs = [
+  {
+    q: 'IA generativa pode escrever feedback de performance?',
+    a: 'Pode redigir rascunho. Não pode substituir a decisão técnica do líder sobre conteúdo, tom e contexto. Pesquisa do MIT Sloan (2024) mostra que feedback inteiramente gerado por IA tende a soar genérico e a perder credibilidade ao longo do tempo. Uso defensável: rascunho como ponto de partida, revisão substantiva por quem conhece a pessoa e o contexto, decisão final humana documentada.'
+  },
+  {
+    q: 'Algoritmo de triagem de currículo é legal no Brasil?',
+    a: 'Depende do desenho. A LGPD (Lei 13.709/2018, art. 20) prevê direito de revisão humana de decisões automatizadas. Quem usa IA para triagem precisa garantir: transparência sobre o uso, possibilidade de revisão por pessoa, registro auditável de critérios e ausência de viés discriminatório verificável. Algoritmo opaco que reprova candidato sem possibilidade de revisão é arriscado juridicamente e eticamente questionável.'
+  },
+  {
+    q: 'IA reduz viés humano em seleção?',
+    a: 'Não automaticamente. IA treinada em dados históricos de uma empresa replica os vieses históricos dessa empresa — frequentemente amplificados. O caso clássico da Amazon, que descontinuou modelo de triagem por penalizar currículos com palavras associadas ao feminino (Reuters, 2018), virou referência. Para reduzir viés, é preciso auditoria estatística, métrica de paridade entre grupos e governança documentada.'
+  },
+  {
+    q: 'People analytics violou alguma vez a LGPD?',
+    a: 'Sim, em múltiplos casos investigados pela ANPD. Os principais riscos: coleta de dados de comportamento sem base legal explícita, retenção indefinida, ausência de mecanismo de oposição. Empresa que monitora horário de login, tempo em ferramenta colaborativa, padrões de comunicação interna precisa de base legal (legítimo interesse ou consentimento) e de comunicação transparente sobre o que é coletado, por quê e por quanto tempo.'
+  },
+  {
+    q: 'Quem coordena IA em RH precisa ser psicólogo?',
+    a: 'Não obrigatoriamente, mas precisa ter base em Psicologia aplicada. As decisões sobre o que medir, como interpretar, como evitar dano e como comunicar para a força de trabalho são decisões psicológicas. Formação em People Analytics que ignora Psicologia produz dashboard bonito sem sustentação técnica. O caminho mais defensável é equipe interdisciplinar com base sólida em POT.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'IA em RH: por que a Psicologia precisa estar na sala de governança',
+  description: 'Análise técnica do uso de IA em ciclos de pessoas. Como evitar amplificação de viés, garantir LGPD e construir governança defensável.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="IA em RH: governança, viés algorítmico e o papel da Psicologia"
+  description="IA em RH amplifica viés humano. Análise técnica das aplicações por estágio do funil de pessoas, riscos éticos, LGPD e como construir governança defensável.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Temas', href: '/temas' },
+        { label: 'IA em RH' }
+      ]} />
+      <span class="section-eyebrow mt-3">Tema · Tecnologia + ética · McKinsey (2025) · ANPD</span>
+      <h1 class="section-h text-3xl sm:text-4xl">IA em RH: governança, viés algorítmico e o papel da Psicologia</h1>
+      <p class="mt-3 text-ink-700 text-lg max-w-3xl">Sem Psicologia na sala de governança, IA em RH vira vigilância eficiente travestida de eficiência.</p>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          IA em RH amplifica viés humano quando opera sem governança técnica. Sem Psicologia na sala — e sem comitê multidisciplinar com poder real de veto —, a tecnologia vira vigilância eficiente, com risco de violação da LGPD e de erosão de confiança da força de trabalho. A pergunta certa deixou de ser se a IA entra. É como entra sem destruir o que sustenta a relação de trabalho.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva: IA amplia o que existe — e o que existe nem sempre serve</h2>
+        <p>
+          A promessa comercial sobre IA em RH é direta: mais objetividade, menos viés, mais eficiência. A promessa é parcialmente verdadeira e parcialmente enganosa. Verdadeira no sentido de que um modelo bem desenhado, com dados representativos e auditoria contínua, pode reduzir parte do viés humano em decisões repetitivas. Enganosa no sentido de que esse cenário ideal é exceção — não regra. O cenário real é outro: modelos treinados em dados históricos da própria empresa, herdando os padrões de decisão dessa empresa, amplificados por escala e travestidos de neutralidade algorítmica.
+        </p>
+        <p>
+          Cathy O'Neil documentou em "Weapons of Math Destruction" (O'Neil, 2016) que algoritmos opacos aplicados em contextos sensíveis — crédito, justiça, emprego — tendem a reproduzir desigualdade existente em formato auditável apenas por especialistas. Quando aplicado em RH, o problema se agrava: a decisão automatizada afeta carreira, renda, identidade profissional. Erro algorítmico aqui não é inconveniente. É dano material.
+        </p>
+        <p>
+          A inversão necessária: tratar IA em RH como decisão técnica de governança, não como aquisição de software. Quem compra ferramenta sem desenhar comitê, métrica de auditoria, processo de revisão humana e canal de oposição, está comprando passivo jurídico embrulhado em inovação. Empresa madura faz o caminho inverso: primeiro define governança, depois escolhe ferramenta que cabe nessa governança.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Fundamentação: o que a literatura e a regulação dizem</h2>
+        <p>
+          A McKinsey (2025) reportou em sua pesquisa anual "AI at Work" que 78% das organizações pesquisadas já usam IA em pelo menos uma função de pessoas — triagem, performance, learning, predição de turnover. O dado tem dois lados. Um lado é maturação: a tecnologia chegou. O outro é alerta: governança não chegou na mesma velocidade. A mesma pesquisa mostra que apenas 18% das organizações têm comitê formal de governança de IA com participação de RH e ética.
+        </p>
+        <p>
+          O MIT Sloan Management Review (2024) aprofundou o tema com revisão de casos empresariais. A conclusão técnica é cautelosa: IA generativa em ciclos de pessoas funciona como acelerador de rascunho — feedback, descrição de cargo, plano de desenvolvimento — mas perde credibilidade quando substitui a decisão humana documentada. Texto integralmente gerado por IA tende a soar genérico, e a força de trabalho percebe isso em poucas semanas. O custo de credibilidade é maior que o ganho de produtividade.
+        </p>
+        <p>
+          No plano regulatório brasileiro, a Lei Geral de Proteção de Dados (Lei 13.709/2018) estabelece em seu artigo 20 que o titular dos dados tem direito a solicitar revisão de decisões automatizadas que afetem seus interesses. Aplicado em RH, isso significa que candidato reprovado por algoritmo, colaborador rebaixado por nota gerada por modelo, profissional encaminhado para PDI por predição de turnover têm direito formal a revisão humana. Empresa que não desenhou esse fluxo está exposta.
+        </p>
+        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
+          "Modelos matemáticos opacos podem amplificar discriminação social existente em escala industrial. Em domínios de alto impacto — crédito, justiça, emprego — a opacidade não é detalhe técnico. É falha ética." — Cathy O'Neil, Weapons of Math Destruction (2016).
+        </blockquote>
+        <p>
+          A Autoridade Nacional de Proteção de Dados (ANPD) tem emitido guias técnicos sobre tratamento de dados em contexto laboral. A direção é consistente: base legal explícita, transparência ativa sobre o que é coletado, retenção limitada, possibilidade de oposição. Empresa que coleta dado comportamental — horário de login, tempo em ferramenta, padrão de comunicação — precisa cumprir essa cadeia. Não basta colocar uma cláusula no contrato de trabalho.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">IA em RH por estágio do funil de pessoas</h2>
+        <p class="text-ink-700 mt-2">
+          A tabela abaixo mapeia as aplicações mais frequentes por estágio do ciclo de vida do colaborador, com o risco ético e a exigência de LGPD em cada caso. É ponto de partida para desenho de governança — não substitui análise jurídica de caso.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Estágio</th>
+                <th class="text-left px-4 py-3">Aplicação típica de IA</th>
+                <th class="text-left px-4 py-3">Risco ético principal</th>
+                <th class="text-left px-4 py-3">Exigência LGPD</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Atrair</td>
+                <td class="px-4 py-3 text-ink-700">Personalização de anúncio, segmentação de audiência.</td>
+                <td class="px-4 py-3 text-ink-700">Exclusão de grupos por proxy demográfico.</td>
+                <td class="px-4 py-3 text-ink-700">Auditoria de paridade entre grupos demográficos.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Selecionar</td>
+                <td class="px-4 py-3 text-ink-700">Triagem de currículo, scoring de candidato, entrevista por vídeo com análise comportamental.</td>
+                <td class="px-4 py-3 text-ink-700">Viés histórico amplificado, falsa objetividade.</td>
+                <td class="px-4 py-3 text-ink-700">Direito de revisão humana (art. 20), transparência sobre critério.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Engajar</td>
+                <td class="px-4 py-3 text-ink-700">Pulse survey automatizado, análise de sentimento em pesquisa de clima.</td>
+                <td class="px-4 py-3 text-ink-700">Vigilância travestida de cuidado, perda de confiança.</td>
+                <td class="px-4 py-3 text-ink-700">Anonimização efetiva, comunicação clara sobre uso.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Desenvolver</td>
+                <td class="px-4 py-3 text-ink-700">Recomendação de conteúdo de aprendizagem, plano de desenvolvimento gerado.</td>
+                <td class="px-4 py-3 text-ink-700">Reforço de trajetória estreita, sugestão sem contexto.</td>
+                <td class="px-4 py-3 text-ink-700">Possibilidade de oposição, supervisão humana técnica.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Reter</td>
+                <td class="px-4 py-3 text-ink-700">Predição de turnover, alerta de risco de saída.</td>
+                <td class="px-4 py-3 text-ink-700">Discriminação preventiva, estigma de "saidente".</td>
+                <td class="px-4 py-3 text-ink-700">Base legal explícita, ausência de decisão automatizada.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Sair</td>
+                <td class="px-4 py-3 text-ink-700">Análise de entrevista de desligamento, padrão de saída.</td>
+                <td class="px-4 py-3 text-ink-700">Identificação indevida, retenção de dado sensível.</td>
+                <td class="px-4 py-3 text-ink-700">Retenção limitada, anonimização, descarte programado.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Quando o algoritmo de promoção replicou o viés histórico</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Empresa de serviços financeiros, 4.500 colaboradores, processo de promoção formal duas vezes por ano. Diretoria contratou consultoria de RH para "tornar a promoção mais objetiva" via modelo preditivo de desempenho futuro. O modelo foi treinado com cinco anos de dados históricos de promoção bem-sucedida: indicadores de produção, avaliação 360, tempo de casa, projetos liderados. Funcionou em piloto. Foi colocado em produção.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Um ano depois, auditoria interna identificou padrão. O modelo, supostamente neutro, recomendava promoção para perfil estatisticamente equivalente ao histórico — homens, faixa etária 35-45, áreas tradicionais da empresa. Profissionais com trajetória atípica — vindo de áreas técnicas que cresceram recentemente, mulheres em cargos de gestão, profissionais mais jovens — sistematicamente recebiam scoring abaixo da linha de corte. O modelo não era neutro. Era espelho aumentado do passado da empresa. A intervenção: pausar o uso do modelo em decisão final, manter como input em discussão paritária do comitê de pessoas, com critério de paridade auditada por grupo. O incidente entrou no caso de governança da empresa.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O que você faz a respeito</h2>
+        <p class="text-ink-700 mt-2">
+          Quem está estruturando uso de IA em RH com método.
+        </p>
+        <ol class="mt-4 space-y-3 list-decimal pl-5 text-ink-700">
+          <li><strong>Comitê multidisciplinar com poder de veto.</strong> RH, jurídico, segurança da informação, Psicologia Organizacional e ética. Sem poder real de pausar projeto, comitê vira selo simbólico.</li>
+          <li><strong>Inventário de uso e classificação de risco.</strong> Mapear onde a IA já está, classificar por nível de risco (alto, médio, baixo) e estabelecer política proporcional para cada nível.</li>
+          <li><strong>Auditoria de viés estatística.</strong> Modelo de scoring precisa de auditoria periódica de paridade entre grupos. Sem isso, viés sustentado passa despercebido até virar problema reputacional.</li>
+          <li><strong>Transparência ativa para a força de trabalho.</strong> Comunicação clara sobre o que é coletado, como é usado, por quanto tempo é retido, como contestar. Sem isso, o passivo de confiança cresce silenciosamente.</li>
+          <li><strong>Escape humano formal.</strong> Todo processo automatizado que afete decisão sobre pessoa precisa de canal explícito de revisão humana, com prazo de resposta e responsável definido.</li>
+          <li><strong>Política de retenção e descarte.</strong> Dado comportamental retido indefinidamente vira ativo de risco. Política clara de retenção proporcional e descarte programado.</li>
+        </ol>
+        <p class="text-ink-700 mt-4">
+          A construção dessa governança exige formação que cruze POT, ética, regulação e analytics. O MBA do IPOG em Psicologia Organizacional e do Trabalho, em formato Ao Vivo síncrono, trata diretamente desses cruzamentos como módulo aplicado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes sobre IA em RH</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">IA em RH é decisão de governança, não de software</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Empresa que entendeu o movimento estrutural posiciona Psicologia Organizacional no comitê de governança de IA, ao lado de jurídico e tecnologia. Quem vai sustentar essa frente precisa de formação que cruze POT, analytics e ética — território que o MBA em Psicologia Organizacional e do Trabalho do IPOG, em formato Ao Vivo síncrono com docente nominal, trata como núcleo aplicado.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Formação relacionada</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName} — IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Governança de IA em RH precisa de base em Psicologia Organizacional, ética aplicada e people analytics. Formato Ao Vivo síncrono, docente nominal, discussão de caso real.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/mbas" class="btn btn-ghost mt-2 w-full">Comparar MBAs</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas conectadas</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/ia-people-analytics-psicologia-digital" class="mega-link"><strong class="text-ink-900 text-sm">IA, People Analytics e Psicologia Digital</strong></a></li>
+          <li><a href="/areas/psicologia-organizacional-trabalho" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Organizacional e do Trabalho</strong></a></li>
+          <li><a href="/areas/avaliacao-psicologica" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação Psicológica</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.gov.br/anpd/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANPD — LGPD aplicada</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Ética profissional</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+</Base>

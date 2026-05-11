@@ -1,0 +1,391 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+
+interface Term {
+  id: string;
+  termo: string;
+  letra: string;
+  definicao: string;
+  fonte?: string;
+  links?: { label: string; href: string }[];
+}
+
+const termos: Term[] = [
+  {
+    id: 'avaliacao-psicologica',
+    termo: 'Avaliação Psicológica',
+    letra: 'A',
+    definicao: 'Processo técnico estruturado conduzido por psicólogo para investigar características psicológicas, com uso de instrumentos avaliados pelo SATEPSI, entrevistas clínicas, observação e análise documental. Resulta em laudo, parecer ou relatório técnico. É atividade privativa de psicólogo, regulamentada pelo CFP. Aplica-se em contextos clínico, organizacional, escolar, jurídico e de trânsito, com adaptações conforme finalidade. Diferencia-se de avaliação comportamental ou de competências, que podem ser conduzidas por outros profissionais.',
+    fonte: 'Conselho Federal de Psicologia',
+    links: [{ label: 'Ver área', href: '/areas/avaliacao-psicologica' }]
+  },
+  {
+    id: 'aba',
+    termo: 'ABA (Análise do Comportamento Aplicada)',
+    letra: 'A',
+    definicao: 'Abordagem baseada na ciência do comportamento, desenvolvida a partir do behaviorismo radical de Skinner. Estuda como comportamento se aprende e como pode ser modificado por reforço, extinção e modelagem. Tem aplicação reconhecida em intervenção com Transtorno do Espectro Autista (TEA), desenvolvimento de habilidades sociais e educacionais, e em organizações para gestão de comportamento. Profissionais com formação em ABA podem obter certificação internacional BCBA.',
+    fonte: 'BACB (Behavior Analyst Certification Board)',
+    links: [{ label: 'Ver área', href: '/areas/aba-tea-neurodesenvolvimento' }]
+  },
+  {
+    id: 'burnout',
+    termo: 'Burnout',
+    letra: 'B',
+    definicao: 'Síndrome ocupacional caracterizada por três dimensões: exaustão emocional, despersonalização (distanciamento do trabalho) e baixa realização profissional. Incluída pela Organização Mundial da Saúde na CID-11 (2019) como fenômeno ocupacional. Decorre do desalinhamento sustentado entre pessoa e organização nas seis áreas de worklife — carga, controle, recompensa, comunidade, justiça e valores (Maslach &amp; Leiter, 2016). Diferencia-se de depressão por ser especificamente relacionada ao trabalho.',
+    fonte: 'CID-11 (OMS, 2019); Maslach &amp; Leiter (2016)',
+    links: [{ label: 'Ver tema', href: '/temas/burnout-prevencao' }]
+  },
+  {
+    id: 'cfp',
+    termo: 'CFP — Conselho Federal de Psicologia',
+    letra: 'C',
+    definicao: 'Autarquia federal que regula o exercício da profissão de psicólogo no Brasil. Tem entre suas atribuições reconhecer especialidades, definir critérios para registro de especialista, manter o cadastro nacional de profissionais e fiscalizar o exercício ético. Atua em conjunto com os Conselhos Regionais (CRPs). Reconhece atualmente 13 especialidades em Psicologia, incluindo Organizacional e do Trabalho, Neuropsicologia, Avaliação Psicológica e demais áreas reguladas.',
+    fonte: 'Lei 5.766/1971',
+    links: [{ label: 'Ver regulação', href: '/regulacao#cfp' }]
+  },
+  {
+    id: 'crp',
+    termo: 'CRP — Conselho Regional de Psicologia',
+    letra: 'C',
+    definicao: 'Órgão regional, vinculado ao CFP, que opera o registro profissional dos psicólogos em cada estado ou conjunto de estados. É no CRP que o psicólogo se inscreve para exercer a profissão, mantém cadastro atualizado e responde a processo ético quando aplicável. Cada CRP tem numeração específica (CRP-01, CRP-02, etc.) e exerce a fiscalização de campo da atividade profissional. Atendimento clínico, parecer técnico e laudo psicológico só são válidos quando assinados por profissional inscrito em CRP ativo.',
+    fonte: 'Conselho Federal de Psicologia'
+  },
+  {
+    id: 'cultura-organizacional',
+    termo: 'Cultura Organizacional',
+    letra: 'C',
+    definicao: 'Padrão de pressupostos compartilhados que um grupo aprendeu ao resolver problemas de adaptação externa e integração interna, e que funciona suficientemente bem para ser considerado válido e ensinado a novos membros (Schein, 2017). Manifesta-se em três camadas: artefatos visíveis (comportamentos, layout, rituais), valores declarados (missão, princípios) e pressupostos básicos (crenças inconscientes sobre poder, controle, tempo). Diagnóstico técnico exige metodologia que alcance a terceira camada — pesquisa de clima isolada acessa apenas as duas primeiras.',
+    fonte: 'Schein (2017)',
+    links: [{ label: 'Ver área', href: '/areas/psicologia-organizacional-trabalho' }]
+  },
+  {
+    id: 'cid-11',
+    termo: 'CID-11',
+    letra: 'C',
+    definicao: 'Décima primeira revisão da Classificação Internacional de Doenças, publicada pela Organização Mundial da Saúde em 2019 e em vigor a partir de 2022. Substitui a CID-10. Para o campo da saúde mental, traz mudanças importantes — incluindo o reconhecimento formal de burnout como fenômeno ocupacional, a reclassificação de transtornos do desenvolvimento e a inclusão de novas categorias diagnósticas. É a referência internacional usada por sistemas de saúde, planos de saúde e perícias.',
+    fonte: 'Organização Mundial da Saúde (OMS, 2019)'
+  },
+  {
+    id: 'ead-vs-ao-vivo-sincrono',
+    termo: 'EAD vs Ao Vivo síncrono',
+    letra: 'E',
+    definicao: 'EAD (Educação a Distância) é o termo genérico para modalidades não presenciais reconhecidas pelo MEC. Dentro do EAD, há formatos distintos. Ao Vivo síncrono é o formato com aulas em tempo real, horário fixo, presença simultânea de docente e turma — preserva discussão de caso, interação direta e disciplina de ritmo. Gravado é o formato assíncrono, em que o aluno consome conteúdo previamente gravado — oferece flexibilidade mas perde a dinâmica da discussão em tempo real. Para pós-graduação aplicada, o formato Ao Vivo síncrono costuma ter maior densidade pedagógica.',
+    fonte: 'MEC'
+  },
+  {
+    id: 'especialista-cfp',
+    termo: 'Especialista reconhecido pelo CFP',
+    letra: 'E',
+    definicao: 'Título conferido pelo CFP após processo formal que combina formação teórico-metodológica adequada (especialização ou programa equivalente, com carga horária mínima definida) e comprovação de prática profissional supervisionada na área da especialidade. Difere de titulação de pós-graduação em si — MBA ou especialização não concede automaticamente título de especialista; servem como parte da formação exigida, somando-se à comprovação de experiência. O CFP reconhece 13 especialidades em Psicologia.',
+    fonte: 'Conselho Federal de Psicologia',
+    links: [{ label: 'Ver regulação', href: '/regulacao#cfp' }]
+  },
+  {
+    id: 'especializacao',
+    termo: 'Especialização',
+    letra: 'E',
+    definicao: 'Curso de pós-graduação lato sensu com carga horária mínima de 360 horas, regulado pelo MEC. Aplicada, aprofunda área técnica específica. Difere de MBA principalmente por foco e nomenclatura mercadológica — MBA tende a ser orientado a gestão aplicada, especialização tende a aprofundar técnica em campo específico. Ambos são lato sensu e ambos contam como formação teórico-metodológica para registro de especialista pelo CFP, quando atendem aos critérios. Difere de mestrado e doutorado (stricto sensu), que envolvem pesquisa formal e produção acadêmica.',
+    fonte: 'MEC, Resolução CNE/CES'
+  },
+  {
+    id: 'faq-regulatorio',
+    termo: 'FAQ regulatório',
+    letra: 'F',
+    definicao: 'Conjunto de perguntas frequentes sobre regulamentação profissional, regulação de cursos e ética em Psicologia aplicada. Inclui temas como diferença entre lato sensu e stricto sensu, requisitos para registro de especialista, áreas privativas do psicólogo, limites de atuação para profissionais correlatos. No portal, organizado em FAQPage Schema para suporte a leitura de mecanismos de busca e modelos de linguagem. Cumpre função orientativa, não substitui consulta ao CFP/CRP ou ao MEC.',
+    fonte: 'Brasil GEO — política editorial do portal'
+  },
+  {
+    id: 'gestao-pessoas',
+    termo: 'Gestão de Pessoas',
+    letra: 'G',
+    definicao: 'Função administrativa responsável pela coordenação das políticas de pessoas em uma organização — recrutamento, seleção, desenvolvimento, remuneração, retenção, saída. Difere de Recursos Humanos (RH) historicamente pela ênfase em pessoas como agente estratégico, não apenas como recurso. Difere de Psicologia Organizacional e do Trabalho (POT) por ser função executiva, enquanto POT é campo de conhecimento. Em prática moderna, Gestão de Pessoas integra POT, neurociência aplicada e people analytics como bases técnicas.',
+    fonte: 'Literatura organizacional consolidada'
+  },
+  {
+    id: 'gro',
+    termo: 'GRO — Gerenciamento de Riscos Ocupacionais',
+    letra: 'G',
+    definicao: 'Sistema de gestão estabelecido pela NR-1 atualizada para identificação, avaliação, controle e revisão de riscos ocupacionais. Inclui o Programa de Gerenciamento de Riscos (PGR) como instrumento operacional. A partir da redação vigente (2025-2026), incorpora explicitamente os riscos psicossociais — sobrecarga, falta de autonomia, demanda emocional, assédio, conflito de papéis — ao escopo de risco a ser gerido com o mesmo rigor de riscos físicos. Responsabilidade legal do empregador, com governança multidisciplinar.',
+    fonte: 'Ministério do Trabalho e Emprego (MTE, 2025)',
+    links: [{ label: 'Ver tema', href: '/temas/nr1-riscos-psicossociais' }]
+  },
+  {
+    id: 'ia-em-rh',
+    termo: 'IA em RH',
+    letra: 'I',
+    definicao: 'Aplicação de Inteligência Artificial em ciclos de gestão de pessoas — atrair, selecionar, engajar, desenvolver, reter e analisar saída. Cobre triagem de currículo, scoring de candidato, personalização de aprendizagem, predição de turnover, geração de feedback e análise de sentimento. Riscos incluem amplificação de viés histórico, opacidade algorítmica e violação da LGPD. Uso defensável exige governança multidisciplinar com poder de veto, auditoria de paridade entre grupos e direito formal de revisão humana.',
+    fonte: 'McKinsey (2025); MIT Sloan (2024); ANPD',
+    links: [{ label: 'Ver tema', href: '/temas/ia-em-rh' }]
+  },
+  {
+    id: 'ipog',
+    termo: 'IPOG — Instituto de Pós-Graduação e Graduação',
+    letra: 'I',
+    definicao: 'Instituição brasileira de educação superior, fundada em 2000, com mais de duas décadas de atuação em pós-graduação lato sensu. Oferece programas em modalidade Ao Vivo síncrono, com corpo docente nominal, em múltiplos campi pelo país. Mantém portfólio aplicado em diversas áreas, incluindo Psicologia Organizacional e do Trabalho, Psicologia Positiva e Bem-Estar, Reabilitação Neuropsicológica, Neurociência e Liderança. Site oficial: ipog.edu.br. Este portal é independente e não é o site oficial do IPOG.',
+    fonte: 'IPOG'
+  },
+  {
+    id: 'lato-sensu',
+    termo: 'Lato sensu',
+    letra: 'L',
+    definicao: 'Família de pós-graduação reconhecida pelo MEC, com carga horária mínima de 360 horas, orientação aplicada, sem exigência de pesquisa científica formal. Reúne especializações e MBAs. Confere certificado de conclusão de curso, não título acadêmico. Difere de stricto sensu (mestrado e doutorado), que envolve pesquisa formal, defesa de dissertação ou tese e linhas de pesquisa. Para atuação profissional aplicada — corporativo, consultoria, clínica — costuma ser o caminho de maior retorno marginal.',
+    fonte: 'MEC, Resolução CNE/CES'
+  },
+  {
+    id: 'lideranca-positiva',
+    termo: 'Liderança Positiva',
+    letra: 'L',
+    definicao: 'Abordagem de liderança derivada da Psicologia Positiva aplicada às organizações, que combina foco em forças individuais, propósito coletivo, segurança psicológica e performance sustentada. Tem base teórica em Cameron (2012), Seligman (2002) e Edmondson (2019). Difere de liderança servidora e de liderança transformacional por ênfase específica em florescimento humano e bem-estar como pilar da decisão gerencial — não apenas como consequência. Aplicada em times de alta performance, exige formação técnica.',
+    fonte: 'Cameron (2012); Seligman (2002); Edmondson (2019)'
+  },
+  {
+    id: 'lgpd',
+    termo: 'LGPD — Lei Geral de Proteção de Dados',
+    letra: 'L',
+    definicao: 'Lei brasileira 13.709/2018, vigente a partir de 2020, que regula o tratamento de dados pessoais por organizações públicas e privadas. Em contexto laboral, exige base legal explícita para coleta e tratamento (legítimo interesse ou consentimento), transparência ativa sobre uso, retenção limitada e possibilidade de oposição. O artigo 20 estabelece direito de revisão humana de decisões automatizadas — o que impacta diretamente uso de IA em RH. Fiscalização conduzida pela Autoridade Nacional de Proteção de Dados (ANPD).',
+    fonte: 'Lei 13.709/2018'
+  },
+  {
+    id: 'mba',
+    termo: 'MBA — Master in Business Administration',
+    letra: 'M',
+    definicao: 'No Brasil, MBA é categoria de pós-graduação lato sensu, regulada pelo MEC com carga horária mínima de 360 horas. Tende a ser orientado a gestão aplicada e mercado. Difere de MBA internacional (geralmente stricto sensu, equivalente a mestrado profissional) em estrutura e propósito. MBA em Psicologia aplicada — POT, Liderança Positiva, Psicologia Positiva — combina técnica psicológica com vocabulário de negócio, e cabe tanto a psicólogos quanto a profissionais correlatos (RH, gestão, consultoria).',
+    fonte: 'MEC; Brasil GEO — análise de mercado'
+  },
+  {
+    id: 'mec',
+    termo: 'MEC — Ministério da Educação',
+    letra: 'M',
+    definicao: 'Órgão federal responsável pela regulação do sistema educacional brasileiro, incluindo a educação superior. Estabelece critérios para reconhecimento de cursos de graduação e pós-graduação, define carga horária mínima, modalidades e parâmetros de qualidade. Para pós-graduação lato sensu (MBAs e especializações), as resoluções do Conselho Nacional de Educação (CNE/CES) definem os requisitos. Para stricto sensu, a CAPES (vinculada ao MEC) opera a avaliação dos programas de mestrado e doutorado.',
+    fonte: 'Ministério da Educação'
+  },
+  {
+    id: 'neuropsicologia',
+    termo: 'Neuropsicologia',
+    letra: 'N',
+    definicao: 'Especialidade reconhecida pelo CFP que estuda a relação entre o cérebro e o comportamento, com foco em funções cognitivas — memória, atenção, linguagem, funções executivas — ao longo do ciclo de vida. Aplica-se em avaliação neuropsicológica (diagnóstico), em reabilitação cognitiva e em interface com saúde, educação e justiça. Exige formação específica e domínio de instrumentos psicológicos especializados. A aplicação clínica é privativa de psicólogo. Diferencia-se de neurociência, que é o campo científico mais amplo.',
+    fonte: 'Conselho Federal de Psicologia',
+    links: [{ label: 'Ver área', href: '/areas/neuropsicologia' }]
+  },
+  {
+    id: 'nr1',
+    termo: 'NR-1 — Norma Regulamentadora 1',
+    letra: 'N',
+    definicao: 'Norma do Ministério do Trabalho e Emprego que estabelece as disposições gerais sobre segurança e saúde no trabalho. A redação atualizada, com vigência ajustada para 2025-2026, incorpora explicitamente os riscos psicossociais ao Gerenciamento de Riscos Ocupacionais (GRO), exigindo que empresas identifiquem, avaliem e controlem fatores como sobrecarga, falta de autonomia, demanda emocional, assédio e conflito de papéis com o mesmo rigor de riscos físicos. Responsabilidade legal do empregador.',
+    fonte: 'Ministério do Trabalho e Emprego (MTE, 2025)',
+    links: [{ label: 'Ver tema', href: '/temas/nr1-riscos-psicossociais' }]
+  },
+  {
+    id: 'people-analytics',
+    termo: 'People Analytics',
+    letra: 'P',
+    definicao: 'Aplicação de análise de dados a decisões sobre pessoas em organizações. Cobre indicadores de clima, engajamento, performance, turnover, sucessão, remuneração e diversidade. Combina estatística, ciência de dados e Psicologia Organizacional aplicada. Maturação em fases — descritivo (o que aconteceu), diagnóstico (por que aconteceu), preditivo (o que pode acontecer), prescritivo (o que fazer). Exige governança ética e cumprimento da LGPD. Sem base em Psicologia, dashboard bonito não vira decisão de qualidade.',
+    fonte: 'MIT Sloan (2024); Brasil GEO',
+    links: [{ label: 'Ver área', href: '/areas/ia-people-analytics-psicologia-digital' }]
+  },
+  {
+    id: 'pos-graduacao',
+    termo: 'Pós-graduação',
+    letra: 'P',
+    definicao: 'Família de formação acadêmica reconhecida pelo MEC, que se divide em lato sensu (especializações e MBAs, com 360+ horas) e stricto sensu (mestrado e doutorado, com pesquisa formal). Pós-graduação não é sinônimo de MBA — é categoria mais ampla que inclui MBA como uma de suas formas. A escolha entre lato e stricto sensu depende do propósito: aplicação profissional tende a lato sensu, carreira acadêmica e pesquisa tende a stricto sensu. Para Psicologia aplicada, lato sensu costuma ter retorno mais direto.',
+    fonte: 'MEC'
+  },
+  {
+    id: 'psicologia-organizacional',
+    termo: 'Psicologia Organizacional e do Trabalho (POT)',
+    letra: 'P',
+    definicao: 'Especialidade reconhecida pelo CFP que estuda o comportamento humano no contexto do trabalho — cultura, clima, liderança, saúde mental, riscos psicossociais, performance coletiva, recrutamento e seleção, desenvolvimento. Difere de Gestão de Pessoas por ser campo de conhecimento, não função administrativa. Difere de Psicologia Social por ter foco específico em organizações. Em sua versão moderna, integra people analytics, IA aplicada e neurociência organizacional como complementos técnicos.',
+    fonte: 'Conselho Federal de Psicologia',
+    links: [{ label: 'Ver área', href: '/areas/psicologia-organizacional-trabalho' }]
+  },
+  {
+    id: 'psicologia-positiva',
+    termo: 'Psicologia Positiva',
+    letra: 'P',
+    definicao: 'Campo da Psicologia que estuda condições e processos que favorecem florescimento individual e coletivo — forças pessoais, propósito, bem-estar, resiliência, engajamento. Desenvolvida a partir de Seligman (2002), com bases empíricas robustas. Aplicada em organizações, foca em liderança positiva, segurança psicológica, cultura de cuidado e prevenção de adoecimento. Não substitui Psicologia tradicional baseada em patologia — complementa, com foco em saúde e desenvolvimento. Base teórica para MBAs em bem-estar organizacional.',
+    fonte: 'Seligman (2002); Lyubomirsky (2007)',
+    links: [{ label: 'Ver área', href: '/areas/psicologia-positiva' }]
+  },
+  {
+    id: 'reabilitacao-neuropsicologica',
+    termo: 'Reabilitação Neuropsicológica',
+    letra: 'R',
+    definicao: 'Área que aplica princípios da neuropsicologia ao planejamento e execução de intervenções para reabilitação de funções cognitivas após lesão cerebral, acidente vascular, doença neurodegenerativa, transtorno do desenvolvimento ou envelhecimento. Usa princípios de neuroplasticidade, estimulação cognitiva e estratégias compensatórias. Difere de avaliação neuropsicológica, que tem foco diagnóstico — reabilitação tem foco em plano de intervenção e progressão. Trabalho multiprofissional, com forte interface com fonoaudiologia, terapia ocupacional e fisioterapia.',
+    fonte: 'Wilson (2009); Sociedade Brasileira de Neuropsicologia'
+  },
+  {
+    id: 'riscos-psicossociais',
+    termo: 'Riscos Psicossociais',
+    letra: 'R',
+    definicao: 'Aspectos do desenho, organização e gestão do trabalho — combinados ao contexto social e ambiental — que têm potencial para causar dano psicológico, social ou físico (ILO, 2022). Inclui sobrecarga quantitativa, baixa autonomia, demanda emocional alta, falta de reconhecimento, conflito de papéis, assédio e insegurança no trabalho. A NR-1 atualizada incorporou esses fatores ao Gerenciamento de Riscos Ocupacionais (GRO), tornando obrigatória a identificação, avaliação e controle organizacional sistemático.',
+    fonte: 'ILO (2022); MTE (2025)',
+    links: [{ label: 'Ver tema', href: '/temas/nr1-riscos-psicossociais' }]
+  },
+  {
+    id: 'satepsi',
+    termo: 'SATEPSI',
+    letra: 'S',
+    definicao: 'Sistema de Avaliação de Testes Psicológicos, mantido pelo CFP, que avalia a qualidade técnico-científica de instrumentos psicológicos comercializados no Brasil. Mantém lista pública de testes com parecer favorável — únicos autorizados para uso profissional. A aplicação dos testes do SATEPSI é privativa de psicólogo. Profissionais correlatos não podem aplicar instrumentos do SATEPSI, mesmo com formação correlata. O sistema é referência nacional para qualidade técnica em avaliação psicológica.',
+    fonte: 'Conselho Federal de Psicologia',
+    links: [{ label: 'Ver regulação', href: '/regulacao#satepsi' }]
+  },
+  {
+    id: 'saude-mental-trabalho',
+    termo: 'Saúde Mental no Trabalho',
+    letra: 'S',
+    definicao: 'Campo de atuação que articula prevenção, promoção, cuidado e reabilitação relacionados à saúde mental no contexto do trabalho. Combina três níveis de prevenção: primária (desenho do trabalho e estilo de liderança), secundária (cuidado em situações de risco) e terciária (tratamento e retorno ao trabalho). A literatura consolidada (WHO/ILO, 2022) mostra que a maior parte do efeito sustentável vem da prevenção primária — mudança organizacional. Programas focados apenas em cuidado individual têm impacto limitado.',
+    fonte: 'WHO/ILO (2022); Schaufeli (2017)',
+    links: [{ label: 'Ver tema', href: '/temas/saude-mental-trabalho' }]
+  },
+  {
+    id: 'seguranca-psicologica',
+    termo: 'Segurança Psicológica',
+    letra: 'S',
+    definicao: 'Crença compartilhada em um time de que é seguro assumir riscos interpessoais — discordar do líder, admitir erro, propor ideia que pode falhar, fazer pergunta básica. Conceito formulado por Amy Edmondson (1999) e consolidado em literatura subsequente como o fator de maior poder explicativo sobre performance sustentada de equipes (Project Aristotle, Google, 2015). Não é ambiente agradável — é tolerância gerencial à discordância técnica. Construída por comportamento consistente, destruída por episódios de retaliação visível.',
+    fonte: 'Edmondson (1999, 2019); Google (2015)',
+    links: [{ label: 'Ver tema', href: '/temas/seguranca-psicologica' }]
+  },
+  {
+    id: 'stricto-sensu',
+    termo: 'Stricto sensu',
+    letra: 'S',
+    definicao: 'Família de pós-graduação que reúne mestrado e doutorado. Envolve pesquisa científica formal, defesa de dissertação (mestrado) ou tese (doutorado), e produção acadêmica estruturada. Regulada pela CAPES, vinculada ao MEC. Concede título acadêmico (mestre, doutor), diferente do certificado de lato sensu. Trajetória natural para carreira acadêmica, pesquisa e consultoria de alto valor agregado em temas específicos. Mestrado profissional é variante que combina pesquisa aplicada com proximidade ao mercado.',
+    fonte: 'CAPES; MEC'
+  },
+  {
+    id: 'tcc-terapia',
+    termo: 'TCC — Terapia Cognitivo-Comportamental',
+    letra: 'T',
+    definicao: 'Abordagem psicoterapêutica baseada na premissa de que pensamentos, emoções e comportamentos se influenciam mutuamente, e que mudanças sustentadas em padrões disfuncionais de pensamento e comportamento produzem efeitos terapêuticos mensuráveis. Tem ampla base empírica em depressão, transtornos de ansiedade, TOC, fobias e estresse pós-traumático. Aplicada em formato individual, em grupo ou online. É uma das abordagens com mais evidência científica em ensaios clínicos. Diferencia-se de TCC (Trabalho de Conclusão de Curso), homônimo de outro contexto.',
+    fonte: 'Beck (1967); Sociedade Brasileira de Psicoterapias Comportamentais e Cognitivas'
+  },
+  {
+    id: 'tea',
+    termo: 'TEA — Transtorno do Espectro Autista',
+    letra: 'T',
+    definicao: 'Condição do neurodesenvolvimento caracterizada por padrões persistentes de dificuldade na comunicação social e por interesses e comportamentos restritos ou repetitivos. Diagnóstico clínico segue critérios da CID-11 e do DSM-5. Aborda-se como espectro — com ampla variação de manifestação e necessidade de suporte. Intervenções incluem ABA (Análise do Comportamento Aplicada), terapia ocupacional, fonoaudiologia, suporte educacional e acompanhamento familiar. Trabalho multiprofissional sustentado. Lei Berenice Piana (2012) reconhece TEA como deficiência para fins legais.',
+    fonte: 'CID-11; Lei 12.764/2012',
+    links: [{ label: 'Ver área', href: '/areas/aba-tea-neurodesenvolvimento' }]
+  },
+  {
+    id: 'psicologia-transito',
+    termo: 'Psicologia de Trânsito',
+    letra: 'T',
+    definicao: 'Especialidade reconhecida pelo CFP que estuda o comportamento humano no trânsito e aplica conhecimento psicológico em avaliação para obtenção e renovação da Carteira Nacional de Habilitação, em programas de educação para o trânsito e em segurança viária. A avaliação psicológica para CNH é regulada por resolução específica do CONTRAN e do CFP, com uso obrigatório de instrumentos do SATEPSI. É atividade privativa de psicólogos com credenciamento específico junto ao DETRAN do respectivo estado.',
+    fonte: 'CFP; CONTRAN; Lei 9.503/1997',
+    links: [{ label: 'Ver área', href: '/areas/psicologia-transito-trafego' }]
+  }
+];
+
+const letras = Array.from(new Set(termos.map(t => t.letra))).sort();
+const termosPorLetra: Record<string, Term[]> = {};
+letras.forEach(l => { termosPorLetra[l] = termos.filter(t => t.letra === l).sort((a, b) => a.termo.localeCompare(b.termo, 'pt-BR')); });
+
+const ldDefinedTermSet = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  name: 'Glossário de pós-graduação e Psicologia aplicada',
+  description: 'Definições técnicas de termos centrais de pós-graduação, áreas da Psicologia, regulação profissional, conceitos organizacionais e instituições.',
+  inLanguage: 'pt-BR',
+  hasDefinedTerm: termos.map(t => ({
+    '@type': 'DefinedTerm',
+    '@id': `${SITE.url}/glossario#${t.id}`,
+    name: t.termo,
+    description: t.definicao,
+    inDefinedTermSet: `${SITE.url}/glossario`
+  }))
+};
+---
+
+<Base
+  title="Glossário de pós-graduação em Psicologia — 35 termos técnicos definidos"
+  description="Definições técnicas de áreas, conceitos, regulação e instituições em pós-graduação em Psicologia aplicada. CFP, SATEPSI, NR-1, MBA, especialização, áreas reconhecidas.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Glossário' }]} />
+      <h1 class="section-h text-3xl sm:text-4xl mt-3">Glossário — termos técnicos em pós-graduação em Psicologia</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Definições de áreas, conceitos, regulação e instituições. Cada termo traz referência técnica ou regulatória e link para a página interna correspondente.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-8">
+    <nav aria-label="Índice alfabético" class="flex flex-wrap gap-2">
+      {letras.map(l => (
+        <a href={`#letra-${l}`} class="chip" aria-label={`Ir para termos com a letra ${l}`}>{l}</a>
+      ))}
+    </nav>
+  </section>
+
+  <section class="container-page pb-16 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+      {letras.map(letra => (
+        <div id={`letra-${letra}`} class="scroll-mt-24">
+          <h2 class="section-h text-3xl mb-4">
+            <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand-50 text-brand-800 font-display font-bold mr-3">{letra}</span>
+          </h2>
+          <div class="space-y-5">
+            {termosPorLetra[letra].map(t => (
+              <article id={t.id} class="card p-6 scroll-mt-24">
+                <h3 class="font-display font-semibold text-lg text-ink-900">{t.termo}</h3>
+                <p class="mt-2 text-sm text-ink-700 leading-relaxed" set:html={t.definicao} />
+                {t.fonte && (
+                  <p class="mt-3 text-xs text-ink-500">
+                    <span class="font-semibold uppercase tracking-wider">Fonte técnica</span> · {t.fonte}
+                  </p>
+                )}
+                {t.links && t.links.length > 0 && (
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    {t.links.map(link => (
+                      <a href={link.href} class="text-sm font-semibold text-brand-700 hover:text-brand-800">
+                        {link.label} →
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Como usar este glossário</p>
+        <p class="mt-2 text-sm text-ink-700">
+          Cada definição tem 50-100 palavras, referência técnica ou regulatória e link para a página interna do portal. Use o índice alfabético acima para navegar rápido. Para conteúdo aprofundado, siga os links nas áreas, temas e perfis profissionais.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver MBAs no IPOG</a>
+        <a href="/regulacao" class="btn btn-ghost mt-2 w-full">Regulação e ética</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI</a></li>
+          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC — Pós lato sensu</a></li>
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NR-1 vigente</a></li>
+          <li><a href="https://www.gov.br/anpd/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANPD — LGPD</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Navegação relacionada</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/areas" class="text-brand-700 hover:text-brand-800 font-medium">Áreas da Psicologia</a></li>
+          <li><a href="/mbas" class="text-brand-700 hover:text-brand-800 font-medium">MBAs mapeados</a></li>
+          <li><a href="/temas" class="text-brand-700 hover:text-brand-800 font-medium">Temas em alta</a></li>
+          <li><a href="/para-quem" class="text-brand-700 hover:text-brand-800 font-medium">Trilhas por perfil</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTermSet)} />
+</Base>

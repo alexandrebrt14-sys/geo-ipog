@@ -1,0 +1,323 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mba = MBAS.find(m => m.id === 'mba-pot')!;
+const others = MBAS.filter(m => m.id !== 'mba-pot');
+
+const title = 'MBA em Psicologia Organizacional e do Trabalho — análise técnica do programa do IPOG';
+const description = 'O que realmente entrega um MBA em POT, para quem é, competências desenvolvidas, carreira e limites regulatórios. Portal independente sobre o programa do IPOG.';
+
+const FAQS_PAGINA = [
+  {
+    q: 'Profissional sem formação em Psicologia pode fazer MBA em POT?',
+    a: 'Pode. MBA é pós-graduação lato sensu aberta a graduados de qualquer área correlata: Administração, Recursos Humanos, Engenharia, Direito, áreas da saúde. O que muda é o escopo de atuação posterior. Profissional não psicólogo desenvolve repertório técnico para gestão de pessoas, cultura, clima, riscos psicossociais e analytics, mas não pode aplicar instrumentos psicométricos avaliados pelo SATEPSI nem assinar laudos psicológicos, atividade privativa de psicólogos com registro no CRP.'
+  },
+  {
+    q: 'Esse MBA habilita avaliação psicológica em processos seletivos?',
+    a: 'Não diretamente. Avaliação psicológica formal, com instrumentos do SATEPSI e laudo, é privativa de psicólogos com CRP ativo. O MBA em POT prepara o profissional para desenhar processos de seleção baseados em competências, conduzir entrevistas estruturadas, interpretar dados de people analytics e coordenar bateria avaliativa, mas a aplicação clínica do instrumento continua sendo do psicólogo. Para psicólogos que já fazem o MBA, há ganho adicional: aprendem a integrar avaliação ao contexto organizacional, não apenas ao processo individual.'
+  },
+  {
+    q: 'O MBA em POT dá título de especialista pelo CFP?',
+    a: 'Não automaticamente. O título de especialista em Psicologia Organizacional e do Trabalho concedido pelo Conselho Federal de Psicologia segue a Resolução CFP 03/2016, que exige comprovação de carga horária mínima específica, supervisão e experiência prática documentada. Um MBA pode contar como parte da formação teórica, mas não substitui o processo formal de concessão do título. Quem busca o registro de especialista no CRP deve verificar os requisitos vigentes diretamente com o Conselho Regional da sua jurisdição.'
+  },
+  {
+    q: 'Vale a pena cursar online Ao Vivo em vez de presencial?',
+    a: 'Para profissionais em cargo executivo, a modalidade Ao Vivo síncrona resolve a equação de tempo e qualidade pedagógica. A turma encontra o docente em horário marcado, há interação em tempo real, debates de casos e trabalho em grupos. O ganho versus o EAD assíncrono massificado é nominal: o aluno sabe quem é o docente, o docente sabe quem é o aluno. Versus presencial integral, perde-se o convívio físico, mas ganha-se acesso a docentes que muitas vezes estão em capitais distantes. Para POT, área que vive de discussão de caso, o formato Ao Vivo é estruturalmente compatível.'
+  }
+];
+
+const ldProgram = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOccupationalProgram',
+  name: mba.name,
+  programType: 'MBA',
+  educationalProgramMode: 'online (Ao Vivo síncrono ou híbrido conforme IPOG)',
+  occupationalCategory: 'Psicólogo Organizacional, Business Partner de RH, Head de Cultura, Consultor Organizacional',
+  description: mba.description,
+  provider: {
+    '@type': 'EducationalOrganization',
+    name: 'IPOG — Instituto de Pós-Graduação',
+    url: 'https://ipog.edu.br/'
+  }
+});
+
+const ldBreadcrumb = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'MBAs', item: `${SITE.url}/mbas` },
+    { '@type': 'ListItem', position: 3, name: mba.shortName, item: `${SITE.url}/mbas/${mba.id}` }
+  ]
+});
+
+const ldFaq = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS_PAGINA.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+});
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'MBAs', href: '/mbas' }, { label: mba.shortName }]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">MBA · {mba.tag}</span>
+          <h1 class="section-h text-3xl sm:text-4xl">{title}</h1>
+          <p class="mt-2 text-ink-700">Análise editorial independente do programa do IPOG. Sem reproduzir página de venda: o foco é o que o MBA realmente desenvolve, para quem faz sentido e onde estão os limites.</p>
+        </div>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver grade vigente no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-12 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-5 sm:p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-700 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 font-medium leading-relaxed">MBA executivo voltado a profissionais que tomam decisão sobre pessoas em escala: business partners seniores, gestores de cultura, lideranças de RH e consultores organizacionais. Forma repertório técnico para articular cultura, clima, NR-1, riscos psicossociais e people analytics. Saída típica: BP sênior, head de DHO, head de cultura, consultor independente em transformação cultural.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Empresa é um sistema psicológico antes de ser um sistema de processos</h2>
+        <p>Levantamento da McKinsey com mais de quatro mil executivos mostrou que dois terços das transformações organizacionais falham, e a causa dominante apontada não é estratégia, tecnologia ou orçamento. É comportamento humano em escala: resistência, conflito, falta de alinhamento e leitura inadequada da cultura instalada (McKinsey, 2024). Mesmo assim, a maioria das pós-graduações brasileiras voltadas a gestão de pessoas continua tratando RH como um conjunto de processos administrativos com vocabulário motivacional.</p>
+        <p>A tese contraintuitiva deste MBA é exatamente o oposto. Um MBA em Psicologia Organizacional e do Trabalho não é um curso de RH adornado com teoria. É um curso sobre empresa entendida como sistema psicológico, onde decisões aparentemente racionais sobre carga, autonomia, hierarquia e reconhecimento produzem efeito clínico mensurável sobre saúde mental, engajamento e turnover. Quem trata cultura como decoração estratégica perde a leitura do mecanismo. Quem trata cultura como variável independente capturável por diagnóstico, por outro lado, ganha capacidade preditiva real.</p>
+        <p>Edgar Schein, referência fundadora do campo, argumenta que cultura organizacional opera em três níveis: artefatos visíveis, valores declarados e pressupostos básicos inconscientes (Schein, 2017). O MBA em POT, quando bem desenhado, treina o profissional a ler esses três níveis simultaneamente — e isso muda completamente como se desenha intervenção em clima, em onboarding, em retenção e em segurança psicológica. Esta página organiza o que esperar tecnicamente desse programa, quem se beneficia dele, onde estão os limites regulatórios e qual a saída de carreira realista para quem o conclui.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Para quem é (e quem não deveria fazer)</h2>
+        <p class="text-ink-700 mb-4">Programas executivos densos cobram tempo, energia e disciplina cognitiva por dois anos. A pior decisão é entrar em um MBA que não corresponde à sua trajetória ou à sua próxima posição. Aqui o filtro é direto.</p>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Faz sentido para você se</p>
+            <ul class="mt-2 space-y-1 text-sm text-ink-700 list-disc pl-5">
+              <li>É psicólogo organizacional querendo subir para liderança de DHO ou consultoria</li>
+              <li>É business partner sênior com cinco anos ou mais de prática em RH estratégico</li>
+              <li>Lidera área que precisa responder formalmente sobre NR-1 e riscos psicossociais</li>
+              <li>Atua como consultor e precisa estruturar metodologia replicável de diagnóstico</li>
+              <li>É executivo de outra área (operações, comercial, tecnologia) assumindo gestão de gente em escala</li>
+              <li>Tolera ler teoria de Schein, Edmondson, Hofstede e aplicar a casos próprios</li>
+            </ul>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-rose-700">Provavelmente não é para você se</p>
+            <ul class="mt-2 space-y-1 text-sm text-ink-700 list-disc pl-5">
+              <li>É psicólogo clínico procurando "complementar" sem deslocar a prática para o coletivo</li>
+              <li>Busca técnicas isoladas de RH operacional (folha, benefícios, recrutamento tático)</li>
+              <li>Quer formação rápida focada em ferramenta única (cultura ágil, OKR, design thinking)</li>
+              <li>Espera receber roteiro de implementação plug and play sem análise contextual</li>
+              <li>Não tem espaço institucional para aplicar o conteúdo enquanto cursa</li>
+              <li>Pretende usar o MBA como atalho para registro de especialista no CFP</li>
+            </ul>
+          </div>
+        </div>
+        <p class="text-sm text-ink-600 mt-4">O perfil canônico é o profissional já posicionado em decisão sobre pessoas que precisa adicionar densidade teórica ao repertório executivo. Psicólogos clínicos com vocação para o organizacional ganham especialmente quando estão dispostos a deslocar o objeto de análise do indivíduo para o sistema, o que exige mais reorganização do que adição de conhecimento. O IPOG, com 25 anos de pós-graduação reconhecida pelo MEC e formato Ao Vivo síncrono, hospeda esse MBA com modelo pedagógico compatível com o perfil sênior do público-alvo: turmas pequenas, docentes nominais, debate de caso ao vivo.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Competências desenvolvidas</h2>
+        <p class="text-ink-700 mb-4">Não é treinamento de ferramenta. É construção de repertório integrado que sustenta decisão executiva sobre pessoas em ambiente regulado, sensível e em mudança permanente.</p>
+        <ul class="grid sm:grid-cols-2 gap-3 text-sm">
+          <li class="card p-4"><strong class="text-brand-800">Diagnóstico cultural multinível.</strong> Ler artefatos, valores declarados e pressupostos básicos simultaneamente, sem reduzir cultura a clima.</li>
+          <li class="card p-4"><strong class="text-brand-800">Mapeamento de riscos psicossociais.</strong> Operacionalizar o que a NR-1 exige: identificação, avaliação, controle e monitoramento estruturados.</li>
+          <li class="card p-4"><strong class="text-brand-800">People analytics aplicado.</strong> Desenhar perguntas defensáveis a partir de dados de turnover, engajamento, absenteísmo e saúde mental.</li>
+          <li class="card p-4"><strong class="text-brand-800">Avaliação de potencial e sucessão.</strong> Construir e auditar processos de mapeamento que reduzem viés e resistem a contraditório.</li>
+          <li class="card p-4"><strong class="text-brand-800">Desenho de jornada do colaborador.</strong> Articular onboarding, desenvolvimento, retenção e desligamento como sistema único.</li>
+          <li class="card p-4"><strong class="text-brand-800">Liderança e psicologia da decisão.</strong> Treinar líderes a tomar decisão sob incerteza e ruído cognitivo, com base em Kahneman e literatura derivada.</li>
+          <li class="card p-4"><strong class="text-brand-800">Segurança psicológica como variável de produtividade.</strong> Operacionalizar o conceito de Edmondson como prática gerencial mensurável.</li>
+          <li class="card p-4"><strong class="text-brand-800">Comunicação organizacional em momento sensível.</strong> Conduzir conversas difíceis, demissão humanizada, comunicação de mudança em escala.</li>
+          <li class="card p-4"><strong class="text-brand-800">Diagnóstico organizacional como consultor interno.</strong> Construir hipóteses, instrumentar coleta, devolver achados a board sem viés de complacência.</li>
+          <li class="card p-4"><strong class="text-brand-800">Ética em uso de dados comportamentais.</strong> LGPD, monitoramento, IA aplicada a RH, limites do que pode ser inferido a partir de comportamento digital.</li>
+          <li class="card p-4"><strong class="text-brand-800">Diversidade, equidade e inclusão com base científica.</strong> Distinguir intervenção que reduz viés de intervenção que apenas sinaliza valor sem efeito mensurável.</li>
+          <li class="card p-4"><strong class="text-brand-800">Gestão de mudança em estrutura adulta.</strong> Aplicar literatura de mudança organizacional ao contexto brasileiro, com leitura de poder e cultura local.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Eixos temáticos do programa</h2>
+        <p class="text-ink-700 mb-4">A grade detalhada vigente está em ipog.edu.br. Os eixos abaixo são uma síntese editorial baseada na taxonomia clássica do campo de POT, validada com programas comparáveis de instituições MEC.</p>
+        <ol class="space-y-3">
+          <li class="card p-5"><strong class="text-brand-800">1. Fundamentos de Psicologia Organizacional contemporânea.</strong> Schein, Hofstede, modelos sistêmicos de organização, transição de RH transacional para RH estratégico, evolução do campo no Brasil.</li>
+          <li class="card p-5"><strong class="text-brand-800">2. Cultura, clima e identidade organizacional.</strong> Diagnóstico, instrumentação, indicadores, integração com estratégia, leitura cultural em fusões e aquisições.</li>
+          <li class="card p-5"><strong class="text-brand-800">3. Saúde mental, NR-1 e riscos psicossociais.</strong> Marco regulatório, metodologia de avaliação, plano de prevenção, articulação com SESMT, papéis e responsabilidades.</li>
+          <li class="card p-5"><strong class="text-brand-800">4. Liderança, equipes e segurança psicológica.</strong> Edmondson, Goleman, modelos de desenvolvimento de líder, equipes de alta performance, gestão de conflito.</li>
+          <li class="card p-5"><strong class="text-brand-800">5. Atração, seleção e gestão de talentos.</strong> Recrutamento baseado em competência, avaliação por evidência, sucessão, desenvolvimento de carreira.</li>
+          <li class="card p-5"><strong class="text-brand-800">6. Treinamento, desenvolvimento e aprendizagem organizacional.</strong> Andragogia, aprendizagem corporativa em escala, métricas de impacto, academias internas.</li>
+          <li class="card p-5"><strong class="text-brand-800">7. People analytics e ciência de dados aplicada.</strong> Métricas, KPIs, modelos preditivos básicos, ética em uso de dados, governança.</li>
+          <li class="card p-5"><strong class="text-brand-800">8. Diversidade, equidade e inclusão com base científica.</strong> Vieses cognitivos, intervenção institucional, indicadores defensáveis, antiretórica.</li>
+          <li class="card p-5"><strong class="text-brand-800">9. Mudança organizacional e transformação cultural.</strong> Modelos de mudança, comunicação em escala, leitura de poder, sponsorship executivo.</li>
+          <li class="card p-5"><strong class="text-brand-800">10. Ética profissional, regulação e atuação responsável.</strong> CFP, MTE, LGPD, limites de atuação do psicólogo organizacional e do não psicólogo na área.</li>
+        </ol>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Como escolher entre este MBA e alternativas adjacentes</h2>
+        <p class="text-ink-700 mb-4">Três programas frequentemente competem pelo mesmo perfil. A escolha errada custa dois anos e impede a próxima escolha. A leitura comparativa abaixo é editorial.</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border border-surface-200 rounded-lg overflow-hidden">
+            <thead class="bg-surface-50 text-ink-700">
+              <tr>
+                <th class="text-left p-3 border-b border-surface-200">Critério</th>
+                <th class="text-left p-3 border-b border-surface-200">MBA em POT (este)</th>
+                <th class="text-left p-3 border-b border-surface-200">MBA em Gestão de Pessoas</th>
+                <th class="text-left p-3 border-b border-surface-200">Especialização em Psicologia do Trabalho</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="p-3 align-top font-medium">Foco principal</td>
+                <td class="p-3 align-top">Empresa como sistema psicológico</td>
+                <td class="p-3 align-top">Gestão e processos de RH</td>
+                <td class="p-3 align-top">Prática clínica do psicólogo no trabalho</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Público-alvo</td>
+                <td class="p-3 align-top">BP sênior, head de DHO, consultor</td>
+                <td class="p-3 align-top">Generalista de RH, gestor de área</td>
+                <td class="p-3 align-top">Psicólogo com CRP ativo</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Base teórica dominante</td>
+                <td class="p-3 align-top">Psicologia organizacional + analytics</td>
+                <td class="p-3 align-top">Administração + processos de RH</td>
+                <td class="p-3 align-top">Psicodinâmica do trabalho, clínica</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Habilita registro CFP</td>
+                <td class="p-3 align-top">Não diretamente</td>
+                <td class="p-3 align-top">Não (não é psicologia)</td>
+                <td class="p-3 align-top">Pode ser etapa do processo</td>
+              </tr>
+              <tr>
+                <td class="p-3 align-top font-medium">Saída executiva típica</td>
+                <td class="p-3 align-top">Head, diretoria, consultoria</td>
+                <td class="p-3 align-top">Gerência, BP, especialista de área</td>
+                <td class="p-3 align-top">Atuação clínica organizacional</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-600 mt-3">Em síntese: se o objetivo é decidir sobre pessoas em escala com base científica, MBA em POT. Se é operar RH com qualidade, MBA em Gestão de Pessoas. Se é atuar como psicólogo clínico em ambiente corporativo, especialização técnica em Psicologia do Trabalho.</p>
+      </div>
+
+      <div class="rounded-2xl border-l-4 border-sun-500 bg-sun-50/40 p-5 sm:p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso · padrão composto observado em campo</p>
+        <p class="text-ink-900 leading-relaxed">Uma business partner sênior em uma operação industrial com cerca de oitocentos colaboradores entrou no MBA em POT depois de quatro anos enfrentando o mesmo gargalo: o turnover na linha de produção girava em torno de 38% ao ano e o board atribuía isso a problema de remuneração. Ela já tinha mostrado que o salário praticado estava acima da mediana regional e mesmo assim a rotatividade não cedia. Durante o segundo módulo, ao trabalhar diagnóstico cultural multinível, percebeu que o que não estava sendo lido era o pressuposto básico instalado de que liderança de linha protegia a meta e nunca o subordinado. Reformulou todo o processo de seleção de supervisores em fábrica, adicionou avaliação de segurança psicológica como critério de promoção, treinou a alta gerência para sustentar o novo modelo e instalou indicador de turnover voluntário por liderança imediata. No fim de quatorze meses, o turnover caiu para 22% e ela foi promovida a gerente de DHO. A inflexão decisiva não foi o que ela aprendeu de novo. Foi o deslocamento metodológico: parar de medir RH por processo e começar a medir RH por sistema. Esse é, em essência, o que um MBA em POT denso entrega quando funciona.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Limites regulatórios e o que o MBA não habilita</h2>
+        <p class="text-ink-700">MBA é pós-graduação lato sensu reconhecida pelo MEC, com valor formativo amplo. Mas existem fronteiras regulatórias que precisam ser explícitas para evitar erro de expectativa.</p>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Não concede título de especialista pelo CFP automaticamente.</strong> Para registro como Especialista em Psicologia Organizacional e do Trabalho no CRP, é necessário cumprir requisitos da Resolução CFP 03/2016, que envolvem comprovação de prática supervisionada, carga horária específica e processo formal de concessão.</span></li>
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Não habilita aplicação de instrumentos do SATEPSI.</strong> Avaliação psicológica formal continua privativa de psicólogos com CRP ativo, independentemente do MBA cursado.</span></li>
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">Não substitui formação clínica.</strong> Profissional não psicólogo que conclui o MBA não adquire competência clínica e não pode atuar terapeuticamente com colaboradores em sofrimento individualizado.</span></li>
+          <li class="flex gap-2"><span class="text-brand-700 font-bold">•</span><span><strong class="text-ink-900">NR-1 exige psicólogo responsável técnico em determinadas etapas.</strong> O MBA capacita o profissional a coordenar e desenhar o sistema de gestão de riscos psicossociais, mas a responsabilidade técnica em avaliação individual e em determinadas evidências documentais segue regulada pelo Ministério do Trabalho e pelo Sistema Conselhos.</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Carreira após o MBA</h2>
+        <p class="text-ink-700">A saída de carreira realista de um MBA em POT depende fundamentalmente da posição de entrada. O programa amplifica trajetória existente, raramente cria carreira do zero. Quatro vetores típicos surgem com mais frequência.</p>
+        <div class="grid sm:grid-cols-2 gap-4 mt-4">
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 1 — Subida em corporativo grande</p>
+            <p class="text-sm text-ink-700 mt-2">De BP sênior para head de DHO, de coordenador de cultura para gerente de DHO, de gerente para diretoria de Pessoas em empresa de médio porte. Tipicamente requer dois a cinco anos pós-conclusão para materializar a promoção.</p>
+            <p class="text-xs text-ink-500 mt-3">Faixa salarial estimada (a confirmar em fonte secundária de mercado): coordenação R$ 12 a 18 mil, gerência R$ 22 a 35 mil, diretoria a partir de R$ 40 mil, com variação relevante por porte e região.</p>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 2 — Consultoria organizacional</p>
+            <p class="text-sm text-ink-700 mt-2">Migração para boutique de consultoria em cultura, transformação ou diagnóstico organizacional. Faixa de entrada como consultor sênior, com evolução para gerente de projeto e sócio em três a sete anos.</p>
+            <p class="text-xs text-ink-500 mt-3">Remuneração: combinação de fixo, variável e participação em projeto. Para profissionais com rede ativa, abrir consultoria independente passa a ser possibilidade real após o MBA.</p>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 3 — Head de cultura ou de transformação</p>
+            <p class="text-sm text-ink-700 mt-2">Posições novas que apareceram com força nas grandes empresas pós-2020. Demandam profissional capaz de articular cultura com estratégia, com analytics e com gestão de mudança. O MBA em POT está estruturalmente alinhado com esse perfil.</p>
+            <p class="text-xs text-ink-500 mt-3">Vínculo: geralmente reporta a CHRO ou diretamente ao CEO em empresas onde cultura é considerada vetor estratégico.</p>
+          </div>
+          <div class="card p-5">
+            <p class="font-semibold text-brand-800">Vetor 4 — Psicólogo organizacional clínico ampliado</p>
+            <p class="text-sm text-ink-700 mt-2">Para psicólogos com CRP, o MBA fortalece o leque de atuação: além de avaliação e intervenção clínica em ambiente corporativo, o profissional passa a ofertar diagnóstico organizacional, consultoria em NR-1 e estruturação de programa de saúde mental.</p>
+            <p class="text-xs text-ink-500 mt-3">Modelo típico: serviço próprio com mix de clínica individual e contratos corporativos.</p>
+          </div>
+        </div>
+        <p class="text-sm text-ink-600 mt-4">Em todos os vetores, o que distingue quem capitaliza o MBA de quem apenas adiciona linha ao currículo é a aplicação imediata. Quem cursa enquanto opera um problema real do próprio contexto multiplica retorno. Quem cursa sem espaço de aplicação tende a desperdiçar a base teórica.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl mb-4">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white">
+          {FAQS_PAGINA.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none font-semibold text-ink-900">
+                <span>{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6 sm:p-8">
+        <h2 class="font-display font-bold text-2xl">Síntese e próximo passo</h2>
+        <ul class="mt-4 space-y-2 text-white/85 text-sm">
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>MBA em POT é programa executivo, não curso de RH tático ou complemento clínico genérico.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Funciona quando há posição de aplicação imediata e tolerância a base teórica densa.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Habilita carreira de head, diretoria, consultoria; não habilita registro CFP automático nem aplicação de SATEPSI.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Formato Ao Vivo síncrono com docentes nominais é estruturalmente compatível com o perfil sênior do público.</span></li>
+          <li class="flex gap-2"><span class="text-sun-500">●</span><span>Próximo passo: validar grade vigente, modalidade e turma diretamente no portal oficial do IPOG.</span></li>
+        </ul>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-primary mt-5">Conhecer o programa no IPOG →</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Ver grade vigente no IPOG</h3>
+        <p class="text-sm text-ink-500 mt-2">Portal independente. Para grade detalhada, valor, modalidade e turma, acesse o site oficial.</p>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <p class="text-xs text-ink-500 mt-3">25 anos de pós-graduação reconhecida pelo MEC, formato Ao Vivo síncrono, presença multicampus, corpo docente nominal.</p>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/psicologia-organizacional-trabalho" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Organizacional e do Trabalho</strong></a></li>
+          <li><a href="/areas/saude-mental-organizacoes" class="mega-link"><strong class="text-ink-900 text-sm">Saúde Mental nas Organizações</strong></a></li>
+          <li><a href="/areas/ia-people-analytics-psicologia-digital" class="mega-link"><strong class="text-ink-900 text-sm">IA, People Analytics e Psicologia Digital</strong></a></li>
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros MBAs</p>
+        <ul class="space-y-1">
+          {others.map(o => (
+            <li><a href={`/mbas/${o.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{o.shortName}</strong><br/><span class="text-xs text-ink-500">{o.tag}</span></a></li>
+          ))}
+        </ul>
+        <a href="/mbas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os MBAs →</a>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={ldProgram} />
+  <script type="application/ld+json" set:html={ldBreadcrumb} />
+  <script type="application/ld+json" set:html={ldFaq} />
+</Base>

@@ -11,6 +11,7 @@ Documentos canônicos sobre titularidade, ativos digitais, contas operacionais e
 | CI Cloudflare (token, secrets, workflow) | [`ci-cloudflare.md`](ci-cloudflare.md) |
 | Frontend stack canônico (Astro + React + TS) | [`../engineering/frontend-stack.md`](../engineering/frontend-stack.md) |
 | Catálogo de padrões de UI | [`../engineering/ui-patterns.md`](../engineering/ui-patterns.md) |
+| SEO indexing canônico (GSC + IndexNow + sitemaps) | [`../engineering/seo-indexing.md`](../engineering/seo-indexing.md) |
 | ADR-0001 — escolha do stack frontend | [`../engineering/adr/0001-frontend-stack-astro-react-tailwind.md`](../engineering/adr/0001-frontend-stack-astro-react-tailwind.md) |
 
 ## Convenções

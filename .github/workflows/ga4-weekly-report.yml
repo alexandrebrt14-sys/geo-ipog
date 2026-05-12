@@ -1,0 +1,69 @@
+name: GA4 Weekly Report
+
+on:
+  schedule:
+    # Toda segunda 09:00 BRT = 12:00 UTC
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+    inputs:
+      period:
+        description: 'Periodo (7d, 28d, 90d)'
+        required: false
+        default: '7d'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install google-analytics-data
+
+      - name: Write service account key
+        env:
+          KEY: ${{ secrets.GA4_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::error::Secret GA4_SERVICE_ACCOUNT_JSON nao definido. Adicione em Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          mkdir -p .runtime
+          printf '%s' "$KEY" > .runtime/sa.json
+          chmod 600 .runtime/sa.json
+
+      - name: Run report
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/.runtime/sa.json
+          PERIOD: ${{ github.event.inputs.period || '7d' }}
+        run: python scripts/weekly_ga4_report.py --period "$PERIOD"
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -rf .runtime
+
+      - name: Create PR with new report
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(ga4): relatorio semanal automatico"
+          title: "GA4 weekly report - automated"
+          body: |
+            Relatorio GA4 gerado automaticamente.
+
+            - Periodo: ${{ github.event.inputs.period || '7d' }}
+            - Property: 537256335 (posgraduacaopsicologia.com)
+            - Script: `scripts/weekly_ga4_report.py`
+
+            Conferir tabelas em `dashboards/relatorios-ga4/`.
+          branch: ga4-weekly-${{ github.run_number }}
+          delete-branch: true
+          add-paths: dashboards/relatorios-ga4

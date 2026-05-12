@@ -1,6 +1,6 @@
 # Código de Conduta — Programa GEO IPOG
 
-Este código de conduta orienta o relacionamento entre Brasil GEO e IPOG durante a execução do programa de Generative Engine Optimization. Aplica-se a todos os colaboradores com acesso a este repositório.
+Este código de conduta orienta o relacionamento entre Brasil GEO e IPOG durante a execução do programa de Generative Engine Optimization, cujo escopo canônico cobre as Pós-Graduações em Psicologia do IPOG em todas as modalidades regulamentadas (Especialização Lato Sensu, MBA em áreas correlatas, Mestrado Profissional, Especialização Clínica certificada por Conselhos profissionais, Residências e formações híbridas). Aplica-se a todos os colaboradores com acesso a este repositório.
 
 ## Compromissos mútuos
 
@@ -22,7 +22,7 @@ Este código de conduta orienta o relacionamento entre Brasil GEO e IPOG durante
 
 - **Sem dados sensíveis** no repositório: PII de candidatos/alunos, credenciais de plataformas, exports brutos do CRM IPOG. Datasets em `data/` que contenham PII devem ser armazenados em diretórios ignorados pelo `.gitignore` e nunca commitados.
 - **Naming canônico** respeitado em todo conteúdo público assinado pela marca IPOG ou por Alexandre Caramaschi.
-- **Compliance MEC e CFP** revisado pelo jurídico/acadêmico IPOG em qualquer claim regulatório antes da publicação.
+- **Compliance MEC, CFP, ABRAP, FBT e demais Conselhos profissionais** revisado pelo jurídico/acadêmico IPOG em qualquer claim regulatório antes da publicação, independentemente da modalidade de pós-graduação envolvida.
 
 ## Conduta esperada nas interações
 

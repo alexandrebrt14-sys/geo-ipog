@@ -1,6 +1,6 @@
 # Reuniões e Cadência Operacional — GEO IPOG
 
-Este documento estabelece o ritmo operacional acordado entre Brasil GEO e IPOG para o programa GEO IPOG. As cadências aqui descritas são definidas no kickoff e revisadas no checkpoint executivo mensal.
+Este documento estabelece o ritmo operacional acordado entre Brasil GEO e IPOG para o programa GEO IPOG, cujo escopo canônico cobre as Pós-Graduações em Psicologia do IPOG em todas as modalidades regulamentadas (Especialização Lato Sensu, MBA em áreas correlatas, Mestrado Profissional, Especialização Clínica certificada por Conselhos profissionais como CFP, ABRAP e FBT, Residências e formações híbridas). As cadências aqui descritas são definidas no kickoff e revisadas no checkpoint executivo mensal.
 
 ## Reunião semanal de status
 
@@ -37,7 +37,7 @@ Este documento estabelece o ritmo operacional acordado entre Brasil GEO e IPOG p
 - **Pauta padrão:**
   1. Revisão executiva da onda concluída (KPIs, mention rate, share-of-voice, gaps fechados)
   2. Decisões de continuidade ou recalibração
-  3. Eventual expansão de escopo (outras áreas IPOG além de Psicologia)
+  3. Eventual expansão de escopo (outras áreas IPOG além de Psicologia, ou inclusão de novas modalidades de Pós-Graduação em Psicologia no programa GEO)
   4. Investimento da onda seguinte (recursos, prazos, prioridades)
   5. Riscos estratégicos e dependências executivas
 - **Ata:** `docs/atas/YYYY-MM-DD-ipog-checkpoint-executivo.md`.
@@ -72,6 +72,6 @@ Este documento estabelece o ritmo operacional acordado entre Brasil GEO e IPOG p
 | Resposta a comentário em issue por @alexandrebrt14-sys | 1 dia útil |
 | Aprovação de PR pelo Head Brasil GEO | 1 dia útil após checklist completo |
 | Aprovação de mudança em propriedade IPOG ao vivo (Bruno Azambuja) | 2 dias úteis |
-| Revisão jurídica IPOG para conteúdo com claim MEC/CFP | 5 dias úteis |
+| Revisão jurídica IPOG para conteúdo com claim MEC/CFP/ABRAP/FBT ou demais Conselhos | 5 dias úteis |
 | Resposta a SEV1/SEV2 de incidente | 4 horas (em horário comercial BRT) |
 | Decisão executiva escalada para Ronan Maia | Próximo checkpoint mensal, ou e-mail direto se SEV1 |

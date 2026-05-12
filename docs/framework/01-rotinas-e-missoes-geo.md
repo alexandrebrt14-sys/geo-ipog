@@ -1,6 +1,8 @@
 # Framework Conceitual de GEO — Rotinas, Missões e Tarefas Recorrentes (vertical Educação Superior)
 
-Este documento consolida o estado conceitual atualizado das práticas de Generative Engine Optimization aplicáveis a uma instituição de ensino superior brasileira que busca presença, fidelidade de citação e share-of-voice em respostas de motores generativos. O framework é genérico em método, mas as ilustrações estão calibradas para o recorte do programa GEO IPOG: pós-graduação online em Psicologia.
+> **Reframe canônico 12-05-2026:** o recorte do programa GEO IPOG é o portfólio amplo de **Pós-Graduações em Psicologia** nas 5 modalidades canônicas: Especialização Lato Sensu (formato dominante), MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos (CFP/ABRAP/FBT) e Formações híbridas/residências (ver `dashboards/METRICAS-CANONICAS.md` Cláusula 0). MBA é um subconjunto, não a vertical. Onde "MBA Online de Psicologia" aparece como exemplo de uso, leia "uma das 5 modalidades canônicas conforme a área tratada".
+
+Este documento consolida o estado conceitual atualizado das práticas de Generative Engine Optimization aplicáveis a uma instituição de ensino superior brasileira que busca presença, fidelidade de citação e share-of-voice em respostas de motores generativos. O framework é genérico em método, mas as ilustrações estão calibradas para o recorte do programa GEO IPOG: o portfólio amplo de pós-graduação em Psicologia (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada, Formações híbridas/residências).
 
 ---
 

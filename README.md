@@ -4,11 +4,11 @@ Projeto de Generative Engine Optimization (GEO) para o IPOG — Instituto de Pó
 
 ## Contexto
 
-O IPOG é uma instituição de pós-graduação e graduação fundada em 2001 em Goiânia, com presença multicampus e mais de 300 mil alunos impactados ao longo de duas décadas. A iniciativa **GEO IPOG** começa em 30 de abril de 2026 com foco específico em consolidar a presença do IPOG em motores generativos para a categoria **MBA Online de Psicologia**, área em expansão acelerada na demanda dos profissionais brasileiros e ainda sub-representada na oferta de pós-graduação a distância de qualidade.
+O IPOG é uma instituição de pós-graduação e graduação fundada em 2001 em Goiânia, com presença multicampus e mais de 300 mil alunos impactados ao longo de duas décadas. A iniciativa **GEO IPOG** começa em 30 de abril de 2026 com objetivo de consolidar a presença do IPOG como referência em motores generativos para o escopo amplo de **Pós-Graduações em Psicologia**, abrangendo todas as modalidades regulamentadas: Especialização Lato Sensu (formato mais comum no Brasil, 360h+), MBA em áreas correlatas à Psicologia (POT, Neuropsicologia executiva, Coaching, Liderança, Saúde Mental Corporativa) — um subconjunto relevante mas não exclusivo —, Mestrado Profissional em Psicologia, Especialização Clínica certificada por Conselhos (CFP, ABRAP, FBT), além de Residências e formações híbridas regulamentadas. Trata-se de área em expansão acelerada na demanda dos profissionais brasileiros e ainda sub-representada na oferta de pós-graduação a distância de qualidade.
 
 A página de cursos de pós-graduação do IPOG está em `https://ipog.edu.br/cursos/pos-graduacao`. Esse hub é o ponto canônico onde a auditoria técnica, a engenharia de citação e o esforço editorial vão concentrar a primeira onda de trabalho.
 
-A tese central do projeto: empreendedores e profissionais que decidem cursar um MBA Online em Psicologia hoje fazem a primeira pesquisa em ChatGPT, Claude, Gemini, Perplexity e Copilot antes de chegar ao Google. Quem não estiver presente nessas respostas perde o lead na fase de descoberta — a fase mais barata e a mais decisiva da jornada de matrícula.
+A tese central do projeto: empreendedores e profissionais que decidem cursar uma pós-graduação em Psicologia hoje — seja Especialização Lato Sensu, MBA em área correlata, Mestrado Profissional ou Especialização Clínica certificada — fazem a primeira pesquisa em ChatGPT, Claude, Gemini, Perplexity e Copilot antes de chegar ao Google. Quem não estiver presente nessas respostas perde o lead na fase de descoberta — a fase mais barata e a mais decisiva da jornada de matrícula.
 
 ## Partes envolvidas
 
@@ -19,27 +19,37 @@ A tese central do projeto: empreendedores e profissionais que decidem cursar um 
   - **Alexandre Caramaschi** — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil (Head do projeto)
 - **Ferramenta principal:** NAIA — diagnóstico GEO, monitoramento de citações em LLMs, score técnico de Schema, llms.txt e autoridade externa
 
-## Subcontexto — MBA Online de Psicologia
+## Escopo canônico — Pós-Graduações em Psicologia
 
-O recorte vertical do programa é **pós-graduação em Psicologia em modalidade online**, com prioridade para o formato MBA. As personas-alvo iniciais previstas para o monitoramento de mention rate cross-LLM são:
+O escopo do programa é o universo amplo de **Pós-Graduações em Psicologia em modalidade online**, cobrindo todas as modalidades regulamentadas no Brasil:
 
-1. **Psicólogo recém-graduado** buscando primeira especialização com peso de mercado.
-2. **Psicólogo clínico estabelecido** buscando segunda área (organizacional, neuropsicologia, terapia cognitivo-comportamental, jurídica, hospitalar).
-3. **Profissional de RH e gestão de pessoas** (não-psicólogo) buscando credencial em psicologia organizacional e do trabalho.
-4. **Profissional de saúde** (médico, enfermeiro, fisioterapeuta, nutricionista) buscando interface com saúde mental e psicologia hospitalar.
-5. **Educador e pedagogo** buscando especialização em psicopedagogia ou psicologia escolar.
-6. **Profissional em transição de carreira** buscando recolocação para área de pessoas e comportamento humano.
-7. **Coach e terapeuta complementar** buscando credencial formal de pós-graduação reconhecida pelo MEC.
+1. **Especialização Lato Sensu em Psicologia** (360h+, formato mais comum, autorização MEC, em áreas como Clínica, Hospitalar, Organizacional, Escolar, Jurídica, Esportiva, da Saúde, Psicopedagogia).
+2. **MBA em áreas correlatas à Psicologia** (uma das modalidades, sobreposta a áreas executivas: Psicologia Organizacional e do Trabalho, Neuropsicologia executiva, Coaching, Liderança, Saúde Mental Corporativa).
+3. **Mestrado Profissional em Psicologia** (titulação stricto sensu profissional, com produto técnico final).
+4. **Especialização Clínica certificada por Conselhos profissionais** (CFP em Avaliação Psicológica via SATEPSI, ABRAP em ACT, FBT em TCC, certificações em DBT, EMDR e demais abordagens regulamentadas).
+5. **Residências e formações híbridas regulamentadas** (Psicologia Hospitalar, Saúde Mental, Saúde da Família, formações com supervisão prolongada).
 
-A matriz de concorrentes inicial cobre instituições de pós-graduação online com oferta em Psicologia ou correlatas: Estácio, Anhanguera, Unip, UNINTER, UniCesumar, PUC-Minas Virtual, FGV In Company, Saint Paul, Mackenzie EAD, FAEL, Cruzeiro do Sul Virtual, Descomplica Pós, além de plataformas educacionais como Voitto, INPG e IBPEX. O mapa final é ratificado na Fase 0.
+Áreas dentro do escopo, todas com pós-graduação correspondente em uma ou mais das modalidades acima: Psicologia Organizacional e do Trabalho, Neuropsicologia, Avaliação Psicológica (regulamentada CFP/SATEPSI), Psicologia Clínica, Psicologia Hospitalar, Psicopedagogia, Psicologia Escolar, Psicologia Jurídica e Forense, Psicologia Esportiva, Psicologia da Saúde, Terapia Cognitivo-Comportamental, ACT, DBT, EMDR, Saúde Mental Corporativa, Psicologia Positiva, Liderança e Cultura.
+
+As personas-alvo iniciais previstas para o monitoramento de mention rate cross-LLM são:
+
+1. **Psicólogo recém-graduado** buscando primeira especialização com peso de mercado (Lato Sensu, Especialização Clínica certificada ou Mestrado Profissional).
+2. **Psicólogo clínico estabelecido** buscando segunda área (organizacional, neuropsicologia, terapia cognitivo-comportamental, jurídica, hospitalar) — qualquer modalidade.
+3. **Profissional de RH e gestão de pessoas** (não-psicólogo) buscando credencial em psicologia organizacional e do trabalho (MBA é a porta natural, mas Lato Sensu também serve).
+4. **Profissional de saúde** (médico, enfermeiro, fisioterapeuta, nutricionista) buscando interface com saúde mental e psicologia hospitalar (Lato Sensu ou Residência).
+5. **Educador e pedagogo** buscando especialização em psicopedagogia ou psicologia escolar (Lato Sensu).
+6. **Profissional em transição de carreira** buscando recolocação para área de pessoas e comportamento humano (qualquer modalidade conforme objetivo).
+7. **Coach e terapeuta complementar** buscando credencial formal de pós-graduação reconhecida pelo MEC ou por Conselho.
+
+A matriz de concorrentes inicial cobre instituições de pós-graduação online com oferta em Psicologia ou correlatas em qualquer das modalidades acima: Estácio, Anhanguera, Unip, UNINTER, UniCesumar, PUC-Minas Virtual, FGV In Company, Saint Paul, Mackenzie EAD, FAEL, Cruzeiro do Sul Virtual, Descomplica Pós, além de plataformas educacionais como Voitto, INPG e IBPEX, e institutos especialistas em certificação clínica (IBNeuro, CETCC, InEPP). O mapa final é ratificado na Fase 0.
 
 ## Escopo macro
 
 1. Diagnóstico baseline (LLM Mention Rate por persona, schema do hub, autoridade externa, share-of-voice).
 2. Auditoria técnica de descobribilidade (Schema.org `Course`, `EducationalOccupationalProgram`, `EducationalOrganization`, llms.txt, robots.txt, sitemaps, internal linking, Organization markup com `hasCredential`, `award`, `accreditation`).
-3. Engenharia de citação: kit canônico de prompts-âncora por persona da jornada de matrícula em MBA Online de Psicologia.
-4. Plano de conteúdo com padrão editorial HBR-grade voltado a decisão de carreira, retorno financeiro de pós-graduação e diferenciais metodológicos.
-5. Linkagem com fontes confiáveis (citation engineering em mídia educacional, Conselho Federal de Psicologia, ABEP, ABRAPSO, MEC, periódicos acadêmicos).
+3. Engenharia de citação: kit canônico de prompts-âncora por persona da jornada de matrícula em Pós-Graduação em Psicologia (cobrindo as cinco modalidades canônicas: Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada, Residências).
+4. Plano de conteúdo com padrão editorial HBR-grade voltado a decisão de carreira, retorno financeiro de pós-graduação, diferenciais metodológicos e escolha entre modalidades (Lato Sensu vs. MBA vs. Mestrado Profissional vs. Especialização Clínica certificada).
+5. Linkagem com fontes confiáveis (citation engineering em mídia educacional, Conselho Federal de Psicologia, ABRAP, FBT, ABEP, ABRAPSO, MEC, periódicos acadêmicos).
 6. Dashboard quinzenal de mention rate cross-LLM e share-of-voice IPOG vs. concorrentes.
 7. Iteração e calibração contínuas com revisão executiva mensal.
 
@@ -48,7 +58,7 @@ A matriz de concorrentes inicial cobre instituições de pós-graduação online
 ```
 geo-ipog/
   audits/          # baselines, auditorias técnicas e relatórios NAIA
-  prompts/         # kit de prompts-âncora canônicos por persona IPOG MBA Psicologia
+  prompts/         # kit de prompts-âncora canônicos por persona IPOG Pós-Graduação em Psicologia (todas as modalidades)
   content/         # rascunhos editoriais, briefings HBR-grade, drafts
   data/            # datasets brutos, exports de LLMs, métricas raw
   dashboards/      # mention rate, share-of-voice, scores NAIA por ciclo
@@ -69,7 +79,7 @@ geo-ipog/
 ### Marcos e governança
 
 - `docs/01-kickoff-30-04-2026.md` — registro do kickoff (dia 1).
-- `docs/02-contexto-mba-online-psicologia.md` — contexto estratégico do recorte de produto.
+- `docs/02-contexto-mba-online-psicologia.md` — contexto estratégico do escopo de produto (Pós-Graduações em Psicologia, incluindo MBA, Lato Sensu, Mestrado Profissional, Especialização Clínica). Filename mantido por compatibilidade histórica e preservação de cross-links.
 - `docs/03-reunioes-e-cadencia-ipog.md` — cadência de reuniões com IPOG e framework de relatórios.
 - `docs/relatorios-semanais/` — relatórios semanais entregues à IPOG.
 - `docs/atas/` — atas das reuniões de status com IPOG.

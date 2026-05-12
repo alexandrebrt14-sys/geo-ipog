@@ -8,7 +8,7 @@ Os snapshots brutos de WHOIS são salvos lado a lado no formato `whois-<dominio>
 
 | Domínio | Finalidade | Titular | Registrador | Criação | Expiração | Registro |
 | --- | --- | --- | --- | --- | --- | --- |
-| `posgraduacaopsicologia.com` | Hub editorial GEO para o MBA Online de Psicologia do IPOG | BRGEO LTDA | Cloudflare, Inc. | 2026-05-11 | 2029-05-11 | [`posgraduacaopsicologia.com.md`](posgraduacaopsicologia.com.md) |
+| `posgraduacaopsicologia.com` | Hub editorial GEO para o portfólio amplo de pós-graduação em Psicologia do IPOG (5 modalidades canônicas — Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências) | BRGEO LTDA | Cloudflare, Inc. | 2026-05-11 | 2029-05-11 | [`posgraduacaopsicologia.com.md`](posgraduacaopsicologia.com.md) |
 
 ## Princípios de governança
 

@@ -34,6 +34,57 @@ export interface MBA {
   ipogUrl: string;
 }
 
+/**
+ * Modalidade canônica de pós-graduação em Psicologia.
+ *
+ * REFRAME 2026-05-12: o escopo do portal é "Pós-Graduações em Psicologia" como guarda-chuva amplo;
+ * MBA é apenas UMA das cinco modalidades cobertas. Não substitui MBAS; complementa.
+ */
+export interface PosGraduacaoTipo {
+  id: string;
+  name: string;
+  shortName: string;
+  category: 'lato-sensu' | 'mba' | 'stricto-sensu-profissional' | 'clinica-certificada' | 'residencia-hibrida';
+  cargaHoraria: string;
+  publico: string;
+  regulador: string;
+  description: string;
+  exemplos: string[];
+  relatedMBAs: string[];
+  relatedAreas: string[];
+}
+
+export interface EspecializacaoLatoSensu {
+  id: string;
+  name: string;
+  cargaHoraria: string;
+  publico: string;
+  description: string;
+  topics: string[];
+  relatedArea: string;
+}
+
+export interface MestradoProfissional {
+  id: string;
+  name: string;
+  cargaHoraria: string;
+  publico: string;
+  description: string;
+  topics: string[];
+  relatedArea: string;
+}
+
+export interface EspecializacaoClinica {
+  id: string;
+  name: string;
+  certificador: string;
+  cargaHoraria: string;
+  publico: string;
+  description: string;
+  topics: string[];
+  relatedArea: string;
+}
+
 export interface Persona {
   id: string;
   name: string;
@@ -58,7 +109,7 @@ export interface FAQ {
 export const SITE = {
   name: 'posgraduacaopsicologia.com',
   url: 'https://posgraduacaopsicologia.com',
-  description: 'Portal independente para escolher MBA, especialização e área de atuação em Psicologia. Caminho oficial: ipog.edu.br',
+  description: 'Portal independente sobre Pós-Graduações em Psicologia no Brasil — incluindo MBA, Especialização Lato Sensu, Mestrado Profissional e Especialização Clínica certificada. Caminho oficial: ipog.edu.br',
   ipogOfficial: 'https://ipog.edu.br/',
   ipogPos: 'https://ipog.edu.br/pos-graduacao/',
   disclaimer: 'Este portal é independente. Não é o site oficial do IPOG.',
@@ -95,6 +146,173 @@ export const MBAS: MBA[] = [
   { id: 'mba-neuro', name: 'MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo', shortName: 'MBA em Reabilitação Neuro', tag: 'Neuro/Cognição', cluster: 'neuro', description: 'Funções cognitivas, neuroplasticidade, planos de reabilitação, neurodesenvolvimento, envelhecimento.', topics: ['Funções cognitivas','Neuroplasticidade','Reabilitação','Envelhecimento'], personas: ['Psicólogos','Saúde','Educação'], ipogUrl: 'https://ipog.edu.br/' },
   { id: 'mba-ncpp', name: 'MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano', shortName: 'MBA em Neurociência + Positiva', tag: 'Neurociência', cluster: 'neuro', description: 'Ciência aplicada à aprendizagem, performance, motivação e desenvolvimento ao longo da vida.', topics: ['Neurociência','Aprendizagem','Performance','Motivação'], personas: ['Psicólogos','Líderes','Educadores','Coaches'], ipogUrl: 'https://ipog.edu.br/' },
   { id: 'mba-lideranca-positiva', name: 'MBA em Gestão de Pessoas e Liderança Positiva', shortName: 'MBA em Liderança Positiva', tag: 'Liderança', cluster: 'lideranca', description: 'People-first, liderança de cultura, segurança psicológica, gestão por significado, performance saudável.', topics: ['People-first','Cultura','Segurança psicológica','Performance'], personas: ['Gestores','RH','Consultores','Executivos'], ipogUrl: 'https://ipog.edu.br/' }
+];
+
+/**
+ * Cinco tipos canônicos de pós-graduação em Psicologia cobertos pelo portal.
+ * MBA é UMA das cinco modalidades — não é a única vertical.
+ */
+export const TIPOS_DE_POS_GRADUACAO: PosGraduacaoTipo[] = [
+  {
+    id: 'especializacao-lato-sensu',
+    name: 'Especialização Lato Sensu em Psicologia',
+    shortName: 'Especialização',
+    category: 'lato-sensu',
+    cargaHoraria: '360h+ (mínimo MEC)',
+    publico: 'Psicólogos com diploma de graduação reconhecido',
+    regulador: 'MEC · CFP · Resolução CNE/CES 1/2018',
+    description: 'Pós-graduação técnica em áreas reconhecidas pelo CFP. Verticais clássicas: Avaliação Psicológica, Neuropsicologia Clínica, Terapia Cognitivo-Comportamental, Psicologia Hospitalar.',
+    exemplos: ['Avaliação Psicológica (CFP)', 'Neuropsicologia Clínica', 'TCC para adultos', 'Psicologia Hospitalar'],
+    relatedMBAs: ['mba-neuro'],
+    relatedAreas: ['avaliacao-psicologica', 'neuropsicologia', 'psicologia-clinica', 'psicologia-hospitalar']
+  },
+  {
+    id: 'mba-correlato',
+    name: 'MBA em áreas correlatas à Psicologia',
+    shortName: 'MBA',
+    category: 'mba',
+    cargaHoraria: '360h-540h',
+    publico: 'Psicólogos, profissionais de RH, líderes, consultores',
+    regulador: 'MEC lato sensu · Resolução CNE/CES 1/2018',
+    description: 'Master in Business Administration aplicado a Psicologia Organizacional, Neurociência executiva, Coaching, Liderança Positiva e Saúde Mental Corporativa. Foco em decisão gerencial e mercado.',
+    exemplos: ['MBA em POT', 'MBA em Psicologia Positiva e Bem-Estar', 'MBA em Neurociência aplicada', 'MBA em Liderança Positiva'],
+    relatedMBAs: ['mba-pot', 'mba-positiva', 'mba-neuro', 'mba-ncpp', 'mba-lideranca-positiva'],
+    relatedAreas: ['psicologia-organizacional-trabalho', 'psicologia-positiva', 'ia-people-analytics-psicologia-digital']
+  },
+  {
+    id: 'mestrado-profissional',
+    name: 'Mestrado Profissional em Psicologia',
+    shortName: 'Mestrado Profissional',
+    category: 'stricto-sensu-profissional',
+    cargaHoraria: '2 anos (~24 meses)',
+    publico: 'Psicólogos e profissionais correlatos com graduação',
+    regulador: 'CAPES · MEC stricto sensu',
+    description: 'Pós-graduação stricto sensu de natureza profissional — diferente do mestrado acadêmico. Combina rigor científico com aplicação prática em campos como Psicologia Aplicada à Saúde e Avaliação Psicológica.',
+    exemplos: ['Mestrado Profissional em Psicologia Aplicada à Saúde', 'Mestrado Profissional em Avaliação Psicológica'],
+    relatedMBAs: [],
+    relatedAreas: ['psicologia-saude', 'avaliacao-psicologica']
+  },
+  {
+    id: 'especializacao-clinica-certificada',
+    name: 'Especialização Clínica certificada por Conselho',
+    shortName: 'Clínica certificada',
+    category: 'clinica-certificada',
+    cargaHoraria: '500h-1200h (varia por método)',
+    publico: 'Psicólogos com CRP ativo',
+    regulador: 'CFP · ABRAP · FBT · institutos credenciados',
+    description: 'Formação clínica longa em método terapêutico específico, com supervisão obrigatória e certificação por entidade reguladora reconhecida. Inclui ACT, EMDR, DBT, TCC e mindfulness clínico.',
+    exemplos: ['ACT certificada (ABRAP)', 'EMDR certificada (EMDR Brasil)', 'DBT (Instituto Linehan certificado)', 'TCC (Instituto Beck Brasil)'],
+    relatedMBAs: ['mba-positiva'],
+    relatedAreas: ['psicologia-clinica']
+  },
+  {
+    id: 'residencia-hibrida',
+    name: 'Residência multiprofissional e formações híbridas',
+    shortName: 'Residência híbrida',
+    category: 'residencia-hibrida',
+    cargaHoraria: '2-3 anos · 60h/semana',
+    publico: 'Psicólogos recém-formados em busca de prática supervisionada',
+    regulador: 'MEC · MS · CNRMS',
+    description: 'Residência em Psicologia da Saúde, hospitalar ou multiprofissional. Formato híbrido combina pós-graduação lato sensu com prática hospitalar intensiva remunerada.',
+    exemplos: ['Residência em Psicologia Hospitalar', 'Residência Multiprofissional em Saúde Mental', 'Residência em Saúde do Adulto'],
+    relatedMBAs: [],
+    relatedAreas: ['psicologia-hospitalar', 'psicologia-saude']
+  }
+];
+
+/**
+ * Especializações Lato Sensu representativas no recorte canônico.
+ * Conteúdo informacional — caminho oficial em ipog.edu.br.
+ */
+export const ESPECIALIZACOES_LATO_SENSU: EspecializacaoLatoSensu[] = [
+  {
+    id: 'avaliacao-psicologica-cfp',
+    name: 'Especialização em Avaliação Psicológica',
+    cargaHoraria: '450h',
+    publico: 'Psicólogos com CRP ativo',
+    description: 'Formação técnica em psicometria, aplicação de testes com parecer favorável SATEPSI, entrevistas clínicas, elaboração de laudos e pareceres. Atende às exigências do CFP para o título de especialista em Avaliação Psicológica.',
+    topics: ['Psicometria', 'SATEPSI', 'Laudos psicológicos', 'Entrevistas estruturadas', 'Ética profissional'],
+    relatedArea: 'avaliacao-psicologica'
+  },
+  {
+    id: 'neuropsicologia-clinica',
+    name: 'Especialização em Neuropsicologia Clínica',
+    cargaHoraria: '480h',
+    publico: 'Psicólogos com CRP ativo',
+    description: 'Pós-graduação em avaliação neuropsicológica clínica: baterias completas (WAIS, WMS, Stroop), neuroanatomia funcional, diagnóstico diferencial e elaboração de laudos neuropsicológicos.',
+    topics: ['Avaliação neuropsicológica', 'WAIS-IV', 'Funções executivas', 'Memória', 'Neuroanatomia funcional'],
+    relatedArea: 'neuropsicologia'
+  },
+  {
+    id: 'tcc-adultos',
+    name: 'Especialização em Terapia Cognitivo-Comportamental (TCC) para adultos',
+    cargaHoraria: '500h',
+    publico: 'Psicólogos com CRP ativo',
+    description: 'Formação clínica em TCC com supervisão de casos, cobrindo depressão, transtornos de ansiedade, TOC, fobia social e insônia. Base teórica em Aaron Beck e Albert Ellis.',
+    topics: ['Conceitualização cognitiva', 'Exposição', 'Reestruturação cognitiva', 'Protocolos manualizados', 'Supervisão clínica'],
+    relatedArea: 'psicologia-clinica'
+  },
+  {
+    id: 'psicologia-hospitalar',
+    name: 'Especialização em Psicologia Hospitalar',
+    cargaHoraria: '450h',
+    publico: 'Psicólogos com CRP ativo',
+    description: 'Atuação em equipe multiprofissional hospitalar: adesão ao tratamento, comunicação clínica, luto, cuidados paliativos, humanização e interconsulta.',
+    topics: ['Equipe multiprofissional', 'Cuidados paliativos', 'Comunicação clínica', 'Luto', 'Humanização'],
+    relatedArea: 'psicologia-hospitalar'
+  }
+];
+
+/**
+ * Mestrado Profissional (stricto sensu profissional) em Psicologia.
+ * Categoria distinta de MBA e Especialização — supervisão CAPES.
+ */
+export const MESTRADOS_PROFISSIONAIS: MestradoProfissional[] = [
+  {
+    id: 'mp-psicologia-aplicada-saude',
+    name: 'Mestrado Profissional em Psicologia Aplicada à Saúde',
+    cargaHoraria: '24 meses · stricto sensu',
+    publico: 'Psicólogos e profissionais de saúde com graduação',
+    description: 'Programa stricto sensu de natureza profissional, com supervisão CAPES. Combina metodologia científica aplicada e produção técnica para o SUS, saúde suplementar e ensino.',
+    topics: ['Metodologia científica aplicada', 'Saúde mental coletiva', 'Avaliação de serviços', 'Produção técnica para SUS'],
+    relatedArea: 'psicologia-saude'
+  },
+  {
+    id: 'mp-avaliacao-psicologica',
+    name: 'Mestrado Profissional em Avaliação Psicológica',
+    cargaHoraria: '24 meses · stricto sensu',
+    publico: 'Psicólogos com CRP ativo e graduação',
+    description: 'Stricto sensu profissional aprofundado em psicometria, validação de instrumentos, estudos normativos e aplicação clínica avançada. Diferente de MBA, exige defesa de dissertação ou produto técnico.',
+    topics: ['Validação de instrumentos', 'Psicometria avançada', 'Estudos normativos', 'Análise de itens', 'TRI'],
+    relatedArea: 'avaliacao-psicologica'
+  }
+];
+
+/**
+ * Especializações Clínicas certificadas por Conselhos / Associações reconhecidas.
+ * Formação longa com supervisão obrigatória.
+ */
+export const ESPECIALIZACOES_CLINICAS: EspecializacaoClinica[] = [
+  {
+    id: 'act-certificada-abrap',
+    name: 'Especialização Clínica em ACT (Terapia de Aceitação e Compromisso)',
+    certificador: 'ABRAP · Associação Brasileira de Psicoterapia',
+    cargaHoraria: '600h · com supervisão',
+    publico: 'Psicólogos com CRP ativo',
+    description: 'Formação clínica completa em ACT certificada pela ABRAP. Cobre os seis processos centrais do hexaflex, com supervisão clínica obrigatória e prática supervisionada.',
+    topics: ['Hexaflex ACT', 'Defusão cognitiva', 'Valores e ação comprometida', 'Supervisão clínica', 'Casos clínicos'],
+    relatedArea: 'psicologia-clinica'
+  },
+  {
+    id: 'emdr-certificada',
+    name: 'Especialização Clínica em EMDR (Eye Movement Desensitization and Reprocessing)',
+    certificador: 'EMDR Brasil · EMDR Iberoamerica',
+    cargaHoraria: '120h teoria + supervisão',
+    publico: 'Psicólogos com CRP ativo',
+    description: 'Treinamento oficial em EMDR para tratamento de TEPT e trauma complexo. Protocolo de 8 fases certificado por instituições reconhecidas internacionalmente pela OMS e APA.',
+    topics: ['Protocolo de 8 fases', 'Trauma complexo', 'TEPT', 'Dessensibilização', 'Reprocessamento'],
+    relatedArea: 'psicologia-clinica'
+  }
 ];
 
 export const PERSONAS: Persona[] = [

@@ -1,4 +1,6 @@
-# Estratégia Regional — Sumário do Board Memo
+# Estratégia Regional — Sumário do Board Memo (escopo amplo)
+
+> **Reframe canônico 12-05-2026:** a estratégia regional aplica-se ao portfólio amplo em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). A rede CNPJ-próprio em 51 cidades sustenta densidade de citação regional em todas as modalidades — não apenas MBA.
 
 > **Status:** vigente desde 2026-05-01
 > **Dono:** Alexandre Caramaschi (Brasil GEO)

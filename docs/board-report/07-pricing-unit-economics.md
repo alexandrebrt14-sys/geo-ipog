@@ -1,4 +1,6 @@
-# Pricing e Unit Economics — MBA Online de Psicologia (IPOG)
+# Pricing e Unit Economics — Pós-Graduações em Psicologia (IPOG, escopo amplo)
+
+> **Reframe canônico 12-05-2026:** pricing e unit economics cobrem o portfólio amplo em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). Ticket médio, margem e LTV variam por modalidade: Especialização Lato Sensu (formato dominante, ticket-base de mercado); MBA correlato (premium 20-40% sobre Lato Sensu); Mestrado Profissional (premium adicional sobre MBA pela autorização CAPES); Especialização Clínica certificada (premium adicional pela certificação por Conselho); Formações híbridas/residências (componente presencial encarece). Modelagem por modalidade é canônica.
 
 > **Status:** vigente desde 2026-05-01
 > **Dono:** Alexandre Caramaschi (Brasil GEO)

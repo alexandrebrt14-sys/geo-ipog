@@ -43,7 +43,9 @@ Marque `[x]` quando o item estiver atendido. Itens não marcados precisam ser co
 
 - [ ] **13. Zero emojis.** Nenhum emoji em qualquer posição do texto, em headings, em rodapé ou em campos Schema.
 
-- [ ] **14. Referências com autor/ano + checklist de aplicação imediata + ponte para próxima peça + naming canônico.** Bloco final contém: (a) referências completas em formato canônico quando há cinco ou mais citações no corpo; (b) checklist de aplicação imediata (ações para 24-72 horas); (c) cross-link descritivo para próxima peça do hub IPOG; (d) naming canônico íntegro ("Brasil GEO", "IPOG", "MBA Online de Psicologia", "Alexandre Caramaschi"; sem nenhum naming proibido). Ver `content/VOICE-GUIDE.md` para a deny-list de naming.
+- [ ] **14. Referências com autor/ano + checklist de aplicação imediata + ponte para próxima peça + naming canônico.** Bloco final contém: (a) referências completas em formato canônico quando há cinco ou mais citações no corpo; (b) checklist de aplicação imediata (ações para 24-72 horas); (c) cross-link descritivo para próxima peça do hub IPOG; (d) naming canônico íntegro ("Brasil GEO", "IPOG", "Pós-Graduações em Psicologia" para escopo completo, "MBA Online de Psicologia" apenas para o produto MBA, "Alexandre Caramaschi"; sem nenhum naming proibido). Ver `content/VOICE-GUIDE.md` para a deny-list de naming.
+
+- [ ] **15. Modalidade de pós-graduação explicitamente declarada.** A peça aborda explicitamente qual modalidade está em discussão: Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos, residência/híbrida ou comparação transversal. Não tratar as cinco modalidades como sinônimas; não usar "MBA Online de Psicologia" como sinônimo do programa GEO IPOG inteiro (ver `content/CLICHES-PROIBIDOS.md`, deny-list 4). Quando a peça é institucional (sobre o programa todo), declarar explicitamente o escopo "Pós-Graduações em Psicologia — cinco modalidades".
 
 ## Procedimento de submissão
 
@@ -78,6 +80,7 @@ Quando um item falhar e o autor precisar revisar a regra, esta tabela aponta o d
 | 12. Acentuação | `content/ACENTUACAO-PT-BR.md` (tabela e checklist binário) |
 | 13. Emojis | regra global do programa, sem exceção |
 | 14. Referências e naming | `content/VOICE-GUIDE.md` (naming canônico e deny-list) |
+| 15. Modalidade declarada | `content/CLICHES-PROIBIDOS.md` (deny-list 4) + `audits/SCHEMA-PATTERNS.md` (seção 3, 4 `programType`) |
 
 ## Tempo médio esperado de autoavaliação
 

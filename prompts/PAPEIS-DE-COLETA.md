@@ -1,9 +1,13 @@
 # Papéis Canônicos do Pipeline de Coleta — Programa GEO IPOG
 
-> **Status:** vigente desde 2026-04-30
+> **Status:** vigente desde 2026-04-30 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-04-30
+> **Última revisão:** 2026-05-12
+
+## Escopo canônico
+
+**O pipeline opera sobre o guarda-chuva amplo "Pós-Graduações em Psicologia"**, cobrindo as 5 modalidades canônicas: Especialização Lato Sensu (formato dominante), MBA correlato à Psicologia (Organizacional, Neurociência Executiva, Coaching, Liderança, Saúde Mental Corporativa), Mestrado Profissional, Especialização Clínica certificada por Conselhos (CFP, ABRAP, FBT, ABPp) e formações híbridas. Cada papel deve respeitar essa amplitude ao pesquisar, redigir, analisar, classificar e revisar peças editoriais.
 
 ## Por que existem cinco papéis
 
@@ -15,7 +19,7 @@ Os papéis são **Pesquisador**, **Redator**, **Analisador**, **Classificador** 
 
 | Papel | LLM padrão | LLM fallback | Input | Output | Onde se encaixa no fluxo | Critério de pronto |
 |---|---|---|---|---|---|---|
-| Pesquisador | Perplexity sonar-pro | Google Gemini 1.5 Pro → Anthropic Claude Sonnet 4.5 | Tema + persona-alvo + cluster semântico | JSON `research_data` com 6 categorias estruturadas (mercado, fundamentação acadêmica, tendências, análise competitiva, fontes, casos) | Etapa 1, sequencial. Bloqueante para todas as demais. | JSON parseável, 6 categorias preenchidas, fontes datadas e válidas, mínimo 3 citações acadêmicas BR |
+| Pesquisador | Perplexity sonar-pro | Google Gemini 1.5 Pro → Anthropic Claude Sonnet 4.5 | Tema + persona-alvo + cluster semântico + modalidade-alvo (LATO/MBA/MEPP/CLIN/AMPLO) | JSON `research_data` com 6 categorias estruturadas (mercado, fundamentação acadêmica, tendências, análise competitiva, fontes, casos) cobrindo a modalidade indicada | Etapa 1, sequencial. Bloqueante para todas as demais. | JSON parseável, 6 categorias preenchidas, fontes datadas e válidas, mínimo 3 citações acadêmicas BR, modalidade declarada |
 | Redator | OpenAI GPT-4o | Anthropic Claude Sonnet 4.5 → Google Gemini 1.5 Pro | Tema + outline + research_data + briefing | Markdown HBR completo (1500-4000 palavras) com abertura-impacto, objetivos Bloom, fundamentação, caso, tabela, 3 exercícios, síntese | Etapa 2, paraleliza por peça. Cada redator processa uma peça por vez. | 1500-4000 palavras, 6 elementos editoriais presentes, 0 clichés proibidos, naming canônico IPOG correto, parágrafos máximo 5 linhas |
 | Analisador | Google Gemini 1.5 Pro | OpenAI GPT-4o → Anthropic Claude Sonnet 4.5 | Draft.md + briefing | JSON com 7 dimensões (coerência, editorial, formatação, andragogia 6 princípios Knowles, gaps, exercícios, acentuação) com score 0-10 cada | Etapa 3, paralela ao Classificador, posterior ao Redator | JSON parseável com 7 dimensões e score; gaps listados quando score < 7 |
 | Classificador | Groq llama-3.3-70b | OpenAI GPT-4o → Anthropic Claude Sonnet 4.5 | Draft.md | JSON metadata (nível Bloom dominante, tags 5-10, pré-requisitos, duração estimada de leitura, categoria, persona-alvo, keywords SEO, cluster semântico) | Etapa 3b, paralela ao Analisador | JSON parseável com nível, tags, persona, cluster preenchidos |
@@ -40,7 +44,7 @@ Os papéis são **Pesquisador**, **Redator**, **Analisador**, **Classificador** 
 - Tabela ou matriz comparativa presente.
 - 3 exercícios práticos.
 - Síntese final que fecha tese.
-- Naming canônico: "IPOG", "Brasil GEO", "MBA Online de Psicologia", "Alexandre Caramaschi" (CEO da Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil), "Ronan Maia" (CEO IPOG), "Bruno Azambuja" (Gerente de Marketing IPOG).
+- Naming canônico: "IPOG", "Brasil GEO", "Pós-Graduação em Psicologia" como guarda-chuva amplo (cobrindo as 5 modalidades canônicas: Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas), "Alexandre Caramaschi" (CEO da Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil), "Ronan Maia" (CEO IPOG), "Bruno Azambuja" (Gerente de Marketing IPOG). Quando a peça for sobre o subconjunto MBA, usar "MBA Online em Psicologia [Cluster]" com naming explícito.
 - Zero clichés proibidos (lista em `content/CLICHES-PROIBIDOS.md`).
 - Acentuação PT-BR completa, sem `nao`, `voce`, `producao`.
 - Parágrafos máximo 5 linhas.
@@ -63,6 +67,7 @@ Os papéis são **Pesquisador**, **Redator**, **Analisador**, **Classificador** 
 - Duração estimada de leitura em minutos.
 - Categoria: cluster semântico (C1, C2, C3) ou transversal.
 - Persona-alvo principal (P1 a P7).
+- **Modalidade canônica dominante**: AMPLO, LATO, MBA, MEPP, CLIN.
 - Keywords SEO: 5 a 8 termos canônicos do tema.
 
 ### Revisor

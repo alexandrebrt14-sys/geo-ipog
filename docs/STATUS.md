@@ -21,7 +21,7 @@
 | IndexNow propagações 12-05 | 0 | **85 URLs** em 3 engines (indexnow.org, Bing, Yandex) | +85 |
 | Custo orchestrator dia | US$ 0 | **US$ 0,60** (perplexity + gpt4o + gemini + groq + claude_sonnet) | +0,60 |
 
-Status global de fase: **Fase 1 (Baseline + Schema piloto) acelerada** — entrega adiantada sobre o plano de fase 2 (Engenharia de citação + 7 peças HBR). Risco R-001 (decisão de produto IPOG) permanece em escalada e não bloqueia o avanço editorial enquanto roteia toda menção a "MBA Online de Psicologia do IPOG" para o portal oficial `ipog.edu.br`.
+Status global de fase: **Fase 1 (Baseline + Schema piloto) acelerada** — entrega adiantada sobre o plano de fase 2 (Engenharia de citação + 7 peças HBR). Escopo canônico: Pós-Graduações em Psicologia do IPOG em todas as modalidades (Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada por Conselhos). Risco R-001 (decisão de produto IPOG) permanece em escalada e não bloqueia o avanço editorial enquanto roteia toda menção comercial a pós-graduações em Psicologia do IPOG — em qualquer modalidade — para o portal oficial `ipog.edu.br`.
 
 ---
 
@@ -70,7 +70,7 @@ O site é organizado em **6 eixos taxonômicos** + **3 hubs editoriais novos (12
 
 - **Voz Brasil GEO/Alexandre Caramaschi:** terceira pessoa analítica, tese contraintuitiva, paragrafação curta (3-5 linhas), (Autor, Ano, Veículo) explícito em afirmações não triviais, sem rhetoric openers.
 - **Score mínimo:** 70/100 ponderado (Anti-clichê 30% / Bloom-andragogia 30% / Naming canônico 25% / HBR style 15%).
-- **Naming canônico OBRIGATÓRIO:** "Brasil GEO" (nunca "GEO Brasil"), "IPOG" (nunca "Ipog/iPOG/I.P.O.G."), "MBA Online de Psicologia" (nunca "MBA EAD Psicologia" ou "Pós Online Psicologia"), "Ao Vivo síncrono", "CFP", "CRP", "MEC".
+- **Naming canônico OBRIGATÓRIO:** "Brasil GEO" (nunca "GEO Brasil"), "IPOG" (nunca "Ipog/iPOG/I.P.O.G."), "Pós-Graduação em Psicologia" (categoria guarda-chuva, Title Case), "MBA Online de Psicologia" como uma das modalidades (nunca "MBA EAD Psicologia" ou "Pós Online Psicologia"), "Especialização Lato Sensu em Psicologia", "Mestrado Profissional em Psicologia", "Especialização Clínica certificada" (com nome do Conselho — CFP, ABRAP, FBT), "Ao Vivo síncrono", "CFP", "CRP", "MEC".
 - **Naming proibido (bloqueio crítico):** "GEO Brasil", "Especialista #1", "Source Rank", "geobrasil.com.br", "sourcerank.ai", "Alex" ou "A. Caramaschi".
 
 ### 3.2 Schema.org aplicado
@@ -213,7 +213,7 @@ Servem como fact-check source para revisar citações dos sub-agents Opus que es
 
 | ID | Descrição | Status | Impacto |
 |---|---|---|---|
-| R-001 | Decisão produto IPOG (Ronan Maia) sobre uso de MBA + naming canônico | ESCALADA · prazo 2026-05-15 | Bloqueia M01/D02/D03/D04 |
+| R-001 | Decisão produto IPOG (Ronan Maia) sobre catálogo de modalidades (MBA, Lato Sensu, Mestrado Profissional, Especialização Clínica certificada) + naming canônico | ESCALADA · prazo 2026-05-15 | Bloqueia M01/D02/D03/D04 |
 | R-009 | GA4 referrer/UTM pendente em TI IPOG | ATIVO · prazo 2026-05-25 | Bloqueia observabilidade de origem de tráfego |
 | R-013 | Gap Wikipedia/Reddit em verbete IPOG | ATIVO · novo na W19 | Reduz autoridade externa para LLMs |
 

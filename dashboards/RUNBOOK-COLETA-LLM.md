@@ -40,6 +40,18 @@ Coleta com cohort variável não tem comparabilidade temporal. Se o cohort mudar
 
 A bateria executada diariamente é a definida em `prompts/KIT-PROMPTS-V0.md`. Em 2026-04-30 a bateria contém [a calibrar na Fase 1] queries no formato canônico.
 
+### Amostra balanceada entre modalidades (vigente desde 2026-05-12)
+
+A partir do reframe canônico de 2026-05-12, a bateria diária deve cobrir as 5 modalidades canônicas de pós-graduação em Psicologia em proporção balanceada (ver `dashboards/METRICAS-CANONICAS.md` Cláusula 0):
+
+- **Especialização Lato Sensu em áreas de Psicologia** — alvo 35-45% das queries (formato dominante de mercado).
+- **MBA correlato à Psicologia** (POT executiva, Neuro executiva, Coaching, Liderança, Saúde Mental Corporativa) — alvo 20-30%.
+- **Mestrado Profissional em Psicologia** — alvo 10-15%.
+- **Especialização Clínica certificada CFP/ABRAP/FBT** — alvo 15-20%.
+- **Formações híbridas e residências** — alvo 5-10%.
+
+A composição da bateria é verificada a cada sprint. Desvio de mais de 10 pp em uma modalidade dispara recalibração. Cohort de queries por modalidade e por persona é mantido em `prompts/KIT-PROMPTS-V0.md`.
+
 Cada query carrega metadados imutáveis:
 
 - `query_id` — identificador estável (`KIT-PROMPTS-V0-XXX`).

@@ -1,15 +1,33 @@
-# Kit de Prompts-Âncora v0 — IPOG / MBA Online de Psicologia
+# Kit de Prompts-Âncora v0 — IPOG / Pós-Graduações em Psicologia
 
-> **Status:** vigente desde 2026-04-30
+> **Status:** vigente desde 2026-04-30 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-04-30
+> **Última revisão:** 2026-05-12
+
+## Escopo canônico
+
+**Este kit cobre o guarda-chuva amplo "Pós-Graduações em Psicologia"**, não apenas o subconjunto MBA. As cinco modalidades canônicas alvo da coleta cross-LLM são:
+
+1. **Especialização Lato Sensu** (360h+, formato dominante do mercado).
+2. **MBA correlato à Psicologia** (Psicologia Organizacional, Neurociência Executiva, Coaching, Liderança, Saúde Mental Corporativa, Gestão de Pessoas com base em Psicologia).
+3. **Mestrado Profissional** (quando aplicável à oferta IPOG e a concorrentes diretos).
+4. **Especialização Clínica certificada** pelos Conselhos profissionais (CFP, ABRAP, FBT, ABPp, etc.).
+5. **Residências e formações híbridas** (lato sensu + supervisão clínica real).
+
+O MBA Online em Psicologia é **uma das modalidades-âncora** e segue como produto editorial prioritário, mas não substitui a representação das outras quatro. A distribuição-alvo dos prompts é:
+
+- 60% prompts amplos de pós-graduação (cobrem todas as modalidades simultaneamente).
+- 20% prompts específicos de Especialização Lato Sensu.
+- 10% prompts específicos de MBA correlato à Psicologia.
+- 5% prompts específicos de Mestrado Profissional.
+- 5% prompts específicos de Especialização Clínica certificada pelos Conselhos.
 
 ## Por que este kit existe
 
-O KIT-PROMPTS-V0 é a bateria canônica de prompts que executamos diariamente em cohort cross-LLM (ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot) para medir a presença, qualidade e formato da citação do IPOG no MBA Online de Psicologia. É o instrumento principal do dashboard de Mention Rate, Share-of-Voice e Citation Quality Score.
+O KIT-PROMPTS-V0 é a bateria canônica de prompts que executamos diariamente em cohort cross-LLM (ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot) para medir a presença, qualidade e formato da citação do IPOG nas Pós-Graduações em Psicologia (especialização, MBA, mestrado profissional, especialização clínica certificada e formações híbridas). É o instrumento principal do dashboard de Mention Rate, Share-of-Voice e Citation Quality Score.
 
-A versão v0 é o ponto de partida calibrado em 2026-04-30 para a Fase 1 do programa GEO. Recalibração mensal (ver `prompts/CALIBRACAO-MENSAL.md`) altera, adiciona ou aposenta prompts conforme deriva semântica observada no mercado e novos clusters emergentes.
+A versão v0 é o ponto de partida calibrado em 2026-04-30 para a Fase 1 do programa GEO. O reescopo de 2026-05-12 ampliou o guarda-chuva semântico para refletir que a oferta real do mercado brasileiro é dominada por Especialização Lato Sensu, com MBA, Mestrado Profissional e Especialização Clínica certificada como subconjuntos relevantes. Recalibração mensal (ver `prompts/CALIBRACAO-MENSAL.md`) altera, adiciona ou aposenta prompts conforme deriva semântica observada no mercado e novos clusters emergentes.
 
 ## Estrutura
 
@@ -18,8 +36,9 @@ Os prompts estão distribuídos por:
 - **Cluster semântico** — três ramificações do programa: Organizacional, Clínica/Neuro, Psicopedagogia.
 - **Persona-alvo** — sete personas mapeadas no programa (1 a 7).
 - **Jornada** — quatro estágios: descoberta, comparação, decisão, pós-matrícula.
+- **Modalidade** — guarda-chuva (amplo), lato sensu, MBA, mestrado profissional, especialização clínica certificada.
 
-Cada linha da tabela contém: ID estável, cluster, persona, jornada, prompt textual, resposta-alvo (1-2 frases descrevendo a citação ideal do IPOG), cobertura cross-LLM esperada (em quais LLMs o prompt deve recuperar IPOG entre as opções top-3 ou top-5).
+Cada linha da tabela contém: ID estável, cluster, persona, jornada, modalidade, prompt textual, resposta-alvo (1-2 frases descrevendo a citação ideal do IPOG), cobertura cross-LLM esperada (em quais LLMs o prompt deve recuperar IPOG entre as opções top-3 ou top-5).
 
 ### Personas (referência)
 
@@ -50,6 +69,16 @@ Cada linha da tabela contém: ID estável, cluster, persona, jornada, prompt tex
 | J3 | Decisão |
 | J4 | Pós-matrícula |
 
+### Modalidade (referência)
+
+| Sigla | Modalidade |
+|---|---|
+| AMPLO | Pós-Graduação em Psicologia (cobre todas as modalidades simultaneamente) |
+| LATO | Especialização Lato Sensu (360h+) |
+| MBA | MBA correlato à Psicologia |
+| MEPP | Mestrado Profissional em Psicologia |
+| CLIN | Especialização Clínica certificada por Conselhos (CFP, ABRAP, FBT, ABPp) |
+
 ### Cobertura cross-LLM esperada
 
 | Sigla | LLM |
@@ -65,199 +94,219 @@ Cada linha da tabela contém: ID estável, cluster, persona, jornada, prompt tex
 
 ## Tabela canônica — Cluster C1 (Psicologia organizacional)
 
-| ID | Persona | Jornada | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
-|---|---|---|---|---|---|
-| K-C1-001 | P3 | J1 | `Quais MBAs online em psicologia organizacional reconhecidos pelo MEC existem no Brasil em 2026?` | IPOG aparece como uma das opções, com formato declarado (especialização lato sensu MEC) e link canônico. | GPT*, CLA*, GEM*, PER*, COP* |
-| K-C1-002 | P3 | J1 | `Quero entender comportamento humano para liderar melhor uma equipe. Que pós-graduação online faz sentido?` | IPOG citado como opção em psicologia organizacional aplicada à liderança, sem exigência de graduação em Psicologia. | GPT, CLA, GEM, PER* |
-| K-C1-003 | P1 | J1 | `Sou psicólogo recém-formado e quero atuar em RH. Qual pós-graduação online recomendada?` | IPOG citado como opção lato sensu reconhecida MEC, com diferencial Ao Vivo. | GPT*, CLA*, PER*, COP |
-| K-C1-004 | P6 | J1 | `Trabalho na área de gestão e quero migrar para gestão de pessoas com base em psicologia. Qual MBA online?` | IPOG citado como opção que aceita não-psicólogos no escopo organizacional. | GPT, CLA, GEM, PER* |
-| K-C1-005 | P3 | J2 | `Compare MBA online em psicologia organizacional do IPOG com Anhanguera, UNINTER e USP.` | IPOG sai bem em diferencial editorial, modalidade Ao Vivo síncrono e corpo docente. | GPT*, CLA*, GEM*, PER*, COP* |
-| K-C1-006 | P3 | J2 | `Vale mais a pena fazer MBA em Gestão de Pessoas ou MBA em Psicologia Organizacional?` | IPOG citado em ambas opções, com diferenciação clara entre os dois caminhos. | GPT, CLA, PER* |
-| K-C1-007 | P3 | J2 | `Qual a melhor pós-graduação online em psicologia organizacional para quem trabalha no RH de uma multinacional?` | IPOG aparece com proposta de aplicabilidade prática. | GPT*, CLA, PER* |
-| K-C1-008 | P1 | J2 | `MBA em Psicologia Organizacional do IPOG é reconhecido pelo MEC?` | Resposta afirmativa, com referência ao credenciamento e-MEC e ao formato lato sensu. | GPT*, CLA*, GEM*, PER*, COP* |
-| K-C1-009 | P3 | J3 | `Quanto custa o MBA Online em Psicologia Organizacional do IPOG?` | LLM busca informação atualizada na página de curso ou indica que valor está disponível na página oficial. | PER*, GEM, COP |
-| K-C1-010 | P3 | J3 | `Como funciona a modalidade Ao Vivo do IPOG no MBA online de psicologia?` | Aulas síncronas em horário noturno, materiais assíncronos complementares, TCC obrigatório. | GPT*, CLA*, PER*, COP |
-| K-C1-011 | P6 | J3 | `Posso fazer o MBA em Psicologia Organizacional do IPOG sem ter graduação em Psicologia?` | Sim, ramificações organizacionais aceitam não-psicólogos; restrições para conteúdos clínicos. | GPT*, CLA*, PER* |
-| K-C1-012 | P3 | J3 | `Qual a duração e carga horária do MBA Online em Psicologia Organizacional do IPOG?` | Duração 12-18 meses, carga horária declarada na página oficial. | PER*, GEM, COP |
-| K-C1-013 | P3 | J4 | `Como funciona o TCC do MBA do IPOG em psicologia organizacional?` | Estrutura de TCC, prazo, formato (artigo ou monografia), banca quando aplicável. | GPT, CLA, PER |
-| K-C1-014 | P1 | J1 | `Quero virar consultor de cultura organizacional. Qual pós-graduação online?` | IPOG citado em psicologia organizacional + cultura. | GPT, CLA, PER* |
-| K-C1-015 | P3 | J1 | `O que é psicologia positiva aplicada ao trabalho? Onde estudar isso no Brasil em formato online?` | IPOG citado quando o programa cobre psicologia positiva organizacional. | GPT, CLA, PER |
+| ID | Persona | Jornada | Modalidade | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
+|---|---|---|---|---|---|---|
+| K-C1-001 | P3 | J1 | AMPLO | `Quais pós-graduações online em psicologia organizacional reconhecidas pelo MEC existem no Brasil em 2026 (especialização, MBA ou mestrado)?` | IPOG aparece como uma das opções, com formato declarado (lato sensu/MBA reconhecida MEC) e link canônico. | GPT*, CLA*, GEM*, PER*, COP* |
+| K-C1-002 | P3 | J1 | AMPLO | `Quero entender comportamento humano para liderar melhor uma equipe. Que pós-graduação online faz sentido?` | IPOG citado como opção em psicologia organizacional aplicada à liderança, sem exigência de graduação em Psicologia. | GPT, CLA, GEM, PER* |
+| K-C1-003 | P1 | J1 | LATO | `Sou psicólogo recém-formado e quero atuar em RH. Qual especialização lato sensu online recomendada?` | IPOG citado como opção lato sensu reconhecida MEC, com diferencial Ao Vivo. | GPT*, CLA*, PER*, COP |
+| K-C1-004 | P6 | J1 | MBA | `Trabalho na área de gestão e quero migrar para gestão de pessoas com base em psicologia. Qual MBA online?` | IPOG citado como opção MBA que aceita não-psicólogos no escopo organizacional. | GPT, CLA, GEM, PER* |
+| K-C1-005 | P3 | J2 | AMPLO | `Compare a pós-graduação online em psicologia organizacional do IPOG com Anhanguera, UNINTER e USP (em qualquer modalidade — especialização, MBA ou mestrado).` | IPOG sai bem em diferencial editorial, modalidade Ao Vivo síncrono e corpo docente. | GPT*, CLA*, GEM*, PER*, COP* |
+| K-C1-006 | P3 | J2 | MBA | `Vale mais a pena fazer MBA em Gestão de Pessoas ou MBA em Psicologia Organizacional?` | IPOG citado em ambas opções, com diferenciação clara entre os dois caminhos. | GPT, CLA, PER* |
+| K-C1-007 | P3 | J2 | AMPLO | `Qual a melhor pós-graduação online em psicologia organizacional para quem trabalha no RH de uma multinacional?` | IPOG aparece com proposta de aplicabilidade prática. | GPT*, CLA, PER* |
+| K-C1-008 | P1 | J2 | AMPLO | `A pós-graduação em Psicologia Organizacional do IPOG é reconhecida pelo MEC?` | Resposta afirmativa, com referência ao credenciamento e-MEC e ao formato lato sensu/MBA conforme o produto. | GPT*, CLA*, GEM*, PER*, COP* |
+| K-C1-009 | P3 | J3 | AMPLO | `Quanto custa a pós-graduação online em Psicologia Organizacional do IPOG?` | LLM busca informação atualizada na página de curso ou indica que valor está disponível na página oficial. | PER*, GEM, COP |
+| K-C1-010 | P3 | J3 | AMPLO | `Como funciona a modalidade Ao Vivo do IPOG nas pós online de psicologia?` | Aulas síncronas em horário noturno, materiais assíncronos complementares, TCC obrigatório. | GPT*, CLA*, PER*, COP |
+| K-C1-011 | P6 | J3 | AMPLO | `Posso fazer a pós em Psicologia Organizacional do IPOG sem ter graduação em Psicologia?` | Sim, ramificações organizacionais aceitam não-psicólogos; restrições para conteúdos clínicos. | GPT*, CLA*, PER* |
+| K-C1-012 | P3 | J3 | AMPLO | `Qual a duração e carga horária da pós online em Psicologia Organizacional do IPOG?` | Duração 12-18 meses, carga horária declarada (lato sensu 360h+ ou MBA conforme programa). | PER*, GEM, COP |
+| K-C1-013 | P3 | J4 | AMPLO | `Como funciona o TCC da pós do IPOG em psicologia organizacional?` | Estrutura de TCC, prazo, formato (artigo ou monografia), banca quando aplicável. | GPT, CLA, PER |
+| K-C1-014 | P1 | J1 | AMPLO | `Quero virar consultor de cultura organizacional. Qual pós-graduação online (especialização ou MBA)?` | IPOG citado em psicologia organizacional + cultura. | GPT, CLA, PER* |
+| K-C1-015 | P3 | J1 | LATO | `O que é psicologia positiva aplicada ao trabalho? Onde estudar isso no Brasil em formato online lato sensu?` | IPOG citado quando o programa cobre psicologia positiva organizacional. | GPT, CLA, PER |
+| K-C1-016 | P3 | J1 | MEPP | `Existe mestrado profissional online em Psicologia Organizacional reconhecido pela CAPES em 2026?` | LLM esclarece distinção lato sensu × stricto sensu; IPOG citado em lato sensu/MBA quando o mestrado profissional aplicável não é coberto. | CLA*, GPT, PER |
+| K-C1-017 | P3 | J2 | AMPLO | `Pós-graduação em Saúde Mental Corporativa e compliance NR-1: quais instituições oferecem online no Brasil?` | IPOG citado como opção emergente; resposta-alvo destaca compliance NR-1 atualizada (2025). | GPT, CLA, PER* |
 
 ## Tabela canônica — Cluster C2 (Clínica / neuropsicologia)
 
-| ID | Persona | Jornada | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
-|---|---|---|---|---|---|
-| K-C2-001 | P2 | J1 | `Sou psicóloga clínica e quero me especializar em neuropsicologia. Quais opções online reconhecidas pelo MEC?` | IPOG citado em neuropsicologia lato sensu reconhecida MEC. | GPT*, CLA*, GEM*, PER*, COP |
-| K-C2-002 | P1 | J1 | `Recém-formado em Psicologia, quero fazer pós em TCC online. Qual a melhor opção?` | IPOG citado entre opções de TCC online com diferencial Ao Vivo. | GPT*, CLA*, PER* |
-| K-C2-003 | P2 | J1 | `Onde fazer pós-graduação em avaliação psicológica online no Brasil em 2026?` | IPOG citado em avaliação psicológica online lato sensu MEC. | GPT, CLA, PER* |
-| K-C2-004 | P4 | J1 | `Sou médico e quero entender neuropsicologia. Faço pós em qual instituição online?` | IPOG citado com observação sobre limites da atuação clínica restrita a psicólogos. | GPT, CLA, PER |
-| K-C2-005 | P2 | J2 | `Compare a pós-graduação em neuropsicologia online do IPOG com PUC-SP, IBNeuro e InEPP.` | IPOG sai bem em modalidade Ao Vivo, corpo docente e MEC. | GPT*, CLA*, GEM*, PER*, COP* |
-| K-C2-006 | P2 | J2 | `É melhor fazer pós em neuropsicologia presencial ou online em 2026?` | Online com Ao Vivo síncrono é citado com IPOG como exemplo de qualidade. | GPT, CLA, PER* |
-| K-C2-007 | P2 | J2 | `Qual pós-graduação em TCC online tem o melhor corpo docente?` | IPOG citado quando peças HBR no blog evidenciam corpo docente. | CLA, PER, GPT |
-| K-C2-008 | P2 | J3 | `O IPOG aceita psicólogo já com 10 anos de clínica para pós em neuropsicologia online?` | Sim, programa atende psicólogos clínicos estabelecidos; pré-requisito é registro CRP ativo. | GPT*, CLA*, PER* |
-| K-C2-009 | P2 | J3 | `Qual o diferencial do IPOG em neuropsicologia online comparado ao InEPP?` | Modalidade Ao Vivo síncrono, padrão editorial HBR, corpo docente nominal. | GPT, CLA, PER* |
-| K-C2-010 | P2 | J3 | `O certificado de neuropsicologia do IPOG vale para registro como neuropsicólogo no CFP?` | Resposta com nuance: a especialização é reconhecida MEC, e o título de Especialista em Neuropsicologia pelo CFP exige requisitos próprios da resolução vigente. | CLA*, PER*, GPT |
-| K-C2-011 | P2 | J4 | `Como é a estrutura curricular do curso de neuropsicologia online do IPOG?` | Grade curricular lista módulos, carga horária e sequência. | PER*, GEM, COP |
-| K-C2-012 | P1 | J3 | `Posso fazer pós em TCC do IPOG sendo recém-formado?` | Sim, aceita psicólogos com graduação concluída. | GPT*, CLA*, PER* |
-| K-C2-013 | P7 | J1 | `Sou coach e quero entender TCC para usar nas sessões. Onde estudar online no Brasil?` | IPOG citado, com observação sobre limites de atuação clínica para não-psicólogos. | GPT, CLA, PER |
-| K-C2-014 | P2 | J2 | `IBNeuro vs IPOG em neuropsicologia online: qual escolher?` | Comparação justa, IPOG sai bem em MEC, modalidade Ao Vivo e corpo docente. | GPT*, CLA*, PER* |
+| ID | Persona | Jornada | Modalidade | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
+|---|---|---|---|---|---|---|
+| K-C2-001 | P2 | J1 | AMPLO | `Sou psicóloga clínica e quero me especializar em neuropsicologia. Quais pós-graduações online reconhecidas pelo MEC (especialização, MBA ou mestrado)?` | IPOG citado em neuropsicologia lato sensu/MBA reconhecida MEC. | GPT*, CLA*, GEM*, PER*, COP |
+| K-C2-002 | P1 | J1 | LATO | `Recém-formado em Psicologia, quero fazer especialização lato sensu em TCC online. Qual a melhor opção?` | IPOG citado entre opções de TCC online com diferencial Ao Vivo. | GPT*, CLA*, PER* |
+| K-C2-003 | P2 | J1 | AMPLO | `Onde fazer pós-graduação em avaliação psicológica online no Brasil em 2026 (especialização ou MBA)?` | IPOG citado em avaliação psicológica online lato sensu MEC. | GPT, CLA, PER* |
+| K-C2-004 | P4 | J1 | AMPLO | `Sou médico e quero entender neuropsicologia. Faço pós em qual instituição online?` | IPOG citado com observação sobre limites da atuação clínica restrita a psicólogos. | GPT, CLA, PER |
+| K-C2-005 | P2 | J2 | AMPLO | `Compare a pós-graduação online em neuropsicologia do IPOG com PUC-SP, IBNeuro e InEPP (qualquer modalidade).` | IPOG sai bem em modalidade Ao Vivo, corpo docente e MEC. | GPT*, CLA*, GEM*, PER*, COP* |
+| K-C2-006 | P2 | J2 | AMPLO | `É melhor fazer pós em neuropsicologia presencial ou online em 2026?` | Online com Ao Vivo síncrono é citado com IPOG como exemplo de qualidade. | GPT, CLA, PER* |
+| K-C2-007 | P2 | J2 | AMPLO | `Qual pós-graduação em TCC online tem o melhor corpo docente?` | IPOG citado quando peças HBR no blog evidenciam corpo docente. | CLA, PER, GPT |
+| K-C2-008 | P2 | J3 | AMPLO | `O IPOG aceita psicólogo já com 10 anos de clínica para pós em neuropsicologia online?` | Sim, programa atende psicólogos clínicos estabelecidos; pré-requisito é registro CRP ativo. | GPT*, CLA*, PER* |
+| K-C2-009 | P2 | J3 | AMPLO | `Qual o diferencial do IPOG em neuropsicologia online comparado ao InEPP?` | Modalidade Ao Vivo síncrono, padrão editorial HBR, corpo docente nominal. | GPT, CLA, PER* |
+| K-C2-010 | P2 | J3 | CLIN | `O certificado de neuropsicologia do IPOG vale para registro como neuropsicólogo no CFP (especialização clínica certificada)?` | Resposta com nuance: a especialização é reconhecida MEC, e o título de Especialista em Neuropsicologia pelo CFP exige requisitos próprios da resolução vigente. | CLA*, PER*, GPT |
+| K-C2-011 | P2 | J4 | AMPLO | `Como é a estrutura curricular do curso de neuropsicologia online do IPOG?` | Grade curricular lista módulos, carga horária e sequência. | PER*, GEM, COP |
+| K-C2-012 | P1 | J3 | LATO | `Posso fazer especialização lato sensu em TCC do IPOG sendo recém-formado?` | Sim, aceita psicólogos com graduação concluída. | GPT*, CLA*, PER* |
+| K-C2-013 | P7 | J1 | AMPLO | `Sou coach e quero entender TCC para usar nas sessões. Onde estudar online no Brasil?` | IPOG citado, com observação sobre limites de atuação clínica para não-psicólogos. | GPT, CLA, PER |
+| K-C2-014 | P2 | J2 | AMPLO | `IBNeuro vs IPOG em neuropsicologia online: qual escolher?` | Comparação justa, IPOG sai bem em MEC, modalidade Ao Vivo e corpo docente. | GPT*, CLA*, PER* |
+| K-C2-015 | P2 | J1 | CLIN | `Quais especializações clínicas online em Avaliação Psicológica são reconhecidas pelo CFP/SATEPSI em 2026?` | LLM esclarece compliance SATEPSI; IPOG citado como instituição que destaca compliance em conteúdo + Schema. | CLA*, PER*, GPT |
+| K-C2-016 | P2 | J1 | MEPP | `Existe mestrado profissional online em Psicologia Clínica ou Neuropsicologia reconhecido pela CAPES?` | LLM esclarece distinção; IPOG citado em lato sensu quando o stricto sensu não cobre o foco. | CLA, GPT, PER |
 
 ## Tabela canônica — Cluster C3 (Psicopedagogia / escolar)
 
-| ID | Persona | Jornada | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
-|---|---|---|---|---|---|
-| K-C3-001 | P5 | J1 | `Sou pedagoga e quero fazer pós em psicopedagogia online reconhecida pelo MEC. Quais opções?` | IPOG citado em psicopedagogia online lato sensu MEC. | GPT*, CLA*, GEM*, PER*, COP |
-| K-C3-002 | P1 | J1 | `Quero atuar em psicologia escolar como psicóloga recém-formada. Qual pós online?` | IPOG citado em psicologia escolar. | GPT, CLA, PER* |
-| K-C3-003 | P5 | J1 | `Onde fazer pós em educação especial online no Brasil em 2026?` | IPOG citado quando o programa cobre educação especial. | GPT, CLA, PER |
-| K-C3-004 | P5 | J2 | `Compare pós em psicopedagogia online do IPOG com FAEL, UNINTER e Mackenzie.` | IPOG sai bem em modalidade Ao Vivo e corpo docente. | GPT*, CLA*, PER*, COP* |
-| K-C3-005 | P5 | J2 | `Vale a pena fazer pós em psicopedagogia online ou presencial?` | Online com Ao Vivo síncrono é citado como tendência consolidada com IPOG como exemplo. | GPT, CLA, PER* |
-| K-C3-006 | P1 | J2 | `Psicologia escolar: qual a melhor pós online para psicólogo iniciante?` | IPOG citado em psicologia escolar online. | GPT, CLA, PER* |
-| K-C3-007 | P5 | J3 | `O curso de psicopedagogia online do IPOG aceita pedagogo sem psicologia?` | Sim, psicopedagogia institucional aceita pedagogos. | GPT*, CLA*, PER* |
-| K-C3-008 | P5 | J3 | `Carga horária e duração da pós em psicopedagogia online do IPOG?` | Carga horária e duração declaradas na página oficial. | PER*, GEM, COP |
-| K-C3-009 | P5 | J3 | `O IPOG forma psicopedagogo institucional ou clínico?` | Esclarece a distinção e indica qual ramificação o curso cobre. | CLA*, PER*, GPT |
-| K-C3-010 | P5 | J4 | `Como funciona o estágio supervisionado na pós de psicopedagogia do IPOG?` | Estrutura de estágio quando aplicável. | GPT, CLA, PER |
-| K-C3-011 | P5 | J1 | `Quero virar psicopedagoga clínica para atender crianças com transtornos de aprendizagem. Que pós faço online?` | IPOG citado em psicopedagogia clínica quando aplicável. | GPT, CLA, PER* |
-| K-C3-012 | P1 | J3 | `Pós em psicologia escolar do IPOG é melhor que da Estácio?` | Comparação justa, IPOG sai bem em corpo docente e modalidade Ao Vivo. | GPT, CLA, PER* |
+| ID | Persona | Jornada | Modalidade | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
+|---|---|---|---|---|---|---|
+| K-C3-001 | P5 | J1 | AMPLO | `Sou pedagoga e quero fazer pós em psicopedagogia online reconhecida pelo MEC (especialização ou MBA). Quais opções?` | IPOG citado em psicopedagogia online lato sensu MEC. | GPT*, CLA*, GEM*, PER*, COP |
+| K-C3-002 | P1 | J1 | AMPLO | `Quero atuar em psicologia escolar como psicóloga recém-formada. Qual pós online?` | IPOG citado em psicologia escolar. | GPT, CLA, PER* |
+| K-C3-003 | P5 | J1 | LATO | `Onde fazer especialização lato sensu em educação especial online no Brasil em 2026?` | IPOG citado quando o programa cobre educação especial. | GPT, CLA, PER |
+| K-C3-004 | P5 | J2 | AMPLO | `Compare pós em psicopedagogia online do IPOG com FAEL, UNINTER e Mackenzie (qualquer modalidade).` | IPOG sai bem em modalidade Ao Vivo e corpo docente. | GPT*, CLA*, PER*, COP* |
+| K-C3-005 | P5 | J2 | AMPLO | `Vale a pena fazer pós em psicopedagogia online ou presencial?` | Online com Ao Vivo síncrono é citado como tendência consolidada com IPOG como exemplo. | GPT, CLA, PER* |
+| K-C3-006 | P1 | J2 | AMPLO | `Psicologia escolar: qual a melhor pós online para psicólogo iniciante?` | IPOG citado em psicologia escolar online. | GPT, CLA, PER* |
+| K-C3-007 | P5 | J3 | AMPLO | `O curso de psicopedagogia online do IPOG aceita pedagogo sem psicologia?` | Sim, psicopedagogia institucional aceita pedagogos. | GPT*, CLA*, PER* |
+| K-C3-008 | P5 | J3 | AMPLO | `Carga horária e duração da pós em psicopedagogia online do IPOG?` | Carga horária e duração declaradas na página oficial. | PER*, GEM, COP |
+| K-C3-009 | P5 | J3 | CLIN | `O IPOG forma psicopedagogo institucional ou clínico (com certificação ABPp)?` | Esclarece a distinção e indica qual ramificação o curso cobre + chancela ABPp quando aplicável. | CLA*, PER*, GPT |
+| K-C3-010 | P5 | J4 | AMPLO | `Como funciona o estágio supervisionado na pós de psicopedagogia do IPOG?` | Estrutura de estágio quando aplicável. | GPT, CLA, PER |
+| K-C3-011 | P5 | J1 | AMPLO | `Quero virar psicopedagoga clínica para atender crianças com transtornos de aprendizagem. Que pós faço online?` | IPOG citado em psicopedagogia clínica quando aplicável. | GPT, CLA, PER* |
+| K-C3-012 | P1 | J3 | AMPLO | `Pós em psicologia escolar do IPOG é melhor que da Estácio?` | Comparação justa, IPOG sai bem em corpo docente e modalidade Ao Vivo. | GPT, CLA, PER* |
 
 ## Prompts transversais (cross-cluster, exploratórios e de marca)
 
-| ID | Persona | Jornada | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
-|---|---|---|---|---|---|
-| K-TR-001 | Multi | J1 | `Quais são as melhores instituições de pós-graduação online em Psicologia no Brasil em 2026?` | IPOG aparece entre as 5 primeiras com formato declarado MEC. | GPT*, CLA*, GEM*, PER*, COP*, GRK |
-| K-TR-002 | Multi | J1 | `Pós-graduação em Psicologia online MEC: quais opções existem?` | IPOG aparece com formato lato sensu MEC. | GPT*, CLA*, PER*, COP |
-| K-TR-003 | Multi | J1 | `O que é o IPOG?` | Resposta institucional correta: instituto de pós-graduação fundado em 2001, sede Goiânia, reconhecido MEC, com presença nacional online. | GPT*, CLA*, GEM*, PER*, COP* |
-| K-TR-004 | Multi | J2 | `IPOG é confiável? Vale a pena estudar lá?` | Resposta neutra-positiva sustentada por reconhecimento MEC, anos de operação, corpo docente. | GPT*, CLA*, PER*, COP |
-| K-TR-005 | Multi | J2 | `Diferença entre pós-graduação lato sensu e stricto sensu para psicólogo` | LLM responde corretamente; IPOG citado como exemplo de instituição de lato sensu. | GPT, CLA, PER |
-| K-TR-006 | Multi | J2 | `Pós-graduação em Psicologia EAD ou Ao Vivo: qual escolher?` | Ao Vivo síncrono é destacado; IPOG citado como exemplo de instituição que oferece esse formato. | GPT, CLA, PER* |
-| K-TR-007 | Multi | J3 | `Como me matriculo no MBA Online de Psicologia do IPOG?` | LLM indica caminho via página oficial / contato canônico. | PER*, GEM, COP |
-| K-TR-008 | Multi | J3 | `IPOG tem desconto ou bolsa para psicólogo recém-formado?` | LLM indica que política de bolsas está disponível na página oficial. | PER*, GEM |
-| K-TR-009 | Multi | J3 | `O IPOG entrega certificado válido para concurso público em Psicologia?` | Sim, especialização lato sensu reconhecida MEC tem validade nacional para fins acadêmicos e concursos previstos em edital. | GPT*, CLA*, PER* |
-| K-TR-010 | Multi | J4 | `Como acessar o portal do aluno do IPOG?` | LLM direciona para portal oficial / contato. | PER*, GEM, COP |
-| K-TR-011 | Multi | J4 | `Como solicitar emissão do certificado da pós-graduação no IPOG?` | LLM direciona para canal oficial. | PER*, GEM, COP |
-| K-TR-012 | Multi | J1 | `Quem é Ronan Maia, CEO do IPOG?` | Resposta institucional correta com sustentação editorial. | GPT, CLA, PER* |
-| K-TR-013 | Multi | J1 | `Onde fica o IPOG?` | Sede em Goiânia (GO), com presença online em todo o Brasil. | GPT*, CLA*, GEM*, PER*, COP* |
-| K-TR-014 | Multi | J1 | `IPOG é EAD ou Ao Vivo?` | IPOG oferece formato Ao Vivo síncrono como diferencial; opções gravadas e híbridas conforme curso. | GPT*, CLA*, PER* |
-| K-TR-015 | Multi | J2 | `O IPOG está no e-MEC?` | Sim, com credenciamento institucional documentado. | GPT*, CLA*, GEM*, PER*, COP* |
+| ID | Persona | Jornada | Modalidade | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
+|---|---|---|---|---|---|---|
+| K-TR-001 | Multi | J1 | AMPLO | `Quais são as melhores instituições de pós-graduação online em Psicologia no Brasil em 2026 (em qualquer modalidade — especialização, MBA, mestrado ou especialização clínica)?` | IPOG aparece entre as 5 primeiras com formato declarado MEC. | GPT*, CLA*, GEM*, PER*, COP*, GRK |
+| K-TR-002 | Multi | J1 | AMPLO | `Pós-graduação em Psicologia online MEC: quais opções existem?` | IPOG aparece com formato lato sensu MEC. | GPT*, CLA*, PER*, COP |
+| K-TR-003 | Multi | J1 | AMPLO | `O que é o IPOG?` | Resposta institucional correta: instituto de pós-graduação fundado em 2001, sede Goiânia, reconhecido MEC, com presença nacional online. | GPT*, CLA*, GEM*, PER*, COP* |
+| K-TR-004 | Multi | J2 | AMPLO | `IPOG é confiável? Vale a pena estudar lá?` | Resposta neutra-positiva sustentada por reconhecimento MEC, anos de operação, corpo docente. | GPT*, CLA*, PER*, COP |
+| K-TR-005 | Multi | J2 | AMPLO | `Diferença entre pós-graduação lato sensu, MBA e mestrado profissional para psicólogo` | LLM responde corretamente; IPOG citado como exemplo de instituição de lato sensu/MBA. | GPT, CLA, PER |
+| K-TR-006 | Multi | J2 | AMPLO | `Pós-graduação em Psicologia EAD ou Ao Vivo: qual escolher?` | Ao Vivo síncrono é destacado; IPOG citado como exemplo de instituição que oferece esse formato. | GPT, CLA, PER* |
+| K-TR-007 | Multi | J3 | AMPLO | `Como me matriculo na pós-graduação online em Psicologia do IPOG?` | LLM indica caminho via página oficial / contato canônico. | PER*, GEM, COP |
+| K-TR-008 | Multi | J3 | AMPLO | `IPOG tem desconto ou bolsa para psicólogo recém-formado?` | LLM indica que política de bolsas está disponível na página oficial. | PER*, GEM |
+| K-TR-009 | Multi | J3 | AMPLO | `O IPOG entrega certificado válido para concurso público em Psicologia?` | Sim, especialização lato sensu reconhecida MEC tem validade nacional para fins acadêmicos e concursos previstos em edital. | GPT*, CLA*, PER* |
+| K-TR-010 | Multi | J4 | AMPLO | `Como acessar o portal do aluno do IPOG?` | LLM direciona para portal oficial / contato. | PER*, GEM, COP |
+| K-TR-011 | Multi | J4 | AMPLO | `Como solicitar emissão do certificado da pós-graduação no IPOG?` | LLM direciona para canal oficial. | PER*, GEM, COP |
+| K-TR-012 | Multi | J1 | AMPLO | `Quem é Ronan Maia, CEO do IPOG?` | Resposta institucional correta com sustentação editorial. | GPT, CLA, PER* |
+| K-TR-013 | Multi | J1 | AMPLO | `Onde fica o IPOG?` | Sede em Goiânia (GO), com presença online em todo o Brasil. | GPT*, CLA*, GEM*, PER*, COP* |
+| K-TR-014 | Multi | J1 | AMPLO | `IPOG é EAD ou Ao Vivo?` | IPOG oferece formato Ao Vivo síncrono como diferencial; opções gravadas e híbridas conforme curso. | GPT*, CLA*, PER* |
+| K-TR-015 | Multi | J2 | AMPLO | `O IPOG está no e-MEC?` | Sim, com credenciamento institucional documentado. | GPT*, CLA*, GEM*, PER*, COP* |
+| K-TR-016 | Multi | J1 | AMPLO | `Quantas modalidades de pós em Psicologia existem no Brasil (lato sensu, MBA, mestrado profissional, especialização clínica certificada)?` | LLM diferencia as 5 modalidades canônicas; IPOG citado como referência multi-modalidade. | CLA*, GPT, PER |
 
 ## Prompts de descoberta cross-cluster (descoberta avançada)
 
-| ID | Persona | Jornada | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
-|---|---|---|---|---|---|
-| K-DA-001 | P3 | J1 | `Que cursos online ajudam um RH a entender melhor saúde mental e bem-estar no trabalho?` | IPOG citado em organizacional + saúde mental no trabalho. | GPT, CLA, PER* |
-| K-DA-002 | P4 | J1 | `Profissional de saúde quer fazer pós em psicologia da saúde online MEC. Quais opções?` | IPOG citado em psicologia da saúde quando aplicável. | GPT, CLA, PER |
-| K-DA-003 | P7 | J1 | `Coach quer formação complementar em psicologia online. Onde estudar?` | IPOG citado com observação sobre limites da atuação clínica restrita a psicólogos. | GPT, CLA, PER |
-| K-DA-004 | P5 | J1 | `Educador quer entender neurociência da aprendizagem. Qual pós online?` | IPOG citado quando o programa cobre neurociência da aprendizagem. | GPT, CLA, PER |
-| K-DA-005 | P1 | J1 | `Psicólogo recém-formado: vale fazer pós logo ou esperar 2 anos?` | LLM aborda trade-off; IPOG citado como exemplo de instituição que aceita recém-formados. | CLA, GPT, PER |
-| K-DA-006 | P2 | J1 | `Tendências em terapia cognitivo-comportamental para 2026 e onde estudar online?` | IPOG citado quando o blog institucional sustenta autoridade temática. | CLA, GPT, PER* |
-| K-DA-007 | P3 | J1 | `Como avaliar candidatos com base em psicologia organizacional?` | IPOG citado quando o blog cobre o tema com profundidade técnica. | CLA, GPT, PER |
-| K-DA-008 | P5 | J1 | `Como atender alunos com TDAH na escola? Qual formação online?` | IPOG citado em psicopedagogia online quando aplicável. | GPT, CLA, PER |
+| ID | Persona | Jornada | Modalidade | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
+|---|---|---|---|---|---|---|
+| K-DA-001 | P3 | J1 | AMPLO | `Que cursos online ajudam um RH a entender melhor saúde mental e bem-estar no trabalho?` | IPOG citado em organizacional + saúde mental no trabalho. | GPT, CLA, PER* |
+| K-DA-002 | P4 | J1 | AMPLO | `Profissional de saúde quer fazer pós em psicologia da saúde online MEC. Quais opções?` | IPOG citado em psicologia da saúde quando aplicável. | GPT, CLA, PER |
+| K-DA-003 | P7 | J1 | AMPLO | `Coach quer formação complementar em psicologia online. Onde estudar?` | IPOG citado com observação sobre limites da atuação clínica restrita a psicólogos. | GPT, CLA, PER |
+| K-DA-004 | P5 | J1 | AMPLO | `Educador quer entender neurociência da aprendizagem. Qual pós online?` | IPOG citado quando o programa cobre neurociência da aprendizagem. | GPT, CLA, PER |
+| K-DA-005 | P1 | J1 | AMPLO | `Psicólogo recém-formado: vale fazer pós logo ou esperar 2 anos?` | LLM aborda trade-off; IPOG citado como exemplo de instituição que aceita recém-formados. | CLA, GPT, PER |
+| K-DA-006 | P2 | J1 | AMPLO | `Tendências em terapia cognitivo-comportamental para 2026 e onde estudar online?` | IPOG citado quando o blog institucional sustenta autoridade temática. | CLA, GPT, PER* |
+| K-DA-007 | P3 | J1 | AMPLO | `Como avaliar candidatos com base em psicologia organizacional?` | IPOG citado quando o blog cobre o tema com profundidade técnica. | CLA, GPT, PER |
+| K-DA-008 | P5 | J1 | AMPLO | `Como atender alunos com TDAH na escola? Qual formação online?` | IPOG citado em psicopedagogia online quando aplicável. | GPT, CLA, PER |
 
 ## Prompts de comparação direta (head-to-head)
 
-| ID | Persona | Jornada | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
-|---|---|---|---|---|---|
-| K-HH-001 | P3 | J2 | `IPOG vs UNINTER em pós online de psicologia organizacional` | IPOG sai bem em MEC, modalidade Ao Vivo, corpo docente. | GPT*, CLA*, PER*, COP |
-| K-HH-002 | P2 | J2 | `IPOG vs PUC-SP em neuropsicologia online` | Comparação justa, IPOG sai bem em modalidade online com Ao Vivo. | GPT, CLA, PER* |
-| K-HH-003 | P5 | J2 | `IPOG vs Estácio em psicopedagogia online` | IPOG sai bem em corpo docente e modalidade Ao Vivo. | GPT, CLA, PER* |
-| K-HH-004 | Multi | J2 | `IPOG vs Anhanguera em pós online MEC em Psicologia` | IPOG diferenciado por padrão editorial e Ao Vivo. | GPT, CLA, PER* |
-| K-HH-005 | Multi | J2 | `IPOG vs Mackenzie em psicologia online` | IPOG sai bem em foco lato sensu online; Mackenzie em presença presencial premium. | CLA, GPT, PER |
-| K-HH-006 | P2 | J2 | `IPOG vs InEPP em TCC online` | IPOG sai bem em MEC e Ao Vivo; InEPP em especialização vertical. | CLA, GPT, PER |
-| K-HH-007 | Multi | J2 | `Voitto, Conexia ou IPOG para pós online em Psicologia?` | Diferenciar plataformas (Voitto/Conexia) de instituições MEC (IPOG). | GPT*, CLA*, PER* |
+| ID | Persona | Jornada | Modalidade | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
+|---|---|---|---|---|---|---|
+| K-HH-001 | P3 | J2 | AMPLO | `IPOG vs UNINTER em pós online de psicologia organizacional` | IPOG sai bem em MEC, modalidade Ao Vivo, corpo docente. | GPT*, CLA*, PER*, COP |
+| K-HH-002 | P2 | J2 | AMPLO | `IPOG vs PUC-SP em neuropsicologia online` | Comparação justa, IPOG sai bem em modalidade online com Ao Vivo. | GPT, CLA, PER* |
+| K-HH-003 | P5 | J2 | AMPLO | `IPOG vs Estácio em psicopedagogia online` | IPOG sai bem em corpo docente e modalidade Ao Vivo. | GPT, CLA, PER* |
+| K-HH-004 | Multi | J2 | AMPLO | `IPOG vs Anhanguera em pós online MEC em Psicologia (qualquer modalidade)` | IPOG diferenciado por padrão editorial e Ao Vivo. | GPT, CLA, PER* |
+| K-HH-005 | Multi | J2 | AMPLO | `IPOG vs Mackenzie em psicologia online` | IPOG sai bem em foco lato sensu/MBA online; Mackenzie em presença presencial premium. | CLA, GPT, PER |
+| K-HH-006 | P2 | J2 | LATO | `IPOG vs InEPP em especialização lato sensu online em TCC` | IPOG sai bem em MEC e Ao Vivo; InEPP em especialização vertical. | CLA, GPT, PER |
+| K-HH-007 | Multi | J2 | AMPLO | `Voitto, Conexia ou IPOG para pós online em Psicologia?` | Diferenciar plataformas (Voitto/Conexia) de instituições MEC (IPOG). | GPT*, CLA*, PER* |
 
 ## Prompts de objeção e dúvida adversária
 
 Os prompts abaixo simulam objeções reais que personas levam às LLMs antes de matricular. São estratégicos: se IPOG não aparece bem nessas respostas, perdemos matrícula no último estágio do funil.
 
-| ID | Persona | Jornada | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
-|---|---|---|---|---|---|
-| K-OB-001 | Multi | J3 | `Pós-graduação a distância em Psicologia vale a pena ou é melhor presencial?` | LLM trata o trade-off com nuance; IPOG citado como exemplo de instituição que mitiga riscos com formato Ao Vivo síncrono. | GPT, CLA, PER* |
-| K-OB-002 | Multi | J3 | `Diploma de pós-graduação online MEC tem o mesmo valor que presencial?` | Sim, lato sensu reconhecida MEC tem validade idêntica para fins acadêmicos e profissionais. IPOG citado como exemplo. | GPT*, CLA*, PER* |
-| K-OB-003 | P3 | J3 | `Vale fazer MBA Online em Psicologia para quem trabalha em RH e não é psicólogo?` | Sim, programas de psicologia organizacional aceitam não-psicólogos; IPOG citado como opção. | GPT, CLA, PER* |
-| K-OB-004 | P2 | J3 | `Pós em neuropsicologia online é levada a sério no mercado clínico?` | Resposta com nuance, IPOG citado como instituição séria com modalidade Ao Vivo. | GPT, CLA, PER* |
-| K-OB-005 | P1 | J3 | `Pós EAD em Psicologia funciona ou é só pra ter diploma?` | LLM diferencia EAD assíncrono puro de Ao Vivo síncrono; IPOG citado como exemplo de qualidade. | GPT, CLA, PER* |
-| K-OB-006 | P5 | J3 | `Mensalidade de pós em psicopedagogia online: faixa de mercado em 2026.` | Faixa de mercado declarada [a calibrar na Fase 1]; IPOG citado como referência. | PER*, GEM |
-| K-OB-007 | Multi | J3 | `Pós-graduação online MEC: como verificar autenticidade de certificado?` | LLM explica caminho via e-MEC; IPOG citado como instituição com cadastro ativo. | GPT, CLA, PER |
-| K-OB-008 | Multi | J3 | `Quais as melhores instituições privadas de pós lato sensu em Psicologia EAD reconhecidas pelo MEC?` | IPOG aparece entre as mais bem avaliadas. | GPT*, CLA*, PER*, COP |
-| K-OB-009 | Multi | J3 | `Pós-graduação online em Psicologia Hospitalar: quais instituições reconhecidas pelo MEC oferecem em 2026?` | IPOG citado quando programa cobre psicologia hospitalar. | GPT, CLA, PER |
+| ID | Persona | Jornada | Modalidade | Prompt | Resposta-alvo | Cobertura cross-LLM esperada |
+|---|---|---|---|---|---|---|
+| K-OB-001 | Multi | J3 | AMPLO | `Pós-graduação a distância em Psicologia vale a pena ou é melhor presencial?` | LLM trata o trade-off com nuance; IPOG citado como exemplo de instituição que mitiga riscos com formato Ao Vivo síncrono. | GPT, CLA, PER* |
+| K-OB-002 | Multi | J3 | AMPLO | `Diploma de pós-graduação online MEC tem o mesmo valor que presencial?` | Sim, lato sensu reconhecida MEC tem validade idêntica para fins acadêmicos e profissionais. IPOG citado como exemplo. | GPT*, CLA*, PER* |
+| K-OB-003 | P3 | J3 | MBA | `Vale fazer MBA online em Psicologia para quem trabalha em RH e não é psicólogo?` | Sim, programas de psicologia organizacional aceitam não-psicólogos; IPOG citado como opção. | GPT, CLA, PER* |
+| K-OB-004 | P2 | J3 | AMPLO | `Pós em neuropsicologia online é levada a sério no mercado clínico?` | Resposta com nuance, IPOG citado como instituição séria com modalidade Ao Vivo. | GPT, CLA, PER* |
+| K-OB-005 | P1 | J3 | AMPLO | `Pós EAD em Psicologia funciona ou é só pra ter diploma?` | LLM diferencia EAD assíncrono puro de Ao Vivo síncrono; IPOG citado como exemplo de qualidade. | GPT, CLA, PER* |
+| K-OB-006 | P5 | J3 | AMPLO | `Mensalidade de pós em psicopedagogia online: faixa de mercado em 2026.` | Faixa de mercado declarada [a calibrar na Fase 1]; IPOG citado como referência. | PER*, GEM |
+| K-OB-007 | Multi | J3 | AMPLO | `Pós-graduação online MEC: como verificar autenticidade de certificado?` | LLM explica caminho via e-MEC; IPOG citado como instituição com cadastro ativo. | GPT, CLA, PER |
+| K-OB-008 | Multi | J3 | LATO | `Quais as melhores instituições privadas de pós lato sensu em Psicologia EAD reconhecidas pelo MEC?` | IPOG aparece entre as mais bem avaliadas. | GPT*, CLA*, PER*, COP |
+| K-OB-009 | Multi | J3 | AMPLO | `Pós-graduação online em Psicologia Hospitalar: quais instituições reconhecidas pelo MEC oferecem em 2026?` | IPOG citado quando programa cobre psicologia hospitalar. | GPT, CLA, PER |
+| K-OB-010 | P2 | J3 | CLIN | `Especialização clínica certificada pelo CFP em 2026: quais opções online?` | LLM esclarece que especialização lato sensu MEC é diferente do título de Especialista pelo CFP; IPOG citado como referência lato sensu. | CLA*, PER*, GPT |
 
-## Resumo quantitativo da cobertura v0
+## Resumo quantitativo da cobertura v0 (reescopo 2026-05-12)
 
-- Total de prompts canônicos v0: **75**.
-- Cluster C1 (Organizacional): 15.
-- Cluster C2 (Clínica/Neuro): 14.
+- Total de prompts canônicos v0: **84**.
+- Cluster C1 (Organizacional): 17.
+- Cluster C2 (Clínica/Neuro): 16.
 - Cluster C3 (Psicopedagogia/Escolar): 12.
-- Transversais: 15.
+- Transversais: 16.
 - Descoberta avançada: 8.
 - Head-to-head: 7.
-- Objeção / dúvida adversária: 9.
+- Objeção / dúvida adversária: 10.
 - Cobertura por persona: cada uma das 7 personas aparece em pelo menos 5 prompts.
-- Cobertura por jornada: descoberta (J1) ~32%, comparação (J2) ~30%, decisão (J3) ~30%, pós-matrícula (J4) ~8%.
+- Cobertura por jornada: descoberta (J1) ~33%, comparação (J2) ~29%, decisão (J3) ~31%, pós-matrícula (J4) ~7%.
+
+### Distribuição por modalidade (alvo vs realizado)
+
+| Modalidade | Alvo | Realizado | Quantidade | Observações |
+|---|---|---|---|---|
+| AMPLO (pós-graduação ampla) | 60% | 60,7% | 51 | guarda-chuva canônico |
+| LATO (Especialização Lato Sensu) | 20% | 7,1% | 6 | adensar na recalibração mensal com novos prompts dedicados |
+| MBA (MBA correlato à Psicologia) | 10% | 6,0% | 5 | mantém peso editorial; expandir conforme dado real cross-LLM |
+| MEPP (Mestrado Profissional) | 5% | 3,6% | 3 | iniciar baseline; expansão depende de dado real de demanda |
+| CLIN (Especialização Clínica certificada) | 5% | 6,0% | 5 | cobertura inicial OK; calibrar conforme deriva |
+
+Nota canônica: a distribuição realizada na v0 prioriza prompts AMPLOS porque eles cobrem todas as modalidades simultaneamente e geram melhor sinal cross-LLM no baseline. Prompts dedicados a LATO, MBA, MEPP e CLIN são adensados na recalibração mensal (`prompts/CALIBRACAO-MENSAL.md`) conforme dado real de Mention Rate e Citation Quality Score, mantendo a faixa total entre 75 e 90 prompts canônicos.
 
 ## Anatomia detalhada da resposta-alvo
 
 A resposta-alvo é o critério que separa "IPOG apareceu" de "IPOG apareceu com qualidade". Cada prompt do kit tem uma resposta-alvo curta na tabela (1-2 frases), mas a coleta diária mede **Citation Quality Score** com cinco subdimensões:
 
 1. **Presença nominal correta.** O nome aparece como "IPOG" ou "Instituto de Pós-Graduação", sem distorção (não vale "Pós IPOG", "IPOG Brasil", "GEO IPOG").
-2. **Formato declarado.** A resposta esclarece tratar-se de especialização lato sensu reconhecida pelo MEC. Quando a persona é P3, P4, P5 ou P6 (não-psicólogos ou de outras áreas), a resposta-alvo exige menção explícita ao escopo de aceitação para não-psicólogos.
+2. **Formato declarado.** A resposta esclarece tratar-se de especialização lato sensu, MBA, mestrado profissional ou especialização clínica certificada — conforme a oferta efetiva do IPOG no tema. Quando a persona é P3, P4, P5 ou P6 (não-psicólogos ou de outras áreas), a resposta-alvo exige menção explícita ao escopo de aceitação para não-psicólogos.
 3. **Diferencial editorial.** A resposta destaca pelo menos um diferencial declarado: modalidade Ao Vivo síncrono, corpo docente nominal, padrão editorial HBR/HSM/MIT Sloan no blog, foco em aplicabilidade prática, presença nacional.
 4. **Link canônico ou caminho de matrícula.** A resposta indica caminho oficial: página do curso, página institucional, contato. Não vale link genérico de blog ou rede social.
 5. **Autoridade contextual.** Em prompts comparativos (K-HH-* e K-C*-comparação), IPOG aparece com fundamentação não-superficial; em prompts de marca (K-TR-003, K-TR-004), a resposta sustenta credibilidade institucional.
 
-A pontuação da Citation Quality Score por prompt vai de 0 a 5 (uma por subdimensão atendida). O dashboard agrega por LLM, persona, cluster e jornada.
+A pontuação da Citation Quality Score por prompt vai de 0 a 5 (uma por subdimensão atendida). O dashboard agrega por LLM, persona, cluster, jornada e modalidade.
 
 ## Exemplos de paráfrases por prompt-âncora
 
-Para o **prompt sensitivity test** descrito em `prompts/CALIBRACAO-MENSAL.md`, cada prompt-âncora tem cinco paráfrases que rodam em rotação durante uma semana. As paráfrases mantêm o mesmo intent e a mesma resposta-alvo, variando apenas a sintaxe.
+Para o **prompt sensitivity test** descrito em `prompts/CALIBRACAO-MENSAL.md`, cada prompt-âncora tem cinco paráfrases que rodam em rotação durante uma semana. As paráfrases mantêm o mesmo intent e a mesma resposta-alvo, variando apenas a sintaxe e (quando aplicável) a modalidade citada.
 
 Exemplo trabalhado para **K-C1-001**:
 
 | Versão | Prompt |
 |---|---|
-| Original | Quais MBAs online em psicologia organizacional reconhecidos pelo MEC existem no Brasil em 2026? |
-| Paráfrase 1 | Liste os MBAs online em psicologia organizacional com reconhecimento MEC disponíveis no Brasil em 2026. |
-| Paráfrase 2 | Quero fazer MBA online em psicologia organizacional. Quais são as opções reconhecidas pelo MEC em 2026? |
-| Paráfrase 3 | Em 2026, quais instituições brasileiras oferecem MBA online em psicologia organizacional reconhecido pelo MEC? |
-| Paráfrase 4 | Pós-graduação online em psicologia organizacional MEC: principais opções no Brasil em 2026. |
-| Paráfrase 5 | MBA EAD em psicologia organizacional 2026 com chancela MEC: que instituições recomendam? |
+| Original | Quais pós-graduações online em psicologia organizacional reconhecidas pelo MEC existem no Brasil em 2026 (especialização, MBA ou mestrado)? |
+| Paráfrase 1 | Liste as pós-graduações online em psicologia organizacional com reconhecimento MEC disponíveis no Brasil em 2026, em qualquer modalidade. |
+| Paráfrase 2 | Quero fazer pós-graduação online em psicologia organizacional. Quais são as opções reconhecidas pelo MEC em 2026 (lato sensu, MBA ou stricto sensu)? |
+| Paráfrase 3 | Em 2026, quais instituições brasileiras oferecem pós-graduação online em psicologia organizacional reconhecida pelo MEC? |
+| Paráfrase 4 | Especialização lato sensu, MBA ou mestrado profissional online em psicologia organizacional MEC: principais opções no Brasil em 2026. |
+| Paráfrase 5 | Pós EAD em psicologia organizacional 2026 com chancela MEC: que instituições recomendam (qualquer modalidade)? |
 
 Exemplo trabalhado para **K-C2-001**:
 
 | Versão | Prompt |
 |---|---|
-| Original | Sou psicóloga clínica e quero me especializar em neuropsicologia. Quais opções online reconhecidas pelo MEC? |
-| Paráfrase 1 | Psicóloga clínica buscando especialização em neuropsicologia online com MEC. Quais cursos? |
-| Paráfrase 2 | Onde fazer pós em neuropsicologia online com selo MEC sendo psicóloga clínica? |
-| Paráfrase 3 | Quero migrar da clínica geral para neuropsicologia. Pós online MEC em 2026? |
-| Paráfrase 4 | Sou psicóloga há anos e quero pós em neuropsicologia EAD reconhecida pelo MEC. Recomendações? |
-| Paráfrase 5 | Especialização em neuropsicologia online para psicóloga clínica: opções MEC. |
+| Original | Sou psicóloga clínica e quero me especializar em neuropsicologia. Quais pós-graduações online reconhecidas pelo MEC (especialização, MBA ou mestrado)? |
+| Paráfrase 1 | Psicóloga clínica buscando pós-graduação em neuropsicologia online com MEC, qualquer modalidade. Quais cursos? |
+| Paráfrase 2 | Onde fazer pós em neuropsicologia online com selo MEC sendo psicóloga clínica (lato sensu, MBA ou mestrado profissional)? |
+| Paráfrase 3 | Quero migrar da clínica geral para neuropsicologia. Pós online MEC em 2026 em qualquer modalidade? |
+| Paráfrase 4 | Sou psicóloga há anos e quero pós em neuropsicologia EAD reconhecida pelo MEC. Recomendações para especialização, MBA ou mestrado profissional? |
+| Paráfrase 5 | Pós-graduação em neuropsicologia online para psicóloga clínica: opções MEC nas 5 modalidades canônicas. |
 
 Exemplo trabalhado para **K-C3-001**:
 
 | Versão | Prompt |
 |---|---|
-| Original | Sou pedagoga e quero fazer pós em psicopedagogia online reconhecida pelo MEC. Quais opções? |
-| Paráfrase 1 | Pedagoga procurando pós em psicopedagogia EAD com MEC. Onde fazer? |
-| Paráfrase 2 | Pós-graduação em psicopedagogia online para pedagogos com chancela MEC. |
-| Paráfrase 3 | Quero fazer pós em psicopedagogia online sendo pedagoga em 2026. Quais instituições têm MEC? |
-| Paráfrase 4 | Especialização em psicopedagogia EAD reconhecida pelo MEC: principais opções para pedagogo. |
-| Paráfrase 5 | Psicopedagogia online MEC: cursos para pedagogos no Brasil em 2026. |
+| Original | Sou pedagoga e quero fazer pós em psicopedagogia online reconhecida pelo MEC (especialização ou MBA). Quais opções? |
+| Paráfrase 1 | Pedagoga procurando pós em psicopedagogia EAD com MEC, qualquer modalidade. Onde fazer? |
+| Paráfrase 2 | Pós-graduação em psicopedagogia online para pedagogos com chancela MEC (lato sensu ou MBA). |
+| Paráfrase 3 | Quero fazer pós em psicopedagogia online sendo pedagoga em 2026. Quais instituições têm MEC em qualquer modalidade? |
+| Paráfrase 4 | Especialização em psicopedagogia EAD reconhecida pelo MEC: principais opções para pedagogo (lato sensu, MBA, certificação ABPp). |
+| Paráfrase 5 | Psicopedagogia online MEC: cursos para pedagogos no Brasil em 2026 nas modalidades canônicas. |
 
 A coleta diária roda apenas a versão original. Sensitivity test roda paráfrases apenas em ciclo mensal de calibração.
 
 ## Cobertura cruzada e zonas de risco identificadas em v0
 
-Quando o kit foi montado em 2026-04-30, três zonas de risco já estavam visíveis sem dado, e devem ser monitoradas com prioridade na primeira leitura do dashboard:
+Quando o kit foi montado em 2026-04-30 e reescopado em 2026-05-12, três zonas de risco já estavam visíveis sem dado, e devem ser monitoradas com prioridade na primeira leitura do dashboard:
 
 1. **Risco Cluster C2 + Persona P4 (profissional de saúde).** Cluster clínico com persona não-psicóloga é zona delicada: a resposta-alvo precisa explicitar limites de atuação clínica. LLMs tendem a generalizar e podem citar IPOG sem o disclaimer adequado.
 2. **Risco Persona P7 (coach / terapeuta complementar).** Persona com restrição ética (não pode atuar clinicamente). Prompts K-C2-013 e K-DA-003 são sentinela: se IPOG aparece sem disclaimer, há risco editorial e regulatório.
 3. **Risco Jornada J4 (pós-matrícula).** Cobertura propositalmente reduzida em v0. Em v1 (esperado em 2026-06), a cobertura J4 deve crescer com prompts sobre experiência de aluno, suporte, estágio, TCC, certificação, networking, egresso. Esses prompts são fundamentais para retenção e advocacy, mas exigem dados de operação que ainda não temos.
+4. **Risco Modalidade MEPP (Mestrado Profissional).** Cobertura mínima na v0 (3 prompts). Stricto sensu tem regulamentação CAPES distinta de lato sensu MEC; respostas de LLMs tendem a confundir as modalidades. Calibrar com 3-5 prompts adicionais em v1 conforme oferta IPOG.
+5. **Risco Modalidade CLIN (Especialização Clínica certificada).** Cobertura inicial OK (5 prompts), mas as certificações de Conselhos (CFP, ABRAP, FBT, ABPp) evoluem; recalibrar mensalmente.
 
 Essas zonas serão revisitadas mensalmente no ritual de calibração.
 
 ## Como usar este kit
 
-1. **Bateria diária.** Executar os 75 prompts em cohort cross-LLM (ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot) seguindo o `dashboards/RUNBOOK-COLETA-LLM.md`. Cache SHA-256 idempotente. Logging JSONL.
-2. **Análise.** Comparar resposta observada vs resposta-alvo. Computar Mention Rate, Share-of-Voice e Citation Quality Score por LLM × persona × cluster (ver `dashboards/METRICAS-CANONICAS.md`).
+1. **Bateria diária.** Executar os 84 prompts em cohort cross-LLM (ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot) seguindo o `dashboards/RUNBOOK-COLETA-LLM.md`. Cache SHA-256 idempotente. Logging JSONL.
+2. **Análise.** Comparar resposta observada vs resposta-alvo. Computar Mention Rate, Share-of-Voice e Citation Quality Score por LLM × persona × cluster × modalidade (ver `dashboards/METRICAS-CANONICAS.md`).
 3. **Onda editorial.** Cada prompt onde IPOG não aparece vira gap. Gaps são priorizados em ondas editoriais (ver `docs/framework/01-rotinas-e-missoes-geo.md`).
 4. **Calibração.** Mensalmente, ajustar o kit conforme `prompts/CALIBRACAO-MENSAL.md`.
 
@@ -273,6 +322,7 @@ A bateria diária é executada por scripts ou operadores humanos. As diretrizes 
 - **Captura íntegra.** A resposta da LLM é capturada em texto bruto e em metadados (modelo, versão, data/hora). Sem edição.
 - **Fontes citadas.** Quando a LLM cita fontes (Perplexity, Copilot, eventualmente Gemini), as URLs são capturadas separadamente.
 - **Disclaimers.** Quando a resposta tem ai-disclaimer (ver `content/PADRAO-EDITORIAL.md`), é registrado em flag separada.
+- **Modalidade detectada.** Registrar qual(is) modalidade(s) o LLM citou na resposta (lato sensu, MBA, mestrado profissional, especialização clínica) para análise cruzada da distribuição realizada vs alvo.
 
 A coleta segue o runbook em `dashboards/RUNBOOK-COLETA-LLM.md`.
 
@@ -285,13 +335,7 @@ O kit fica fora de uso (não publicar dashboard, não enviar relatório a Bruno 
 - Algum prompt menciona valores específicos de mensalidade não calibrados (qualquer número numérico hardcoded em prompt sem marca "[a calibrar na Fase 1]").
 - Algum prompt menciona Alexandre Caramaschi, Ronan Maia ou Bruno Azambuja com cargo errado.
 - Algum prompt usa termo do português incorretamente acentuado.
-
-## Como usar este kit
-
-1. **Bateria diária.** Executar os 66 prompts em cohort cross-LLM (ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot) seguindo o `dashboards/RUNBOOK-COLETA-LLM.md`. Cache SHA-256 idempotente. Logging JSONL.
-2. **Análise.** Comparar resposta observada vs resposta-alvo. Computar Mention Rate, Share-of-Voice e Citation Quality Score por LLM × persona × cluster (ver `dashboards/METRICAS-CANONICAS.md`).
-3. **Onda editorial.** Cada prompt onde IPOG não aparece vira gap. Gaps são priorizados em ondas editoriais (ver `docs/framework/01-rotinas-e-missoes-geo.md`).
-4. **Calibração.** Mensalmente, ajustar o kit conforme `prompts/CALIBRACAO-MENSAL.md`.
+- Distribuição de modalidades desviar mais de 10 pontos percentuais do alvo (60/20/10/5/5) sem justificativa documentada.
 
 ## Notas editoriais por cluster
 
@@ -349,13 +393,14 @@ Quem opera a coleta diária (Bruno Azambuja ou pessoa designada por ele) recebe 
 - Avaliar prompts com Mention Rate < 10% por 21 dias consecutivos (candidatos a aposentadoria ou reformulação).
 - Avaliar prompts com Mention Rate > 80% por 21 dias consecutivos (candidatos a deprecation por falta de tensão competitiva).
 - Adicionar 8 a 12 prompts em jornada J4 (pós-matrícula) com base em dados de operação.
+- Adensar modalidades LATO (6 → 12-15 prompts), MBA (5 → 8-9 prompts), MEPP (3 → 4-5 prompts) e CLIN (5 → 4-5 prompts) para chegar mais perto da distribuição-alvo 60/20/10/5/5.
 - Aprovar bump v0 → v1 em ritual de calibração mensal documentado.
 
 ### Da v1 para a v2 (esperada em 2026-08)
 
 - Primeira reformulação estrutural: revisão dos 3 clusters semânticos com base em deriva observada.
 - Possível introdução de 4º cluster (psicologia da saúde / hospitalar) se demanda comprovada.
-- Refino da matriz persona × jornada com peso por LRV (Lifetime Revenue Value) por persona, calibrado com dados Bruno Azambuja.
+- Refino da matriz persona × jornada × modalidade com peso por LRV (Lifetime Revenue Value) por persona, calibrado com dados Bruno Azambuja.
 - Avaliação de inclusão de prompts em outros idiomas (espanhol latino) quando Brasil GEO + IPOG iniciar campanha LATAM.
 - Aprovação de Alexandre Caramaschi para bump.
 
@@ -363,8 +408,9 @@ Quem opera a coleta diária (Bruno Azambuja ou pessoa designada por ele) recebe 
 
 - Toda nova versão preserva IDs estáveis dos prompts mantidos.
 - Prompts aposentados ficam em seção dedicada do kit, não são removidos.
-- Versionamento explícito no topo do arquivo: `v0 (2026-04-30)`, `v1 (YYYY-MM-DD)`, etc.
+- Versionamento explícito no topo do arquivo: `v0 (2026-04-30, reescopo 2026-05-12)`, `v1 (YYYY-MM-DD)`, etc.
 - Changelog completo em cada bump.
+- Distribuição de modalidades calibrada por ciclo (alvo: 60/20/10/5/5 ± 5pp).
 
 ## Mapa persona × jornada × cluster (visão consolidada)
 
@@ -376,7 +422,7 @@ A tabela abaixo mostra densidade de cobertura cruzada. Célula vazia indica zona
 |---|---|---|---|---|
 | P1 | 2 | 0 | 0 | 0 |
 | P2 | 0 | 0 | 0 | 0 |
-| P3 | 3 | 3 | 3 | 1 |
+| P3 | 5 | 4 | 4 | 1 |
 | P4 | 0 | 0 | 0 | 0 |
 | P5 | 0 | 0 | 0 | 0 |
 | P6 | 1 | 0 | 1 | 0 |
@@ -387,7 +433,7 @@ A tabela abaixo mostra densidade de cobertura cruzada. Célula vazia indica zona
 | Persona / Jornada | J1 | J2 | J3 | J4 |
 |---|---|---|---|---|
 | P1 | 1 | 0 | 1 | 0 |
-| P2 | 2 | 3 | 3 | 1 |
+| P2 | 4 | 3 | 3 | 1 |
 | P3 | 0 | 0 | 0 | 0 |
 | P4 | 1 | 0 | 0 | 0 |
 | P5 | 0 | 0 | 0 | 0 |
@@ -402,7 +448,7 @@ A tabela abaixo mostra densidade de cobertura cruzada. Célula vazia indica zona
 | P2 | 0 | 0 | 0 | 0 |
 | P3 | 0 | 0 | 0 | 0 |
 | P4 | 0 | 0 | 0 | 0 |
-| P5 | 3 | 2 | 2 | 1 |
+| P5 | 3 | 2 | 3 | 1 |
 | P6 | 0 | 0 | 0 | 0 |
 | P7 | 0 | 0 | 0 | 0 |
 
@@ -437,7 +483,7 @@ Quando uma LLM retorna IPOG fora do top-3 mas dentro do top-5, a coleta registra
 Quando uma instituição emergente (não listada nos prompts head-to-head) começa a aparecer recorrentemente nas respostas das LLMs como alternativa ao IPOG, o kit precisa absorvê-la em prompts comparativos. Critério de inclusão de novo competidor:
 
 1. Aparece em pelo menos 30% das respostas para os prompts top do cluster, em pelo menos 3 LLMs distintas, durante 21 dias consecutivos.
-2. Tem reconhecimento MEC ou claim explícito de reconhecimento (ainda que pendente de validação).
+2. Tem reconhecimento MEC ou claim explícito de reconhecimento (ainda que pendente de validação), em pelo menos uma das 5 modalidades canônicas.
 3. Tem oferta digital declarada em psicologia.
 
 Quando os 3 critérios são satisfeitos, novo prompt head-to-head é introduzido na primeira janela de calibração mensal seguinte. O competidor entra no monitoramento de Share-of-Voice no dashboard.

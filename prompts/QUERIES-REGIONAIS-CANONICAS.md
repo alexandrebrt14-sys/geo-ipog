@@ -1,15 +1,19 @@
 # Queries Regionais Canônicas — Matriz Operacional 51 × 10 × 5
 
-> **Status:** vigente desde 2026-05-01
+> **Status:** vigente desde 2026-05-01 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-05-01
+> **Última revisão:** 2026-05-12
+
+## Escopo canônico
+
+**Este documento cobre o guarda-chuva amplo "Pós-Graduações em Psicologia"** em chave regional, não apenas o subconjunto MBA. As 5 modalidades canônicas alvo da coleta (Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos, e formações híbridas) precisam estar representadas nas queries por cidade × curso × dúvida.
 
 ## Por que este documento existe
 
-O `KIT-PROMPTS-V0.md` cobre 66 prompts-âncora organizados por 3 clusters × 7 personas × 4 jornadas, com foco em descoberta cross-LLM da categoria MBA Online de Psicologia. Esse kit é vertical — opera no eixo área acadêmica × persona × jornada.
+O `KIT-PROMPTS-V0.md` cobre 84 prompts-âncora organizados por 3 clusters × 7 personas × 4 jornadas × 5 modalidades, com foco em descoberta cross-LLM das Pós-Graduações em Psicologia (especialização, MBA, mestrado profissional, especialização clínica certificada e formações híbridas). Esse kit é vertical — opera no eixo área acadêmica × persona × jornada × modalidade.
 
-Este documento estende a engenharia de prompts em uma terceira dimensão: **localização geográfica brasileira**. Formaliza os cinco tipos canônicos de query regional educacional, mapeia o universo combinatório (51 cidades × 10 áreas × 5 tipos = 2.550 queries) e fixa o protocolo de coleta cross-LLM regional.
+Este documento estende a engenharia de prompts em uma terceira dimensão: **localização geográfica brasileira**. Formaliza os cinco tipos canônicos de query regional educacional, mapeia o universo combinatório (51 cidades × 10 áreas × 5 tipos = 2.550 queries) e fixa o protocolo de coleta cross-LLM regional, com cobertura balanceada entre as 5 modalidades de pós-graduação.
 
 A motivação estratégica está em `docs/framework/05-estrategia-regional-geo-educacao.md` (framework canônico de regionalização). Este arquivo é a operacionalização técnica.
 
@@ -66,15 +70,21 @@ Ativa vetor comparativo. LLM precisa de contexto rico sobre cada opção. Esta q
 
 ### Tipo 5 · Autoridade Local
 
-Padrão: `qual a melhor [categoria] em [cidade]` ou `melhor [área] em [cidade]`
+Padrão: `qual a melhor pós-graduação em [área] em [cidade]` (cobre todas as modalidades) ou `qual a melhor [modalidade-específica] em [cidade]` (lato sensu, MBA, mestrado profissional, especialização clínica certificada).
 
-Exemplos:
-- "qual a melhor instituição de pós em Cuiabá"
-- "melhor MBA em Imperatriz"
-- "melhor faculdade de pós em Rio Verde"
-- "qual a melhor pós-graduação em Parauapebas"
+Exemplos amplos (guarda-chuva, prioridade):
+- "qual a melhor pós-graduação em Psicologia em Cuiabá"
+- "qual a melhor pós-graduação em Psicologia Organizacional em Imperatriz"
+- "qual a melhor pós-graduação online em Neuropsicologia em Rio Verde"
+- "qual a melhor pós-graduação em Psicologia em Parauapebas (especialização, MBA ou mestrado)"
 
-Ativa vetor de autoridade. LLM responde com julgamento de mérito apoiado em corpus existente. Mais sensível a citação por terceiros regionais (Alavanca 3) — imprensa local, conselhos regionais, federações. Resposta IPOG depende de presença em corpus regional terceirizado.
+Exemplos por modalidade específica (calibração mensal):
+- "melhor especialização lato sensu em Psicologia Clínica em Cuiabá"
+- "melhor MBA em Gestão de Pessoas em Imperatriz"
+- "melhor mestrado profissional em Psicologia em Goiânia"
+- "melhor especialização clínica certificada CFP em Avaliação Psicológica em Brasília"
+
+Ativa vetor de autoridade. LLM responde com julgamento de mérito apoiado em corpus existente. Mais sensível a citação por terceiros regionais (Alavanca 3) — imprensa local, conselhos regionais, federações. Resposta IPOG depende de presença em corpus regional terceirizado. A query ampla ("qual a melhor pós-graduação em [área] em [cidade]") é prioritária porque cobre todas as 5 modalidades simultaneamente.
 
 ## A matriz combinatória — 2.550 queries
 
@@ -144,7 +154,7 @@ Cidades médias estratégicas (24, ilustrativo — confirmar lista canônica com
 3. Gestão (Administração, MBA Executivo, Gestão de Pessoas, Marketing)
 4. Direito (lato sensu)
 5. Educação (Psicopedagogia, Educação Especial, Gestão Escolar)
-6. Psicologia (Organizacional, Clínica/TCC, Neuropsicologia, Avaliação Psicológica) — vertical-âncora 2026
+6. **Psicologia (Organizacional, Clínica/TCC, Neuropsicologia, Avaliação Psicológica, Psicopedagogia, Saúde Mental Corporativa) — vertical-âncora 2026, cobrindo as 5 modalidades canônicas: Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada (CFP/ABRAP/FBT/ABPp) e formações híbridas.**
 7. Tecnologia da Informação (Gestão de TI, Segurança da Informação)
 8. Construção Civil (Gerenciamento de Obras, BIM, Patologia)
 9. Arquitetura e Urbanismo (Interiores, Paisagismo, Sustentabilidade)
@@ -202,13 +212,22 @@ Detalhes operacionais em `dashboards/METRICAS-CANONICAS.md`. Resumo aplicável a
 
 Para queries regionais, aplicar variações sistemáticas no Coletor Perplexity:
 
-- **Ordem dos termos**: "MBA em Goiânia" vs "Goiânia MBA"
+- **Ordem dos termos**: "pós-graduação em Psicologia em Goiânia" vs "Goiânia pós-graduação Psicologia"
 - **Sinonímia institucional**: "instituto" vs "faculdade" vs "escola" vs "centro"
-- **Sinonímia modalidade**: "presencial" vs "presencial intensivo" vs "ao vivo" vs "síncrono"
+- **Sinonímia modalidade canônica**: "especialização lato sensu" vs "MBA" vs "mestrado profissional" vs "especialização clínica certificada CFP/ABRAP/FBT/ABPp" vs "pós-graduação" (guarda-chuva)
+- **Sinonímia formato**: "presencial" vs "presencial intensivo" vs "ao vivo" vs "síncrono" vs "EAD" vs "online"
 - **Variação morfológica de cidade**: "Goiânia" vs "Goiania" (sem acento) vs "Goiâni" (truncamento)
-- **Marcadores temporais**: "MBA em Goiânia 2026" vs "MBA em Goiânia"
+- **Marcadores temporais**: "pós em Goiânia 2026" vs "pós em Goiânia"
 
 Padronizar coleta com normalização Unicode NFC + acentuação completa em PT-BR (ver `content/ACENTUACAO-PT-BR.md`).
+
+### Balanceamento por modalidade nas variações regionais
+
+Para cada par cidade × área, gerar queries em 3 níveis de granularidade:
+
+1. **Ampla (prioritária, ~60% das variações)**: "qual a melhor pós-graduação em Psicologia Organizacional em Cuiabá" — captura todas as 5 modalidades simultaneamente.
+2. **Por modalidade específica (~30%)**: "qual a melhor especialização lato sensu em Psicologia Organizacional em Cuiabá" + "qual o melhor MBA em Psicologia Organizacional em Cuiabá" + "qual o melhor mestrado profissional em Psicologia em Cuiabá" + "qual a melhor especialização clínica certificada em Cuiabá".
+3. **Híbrida com qualificador (~10%)**: "pós-graduação em Psicologia Organizacional online + ao vivo em Cuiabá", "pós em Psicologia com CFP-compliance em Cuiabá".
 
 ## Como este documento se conecta
 

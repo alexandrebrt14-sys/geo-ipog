@@ -149,7 +149,7 @@ Lista priorizada para evoluir o stack de analytics ao longo das proximas 4-6 sem
 
 ### Medio-longo (proximas 6-8 semanas)
 
-- [ ] **Audiencias / Segmentos**: criar "Visitantes interessados em MBA Online de Psicologia" (paginas `/mbas/*` + `/areas/*`) e "Quase-leads" (passaram 60s+ em `/pos-graduacao-psicologia/*`). Necessario para retargeting futuro Google Ads.
+- [ ] **Audiencias / Segmentos** (reframe 12-05-2026, escopo amplo): criar uma audiencia por modalidade canonica de pos-graduacao em Psicologia: "Visitantes interessados em Especializacao Lato Sensu" (`/pos-graduacao/especializacao-*`), "Visitantes interessados em MBA correlato" (`/mbas/*` + `/areas/*`), "Visitantes interessados em Mestrado Profissional" (`/pos-graduacao/mestrado-profissional-*`), "Visitantes interessados em Especializacao Clinica certificada" (`/pos-graduacao/especializacao-clinica-*`), "Visitantes interessados em Formacoes hibridas/residencias" (`/pos-graduacao/residencia-*`). Mais "Quase-leads" (passaram 60s+ em `/pos-graduacao-psicologia/*`). Necessario para retargeting futuro Google Ads por modalidade.
 - [ ] **Google Ads link** — vincular conta Google Ads quando IPOG aprovar campanha de remarketing. Path: Admin → Vinculacoes Google Ads.
 - [ ] **Server-side GTM** (avaliacao) — para reduzir bloqueio por ad-blockers, considerar GTM server container hospedado em Cloudflare Workers. Estimativa US$ 20-30/mes mas melhora ate +20% na coleta.
 - [ ] **Auditoria LGPD** — revisao formal de retencao (atual: 14 meses padrao GA4), data anonymization, contratos com Google Workspace. Saida: termo de privacidade publicado no portal apontando para o GA4.

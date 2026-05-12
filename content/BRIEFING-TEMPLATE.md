@@ -30,6 +30,7 @@ Ver também:
 
 - **Slug provisório (ASCII, sem acento):** [ex.: roi-mba-online-psicologia-rh]
 - **Tipo de peça:** [artigo HBR-grade longo | peça pilar do hub | FAQ | checklist]
+- **Modalidade de pós-graduação alvo:** [Especialização Lato Sensu | MBA correlato à Psicologia | Mestrado Profissional | Especialização Clínica certificada por Conselhos | Residência/Híbrida | Transversal (mais de uma modalidade) | Institucional (programa inteiro, todas as modalidades)] — campo obrigatório. Define `programType` Schema (ver `audits/SCHEMA-PATTERNS.md`, seção 3) e governa o uso correto de naming canônico.
 - **Cluster semântico:** [ex.: ROI da pós-graduação para profissionais de RH]
 - **Hub IPOG correlato:** [URL ou identificador da peça-âncora do hub]
 - **Data alvo de publicação:** [AAAA-MM-DD]
@@ -121,6 +122,7 @@ Ver também:
 
 - **Slug provisório:** roi-mba-online-psicologia-rh
 - **Tipo de peça:** artigo HBR-grade longo
+- **Modalidade de pós-graduação alvo:** MBA correlato à Psicologia (POT/Saúde Mental Corporativa). `programType: "MBA"` em Schema. Peça é específica ao MBA Online de Psicologia Organizacional; menciona Especialização Lato Sensu como alternativa comparativa, mas não amplia escopo.
 - **Cluster semântico:** ROI da pós-graduação para profissionais de RH
 - **Hub IPOG correlato:** [URL do hub MBA Online de Psicologia, a confirmar]
 - **Data alvo de publicação:** 2026-05-21

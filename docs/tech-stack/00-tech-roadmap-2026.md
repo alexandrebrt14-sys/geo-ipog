@@ -5,7 +5,7 @@
 > **Sponsor executivo:** Ronan Maia (CEO IPOG).
 > **Interlocutor operacional:** Bruno Azambuja (Gerente de Marketing IPOG).
 > **Executor:** Brasil GEO — Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil).
-> **Subcontexto:** vertical MBA Online de Psicologia.
+> **Subcontexto (reframe canônico 12-05-2026):** portfólio amplo de **Pós-Graduações em Psicologia** em 5 modalidades canônicas — Especialização Lato Sensu (formato dominante), MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos (CFP/ABRAP/FBT) e Formações híbridas/residências (ver `dashboards/METRICAS-CANONICAS.md` Cláusula 0). MBA é um subconjunto, não a vertical.
 > **Pico GEO crítico:** 15-06-2026 a 31-07-2026 (captação 2026.2). Próximo pico: 01-12-2026 a 15-02-2027.
 > **Janela de execução:** janeiro a dezembro de 2026.
 > **Data:** 2026-05-01.

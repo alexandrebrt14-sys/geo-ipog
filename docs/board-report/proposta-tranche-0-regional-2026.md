@@ -1,4 +1,6 @@
-# Proposta Executiva — Tranche 0 do Programa Regional GEO IPOG (2026)
+# Proposta Executiva — Tranche 0 do Programa Regional GEO IPOG (2026, escopo amplo)
+
+> **Reframe canônico 12-05-2026:** a Tranche 0 Regional cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). A rede CNPJ-próprio em 51 cidades sustenta captação regional em todas as modalidades.
 
 > **Documento:** proposta executiva para aprovação formal da Tranche 0 do programa Regional GEO IPOG.
 > **Audiência primária:** Ronan Maia (CEO IPOG) — checkpoint executivo extraordinário até **13-05-2026**.

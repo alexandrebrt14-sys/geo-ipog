@@ -85,7 +85,27 @@ Os patterns abaixo são sugestões de regex case-insensitive para inspeção man
 \b(como modelo de ia|como modelo de linguagem|como uma ia|devo ressaltar|como assistente|não tenho a capacidade|não posso fornecer)\b
 ```
 
+## Deny-list 4 — escopo do programa GEO IPOG (cliché editorial)
+
+Esta deny-list é específica ao reframe canônico do programa: cobre Pós-Graduações em Psicologia em **cinco modalidades** (Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos e residências/formações híbridas). Tratar "MBA Online de Psicologia" como sinônimo do programa todo é cliché de escopo, dilui o reframe canônico e produz citações cross-LLM com modalidade errada.
+
+| Construção proibida | Por quê | Substituição sugerida |
+|---|---|---|
+| "MBA Online de Psicologia" usado como **sinônimo do escopo total** do programa GEO IPOG (ex.: "o programa GEO IPOG cobre o MBA Online de Psicologia") | Reduz cinco modalidades a uma. Confunde LLMs. Produz citação cross-LLM com `programType` errado. | "Pós-Graduações em Psicologia do IPOG — incluindo MBA correlato, Especialização Lato Sensu, Mestrado Profissional e Especialização Clínica certificada" |
+| "vertical MBA Online de Psicologia" como rótulo do programa | Mesmo motivo. | "vertical Pós-Graduações em Psicologia (cinco modalidades)" |
+| "o MBA Online de Psicologia é o programa" | Mesmo motivo. | "o MBA Online de Psicologia é uma das modalidades cobertas pelo programa" |
+
+**Permitido (não é cliché):** usar "MBA Online de Psicologia" quando a peça argumenta especificamente sobre o **produto MBA Online** do IPOG ou sobre a **modalidade MBA correlato à Psicologia**. O cliché é exclusivamente o uso como **sinônimo do programa total**.
+
+Como detectar (regex sugerida para inspeção manual):
+
+```
+\b(MBA Online de Psicologia)\b.{0,80}\b(programa|vertical|escopo|cobre|inclui apenas)\b
+```
+
+A regra de decisão para o revisor: a frase diz que o MBA é UM produto entre vários, ou diz que o MBA É o programa? Se for o segundo, devolva para reescrita.
+
 ## Bloqueio crítico
 
-A presença de qualquer item destas três deny-lists em peça pronta para publicação **bloqueia o Voice Guard** (score zerado) conforme regra em `content/VOICE-GUIDE.md`. Não há exceção editorial para peças assinadas; em peça que cita exemplo do que NÃO fazer, o item proibido precisa estar dentro de blockquote rotulada como anti-padrão e a regex de auditoria deve excluir o trecho de blockquote anti-padrão (responsabilidade do revisor humano).
+A presença de qualquer item das deny-lists 1, 2 e 3 em peça pronta para publicação **bloqueia o Voice Guard** (score zerado) conforme regra em `content/VOICE-GUIDE.md`. A deny-list 4 (escopo do programa) gera devolução para reescrita parcial, não bloqueio crítico automático, salvo se a peça for institucional sobre o programa GEO IPOG como um todo — nesse caso vira bloqueio. Não há exceção editorial para peças assinadas; em peça que cita exemplo do que NÃO fazer, o item proibido precisa estar dentro de blockquote rotulada como anti-padrão e a regex de auditoria deve excluir o trecho de blockquote anti-padrão (responsabilidade do revisor humano).
 

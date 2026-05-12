@@ -23,6 +23,8 @@ Ver também:
 
 **Cluster:** [cluster semântico da peça]
 
+**Modalidade de pós-graduação:** [Especialização Lato Sensu | MBA correlato à Psicologia | Mestrado Profissional | Especialização Clínica certificada | Residência/Híbrida | Transversal] — declarar a modalidade alvo do exercício, porque o critério de decisão muda entre modalidades (lato sensu MEC vs stricto sensu CAPES vs título de Conselho).
+
 **Contexto:** [Cenário profissional real com dados concretos. Inclua números, marcos temporais, restrições. Mínimo de 4 frases. Use marcador "[a confirmar com fonte X]" quando necessário durante o draft.]
 
 **Enunciado:** [Problema claro com dados suficientes para resolução. Termina sempre com verbo Bloom 3+ direcionando a tarefa do leitor.]

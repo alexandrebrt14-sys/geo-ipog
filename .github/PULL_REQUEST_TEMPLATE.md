@@ -31,7 +31,7 @@ Closes #
 
 - [ ] Texto em Português do Brasil com acentuação completa
 - [ ] Sem emojis em qualquer arquivo do PR
-- [ ] Naming canônico respeitado (Brasil GEO, IPOG, MBA Online de Psicologia, nomes próprios completos)
+- [ ] Naming canônico respeitado (Brasil GEO, IPOG, Pós-Graduação em Psicologia como categoria guarda-chuva, MBA Online de Psicologia como uma das modalidades, Especialização Lato Sensu / Mestrado Profissional / Especialização Clínica certificada conforme aplicável, nomes próprios completos)
 - [ ] Conventional Commits no histórico do PR
 - [ ] Branch nomeada com prefixo correto (`feat/`, `audit/`, `content/`, `schema/`, `prompts/`, `fix/`, `ci/`, `chore/`)
 - [ ] Documentação atualizada quando aplicável (README, ROADMAP, docs/)
@@ -41,6 +41,8 @@ Closes #
 
 - [ ] Conteúdo afirma autorização MEC, reconhecimento de curso ou validade nacional do certificado — **revisado pelo jurídico/acadêmico IPOG**
 - [ ] Conteúdo faz claims sobre exercício profissional pós-especialização (CFP, registro profissional) — **revisado pelo jurídico IPOG**
+- [ ] Conteúdo faz claims sobre certificação por Conselho profissional (CFP/SATEPSI em Avaliação, ABRAP em ACT, FBT em TCC, demais Conselhos em DBT/EMDR) — **revisado pelo jurídico/acadêmico IPOG**
+- [ ] Conteúdo se refere a Mestrado Profissional (avaliação CAPES) — **revisado pelo acadêmico IPOG**
 - [ ] Mudança em propriedade digital IPOG ao vivo (Schema em produção, llms.txt, página publicada) — **aprovada por Bruno Azambuja**
 
 ## Voice Guard

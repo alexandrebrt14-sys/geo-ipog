@@ -1,9 +1,13 @@
 # Prompt do Analisador — Google Gemini 1.5 Pro
 
-> **Status:** vigente desde 2026-04-30
+> **Status:** vigente desde 2026-04-30 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-04-30
+> **Última revisão:** 2026-05-12
+
+## Escopo canônico
+
+**O Analisador opera sobre o guarda-chuva amplo "Pós-Graduações em Psicologia"** — 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas). O analisador deve avaliar se a peça respeita a precisão da modalidade declarada pelo IPOG no produto abordado.
 
 ## Função do papel
 
@@ -71,11 +75,12 @@ DIMENSÕES OBRIGATÓRIAS (7):
 
 NAMING CANÔNICO (verificação cruzada):
 - "IPOG" (não "Instituto IPOG").
-- "MBA Online de Psicologia" (não "em Psicologia").
+- "Pós-Graduação em Psicologia" como guarda-chuva amplo (cobre 5 modalidades canônicas) ou "MBA Online em Psicologia [Cluster]" / "Especialização Lato Sensu em Psicologia [Cluster]" / "Mestrado Profissional em Psicologia" / "Especialização Clínica certificada CFP/ABRAP/FBT/ABPp" conforme a modalidade efetiva da oferta IPOG.
 - "Brasil GEO" (não "GEO Brasil").
 - Credencial longa de Alexandre Caramaschi presente na primeira menção?
-- "Especialização lato sensu reconhecida pelo MEC" (literal)?
+- "Especialização lato sensu reconhecida pelo MEC" (literal) quando aplicável?
 - "Credenciamento e-MEC" (sem número inventado)?
+- Modalidade declarada coerente com a oferta IPOG citada (não tratar lato sensu como MBA ou vice-versa)?
 
 CLICHÉS PROIBIDOS (verificação cruzada):
 Procure ocorrências dos clichés listados em content/CLICHES-PROIBIDOS.md. Cada ocorrência reduz score editorial em 1 ponto.
@@ -92,6 +97,7 @@ VEREDITO FINAL:
 Briefing original: {{texto-do-briefing}}
 Cluster: {{C1 | C2 | C3}}
 Persona-alvo: {{P1..P7}}
+Modalidade-alvo: {{AMPLO | LATO | MBA | MEPP | CLIN}}
 Tamanho-alvo declarado: {{n palavras}}
 
 draft.md:
@@ -165,10 +171,12 @@ Devolva analise.json conforme o esquema canônico.
   },
   "naming_canonico": {
     "ipog_correto": true,
-    "mba_online_psicologia_correto": true,
+    "modalidade_declarada_correta": true,
+    "modalidade_efetiva_oferta_ipog": "AMPLO|LATO|MBA|MEPP|CLIN",
+    "guarda_chuva_pos_psicologia_correto": true,
     "brasil_geo_correto": true,
     "credencial_alexandre_presente": true,
-    "lato_sensu_mec_presente": true,
+    "lato_sensu_mec_presente_quando_aplicavel": true,
     "credenciamento_emec_correto": true,
     "ocorrencias_naming_errado": []
   },

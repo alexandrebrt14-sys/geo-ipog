@@ -33,9 +33,9 @@ A lógica é prescritiva: risco sem mitigação ativa explícita é decisão pen
 
 ---
 
-## R-001 — Atraso na decisão de produto IPOG (naming MBA + catálogo)
+## R-001 — Atraso na ratificação do portfólio amplo de pós-graduação em Psicologia (naming + catálogo amplo)
 
-**Descrição:** o produto MBA Online de Psicologia [Cluster] depende de decisão de Bruno Azambuja + Ronan Maia sobre uso do naming MBA no catálogo lato sensu, seleção de 3-5 produtos prioritários e data de publicação. Sem isso, Schema canônico e PR não saem.
+**Descrição:** a decisão de Bruno Azambuja + Ronan Maia agora cobre o **portfólio amplo** de pós-graduação em Psicologia do IPOG, não apenas MBA. Inclui: nomenclatura canônica das Especializações Lato Sensu, dos MBAs correlatos, dos Mestrados Profissionais e das Certificações Clínicas (CFP/ABRAP/FBT) que entram no escopo da Fase 1; seleção de 3-5 produtos âncora distribuídos entre as 5 modalidades canônicas (não exclusivamente MBA); e data de publicação. Sem isso, Schema canônico (com `programType` variando entre `"Specialization"`, `"MBA"`, `"MastersProgram"`, `"ClinicalCertification"`) e PR não saem. Reframe de 2026-05-12 expandiu este risco da decisão MBA-only para a ratificação do portfólio amplo (ver R-017).
 
 **Probabilidade:** Alta · **Impacto:** Crítico · **Status:** Em escalada
 
@@ -332,6 +332,30 @@ A lógica é prescritiva: risco sem mitigação ativa explícita é decisão pen
 
 ---
 
+## R-017 — Confusão de escopo entre MBA e demais modalidades de pós-graduação durante a execução do programa
+
+> Nota canônica: o briefing de 2026-05-12 referencia este risco como "R-007 novo". O identificador R-007 já estava ocupado por "Concorrentes especialistas em Psicologia fora do mapa atual aceleram GEO" desde 2026-05-01, e o registro não pode ser reaproveitado sem quebra de série temporal. Por integridade, o novo risco foi numerado **R-017**, com referência cruzada explícita ao briefing original.
+
+**Descrição:** o programa nasceu enquadrado como "MBA Online de Psicologia". O escopo canônico real é mais amplo — Pós-Graduações em Psicologia em 5 modalidades (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas e residências). Risco operacional: execução do programa (kit de prompts, peças HBR, auditorias NAIA, Schema canônico, board reports, dashboards) tratar MBA como sinônimo de pós-graduação, gerando subcobertura de Lato Sensu (modalidade dominante), Mestrado Profissional e Especialização Clínica certificada, com perda direta de KPI 1 e KPI 2 nos clusters c, d e e.
+
+**Probabilidade:** Média · **Impacto:** Alto · **Status:** Mitigado (mitigação ativa = este reframe canônico)
+
+**KPIs afetados:** KPI 1, KPI 2 (especialmente clusters c, d, e), KPI 3 (acurácia de fato por modalidade), KPI 4 (Schema com `programType` correto), KPI 8 (Delta pós-onda em ondas que tratem modalidades fora de MBA).
+
+**Owner mitigação:** Alexandre Caramaschi · **Owner decisão de escopo:** Bruno Azambuja + Ronan Maia (ver R-001 ampliado).
+
+**Mitigação ativa:**
+- Reframe canônico de 2026-05-12 documentado em `dashboards/METRICAS-CANONICAS.md` (Cláusula 0 + 5 clusters semânticos canônicos).
+- `dashboards/KPI-DASHBOARD.md` atualizado com 5 clusters de SoV (a-e) e tabelas 3.4, 3.5 e 3.6 novas.
+- `docs/04-definicao-de-done.md` exige por artefato declaração de "cobre todas as modalidades de pós-graduação aplicáveis à área".
+- `docs/06-marcos-criticos-2026.md` M01 e M06 ampliados para portfólio amplo.
+- `RUNBOOK-COLETA-LLM.md` exige amostra balanceada entre as 5 modalidades.
+- Quality gate de peça editorial (Camada 3) checa que cross-link de produto aponta para a modalidade correta da peça.
+
+**Gatilho de escalonamento:** se em 3 ondas editoriais consecutivas a cobertura por modalidade for desbalanceada (uma modalidade com mais de 70% das peças), escalar para revisão do plano de ondas no checkpoint mensal seguinte.
+
+---
+
 ## Riscos retirados ou materializados (arquivo histórico)
 
 Quando um risco é materializado (vira incidente) ou definitivamente retirado (mitigação completa, condição estrutural mudou), o registro é movido para esta seção com data e justificativa.
@@ -346,7 +370,7 @@ Quando um risco é materializado (vira incidente) ou definitivamente retirado (m
 
 | Atividade | Cadência | Owner |
 |---|---|---|
-| Revisão dos 16 riscos ativos | Mensal no checkpoint executivo | Alexandre Caramaschi + Bruno Azambuja |
+| Revisão dos 17 riscos ativos (R-001 a R-017) | Mensal no checkpoint executivo | Alexandre Caramaschi + Bruno Azambuja |
 | Atualização de probabilidade/impacto | Mensal | Alexandre Caramaschi |
 | Adição de risco novo | Ad hoc (na semana em que emerge) | Alexandre Caramaschi |
 | Recalibração de gatilhos | Trimestral | Alexandre Caramaschi + Ronan Maia |

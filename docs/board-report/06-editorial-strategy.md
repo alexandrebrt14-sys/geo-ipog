@@ -1,4 +1,6 @@
-# Estratégia editorial — Fase 2: primeira leva HBR-grade do programa GEO IPOG
+# Estratégia editorial — Fase 2: primeira leva HBR-grade do programa GEO IPOG (escopo amplo)
+
+> **Reframe canônico 12-05-2026:** a primeira leva HBR-grade cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). A composição da leva tem pelo menos 1 peça-âncora por modalidade aplicável à área tratada — sem subcobertura de Especialização Lato Sensu, Mestrado Profissional ou Especialização Clínica certificada.
 
 > **Status:** rascunho de board-report, ciclo 2026.2
 > **Dono editorial:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil)

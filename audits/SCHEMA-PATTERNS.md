@@ -7,7 +7,9 @@
 
 ## Por que Schema.org importa para o programa GEO
 
-LLMs não leem páginas como humanos. ChatGPT, Claude, Gemini, Perplexity, Grok e Copilot dependem de sinais estruturados para identificar entidades, hierarquias, credenciais e relações. JSON-LD bem composto eleva drasticamente a probabilidade de o IPOG ser citado por nome correto, com formato declarado (especialização lato sensu reconhecida pelo MEC), carga horária correta, autorização MEC mencionada e diferencial editorial reconhecido.
+LLMs não leem páginas como humanos. ChatGPT, Claude, Gemini, Perplexity, Grok e Copilot dependem de sinais estruturados para identificar entidades, hierarquias, credenciais e relações. JSON-LD bem composto eleva drasticamente a probabilidade de o IPOG ser citado por nome correto, com formato declarado (Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional ou Especialização Clínica certificada por Conselhos), carga horária correta, autorização MEC mencionada e diferencial editorial reconhecido.
+
+> **Escopo canônico do programa GEO IPOG.** O programa cobre o guarda-chuva amplo de **Pós-Graduações em Psicologia**, não apenas MBA. Cinco modalidades são alvo: (1) Especialização Lato Sensu (360h+, formato dominante no mercado brasileiro); (2) MBA correlato à Psicologia (POT, Neuro executiva, Coaching, Liderança, Saúde Mental Corporativa); (3) Mestrado Profissional; (4) Especialização Clínica certificada por Conselhos (CFP/ABRAP/FBT); (5) Residências e formações híbridas. Cada modalidade exige um `programType` Schema.org diferente — ver seção 3.
 
 Este documento é prescritivo. Cada padrão abaixo é obrigatório quando aplicável e os campos marcados como obrigatórios não podem ser omitidos. Validação contra `validator.schema.org` é etapa do quality gate antes de cada publicação.
 
@@ -15,7 +17,7 @@ Este documento é prescritivo. Cada padrão abaixo é obrigatório quando aplic�
 
 1. EducationalOrganization — entidade raiz (IPOG).
 2. Course — cada curso de pós-graduação individualmente.
-3. EducationalOccupationalProgram — programas abrangentes (MBA).
+3. EducationalOccupationalProgram — programas abrangentes nas cinco modalidades (Especialização Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada, Residência/híbrida).
 4. FAQPage — página de FAQ ou bloco de FAQ em página de curso.
 5. Article (e BlogPosting) — peças HBR no blog institucional.
 6. Person — corpo docente IPOG e autores convidados.
@@ -178,18 +180,30 @@ Representa cada curso de pós-graduação individualmente. Obrigatório em toda 
 
 `https://validator.schema.org` + Rich Results Test do Google.
 
-## 3. EducationalOccupationalProgram
+## 3. EducationalOccupationalProgram — quatro modalidades, quatro `programType`
 
 ### Descrição
 
-Representa programas abrangentes que englobam um ou mais cursos. Aplicável aos MBAs do IPOG, especialmente o MBA Online de Psicologia em suas três grandes ramificações.
+Representa programas abrangentes que englobam um ou mais cursos. Aplicável às cinco modalidades de pós-graduação cobertas pelo programa GEO IPOG. Cada modalidade exige um valor de `programType` diferente, com nota descritiva quando o vocabulário Schema.org não cobre a granularidade brasileira.
+
+### Quando usar cada `programType`
+
+| Modalidade IPOG | `programType` canônico | Quando aplicar | Nota obrigatória |
+|---|---|---|---|
+| Especialização Lato Sensu (360h+, formato dominante no mercado brasileiro) | `Specialization` | Todo curso de pós-graduação lato sensu reconhecido pelo MEC que não usa o rótulo MBA — Neuropsicologia, Psicopedagogia, Psicologia Clínica, Psicologia Escolar, Psicologia Hospitalar, Avaliação Psicológica. | `description` deve conter "Especialização lato sensu reconhecida pelo MEC, duração mínima 360 horas". |
+| MBA correlato à Psicologia | `MBA` | MBAs que aplicam Psicologia a contexto corporativo: POT (Psicologia Organizacional e do Trabalho), Neurociência Executiva, Coaching, Liderança, Saúde Mental Corporativa. | `description` declara "MBA lato sensu reconhecido pelo MEC, com aplicação de Psicologia a contexto corporativo". |
+| Mestrado Profissional (stricto sensu) | `ProfessionalMastersProgram` | Programas Stricto Sensu Profissionais regulados pela CAPES, com dissertação aplicada. Não confundir com lato sensu. | `description` declara "Mestrado Profissional stricto sensu autorizado pela CAPES, com defesa de dissertação aplicada". |
+| Especialização Clínica certificada por Conselhos (CFP/ABRAP/FBT) | `ProfessionalCertification` | Especializações clínicas que conferem título de especialista validado por entidade profissional (Resolução CFP 23/2022, ABRAP, FBT). Pode coexistir com `Specialization` quando o curso é simultaneamente lato sensu MEC e títulado pelo Conselho. | `description` declara qual entidade certifica e qual o número de horas práticas supervisionadas exigidas. |
+| Residência e formações híbridas | `Specialization` + `ProfessionalCertification` (combinado em `@graph`) | Residências em saúde mental, programas híbridos lato sensu + certificação clínica, formações longas em abordagens (TCC, ACT, DBT, EMDR) com supervisão estruturada. | Combinar dois nós no `@graph` da página, com `@id` distintos, amarrados ao mesmo `provider`. |
+
+> **Anti-padrão:** declarar `programType: "MBA"` para Especialização Lato Sensu que não usa o rótulo MBA. LLMs interpretam isso como categoria errada e a citação cross-LLM passa a sair com modalidade equivocada. Use o `programType` que descreve a modalidade real.
 
 ### Campos obrigatórios
 
 - `@context`, `@type`, `@id`.
 - `name`.
 - `provider`.
-- `programType` — `MBA` quando aplicável.
+- `programType` — valor exato da tabela acima.
 
 ### Campos recomendados
 
@@ -200,15 +214,38 @@ Representa programas abrangentes que englobam um ou mais cursos. Aplicável aos 
 - `occupationalCredentialAwarded`.
 - `programPrerequisites`.
 
-### JSON-LD pronto
+### JSON-LD pronto — Especialização Lato Sensu (Neuropsicologia)
 
 ```json
 {
   "@context": "https://schema.org",
   "@type": "EducationalOccupationalProgram",
-  "@id": "https://ipog.edu.br/cursos/pos-graduacao/{{slug-programa}}#program",
-  "name": "{{nome-do-programa}}",
-  "description": "{{descricao-do-programa}}",
+  "@id": "https://ipog.edu.br/cursos/pos-graduacao/neuropsicologia#program",
+  "name": "Pós-Graduação em Neuropsicologia",
+  "description": "Especialização lato sensu reconhecida pelo MEC, duração mínima 480 horas, formação para psicólogos com registro CRP ativo em avaliação e reabilitação neuropsicológica.",
+  "provider": {
+    "@id": "https://ipog.edu.br/#organization"
+  },
+  "programType": "Specialization",
+  "educationalProgramMode": "online",
+  "timeOfDay": "evening",
+  "applicationDeadline": "{{YYYY-MM-DD}}",
+  "occupationalCredentialAwarded": "Especialização lato sensu reconhecida pelo MEC",
+  "numberOfCredits": "480",
+  "termDuration": "P18M",
+  "termsPerYear": 1
+}
+```
+
+### JSON-LD pronto — MBA correlato à Psicologia (POT)
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOccupationalProgram",
+  "@id": "https://ipog.edu.br/cursos/pos-graduacao/mba-online-psicologia-organizacional-trabalho#program",
+  "name": "MBA Online em Psicologia Organizacional e do Trabalho",
+  "description": "MBA lato sensu reconhecido pelo MEC, com aplicação de Psicologia Organizacional e do Trabalho ao contexto corporativo: NR-1, riscos psicossociais, gestão de pessoas baseada em evidência.",
   "provider": {
     "@id": "https://ipog.edu.br/#organization"
   },
@@ -223,15 +260,89 @@ Representa programas abrangentes que englobam um ou mais cursos. Aplicável aos 
 }
 ```
 
+### JSON-LD pronto — Mestrado Profissional
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOccupationalProgram",
+  "@id": "https://ipog.edu.br/cursos/stricto-sensu/mestrado-profissional-psicologia-aplicada#program",
+  "name": "Mestrado Profissional em Psicologia Aplicada",
+  "description": "Mestrado Profissional stricto sensu autorizado pela CAPES, com defesa de dissertação aplicada e foco em produção técnica para o mercado de trabalho.",
+  "provider": {
+    "@id": "https://ipog.edu.br/#organization"
+  },
+  "programType": "ProfessionalMastersProgram",
+  "educationalProgramMode": "blended",
+  "applicationDeadline": "{{YYYY-MM-DD}}",
+  "occupationalCredentialAwarded": "Título de Mestre Profissional reconhecido pela CAPES",
+  "numberOfCredits": "{{creditos-capes}}",
+  "termDuration": "P24M",
+  "termsPerYear": 2,
+  "programPrerequisites": "Graduação concluída em Psicologia ou área correlata. Processo seletivo CAPES."
+}
+```
+
+### JSON-LD pronto — Especialização Clínica certificada (TCC + CFP)
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOccupationalProgram",
+  "@id": "https://ipog.edu.br/cursos/pos-graduacao/especializacao-clinica-tcc#program",
+  "name": "Especialização Clínica em Terapia Cognitivo-Comportamental",
+  "description": "Especialização Clínica em Terapia Cognitivo-Comportamental certificada pela Federação Brasileira de Terapias Cognitivas (FBT) e em conformidade com a Resolução CFP 23/2022, com 600 horas de carga horária e supervisão clínica estruturada.",
+  "provider": {
+    "@id": "https://ipog.edu.br/#organization"
+  },
+  "programType": "ProfessionalCertification",
+  "educationalProgramMode": "blended",
+  "timeOfDay": "evening",
+  "applicationDeadline": "{{YYYY-MM-DD}}",
+  "occupationalCredentialAwarded": "Título de Especialista em Terapia Cognitivo-Comportamental — FBT/CFP",
+  "numberOfCredits": "600",
+  "termDuration": "P24M",
+  "programPrerequisites": "Registro CRP ativo. Graduação em Psicologia."
+}
+```
+
+### Composição residência/híbrida — dois `@type` no `@graph`
+
+Para residências e formações híbridas que cumprem duas funções regulatórias simultâneas (lato sensu MEC + certificação clínica de Conselho), declarar dois `EducationalOccupationalProgram` no mesmo `@graph`, com `@id` distintos amarrados ao mesmo `provider`:
+
+```json
+{
+  "@graph": [
+    {
+      "@type": "EducationalOccupationalProgram",
+      "@id": "https://ipog.edu.br/cursos/residencia-saude-mental#program-latosensu",
+      "name": "Residência em Saúde Mental — componente lato sensu MEC",
+      "programType": "Specialization",
+      "occupationalCredentialAwarded": "Especialização lato sensu reconhecida pelo MEC"
+    },
+    {
+      "@type": "EducationalOccupationalProgram",
+      "@id": "https://ipog.edu.br/cursos/residencia-saude-mental#program-certificacao",
+      "name": "Residência em Saúde Mental — componente de certificação clínica",
+      "programType": "ProfessionalCertification",
+      "occupationalCredentialAwarded": "Certificação clínica em saúde mental — ABRAP"
+    }
+  ]
+}
+```
+
 ### Erros comuns
 
 1. Duplicar EducationalOccupationalProgram e Course com o mesmo escopo — preferir um EducationalOccupationalProgram quando o programa for abrangente.
-2. `programType` em português (`Mestrado`, `MBA Executivo`) — usar valores semânticos canônicos.
-3. `timeOfDay` ausente quando há aulas síncronas em horário definido — deixa o sinal de modalidade incompleto.
+2. `programType` em português (`Mestrado`, `MBA Executivo`) — usar valores semânticos canônicos da tabela acima.
+3. Usar `MBA` como `programType` para todo curso lato sensu — viola o reframe canônico do programa (MBA é apenas uma modalidade entre cinco).
+4. `timeOfDay` ausente quando há aulas síncronas em horário definido — deixa o sinal de modalidade incompleto.
+5. Mestrado Profissional declarado como `Specialization` (lato sensu) — confunde regulação CAPES com regulação MEC lato sensu; LLMs propagam o erro.
+6. Especialização Clínica certificada sem `ProfessionalCertification` — perde o sinal de título de especialista validado por Conselho profissional, que é o principal diferencial regulatório dessas formações.
 
 ### Validação
 
-Rich Results Test não cobre EducationalOccupationalProgram diretamente; usar `https://validator.schema.org`.
+Rich Results Test não cobre EducationalOccupationalProgram diretamente; usar `https://validator.schema.org`. Para cada nó do `@graph`, validar isoladamente também.
 
 ## 4. FAQPage
 
@@ -449,7 +560,7 @@ Representa cada docente do IPOG. Obrigatório no perfil individual (`/corpo-doce
 
 ## Composição completa de página de curso
 
-A página `https://ipog.edu.br/cursos/pos-graduacao/{slug}` deve conter um único `<script type="application/ld+json">` com array de objetos compondo: EducationalOrganization (referência por `@id`), Course, FAQPage e (opcionalmente) EducationalOccupationalProgram quando o curso integra MBA. A composição completa amarra a hierarquia e dá ao LLM o pacote integral de sinal num único parse.
+A página `https://ipog.edu.br/cursos/pos-graduacao/{slug}` deve conter um único `<script type="application/ld+json">` com array de objetos compondo: EducationalOrganization (referência por `@id`), Course, FAQPage e EducationalOccupationalProgram com o `programType` correto da modalidade (Especialização Lato Sensu → `Specialization`; MBA correlato → `MBA`; Mestrado Profissional → `ProfessionalMastersProgram`; Especialização Clínica certificada → `ProfessionalCertification`). A composição completa amarra a hierarquia e dá ao LLM o pacote integral de sinal num único parse.
 
 ```html
 <script type="application/ld+json">

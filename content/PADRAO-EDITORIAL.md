@@ -5,7 +5,7 @@
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Última revisão:** 2026-04-30
 
-Este documento define a estrutura obrigatória, padrões tipográficos e regras de citação para peças editoriais públicas do programa GEO IPOG (Brasil GEO + IPOG, vertical MBA Online de Psicologia). O padrão é adaptado de Harvard Business Review, HSM Management e MIT Sloan Management Review, com ajustes para o contexto educação superior + Psicologia regulamentada.
+Este documento define a estrutura obrigatória, padrões tipográficos e regras de citação para peças editoriais públicas do programa GEO IPOG (Brasil GEO + IPOG, vertical **Pós-Graduações em Psicologia**, cobrindo cinco modalidades canônicas: Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos (CFP/ABRAP/FBT) e residências/formações híbridas — MBA é uma das modalidades, não o escopo total). O padrão é adaptado de Harvard Business Review, HSM Management e MIT Sloan Management Review, com ajustes para o contexto educação superior + Psicologia regulamentada.
 
 Ver também:
 - `content/BLOOM-KNOWLES.md` para verbos cognitivos e princípios andragógicos.
@@ -90,7 +90,7 @@ A progressão típica em peça longa é: Aplicação (3) → Análise (4) → Av
 | Exercícios práticos | Mínimo 3 | Mínimo 5, progressão Bloom 3-6 | 1 mini-exercício opcional | Exercício embutido no checklist |
 | Síntese executiva | Obrigatória | Obrigatória + roadmap de leitura | Próximo passo em 1-2 frases | Resumo final + cross-link |
 | Schema.org | Article + Person + EducationalOrganization | Article + Person + EducationalOrganization + ItemList | FAQPage + Question + Answer | HowTo + Step |
-| Exemplo | "ROI do MBA Online de Psicologia para profissionais de RH em empresas de médio porte" | "Guia executivo: especialização em Psicologia para profissionais de carreira corporativa" | "O MBA Online de Psicologia é reconhecido pelo MEC?" (resposta canônica) | "Checklist de elegibilidade para o MBA Online de Psicologia" |
+| Exemplo | "ROI do MBA correlato em Psicologia Organizacional para profissionais de RH em empresas de médio porte" | "Guia executivo: pós-graduação em Psicologia para profissionais de carreira corporativa — Especialização Lato Sensu, MBA correlato ou Mestrado Profissional?" | "Qual modalidade de pós-graduação em Psicologia escolher: Especialização Lato Sensu, MBA, Mestrado Profissional ou Especialização Clínica certificada?" (resposta canônica) | "Checklist de elegibilidade para Especialização Clínica em TCC certificada por Conselho" |
 
 ## Padrão de citação
 

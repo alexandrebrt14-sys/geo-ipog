@@ -1,4 +1,6 @@
-# Plano Tático GEO — IPOG MBA Online de Psicologia (90 dias)
+# Plano Tático GEO — IPOG Pós-Graduações em Psicologia, escopo amplo (90 dias)
+
+> **Reframe canônico 12-05-2026:** plano tático cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). Ondas editoriais e ajustes Schema são balanceados entre modalidades — meta de cobertura mínima por modalidade na Fase 1.
 
 > **Janela:** 07-05-2026 a 04-08-2026 (Fases 1, 2 e 3 do roadmap).
 > **Pico GEO de captação:** 15-06 a 31-07-2026.

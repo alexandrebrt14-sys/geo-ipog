@@ -1,9 +1,13 @@
 # Calibração Mensal do Kit de Prompts
 
-> **Status:** vigente desde 2026-04-30
+> **Status:** vigente desde 2026-04-30 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-04-30
+> **Última revisão:** 2026-05-12
+
+## Escopo canônico
+
+**A calibração mensal cobre o guarda-chuva amplo "Pós-Graduações em Psicologia"**, mantendo distribuição balanceada nas 5 modalidades canônicas: Especialização Lato Sensu (alvo 20%), MBA correlato à Psicologia (alvo 10%), Mestrado Profissional (alvo 5%), Especialização Clínica certificada por Conselhos (alvo 5%) e prompts amplos cobrindo simultaneamente as modalidades (alvo 60%). A recalibração mensal monitora deriva tanto por cluster/persona/jornada quanto por modalidade.
 
 ## Por que recalibrar
 
@@ -27,8 +31,19 @@ Critérios cumulativos. Um sozinho não basta.
 2. Termo é compatível com pelo menos um dos 3 clusters semânticos (C1 organizacional, C2 clínica/neuro, C3 psicopedagogia).
 3. Existe persona dentre P1 a P7 que faria essa pergunta naturalmente.
 4. Pelo menos 1 LLM cross-cohort já trouxe IPOG ou competidor direto na resposta a esse prompt em testes preliminares (3 paráfrases).
+5. Modalidade canônica (AMPLO, LATO, MBA, MEPP, CLIN) declarada e coerente com o intent de busca.
 
-Quando os 4 critérios são atendidos, o prompt entra como candidato. Antes de virar oficial, passa por **prompt sensitivity test** (ver seção dedicada abaixo).
+Quando os 5 critérios são atendidos, o prompt entra como candidato. Antes de virar oficial, passa por **prompt sensitivity test** (ver seção dedicada abaixo).
+
+## Critérios de calibração balanceados entre as 5 modalidades
+
+A distribuição-alvo do kit é 60/20/10/5/5 (AMPLO/LATO/MBA/MEPP/CLIN). A calibração mensal deve:
+
+1. **Medir a distribuição realizada** vs alvo por modalidade no início da sessão. Aceitar desvios até ±5 pontos percentuais sem ação corretiva; ±5-10 pp dispara revisão; >10 pp dispara reescopo do kit.
+2. **Avaliar Mention Rate por modalidade** — quando uma modalidade tem Mention Rate < 10% por 21 dias e cobertura mínima de 3 prompts, é candidata a expansão (não a aposentadoria; modalidade subrepresentada exige mais prompts, não menos).
+3. **Considerar deriva de mercado por modalidade** — quando uma modalidade ganha relevância (ex: lançamento de Mestrado Profissional do IPOG, certificação CFP nova), adicionar 2-4 prompts dedicados.
+4. **Conservar amplitude do guarda-chuva** — nunca reduzir o peso de prompts AMPLOS abaixo de 50%; eles são a forma mais econômica de cobrir múltiplas modalidades em uma única coleta.
+5. **Cobertura mínima por modalidade**: LATO ≥ 6 prompts, MBA ≥ 5 prompts, MEPP ≥ 3 prompts, CLIN ≥ 4 prompts. Abaixo desses pisos, mesmo com Mention Rate baixo, a modalidade segue com prompts ativos para baseline cross-LLM.
 
 ## Quando aposentar prompt
 
@@ -90,13 +105,14 @@ Mudança de versão exige:
 
 Ata padrão de cada calibração mensal:
 
-1. Resumo de Mention Rate, Share-of-Voice e Citation Quality Score do mês anterior.
-2. Lista de prompts adicionados (com critério atendido).
-3. Lista de prompts aposentados (com critério atendido).
-4. Resultado de sensitivity tests do mês.
-5. Deriva semântica detectada (se houver).
-6. Decisão sobre bump de versão (sim/não).
-7. Pendências para o mês seguinte.
+1. Resumo de Mention Rate, Share-of-Voice e Citation Quality Score do mês anterior — agregados por LLM × persona × cluster × modalidade.
+2. **Distribuição realizada por modalidade vs alvo 60/20/10/5/5.** Quando desvio > 5pp, listar ações corretivas.
+3. Lista de prompts adicionados (com critério atendido e modalidade declarada).
+4. Lista de prompts aposentados (com critério atendido).
+5. Resultado de sensitivity tests do mês.
+6. Deriva semântica detectada (se houver), incluindo deriva por modalidade (ex: aumento de buscas por "Especialização Clínica certificada CFP" em 90 dias).
+7. Decisão sobre bump de versão (sim/não).
+8. Pendências para o mês seguinte.
 
 A ata é gravada em `docs/calibracoes/YYYY-MM-DD-calibracao-mensal.md` (a Wave 4B cria o diretório se aplicável).
 

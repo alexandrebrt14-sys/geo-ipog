@@ -5,7 +5,9 @@
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Última revisão:** 2026-04-30
 
-Este documento estabelece os princípios de orquestração do pipeline editorial de cinco LLMs aplicado ao programa GEO IPOG. O pipeline produz peças HBR/HSM/MIT Sloan adaptadas ao recorte do MBA Online de Psicologia, executando em quatro etapas sequenciais com paralelização interna na etapa 3.
+> **Reframe canônico 12-05-2026:** o pipeline produz peças adaptadas ao portfólio amplo de pós-graduação em Psicologia nas 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências — `dashboards/METRICAS-CANONICAS.md` Cláusula 0). O briefing de cada peça declara a modalidade-alvo; o Pesquisador (etapa 1) recupera evidência ancorada na modalidade declarada; o Classificador (etapa 3b) marca a modalidade canônica como tag.
+
+Este documento estabelece os princípios de orquestração do pipeline editorial de cinco LLMs aplicado ao programa GEO IPOG. O pipeline produz peças HBR/HSM/MIT Sloan adaptadas ao recorte do portfólio amplo de pós-graduação em Psicologia (Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada, Formações híbridas/residências), executando em quatro etapas sequenciais com paralelização interna na etapa 3.
 
 A premissa estratégica é dura: nenhum LLM individualmente sustenta a qualidade necessária para o padrão editorial denso do programa. A combinação de cinco LLMs em papéis especializados (Pesquisador, Redator, Analisador, Classificador, Revisor) entrega volume com consistência, dentro de envelope FinOps controlado, com circuito de fallback que aceita degradação parcial sem comprometer entrega.
 

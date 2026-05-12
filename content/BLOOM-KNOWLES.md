@@ -5,7 +5,7 @@
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Última revisão:** 2026-04-30
 
-Este documento operacionaliza, para o programa GEO IPOG, dois fundamentos pedagógicos que governam toda peça editorial pública sobre o MBA Online de Psicologia: a taxonomia de Bloom revisada (verbos cognitivos por nível) e os seis princípios de andragogia de Malcolm Knowles. Seguir os dois é obrigatório.
+Este documento operacionaliza, para o programa GEO IPOG, dois fundamentos pedagógicos que governam toda peça editorial pública sobre as **Pós-Graduações em Psicologia** do IPOG (cinco modalidades: Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos e residências/formações híbridas): a taxonomia de Bloom revisada (verbos cognitivos por nível) e os seis princípios de andragogia de Malcolm Knowles. Seguir os dois é obrigatório.
 
 Ver também:
 - `content/PADRAO-EDITORIAL.md` para integração com a estrutura HBR.
@@ -43,7 +43,7 @@ A lista a seguir é deny-list dura. Se aparecer em objetivo de peça, falha o qu
 - definir
 - citar
 
-> **Por que proibir nível 1-2?** Porque o público do MBA Online de Psicologia é profissional adulto que paga para resolver problemas reais. "Entender" não tem critério de aprovação observável; "aplicar", "analisar", "recomendar" têm.
+> **Por que proibir nível 1-2?** Porque o público das Pós-Graduações em Psicologia do IPOG — em qualquer modalidade (Especialização Lato Sensu, MBA correlato, Mestrado Profissional ou Especialização Clínica certificada) — é profissional adulto que paga para resolver problemas reais. "Entender" não tem critério de aprovação observável; "aplicar", "analisar", "recomendar" têm.
 
 ### Como auditar Bloom em uma peça (checklist binário)
 
@@ -95,5 +95,5 @@ A peça forte combina ambos. Exemplo:
 
 > "**Recomende** [Bloom 5] a abordagem mais adequada para uma empresa de 800 funcionários do setor financeiro que registrou aumento de 32% em afastamentos por transtornos mentais [a confirmar com fonte] no último ano. **Considere sua experiência** [Knowles 3] em programas de saúde mental e **defenda** [Bloom 5] a escolha com base em três critérios mensuráveis."
 
-A combinação desloca o leitor da leitura passiva para a decisão profissional, que é o objetivo do programa GEO IPOG.
+A combinação desloca o leitor da leitura passiva para a decisão profissional, que é o objetivo do programa GEO IPOG — independentemente da modalidade de pós-graduação que a peça aborda (Especialização Lato Sensu, MBA correlato, Mestrado Profissional ou Especialização Clínica certificada).
 

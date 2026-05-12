@@ -2,7 +2,7 @@
 
 Início: 30 de abril de 2026.
 Cadência: ondas quinzenais com checkpoint executivo mensal de calibração com Ronan Maia (CEO IPOG).
-Subcontexto vertical: **MBA Online de Psicologia** como recorte prioritário de produto para o ciclo 2026.
+Escopo canônico: **Pós-Graduações em Psicologia** em todas as modalidades regulamentadas (Especialização Lato Sensu, MBA em áreas correlatas — um subconjunto —, Mestrado Profissional, Especialização Clínica certificada por Conselhos profissionais como CFP, ABRAP e FBT, Residências e formações híbridas regulamentadas). MBA Online de Psicologia é uma das modalidades-âncora dentro desse escopo amplo, não o escopo total.
 
 ---
 
@@ -17,9 +17,9 @@ A primeira onda do projeto trabalha em janela espelho: **diagnóstico pré-inves
 
 Implicações operacionais:
 
-- Schema.org de `Course` e `EducationalOccupationalProgram` precisa estar implementado e validado até **30-05-2026** para entrar no pico de captação 2026.2.
-- Kit de prompts-âncora cobrindo jornada de descoberta → comparação → decisão de matrícula em pós-graduação online de Psicologia precisa estar fechado até **20-05-2026**.
-- Primeira leva de conteúdo HBR-grade (entre 6 e 10 peças) publicada até **15-06-2026** com cross-link para o hub `ipog.edu.br/cursos/pos-graduacao` e para a página de produto MBA Online de Psicologia quando estiver no ar.
+- Schema.org de `Course` e `EducationalOccupationalProgram` precisa estar implementado e validado até **30-05-2026** para entrar no pico de captação 2026.2, com cobertura para todas as modalidades de pós-graduação em Psicologia ofertadas pelo IPOG.
+- Kit de prompts-âncora cobrindo jornada de descoberta → comparação → decisão de matrícula em pós-graduação online de Psicologia (Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada) precisa estar fechado até **20-05-2026**.
+- Primeira leva de conteúdo HBR-grade (entre 6 e 10 peças) publicada até **15-06-2026** com cross-link para o hub `ipog.edu.br/cursos/pos-graduacao` e para as páginas de produto de cada modalidade (incluindo MBA Online de Psicologia como uma das modalidades-âncora) quando estiverem no ar.
 
 Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
@@ -30,13 +30,13 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 **Janela:** 30-04-2026 a 06-05-2026 (semana 1)
 
 - Alinhar escopo formal com stakeholders IPOG: Ronan Maia (CEO, sponsor), Bruno Azambuja (Marketing, interlocutor operacional), demais áreas envolvidas (acadêmico, captação, TI, jurídico).
-- Mapear personas-alvo prioritárias do MBA Online de Psicologia: psicólogo recém-graduado, psicólogo clínico estabelecido, profissional de RH não-psicólogo, profissional de saúde, educador e pedagogo, transição de carreira, coach e terapeuta complementar.
+- Mapear personas-alvo prioritárias da Pós-Graduação em Psicologia (todas as modalidades): psicólogo recém-graduado, psicólogo clínico estabelecido, profissional de RH não-psicólogo, profissional de saúde, educador e pedagogo, transição de carreira, coach e terapeuta complementar.
 - Catalogar propriedades digitais IPOG relevantes: domínio principal (`ipog.edu.br`), hub de pós-graduação, blog, central de atendimento, landing pages de captação, perfis sociais oficiais e canais educacionais.
 - Definir contas e acessos para NAIA, GSC, GA4 (somente leitura quando aplicável) e ferramentas internas IPOG.
 - Acordar política de versionamento e confidencialidade dos prompts-âncora e da matriz de concorrentes monitorada.
-- Levantar o estado atual da oferta IPOG em Psicologia (graduação, especialização em Avaliação Psicológica, novos produtos planejados) e ratificar o recorte do MBA Online de Psicologia que entra no escopo do programa GEO.
+- Levantar o estado atual da oferta IPOG em Psicologia (graduação, Especialização Lato Sensu em Avaliação Psicológica, MBAs executivos correlatos, Mestrado Profissional, novos produtos planejados) e ratificar o escopo canônico de Pós-Graduação em Psicologia que entra no programa GEO, com MBA Online de Psicologia como uma das modalidades-âncora.
 
-**Saídas esperadas:** ata de kickoff, lista de propriedades digitais, persona map v0 do MBA Online de Psicologia, plano de acessos, matriz de concorrentes ratificada, recorte de produto IPOG validado.
+**Saídas esperadas:** ata de kickoff, lista de propriedades digitais, persona map v0 da Pós-Graduação em Psicologia (todas as modalidades), plano de acessos, matriz de concorrentes ratificada, escopo de produto IPOG validado por modalidade.
 
 ---
 
@@ -46,10 +46,10 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
 - Rodar diagnóstico NAIA full em `ipog.edu.br` com foco no hub de pós-graduação e nas páginas de cursos correlatos a Psicologia.
 - Levantar baseline de LLM Mention Rate por persona em ChatGPT, Claude, Gemini, Perplexity, Grok e Copilot. Primeira captura entre **07-05 e 14-05** (estado pré-intervenção). Captura espelho pós-Schema entre **22-05 e 30-05** apenas em provedores RAG-native.
-- Mapear share-of-voice do IPOG vs. concorrentes diretos em três clusters semânticos:
-  - **MBA online em Psicologia organizacional, do trabalho e gestão de pessoas.**
-  - **Pós-graduação online em Psicologia clínica, neuropsicologia, terapia cognitivo-comportamental e avaliação psicológica.**
-  - **Especialização online em psicopedagogia, psicologia escolar e psicologia da educação.**
+- Mapear share-of-voice do IPOG vs. concorrentes diretos em três clusters semânticos (cobrindo modalidades MBA, Especialização Lato Sensu, Mestrado Profissional e Especialização Clínica certificada):
+  - **Pós-graduação online em Psicologia organizacional, do trabalho e gestão de pessoas** (MBA em POT é uma das modalidades, junto com Lato Sensu e Especialização Clínica certificada).
+  - **Pós-graduação online em Psicologia clínica, neuropsicologia, terapia cognitivo-comportamental e avaliação psicológica** (predominam Especialização Lato Sensu e Especialização Clínica certificada por CFP/ABRAP/FBT; MBA em Neuropsicologia executiva é uma das modalidades).
+  - **Especialização online em psicopedagogia, psicologia escolar e psicologia da educação** (predominam Especialização Lato Sensu e Mestrado Profissional).
 - Auditoria técnica do hub de pós-graduação: Schema `Course` e `EducationalOccupationalProgram` cobertura, llms.txt presente, sitemap de cursos, robots.txt, internal linking entre área de Psicologia e demais áreas correlatas, structured data validation, `EducationalOrganization` com `accreditation`, `hasCredential`, `sameAs` para perfis verificados.
 - Inventariar lacunas de autoridade externa do IPOG no nicho Psicologia: citações em mídia educacional, presença em rankings de pós (Estadão, Folha, Quero Bolsa, Gama Academy), Wikipedia, Conselho Federal de Psicologia, ABEP, ABRAPSO, periódicos acadêmicos brasileiros.
 
@@ -65,19 +65,21 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
 **Janela:** 31-05-2026 a 13-06-2026 (semanas 5 e 6)
 
-- Construir kit canônico de **50 a 75 prompts-âncora** distribuídos entre descoberta, comparação, decisão de matrícula e pós-matrícula, com eixo dominante em MBA Online de Psicologia. Exemplos de prompt-âncora previstos:
-  - "Qual o melhor MBA online em Psicologia Organizacional reconhecido pelo MEC?"
-  - "Pós-graduação a distância em Psicologia Clínica vale a pena?"
-  - "MBA em Neuropsicologia online com aulas ao vivo: opções no Brasil"
-  - "Quanto custa um MBA online em Psicologia Hospitalar?"
-  - "Especialização em Avaliação Psicológica online: instituições aprovadas pelo CFP"
-  - "MBA Online em Psicologia para profissionais de RH sem formação em Psicologia"
-  - "Pós em Terapia Cognitivo-Comportamental EAD: melhores faculdades"
-- Definir respostas-alvo (a resposta ideal que o IPOG deveria receber em cada prompt) com fragmentos curtos e citáveis, incluindo número de horas, autorização MEC, formato (Ao Vivo, EAD, presencial), corpo docente nominal e diferencial metodológico.
+- Construir kit canônico de **50 a 75 prompts-âncora** distribuídos entre descoberta, comparação, decisão de matrícula e pós-matrícula, cobrindo todas as modalidades de Pós-Graduação em Psicologia (Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada). Exemplos de prompt-âncora previstos:
+  - "Qual o melhor MBA online em Psicologia Organizacional reconhecido pelo MEC?" (modalidade MBA)
+  - "Pós-graduação a distância em Psicologia Clínica vale a pena?" (modalidade Lato Sensu / Especialização Clínica)
+  - "Mestrado Profissional em Psicologia online: existe no Brasil?" (modalidade Mestrado Profissional)
+  - "MBA em Neuropsicologia executiva online com aulas ao vivo: opções no Brasil" (modalidade MBA)
+  - "Quanto custa uma especialização online em Psicologia Hospitalar?" (modalidade Lato Sensu)
+  - "Especialização em Avaliação Psicológica online: instituições aprovadas pelo CFP" (Especialização Clínica certificada CFP/SATEPSI)
+  - "Especialização Clínica em TCC certificada pela FBT: melhores opções a distância" (Especialização Clínica certificada FBT)
+  - "Pós em Psicologia para profissionais de RH sem formação em Psicologia: MBA ou Lato Sensu?" (comparativo de modalidades)
+  - "Especialização em ACT certificada pela ABRAP: como escolher?" (Especialização Clínica certificada ABRAP)
+- Definir respostas-alvo (a resposta ideal que o IPOG deveria receber em cada prompt) com fragmentos curtos e citáveis, incluindo número de horas, modalidade (Lato Sensu / MBA / Mestrado Profissional / Especialização Clínica certificada), autorização MEC ou certificação de Conselho aplicável, formato (Ao Vivo, EAD, presencial), corpo docente nominal e diferencial metodológico.
 - Identificar gaps entre resposta atual e resposta-alvo por LLM, classificando cada gap por alavanca dominante (conteúdo editorial, Schema, autoridade externa).
 - Priorizar fechamentos por impacto esperado em mention rate vs. esforço de execução.
 
-**Saídas esperadas:** IPOG GEO Prompt Kit v1 (com foco em MBA Psicologia), Gap Map v1, plano de fechamento de gaps com priorização explícita.
+**Saídas esperadas:** IPOG GEO Prompt Kit v1 cobrindo as modalidades canônicas de Pós-Graduação em Psicologia, Gap Map v1, plano de fechamento de gaps com priorização explícita.
 
 **Artefatos de execução vigentes:** `prompts/KIT-PROMPTS-V0.md` (66 prompts canônicos prontos para uso), `prompts/PAPEIS-DE-COLETA.md`, `prompts/PROMPT-PESQUISA.md`, `prompts/PROMPT-REDACAO.md`, `prompts/PROMPT-ANALISE.md`, `prompts/PROMPT-CLASSIFICACAO.md`, `prompts/PROMPT-REVISAO.md`, `prompts/CALIBRACAO-MENSAL.md`.
 
@@ -87,10 +89,10 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
 **Janela:** 14-06-2026 a 15-07-2026 (semanas 7 a 10)
 
-- Produzir entre **6 e 10 peças** no padrão editorial HBR (abertura-impacto, tese contraintuitiva, evidência, mecanismo, decisão, próximo passo) cobrindo decisão de carreira em Psicologia, retorno de investimento de pós-graduação online, comparativo metodológico (Ao Vivo vs. EAD assíncrono), regulamentação CFP da prática profissional pós-especialização e tendências de mercado em saúde mental corporativa.
-- Reforçar Schema.org no hub de pós-graduação: `Course`, `EducationalOccupationalProgram`, `EducationalOrganization`, `FAQPage`, `Person` com credenciais para corpo docente, `Article` em peças editoriais.
+- Produzir entre **6 e 10 peças** no padrão editorial HBR (abertura-impacto, tese contraintuitiva, evidência, mecanismo, decisão, próximo passo) cobrindo decisão de carreira em Psicologia, retorno de investimento de pós-graduação online, comparativo de modalidades (Lato Sensu vs. MBA vs. Mestrado Profissional vs. Especialização Clínica certificada por Conselho), comparativo metodológico (Ao Vivo vs. EAD assíncrono), regulamentação CFP da prática profissional pós-especialização e tendências de mercado em saúde mental corporativa.
+- Reforçar Schema.org no hub de pós-graduação: `Course`, `EducationalOccupationalProgram`, `EducationalOrganization`, `FAQPage`, `Person` com credenciais para corpo docente, `Article` em peças editoriais. Cobrir todas as modalidades de pós-graduação ofertadas (Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada).
 - Implementar `llms.txt` em `ipog.edu.br` declarando posicionamento, hub central de cursos e prioridades de citação.
-- Coordenar citation engineering: PR e parcerias com veículos confiáveis de educação e psicologia (Estadão Educação, Folha Equilíbrio, Quero Bolsa, Conselho Federal de Psicologia, ABEP, ABRAPSO), atualização de fichas em rankings e diretórios de pós-graduação.
+- Coordenar citation engineering: PR e parcerias com veículos confiáveis de educação e psicologia (Estadão Educação, Folha Equilíbrio, Quero Bolsa, Conselho Federal de Psicologia, ABRAP, FBT, ABEP, ABRAPSO), atualização de fichas em rankings e diretórios de pós-graduação.
 
 **Saídas esperadas:** 6 a 10 peças HBR-grade publicadas, Schema cobertura ampliada e validada, llms.txt no ar, plano de PR ativo, matriz de parcerias com veículos.
 
@@ -151,6 +153,6 @@ Os próximos passos formais — Key Event, custom dimensions, Bing Webmaster, Lo
 - **Concorrentes acelerando GEO:** kit de prompts-âncora compartilhado com concorrência simulada para detecção precoce de movimento competitivo.
 - **Compliance regulatório educacional:** todo conteúdo público que faz claims de autorização MEC, carga horária ou registro CFP passa por revisão jurídica IPOG antes da publicação externa.
 - **Latência de absorção pelos LLMs:** modelos com pesos paramétricos não retreinam imediatamente. Ganho de presença em pesos paramétricos depende de fontes externas atualizadas (mídia, Wikipedia, llms.txt, Schema). Provedores RAG-native absorvem mudança em dias.
-- **Saturação competitiva no termo "MBA online em Psicologia":** instituições EAD massivas (Estácio, Anhanguera, Unip, UNINTER, UniCesumar) também disputam a narrativa. Diferenciação semântica precisa ser construída em torno de atributos defensáveis pelo IPOG: corpo docente nominal, formato Ao Vivo síncrono, presença multicampus, certificação MEC e histórico de 25 anos de pós-graduação.
-- **Dependência de produto:** se o produto MBA Online de Psicologia ainda não estiver no catálogo público no momento do pico GEO, share-of-voice tende a ficar capturado por concorrentes. Mitigação: cronograma do programa GEO sincroniza com plano de lançamento do produto IPOG.
+- **Saturação competitiva no termo "pós-graduação online em Psicologia":** instituições EAD massivas (Estácio, Anhanguera, Unip, UNINTER, UniCesumar) também disputam a narrativa em Lato Sensu. Em Especialização Clínica certificada, institutos especialistas (IBNeuro, CETCC, InEPP) dominam termos. Diferenciação semântica do IPOG precisa ser construída em torno de atributos defensáveis: corpo docente nominal, formato Ao Vivo síncrono, presença multicampus, certificação MEC e histórico de 25 anos de pós-graduação executiva — combinando MBA, Lato Sensu e demais modalidades em catálogo amplo.
+- **Dependência de produto por modalidade:** se determinada modalidade-âncora (MBA Online em POT, Lato Sensu em Avaliação Psicológica, Especialização Clínica certificada em TCC, Mestrado Profissional) ainda não estiver no catálogo público no momento do pico GEO, share-of-voice naquela modalidade tende a ficar capturado por concorrentes. Mitigação: cronograma do programa GEO sincroniza com plano de lançamento de cada produto IPOG por modalidade.
 - **Calendário de captação:** atrasos em Schema ou em conteúdo editorial além de 30-05-2026 reduzem janela de impacto sobre o ciclo 2026.2 e empurram retorno mensurável para o ciclo 2027.1.

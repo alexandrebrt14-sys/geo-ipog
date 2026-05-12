@@ -1,5 +1,7 @@
 # Engenharia de Schema.org, llms.txt, robots.txt e sitemap.xml — Programa GEO IPOG
 
+> **Reframe canônico 12-05-2026:** Schema cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). `EducationalOccupationalProgram` exige `programType` correto para a modalidade: `"Specialization"` (Especialização Lato Sensu — formato dominante), `"MBA"` (MBA correlato à Psicologia), `"MastersProgram"` (Mestrado Profissional) e `"ClinicalCertification"` (Especialização Clínica certificada por Conselho — CFP/ABRAP/FBT). Os exemplos abaixo (URLs `/mba-online-...`) cobrem a modalidade b; URLs análogas existem para as demais modalidades (`/pos-graduacao/especializacao-...`, `/pos-graduacao/mestrado-profissional-...`, `/pos-graduacao/especializacao-clinica-...`, `/pos-graduacao/residencia-...`).
+
 > **Documento:** 03 — Especificação técnica completa de Schema.org JSON-LD, llms.txt, robots.txt e sitemap.xml para `ipog.edu.br`.
 > **Cliente:** IPOG (Instituto de Pós-Graduação e Graduação, Goiânia, fundado 2001).
 > **Sponsor executivo:** Ronan Maia (CEO IPOG).

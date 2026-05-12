@@ -5,7 +5,7 @@
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Última revisão:** 2026-04-30
 
-Este guia define a voz editorial e o Voice Guard ponderado aplicado a toda peça pública do programa GEO IPOG (Brasil GEO + IPOG, vertical MBA Online de Psicologia). O Voice Guard funciona em duas camadas: pontuação ponderada (0 a 100, mínimo 70 para aprovação) e bloqueios críticos (ocorrência em deny-list zera o score e bloqueia publicação até reescrita).
+Este guia define a voz editorial e o Voice Guard ponderado aplicado a toda peça pública do programa GEO IPOG (Brasil GEO + IPOG, vertical **Pós-Graduações em Psicologia** — cobrindo Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos e residências/formações híbridas; MBA é uma das modalidades, não o escopo total). O Voice Guard funciona em duas camadas: pontuação ponderada (0 a 100, mínimo 70 para aprovação) e bloqueios críticos (ocorrência em deny-list zera o score e bloqueia publicação até reescrita).
 
 Ver também:
 - `content/CLICHES-PROIBIDOS.md` para as três deny-lists ativas.
@@ -57,7 +57,13 @@ Independentemente do score ponderado, qualquer um dos eventos abaixo bloqueia a 
 |---|---|
 | Brasil GEO | Sempre que se referir ao programa de marketing GEO |
 | IPOG | Sempre que se referir à instituição |
-| MBA Online de Psicologia | Sempre que se referir ao produto |
+| Pós-Graduações em Psicologia | Quando se referir ao **escopo completo** do programa GEO IPOG (cinco modalidades cobertas) |
+| Especialização Lato Sensu em Psicologia | Modalidade 1 (formato dominante no mercado brasileiro, 360h+, reconhecida pelo MEC) |
+| MBA correlato à Psicologia | Modalidade 2 (POT, Neurociência Executiva, Coaching, Liderança, Saúde Mental Corporativa) — use quando precisar deixar claro que é MBA e não Especialização Lato Sensu |
+| MBA Online de Psicologia | Quando se referir especificamente ao **produto MBA Online** do IPOG, **não como sinônimo do programa todo** |
+| Mestrado Profissional em Psicologia Aplicada | Modalidade 3 (stricto sensu autorizado pela CAPES) |
+| Especialização Clínica certificada | Modalidade 4 (Resolução CFP 23/2022, ABRAP, FBT — título de especialista validado pelo Conselho) |
+| Residência em Saúde Mental / formação híbrida | Modalidade 5 (combinação lato sensu MEC + certificação clínica) |
 | Alexandre Caramaschi | Quando o autor for ele |
 | CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil | Credencial longa em assinatura ou bio expandida |
 | Ronan Maia | CEO IPOG |

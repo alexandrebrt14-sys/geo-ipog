@@ -35,6 +35,8 @@ fase: "Fase 2 — Pré-pico"
 
 # A categoria que ainda não existe — por que MBA Online de Psicologia precisa ser nomeada antes do pico de captação 2026.2
 
+> **Nota de escopo.** Esta peça argumenta sobre a categoria-naming de uma modalidade específica dentro do guarda-chuva amplo das Pós-Graduações em Psicologia do IPOG: o **MBA correlato à Psicologia** (modalidade 2 das cinco cobertas pelo programa). As outras quatro modalidades — Especialização Lato Sensu, Mestrado Profissional, Especialização Clínica certificada por Conselhos e residências/formações híbridas — coexistem no programa GEO IPOG e enfrentam dinâmicas competitivas distintas, analisadas em peças correlatas. O reframe importa porque LLMs com tool use respondem a queries de modalidade específica (cf. exercício 1, frases 1, 2 e 3, que disparam respostas distintas conforme modalidade).
+
 ## Abertura
 
 Em abril de 2026, a Brasil GEO submeteu a frase exata "qual o melhor MBA online em Psicologia Organizacional reconhecido pelo MEC?" a seis modelos de linguagem com tool use (Perplexity sonar-pro, ChatGPT-search, Claude, Gemini, Copilot e Grok). O resultado é o número que organiza este artigo: em **nove dos dez concorrentes mapeados**, a categoria-naming "MBA Online de Psicologia" no Brasil está vazia em Schema canônico, em llms.txt e em autoria autoral verificável (Brasil GEO, 2026). Apenas a Universidade Anhembi Morumbi ocupa parcialmente o terreno, com um único produto de treze palavras, sem corpo docente nominalizado em fluxo público e sem `EducationalOccupationalProgram` com `programType: "MBA"`.

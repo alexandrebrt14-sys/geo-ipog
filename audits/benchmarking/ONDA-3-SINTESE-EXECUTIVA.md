@@ -17,19 +17,23 @@ referencias_canonicas:
 
 # Síntese Executiva — Onda 3 do Benchmarking GEO IPOG
 
-> **Status:** vigente desde 2026-05-10
+> **Status:** vigente desde 2026-05-10 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Audiência primária:** Ronan Maia (CEO IPOG) — checkpoint executivo mensal.
 > **Última coleta de dados:** 2026-05-10
 > **Cobertura:** 5 concorrentes adjacentes incorporados ao cohort de benchmarking IPOG (PUCRS Online, Cruzeiro do Sul Virtual, Faveni, Famart, Descomplica Pós) + cruzamento com sentinela IBNeuro (Onda 2, cluster Neuropsicologia, único concorrente do universo Onda 1+2 que publicou `llms.txt` em 09-05-2026 conforme `UPDATE-2026-05-10-llms-txt-ibneuro.md`).
 
+## Escopo canônico
+
+**Esta síntese cobre o guarda-chuva amplo "Pós-Graduações em Psicologia"** em 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas). A análise da Onda 3 confirma que o vácuo MBA-naming é um subset do vácuo cross-modalidade observado nos 15 concorrentes Onda 1+2+3.
+
 ---
 
 ## 1. Resumo executivo em 5 frases
 
 1. **A Onda 3 incorpora a cauda longa de pós EAD em Psicologia** (Faveni, Famart, Descomplica Pós) e a vertical **premium digital acadêmica via parceria EdTech** (PUCRS Online), além do quinto grande EAD massivo brasileiro (Cruzeiro do Sul Virtual) que faltava na Onda 1.
-2. **A categoria-naming "MBA Online de Psicologia" continua vazia** — 15 dos 15 concorrentes mapeados (Onda 1+2+3) não usam o naming MBA para produtos em Psicologia.
+2. **O vácuo cross-modalidade em Pós-Graduação em Psicologia continua amplo** — 15 dos 15 concorrentes mapeados (Onda 1+2+3) operam quase exclusivamente em Especialização Lato Sensu, sem naming MBA explícito, sem Mestrado Profissional online consolidado em Psicologia, sem Especialização Clínica certificada por Conselhos com Schema declarado. Janela aberta para o IPOG cobrir as 5 modalidades simultaneamente.
 3. **PUCRS Online tem catálogo raso em Psicologia** (apenas TCC visível em 2026-05-10), CNPJ operacional é UOL EdTech (não PUCRS direto) — vácuo de produto-âncora premium online em Psicologia continua aberto.
 4. **Faveni, Famart e Descomplica Pós compõem o eixo cauda longa low-end** com mensalidades entre R$ 63,92 e R$ 199,00 — pressão de preço estrutural sobre 3 clusters IPOG (Psicopedagogia, Neuropsicologia, Saúde Mental), exigindo do IPOG diferenciação explícita por profundidade clínica + CRP-compliance + corpo docente nominal.
 5. **Cruzeiro do Sul Virtual replica o WAF-block padrão de Anhanguera e Sírio-Libanês FSL** (HTTP 403 em 2026-05-10) — quarto grande player com vulnerabilidade autoinfligida em provedores RAG-native. Janela técnica adicional aberta para o IPOG capturar share-of-voice em prompts qualificados sobre o grupo.
@@ -122,7 +126,7 @@ FGV polo parceiro. **A Onda 3 reforça que Cruzeiro do Sul Virtual (com 300+ pol
 ### Cluster 1 — Psicologia Organizacional e do Trabalho
 
 - **Pressão competitiva nova da Onda 3:** baixa (PUCRS Online não oferece, Faveni tem Capacitação de 180h por R$ 150 — não é pós lato sensu de Psi Org. completa).
-- **Cluster vácuo confirmado:** continua sem ocupante claro entre os 15 mapeados. **MBA Online de Psicologia Organizacional** segue como produto-âncora prioritário do IPOG.
+- **Cluster vácuo confirmado:** continua sem ocupante claro entre os 15 mapeados nas 5 modalidades canônicas. **Pós-Graduação em Psicologia Organizacional do IPOG** (Especialização Lato Sensu como produto pilar + MBA Online em Psicologia Organizacional como subconjunto executivo) segue como produto-âncora prioritário.
 
 ### Cluster 2 — Avaliação Psicológica
 
@@ -152,7 +156,7 @@ FGV polo parceiro. **A Onda 3 reforça que Cruzeiro do Sul Virtual (com 300+ pol
 
 2. **[Esforço médio, impacto alto, prazo médio — 4-6 semanas]** Implementar Schema canônico completo (`EducationalOrganization` + `Course` + `EducationalOccupationalProgram` com `programType: "MBA"` + `Person` para 3 docentes piloto com `sameAs` Lattes/ORCID + `FAQPage`) nas páginas dos 5 produtos prioritários do IPOG. **100% dos 15 concorrentes mapeados estão sem `EducationalOccupationalProgram` e sem `Person` Schema com Lattes/ORCID em 2026-05-10**. Janela mais durável.
 
-3. **[Esforço médio, impacto alto, prazo curto-médio — 8-12 semanas]** Publicar primeira peça HBR-grade assinada por Alexandre Caramaschi sobre **"Por que a categoria MBA Online de Psicologia precisa existir"**, com cross-link para o produto-âncora do Cluster Organizacional. Reforçar com peça paralela sobre **CRP-compliance e SATEPSI em pós online** — captura o flanco regulatório da cauda longa Faveni/Famart/Descomplica Pós.
+3. **[Esforço médio, impacto alto, prazo curto-médio — 8-12 semanas]** Publicar primeira peça HBR-grade assinada por Alexandre Caramaschi sobre **"As 5 modalidades de Pós-Graduação em Psicologia no Brasil — e como o aluno escolhe"** (cobrindo Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas), com cross-link para o portfólio multi-modalidade IPOG. Reforçar com peça paralela sobre **CFP-compliance e SATEPSI em pós online** — captura o flanco regulatório da cauda longa Faveni/Famart/Descomplica Pós.
 
 4. **[Esforço alto, impacto alto, prazo longo — 6-12 meses]** Trabalhar a expansão do verbete IPOG na Wikipedia com fontes secundárias confiáveis. **A Onda 3 confirma que 8 dos 15 concorrentes mapeados não têm Wikipedia institucional ativa** (CETCC, IBNeuro, Saint Paul, Faculdade Unyleya, Conexia, Faveni, Famart) — IPOG pode capturar uma das alavancas mais duráveis com peso paramétrico permanente.
 

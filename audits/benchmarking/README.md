@@ -1,11 +1,15 @@
-# Benchmarking dos Concorrentes do IPOG — MBA Online de Psicologia
+# Benchmarking dos Concorrentes do IPOG — Pós-Graduações em Psicologia
 
-> **Status:** vigente desde 2026-04-30 (Onda 1) e 2026-05-01 (Onda 2)
+> **Status:** vigente desde 2026-04-30 (Onda 1), 2026-05-01 (Onda 2), reescopo 2026-05-12
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-05-01
+> **Última revisão:** 2026-05-12
 
-Este diretório consolida o benchmarking dos concorrentes do IPOG na vertical de pós-graduação online em Psicologia, executado em duas ondas complementares com pesquisa primária e double-check via web em 2026-05-01.
+## Escopo canônico
+
+**Este diretório consolida o benchmarking dos concorrentes do IPOG na vertical de Pós-Graduações em Psicologia**, cobrindo as 5 modalidades canônicas: Especialização Lato Sensu (formato dominante), MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos (CFP, ABRAP, FBT, ABPp) e formações híbridas. O recorte original "MBA Online de Psicologia" foi ampliado em 2026-05-12 para refletir que a oferta dominante do mercado é lato sensu, com MBA como subconjunto relevante.
+
+Benchmarking executado em duas ondas complementares com pesquisa primária e double-check via web em 2026-05-01.
 
 - **Onda 1 (2026-04-30):** cinco concorrentes massivos do EAD brasileiro (Estácio, Anhanguera, UNINTER, UniCesumar, PUC-Minas Virtual). 10 artefatos canônicos.
 - **Onda 2 (2026-05-01):** cinco concorrentes especialistas verticais e premium executiva (CETCC, IBNeuro, Sírio-Libanês IEP, wPós/Anhembi, Saint Paul/EXAME). Cinco dossiês individuais + nota de correções de premissa.
@@ -76,7 +80,7 @@ A Onda 2 trouxe três correções de identidade institucional consolidadas em `O
 
 ### Onda 1 — confirmados
 
-- A categoria-naming **"MBA Online de Psicologia"** está vazia entre os 5 concorrentes massivos (todos vendem "Especialização lato sensu").
+- O vácuo cross-modalidade em Pós-Graduação em Psicologia é estrutural — entre os 5 concorrentes massivos, **todos operam quase exclusivamente em Especialização Lato Sensu**; nenhum nomeia MBA explícito em Psicologia, nenhum oferece Mestrado Profissional online em Psicologia consolidado, nenhum declara Especialização Clínica certificada por Conselhos com Schema canônico.
 - **Nenhum dos 5 tem llms.txt.** Janela técnica 100% aberta para o IPOG ser primeiro do nicho.
 - **Nenhum tem `EducationalOccupationalProgram` Schema.** Janela semântica para vincular o produto IPOG ao tipo correto.
 - **Nenhum tem `Person` Schema com Lattes/ORCID para corpo docente.** Janela durável (exige consentimento docente).

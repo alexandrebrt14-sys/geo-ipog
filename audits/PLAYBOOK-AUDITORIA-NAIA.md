@@ -9,7 +9,9 @@
 
 O programa Brasil GEO + IPOG depende de uma auditoria técnica recorrente que identifique gaps de presença em LLMs, fragilidades de Schema.org, falhas de sinalização para crawlers de IA e oportunidades de adensar autoridade declarada. NAIA é o nome operacional da bateria de auditoria que executamos sobre o domínio `ipog.edu.br` e seus ativos críticos. Este documento é a fonte de verdade do escopo, da bateria de checks, do formato de relatório, da escala de severidade e da governança de tickets.
 
-A auditoria NAIA não substitui SEO clássico — ela complementa, focando em sinais que LLMs e crawlers de IA priorizam: dados estruturados ricos, declaração explícita de autoridade, fontes externas confiáveis, llms.txt, sitemap canônico, FAQs estruturadas, biografia de corpo docente com Lattes/ORCID, schema de cursos completo. A meta é que ChatGPT, Claude, Gemini, Perplexity, Grok e Copilot citem o IPOG por nome, com formato declarado, carga horária correta, autorização MEC mencionada e diferencial editorial reconhecido.
+A auditoria NAIA cobre o guarda-chuva amplo de **Pós-Graduações em Psicologia** do IPOG (cinco modalidades: Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos e residências/formações híbridas) — não apenas MBA. Schema, llms.txt, sitemap e KPIs cross-LLM são auditados modalidade por modalidade.
+
+A auditoria NAIA não substitui SEO clássico — ela complementa, focando em sinais que LLMs e crawlers de IA priorizam: dados estruturados ricos com `programType` correto para cada modalidade, declaração explícita de autoridade, fontes externas confiáveis, llms.txt, sitemap canônico, FAQs estruturadas, biografia de corpo docente com Lattes/ORCID, schema de cursos completo. A meta é que ChatGPT, Claude, Gemini, Perplexity, Grok e Copilot citem o IPOG por nome, com **modalidade correta declarada** (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada), carga horária correta, autorização MEC ou CAPES mencionada quando aplicável e diferencial editorial reconhecido.
 
 ## Escopo da auditoria
 
@@ -23,11 +25,19 @@ A auditoria NAIA não substitui SEO clássico — ela complementa, focando em si
 
 ### Páginas de curso individuais
 
-Toda URL `https://ipog.edu.br/cursos/pos-graduacao/{slug}` referente ao MBA Online de Psicologia e cursos correlatos da grande área. Inclui as três grandes ramificações do programa:
+Toda URL `https://ipog.edu.br/cursos/pos-graduacao/{slug}` (ou `https://ipog.edu.br/cursos/stricto-sensu/{slug}` para Mestrado Profissional) referente ao guarda-chuva de **Pós-Graduações em Psicologia** ofertado pelo IPOG. O escopo cobre cinco modalidades canônicas, e cada modalidade exige verificação específica de Schema (ver `audits/SCHEMA-PATTERNS.md`, seção 3):
 
-1. Psicologia organizacional, do trabalho e RH.
-2. Clínica, neuropsicologia, TCC e avaliação psicológica.
-3. Psicopedagogia, escolar e educação.
+1. **Especialização Lato Sensu** — formato dominante no mercado brasileiro, 360h+, reconhecida pelo MEC. Inclui Neuropsicologia, Psicopedagogia, Psicologia Clínica geral, Psicologia Escolar, Psicologia Hospitalar, Avaliação Psicológica. `programType: "Specialization"`.
+2. **MBA correlato à Psicologia** — Psicologia Organizacional e do Trabalho (POT), Neurociência Executiva, Coaching, Liderança, Saúde Mental Corporativa. `programType: "MBA"`.
+3. **Mestrado Profissional** — stricto sensu autorizado pela CAPES, com dissertação aplicada. `programType: "ProfessionalMastersProgram"`.
+4. **Especialização Clínica certificada por Conselhos** — Resolução CFP 23/2022, ABRAP, FBT; cursos que conferem título de especialista validado por entidade profissional (TCC, ACT, DBT, EMDR). `programType: "ProfessionalCertification"`.
+5. **Residências e formações híbridas** — programas que combinam lato sensu MEC com certificação clínica de Conselho. Composição de dois `EducationalOccupationalProgram` no `@graph`.
+
+Para fins de auditoria temática, mantêm-se três grandes clusters editoriais cross-modalidade:
+
+- Psicologia Organizacional, do Trabalho e RH (dominado por MBA, mas com Especialização Lato Sensu também).
+- Psicologia Clínica, Neuropsicologia, TCC e Avaliação Psicológica (dominado por Especialização Lato Sensu e Especialização Clínica certificada).
+- Psicopedagogia, Escolar e Educação (dominado por Especialização Lato Sensu).
 
 ### Páginas institucionais auxiliares
 
@@ -92,9 +102,11 @@ A tabela abaixo lista todos os checks executados pela auditoria. Cada check tem 
 | NAIA-028 | Course tem `hasCourseInstance` quando há datas de turmas | P2 |
 | NAIA-029 | Course tem `offers` Offer com price e availability | P1 |
 | NAIA-030 | Course tem `numberOfCredits` ou carga horária estruturada | P1 |
-| NAIA-031 | EducationalOccupationalProgram presente quando programa é abrangente (ex.: MBA) | P1 |
-| NAIA-032 | EducationalOccupationalProgram tem `programType` "MBA" quando aplicável | P2 |
+| NAIA-031 | EducationalOccupationalProgram presente em todo programa abrangente (qualquer das cinco modalidades) | P1 |
+| NAIA-032 | EducationalOccupationalProgram tem `programType` correto para a modalidade: `Specialization` (Lato Sensu), `MBA` (MBA correlato), `ProfessionalMastersProgram` (Mestrado Profissional) ou `ProfessionalCertification` (Especialização Clínica certificada por Conselhos) | P0 |
 | NAIA-033 | EducationalOccupationalProgram tem `applicationDeadline` quando há janela definida | P2 |
+| NAIA-034 | Residências e formações híbridas declaram dois `EducationalOccupationalProgram` no `@graph` (lato sensu MEC + certificação clínica de Conselho) | P1 |
+| NAIA-035 | `occupationalCredentialAwarded` é coerente com a modalidade (lato sensu MEC, MBA lato sensu MEC, Título de Mestre Profissional CAPES, ou Título de Especialista certificado pelo Conselho) | P1 |
 
 ### Categoria C — Schema.org de FAQ e blog
 
@@ -133,7 +145,7 @@ A tabela abaixo lista todos os checks executados pela auditoria. Cada check tem 
 | NAIA-080 | `/llms.txt` existe e retorna 200 | P0 |
 | NAIA-081 | Llms.txt segue spec Anthropic (header H1 com nome da organização, descrição curta) | P1 |
 | NAIA-082 | Llms.txt lista hub central como link prioritário | P0 |
-| NAIA-083 | Llms.txt lista 5+ páginas-pilar do MBA Online de Psicologia | P1 |
+| NAIA-083 | Llms.txt lista 5+ páginas-pilar das pós-graduações em Psicologia, cobrindo no mínimo três das cinco modalidades (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada, residência/híbrida) | P1 |
 | NAIA-084 | Llms.txt declara áreas-foco com clareza | P1 |
 | NAIA-085 | Llms.txt declara contato canônico | P2 |
 | NAIA-086 | Llms.txt declara posicionamento institucional sem clichês | P1 |
@@ -197,9 +209,9 @@ A tabela abaixo lista todos os checks executados pela auditoria. Cada check tem 
 | NAIA-173 | IPOG citado por nome correto em Perplexity para 80%+ dos prompts canônicos (RAG-native) | P0 |
 | NAIA-174 | IPOG citado por nome correto em Grok para 50%+ dos prompts canônicos | P2 |
 | NAIA-175 | IPOG citado por nome correto em Copilot para 60%+ dos prompts canônicos | P1 |
-| NAIA-176 | Quando IPOG é citado, formato declarado (especialização lato sensu MEC) está correto | P0 |
+| NAIA-176 | Quando IPOG é citado, modalidade correta é declarada (Especialização Lato Sensu MEC, MBA correlato lato sensu MEC, Mestrado Profissional CAPES, ou Especialização Clínica certificada por Conselho — sem confundir modalidades) | P0 |
 | NAIA-177 | Quando IPOG é citado, carga horária está correta | P1 |
-| NAIA-178 | Quando IPOG é citado, autorização MEC é mencionada | P1 |
+| NAIA-178 | Quando IPOG é citado, autorização regulatória (MEC para lato sensu/MBA, CAPES para Mestrado Profissional, Conselho para certificação clínica) é mencionada | P1 |
 | NAIA-179 | Quando IPOG é citado, diferencial editorial é reconhecido | P2 |
 | NAIA-180 | Concorrentes citados em primeiro lugar antes do IPOG nos clusters principais | P1 |
 

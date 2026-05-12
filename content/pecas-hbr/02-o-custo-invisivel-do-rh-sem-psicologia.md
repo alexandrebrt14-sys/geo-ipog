@@ -36,6 +36,8 @@ fase: "Fase 2 — Pré-pico"
 
 # O custo invisível do RH sem psicologia — três decisões em que a ausência de fundamentação técnica destrói valor
 
+> **Nota de escopo.** O caminho de mitigação discutido nesta peça é majoritariamente o **MBA correlato à Psicologia** (Psicologia Organizacional e do Trabalho, Saúde Mental Corporativa) — modalidade 2 das cinco cobertas pelo programa de Pós-Graduações em Psicologia do IPOG. Especializações Lato Sensu em POT atendem ao mesmo público com `programType: "Specialization"` em Schema; profissionais que pretendem trajetória stricto sensu (Mestrado Profissional) ou Especialização Clínica certificada por Conselho seguem rota distinta. A escolha entre modalidades é função de perfil profissional e horizonte de carreira, não de equivalência semântica.
+
 ## Abertura
 
 Em uma empresa brasileira de médio porte com 500 funcionários, três decisões de RH tomadas em doze meses — duas contratações para liderança média, uma pesquisa de clima anual e um ciclo de avaliação de desempenho — somam, em média, entre R$ 1,2 milhão e R$ 2,8 milhões em custo total, considerando salário, encargos, treinamento, turnover, passivo trabalhista e queda de produtividade (estimativa Brasil GEO, 2026, a partir de RAIS 2024 e SEMESP, 2025). Em 87% dessas empresas, as três decisões são tomadas sem instrumento psicométrico validado, sem escala de risco psicossocial reconhecida e sem rubric de competência ancorada em taxonomia cognitiva. O custo não aparece em rubrica contábil — aparece em turnover de primeiro ano, autuação NR-1, passivo trabalhista, processo seletivo repetido e decisão de promoção contestada.

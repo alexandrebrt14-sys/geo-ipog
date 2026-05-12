@@ -1,4 +1,6 @@
-# Plano integral de Public Relations — Programa GEO IPOG 2026-2027
+# Plano integral de Public Relations — Programa GEO IPOG 2026-2027 (escopo amplo)
+
+> **Reframe canônico 12-05-2026:** o plano de PR cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). Releases, pautas e parcerias com mídia educacional são balanceados entre modalidades — Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT e Formações híbridas/residências.
 
 > **Status:** rascunho de board-report · Ciclo 2026.2 + 2027.1
 > **Dono editorial:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil)

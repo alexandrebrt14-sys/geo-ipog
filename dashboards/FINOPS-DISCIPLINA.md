@@ -3,7 +3,9 @@
 > **Status:** vigente desde 2026-04-30
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-04-30
+> **Última revisão:** 2026-05-12 (nota de escopo amplo adicionada — lógica financeira inalterada)
+
+> **Nota canônica de escopo (12-05-2026):** o budget e a alocação por LLM descritos abaixo **não mudam** com o reframe de 12-05-2026. O budget cobre a operação do programa sobre o portfólio amplo de pós-graduação em Psicologia (5 modalidades — Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências — ver `dashboards/METRICAS-CANONICAS.md` Cláusula 0), não apenas sobre MBA. O custo médio por peça (0,70 USD) e o teto por sprint (50 USD) permanecem por unidade econômica de peça, independentemente da modalidade da peça. A única implicação operacional do reframe é distributiva: a sprint cobre peças em várias modalidades e ondas balanceadas têm cobertura entre modalidades — sem impacto no teto agregado.
 
 Este documento estabelece a disciplina de FinOps que governa o consumo de APIs de LLM no programa GEO IPOG. O programa opera com cinco provedores (Perplexity, OpenAI, Google, Groq, Anthropic) em dois pipelines distintos: o **pipeline de coleta cross-LLM** (`dashboards/RUNBOOK-COLETA-LLM.md`) e o **pipeline editorial de produção** (`prompts/PAPEIS-DE-COLETA.md`). Ambos consomem orçamento e ambos precisam de teto explícito.
 

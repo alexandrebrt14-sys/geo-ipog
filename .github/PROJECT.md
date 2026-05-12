@@ -26,7 +26,7 @@ Além dos campos padrão do GitHub (Title, Assignees, Status, Labels, Milestone,
 ### Significado dos campos
 
 - **Onda** — distingue trabalho originário de uma onda específica do benchmarking (Onda 1 a Onda 4) do trabalho geral do programa (Programa). Issues de monitoramento contínuo de concorrentes da Onda 2 ficam marcadas como Onda 2.
-- **Cluster** — cluster semântico do produto-âncora MBA Online de Psicologia. "Transversal" para issues que afetam todos os clusters (Schema, llms.txt, baseline, framework).
+- **Cluster** — cluster semântico das Pós-Graduações em Psicologia (escopo amplo cobrindo Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada). "Transversal" para issues que afetam todos os clusters (Schema, llms.txt, baseline, framework).
 - **Fase** — fase do roadmap (Fase 1 a Fase 4) ou "Continuo" para monitoramento e operação contínua sem fim de fase.
 - **Prioridade** — Alta (bloqueante de pico ou janela competitiva), Media (relevante mas não bloqueante), Baixa (backlog ou observação).
 
@@ -100,7 +100,7 @@ Quando o board ganhar mais issues, criar views customizadas:
 1. **Roadmap por Fase** — agrupado por Fase, ordenado por Prioridade descendente. Visão executiva do checkpoint mensal.
 2. **Operação semanal** — filtrado por Status = In Progress + Todo com Prioridade = Alta. Visão da reunião semanal.
 3. **Monitoramento contínuo** — filtrado por Fase = Continuo. Visão das issues de cadência permanente (re-fetch quinzenal, recheck mensal, monitoramento WAF).
-4. **Por cluster** — agrupado por Cluster. Visão para revisão de cobertura por vertical de Psicologia.
+4. **Por cluster** — agrupado por Cluster. Visão para revisão de cobertura por vertical de Psicologia (todas as modalidades — Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada).
 5. **Por onda** — agrupado por Onda. Visão para revisão de waves do benchmarking competitivo.
 
 ---

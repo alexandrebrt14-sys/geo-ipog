@@ -21,12 +21,16 @@ referencias_canonicas:
 
 # Síntese Executiva — Onda 4 do Benchmarking GEO IPOG
 
-> **Status:** vigente desde 2026-05-10
+> **Status:** vigente desde 2026-05-10 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Audiência primária:** Ronan Maia (CEO IPOG) — checkpoint executivo mensal.
 > **Última coleta de dados:** 2026-05-10
 > **Cobertura:** 6 concorrentes da Onda 4 — 3 especialistas verticais Psi (InEPP, INPG, IBPEX) + 3 plataformas de telepsicologia (Vittude, Zenklub, Eurekka). **Cruzamento com IBNeuro (sentinela ativa Cluster 2 Onda 2 — único do universo Onda 1+2+3 com `llms.txt` publicado em 09-05-2026).**
+
+## Escopo canônico
+
+**Esta síntese cobre o guarda-chuva amplo "Pós-Graduações em Psicologia"** em 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas). A Onda 4 revela vácuos adicionais cross-modalidade nos especialistas verticais e nas plataformas de telepsicologia (categoria R-016).
 
 ---
 
@@ -36,7 +40,7 @@ referencias_canonicas:
 2. **INPG = INPG Business School** (e não "Instituto Nacional de Psicologia Geral") — escola de negócios multipolar SP/SC com **MBA em RH com ementa que sobrepõe 60% do MBA em Psicologia Organizacional IPOG**, mas **sem usar o naming "Psicologia Organizacional"** — vácuo semântico mantido.
 3. **IBPEX = sub-marca do Grupo Uninter** (marca-fundadora de 1996, hoje regional Curitiba) — competidor é a Uninter consolidada (já Onda 1); IBPEX é variação regional sem chancela MEC autônoma e com domínio em HTTP 503 em 2026-05-10.
 4. **Categoria nova R-016 (telepsicologia) tem 3 níveis distintos de maturidade educacional:** Vittude (Summit corporativo + 0 lato sensu) < Zenklub (Academy com Selo proprietário + 0 lato sensu) < Eurekka (Formação estruturada 100h em ACT/FAP/DBT + 0 lato sensu) — **nenhum dos 3 tem parceria com IES MEC**, mas todos publicaram capacitação livre para psicólogos; **gatilho R-016 acionado se qualquer um anunciar lato sensu antes de 30-06-2026.**
-5. **Total Onda 1+2+3+4 = 16 concorrentes mapeados** (objetivo 21 — restam 5 para Onda 5). Resultado canônico mantido: **100% dos 16 sem naming MBA em Psicologia + 100% sem `EducationalOccupationalProgram` Schema + 15 de 16 sem `llms.txt`** (apenas IBNeuro publicou 09-05-2026). **Janela competitiva IPOG segue aberta no naming canônico "MBA Online de Psicologia".**
+5. **Total Onda 1+2+3+4 = 16 concorrentes mapeados** (objetivo 21 — restam 5 para Onda 5). Resultado canônico mantido: **100% dos 16 operam quase exclusivamente em Especialização Lato Sensu, sem cobertura cross-modalidade (MBA naming + Mestrado Profissional + Especialização Clínica certificada por Conselhos) consolidada; 100% sem `EducationalOccupationalProgram` Schema; 15 de 16 sem `llms.txt`** (apenas IBNeuro publicou 09-05-2026). **Janela competitiva IPOG segue aberta no guarda-chuva "Pós-Graduação em Psicologia" cobrindo as 5 modalidades simultaneamente.**
 
 ---
 
@@ -76,13 +80,13 @@ Padrão observado em todas as 4 ondas anteriores se repete:
 
 **3 de 3 especialistas verticais da Onda 4 com vulnerabilidade técnica em descoberta.** Isso reforça o padrão Onda 1+2+3+4 (8 de 16 concorrentes com bloqueio/indisponibilidade ao crawler de IA — Anhanguera WAF, Sírio-Libanês WAF, Cruzeiro do Sul Virtual WAF, Famart 403, INPG 403, IBPEX 503, InEPP DNS, Vittude robots-block, Eurekka robots-block).
 
-### Padrão 3 — Recusa estrutural ao naming MBA em Psicologia
+### Padrão 3 — Recusa estrutural ao naming MBA em Psicologia (subset do vácuo cross-modalidade)
 
 - **InEPP/ecossistema psicanalítico**: cultura tradicional recusa "MBA" como termo de mercado executivo.
 - **INPG Business School**: usa MBA, mas **só em produtos de Negócios** ("MBA em RH"), nunca em "MBA em Psicologia Organizacional".
 - **IBPEX/Uninter**: usa "Especialização" e "Pós-Graduação Lato Sensu", **não "MBA"** em Psicologia.
 
-**3 de 3 com vácuo no naming canônico "MBA Online de Psicologia".** Combinado com 13 dos 13 concorrentes Onda 1+2+3 com mesmo vácuo, **resultado consolidado universal: 16 de 16 concorrentes sem MBA explícito em Psicologia em 2026-05-10**.
+**3 de 3 com vácuo no naming canônico MBA em Psicologia.** Combinado com 13 dos 13 concorrentes Onda 1+2+3 com mesmo vácuo, **resultado consolidado: 16 de 16 concorrentes sem MBA explícito em Psicologia em 2026-05-10**. Esse vácuo é apenas um subset do **vácuo cross-modalidade** amplo: 16 de 16 também sem Mestrado Profissional online em Psicologia consolidado, sem Especialização Clínica certificada por Conselhos com Schema declarado e sem formações híbridas com supervisão real bem-nomeadas. O guarda-chuva "Pós-Graduação em Psicologia" 5 modalidades está aberto para captura cross-LLM.
 
 ---
 

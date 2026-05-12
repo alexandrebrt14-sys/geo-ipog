@@ -240,7 +240,12 @@ Recomendado para o IPOG: usar sitemap-index com sitemaps segregados por tipo. Fa
 ## Priorizações específicas para o programa GEO IPOG
 
 1. O hub `/cursos/pos-graduacao` é o nó mais crítico. Tudo deve apontar para ele com canonical correto, sitemap priority 1.0, lastmod realista, robots permissivo.
-2. As páginas-pilar do MBA Online de Psicologia (organizacional, clínica/neuro, psicopedagogia) têm priority 0.8 e changefreq `monthly` no sitemap.
+2. As páginas-pilar das **cinco modalidades cobertas pelo programa** têm priority 0.8 e changefreq `monthly` no sitemap:
+   - Especialização Lato Sensu em Neuropsicologia, Psicopedagogia, Psicologia Clínica e Escolar;
+   - MBA correlato à Psicologia (POT, Neurociência Executiva, Coaching, Liderança, Saúde Mental Corporativa);
+   - Mestrado Profissional em Psicologia Aplicada (stricto sensu CAPES);
+   - Especialização Clínica certificada por Conselhos (TCC/ACT/DBT/EMDR — FBT, ABRAP, CFP 23/2022);
+   - Residências e formações híbridas.
 3. Perfis de corpo docente têm priority 0.6 e devem ser revisados a cada 6 meses para atualizar lastmod.
 4. Conteúdo de blog que sustenta autoridade temática tem priority 0.6 e changefreq `monthly` no primeiro ano de publicação, depois reduz.
 

@@ -2,7 +2,7 @@
 
 ## Escopo
 
-Este repositório é privado e opera sob acordo de confidencialidade entre Brasil GEO e IPOG — Instituto de Pós-Graduação e Graduação. O conteúdo pode incluir informações estratégicas confidenciais relacionadas ao roadmap de produto, posicionamento mercadológico do MBA Online de Psicologia, dados de captação, métricas internas IPOG e materiais editoriais não publicados.
+Este repositório é privado e opera sob acordo de confidencialidade entre Brasil GEO e IPOG — Instituto de Pós-Graduação e Graduação. O conteúdo pode incluir informações estratégicas confidenciais relacionadas ao roadmap de produto e posicionamento mercadológico das pós-graduações em Psicologia do IPOG em todas as modalidades (Especialização Lato Sensu, MBA em áreas correlatas, Mestrado Profissional, Especialização Clínica certificada por Conselhos profissionais, Residências e formações híbridas regulamentadas), dados de captação, métricas internas IPOG e materiais editoriais não publicados.
 
 ## Relato de vulnerabilidades
 
@@ -35,7 +35,7 @@ Quaisquer datasets em `data/` que contenham informações pessoalmente identific
 
 ## Confidencialidade do roadmap de produto
 
-Decisões estratégicas do IPOG sobre lançamento, precificação, formato e posicionamento do MBA Online de Psicologia são estritamente confidenciais até comunicação oficial. Colaboradores com acesso ao repositório são responsáveis por não divulgar, reproduzir ou referenciar externamente esse conteúdo antes da liberação formal por Bruno Azambuja ou Ronan Maia.
+Decisões estratégicas do IPOG sobre lançamento, precificação, formato e posicionamento de qualquer modalidade de Pós-Graduação em Psicologia — Especialização Lato Sensu, MBA em áreas correlatas, Mestrado Profissional, Especialização Clínica certificada por Conselhos profissionais — são estritamente confidenciais até comunicação oficial. Colaboradores com acesso ao repositório são responsáveis por não divulgar, reproduzir ou referenciar externamente esse conteúdo antes da liberação formal por Bruno Azambuja ou Ronan Maia.
 
 ## Contato
 

@@ -1,10 +1,12 @@
 # Síntese aplicada do research de Generative Engine Optimization ao programa GEO IPOG
 
-> **Status:** proposta técnica para aprovação do Conselho IPOG · ciclo 06-2026
+> **Status:** proposta técnica para aprovação do Conselho IPOG · ciclo 06-2026 — escopo amplo (12-05-2026)
 > **Dono:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil)
 > **Validação operacional prevista:** Bruno Azambuja (Gerente de Marketing IPOG)
 > **Sponsor executivo:** Ronan Maia (CEO IPOG)
 > **Data:** 10-05-2026
+
+> **Reframe canônico 12-05-2026:** o research GEO aplicado cobre o portfólio amplo de pós-graduação em Psicologia (5 modalidades canônicas — `dashboards/METRICAS-CANONICAS.md` Cláusula 0). A hipótese pré-registrada de `EducationalOccupationalProgram` Schema com `programType` (originalmente exemplificada com `"MBA"`) generaliza para os 4 valores canônicos de `programType`: `"Specialization"` (Especialização Lato Sensu), `"MBA"`, `"MastersProgram"` (Mestrado Profissional) e `"ClinicalCertification"` (Especialização Clínica certificada por Conselho). Cada variante de `programType` é testada como hipótese independente.
 > **Cross-links obrigatórios:** `docs/board-report/00-board-report-final.md`, `dashboards/METRICAS-CANONICAS.md`, `dashboards/RUNBOOK-COLETA-LLM.md`, `prompts/KIT-PROMPTS-V0.md`, `docs/framework/02-quality-gate-5-camadas.md`, `docs/framework/06-voice-guard-v2-aggarwal.md`, `audits/benchmarking/ONDA-5-SINTESE-EXECUTIVA.md`, roadmap público `brasilgeo.ai/ipoggeoroadmap`.
 
 ---

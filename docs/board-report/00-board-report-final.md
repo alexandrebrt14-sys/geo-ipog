@@ -1,4 +1,6 @@
-# Board Report — MBA Online de Psicologia IPOG
+# Board Report — Pós-Graduações em Psicologia IPOG (escopo amplo)
+
+> **Reframe canônico 12-05-2026:** o board report consolidado cobre o portfólio amplo de **Pós-Graduações em Psicologia do IPOG** em 5 modalidades canônicas — Especialização Lato Sensu (formato dominante), MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências (ver `dashboards/METRICAS-CANONICAS.md` Cláusula 0). Onde "MBA Online de Psicologia" aparece como exemplo no corpo deste relatório, leia "a modalidade canônica aplicável àquele cluster decisório". MBA é um subconjunto, não a vertical do programa.
 
 > **Documento:** 00 — Board Report consolidado para o Conselho IPOG
 > **Cliente:** IPOG (Instituto de Pós-Graduação e Graduação, Goiânia, fundado 2001)

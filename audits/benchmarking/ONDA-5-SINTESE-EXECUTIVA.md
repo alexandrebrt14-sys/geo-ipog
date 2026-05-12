@@ -20,7 +20,7 @@ referencias_canonicas:
 
 # Síntese Executiva — Onda 5 do Benchmarking GEO IPOG (Fechamento — 21/21 concorrentes mapeados)
 
-> **Status:** vigente desde 2026-05-10
+> **Status:** vigente desde 2026-05-10 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Audiência primária:** Ronan Maia (CEO IPOG) — checkpoint executivo mensal e marco de fechamento da fase de benchmarking competitivo.
@@ -28,12 +28,16 @@ referencias_canonicas:
 > **Cobertura:** 5 concorrentes da Onda 5 (PUC-RS, FGV polo parceiro, Mackenzie Online, Insper Online, Casa do Saber priorizada sobre FESPSP) + cruzamento com universo Onda 1-4. **Total cumulativo Ondas 1-5: 21/21 concorrentes mapeados — 100% da meta canônica do programa GEO IPOG**.
 > **Marco institucional:** este documento sinaliza o **fechamento da fase de benchmarking competitivo** e a **transição para monitoramento contínuo**.
 
+## Escopo canônico
+
+**Esta síntese cobre o guarda-chuva amplo "Pós-Graduações em Psicologia"** em 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas). O fechamento 21/21 confirma vácuo cross-modalidade amplo no mercado brasileiro.
+
 ---
 
 ## 1. Resumo executivo em 5 frases
 
 1. **A Onda 5 fecha a cobertura competitiva em 21/21 concorrentes (100% da meta)** com 5 dossiês profundos: PUC-RS (premium acadêmica Sul, distinta de PUCRS Online Onda 3), FGV via polo parceiro (Arquétipo 4 canônico, único concorrente direto da tese regional CNPJ-próprio IPOG), Mackenzie Online (premium SP com Pós Digital em pré-lançamento), Insper Online (premium SP-RJ com WAF + parceria OpenAI Edu) e Casa do Saber (plataforma streaming intelectual priorizada sobre FESPSP por ausência total de oferta Psicologia na segunda).
-2. **A categoria-naming "MBA Online de Psicologia" continua 100% vazia em 21/21 concorrentes mapeados** — 21 de 21 sem naming MBA explícito em Psicologia em 2026-05-10. A janela competitiva canônica do IPOG segue aberta e é a posição de captura prioritária para o ciclo 2026.2.
+2. **O vácuo cross-modalidade em Pós-Graduação em Psicologia continua amplo em 21/21 concorrentes mapeados** — 21 de 21 operam quase exclusivamente em Especialização Lato Sensu, sem cobertura simultânea consolidada das outras 4 modalidades (MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas). Subset: 21/21 sem naming MBA explícito em Psicologia em 2026-05-10 (Anhembi Morumbi é exceção parcial em Psicologia Organizacional). A janela competitiva canônica do IPOG segue aberta e é a posição de captura prioritária para o ciclo 2026.2 — cobrir as 5 modalidades simultaneamente.
 3. **PUC-RS é o segundo concorrente do universo Onda 1-5 a bloquear explicitamente IA via robots.txt + Content-Signal `ai-train=no`** — junto com Vittude e Eurekka (Onda 4), totalizando agora **3 de 21 concorrentes em política deliberada de bloqueio a treinamento IA**. Janela RAG-native do IPOG segue ampliada — 18 de 21 concorrentes têm `robots.txt` aberto ou WAF genérico (não-IA-específico).
 4. **Apenas 1 concorrente (IBNeuro, sentinela Onda 2) publicou `llms.txt` em 09-05-2026** — 20 de 21 ainda sem. **A janela `llms.txt no nicho` segue 95% aberta** para o IPOG entrar como segundo do nicho ainda em janela competitiva.
 5. **A FGV via polo parceiro é confirmada como o concorrente mais perigoso da Onda 5 e do programa inteiro** — opera 100+ cidades brasileiras com chancela FGV única + operação CNPJ-terceirizado heterogênea. Sobreposição direta com 51 cidades IPOG (estimadas ~15-25 em overlap). **Alavanca 4 do framework regional IPOG é a posição canônica de defesa**.
@@ -51,7 +55,7 @@ referencias_canonicas:
 | **Casa do Saber** | Arq. novo 5b Plataforma streaming intelectual cursos livres (sem MEC) | ausente (explícita — cursos livres) | n/d (não confirmado) | aberto e minimalista | ativo (Wikipedia PT) | provavelmente ausente (CreativeWork, não Course) | só SP + 100% streaming nacional | R$ 49-89/mês assinatura ou cursos avulsos |
 
 **Achados centrais da tabela:**
-- **5 de 5 concorrentes Onda 5 sem naming MBA em Psicologia** — vácuo confirmado consolida 21/21 universo.
+- **5 de 5 concorrentes Onda 5 sem naming MBA em Psicologia e sem cobertura multi-modalidade consolidada** — vácuo cross-modalidade confirmado consolida 21/21 universo.
 - **5 de 5 sem `EducationalOccupationalProgram` Schema** — janela técnica IPOG estrutural e durável.
 - **5 de 5 sem `llms.txt`** — janela curatorial GEO aberta.
 - **PUC-RS é o primeiro premium acadêmico do universo Onda 1-5 a bloquear IA explicitamente** — política deliberada com `Content-Signal: ai-train=no`.
@@ -164,7 +168,7 @@ A PUC-RS bloqueia explicitamente ClaudeBot/GPTBot/Google-Extended/CCBot via robo
 
 Mackenzie sinaliza **"Pós Digital em pré-lançamento"** em 2026-05-10. Insper opera Insper Online em Advanced Programs e Certificate Programs mas **sem oferta em Psicologia**. Saint Paul/EXAME está em transição pós-aquisição BTG. **Nenhum dos 3 tem oferta MBA Online em Psicologia consolidada em 2026-05-10**.
 
-**Implicação para IPOG:** janela de **6-12 meses** para o IPOG consolidar produto MBA Online de Psicologia com naming canônico, Schema completo e capilaridade regional **antes de reação coordenada premium SP-RJ**. Após esse prazo, Mackenzie + Saint Paul tendem a entrar com produtos digitais em Psicologia, fechando parcialmente o vácuo.
+**Implicação para IPOG:** janela de **6-12 meses** para o IPOG consolidar portfólio Pós-Graduações em Psicologia (cobrindo as 5 modalidades canônicas: Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas) com naming canônico por modalidade, Schema completo e capilaridade regional **antes de reação coordenada premium SP-RJ**. Após esse prazo, Mackenzie + Saint Paul tendem a entrar com produtos digitais em Psicologia, fechando parcialmente o vácuo.
 
 ### Padrão 3 — Casa do Saber e PUC-RS evidenciam dois polos de "intelectualidade brasileira" não-cobertos por pós lato sensu técnica
 
@@ -208,11 +212,18 @@ A PUCRS Online opera no CNPJ UOL Cursos (não PUCRS direto). A FGV via polo parc
 
 **Owner:** Alexandre Caramaschi (Brasil GEO).
 
-### Ação 2 — [Esforço médio, impacto alto, prazo curto-médio — 45-60 dias]: Lançamento do produto MBA Online de Psicologia IPOG com naming canônico + Schema completo + `llms.txt` declarado
+### Ação 2 — [Esforço médio, impacto alto, prazo curto-médio — 45-60 dias]: Lançamento/ressignificação do portfólio Pós-Graduações em Psicologia IPOG cobrindo as 5 modalidades canônicas + Schema completo + `llms.txt` declarado
 
-**O quê:** decisão de produto IPOG sincronizada com Bruno + Ronan: lançar 1 a 3 produtos MBA Online de Psicologia com naming explícito ("MBA Online em Psicologia Organizacional", "MBA Online em Saúde Mental Corporativa e Compliance NR-1", "MBA Online em Avaliação Psicológica e SATEPSI-Compliance"). Implementar Schema canônico (`EducationalOrganization` + `Course` + `EducationalOccupationalProgram.programType: "MBA"` + `Person` Schema com Lattes/ORCID para 3 docentes piloto + `FAQPage`) + publicar `llms.txt` em `ipog.edu.br/llms.txt`.
+**O quê:** decisão de produto IPOG sincronizada com Bruno + Ronan: lançar/ressignificar produtos cobrindo as 5 modalidades canônicas com naming explícito:
+- **Especialização Lato Sensu em Psicologia [Cluster]** — portfólio pilar do IPOG (formato dominante do mercado).
+- **MBA Online em Psicologia [Cluster]** — 1 a 3 produtos executivos (Psicologia Organizacional, Saúde Mental Corporativa e Compliance NR-1, Avaliação Psicológica com SATEPSI-Compliance).
+- **Mestrado Profissional em Psicologia** — quando aplicável à oferta IPOG.
+- **Especialização Clínica certificada por Conselhos (CFP/ABRAP/FBT/ABPp)** — clusters clínicos.
+- **Formações Híbridas com supervisão** — lato sensu + supervisão clínica real.
 
-**Por quê:** **21/21 concorrentes sem naming MBA Psicologia + sem `EducationalOccupationalProgram` + 20/21 sem `llms.txt`**. Janela é durável (12-18 meses) e captura tripla — semântica + técnica + curatorial.
+Implementar Schema canônico (`EducationalOrganization` + `Course` + `EducationalOccupationalProgram` com `programType` correto por modalidade + `Person` Schema com Lattes/ORCID para 3 docentes piloto + `FAQPage`) em cada modalidade + publicar `llms.txt` em `ipog.edu.br/llms.txt` declarando hub multi-modalidade.
+
+**Por quê:** **21/21 concorrentes sem cobertura cross-modalidade consolidada + sem `EducationalOccupationalProgram` + 20/21 sem `llms.txt`**. Janela é durável (12-18 meses) e captura tripla — semântica multi-modalidade + técnica + curatorial.
 
 **Prazo de entrega:** **10-07-2026** (60 dias).
 

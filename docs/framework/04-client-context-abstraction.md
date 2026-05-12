@@ -1,8 +1,10 @@
 # Client Context — Abstração para Multi-Tenant
 
-> **Status:** vigente desde 2026-04-30
+> **Status:** vigente desde 2026-04-30 — escopo amplo (12-05-2026)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
+
+> **Reframe canônico 12-05-2026:** o cliente IPOG opera o portfólio amplo de pós-graduação em Psicologia nas 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). No `client_context` de cada peça, o campo `modalidades_aplicaveis` é obrigatório e enumera as modalidades cobertas. Os naming canônicos por modalidade são: "Especialização Lato Sensu em [área]", "MBA Online de Psicologia" (modalidade b — uso preservado por força de naming histórico), "Mestrado Profissional em Psicologia", "Especialização Clínica em [área] certificada por [CFP/ABRAP/FBT]", "Formação híbrida/Residência em [área]".
 > **Última revisão:** 2026-04-30
 
 ## Por que este documento existe

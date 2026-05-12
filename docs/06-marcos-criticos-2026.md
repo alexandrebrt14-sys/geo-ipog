@@ -1,9 +1,11 @@
 # Marcos Críticos — Programa GEO IPOG 2026
 
-> **Status:** vigente desde 2026-05-01
+> **Status:** vigente desde 2026-05-01 — escopo ampliado em 2026-05-12 (datas e owners preservados; escopo expandido para portfólio amplo de pós-graduação em Psicologia)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Cadência de revisão:** mensal no checkpoint executivo + ad hoc quando marco for materialmente afetado.
+
+> **Reframe canônico 12-05-2026:** marcos M01 a M10 mantêm datas e owners. O escopo de cada marco foi ampliado para refletir o portfólio amplo de pós-graduação em Psicologia (5 modalidades canônicas — ver `dashboards/METRICAS-CANONICAS.md` Cláusula 0). Em particular: M01 (decisão de produto IPOG) passa a ser "decisão sobre portfólio amplo: nomenclatura de Especializações, MBAs, Mestrados e Certificações Clínicas que entram no escopo da Fase 1". M06 (Schema piloto em produção) cobre as 4 modalidades de Schema `EducationalOccupationalProgram` com `programType` variando entre `"Specialization"`, `"MBA"`, `"MastersProgram"` e `"ClinicalCertification"`.
 
 Calendário consolidado dos marcos críticos do programa GEO IPOG no horizonte de 2026.2 a 2027.1. Cada marco tem janela exata, dependências, owner e métrica de aceite. Atrasos são reportados no relatório semanal seção 8 e escalados ao checkpoint mensal.
 
@@ -17,10 +19,10 @@ A lógica é prescritiva: marco sem janela exata é compromisso vago. Compromiss
 | 01-05-2026 | **Onda 1 do benchmarking concluída** (5 concorrentes massivos) | Alexandre Caramaschi | concluído |
 | 01-05-2026 | **Onda 2 do benchmarking concluída** (5 especialistas + premium executiva) | Alexandre Caramaschi | concluído |
 | 07-05-2026 | **Início da Fase 1 — Baseline + Schema piloto** | Alexandre Caramaschi | em curso |
-| 15-05-2026 | **Decisão de produto IPOG** (naming MBA + 3-5 produtos prioritários) | Bruno Azambuja + Ronan Maia | pendente |
+| 15-05-2026 | **M01 — Decisão sobre portfólio amplo de pós-graduação em Psicologia** (nomenclatura canônica de Especializações Lato Sensu, MBAs correlatos, Mestrados Profissionais e Certificações Clínicas CFP/ABRAP/FBT que entram no escopo da Fase 1; 3-5 produtos âncora distribuídos nas 5 modalidades) | Bruno Azambuja + Ronan Maia | pendente |
 | 20-05-2026 | **Kit de prompts-âncora fechado** (66 prompts × 3 clusters × 7 personas × 4 jornadas) | Alexandre Caramaschi | em curso |
 | 25-05-2026 | **Configuração GA4 com referrer/UTM dedicado de LLM** | Bruno Azambuja | pendente |
-| 30-05-2026 | **Fim da Fase 1** — baseline cross-LLM capturado + Schema piloto implementado + llms.txt no ar | Alexandre Caramaschi + Bruno Azambuja | em curso |
+| 30-05-2026 | **M06 — Fim da Fase 1** — baseline cross-LLM capturado (escopo amplo, 5 modalidades) + Schema piloto implementado cobrindo as 4 variantes de `programType` (`"Specialization"`, `"MBA"`, `"MastersProgram"`, `"ClinicalCertification"`) + llms.txt no ar | Alexandre Caramaschi + Bruno Azambuja | em curso |
 | 01-06-2026 | **Início da Fase 2 — Primeira leva HBR** | Alexandre Caramaschi | a iniciar |
 | 15-06-2026 | **Fim da Fase 2** — 6-10 peças HBR-grade publicadas + integração Onda 2 nas matrizes consolidadas | Alexandre Caramaschi | a iniciar |
 | 15-06-2026 | **Início da Fase 3 — Pico GEO captação 2026.2** | Alexandre Caramaschi + Bruno Azambuja | a iniciar |

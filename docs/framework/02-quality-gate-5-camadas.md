@@ -1,8 +1,10 @@
 # Quality Gate em 5 Camadas + Camada 6 de Compliance MEC/CFP
 
-> **Status:** vigente desde 2026-04-30
+> **Status:** vigente desde 2026-04-30 — escopo amplo (12-05-2026)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
+
+> **Reframe canônico 12-05-2026:** o quality gate opera sobre o portfólio amplo de pós-graduação em Psicologia (5 modalidades canônicas — `dashboards/METRICAS-CANONICAS.md` Cláusula 0). Onde "MBA Online de Psicologia" aparece como exemplo de naming canônico, leia "o naming canônico da modalidade aplicável à peça em revisão". A Camada 6 (Compliance MEC/CFP) agora também valida conformidade CAPES (Mestrado Profissional) e certificação por Conselho (CFP/ABRAP/FBT) quando aplicável à modalidade da peça.
 > **Última revisão:** 2026-04-30
 
 Este documento descreve o quality gate prescritivo executado sobre toda peça produzida pelo programa GEO IPOG antes da publicação em domínio ao vivo. As cinco camadas são executadas em ordem; falha em qualquer camada bloqueia o avanço para a seguinte. Uma sexta camada — compliance MEC/CFP — é acionada apenas quando a peça contém claim regulatório.

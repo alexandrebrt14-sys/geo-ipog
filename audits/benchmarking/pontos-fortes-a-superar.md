@@ -1,10 +1,14 @@
 # Pontos Fortes dos Concorrentes a Superar — IPOG
 
-> **Status:** vigente desde 2026-04-30
+> **Status:** vigente desde 2026-04-30 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-04-30
+> **Última revisão:** 2026-05-12
 > **Insumos:** dossiês em `audits/benchmarking/concorrente-*.md` + matriz cross-LLM em `matriz-presenca-llm.md` + matriz técnica em `matriz-tecnica-schema-seo.md`.
+
+## Escopo canônico
+
+**Este documento cobre os pontos fortes dos concorrentes do IPOG nas Pós-Graduações em Psicologia** — guarda-chuva amplo cobrindo 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas).
 
 Este documento consolida os pontos fortes dos 5 concorrentes principais do IPOG (Estácio, Anhanguera, UNINTER, UniCesumar e PUC-Minas Virtual) que precisarão ser superados ao longo da execução do programa GEO IPOG. A leitura é prescritiva: para cada ponto forte, há **a estratégia explícita** com a qual o IPOG vai contornar, neutralizar ou flanquear, e qual artefato do programa GEO ataca aquele ponto.
 
@@ -20,7 +24,7 @@ Legenda: ●●● = vantagem dominante, ●● = vantagem relevante, ● = vant
 | Volume de alunos | ●●● 1,38 milhão (Yduqs) | ●●● grupo Cogna gigante | ●●● 580 mil ativos | ●●● 400 mil | ●● 80 mil (PUC) | ● 300 mil impactados em 25 anos | mantém |
 | Capital e mídia paga | ●●● R$ 5,5 bi receita Yduqs | ●●● R$ 7 bi LTM Cogna | ●●● Wilson Picler grupo | ●●● Vitru Nasdaq | ●● PUC + Igreja | ● capital privado | guerra assimétrica via GEO |
 | Catálogo Psi (largura) | ●● 6-9 cursos | ●●● 16+ especializações | ●● 6-7 cursos | ●●● 9+ especializações | ● restrito por decreto | ● [a confirmar] | profundidade > largura |
-| **MBA Online de Psicologia (naming)** | — não tem | — não tem | — não tem | — não tem | — não tem | — não tem | **●●● lançar e capturar a categoria** |
+| **Cobertura cross-modalidade em Psicologia (lato sensu + MBA + mestrado profissional + especialização clínica certificada + formações híbridas)** | só lato sensu | só lato sensu | só lato sensu | só lato sensu | só lato sensu | só lato sensu | **●●● lançar e capturar as 5 modalidades simultaneamente** |
 | Formato Ao Vivo síncrono | — EAD assíncrono | — EAD assíncrono | — EAD assíncrono | ●●● Ao Vivo broadcast | ● blended | ●● Ao Vivo turma pequena | ●●● Ao Vivo turma com interação real |
 | Corpo docente nominal + Lattes | — opaco | — opaco | — opaco | — sitemap mas sem Schema | ●● Lattes denso mas sem Schema | ●● docentes nominados | ●●● Schema Person + Lattes/ORCID auditável |
 | Reputação Reclame Aqui | 5,68/10 (ruim) | 5,8/10 (ruim) | ●●● 8,2/10 | [a confirmar] | 5,9/10 (ruim) | [a confirmar] | publicar aggregateRating se >7,5 |
@@ -65,15 +69,15 @@ Cada ponto forte abaixo é citado pelo concorrente que o detém e seguido da est
 
 **Artefato GEO que ataca:** `prompts/KIT-PROMPTS-V0.md` (66 prompts prioritários), `content/PADRAO-EDITORIAL.md` (HBR-grade que constrói profundidade), `docs/02-contexto-mba-online-psicologia.md` (priorização de produto).
 
-### Ponto forte 4 — Categoria-naming "MBA Online de Psicologia" — VAZIO (Estácio, Anhanguera, UNINTER, UniCesumar, PUC-Minas)
+### Ponto forte 4 — Cobertura multi-modalidade em Psicologia — VAZIO (Estácio, Anhanguera, UNINTER, UniCesumar, PUC-Minas)
 
-**O que é:** isto é **anti-ponto forte** dos concorrentes — uma vulnerabilidade comum aos 5. Nenhum oferece produto formalmente nomeado "MBA Online de Psicologia". Todos vendem "Especialização lato sensu em Psicologia X".
+**O que é:** isto é **anti-ponto forte** dos concorrentes — uma vulnerabilidade comum aos 5. Todos operam exclusivamente em Especialização Lato Sensu. Nenhum oferece simultaneamente MBA explícito em Psicologia, Mestrado Profissional online em Psicologia ou Especialização Clínica certificada por Conselhos (CFP/ABRAP/FBT/ABPp) com Schema declarado.
 
-**Por que é janela aberta:** o candidato que digita "MBA" busca naming específico. A oferta atual do mercado não casa com essa busca. O IPOG pode ser **a primeira instituição** citada como resposta primária se o produto for lançado com este naming.
+**Por que é janela aberta:** o aluno-tipo que busca pós-graduação em Psicologia precisa entender as 5 modalidades canônicas para escolher. A oferta atual do mercado é monomodalidade. O IPOG pode ser **a primeira instituição** citada como resposta primária ao construir portfólio que cubra as 5 modalidades com naming, Schema e conteúdo distintos.
 
-**Estratégia IPOG:** **capturar a categoria-naming**. Lançar o produto com o naming exato "MBA Online de Psicologia [Cluster]". Schema declara `EducationalOccupationalProgram` com `programType: "MBA"`. Conteúdo HBR-grade explica por que é um MBA (formato executivo, foco em decisão, aplicabilidade imediata). PR posiciona o lançamento como inovação no mercado.
+**Estratégia IPOG:** **capturar autoridade multi-modalidade**. Lançar/ressignificar produtos com naming explícito por modalidade: "Especialização Lato Sensu em Psicologia [Cluster]" (formato pilar), "MBA Online em Psicologia [Cluster]" (subconjunto executivo), "Mestrado Profissional em Psicologia" (quando aplicável), "Especialização Clínica certificada por [Conselho]" (clusters clínicos), "Formação Híbrida com supervisão" (formações que combinam lato sensu com prática). Schema declara `EducationalOccupationalProgram` com `programType` correto para cada modalidade. Conteúdo HBR-grade explica o que define cada modalidade e quando o aluno escolhe cada uma. PR posiciona o portfólio como cobertura ampla pioneira no mercado.
 
-**Artefato GEO que ataca:** `audits/SCHEMA-PATTERNS.md` (Schema canônico para MBA), `content/PADRAO-EDITORIAL.md` (peças sobre o que define um MBA vs. especialização), `prompts/KIT-PROMPTS-V0.md` (prompt 1 e variações).
+**Artefato GEO que ataca:** `audits/SCHEMA-PATTERNS.md` (Schema canônico por modalidade), `content/PADRAO-EDITORIAL.md` (peças sobre 5 modalidades de pós em Psicologia), `prompts/KIT-PROMPTS-V0.md` (84 prompts canônicos balanceados 60/20/10/5/5 entre AMPLO/LATO/MBA/MEPP/CLIN).
 
 ### Ponto forte 5 — Acreditação MEC máxima dos 5 concorrentes (CI 5 + CI-EaD 5 + IGC 4)
 
@@ -181,7 +185,7 @@ Cada ponto forte abaixo é citado pelo concorrente que o detém e seguido da est
 
 **Por que importa:** se PUC-Minas implementar `Person` Schema antes do IPOG, fecha a janela de autoria nominal auditável.
 
-**Estratégia IPOG:** **acelerar a implementação de `Person` Schema vinculado a Lattes e ORCID** para o corpo docente do MBA Online de Psicologia IPOG. Cada docente com perfil público no domínio IPOG, fotos profissionais, credenciais visíveis, produção acadêmica vinculada. Schema completo conforme `audits/SCHEMA-PATTERNS.md`. Esta é a janela mais defensável e durável que o IPOG pode capturar — concorrentes não podem replicar sem consentimento individual de cada docente, processo lento.
+**Estratégia IPOG:** **acelerar a implementação de `Person` Schema vinculado a Lattes e ORCID** para o corpo docente das Pós-Graduações em Psicologia do IPOG (cobrindo as 5 modalidades: lato sensu, MBA, mestrado profissional, especialização clínica certificada, formações híbridas). Cada docente com perfil público no domínio IPOG, fotos profissionais, credenciais visíveis, produção acadêmica vinculada. Schema completo conforme `audits/SCHEMA-PATTERNS.md`. Esta é a janela mais defensável e durável que o IPOG pode capturar — concorrentes não podem replicar sem consentimento individual de cada docente, processo lento.
 
 **Artefato GEO que ataca:** `audits/SCHEMA-PATTERNS.md` (Schema `Person` canônico), `content/VOICE-GUIDE.md` (autoria nominal IPOG), `docs/framework/04-client-context-abstraction.md` (instância IPOG com docentes nominais).
 
@@ -223,8 +227,8 @@ A Onda 1 do programa GEO IPOG deve priorizar **as 5 janelas técnicas de menor e
 
 1. Publicar `llms.txt` em `ipog.edu.br` na primeira semana (esforço: 1-2 dias).
 2. Implementar Schema completo em uma página piloto de pós em Psicologia (Course + EducationalOccupationalProgram + EducationalOrganization + FAQPage + Person para 3 docentes).
-3. Definir o naming MBA Online de Psicologia [Cluster] para o produto piloto e refletir em todo Schema.
-4. Publicar a primeira peça HBR-grade assinada por Alexandre Caramaschi sobre por que a categoria "MBA Online de Psicologia" precisa existir.
+3. Definir o naming canônico por modalidade ("Especialização Lato Sensu em Psicologia [Cluster]", "MBA Online em Psicologia [Cluster]", "Mestrado Profissional em Psicologia", "Especialização Clínica certificada por [Conselho]") para os produtos piloto e refletir em todo Schema.
+4. Publicar a primeira peça HBR-grade assinada por Alexandre Caramaschi sobre por que a categoria "Pós-Graduação em Psicologia" precisa de 5 modalidades distintas e como o aluno escolhe entre elas.
 5. Capturar baseline real cross-LLM nos 15 prompts da matriz cross-LLM antes que qualquer mudança no site da Anhanguera (caso eles desbloqueiem WAF) ou da PUC-Minas (caso reabram Psicologia EAD) feche as janelas hoje observadas.
 
 ## 5. Riscos da estratégia
@@ -232,5 +236,5 @@ A Onda 1 do programa GEO IPOG deve priorizar **as 5 janelas técnicas de menor e
 - **Risco 1:** se um dos 5 concorrentes implementar `EducationalOccupationalProgram` + `Person` Schema antes do IPOG, a janela técnica fecha. Mitigação: priorizar implementação na Onda 1.
 - **Risco 2:** se Anhanguera desbloquear WAF e abrir a crawlers de IA, a vantagem RAG-native do IPOG diminui. Mitigação: capturar share-of-voice agora, antes da janela fechar.
 - **Risco 3:** se um concorrente especialista em Psicologia (InEPP, IBNeuro, INPG) acelerar GEO antes do IPOG, a janela do nicho fecha. Mitigação: monitorar concorrentes especialistas como cohort secundário (a adicionar na Onda 2 do benchmarking).
-- **Risco 4:** se o produto MBA Online de Psicologia não for lançado pelo IPOG no horizonte do pico de captação 2026.2 (15-06 a 31-07), share-of-voice na categoria-naming fica capturado por concorrentes que reagirem primeiro. Mitigação: sincronizar cronograma do programa GEO com plano de lançamento de produto IPOG (decisão de Bruno Azambuja + Ronan Maia).
+- **Risco 4:** se o portfólio multi-modalidade IPOG (lato sensu + MBA + mestrado profissional + especialização clínica certificada + formações híbridas) não for lançado/ressignificado no horizonte do pico de captação 2026.2 (15-06 a 31-07), share-of-voice no guarda-chuva "Pós-Graduação em Psicologia" fica capturado por concorrentes que reagirem primeiro com cobertura cross-modalidade. Mitigação: sincronizar cronograma do programa GEO com plano de lançamento de produto IPOG por modalidade (decisão de Bruno Azambuja + Ronan Maia).
 - **Risco 5:** se PUC-Minas mudar a postura institucional sobre Psicologia em EAD, a janela premium-online em Psicologia fecha. Mitigação: estabelecer presença defensável (Schema + autoria nominal + autoridade externa) antes da PUC-Minas reagir.

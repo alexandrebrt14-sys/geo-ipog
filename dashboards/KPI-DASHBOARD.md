@@ -1,10 +1,12 @@
 # KPI Dashboard — Programa GEO IPOG
 
-> **Status:** vigente desde 2026-05-01
+> **Status:** vigente desde 2026-05-01 — atualizado em 2026-05-12 (reframe canônico de escopo amplo)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
 > **Última leitura registrada:** {YYYY-MM-DD HH:MM} BRT
 > **Próxima leitura agendada:** {YYYY-MM-DD HH:MM} BRT
+
+> **Reframe canônico 12-05-2026:** todos os KPIs deste painel operam sobre o escopo amplo **Pós-Graduações em Psicologia (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências)** — ver `dashboards/METRICAS-CANONICAS.md` Cláusula 0. SoV passa de 3 clusters baseados em MBA para 5 clusters canônicos.
 
 Este documento é o **painel ao vivo** das leituras dos 8 KPIs canônicos do programa GEO IPOG. As definições operacionais (fórmula, fonte, cadência, N mínimo, owner) estão em `dashboards/METRICAS-CANONICAS.md`. Este arquivo carrega apenas os números, o histórico e a leitura cruzada que alimentam os relatórios semanal, mensal e trimestral.
 
@@ -21,10 +23,12 @@ Semaforização operacional das leituras mais recentes. Critério de cor:
 
 | KPI | Leitura atual | Meta Fase 4 | Cor | Tendência (últimas 4) | Owner |
 |---|---|---|---|---|---|
-| KPI 1 — LLM Mention Rate (mediana cohort) | N/D | varia por LLM | CINZA | -- | Alexandre Caramaschi |
-| KPI 2 — SoV cluster Organizacional | N/D | >= 15% | CINZA | -- | Bruno Azambuja |
-| KPI 2 — SoV cluster Clínica/Neuro | N/D | >= 20% | CINZA | -- | Bruno Azambuja |
-| KPI 2 — SoV cluster Psicopedagogia | N/D | >= 12% | CINZA | -- | Bruno Azambuja |
+| KPI 1 — LLM Mention Rate (mediana cohort, escopo amplo 5 modalidades) | N/D | varia por LLM | CINZA | -- | Alexandre Caramaschi |
+| KPI 2 — SoV cluster a (Especialização Lato Sensu) | N/D | >= 18% | CINZA | -- | Bruno Azambuja |
+| KPI 2 — SoV cluster b (MBA correlato à Psicologia) | N/D | >= 15% | CINZA | -- | Bruno Azambuja |
+| KPI 2 — SoV cluster c (Mestrado Profissional) | N/D | >= 8% | CINZA | -- | Bruno Azambuja |
+| KPI 2 — SoV cluster d (Clínica certificada CFP/ABRAP/FBT) | N/D | >= 20% | CINZA | -- | Bruno Azambuja |
+| KPI 2 — SoV cluster e (Formações híbridas/residências) | N/D | >= 12% | CINZA | -- | Bruno Azambuja |
 | KPI 3 — Citation Quality Score | N/D | >= 80 | CINZA | -- | Alexandre Caramaschi |
 | KPI 4 — Schema Coverage Score (NAIA) | N/D | >= 90 | CINZA | -- | Bruno Azambuja |
 | KPI 5 — Cobertura de fontes externas | N/D | >= 8 | CINZA | -- | Bruno Azambuja |
@@ -72,7 +76,9 @@ Leitura mensal agregada. Personas canônicas IPOG.
 
 ## 3. KPI 2 — Share-of-Voice por cluster
 
-### 3.1 Histórico cluster Organizacional / Trabalho / RH
+> **Reframe 12-05-2026:** SoV passou para 5 clusters canônicos (a-e). As três tabelas 3.1, 3.2 e 3.3 abaixo permanecem como **decomposição secundária** para continuidade da série pré-reframe (clusters baseados em MBA mapeiam dentro dos clusters a e b). Tabelas 3.4, 3.5 e 3.6 abaixo cobrem os novos clusters c, d e e canônicos.
+
+### 3.1 Histórico cluster Organizacional / Trabalho / RH (decomposição secundária, subconjunto dos clusters canônicos a + b)
 
 Snapshot quinzenal. Concorrentes canônicos do trimestre vigente em `data/concorrentes-{YYYY-Q{N}}.yaml` (a criar). Concorrentes mapeados nas Ondas 1-2 do benchmarking aparecem nominalmente.
 
@@ -86,11 +92,29 @@ Snapshot quinzenal. Concorrentes canônicos do trimestre vigente em `data/concor
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | {YYYY-MM-DD} | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
 
-### 3.3 Histórico cluster Psicopedagogia / Escolar / Educação
+### 3.3 Histórico cluster Psicopedagogia / Escolar / Educação (decomposição secundária)
 
 | Leitura | IPOG | Estácio | UNINTER | Anhanguera | UniCesumar | Anhembi | wPós | PUC-Minas | Outros |
 |---|---|---|---|---|---|---|---|---|---|
 | {YYYY-MM-DD} | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+
+### 3.4 Histórico cluster c — Mestrado Profissional em Psicologia (canônico)
+
+| Leitura | IPOG | USP | PUC-SP | UFRJ | UFMG | Mackenzie | UNIFESP | UFRGS | Outros | N total |
+|---|---|---|---|---|---|---|---|---|---|---|
+| {YYYY-MM-DD} | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+
+### 3.5 Histórico cluster d — Especialização Clínica certificada CFP/ABRAP/FBT (canônico)
+
+| Leitura | IPOG | CETCC | InEPP | IBNeuro | INPG | IBPEX | FBT | Anhembi | UniCesumar | Outros | N total |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| {YYYY-MM-DD} | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+
+### 3.6 Histórico cluster e — Formações híbridas e residências (canônico)
+
+| Leitura | IPOG | Sírio-Libanês | Albert Einstein | HCFMUSP | Anhembi | Estácio | PUC-Minas | UniCesumar | Outros | N total |
+|---|---|---|---|---|---|---|---|---|---|---|
+| {YYYY-MM-DD} | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
 
 ---
 

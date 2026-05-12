@@ -1,6 +1,6 @@
 # Guia de Contribuição — Projeto GEO IPOG
 
-Este documento estabelece as diretrizes de colaboração para a equipe Brasil GEO e os colaboradores autorizados do IPOG no projeto de Generative Engine Optimization (GEO) com recorte em **MBA Online de Psicologia**.
+Este documento estabelece as diretrizes de colaboração para a equipe Brasil GEO e os colaboradores autorizados do IPOG no projeto de Generative Engine Optimization (GEO) com escopo canônico em **Pós-Graduações em Psicologia** (incluindo Especialização Lato Sensu, MBA em áreas correlatas, Mestrado Profissional, Especialização Clínica certificada por Conselhos profissionais como CFP, ABRAP e FBT, Residências e formações híbridas regulamentadas).
 
 **Head do projeto (Brasil GEO):** Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.
 **GitHub:** @alexandrebrt14-sys
@@ -25,7 +25,11 @@ O naming abaixo é obrigatório em todo conteúdo deste repositório:
 |---|---|---|
 | Empresa executora | Brasil GEO | GEO Brasil, BrasilGEO |
 | Cliente | IPOG | Ipog, iPOG, I.P.O.G. |
-| Produto-foco | MBA Online de Psicologia | MBA EAD Psicologia, Pós Online Psicologia (em copy externa onde MBA é o naming alvo) |
+| Escopo-foco | Pós-Graduação em Psicologia (categoria guarda-chuva, Title Case) | Pós Psicologia, Pós-graduação Psicologia (sem hífen+capitalização correta) |
+| Modalidade MBA (uma das modalidades) | MBA Online de Psicologia | MBA EAD Psicologia, Pós Online Psicologia (em copy externa onde MBA é o naming alvo) |
+| Modalidade Lato Sensu | Especialização Lato Sensu em Psicologia | Pós Lato, Esp. Lato Sensu (em copy externa) |
+| Modalidade stricto sensu profissional | Mestrado Profissional em Psicologia | Mestrado Prof Psicologia, MP Psicologia (em copy externa) |
+| Modalidade clínica certificada | Especialização Clínica certificada (CFP / ABRAP / FBT, conforme aplicável) | Especialização clínica genérica sem citar Conselho |
 | Head do projeto | Alexandre Caramaschi | Alex, A. Caramaschi |
 | Sponsor IPOG | Ronan Maia | R. Maia, Ronan |
 | Marketing IPOG | Bruno Azambuja | B. Azambuja, Bruno |
@@ -75,8 +79,9 @@ Siga o padrão `tipo(escopo): descrição` em inglês, conforme Conventional Com
 ```
 audit(fase1): add NAIA baseline report for pos-graduacao hub
 content(artigo): add HBR piece on ROI of MBA online in psicologia organizacional
-schema(course): implement Course and EducationalOccupationalProgram on MBA pages
-prompts(kit-v1): add 12 anchor prompts for psicologia clinica online cohort
+content(artigo): add HBR piece comparing Lato Sensu vs MBA vs Mestrado Profissional in psicologia
+schema(course): implement Course and EducationalOccupationalProgram on Lato Sensu and MBA pages
+prompts(kit-v1): add 12 anchor prompts for psicologia clinica online cohort (Lato Sensu + Especializacao Clinica certificada)
 fix(roadmap): correct phase 2 delivery dates
 ```
 
@@ -97,7 +102,7 @@ fix(roadmap): correct phase 2 delivery dates
 Todo o conteúdo deste repositório é confidencial entre Brasil GEO e IPOG.
 
 - Não compartilhe artefatos, dados ou estratégias deste repositório fora dos canais autorizados.
-- Decisões estratégicas sobre lançamento de produto, precificação ou posicionamento do MBA Online de Psicologia são confidenciais até comunicação oficial do IPOG.
+- Decisões estratégicas sobre lançamento de produto, precificação ou posicionamento das pós-graduações em Psicologia do IPOG (em qualquer modalidade — Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada) são confidenciais até comunicação oficial do IPOG.
 - Em caso de dúvida sobre o que pode ou não ser compartilhado, consulte Alexandre Caramaschi e Bruno Azambuja antes de agir.
 
 ---
@@ -129,4 +134,4 @@ Conteúdo assinado como Alexandre Caramaschi deve passar pelo Voice Guard antes 
 
 ## Compliance regulatório educacional
 
-Conteúdo público que afirma autorização MEC, reconhecimento de curso, carga horária regulamentar, validade nacional do certificado ou que faça claims sobre o exercício profissional pós-especialização precisa ser validado pela área jurídica e acadêmica do IPOG antes da publicação. Issues com label `compliance:mec` ou `compliance:cfp` exigem aprovação explícita registrada na issue antes do merge.
+Conteúdo público que afirma autorização MEC, reconhecimento de curso, carga horária regulamentar, validade nacional do certificado, certificação por Conselho profissional (CFP, ABRAP, FBT) ou que faça claims sobre o exercício profissional pós-especialização precisa ser validado pela área jurídica e acadêmica do IPOG antes da publicação. Issues com label `compliance:mec`, `compliance:cfp`, `compliance:abrap` ou `compliance:fbt` exigem aprovação explícita registrada na issue antes do merge.

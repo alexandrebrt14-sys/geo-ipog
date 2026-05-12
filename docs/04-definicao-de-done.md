@@ -1,8 +1,10 @@
 # Definition of Done — Programa GEO IPOG
 
-> **Status:** vigente desde 2026-05-01
+> **Status:** vigente desde 2026-05-01 — atualizado em 2026-05-12 (escopo amplo de pós-graduação)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
+
+> **Cláusula transversal de escopo (12-05-2026):** todo artefato do programa cobre o portfólio amplo de pós-graduação em Psicologia (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências — `dashboards/METRICAS-CANONICAS.md` Cláusula 0). Cada DoD abaixo inclui o critério implícito "**o artefato cobre todas as modalidades de pós-graduação aplicáveis à área tratada**" — peça editorial sobre Avaliação Psicológica, por exemplo, cobre Especialização Lato Sensu e Especialização Clínica certificada; peça sobre Saúde Mental Corporativa cobre Especialização Lato Sensu e MBA correlato. Artefato que cobre só uma modalidade quando há mais modalidades aplicáveis é reaberto.
 
 Definição operacional de "pronto" por tipo de artefato. Toda issue do GitHub usa este documento como referência canônica antes de ser fechada. Nenhum artefato passa de status "In Progress" para "Done" sem que **todos os critérios da seção correspondente** estejam atendidos e marcados na issue.
 
@@ -19,7 +21,8 @@ Aplica-se a todo conteúdo público assinado pela marca IPOG ou por Alexandre Ca
 - [ ] Acentuação completa PT-BR validada (`content/ACENTUACAO-PT-BR.md`).
 - [ ] Glossário de Psicologia respeitado (`content/GLOSSARIO-PSICOLOGIA.md`).
 - [ ] Schema `Article` + `Person` (autor com Lattes/ORCID) implementado (`audits/SCHEMA-PATTERNS.md`).
-- [ ] Cross-link para o produto MBA Online de Psicologia [Cluster] presente.
+- [ ] Cross-link para o produto da modalidade canônica aplicável (Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, ou Formação híbrida/residência) — pelo menos 1 cross-link presente.
+- [ ] A peça cobre todas as modalidades de pós-graduação aplicáveis à área tratada (não apenas MBA).
 - [ ] Imagens com `alt` semântico, não decorativo.
 - [ ] Sem emojis em texto, headings ou metadata.
 - [ ] CHECKLIST-PUBLICACAO 5 camadas aprovado (`content/CHECKLIST-PUBLICACAO.md`).
@@ -49,7 +52,7 @@ Aplica-se a páginas IPOG ao vivo recebendo Schema canônico.
 - [ ] JSON-LD validado no Google Rich Results Test (HTTP 200, sem erros, com warnings registrados).
 - [ ] JSON-LD validado no Schema.org Validator (sem erros).
 - [ ] Snapshot do JSON-LD arquivado em `audits/schema-implementations/{YYYY-MM-DD}-{slug}.json`.
-- [ ] Tipo Schema correto para o caso — `EducationalOrganization` na raiz, `Course` em fichas, `EducationalOccupationalProgram` com `programType: "MBA"` no produto, `FAQPage` quando há FAQ, `Article` em peças editoriais, `Person` em corpo docente.
+- [ ] Tipo Schema correto para o caso — `EducationalOrganization` na raiz, `Course` em fichas, `EducationalOccupationalProgram` com `programType` correto à modalidade do produto (`"Specialization"` para Especialização Lato Sensu, `"MBA"` para MBA correlato, `"MastersProgram"` para Mestrado Profissional, `"ClinicalCertification"` para Especialização Clínica certificada CFP/ABRAP/FBT), `FAQPage` quando há FAQ, `Article` em peças editoriais, `Person` em corpo docente.
 - [ ] `provider` apontando para a `EducationalOrganization` IPOG canônica.
 - [ ] Para Person: `sameAs` apontando para Lattes e ORCID quando disponíveis; `hasCredential` declarado.
 - [ ] Aprovação de Bruno Azambuja registrada antes do go-live.
@@ -63,7 +66,7 @@ Aplica-se a `https://ipog.edu.br/llms.txt`.
 - [ ] Arquivo implementado segue o template em `audits/LLMS-TXT-TEMPLATE.md`.
 - [ ] Arquivo retorna HTTP 200 em `https://ipog.edu.br/llms.txt`.
 - [ ] Declara hub central, posicionamento institucional, prioridades de citação e contato canônico.
-- [ ] Naming canônico respeitado — "IPOG", "Brasil GEO", "MBA Online de Psicologia [Cluster]".
+- [ ] Naming canônico respeitado — "IPOG", "Brasil GEO", e o naming canônico da(s) modalidade(s) aplicável(eis) ("Especialização Lato Sensu em [área]", "MBA Online em [área]", "Mestrado Profissional em Psicologia", "Especialização Clínica em [área] certificada por [CFP/ABRAP/FBT]", "Formação híbrida/Residência em [área]").
 - [ ] Robots.txt complementar mantém permissão a GPTBot, ClaudeBot, anthropic-ai, Google-Extended, PerplexityBot, CCBot, Applebot-Extended.
 - [ ] Aprovação Bruno Azambuja registrada antes do go-live.
 - [ ] Snapshot do conteúdo arquivado em `audits/llms-txt-versions/{YYYY-MM-DD}.txt`.

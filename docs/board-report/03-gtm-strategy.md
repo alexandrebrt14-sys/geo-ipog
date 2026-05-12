@@ -1,4 +1,6 @@
-# GTM Strategy — MBA Online de Psicologia IPOG
+# GTM Strategy — Pós-Graduações em Psicologia IPOG (escopo amplo)
+
+> **Reframe canônico 12-05-2026:** GTM cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). Funis, captação e captura de share-of-voice operam em paralelo nas 5 modalidades, com priorização operacional declarada por onda.
 
 > **Status:** vigente desde 2026-05-01
 > **Dono:** Alexandre Caramaschi (CEO Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil)

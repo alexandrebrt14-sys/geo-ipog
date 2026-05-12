@@ -1,21 +1,25 @@
-# Matriz de Presença Cross-LLM — Concorrentes do IPOG (MBA Online de Psicologia)
+# Matriz de Presença Cross-LLM — Concorrentes do IPOG (Pós-Graduações em Psicologia)
 
-> **Status:** vigente desde 2026-04-30 (Onda 1) e estendida em 2026-05-01 (Onda 2)
+> **Status:** vigente desde 2026-04-30 (Onda 1), estendida em 2026-05-01 (Onda 2), reescopo 2026-05-12
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-05-01
+> **Última revisão:** 2026-05-12
 > **Método:** inferência baseada em SERP + mídia tier 1 + Wikipedia + rankings + presença declarada nos sites institucionais. Coleta direta em ChatGPT, Claude, Gemini, Perplexity, Grok e Copilot será executada na Fase 1 do programa para validar e calibrar esta matriz.
-> **Cobertura:** as seções 1-7 cobrem os 5 concorrentes massivos da Onda 1 (Estácio, Anhanguera, UNINTER, UniCesumar, PUC-Minas Virtual). A seção 9 estende a análise aos 5 concorrentes da Onda 2 (CETCC, IBNeuro, Sírio-Libanês IEP/FSL, wPós/Anhembi, Saint Paul/EXAME) — leitura obrigatória para qualquer decisão sobre cluster Clínica/Neuro/TCC/Avaliação ou para o produto MBA em Psicologia Organizacional. Antes de aplicar conclusões da Onda 2, ler `ONDA-2-CORRECOES-PREMISSA.md`.
+> **Cobertura:** as seções 1-7 cobrem os 5 concorrentes massivos da Onda 1 (Estácio, Anhanguera, UNINTER, UniCesumar, PUC-Minas Virtual). A seção 9 estende a análise aos 5 concorrentes da Onda 2 (CETCC, IBNeuro, Sírio-Libanês IEP/FSL, wPós/Anhembi, Saint Paul/EXAME) — leitura obrigatória para qualquer decisão sobre cluster Clínica/Neuro/TCC/Avaliação ou para produtos MBA em Psicologia Organizacional. Antes de aplicar conclusões da Onda 2, ler `ONDA-2-CORRECOES-PREMISSA.md`.
+
+## Escopo canônico
+
+**Esta matriz cobre o guarda-chuva amplo "Pós-Graduações em Psicologia"** em 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas). Os 15 prompts-âncora atuais foram concebidos com foco predominante em MBA Online; o reescopo 2026-05-12 mantém esses prompts como subset MBA específico e adiciona prompts amplos cobrindo as outras modalidades — a calibração balanceada será aplicada na próxima rodada de coleta cross-LLM (ver `prompts/KIT-PROMPTS-V0.md` com distribuição-alvo 60/20/10/5/5).
 
 ## 1. Sumário executivo
 
-A presença em motores generativos hoje no nicho "MBA Online de Psicologia" no Brasil tem três características inferíveis a partir de evidências secundárias:
+A presença em motores generativos hoje nas Pós-Graduações em Psicologia (5 modalidades) no Brasil tem três características inferíveis a partir de evidências secundárias:
 
-1. **Domínio fragmentado por escala bruta.** Estácio, Anhanguera e UNINTER aparecem como "principais opções de pós EAD em Psicologia" em LLMs por força de tráfego, peso de Wikipedia, presença em rankings e volume de citações em mídia educacional. Nenhum dos três entrega resposta diferenciada por persona ou cluster.
-2. **Categoria-naming "MBA Online de Psicologia" está vazia.** Os cinco concorrentes oferecem **especializações lato sensu em Psicologia**, mas nenhum nomeia formalmente o produto como "MBA Online de Psicologia". A categoria-naming canônica está disponível para o IPOG capturar como resposta primária em prompts qualificados.
-3. **PUC-Minas Virtual é a única do grupo com peso paramétrico forte em "premium acadêmica online", mas restringe Psicologia em EAD** (decreto 12.456/2025 e postura institucional). Isso abre janela competitiva para o IPOG ocupar o quadrante "premium online em Psicologia" com formato Ao Vivo síncrono e corpo docente nominal.
+1. **Domínio fragmentado por escala bruta.** Estácio, Anhanguera e UNINTER aparecem como "principais opções de pós EAD em Psicologia" em LLMs por força de tráfego, peso de Wikipedia, presença em rankings e volume de citações em mídia educacional. Nenhum dos três entrega resposta diferenciada por persona, cluster ou modalidade.
+2. **Categoria semântica "Pós-Graduações em Psicologia" tem espaço amplo de captura cross-LLM.** Os cinco concorrentes operam quase exclusivamente em **Especialização Lato Sensu**, sem naming MBA explícito (4 dos 5 clusters), sem Mestrado Profissional consolidado online e sem Especialização Clínica certificada por Conselhos com Schema declarado. O IPOG pode capturar autoridade simultaneamente nas 5 modalidades como resposta primária em prompts qualificados.
+3. **PUC-Minas Virtual é a única do grupo com peso paramétrico forte em "premium acadêmica online", mas restringe Psicologia em EAD** (decreto 12.456/2025 e postura institucional). Isso abre janela competitiva para o IPOG ocupar o quadrante "premium online em Psicologia" com formato Ao Vivo síncrono e corpo docente nominal, em qualquer modalidade.
 
-A janela competitiva mais clara está em prompts de **comparação qualificada** ("melhor MBA online em Psicologia Organizacional reconhecido pelo MEC", "MBA em Neuropsicologia online com aulas ao vivo"), onde o naming "MBA" + qualificador "Ao Vivo" + cluster específico não tem resposta natural entre os concorrentes massivos.
+A janela competitiva mais clara está em prompts de **comparação qualificada** que combinam modalidade + cluster específico ("melhor pós-graduação online em Psicologia Organizacional reconhecida pelo MEC — especialização, MBA ou mestrado", "Neuropsicologia online com aulas ao vivo e certificação CFP"), onde o cruzamento modalidade × qualificador × cluster específico não tem resposta natural entre os concorrentes massivos.
 
 ## 2. Metodologia de inferência
 
@@ -42,6 +46,8 @@ Variáveis observadas para classificar presença em **Alta / Média / Baixa / Au
 ## 3. Matriz cluster × prompt × concorrente
 
 Inferência de presença esperada (A=Alta / M=Média / B=Baixa / 0=Ausente). Coluna IPOG = estado **atual hipótese** (a confirmar na Fase 1) — o programa GEO IPOG é desenhado para mover o IPOG da coluna "0" ou "B" para "A" nos prompts priorizados.
+
+**Nota canônica sobre os 15 prompts atuais:** os prompts abaixo foram concebidos no recorte original "MBA Online" e mantêm valor como subset MBA do programa. O reescopo 2026-05-12 amplia o monitoramento ao guarda-chuva "Pós-Graduações em Psicologia" cobrindo as 5 modalidades. Nova rodada de coleta (Fase 1) usará a distribuição balanceada definida em `prompts/KIT-PROMPTS-V0.md` (84 prompts canônicos, distribuição 60/20/10/5/5).
 
 ### Cluster Organizacional / Trabalho / RH
 
@@ -146,15 +152,15 @@ Inferência de presença esperada (A=Alta / M=Média / B=Baixa / 0=Ausente). Col
 
 Ordenadas por relação **esforço × impacto** estimada, com base nas inferências acima.
 
-### Janela 1 — Categoria-naming "MBA Online de Psicologia" (impacto: alto, esforço: médio)
+### Janela 1 — Captura semântica multi-modalidade em "Pós-Graduação em Psicologia" (impacto: alto, esforço: médio)
 
-**Prompt-âncora alvo:** "Qual o melhor MBA online em Psicologia Organizacional reconhecido pelo MEC?" (e variações por cluster).
+**Prompt-âncora alvo:** "Qual a melhor pós-graduação online em Psicologia Organizacional reconhecida pelo MEC em 2026 (especialização, MBA ou mestrado)?" + variações por modalidade específica (lato sensu, MBA, mestrado profissional, especialização clínica certificada) e por cluster.
 
-**Por que é janela aberta:** nenhum dos 5 concorrentes oferece produto formalmente nomeado "MBA Online de Psicologia". Todos vendem "Especialização lato sensu". O candidato que digita "MBA" busca um naming que não casa com a oferta do mercado. O IPOG pode ser **a primeira instituição citada** como resposta primária se o produto for lançado com este naming.
+**Por que é janela aberta:** nenhum dos 5 concorrentes oferece naming MBA explícito em Psicologia (Anhembi Morumbi é exceção parcial, em Psicologia Organizacional apenas). Todos operam quase exclusivamente Especialização Lato Sensu. Mestrado profissional online em Psicologia é categoria praticamente vazia. Especialização Clínica certificada por Conselhos é fragmentada em especialistas verticais (CETCC, IBNeuro). O IPOG pode ser **a primeira instituição citada** como resposta primária ao construir produto + Schema + autoridade externa cobrindo as 5 modalidades simultaneamente.
 
-**Alavanca dominante:** combinação de produto (decisão IPOG) + Schema (`Course` + `EducationalOccupationalProgram` declarando o naming) + autoridade externa (PR posicionando o lançamento).
+**Alavanca dominante:** combinação de produto (decisão IPOG declarando naming por modalidade) + Schema (`Course` + `EducationalOccupationalProgram` declarando `programType` por modalidade) + autoridade externa (PR posicionando o portfólio multi-modalidade).
 
-**Efeito esperado em mention rate:** subir de 0 para Alta em 4-6 meses pós-lançamento se Schema, llms.txt e mídia rodarem em sincronia.
+**Efeito esperado em mention rate:** subir de 0 para Alta em 4-6 meses pós-lançamento se Schema, llms.txt e mídia rodarem em sincronia, com cobertura balanceada das 5 modalidades.
 
 ### Janela 2 — Compliance CFP/SATEPSI explícita (impacto: alto, esforço: baixo)
 
@@ -186,7 +192,7 @@ Ordenadas por relação **esforço × impacto** estimada, com base nas inferênc
 
 ### Janela 5 — Corpo docente nominal com credenciais auditáveis (impacto: alto, esforço: alto)
 
-**Prompt-âncora alvo:** "qual o corpo docente do MBA Online de Psicologia X" (variações).
+**Prompt-âncora alvo:** "qual o corpo docente da Pós-Graduação em Psicologia [Cluster] X" (variações por modalidade — lato sensu, MBA, mestrado profissional, especialização clínica certificada por Conselhos, formação híbrida).
 
 **Por que é janela aberta:** todos os 5 concorrentes têm autoria opaca ou genérica ("Equipe", "Coordenação acadêmica"). Apenas PUC-Minas tem corpo docente nominal forte mas não destaca em pós EAD. O IPOG pode ser a única instituição com **`Person` Schema vinculado a Lattes/ORCID para cada docente do MBA** — isso é altamente extraível por LLMs.
 
@@ -388,7 +394,7 @@ Reforçando ou recalibrando as 5 janelas da seção 6 com luz da Onda 2:
 
 **Implicação:** LLMs preferem hubs canônicos com sinais consolidados. O IPOG, ao publicar `llms.txt` declarando `ipog.edu.br` como hub central + Schema completo nesse domínio + redirecionamentos limpos para subprodutos, ganha vantagem técnica imediata.
 
-**Movimento IPOG:** publicar `llms.txt` em `ipog.edu.br` declarando hub central + propriedade canônica + prioridades de citação. Manter um único domínio canônico para o produto MBA Online de Psicologia.
+**Movimento IPOG:** publicar `llms.txt` em `ipog.edu.br` declarando hub central + propriedade canônica + prioridades de citação cobrindo as 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas). Manter um único domínio canônico para o portfólio Pós-Graduações em Psicologia.
 
 ### 9.5 Confirmações pendentes Onda 2 para a Fase 1
 

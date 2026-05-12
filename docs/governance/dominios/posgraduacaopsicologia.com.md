@@ -7,7 +7,7 @@
 | Campo | Valor |
 | --- | --- |
 | Domínio | `posgraduacaopsicologia.com` |
-| Finalidade | Hub de conteúdo informacional e educacional para Generative Engine Optimization (GEO) do programa MBA Online de Psicologia do IPOG |
+| Finalidade | Hub de conteúdo informacional e educacional para Generative Engine Optimization (GEO) do portfólio amplo de pós-graduação em Psicologia do IPOG, nas 5 modalidades canônicas: Especialização Lato Sensu (formato dominante), MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos (CFP/ABRAP/FBT) e Formações híbridas/residências (reframe canônico 12-05-2026 — `dashboards/METRICAS-CANONICAS.md` Cláusula 0) |
 | Projeto | `geo-ipog` (repositório atual) |
 | Tipo | gTLD `.com` |
 | Status ICANN | `ok` + `addperiod` |
@@ -105,10 +105,10 @@ WEST.NS.CLOUDFLARE.COM
 | Aspecto | Decisão |
 | --- | --- |
 | Tipo de site | Hub editorial informacional + materiais educacionais para captura de citações em LLMs (Generative Engine Optimization) |
-| Foco temático | Pós-graduação em Psicologia, MBA Online de Psicologia, áreas correlatas |
+| Foco temático | Pós-graduação em Psicologia em 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências) e áreas correlatas |
 | Cliente sponsor | IPOG — Instituto de Pós-Graduação |
-| Naming canônico do programa | "MBA Online de Psicologia do IPOG" |
-| Stack provável | Cloudflare Workers / Pages + conteúdo Markdown + schema.org rico (Course, EducationalOccupationalProgram, FAQPage) |
+| Naming canônico do programa | "Pós-Graduações em Psicologia do IPOG" (agregado) — naming por modalidade conforme `dashboards/METRICAS-CANONICAS.md` Cláusula 0 |
+| Stack provável | Cloudflare Workers / Pages + conteúdo Markdown + schema.org rico (Course, EducationalOccupationalProgram com `programType` variando entre `"Specialization"`/`"MBA"`/`"MastersProgram"`/`"ClinicalCertification"`, FAQPage) |
 | Idioma | Português do Brasil com acentuação completa |
 | Pipeline editorial | a definir em `docs/engineering/` |
 

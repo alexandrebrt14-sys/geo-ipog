@@ -1,5 +1,7 @@
 # Relatorio semanal GA4 - posgraduacaopsicologia.com
 
+> Reframe canonico 12-05-2026: o portal cobre o portfolio amplo de pos-graduacao em Psicologia em 5 modalidades canonicas (Especializacao Lato Sensu, MBA correlato, Mestrado Profissional, Especializacao Clinica certificada CFP/ABRAP/FBT, Formacoes hibridas/residencias - ver `dashboards/METRICAS-CANONICAS.md` Clausula 0). Audiencias e segmentos do GA4 sao decompostos por modalidade conforme `docs/governance/google-analytics.md`. Acentuacao plena PT-BR e mantida na canonical metadata; este arquivo usa ASCII por compatibilidade com pipeline existente.
+
 Dois caminhos paralelos para acompanhar metricas do portal:
 
 1. **Script offline** (`scripts/weekly_ga4_report.py`) que gera HTML+CSV+Markdown sob `dashboards/relatorios-ga4/YYYY-WWnn/`.

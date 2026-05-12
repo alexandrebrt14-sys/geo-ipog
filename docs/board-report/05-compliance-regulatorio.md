@@ -1,4 +1,6 @@
-# 05 — Compliance regulatório do MBA Online de Psicologia (IPOG)
+# 05 — Compliance regulatório das Pós-Graduações em Psicologia (IPOG, escopo amplo)
+
+> **Reframe canônico 12-05-2026:** compliance cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). Regimes regulatórios variam por modalidade: Especialização Lato Sensu (MEC, Portarias SERES); MBA correlato (MEC, mesmas Portarias do Lato Sensu); Mestrado Profissional (CAPES, processo de autorização específico); Especialização Clínica certificada (Conselhos profissionais — CFP, ABRAP, FBT — em adição à Portaria MEC do Lato Sensu); Formações híbridas/residências (combinações). Decreto 12.456/2025 é tratado por modalidade.
 
 > **Status:** vigente desde 2026-05-01
 > **Dono editorial:** Alexandre Caramaschi (CEO da Brasil GEO)

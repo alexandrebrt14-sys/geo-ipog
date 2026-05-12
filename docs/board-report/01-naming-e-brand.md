@@ -1,4 +1,6 @@
-# Naming canônico e brand do MBA Online de Psicologia — recomendação Brasil GEO para o IPOG
+# Naming canônico e brand do portfólio amplo de Pós-Graduações em Psicologia — recomendação Brasil GEO para o IPOG
+
+> **Reframe canônico 12-05-2026:** o naming canônico cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências — `dashboards/METRICAS-CANONICAS.md` Cláusula 0). Este documento trata em profundidade o naming da modalidade b (MBA correlato à Psicologia), com generalização explícita do framework para as outras 4 modalidades em seção transversal. Naming por modalidade: "Especialização Lato Sensu em [área]", "MBA Online de Psicologia", "Mestrado Profissional em Psicologia", "Especialização Clínica em [área] certificada por [CFP/ABRAP/FBT]", "Formação híbrida/Residência em [área]".
 
 > **Status:** rascunho de board-report, ciclo 2026.2
 > **Dono editorial:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil)

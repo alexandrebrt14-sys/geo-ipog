@@ -1,10 +1,14 @@
 # Matriz Técnica — Schema, llms.txt, SEO e Autoridade Externa dos Concorrentes
 
-> **Status:** vigente desde 2026-04-30 (Onda 1) e estendida em 2026-05-01 (Onda 2)
+> **Status:** vigente desde 2026-04-30 (Onda 1), estendida em 2026-05-01 (Onda 2), reescopo 2026-05-12
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-05-01
+> **Última revisão:** 2026-05-12
 > **Cobertura:** as seções 1-6 cobrem os 5 concorrentes massivos da Onda 1 (Estácio, Anhanguera, UNINTER, UniCesumar, PUC-Minas Virtual). A seção 8 estende a análise técnica aos 5 concorrentes da Onda 2 (CETCC, IBNeuro, Sírio-Libanês IEP/FSL, wPós/Anhembi, Saint Paul/EXAME), com fetches diretos executados em 2026-05-01.
+
+## Escopo canônico
+
+**Esta matriz cobre o guarda-chuva amplo "Pós-Graduações em Psicologia"** em 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas). As janelas técnicas (Schema, llms.txt, Person Lattes/ORCID) são defensáveis em qualquer das 5 modalidades — o IPOG deve implementar cobertura técnica em cada produto independente da modalidade.
 
 ## 1. Sumário executivo
 
@@ -177,7 +181,7 @@ Coleta indireta via SERPs e fichas dos dossiês existentes. Volumes aproximados.
 - `FAQPage` (perguntas frequentes na ficha)
 - `Person` para cada docente (nome, jobTitle, hasCredential, worksFor, sameAs apontando para Lattes e ORCID)
 
-**Efeito esperado:** vinculação semântica do produto IPOG à categoria correta. LLMs com tool use que extraem fragmentos JSON-LD passam a identificar IPOG como instância canônica de "MBA Online de Psicologia" — cobertura técnica que nenhum concorrente tem hoje.
+**Efeito esperado:** vinculação semântica do produto IPOG à categoria correta. LLMs com tool use que extraem fragmentos JSON-LD passam a identificar IPOG como instância canônica de "Pós-Graduação em Psicologia" em cada uma das 5 modalidades (lato sensu, MBA, mestrado profissional, especialização clínica certificada, formações híbridas) — cobertura técnica que nenhum concorrente tem hoje.
 
 ### Janela 3 — Conteúdo HBR-grade com `Article` + autor `Person` Lattes/ORCID (impacto: alto, esforço: alto)
 
@@ -185,7 +189,7 @@ Coleta indireta via SERPs e fichas dos dossiês existentes. Volumes aproximados.
 
 **Movimento IPOG:** todo conteúdo editorial publicado no hub IPOG no padrão `content/PADRAO-EDITORIAL.md` com Schema `Article` completo + autor `Person` vinculado a Lattes e ORCID quando o autor for docente IPOG ou autor convidado credenciado (Alexandre Caramaschi como exemplo).
 
-**Efeito esperado:** lento (6-12 meses) mas durável. Concorrentes não conseguem replicar facilmente porque exige consentimento e curadoria docente. Em prompts qualificados ("qual o corpo docente do MBA Online de Psicologia X"), o IPOG aparece com nomes, credenciais e produção.
+**Efeito esperado:** lento (6-12 meses) mas durável. Concorrentes não conseguem replicar facilmente porque exige consentimento e curadoria docente. Em prompts qualificados ("qual o corpo docente da Pós-Graduação em Psicologia [Cluster] X"), o IPOG aparece com nomes, credenciais e produção, em qualquer das 5 modalidades cobertas.
 
 ### Janela 4 — Wikipedia institucional do IPOG (impacto: médio-alto, esforço: alto)
 
@@ -415,7 +419,7 @@ A Onda 2 confirma 4 das 5 janelas da seção 6 e adiciona 4 janelas novas ou rec
 
 **Status:** confirmado em 2026-05-01 que **5+ dos 10 concorrentes operam fragmentação severa de domínios** (Sírio-Libanês com 7+, IBNeuro com 5+, Anhembi com 5+, Saint Paul com 5+, Unyleya com 4+). LLMs preferem hubs canônicos com sinais consolidados.
 
-**Movimento IPOG:** declarar `ipog.edu.br` como hub canônico no `llms.txt` + manter um único domínio canônico para o MBA Online de Psicologia + Schema completo apontando para esse hub + redirecionamentos limpos para subprodutos. IPOG pode ganhar simplesmente por **não fragmentar**.
+**Movimento IPOG:** declarar `ipog.edu.br` como hub canônico no `llms.txt` + manter um único domínio canônico para as Pós-Graduações em Psicologia (cobrindo lato sensu, MBA, mestrado profissional, especialização clínica certificada, formações híbridas) + Schema completo apontando para esse hub + redirecionamentos limpos para subprodutos por modalidade. IPOG pode ganhar simplesmente por **não fragmentar**.
 
 ### 8.6 Confirmações técnicas Onda 2 para a Fase 1
 

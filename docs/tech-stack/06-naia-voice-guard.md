@@ -1,5 +1,7 @@
 # NAIA Audit Engine + Voice Guard Service — Especificação de Engenharia
 
+> **Reframe canônico 12-05-2026:** NAIA Audit Engine + Voice Guard validam o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). Os checks de `EducationalOccupationalProgram` (categoria B) agora reconhecem `programType` em qualquer dos 4 valores canônicos: `"Specialization"`, `"MBA"`, `"MastersProgram"`, `"ClinicalCertification"`. O check anterior que validava apenas `programType: "MBA"` foi generalizado para "programa declara um `programType` da lista canônica e o valor é coerente com a modalidade da página". O dicionário do Voice Guard mantém naming "MBA Online de Psicologia" para a modalidade b e adiciona naming canônico para as outras 4 modalidades.
+
 > **Documento:** 06 — Especificação dos quality gates programáticos do programa GEO IPOG.
 > **Cliente:** IPOG (Instituto de Pós-Graduação e Graduação, Goiânia, fundado 2001).
 > **Sponsor executivo:** Ronan Maia (CEO IPOG).

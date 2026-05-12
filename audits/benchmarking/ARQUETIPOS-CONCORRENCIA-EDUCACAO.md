@@ -1,9 +1,13 @@
 # Arquétipos de Concorrência em Educação Superior — Lente Estratégica
 
-> **Status:** vigente desde 2026-05-01
+> **Status:** vigente desde 2026-05-01 (reescopo 2026-05-12)
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-05-01
+> **Última revisão:** 2026-05-12
+
+## Escopo canônico
+
+**Este documento cobre os arquétipos de concorrência nas Pós-Graduações em Psicologia** (guarda-chuva amplo, 5 modalidades canônicas: Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas).
 
 ## Por que este documento existe
 
@@ -67,7 +71,7 @@ Este documento consolida a leitura estratégica e fixa o vocabulário canônico 
 **Vulnerabilidades em GEO regional:**
 - Sírio-Libanês IEP / FSL bloqueia crawlers IA via WAF (HTTP 403). Segundo grande player com vulnerabilidade autoinfligida.
 - IBNeuro usa Shopify Product Schema no lugar de Course canônico — signaling acadêmico fragilizado em LLMs que parseiam Schema.org corretamente.
-- CETCC e IBNeuro recusam o naming "MBA" deliberadamente — vácuo aproveitável para o produto-âncora MBA Online de Psicologia do IPOG.
+- CETCC e IBNeuro recusam o naming "MBA" deliberadamente — vácuo aproveitável para o subconjunto MBA Online em Psicologia do IPOG, complementar ao portfólio multi-modalidade.
 - Em queries cross-vertical regionais (uma cidade, múltiplas áreas), não conseguem dominar — porque a operação física não cobre múltiplas áreas simultaneamente.
 
 **Por que não respondem ao IPOG regional:** especialização vertical é incompatível com expansão geográfica simultânea. Capital, time docente e operação não escalam horizontalmente em prazo curto. O IPOG, por design, opera 10 áreas acadêmicas em 51 cidades — combinação inviável para player especialista vertical.

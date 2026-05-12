@@ -1,7 +1,9 @@
 # GEO 2026 · frameworks e KPIs emergentes para incorporação ao programa GEO IPOG
 
-> **Status:** intelligence layer — gaps identificados via dossiê Perplexity sonar-deep-research em 2026-05-12
+> **Status:** intelligence layer — gaps identificados via dossiê Perplexity sonar-deep-research em 2026-05-12 — escopo amplo (12-05-2026)
 > **Dono:** Alexandre Caramaschi (CEO da Brasil GEO)
+
+> **Reframe canônico 12-05-2026:** frameworks emergentes (MCP, agentic search, runtime AI agents) operam sobre o portfólio amplo de pós-graduação em Psicologia (5 modalidades canônicas — `dashboards/METRICAS-CANONICAS.md` Cláusula 0). A pergunta de exemplo "qual MBA em Psicologia se encaixa no perfil do usuário?" generaliza para "qual pós-graduação em Psicologia se encaixa no perfil do usuário?" — agentes precisam de MCP exposto que descreva todas as 5 modalidades, não apenas MBA, com `programType` correto em cada.
 > **Cross-links obrigatórios:** [`docs/framework/06-voice-guard-v2-aggarwal.md`](06-voice-guard-v2-aggarwal.md) (V2 atual), [`docs/framework/07-research-geo-aplicado-ipog.md`](07-research-geo-aplicado-ipog.md) (papers Caramaschi 2026), [`docs/STATUS.md`](../STATUS.md), [`docs/research/perplexity-dossier-seo-geo-agentic-2026.md`](../research/perplexity-dossier-seo-geo-agentic-2026.md)
 > **Issue de rastreamento:** geo-ipog#76 (a abrir)
 

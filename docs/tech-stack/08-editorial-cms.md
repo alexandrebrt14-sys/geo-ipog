@@ -1,5 +1,7 @@
 # Sistema editorial GEO IPOG — Markdown + Voice Guard CI + Schema injection automático
 
+> **Reframe canônico 12-05-2026:** o sistema editorial gerencia peças sobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). O frontmatter da peça declara obrigatoriamente o campo `modalidade_canonica` com um dos valores: `"especializacao-lato-sensu"`, `"mba-correlato"`, `"mestrado-profissional"`, `"especializacao-clinica-certificada"`, `"formacao-hibrida-residencia"`. O `related_product` aponta para o `EducationalOccupationalProgram` da modalidade correspondente. Os exemplos com URL `/mba-online-...` cobrem a modalidade `"mba-correlato"`; peças sobre Avaliação Psicológica com SATEPSI cobrem `"especializacao-clinica-certificada"`; e assim por diante.
+
 > **Documento:** 08 — Especificação do sistema editorial do programa GEO IPOG (gestão de peças HBR-grade, Voice Guard inline, Schema injection automático, integração GA4).
 > **Cliente:** IPOG (Instituto de Pós-Graduação e Graduação, Goiânia, fundado 2001).
 > **Sponsor executivo:** Ronan Maia (CEO IPOG).

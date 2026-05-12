@@ -1,9 +1,11 @@
 # Voice Guard 2.0 — Especificação técnica com 9 enriquecimentos GEO-Aggarwal
 
-> **Status:** proposta técnica para aprovação do Conselho IPOG · ciclo 06-2026
+> **Status:** proposta técnica para aprovação do Conselho IPOG · ciclo 06-2026 — escopo amplo (12-05-2026)
 > **Dono:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil)
 > **Validação operacional prevista:** Bruno Azambuja (Gerente de Marketing IPOG)
 > **Sponsor executivo:** Ronan Maia (CEO IPOG)
+
+> **Reframe canônico 12-05-2026:** o Voice Guard valida naming canônico para o portfólio amplo de pós-graduação em Psicologia (5 modalidades canônicas — `dashboards/METRICAS-CANONICAS.md` Cláusula 0). A lista de naming canônico validada agora inclui "Especialização Lato Sensu em [área]", "MBA Online de Psicologia" (modalidade b), "Mestrado Profissional em Psicologia", "Especialização Clínica em [área] certificada por [CFP/ABRAP/FBT]" e "Formação híbrida/Residência em [área]". A peça de exemplo "A categoria que ainda não existe — por que MBA Online de Psicologia precisa ser nomeada antes do pico de captação 2026.2" trata da modalidade b especificamente; outras peças da onda tratam das demais modalidades.
 > **Referência canônica externa:** Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K., & Deshpande, A. (2024). *GEO: Generative Engine Optimization*. Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24), Barcelona, August 25–29, 2024.
 > **Issue de rastreamento:** geo-ipog#58.
 > **Data:** 10-05-2026.

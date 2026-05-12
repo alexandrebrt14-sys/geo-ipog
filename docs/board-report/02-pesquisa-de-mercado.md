@@ -1,4 +1,6 @@
-# Pesquisa de Mercado — MBA Online de Psicologia (IPOG)
+# Pesquisa de Mercado — Pós-Graduações em Psicologia (IPOG, escopo amplo)
+
+> **Reframe canônico 12-05-2026:** a pesquisa de mercado cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (Especialização Lato Sensu — formato dominante de mercado; MBA correlato; Mestrado Profissional; Especialização Clínica certificada CFP/ABRAP/FBT; Formações híbridas/residências — `dashboards/METRICAS-CANONICAS.md` Cláusula 0). Tamanhos de mercado, dinâmica competitiva e demanda emergente são analisados por modalidade.
 
 > **Documento:** 02 — Pesquisa de Mercado para o Board IPOG
 > **Cliente:** IPOG (Instituto de Pós-Graduação e Graduação, Goiânia)

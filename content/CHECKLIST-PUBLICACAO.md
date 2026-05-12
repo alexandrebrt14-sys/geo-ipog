@@ -36,6 +36,8 @@ Auditoria detalhada em `content/ACENTUACAO-PT-BR.md`.
 - [ ] Zero clichés (deny-list 1, 17 expressões).
 - [ ] Zero rhetoric openers (deny-list 2, 8 expressões).
 - [ ] Zero ai-disclaimers (deny-list 3, 7 expressões).
+- [ ] Cliché de escopo (deny-list 4) — a peça **não** trata "MBA Online de Psicologia" como sinônimo do programa GEO IPOG inteiro. Se a peça é institucional (sobre o programa todo), declara escopo "Pós-Graduações em Psicologia — cinco modalidades".
+- [ ] Modalidade de pós-graduação explicitamente declarada (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada, residência/híbrida ou transversal) — coerente com o `programType` Schema declarado.
 - [ ] Mínimo uma tabela.
 - [ ] Mínimo três exercícios com template canônico e progressão Bloom.
 - [ ] Parágrafos com no máximo cinco linhas.
@@ -68,13 +70,14 @@ Auditoria detalhada em `content/PADRAO-EDITORIAL.md`, `content/BLOOM-KNOWLES.md`
 - [ ] Validador Schema.org Validator sem erro.
 - [ ] Em peça do tipo FAQ, schema `FAQPage` + `Question` + `Answer`.
 - [ ] Em peça do tipo HowTo (checklist), schema `HowTo` + `Step`.
+- [ ] Quando a peça apresenta `EducationalOccupationalProgram`, o `programType` declarado é coerente com a modalidade: `Specialization` (Lato Sensu), `MBA` (MBA correlato), `ProfessionalMastersProgram` (Mestrado Profissional) ou `ProfessionalCertification` (Especialização Clínica certificada por Conselhos). Residências/híbridas declaram dois `EducationalOccupationalProgram` no `@graph`. Ver `audits/SCHEMA-PATTERNS.md`, seção 3.
 
 **Falha bloqueia a Camada 5.**
 
 ## Camada 5 — Voice Guard
 
 - [ ] Score Voice Guard >= 70.
-- [ ] Naming canônico íntegro ("Brasil GEO", "IPOG", "MBA Online de Psicologia", "Alexandre Caramaschi"; demais conforme `content/VOICE-GUIDE.md`).
+- [ ] Naming canônico íntegro ("Brasil GEO", "IPOG", "Pós-Graduações em Psicologia" para escopo completo, "MBA Online de Psicologia" apenas para o produto MBA, "Especialização Lato Sensu", "MBA correlato à Psicologia", "Mestrado Profissional", "Especialização Clínica certificada", "Alexandre Caramaschi"; demais conforme `content/VOICE-GUIDE.md`).
 - [ ] Sem match em deny-list de naming proibido (GEO Brasil, Ipog, iPOG, MBA EAD Psicologia, Pós Online Psicologia, Alex, A. Caramaschi, Especialista #1, Source Rank, geobrasil.com.br, sourcerank.ai).
 - [ ] Sem bloqueio crítico ativo (ver `content/VOICE-GUIDE.md`).
 
@@ -88,7 +91,9 @@ Esta camada se aplica APENAS quando a peça contém claim regulatório.
 
 A peça contém pelo menos um destes elementos:
 
-- Afirmação de reconhecimento MEC do MBA Online de Psicologia.
+- Afirmação de reconhecimento MEC de Especialização Lato Sensu ou MBA correlato à Psicologia do IPOG.
+- Afirmação de autorização CAPES para Mestrado Profissional.
+- Afirmação de certificação por Conselho (CFP via Resolução 23/2022, ABRAP, FBT) para Especialização Clínica certificada.
 - Afirmação sobre exercício profissional regulamentado (clínico, avaliação psicológica, neuropsicologia).
 - Afirmação sobre habilitação para atuação clínica.
 - Afirmação sobre conformidade SATEPSI ou registro CFP.

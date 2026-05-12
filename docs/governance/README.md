@@ -1,5 +1,7 @@
 # Governança — projeto geo-ipog
 
+> **Reframe canônico 12-05-2026:** governança cobre o programa GEO para IPOG no escopo amplo de pós-graduação em Psicologia em 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências — ver `dashboards/METRICAS-CANONICAS.md` Cláusula 0). Os ativos digitais aqui descritos (domínios, contas Cloudflare, GA4, CI/CD) servem o portfólio amplo, não apenas MBA.
+
 Documentos canônicos sobre titularidade, ativos digitais, contas operacionais e regras de manuseio do programa GEO para IPOG.
 
 ## Conteúdo

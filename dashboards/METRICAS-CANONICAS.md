@@ -3,7 +3,21 @@
 > **Status:** vigente desde 2026-04-30
 > **Dono:** Alexandre Caramaschi (Brasil GEO)
 > **Validação operacional:** Bruno Azambuja (IPOG)
-> **Última revisão:** 2026-04-30
+> **Última revisão:** 2026-05-12 (reframe canônico de escopo amplo)
+
+## Reframe canônico de escopo (12-05-2026)
+
+O programa GEO IPOG foi originalmente enquadrado como "MBA Online de Psicologia". A leitura canônica vigente é mais ampla: **o escopo é Pós-Graduações em Psicologia, incluindo MBA, Especialização Lato Sensu, Mestrado Profissional, Especialização Clínica certificada (CFP/ABRAP/FBT) e formações híbridas/residências**. MBA é uma das cinco modalidades, não a vertical única. Todas as definições abaixo passam a operar sobre esse escopo amplo. Onde "MBA Online de Psicologia" aparece como exemplo, leia "uma das modalidades canônicas listadas na Cláusula 0 abaixo".
+
+### Cláusula 0 — Cinco modalidades canônicas de pós-graduação em Psicologia
+
+1. **Especialização Lato Sensu** em áreas de Psicologia (360h+, formato dominante: POT, Clínica, Neuro, Avaliação, Escolar, Hospitalar).
+2. **MBA correlato à Psicologia** (POT executiva, Neuro executiva, Coaching, Liderança, Saúde Mental Corporativa B2B).
+3. **Mestrado Profissional em Psicologia**.
+4. **Especialização Clínica certificada por Conselhos** (CFP/ABRAP/FBT — TCC, ACT, EMDR, Avaliação Psicológica com SATEPSI atualizada).
+5. **Formações híbridas e residências** (oferta com componente presencial + síncrono online em polos próprios).
+
+Toda métrica deste documento responde, salvo nota explícita, ao agregado das cinco modalidades. KPIs com decomposição por modalidade têm seção "Decomposição canônica" explícita.
 
 Este documento define o conjunto canônico de KPIs do programa GEO IPOG. A lista é fechada, não negociável e blindada contra inflação de métricas: qualquer KPI novo precisa ser proposto, justificado e aprovado em revisão executiva mensal com Ronan Maia (CEO IPOG) antes de entrar em dashboards operacionais. KPIs descontinuados saem por decisão registrada em ata, não por desuso silencioso.
 
@@ -32,7 +46,7 @@ Cross-links:
 
 ### Definição operacional
 
-Proporção de prompts canônicos do `prompts/KIT-PROMPTS-V0.md` em que o IPOG é citado pelo nome correto na resposta de cada LLM do cohort. "Nome correto" significa "IPOG" ou "Instituto de Pós-Graduação e Graduação", em qualquer posição da resposta. "Citação errada" (Pog, ipog. com), embora detectada, não conta como menção.
+Proporção de prompts canônicos do `prompts/KIT-PROMPTS-V0.md` em que o IPOG é citado pelo nome correto na resposta de cada LLM do cohort, em respostas que tratam de **qualquer modalidade de pós-graduação em Psicologia** (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por CFP/ABRAP/FBT, e formações híbridas/residências). "Nome correto" significa "IPOG" ou "Instituto de Pós-Graduação e Graduação", em qualquer posição da resposta. "Citação errada" (Pog, ipog. com), embora detectada, não conta como menção. A leitura é agregada e também decomposta por modalidade (decomposição canônica em 5 modalidades — ver Cláusula 0).
 
 ### Fórmula
 
@@ -75,11 +89,21 @@ Alexandre Caramaschi (Brasil GEO).
 
 ### Definição operacional
 
-Para cada cluster semântico (organizacional / clínica-neuro-TCC-avaliação / psicopedagogia-escolar) e cada LLM, mede a participação de IPOG no total de menções de instituições no conjunto de respostas. O denominador inclui todas as instituições mencionadas: EAD massivos (Estácio, Anhanguera, Unip, UNINTER, UniCesumar), premium (USP, PUC, FGV, Mackenzie, Insper), especialistas (InEPP, IBNeuro, INPG, IBPEX) e plataformas (Voitto, Conexia, Descomplica). O numerador é apenas IPOG.
+Para cada **cluster semântico canônico** (5 clusters baseados nas modalidades de pós-graduação em Psicologia — ver Cláusula 0) e cada LLM, mede a participação de IPOG no total de menções de instituições no conjunto de respostas. O denominador inclui todas as instituições mencionadas: EAD massivos (Estácio, Anhanguera, Unip, UNINTER, UniCesumar), premium (USP, PUC, FGV, Mackenzie, Insper), especialistas (InEPP, IBNeuro, INPG, IBPEX, CETCC), plataformas (Voitto, Conexia, Descomplica) e instituições de Mestrado Profissional autorizadas pela CAPES. O numerador é apenas IPOG.
+
+### Cinco clusters semânticos canônicos (vigentes desde 2026-05-12)
+
+a) **Especialização Lato Sensu em áreas de Psicologia** (POT, Clínica, Neuro, Avaliação, Escolar, Hospitalar).
+b) **MBA correlato à Psicologia** (POT executiva, Neuro executiva, Coaching, Liderança, Saúde Mental Corporativa B2B).
+c) **Mestrado Profissional em Psicologia**.
+d) **Especialização Clínica certificada** (CFP/ABRAP/FBT — TCC, ACT, EMDR, Avaliação Psicológica com SATEPSI).
+e) **Formações híbridas e residências**.
+
+Os clusters antigos baseados em MBA (organizacional / clínica-neuro-TCC-avaliação / psicopedagogia-escolar) ficam preservados como **decomposição secundária** dentro dos clusters a e b para continuidade da série temporal pré-reframe, mas a leitura canônica de SoV passa a operar nos 5 clusters acima.
 
 ### Fórmula
 
-`sov(LLM, cluster) = menções IPOG no cluster / sum(menções de todas as instituições no cluster) × 100`.
+`sov(LLM, cluster) = menções IPOG no cluster / sum(menções de todas as instituições no cluster) × 100`, calculada para cada um dos 5 clusters canônicos.
 
 ### Fonte do dado
 
@@ -99,9 +123,11 @@ Snapshot quinzenal por cluster. Comparativo executivo mensal.
 
 ### Target Fase 4
 
-- Cluster organizacional: SoV IPOG >= 15%.
-- Cluster clínica-neuro-TCC-avaliação: SoV IPOG >= 20% (este é o cluster onde o programa concentra produção editorial mais densa).
-- Cluster psicopedagogia-escolar: SoV IPOG >= 12%.
+- Cluster a (Especialização Lato Sensu): SoV IPOG >= 18%.
+- Cluster b (MBA correlato à Psicologia): SoV IPOG >= 15%.
+- Cluster c (Mestrado Profissional): SoV IPOG >= 8% (cluster com presença histórica menor — alvo de fase 4 é estabelecer pegada inicial).
+- Cluster d (Especialização Clínica certificada CFP/ABRAP/FBT): SoV IPOG >= 20% (cluster onde o programa concentra produção editorial mais densa).
+- Cluster e (Formações híbridas e residências): SoV IPOG >= 12%.
 
 ### Owner
 
@@ -111,7 +137,7 @@ Bruno Azambuja (IPOG).
 
 ### Definição operacional
 
-Para cada menção válida do IPOG nas respostas dos LLMs, avalia se acompanhada de fatos canônicos corretos: formato (especialização lato sensu MEC), carga horária, autorização MEC, modalidade (Online Ao Vivo) e diferencial editorial reconhecido. Cada fato presente e correto soma 1 ponto. Pontuação final é normalizada de 0 a 100.
+Para cada menção válida do IPOG nas respostas dos LLMs em **qualquer das 5 modalidades canônicas** de pós-graduação em Psicologia, avalia se acompanhada de fatos canônicos corretos para aquela modalidade: formato (lato sensu MEC, mestrado profissional CAPES, ou especialização clínica certificada por Conselho), carga horária, autorização ou credenciamento aplicável (MEC, CFP, ABRAP, FBT, CAPES quando mestrado), modalidade (Online Ao Vivo, híbrido, presencial) e diferencial editorial reconhecido. Cada fato presente e correto soma 1 ponto. Pontuação final é normalizada de 0 a 100. A acurácia é validada por modalidade — fato correto para MBA citado em contexto de Mestrado Profissional conta como menção, mas não como fato canônico daquela modalidade.
 
 ### Fórmula
 
@@ -146,6 +172,8 @@ Alexandre Caramaschi (Brasil GEO).
 ### Definição operacional
 
 Proporção dos checks Schema da auditoria NAIA passando no momento da leitura. Inclui as categorias A (Schema institucional), B (Schema de curso), C (Schema de FAQ e blog) e D (Schema de pessoas), conforme `audits/PLAYBOOK-AUDITORIA-NAIA.md`. Severidade é considerada: P0 falhando reduz o score em 5 pontos cada; P1 reduz em 2; P2 reduz em 1; P3 não altera.
+
+A partir do reframe canônico de 2026-05-12, a cobertura exigida agora inclui obrigatoriamente os 3 tipos canônicos de Schema educacional do programa, com variação de `programType` na `EducationalOccupationalProgram`: `"Specialization"` (Especialização Lato Sensu), `"MBA"` (MBA correlato à Psicologia), `"MastersProgram"` (Mestrado Profissional) e `"ClinicalCertification"` (Especialização Clínica certificada CFP/ABRAP/FBT). Páginas de produto sem `programType` declarado entre esses quatro valores falham automaticamente o check B equivalente. `Course` e `EducationalOrganization` permanecem obrigatórios em todas as modalidades.
 
 ### Fórmula
 
@@ -246,11 +274,13 @@ Onda com pelo menos 5 gaps P0/P1 abertos.
 
 Alexandre Caramaschi (Brasil GEO).
 
-## KPI 7 — Conversion Lift por canal LLM
+## KPI 7 — Conversion Lift por canal LLM (com decomposição por modalidade — Candidate Intent Score)
 
 ### Definição operacional
 
-Para cada LLM do cohort, compara conversão de matrículas vinda de tráfego identificado como originado em LLM (referrer ou UTM dedicado de PR) com a conversão da mesma persona vinda do canal orgânico Google. O lift é a razão entre as duas taxas, descontando ruído estatístico via teste de significância.
+Para cada LLM do cohort, compara conversão de matrículas em **qualquer das 5 modalidades canônicas** vinda de tráfego identificado como originado em LLM (referrer ou UTM dedicado de PR) com a conversão da mesma persona vinda do canal orgânico Google. O lift é a razão entre as duas taxas, descontando ruído estatístico via teste de significância.
+
+O **Candidate Intent Score** é a decomposição deste KPI por modalidade: mede o volume e a qualidade de leads qualificados em cada modalidade (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada, Formações híbridas) atribuídos a cada LLM. Lead qualificado em modalidade clínica certificada (d) é validado contra registro CRP ativo do lead; lead em MBA correlato (b) é validado contra graduação concluída em área correlata; lead em Mestrado Profissional (c) é validado contra requisitos CAPES da instituição.
 
 ### Fórmula
 
@@ -316,6 +346,22 @@ Onda com pelo menos 5 peças publicadas e pelo menos 1 ajuste técnico Schema ap
 ### Owner
 
 Alexandre Caramaschi (Brasil GEO).
+
+## KPIs derivados canônicos (introduzidos no reframe de 2026-05-12)
+
+Os três KPIs abaixo são derivações instrumentais dos 8 KPIs principais. Não substituem nenhum KPI canônico — operam como leituras complementares para diagnóstico cruzado e relatórios executivos com Ronan Maia. Cada um tem owner único, escopo amplo (cobre as 5 modalidades canônicas) e cadência declarada.
+
+### KPI-D1 — Regional Citation Density (densidade de citação regional)
+
+Densidade de menções IPOG por **cidade × modalidade × área de Psicologia** no cohort cross-LLM. Aproveita o moat estrutural do programa (rede CNPJ-próprio em 51 cidades, ver `docs/framework/05-estrategia-regional-geo-educacao.md`). Fórmula: `densidade(cidade, modalidade, area) = menções IPOG / total de menções de instituições no cluster condicionado a queries com âncora regional`. Cadência mensal. N mínimo: 30 queries com âncora regional por leitura. Owner: Alexandre Caramaschi.
+
+### KPI-D2 — GA4 LLM Referrer Tracking
+
+Volume e qualidade de sessões originadas em referrers de LLM (chatgpt.com, claude.ai, perplexity.ai, gemini.google.com, copilot.microsoft.com, x.com com referência a Grok), com decomposição por modalidade da página de aterrissagem (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Clínica certificada, Híbridas/Residências). Inputs do KPI 7. Cadência semanal. Owner: Bruno Azambuja.
+
+### KPI-D3 — Schema Audit Gap Velocity
+
+Velocidade de fechamento de gaps Schema identificados na auditoria NAIA, por **modalidade × tipo de Schema** (`Course`, `EducationalOccupationalProgram` com `programType` variando entre `"Specialization"`, `"MBA"`, `"MastersProgram"`, `"ClinicalCertification"`, `EducationalOrganization`). Cadência por onda. Owner: Alexandre Caramaschi + Bruno Azambuja.
 
 ## Matriz de leitura cruzada — qual KPI explica qual fenômeno
 

@@ -1,4 +1,6 @@
-# Deck Executivo — Tranche 0 Regional GEO IPOG
+# Deck Executivo — Tranche 0 Regional GEO IPOG (escopo amplo)
+
+> **Reframe canônico 12-05-2026:** o deck cobre o portfólio amplo de pós-graduação em Psicologia em 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências — `dashboards/METRICAS-CANONICAS.md` Cláusula 0). MBA é um subconjunto, não a vertical.
 
 > **Apresentação:** Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.
 > **Audiência:** Ronan Maia (CEO IPOG) — checkpoint executivo extraordinário 13-05-2026.

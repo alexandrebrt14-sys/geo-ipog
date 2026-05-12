@@ -1,5 +1,7 @@
 # Registrador Cloudflare — conta operacional do projeto
 
+> **Reframe canônico 12-05-2026:** o domínio `posgraduacaopsicologia.com` (hub editorial GEO) serve o portfólio amplo de pós-graduação em Psicologia do IPOG em 5 modalidades canônicas — Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada CFP/ABRAP/FBT, Formações híbridas/residências (`dashboards/METRICAS-CANONICAS.md` Cláusula 0).
+
 Documento de governança da conta Cloudflare usada para registrar os domínios do programa GEO para IPOG. Lista contas, escopos, responsabilidades e regras de operação. Credenciais ficam fora do repositório.
 
 ## Conta Cloudflare

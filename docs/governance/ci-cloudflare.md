@@ -1,5 +1,7 @@
 # CI Cloudflare — operação automatizada do domínio posgraduacaopsicologia.com
 
+> **Reframe canônico 12-05-2026:** o domínio `posgraduacaopsicologia.com` é o hub editorial GEO do portfólio amplo de pós-graduação em Psicologia do IPOG nas 5 modalidades canônicas (`dashboards/METRICAS-CANONICAS.md` Cláusula 0). A operação Cloudflare aqui descrita serve todas as modalidades, não apenas MBA.
+
 Este documento descreve como o GitHub Actions opera, em segurança, a zona Cloudflare do domínio `posgraduacaopsicologia.com` via API. Credenciais ficam apenas como GitHub Secrets do repositório — nunca em arquivo versionado.
 
 ## Secrets do repositório

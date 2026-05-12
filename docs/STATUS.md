@@ -111,7 +111,17 @@ REGRA INVIOLÁVEL: textos visíveis em PT-BR completo (`não`, `você`, `também
 - **Deploy:** `npx wrangler pages deploy site/dist --project-name=posgraduacaopsicologia --branch=main`
 - **Fonte da verdade da taxonomia:** `site/src/lib/data.ts` (AREAS, MBAS, TEMAS, ESTADOS, PERSONAS, FAQS, NAV_MENUS, METODOS, EVIDENCIAS, CASOS, INTERVENCOES, GUIAS, FAQS_DEEP, GLOSSARIO_CLUSTERS, TEMAS_EMERGENTES_2025_2026)
 
-### 4.2 Infraestrutura
+### 4.2 CI/CD
+
+| Workflow | Trigger | Status |
+|---|---|---|
+| `deploy-cloudflare-pages.yml` | `push main` em `site/**` + `workflow_dispatch` | ✅ operacional (12-05) · auto-deploy em ~1min com smoke test 8 URLs + IndexNow ping |
+| `concorrentes-monitoring.yml` | cron `0 12 1,15 * *` + `workflow_dispatch` | ✅ operacional (12-05 · fix Actions PR permission · captura quinzenal robots.txt/llms.txt/sitemap dos 10 concorrentes) |
+| `cloudflare-zone-ops.yml` | `workflow_dispatch` | ✅ operacional (verify-token / list-dns / purge-cache) |
+| `quality.yml` | push, PR | ✅ operacional |
+| `report-builder.yml` | cron semanal | ✅ operacional |
+
+### 4.3 Infraestrutura
 
 | Recurso | Identificador | Conta |
 |---|---|---|
@@ -122,7 +132,7 @@ REGRA INVIOLÁVEL: textos visíveis em PT-BR completo (`não`, `você`, `também
 | GSC property | `sc-domain:posgraduacaopsicologia.com` | alexandre.brt14 |
 | IndexNow key | `d2b9ebce0365f8fc565be54671f9fae8` em `/.txt` | — |
 
-### 4.3 Orchestrator 5 LLMs (`bash C:/Sandyboxclaude/scripts/bin/geo-bridge.sh run "demanda"`)
+### 4.4 Orchestrator 5 LLMs (`bash C:/Sandyboxclaude/scripts/bin/geo-bridge.sh run "demanda"`)
 
 | LLM | Modelo | Especialidade |
 |---|---|---|

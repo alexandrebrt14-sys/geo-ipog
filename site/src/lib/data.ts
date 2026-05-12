@@ -64,7 +64,8 @@ export const SITE = {
   disclaimer: 'Este portal é independente. Não é o site oficial do IPOG.',
   twitter: '',
   publisher: 'Brasil GEO',
-  locale: 'pt-BR'
+  locale: 'pt-BR',
+  gaMeasurementId: 'G-1VXE1Z4J9R'
 } as const;
 
 export const AREAS: PsychologyArea[] = [

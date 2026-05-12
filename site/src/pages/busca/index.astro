@@ -3,21 +3,33 @@ import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import SearchPageClient from '@components/SearchPageClient.tsx';
 import { SITE } from '@lib/data';
-import { search } from '@lib/search-index';
+import { searchAdvanced } from '@lib/search-index';
 
 const url = Astro.url;
 const q = (url.searchParams.get('q') ?? '').trim();
-const kind = (url.searchParams.get('kind') ?? '').trim();
+const kindParam = (url.searchParams.get('kind') ?? '').trim();
 const persona = (url.searchParams.get('persona') ?? '').trim();
+const cluster = (url.searchParams.get('cluster') ?? '').trim();
+const regulatoryLevelParam = (url.searchParams.get('regulatoryLevel') ?? '').trim();
+const regiaoParam = (url.searchParams.get('regiao') ?? '').trim();
+const pageParam = parseInt(url.searchParams.get('page') ?? '1', 10);
 
-// Pré-calcula contagem server-side para SEO/JSON-LD
+function parseCsv(v: string): string[] {
+  return v ? v.split(',').map(s => s.trim()).filter(Boolean) : [];
+}
+
+const initialKinds = parseCsv(kindParam);
+const initialRegulatoryLevels = parseCsv(regulatoryLevelParam);
+const initialRegioes = parseCsv(regiaoParam);
+const initialPage = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
+
+// Pré-calcula contagem server-side para SEO/JSON-LD/SSR
 let serverResultCount = 0;
 if (q) {
   try {
-    const docs = search(q, {
-      kind: kind ? (kind as any) : undefined,
+    const docs = searchAdvanced(q, {
       persona: persona || undefined,
-      limit: 100
+      limit: 200
     });
     serverResultCount = docs.length;
   } catch {
@@ -27,14 +39,15 @@ if (q) {
 
 const title = q
   ? `Busca: "${q}" — Pós-graduação em Psicologia`
-  : 'Busca — Pós-graduação em Psicologia';
+  : 'Busca semântica — Pós-graduação em Psicologia';
 
 const description = q
-  ? `Resultados da busca por "${q}" no portal independente Pós-graduação em Psicologia: áreas, MBAs, guias, FAQs profundas, glossário, evidências, casos, intervenções e métodos.`
-  : 'Busca semântica em todo o portal: áreas da Psicologia, MBAs, guias práticos, FAQs profundas, glossário, evidências, casos aplicados, intervenções e métodos. Tudo em um lugar.';
+  ? `Resultados da busca por "${q}" no portal independente Pós-graduação em Psicologia: áreas, MBAs, guias, FAQs profundas, glossário, evidências, casos, intervenções e métodos. Filtros por tipo, perfil, cluster, nível regulatório e região.`
+  : 'Busca semântica com facets em todo o portal: áreas da Psicologia, MBAs, guias práticos, FAQs profundas, glossário, evidências, casos aplicados, intervenções, métodos e regulação. Filtre por tipo, perfil profissional, cluster temático, nível regulatório (R0-R4) e região.';
 
 const canonical = SITE.url + '/busca/' + (q ? `?q=${encodeURIComponent(q)}` : '');
 
+// JSON-LD: SearchResultsPage
 const ldSearchResults = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SearchResultsPage',
@@ -55,6 +68,49 @@ const ldSearchResults = JSON.stringify({
   },
   ...(q ? { significantLink: SITE.url + '/busca/?q=' + encodeURIComponent(q) } : {})
 });
+
+// JSON-LD: WebPage com SearchAction como mainEntity
+const ldWebPage = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': canonical + '#webpage',
+  url: canonical,
+  name: title,
+  description,
+  inLanguage: 'pt-BR',
+  isPartOf: { '@type': 'WebSite', name: SITE.name, url: SITE.url },
+  mainEntity: {
+    '@type': 'SearchAction',
+    target: SITE.url + '/busca/?q={search_term}',
+    'query-input': 'required name=search_term'
+  }
+});
+
+// JSON-LD: BreadcrumbList
+const ldBreadcrumb = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Busca', item: SITE.url + '/busca/' }
+  ]
+});
+
+// JSON-LD: WebSite com SearchAction (potentialAction canônico)
+const ldWebSite = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  url: SITE.url + '/',
+  name: SITE.name,
+  description: SITE.description,
+  inLanguage: 'pt-BR',
+  publisher: { '@type': 'Organization', name: SITE.publisher },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: { '@type': 'EntryPoint', urlTemplate: SITE.url + '/busca/?q={search_term}' },
+    'query-input': 'required name=search_term'
+  }
+});
 ---
 
 <Base title={title} description={description} canonical={canonical} pageType="website">
@@ -66,16 +122,30 @@ const ldSearchResults = JSON.stringify({
       <h1 class="section-h text-3xl sm:text-4xl">Busca semântica em todo o portal</h1>
       <p class="mt-3 text-base text-ink-700">
         Áreas, MBAs, guias, FAQs profundas, glossário, evidências, casos, intervenções e métodos — tudo em um lugar.
-        Filtre por tipo de conteúdo e perfil profissional.
+        Filtre por tipo, perfil, cluster, nível regulatório e região.
       </p>
       <p class="mt-2 text-xs text-ink-500">
         Atalho de teclado: pressione <span class="kbd">/</span> em qualquer página do portal para abrir a busca rápida.
-        Para a versão completa com filtros e sugestões, use esta página.
+        Para a versão completa com facets e sugestões, use esta página.
       </p>
+      {q && (
+        <p class="mt-3 text-sm text-ink-700" data-server-count={serverResultCount}>
+          <strong>{serverResultCount}</strong> resultado{serverResultCount === 1 ? '' : 's'} encontrados em {q.split(/\s+/).filter(Boolean).length} termo{q.split(/\s+/).filter(Boolean).length === 1 ? '' : 's'}.
+        </p>
+      )}
     </header>
 
     <div class="mt-8">
-      <SearchPageClient client:load initialQ={q} initialKind={kind} initialPersona={persona} />
+      <SearchPageClient
+        client:load
+        initialQ={q}
+        initialKinds={initialKinds}
+        initialPersona={persona}
+        initialCluster={cluster}
+        initialRegulatoryLevels={initialRegulatoryLevels}
+        initialRegioes={initialRegioes}
+        initialPage={initialPage}
+      />
     </div>
 
     <aside class="mt-12 rounded-2xl border border-surface-200 bg-surface-50 p-5 text-sm text-ink-700">
@@ -91,4 +161,39 @@ const ldSearchResults = JSON.stringify({
   </section>
 
   <script type="application/ld+json" set:html={ldSearchResults} />
+  <script type="application/ld+json" set:html={ldWebPage} />
+  <script type="application/ld+json" set:html={ldBreadcrumb} />
+  <script type="application/ld+json" set:html={ldWebSite} />
+
+  <script is:inline define:vars={{ q, serverResultCount }}>
+    // Telemetria GA4 de page-load com query presente.
+    if (q && typeof window !== 'undefined') {
+      const fire = () => {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'search_query', {
+            event_category: 'search',
+            event_label: q,
+            query: q,
+            query_length: q.length,
+            result_count: serverResultCount,
+            source: 'page'
+          });
+        } else {
+          window.__searchEventQueue = window.__searchEventQueue || [];
+          window.__searchEventQueue.push({
+            event: 'search_query',
+            payload: {
+              query: q,
+              query_length: q.length,
+              result_count: serverResultCount,
+              source: 'page'
+            },
+            ts: Date.now()
+          });
+        }
+      };
+      if (document.readyState === 'complete') fire();
+      else window.addEventListener('load', fire, { once: true });
+    }
+  </script>
 </Base>

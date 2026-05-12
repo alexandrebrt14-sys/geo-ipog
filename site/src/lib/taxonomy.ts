@@ -499,3 +499,253 @@ export function getNextSteps(href: string, persona?: string): NextStepGroup[] {
 
   return groups;
 }
+
+// ===========================================================================
+// THESAURUS_RICH · apêndice semântico (SE-2)
+// ---------------------------------------------------------------------------
+// Estende SYNONYMS com relações hiperonímicas/hiponímicas/laterais.
+// Permite expansão thesáurica via BFS limitado.
+// Nada aqui altera exports existentes.
+// ===========================================================================
+
+export interface ThesaurusEntry {
+  term: string;
+  hypernyms?: string[];
+  hyponyms?: string[];
+  related?: string[];
+}
+
+export const THESAURUS_RICH: ThesaurusEntry[] = [
+  {
+    term: 'terapia',
+    hyponyms: ['TCC', 'ACT', 'DBT', 'EMDR', 'MBCT', 'MBSR', 'mindfulness clínico', 'psicanálise', 'psicoterapia'],
+    related: ['psicoterapia', 'tratamento psicológico'],
+  },
+  {
+    term: 'psicoterapia',
+    hypernyms: ['terapia'],
+    hyponyms: ['TCC', 'ACT', 'DBT', 'EMDR', 'mindfulness clínico'],
+  },
+  {
+    term: 'TCC',
+    hypernyms: ['terapia', 'psicoterapia', 'terapias de evidência'],
+    related: ['ansiedade', 'depressão', 'insônia', 'TOC', 'fobia social'],
+  },
+  {
+    term: 'ACT',
+    hypernyms: ['terapia', 'terceira onda', 'terapias de evidência'],
+    related: ['dor crônica', 'aceitação', 'mindfulness clínico'],
+  },
+  {
+    term: 'DBT',
+    hypernyms: ['terapia', 'terceira onda', 'terapias de evidência'],
+    related: ['borderline', 'TPB', 'autolesão', 'desregulação emocional'],
+  },
+  {
+    term: 'EMDR',
+    hypernyms: ['terapia', 'terapias de evidência'],
+    related: ['TEPT', 'trauma', 'trauma complexo'],
+  },
+  {
+    term: 'mindfulness clínico',
+    hypernyms: ['terapia', 'terceira onda'],
+    hyponyms: ['MBSR', 'MBCT'],
+    related: ['ACT', 'meditação', 'atenção plena'],
+  },
+  {
+    term: 'burnout',
+    hypernyms: ['esgotamento profissional', 'saúde mental no trabalho'],
+    related: ['NR-1', 'estresse ocupacional', 'fadiga digital', 'exaustão emocional'],
+  },
+  {
+    term: 'saúde mental no trabalho',
+    hypernyms: ['saúde mental nas organizações'],
+    hyponyms: ['burnout', 'NR-1', 'riscos psicossociais', 'fadiga digital'],
+    related: ['liderança positiva', 'segurança psicológica'],
+  },
+  {
+    term: 'NR-1',
+    hypernyms: ['riscos psicossociais', 'saúde mental no trabalho'],
+    related: ['burnout', 'cultura organizacional', 'POT'],
+  },
+  {
+    term: 'liderança positiva',
+    hypernyms: ['liderança'],
+    related: ['segurança psicológica', 'cultura organizacional', 'psicologia positiva'],
+  },
+  {
+    term: 'segurança psicológica',
+    hypernyms: ['cultura organizacional'],
+    related: ['liderança positiva', 'Edmondson', 'alta performance'],
+  },
+  {
+    term: 'POT',
+    hypernyms: ['Psicologia'],
+    hyponyms: ['cultura organizacional', 'clima', 'NR-1', 'people analytics'],
+    related: ['RH', 'recursos humanos'],
+  },
+  {
+    term: 'people analytics',
+    hypernyms: ['POT', 'IA em RH'],
+    related: ['dados comportamentais', 'LGPD', 'engajamento'],
+  },
+  {
+    term: 'neuropsicologia',
+    hypernyms: ['Psicologia'],
+    hyponyms: ['avaliação neuropsicológica', 'reabilitação cognitiva', 'funções executivas'],
+    related: ['neurociência'],
+  },
+  {
+    term: 'reabilitação neuropsicológica',
+    hypernyms: ['neuropsicologia'],
+    related: ['neuroplasticidade', 'AVC', 'demência', 'envelhecimento'],
+  },
+  {
+    term: 'avaliação psicológica',
+    hypernyms: ['Psicologia'],
+    hyponyms: ['psicometria', 'laudos', 'testes psicológicos'],
+    related: ['SATEPSI', 'CFP'],
+  },
+  {
+    term: 'SATEPSI',
+    hypernyms: ['avaliação psicológica'],
+    related: ['CFP', 'testes psicológicos'],
+  },
+  {
+    term: 'CFP',
+    related: ['CRP', 'MEC', 'lato sensu', 'stricto sensu', 'especialidades'],
+  },
+  {
+    term: 'TEA',
+    hypernyms: ['neurodesenvolvimento'],
+    hyponyms: ['TEA infantil', 'TEA adulto'],
+    related: ['ABA', 'autismo', 'inclusão'],
+  },
+  {
+    term: 'ABA',
+    hypernyms: ['análise do comportamento'],
+    related: ['TEA', 'autismo', 'neurodesenvolvimento'],
+  },
+  {
+    term: 'TEPT',
+    hypernyms: ['trauma'],
+    related: ['EMDR', 'estresse pós-traumático'],
+  },
+  {
+    term: 'ansiedade',
+    hypernyms: ['transtorno mental'],
+    hyponyms: ['TAG', 'pânico', 'fobia social', 'fobia'],
+    related: ['TCC'],
+  },
+  {
+    term: 'depressão',
+    hypernyms: ['transtornos do humor'],
+    related: ['TCC', 'MBCT', 'distimia'],
+  },
+  {
+    term: 'IA em Psicologia',
+    hypernyms: ['inteligência artificial'],
+    hyponyms: ['IA generativa', 'people analytics'],
+    related: ['LGPD', 'ética'],
+  },
+  {
+    term: 'IA generativa',
+    hypernyms: ['IA em Psicologia', 'inteligência artificial'],
+    related: ['LGPD', 'GenAI', 'LLM'],
+  },
+  {
+    term: 'MBA',
+    hypernyms: ['pós-graduação', 'lato sensu'],
+    hyponyms: ['MBA em POT', 'MBA em Psicologia Positiva', 'MBA em Liderança Positiva'],
+    related: ['especialização'],
+  },
+  {
+    term: 'especialização',
+    hypernyms: ['pós-graduação', 'lato sensu'],
+    related: ['MBA', 'CFP'],
+  },
+  {
+    term: 'pós-graduação',
+    hyponyms: ['lato sensu', 'stricto sensu', 'MBA', 'mestrado', 'doutorado'],
+  },
+  {
+    term: 'lato sensu',
+    hypernyms: ['pós-graduação'],
+    hyponyms: ['MBA', 'especialização'],
+    related: ['MEC'],
+  },
+  {
+    term: 'stricto sensu',
+    hypernyms: ['pós-graduação'],
+    hyponyms: ['mestrado', 'doutorado'],
+    related: ['CAPES'],
+  },
+  {
+    term: 'fadiga digital',
+    hypernyms: ['saúde mental no trabalho'],
+    related: ['tecnostress', 'trabalho híbrido', 'burnout'],
+  },
+  {
+    term: 'psicologia positiva',
+    hypernyms: ['Psicologia'],
+    related: ['Seligman', 'florescimento humano', 'forças pessoais', 'liderança positiva'],
+  },
+  {
+    term: 'RH',
+    related: ['recursos humanos', 'gestão de pessoas', 'POT', 'people analytics'],
+  },
+  {
+    term: 'mindfulness',
+    hypernyms: ['mindfulness clínico'],
+    related: ['MBSR', 'MBCT', 'meditação', 'ACT'],
+  },
+];
+
+// Indexação interna para BFS rápido (folded).
+const _THESAURUS_INDEX: Map<string, ThesaurusEntry> = new Map(
+  THESAURUS_RICH.map(e => [foldThesaurus(e.term), e]),
+);
+
+/** fold local (sem importar de search-index para evitar ciclo). */
+function foldThesaurus(s: string): string {
+  if (!s) return '';
+  return s
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[ºª]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+/**
+ * Expande thesaurus por BFS limitado em depth (default 1).
+ * Retorna union de hypernyms ∪ hyponyms ∪ related (até a profundidade dada).
+ * O termo de entrada é incluído na saída.
+ */
+export function thesaurusExpand(term: string, depth = 1): string[] {
+  const start = foldThesaurus(term);
+  if (!start) return [];
+  const visited = new Set<string>([start]);
+  const queue: Array<{ t: string; d: number }> = [{ t: start, d: 0 }];
+
+  while (queue.length > 0) {
+    const cur = queue.shift()!;
+    if (cur.d >= depth) continue;
+    const entry = _THESAURUS_INDEX.get(cur.t);
+    if (!entry) continue;
+    const neighbors = [
+      ...(entry.hypernyms || []),
+      ...(entry.hyponyms || []),
+      ...(entry.related || []),
+    ];
+    for (const n of neighbors) {
+      const nf = foldThesaurus(n);
+      if (!visited.has(nf)) {
+        visited.add(nf);
+        queue.push({ t: nf, d: cur.d + 1 });
+      }
+    }
+  }
+
+  return Array.from(visited);
+}

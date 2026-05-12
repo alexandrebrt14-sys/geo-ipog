@@ -16,6 +16,105 @@ import {
   TEMAS_EMERGENTES_2025_2026,
   SITE
 } from '@lib/data';
+import { trending } from '@lib/search-index';
+
+// Top 8 buscas em alta (do índice canônico)
+const TRENDING_DOCS = trending().slice(0, 8);
+
+// Concept map: 6 clusters editoriais com queries canônicas.
+// Defensivo: tenta carregar CONCEPTS de SE-2; se ausente, usa fallback.
+let CONCEPT_CARDS: { id: string; label: string; description: string; queries: { label: string; q: string }[] }[] = [];
+try {
+  const conceptsMod: any = await import('@lib/concepts').catch(() => null);
+  if (conceptsMod && Array.isArray(conceptsMod.CONCEPTS)) {
+    CONCEPT_CARDS = conceptsMod.CONCEPTS.slice(0, 6).map((c: any) => ({
+      id: c.id ?? c.label ?? 'cluster',
+      label: c.label ?? c.name ?? 'Cluster',
+      description: c.description ?? '',
+      queries: (c.members ?? c.queries ?? []).slice(0, 5).map((m: any) =>
+        typeof m === 'string' ? { label: m, q: m } : { label: m.label ?? m.q ?? '', q: m.q ?? m.label ?? '' }
+      )
+    }));
+  }
+} catch {
+  /* fallback */
+}
+if (CONCEPT_CARDS.length === 0) {
+  CONCEPT_CARDS = [
+    {
+      id: 'pot',
+      label: 'POT e cultura organizacional',
+      description: 'Psicologia organizacional do trabalho, cultura, clima, liderança e people analytics.',
+      queries: [
+        { label: 'NR-1', q: 'NR-1' },
+        { label: 'Cultura organizacional', q: 'cultura organizacional' },
+        { label: 'People analytics', q: 'people analytics' },
+        { label: 'Engajamento', q: 'engajamento' },
+        { label: 'Segurança psicológica', q: 'segurança psicológica' }
+      ]
+    },
+    {
+      id: 'bem-estar',
+      label: 'Bem-estar e prevenção',
+      description: 'Saúde mental no trabalho, burnout, mindfulness e psicologia positiva.',
+      queries: [
+        { label: 'Burnout', q: 'burnout' },
+        { label: 'Mindfulness corporativo', q: 'mindfulness corporativo' },
+        { label: 'Liderança positiva', q: 'liderança positiva' },
+        { label: 'Programa de bem-estar', q: 'programa de bem-estar' },
+        { label: 'Retorno ao trabalho', q: 'retorno ao trabalho' }
+      ]
+    },
+    {
+      id: 'neuro',
+      label: 'Neuropsicologia e reabilitação',
+      description: 'Funções cognitivas, neuroplasticidade, neurodesenvolvimento e envelhecimento.',
+      queries: [
+        { label: 'Neuropsicologia', q: 'neuropsicologia' },
+        { label: 'Funções executivas', q: 'funções executivas' },
+        { label: 'Reabilitação cognitiva', q: 'reabilitação cognitiva' },
+        { label: 'Envelhecimento', q: 'envelhecimento' },
+        { label: 'Plasticidade cerebral', q: 'plasticidade cerebral' }
+      ]
+    },
+    {
+      id: 'avaliacao',
+      label: 'Avaliação psicológica',
+      description: 'Psicometria, testes, laudos e ética em avaliação.',
+      queries: [
+        { label: 'SATEPSI', q: 'SATEPSI' },
+        { label: 'WAIS-IV', q: 'WAIS-IV' },
+        { label: 'Avaliação psicológica', q: 'avaliação psicológica' },
+        { label: 'Laudos', q: 'laudos' },
+        { label: 'Psicometria', q: 'psicometria' }
+      ]
+    },
+    {
+      id: 'metodos',
+      label: 'Métodos terapêuticos',
+      description: 'TCC, ACT, DBT, EMDR e mindfulness-based.',
+      queries: [
+        { label: 'TCC', q: 'TCC' },
+        { label: 'ACT', q: 'ACT' },
+        { label: 'DBT', q: 'DBT' },
+        { label: 'EMDR', q: 'EMDR' },
+        { label: 'Terceira onda', q: 'terapias de terceira onda' }
+      ]
+    },
+    {
+      id: 'tendencias',
+      label: 'Tendências 2025-2026',
+      description: 'IA, fadiga digital, TEA em adulto e psicose precoce.',
+      queries: [
+        { label: 'IA generativa', q: 'IA generativa' },
+        { label: 'Fadiga digital', q: 'fadiga digital' },
+        { label: 'TEA adulto', q: 'TEA adulto' },
+        { label: 'Burnout Gen Z', q: 'burnout Gen Z' },
+        { label: 'NR-1 2026', q: 'NR-1 2026' }
+      ]
+    }
+  ];
+}
 
 const title = 'Sugestões de busca — Pós-graduação em Psicologia';
 const description = 'Mapa de atalhos populares e buscas por perfil profissional. Áreas, MBAs, guias, FAQs, glossário, evidências, casos, intervenções e métodos do portal independente.';
@@ -124,7 +223,51 @@ const SECTIONS: Section[] = [
       <p class="mt-1 text-sm text-ink-500">Os 15 termos mais procurados no portal — clique para abrir resultados.</p>
       <div class="mt-4 flex flex-wrap gap-2">
         {ATALHOS_POPULARES.map(item => (
-          <a href={`/busca?q=${encodeURIComponent(item.q)}`} class="chip text-sm">{item.label}</a>
+          <a href={`/busca?q=${encodeURIComponent(item.q)}`} class="chip text-sm" data-concept-suggestion={item.label}>{item.label}</a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Buscas em alta (top 8 trending do índice) -->
+    <section class="mt-10" aria-labelledby="buscas-em-alta">
+      <h2 id="buscas-em-alta" class="font-display text-xl font-semibold text-ink-900">Buscas em alta</h2>
+      <p class="mt-1 text-sm text-ink-500">Os 8 conteúdos com maior peso editorial no índice — bom ponto de partida.</p>
+      <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {TRENDING_DOCS.map(doc => (
+          <a
+            href={`/busca?q=${encodeURIComponent(doc.title)}`}
+            class="card-lift block p-4"
+            data-concept-suggestion={doc.title}
+          >
+            <div class="text-[10px] font-semibold uppercase tracking-wide text-brand-700">{doc.kind}</div>
+            <div class="mt-1 font-display text-sm font-semibold text-ink-900">{doc.title}</div>
+            {doc.subtitle && <div class="mt-1 text-xs text-ink-500 leading-snug">{doc.subtitle}</div>}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Concept map: 6 clusters canônicos -->
+    <section class="mt-10" aria-labelledby="concept-map">
+      <h2 id="concept-map" class="font-display text-xl font-semibold text-ink-900">Concept map</h2>
+      <p class="mt-1 text-sm text-ink-500">Seis núcleos conceituais do portal — cada cartão agrupa termos relacionados.</p>
+      <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {CONCEPT_CARDS.map(cluster => (
+          <article class="rounded-2xl border border-surface-200 bg-white p-5">
+            <h3 class="font-display text-base font-semibold text-ink-900">{cluster.label}</h3>
+            {cluster.description && <p class="mt-1 text-xs text-ink-500 leading-snug">{cluster.description}</p>}
+            <div class="mt-3 flex flex-wrap gap-1.5">
+              {cluster.queries.map(q => (
+                <a
+                  href={`/busca?q=${encodeURIComponent(q.q)}`}
+                  class="chip text-xs"
+                  data-concept-suggestion={q.label}
+                >
+                  {q.label}
+                </a>
+              ))}
+            </div>
+          </article>
         ))}
       </div>
     </section>
@@ -202,4 +345,44 @@ const SECTIONS: Section[] = [
       </p>
     </aside>
   </section>
+
+  <script is:inline>
+    // Telemetria: clique em qualquer chip de sugestão dispara search_concept_clicked.
+    (function () {
+      if (typeof document === 'undefined') return;
+      var nodes = document.querySelectorAll('[data-concept-suggestion]');
+      var fire = function (label, href) {
+        var payload = {
+          event_category: 'search',
+          event_label: label,
+          suggestion: label,
+          source: 'suggestions',
+          doc_href: href || ''
+        };
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'search_concept_clicked', payload);
+        } else {
+          window.__searchEventQueue = window.__searchEventQueue || [];
+          window.__searchEventQueue.push({
+            event: 'search_concept_clicked',
+            payload: { suggestion: label, source: 'suggestions', doc_href: href || '' },
+            ts: Date.now()
+          });
+        }
+      };
+      for (var i = 0; i < nodes.length; i++) {
+        (function (node) {
+          var handler = function () {
+            try {
+              var label = node.getAttribute('data-concept-suggestion') || '';
+              var href = node.getAttribute('href') || '';
+              fire(label, href);
+            } catch (_e) { /* swallow */ }
+          };
+          node.addEventListener('click', handler, true);
+          node.addEventListener('auxclick', handler, true);
+        })(nodes[i]);
+      }
+    })();
+  </script>
 </Base>

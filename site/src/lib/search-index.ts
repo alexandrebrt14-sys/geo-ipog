@@ -28,6 +28,16 @@ import {
   TEMAS_EMERGENTES_2025_2026,
 } from './data';
 import { SYNONYMS, TAG_MAP, TAG_MAP_MBA } from './taxonomy';
+import {
+  indexEngine,
+  bm25Search,
+  parseQuery,
+  suggestCorrection,
+  type EngineDoc,
+  type PrecomputedIndex,
+  type FieldName,
+  type BM25Opts,
+} from './search-engine';
 
 // ---------------------------------------------------------------------------
 // Tipos públicos
@@ -585,33 +595,8 @@ export function buildIndex(): SearchDoc[] {
 }
 
 // ---------------------------------------------------------------------------
-// Ranking + busca
+// Ranking + busca (BM25 multi-campo via search-engine)
 // ---------------------------------------------------------------------------
-
-function scoreDoc(d: SearchDoc, terms: string[], rawFolded: string): number {
-  if (terms.length === 0) return 0;
-  const title = fold(d.title);
-  const subtitle = fold(d.subtitle || '');
-  const tagsFolded = d.tags.join(' ');
-  let score = 0;
-
-  // Match na frase completa (mais forte)
-  if (rawFolded && title === rawFolded) score += 10;
-  if (rawFolded && title.startsWith(rawFolded)) score += 6;
-  if (rawFolded && title.includes(rawFolded)) score += 4;
-
-  // Tokens
-  for (const t of terms) {
-    if (!t) continue;
-    if (title === t) score += 10;
-    if (title.startsWith(t)) score += 6;
-    if (title.includes(t)) score += 4;
-    if (subtitle.includes(t)) score += 2;
-    if (tagsFolded.includes(t)) score += 3;
-    if (d.keywords.includes(t)) score += 1;
-  }
-  return score * d.weight;
-}
 
 export interface SearchOpts {
   kind?: DocKind;
@@ -619,26 +604,235 @@ export interface SearchOpts {
   limit?: number;
 }
 
+export interface AdvancedSearchOpts extends SearchOpts {
+  /** Saturação BM25. Default 1.5. */
+  k1?: number;
+  /** Normalização BM25. Default 0.75. */
+  b?: number;
+  /** Boosts por campo. */
+  fieldBoosts?: Partial<Record<FieldName, number>>;
+  /** Liga/desliga fuzzy. Default true. */
+  fuzzy?: boolean;
+  /** Liga/desliga parseQuery (frase, -termo, kind:x). Default true. */
+  parseOperators?: boolean;
+}
+
+export interface AdvancedSearchResult {
+  doc: SearchDoc;
+  score: number;
+  matchedTerms: string[];
+  highlights: { field: FieldName; term: string; positions: number[] }[];
+}
+
+// ---------------------------------------------------------------------------
+// Mapeamento SearchDoc → EngineDoc (cache de módulo)
+// ---------------------------------------------------------------------------
+
+let _engineDocs: (EngineDoc & { _ref: SearchDoc })[] | null = null;
+let _precomputed: PrecomputedIndex | null = null;
+
+function buildEngineDocs(): (EngineDoc & { _ref: SearchDoc })[] {
+  if (_engineDocs) return _engineDocs;
+  const docs = buildIndex();
+  _engineDocs = docs.map(d => ({
+    id: d.id,
+    weight: d.weight,
+    fields: {
+      title: fold(d.title),
+      subtitle: fold(d.subtitle || ''),
+      keywords: d.keywords, // já folded por mkKeywords
+      tags: d.tags.map(t => fold(t)),
+    },
+    _ref: d,
+  }));
+  return _engineDocs;
+}
+
+function getPrecomputed(): PrecomputedIndex {
+  if (_precomputed) return _precomputed;
+  _precomputed = indexEngine(buildEngineDocs());
+  return _precomputed;
+}
+
+// ---------------------------------------------------------------------------
+// Filtros (kind / persona / not / phrases)
+// ---------------------------------------------------------------------------
+
+function matchesPhrases(doc: SearchDoc, phrases: string[]): boolean {
+  if (!phrases.length) return true;
+  const title = fold(doc.title);
+  const subtitle = fold(doc.subtitle || '');
+  const kw = doc.keywords;
+  for (const p of phrases) {
+    if (!title.includes(p) && !subtitle.includes(p) && !kw.includes(p)) return false;
+  }
+  return true;
+}
+
+function hasExcluded(doc: SearchDoc, not: string[]): boolean {
+  if (!not.length) return false;
+  const title = fold(doc.title);
+  const subtitle = fold(doc.subtitle || '');
+  const kw = doc.keywords;
+  const tags = doc.tags.map(t => fold(t)).join(' ');
+  for (const n of not) {
+    if (title.includes(n) || subtitle.includes(n) || kw.includes(n) || tags.includes(n)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function matchesKindFilter(doc: SearchDoc, value: string): boolean {
+  return fold(doc.kind) === fold(value);
+}
+
+function matchesPersonaFilter(doc: SearchDoc, value: string): boolean {
+  if (!doc.persona) return false;
+  const v = fold(value);
+  return doc.persona.some(p => fold(p) === v);
+}
+
+// ---------------------------------------------------------------------------
+// searchAdvanced
+// ---------------------------------------------------------------------------
+
+/**
+ * Busca BM25 com fuzzy, n-grams e operadores ("frase", -termo, kind:x).
+ *
+ * Complexidade típica: O(|terms_query| · |postings_médio|) graças ao índice
+ * invertido. Fuzzy adiciona O(|vocab|) só para termos sem match exato.
+ */
+export function searchAdvanced(q: string, opts: AdvancedSearchOpts = {}): AdvancedSearchResult[] {
+  const limit = opts.limit ?? 24;
+  const useFuzzy = opts.fuzzy !== false;
+  const useOperators = opts.parseOperators !== false;
+  const rawFolded = fold(q);
+  if (!rawFolded) return [];
+
+  const engineDocs = buildEngineDocs();
+  const idx = getPrecomputed();
+
+  // Parse operadores: frases, -termos, kind:x, persona:x
+  const parsed = useOperators
+    ? parseQuery(q)
+    : { must: [rawFolded], phrases: [], not: [], filters: {}, raw: q };
+
+  // Tokens canônicos a procurar = must + frases inteiras + sinônimos
+  const seed = [...parsed.must, ...parsed.phrases].join(' ').trim() || rawFolded;
+  const expanded = expandQuery(seed);
+
+  const bmOpts: BM25Opts = {
+    k1: opts.k1,
+    b: opts.b,
+    fieldBoosts: opts.fieldBoosts,
+    fuzzyMaxDistance: useFuzzy ? (rawFolded.length >= 6 ? 2 : 1) : 0,
+    fuzzyMinTermLen: useFuzzy ? 4 : 999,
+    ngramSize: [2, 3],
+    limit: Math.max(limit * 3, 100),
+  };
+
+  const scored = bm25Search(engineDocs, rawFolded, expanded, idx, bmOpts);
+
+  // Filtros pós-scoring
+  const kindFilter = opts.kind || parsed.filters.kind;
+  const personaFilter = opts.persona || parsed.filters.persona;
+
+  const filtered: AdvancedSearchResult[] = [];
+  for (const r of scored) {
+    const doc = (r.doc as unknown as { _ref: SearchDoc })._ref;
+    if (!doc) continue;
+    if (kindFilter && !matchesKindFilter(doc, kindFilter)) continue;
+    if (personaFilter && !matchesPersonaFilter(doc, personaFilter)) continue;
+    if (!matchesPhrases(doc, parsed.phrases)) continue;
+    if (hasExcluded(doc, parsed.not)) continue;
+    filtered.push({
+      doc,
+      score: r.score,
+      matchedTerms: r.matchedTerms,
+      highlights: r.matches
+        .filter((m): m is { field: FieldName; term: string; positions: number[] } => {
+          return m.field === 'title' || m.field === 'subtitle' || m.field === 'keywords' || m.field === 'tags';
+        })
+        .map(m => ({ field: m.field, term: m.term, positions: m.positions })),
+    });
+    if (filtered.length >= limit) break;
+  }
+
+  return filtered;
+}
+
+/**
+ * Assinatura legada preservada. Internamente delega para searchAdvanced.
+ * Sem query: devolve trending. Com query: docs em ordem BM25.
+ */
 export function search(q: string, opts: SearchOpts = {}): SearchDoc[] {
-  const idx = buildIndex();
   const limit = opts.limit ?? 24;
   const rawFolded = fold(q);
   if (!rawFolded) {
     return trending().slice(0, limit);
   }
-  const terms = expandQuery(q);
-  const scored = idx
-    .map(d => ({ d, s: scoreDoc(d, terms, rawFolded) }))
-    .filter(x => x.s > 0);
+  return searchAdvanced(q, opts).map(r => r.doc);
+}
 
-  let filtered = scored;
-  if (opts.kind) filtered = filtered.filter(x => x.d.kind === opts.kind);
-  if (opts.persona) filtered = filtered.filter(x => !x.d.persona || x.d.persona.includes(opts.persona!));
+// ---------------------------------------------------------------------------
+// Vocabulário + Did you mean
+// ---------------------------------------------------------------------------
 
-  return filtered
-    .sort((a, b) => b.s - a.s)
-    .slice(0, limit)
-    .map(x => x.d);
+/** Vocabulário completo (todos os termos folded indexados). */
+export function getVocabulary(): string[] {
+  return getPrecomputed().vocabulary.slice();
+}
+
+/**
+ * Para queries com 0 ou poucos resultados, propõe uma forma corrigida.
+ * Heurística: corrige cada token raro da query individualmente.
+ */
+export function didYouMean(q: string): string | null {
+  const folded = fold(q);
+  if (!folded) return null;
+  const idx = getPrecomputed();
+  const tokens = folded.split(/\s+/).filter(Boolean);
+  if (!tokens.length) return null;
+
+  let changed = false;
+  const corrected: string[] = [];
+  for (const tok of tokens) {
+    if (idx.invertedIndex[tok]) {
+      corrected.push(tok);
+      continue;
+    }
+    if (tok.length < 4) {
+      corrected.push(tok);
+      continue;
+    }
+    const maxDist = tok.length >= 6 ? 2 : 1;
+    const sugg = suggestCorrection(tok, idx.vocabulary, maxDist);
+    if (sugg && sugg !== tok) {
+      corrected.push(sugg);
+      changed = true;
+    } else {
+      corrected.push(tok);
+    }
+  }
+  if (!changed) return null;
+  return corrected.join(' ');
+}
+
+/** Estatísticas úteis para debug e para componentes de status. */
+export function getIndexStats(): { docs: number; terms: number; avgDocLen: number; kinds: Record<DocKind, number> } {
+  const docs = buildIndex();
+  const idx = getPrecomputed();
+  const kinds = {} as Record<DocKind, number>;
+  for (const d of docs) {
+    kinds[d.kind] = (kinds[d.kind] || 0) + 1;
+  }
+  return {
+    docs: docs.length,
+    terms: idx.vocabulary.length,
+    avgDocLen: idx.avgLen,
+    kinds,
+  };
 }
 
 /** Top 12 docs por weight (sem query). Base de "trending" do zero-state. */

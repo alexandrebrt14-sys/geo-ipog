@@ -143,3 +143,4 @@ Procedimento:
 | Data | Mudança | Quem |
 | --- | --- | --- |
 | 2026-05-11 | Setup inicial: GSC Domain property verificada, sitemap.xml submetido, 10 URLs solicitadas, IndexNow key criada e 3 engines pingados, página `/mapa-do-site` publicada. | Alexandre Caramaschi |
+| 2026-05-12 | Refresh pós-waves K-Z: sitemap.xml re-submetido no GSC e processado com **174 páginas** (era 95). sitemap-index.xml também submetido (status inicial transitório). IndexNow disparado em batch para todas as 174 URLs: IndexNow.org 200, Bing 200, Yandex 202. URL Inspection lote 2 bloqueado por cota diária — retomar 13-05 com: `/guias`, `/faq`, `/casos`, `/evidencias`, `/intervencoes`, `/metodos`, `/por-estado`, `/regulacao`, `/pos-graduacao-psicologia/mba-vs-especializacao`, `/pos-graduacao-psicologia/como-escolher`. | Alexandre Caramaschi |

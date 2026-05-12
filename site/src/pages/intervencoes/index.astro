@@ -1,0 +1,285 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const protocolos = [
+  {
+    id: 'stepped-care',
+    nome: 'Stepped Care (Cuidado Escalonado)',
+    indicacao: 'Depressão e ansiedade leve a moderada em larga escala',
+    evidencia: 'Forte (NICE CG90, CG113; Bower e Gilbody, 2005)',
+    custo: 'Baixo a médio por caso atendido',
+    duracao: 'Variável por step; revisão a cada 4-6 semanas',
+    descricao: 'Modelo de oferta organizado em degraus de intensidade — do menos para o mais intensivo — com critérios objetivos de escalonamento.'
+  },
+  {
+    id: 'iapt-nhs',
+    nome: 'IAPT/NHS Talking Therapies',
+    indicacao: 'Transtornos comuns em saúde mental, escala populacional',
+    evidencia: 'Forte (Clark, 2018; Clark et al., 2024; NHS England)',
+    custo: 'Médio (financiamento público, alto retorno econômico)',
+    duracao: '6 a 20 sessões conforme step',
+    descricao: 'Programa público inglês que combina stepped care, monitoramento sessão a sessão e formação massiva de terapeutas em métodos baseados em evidência.'
+  },
+  {
+    id: 'atencao-primaria-matriciamento',
+    nome: 'Atenção Primária e Matriciamento',
+    indicacao: 'Saúde mental no SUS, equipes de Saúde da Família',
+    evidencia: 'Moderada a forte (Campos e Domitti, 2007; PNAB 2017)',
+    custo: 'Baixo (estrutura SUS já instalada)',
+    duracao: 'Contínuo, com encontros mensais de matriciamento',
+    descricao: 'Arranjo organizacional brasileiro em que equipes especializadas oferecem apoio técnico-pedagógico contínuo às equipes de referência.'
+  },
+  {
+    id: 'intervencao-crise',
+    nome: 'Intervenção em Crise',
+    indicacao: 'Crise psicológica aguda, suicidalidade, eventos traumáticos',
+    evidencia: 'Forte (Roberts, 2005; OMS mhGAP 2019; PFA OMS 2011)',
+    custo: 'Variável conforme dispositivo (SAMU, CAPS, urgência)',
+    duracao: '1 a 6 contatos curtos em janela de 4 a 6 semanas',
+    descricao: 'Conjunto de protocolos de avaliação e estabilização em estado de crise, com ênfase em segurança imediata e plano de continuidade.'
+  },
+  {
+    id: 'retorno-ao-trabalho',
+    nome: 'Retorno ao Trabalho',
+    indicacao: 'Reintegração após afastamento por sofrimento mental',
+    evidencia: 'Crescente (Bezerra e Souza, 2024-2026; OMS 2022)',
+    custo: 'Baixo a médio (custo de evitar reafastamento)',
+    duracao: '8 a 16 semanas com retorno gradual',
+    descricao: 'Protocolo estruturado de reintegração com avaliação, retorno gradual, ajustes razoáveis e comunicação direta com liderança.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'O que é um protocolo de intervenção baseado em evidência?',
+    a: 'É um conjunto estruturado de etapas clínicas — com critérios de entrada, alvos terapêuticos, técnicas validadas e indicadores de progresso — cuja eficácia foi demonstrada em ensaios controlados randomizados e replicada em meta-análises independentes. Diferencia-se da prática livre por reduzir a variância do tratamento e por oferecer critérios objetivos de decisão. Instituições como NICE (Reino Unido), Cochrane e OMS mantêm sínteses sistemáticas que classificam protocolos por grau de recomendação. No Brasil, o Ministério da Saúde adota lógica análoga em linhas de cuidado da Rede de Atenção Psicossocial (RAPS).'
+  },
+  {
+    q: 'Protocolo engessa a clínica e elimina o juízo do profissional?',
+    a: 'Equívoco frequente. O protocolo descreve a sequência média de melhor desempenho em uma população definida — não substitui a leitura do caso. O profissional decide o quando entrar, quando escalonar e quando interromper, com base em critérios objetivos que o próprio protocolo oferece. Sob pressão de demanda alta, o protocolo destrava decisão: oferece roteiro mínimo defensável e linguagem comum entre equipe. A literatura mostra que profissionais experientes obtêm melhores resultados quando combinam protocolo validado com leitura clínica do caso (Hofmann et al., 2012).'
+  },
+  {
+    q: 'Stepped care e matriciamento são a mesma coisa?',
+    a: 'Não. Stepped care é princípio organizacional de oferta — escala intensidade conforme resposta. Matriciamento é arranjo brasileiro de apoio técnico-pedagógico entre equipe especializada e equipe de referência (Campos e Domitti, 2007). Os dois conversam: na RAPS, o stepped care define o degrau apropriado e o matriciamento sustenta a atenção primária no manejo do que cabe ao primeiro degrau. Onde o matriciamento funciona, menos casos sobem desnecessariamente para a especializada.'
+  },
+  {
+    q: 'Qual a diferença entre intervenção em crise e psicoterapia regular?',
+    a: 'Janela temporal, alvo e formato. Intervenção em crise opera em janela curta — minutos, horas, dias — com foco em segurança imediata, estabilização e plano de continuidade. Roberts (2005) descreve o modelo em sete estágios: avaliação de letalidade, vínculo, identificação do problema central, exploração de sentimentos, geração de alternativas, plano de ação e follow-up. Psicoterapia regular opera em janela maior, com alvos terapêuticos mais profundos. As duas se articulam: a crise estabiliza, a psicoterapia trata.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Protocolos de intervenção baseados em evidência: stepped care, IAPT, matriciamento, crise, retorno ao trabalho',
+  description: 'Mapa técnico dos cinco protocolos de intervenção em saúde mental com maior suporte empírico: indicações, evidência, custos e aplicação no Brasil.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Intervenções', item: SITE.url + '/intervencoes' }
+  ]
+};
+---
+
+<Base
+  title="Protocolos de intervenção baseados em evidência: stepped care, IAPT, matriciamento, crise, retorno ao trabalho"
+  description="Mapa técnico dos cinco protocolos de intervenção em saúde mental com maior suporte empírico: indicações, evidência, custos e aplicação no SUS, em empresas e em consultório. Conteúdo independente.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Intervenções' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Intervenções · Evidência empírica · Aplicação SUS + empresa</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Protocolos de intervenção baseados em evidência</h1>
+          <p class="mt-3 text-ink-700 text-lg">Cinco protocolos estruturados — clínicos e organizacionais — que organizam decisão sob pressão, com lastro em literatura internacional e adaptação ao contexto brasileiro.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Protocolos de intervenção baseados em evidência são roteiros clínicos e organizacionais com etapas, critérios e indicadores definidos, cuja eficácia foi validada em ensaios controlados. Stepped care escala a intensidade do cuidado conforme a resposta; o IAPT/NHS Talking Therapies aplicou esse princípio em escala populacional na Inglaterra; o matriciamento brasileiro (Campos e Domitti, 2007) organiza apoio técnico entre equipes na RAPS; a intervenção em crise (Caplan, 1964; Roberts, 2005) estabiliza estados agudos; o protocolo de retorno ao trabalho reintegra trabalhadores após afastamento por saúde mental. Cinco respostas estruturadas para problemas distintos, sustentadas por literatura sólida.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que protocolos vencem improviso em saúde mental</h2>
+        <p>
+          O campo da saúde mental conviveu durante décadas com uma assimetria desconfortável. Em alta complexidade, ofereceu psicoterapias longas e individualizadas. Na atenção básica, ofereceu encaminhamento sem fim. No meio, faltava método. A consequência foi previsível: filas de espera em CAPS, taxa de adesão baixa em psicoterapia particular, retorno ao trabalho mal conduzido, crise sem rede de continuidade.
+        </p>
+        <p>
+          A virada teórica veio em duas frentes. Bower e Gilbody (2005) formalizaram o stepped care para depressão e ansiedade, demonstrando que escalonar intensidade por resposta clínica produz melhor uso de recursos sem perder eficácia. Clark (2018), na Inglaterra, levou a tese ao maior teste populacional já feito: o IAPT, hoje NHS Talking Therapies, atende mais de um milhão de pessoas por ano com taxa de recuperação em torno de 50% (Clark et al., 2024). No Brasil, o matriciamento de Campos e Domitti (2007) preencheu o vácuo entre atenção básica e especializada, integrando a Política Nacional de Saúde Mental e a Rede de Atenção Psicossocial (Ministério da Saúde, 2019).
+        </p>
+        <p>
+          Em paralelo, a literatura organizacional consolidou protocolos próprios. Caplan (1964) fundou a intervenção em crise como campo; Roberts (2005) consolidou o modelo em sete estágios. A OMS publicou em 2011 a primeira edição de Primeiros Cuidados Psicológicos (PFA) e, em 2019, o mhGAP atualizado. No retorno ao trabalho, a produção brasileira recente (Bezerra e Souza, 2024-2026) e diretrizes da OMS (2022) descrevem protocolo estruturado de reintegração após afastamento por saúde mental.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva: protocolo destrava decisão, não engessa o profissional</h2>
+        <p>
+          A leitura comum sustenta que protocolos engessam a clínica. A leitura técnica sustenta o oposto. Em equipes de plantão, em CAPS lotado, em consultório com lista de espera, em RH lidando com afastamento por burnout — o profissional sem protocolo é o profissional refém da própria fadiga e da heurística do último caso. O protocolo não substitui a leitura clínica; oferece o piso defensável sobre o qual a leitura clínica opera.
+        </p>
+        <p>
+          O segundo ganho é coletivo. Em equipe multiprofissional, protocolo cria linguagem comum. O médico da Unidade Básica entende o que a psicóloga matriciadora vai propor; a enfermeira do CAPS sabe quando escalonar para o psiquiatra; a líder de RH sabe o que o médico do trabalho espera no retorno gradual. Sem protocolo, cada decisão vira negociação ad hoc. Com protocolo, a negociação fica reservada às exceções. É a inversão correta da carga cognitiva.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cinco protocolos baseados em evidência</h2>
+        <p class="text-ink-700 mt-2">Cada protocolo responde a um contexto clínico ou organizacional específico, com grau de evidência reconhecido por instituições internacionais e adaptação ao contexto brasileiro.</p>
+        <div class="grid md:grid-cols-2 gap-4 mt-5">
+          {protocolos.map(p => (
+            <a href={`/intervencoes/${p.id}`} class="card p-6 hover:border-brand-300 transition-colors">
+              <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Protocolo</p>
+              <h3 class="font-display font-semibold text-lg text-ink-900">{p.nome}</h3>
+              <p class="text-sm text-ink-700 mt-2">{p.descricao}</p>
+              <p class="text-sm text-ink-700 mt-2"><strong>Indicação:</strong> {p.indicacao}</p>
+              <p class="text-sm text-brand-700 font-semibold mt-3">Ver fundamentação →</p>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Comparativo técnico</h2>
+        <p class="text-ink-700 mt-2">Indicação clínica, evidência empírica, custo médio e duração típica para cada protocolo.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Protocolo</th>
+                <th class="text-left px-4 py-3">Indicação</th>
+                <th class="text-left px-4 py-3">Evidência</th>
+                <th class="text-left px-4 py-3">Custo médio</th>
+                <th class="text-left px-4 py-3">Duração típica</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {protocolos.map(p => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{p.nome.split(' (')[0]}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.indicacao}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.evidencia}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.custo}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.duracao}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Em saúde mental, protocolo é a forma como evidência chega ao trabalho real</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A literatura internacional consolidou nas últimas décadas uma resposta estruturada a problemas que improviso não resolve: depressão e ansiedade em escala, crise aguda, retorno ao trabalho, integração entre atenção básica e especializada. Os cinco protocolos cobertos aqui — stepped care, IAPT, matriciamento, intervenção em crise e retorno ao trabalho — formam o núcleo da intervenção em saúde mental contemporânea. Formação aprofundada exige curso específico em método validado e supervisão. MBAs em áreas correlatas — como os do IPOG em Psicologia Organizacional e do Trabalho, Psicologia Positiva e Reabilitação Neuropsicológica — incorporam fundamentos teóricos destes protocolos em eixos pedagógicos amplos. Para grade vigente, modalidade e turma, consultar o portal oficial.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs com fundamentação correlata</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Psicologia Organizacional e do Trabalho, Psicologia Positiva e Reabilitação Neuropsicológica que dialogam com cada protocolo apresentado. Para grade, modalidade e turma vigentes, consulte o portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-1">
+          {MBAS.filter(m => ['mba-pot','mba-positiva','mba-neuro'].includes(m.id)).map(m => (
+            <li>
+              <a href={`/mbas/${m.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{m.shortName}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/mbas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os MBAs →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {AREAS.filter(a => ['saude-mental-organizacoes','psicologia-saude','psicologia-organizacional-trabalho','psicologia-positiva'].includes(a.id)).map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.nice.org.uk/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE — diretrizes clínicas</a></li>
+          <li><a href="https://www.england.nhs.uk/mental-health/adults/nhs-talking-therapies/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NHS Talking Therapies (ex-IAPT)</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde — RAPS</a></li>
+          <li><a href="https://www.who.int/teams/mental-health-and-substance-use/treatment-care/mental-health-gap-action-programme" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — mhGAP</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

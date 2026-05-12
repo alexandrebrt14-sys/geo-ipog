@@ -168,6 +168,42 @@ export const METODOS = [
   { id: 'emdr', name: 'EMDR', founder: 'Francine Shapiro', evidence: 'OMS · APA · NICE', indications: ['TEPT', 'Trauma complexo'] }
 ] as const;
 
+export const EVIDENCIAS = [
+  { id: 'nr1-riscos-psicossociais-2026', name: 'NR-1 e riscos psicossociais 2025-2026', cluster: 'regulacao', papers: 9 },
+  { id: 'burnout-gen-z', name: 'Burnout em geração Z e jovens', cluster: 'organizacional', papers: 9 },
+  { id: 'ia-generativa-saude-mental', name: 'IA generativa em saúde mental', cluster: 'tecnologia-ia', papers: 8 },
+  { id: 'mindfulness-corporativo', name: 'Mindfulness corporativo · MBSR/MBCT', cluster: 'intervencao-clinica', papers: 8 },
+  { id: 'terapias-terceira-onda', name: 'Terapias de terceira onda (ACT, DBT, MBCT)', cluster: 'intervencao-clinica', papers: 9 },
+  { id: 'fadiga-digital', name: 'Fadiga digital e tecnostress', cluster: 'organizacional', papers: 8 }
+] as const;
+
+export const CASOS = [
+  { id: 'pot-fabrica-nr1', name: 'POT em fábrica de autopeças · NR-1', area: 'psicologia-organizacional-trabalho', mba: 'mba-pot' },
+  { id: 'positiva-burnout-fintech', name: 'Programa anti-burnout em fintech', area: 'psicologia-positiva', mba: 'mba-positiva' },
+  { id: 'reabilitacao-pos-avc', name: 'Reabilitação neuropsicológica pós-AVC', area: 'reabilitacao-neuropsicologica', mba: 'mba-neuro' },
+  { id: 'lideranca-positiva-startup-escalando', name: 'Liderança Positiva em scale-up SaaS', area: 'psicologia-positiva', mba: 'mba-lideranca-positiva' },
+  { id: 'aba-rede-escolar', name: 'ABA em rede escolar bilíngue', area: 'aba-tea-neurodesenvolvimento', mba: 'mba-ncpp' }
+] as const;
+
+export const INTERVENCOES = [
+  { id: 'stepped-care', name: 'Stepped Care · cuidado escalonado', evidence: 'NICE A', context: 'Depressão/ansiedade leve-moderada' },
+  { id: 'iapt-nhs', name: 'IAPT · NHS Talking Therapies', evidence: 'NHS validado em larga escala', context: 'Inglaterra, modelo de acesso' },
+  { id: 'atencao-primaria-matriciamento', name: 'Atenção primária · matriciamento', evidence: 'PNAB 2017 · RAPS', context: 'Brasil, SUS, eMulti, CAPS' },
+  { id: 'intervencao-crise', name: 'Intervenção em crise e suicidalidade', evidence: 'OMS mhGAP · SAMU/CAPS', context: 'Emergência psicossocial' },
+  { id: 'retorno-ao-trabalho', name: 'Retorno ao trabalho pós-afastamento', evidence: 'OMS 2022 · Cochrane', context: 'Pós-licença saúde mental, NR-1' }
+] as const;
+
+export const TEMAS_EMERGENTES_2025_2026 = [
+  { id: 'fadiga-digital', name: 'Fadiga digital e tecnostress', area: 'psicologia-organizacional-trabalho' },
+  { id: 'climate-anxiety', name: 'Ansiedade climática e eco-luto', area: 'saude-mental-organizacoes' },
+  { id: 'ia-generativa-rh', name: 'IA generativa em RH', area: 'ia-people-analytics-psicologia-digital' },
+  { id: 'gen-z-burnout', name: 'Burnout Gen Z', area: 'saude-mental-organizacoes' },
+  { id: 'longevidade-no-trabalho', name: 'Longevidade no trabalho · carreira 60 anos', area: 'psicologia-organizacional-trabalho' },
+  { id: 'neurodiversidade-corporativa', name: 'Neurodiversidade corporativa', area: 'psicologia-organizacional-trabalho' },
+  { id: 'lideranca-toxica', name: 'Liderança tóxica · abusive supervision', area: 'psicologia-organizacional-trabalho' },
+  { id: 'saude-mental-trabalho-remoto', name: 'Saúde mental no trabalho remoto', area: 'psicologia-organizacional-trabalho' }
+] as const;
+
 export const NAV_MENUS = {
   guia: [
     { label: 'O que é pós-graduação em Psicologia', href: '/regulacao' },
@@ -178,5 +214,8 @@ export const NAV_MENUS = {
   ],
   mbas: MBAS.map(m => ({ label: m.shortName, href: `/mbas#${m.id}` })),
   areas: AREAS.map(a => ({ label: a.short, fullLabel: a.name, href: `/areas/${a.id}`, cluster: a.cluster })),
-  metodos: METODOS.map(m => ({ label: m.name, href: `/metodos/${m.id}` }))
+  metodos: METODOS.map(m => ({ label: m.name, href: `/metodos/${m.id}` })),
+  evidencias: EVIDENCIAS.map(e => ({ label: e.name, href: `/evidencias/${e.id}` })),
+  casos: CASOS.map(c => ({ label: c.name, href: `/casos/${c.id}` })),
+  intervencoes: INTERVENCOES.map(i => ({ label: i.name, href: `/intervencoes/${i.id}` }))
 };

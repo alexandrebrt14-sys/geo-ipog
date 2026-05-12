@@ -1,0 +1,307 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+
+const casos = [
+  {
+    slug: 'pot-fabrica-nr1',
+    titulo: 'POT em fábrica de autopeças: implementando a NR-1 sob pressão de auditoria',
+    eyebrow: 'Psicologia Organizacional e do Trabalho',
+    areaId: 'psicologia-organizacional-trabalho',
+    resumo: 'Indústria de autopeças no ABC paulista, 1.240 colaboradores, prazo curto para o ciclo de NR-1. O diagnóstico encontrou cultura defensiva, e a intervenção foi de processo — não de comunicação interna.',
+    resultado: 'Plano 90/180 dias com mapa de riscos psicossociais auditável e queda de 26% [estimativa] em afastamentos por transtornos mentais em 12 meses.',
+    licao: 'NR-1 só fica de pé quando o desenho de cargo e o ciclo de feedback mudam — não quando o cartaz na parede muda.'
+  },
+  {
+    slug: 'positiva-burnout-fintech',
+    titulo: 'Psicologia Positiva contra burnout em fintech Série B',
+    eyebrow: 'Psicologia Positiva · Saúde Mental nas Organizações',
+    areaId: 'psicologia-positiva',
+    resumo: 'Fintech em São Paulo, 320 pessoas pós-rodada Série B, três trimestres seguidos de eNPS negativo e seis pedidos consecutivos de afastamento por exaustão emocional na engenharia.',
+    resultado: 'PERMA-Profiler subiu 22 pontos médios [estimativa] em sete meses, com Job Crafting de baixo custo e contrato explícito de segurança psicológica entre líderes.',
+    licao: 'Burnout em scale-up não é fadiga: é desalinhamento entre demanda de papel e percepção de progresso. A intervenção age na arquitetura de trabalho, não no benefício.'
+  },
+  {
+    slug: 'reabilitacao-pos-avc',
+    titulo: 'Reabilitação neuropsicológica de executivo pós-AVC isquêmico',
+    eyebrow: 'Reabilitação Neuropsicológica',
+    areaId: 'reabilitacao-neuropsicologica',
+    resumo: 'CFO de empresa de capital aberto, 55 anos, AVC isquêmico em território da ACM esquerda, déficits de fluência verbal, atenção sustentada e memória operacional. Programa de 12 meses para retorno parcial ao trabalho.',
+    resultado: 'Retorno funcional em regime híbrido com escopo redesenhado: relatório técnico em 6 meses, comitê executivo em 10 meses. Recuperação plena de funções executivas não foi atingida.',
+    licao: 'Reabilitação ambiciosa não devolve o cargo antigo: devolve uma vida com função, na configuração possível.'
+  },
+  {
+    slug: 'lideranca-positiva-startup-escalando',
+    titulo: 'Liderança Positiva em scale-up SaaS de 80 para 350 pessoas',
+    eyebrow: 'Liderança Positiva · Cultura Organizacional',
+    areaId: 'psicologia-positiva',
+    resumo: 'SaaS B2B brasileira em rodada de Série C, cresceu 4,4x em 18 meses, perdeu três C-levels seguidos. Mentoria executiva ao CEO e desenho de cultura intencional para a nova escala.',
+    resultado: 'Retenção do C-level remanescente em 18 meses subsequentes, índice de confiança na liderança +28 pontos [estimativa], rituais de cultura instalados sem voltar atrás após troca de COO.',
+    licao: 'Em scale-up, cultura morre por omissão, não por escolha errada. O CEO precisa decidir explicitamente — ou o caos decide por ele.'
+  },
+  {
+    slug: 'aba-rede-escolar',
+    titulo: 'ABA em rede escolar particular com 60 alunos com TEA',
+    eyebrow: 'ABA · TEA · Educação Inclusiva',
+    areaId: 'aba-tea-neurodesenvolvimento',
+    resumo: 'Rede particular bilíngue com 5 unidades em capitais do Sudeste, 60 alunos com TEA distribuídos entre os níveis 1, 2 e 3, equipe pedagógica sem formação formal em ABA, demanda crescente das famílias.',
+    resultado: 'Formação certificada de 84 educadores [estimativa], redução de 41% [estimativa] em incidentes comportamentais nas salas, plano individual com ajustes razoáveis sob LBI documentado para cada aluno.',
+    licao: 'ABA na escola não é trazer terapeuta para a sala: é traduzir princípios de Análise do Comportamento em rotina pedagógica do professor — com supervisão, não com substituição.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Por que casos compostos e não casos reais com nomes?',
+    a: 'Sigilo profissional é regra ética para psicólogo (CFP, Resolução 011/2018) e exigência prática para qualquer trabalho aplicado em organizações. Caso composto preserva o padrão pedagógico — diagnóstico, decisão, resultado, lição — sem expor empresa ou pessoa. É a mesma lógica dos cases da Harvard Business Review quando o cliente pede anonimato: a estrutura ensina, mesmo com detalhes alterados.'
+  },
+  {
+    q: 'Quem deve ler estudos de caso em Psicologia aplicada?',
+    a: 'Psicólogos organizacionais, profissionais de RH, líderes que conduzem ciclos de cultura, consultores e estudantes de pós-graduação. Caso bem escrito acelera repertório decisório — quem leu cinco casos de NR-1 chega à reunião com diretoria com vocabulário, sequência e antecipação de armadilhas. Leitura de caso é a forma mais barata de simular decisão sob pressão antes de viver a decisão.'
+  },
+  {
+    q: 'Os números nos casos são reais?',
+    a: 'Os padrões são reais; os números trazem marcador [estimativa] quando vêm de composição de fontes ou aproximação. Quando vier de norma, lei ou literatura, a citação completa está no corpo do caso (autor, ano). A intenção é honesta: caso composto não promete precisão estatística — promete fidelidade ao mecanismo causal observado em múltiplos atendimentos.'
+  },
+  {
+    q: 'Como esses casos se ligam ao MBA do IPOG?',
+    a: 'Cada caso aponta os MBAs IPOG correlatos no aside. POT em fábrica conversa com o MBA em POT. Liderança em scale-up conversa com o MBA em Gestão de Pessoas e Liderança Positiva. Burnout em fintech conversa com o MBA em Psicologia Positiva e Bem-Estar. Os casos não substituem grade; orientam quem está decidindo onde investir formação.'
+  }
+];
+
+const mbasCorrelatos = MBAS;
+const areasCorrelatas = AREAS.filter(a => ['psicologia-organizacional-trabalho','psicologia-positiva','reabilitacao-neuropsicologica','aba-tea-neurodesenvolvimento','saude-mental-organizacoes'].includes(a.id));
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Estudos de caso compostos em Psicologia aplicada — POT, Positiva, Reabilitação Neuropsicológica, Liderança e ABA',
+  description: 'Cinco estudos de caso compostos com diagnóstico, intervenção, resultado e lição em Psicologia aplicada no Brasil. Formato HBR-grade, padrões reais, sigilo preservado.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Casos', item: SITE.url + '/casos' }
+  ]
+};
+---
+
+<Base
+  title="Estudos de caso compostos em Psicologia aplicada · POT, Positiva, Reabilitação, Liderança, ABA"
+  description="Cinco casos compostos HBR-grade em Psicologia aplicada no Brasil: NR-1 em fábrica, burnout em fintech, reabilitação pós-AVC, liderança em scale-up SaaS e ABA em rede escolar.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Casos' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Estudos de caso compostos · Psicologia aplicada no Brasil</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Estudos de caso compostos · Psicologia aplicada no Brasil</h1>
+          <p class="mt-3 text-ink-700 text-lg">Cinco casos HBR-grade em POT, Positiva, Reabilitação Neuropsicológica, Liderança Positiva e ABA. Padrões recorrentes, decisão visível, lição honesta — sem expor sigilo profissional.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Um estudo de caso composto é uma narrativa pedagógica construída a partir do padrão recorrente observado em vários atendimentos profissionais. Não é o relato de uma empresa específica — é a destilação do mecanismo causal que se repete. Detalhes (setor, porte, nomes, números) são alterados para preservar sigilo. A função do caso composto é dar repertório decisório a quem está prestes a decidir sob pressão.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · padrão recorrente · sigilo preservado</p>
+        <p class="text-ink-900 leading-relaxed">
+          Todos os cinco casos abaixo são compostos baseados em padrão recorrente. Empresas, pessoas, números pontuais e datas foram alterados para preservar sigilo profissional (CFP, Resolução 011/2018). Os mecanismos clínicos e organizacionais — diagnóstico, intervenção, lição — são fiéis ao que a literatura e a prática brasileira mostram.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A leitura de caso forma melhor que a leitura de manual</h2>
+        <p>
+          A tese contraintuitiva é direta: profissional que só estuda teoria não decide sob pressão. A literatura técnica oferece o vocabulário e o mecanismo, mas a decisão real envolve compromisso, perda, política interna, prazo e custo — variáveis que o manual nunca consegue carregar. Por isso a Harvard Business Review constrói sua pedagogia ao redor de casos: o leitor é colocado no ponto da decisão e obrigado a escolher antes de ver o resultado.
+        </p>
+        <p>
+          O mesmo se aplica à Psicologia aplicada no Brasil. Quem leu cinco casos de NR-1 chega à mesa com diretoria com um arsenal que não cabe em um capítulo de Schein (1985) ou em um artigo de Karasek (1979). Sabe a sequência de objeções, sabe onde a engenharia organizacional resiste, sabe quando a queixa "é falta de comunicação" é, na verdade, falta de redesenho de cargo. Caso é atalho seguro para repertório decisório.
+        </p>
+        <p>
+          O composto adiciona uma camada de honestidade. Casos reais com nomes batem em duas paredes: sigilo profissional (CFP, Resolução 011/2018) e proteção de informação concorrencial das empresas. Composto não esconde nem inventa: agrega múltiplos casos sob o mesmo padrão, dá ao leitor o mecanismo replicável e libera detalhes irrelevantes. Esse é o uso correto da forma.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cinco casos compostos</h2>
+        <div class="grid md:grid-cols-2 gap-5 mt-4">
+          {casos.map(c => (
+            <a href={`/casos/${c.slug}`} class="card p-6 border-surface-200 hover:border-brand-700 transition-colors">
+              <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">{c.eyebrow}</p>
+              <h3 class="font-display font-semibold text-lg text-ink-900 leading-snug">{c.titulo}</h3>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{c.resumo}</p>
+              <p class="mt-3 text-sm text-ink-900"><strong>Resultado:</strong> {c.resultado}</p>
+              <p class="mt-3 text-sm italic text-ink-700"><strong class="not-italic">Lição:</strong> {c.licao}</p>
+              <span class="mt-4 inline-block text-sm text-brand-700 font-semibold">Ler caso completo →</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela síntese — área, resultado e lição central</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Caso</th>
+                <th class="text-left px-4 py-3">Área</th>
+                <th class="text-left px-4 py-3">Resultado central</th>
+                <th class="text-left px-4 py-3">Lição</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Fábrica de autopeças e NR-1</td>
+                <td class="px-4 py-3 text-ink-700">POT</td>
+                <td class="px-4 py-3 text-ink-700">Mapa auditável + queda 26% afastamento [estimativa]</td>
+                <td class="px-4 py-3 text-ink-700">NR-1 vive no desenho do cargo, não no cartaz.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Fintech Série B</td>
+                <td class="px-4 py-3 text-ink-700">Psicologia Positiva</td>
+                <td class="px-4 py-3 text-ink-700">PERMA +22 pontos [estimativa] em 7 meses</td>
+                <td class="px-4 py-3 text-ink-700">Burnout em scale-up é desalinhamento, não fadiga.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Executivo pós-AVC</td>
+                <td class="px-4 py-3 text-ink-700">Reabilitação Neuropsicológica</td>
+                <td class="px-4 py-3 text-ink-700">Retorno parcial em 10 meses, escopo redesenhado</td>
+                <td class="px-4 py-3 text-ink-700">Reabilitação devolve função na configuração possível.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Scale-up SaaS 80→350</td>
+                <td class="px-4 py-3 text-ink-700">Liderança Positiva</td>
+                <td class="px-4 py-3 text-ink-700">Retenção C-level + confiança +28 pts [estimativa]</td>
+                <td class="px-4 py-3 text-ink-700">Cultura morre por omissão em scale-up.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Rede escolar com TEA</td>
+                <td class="px-4 py-3 text-ink-700">ABA · Inclusão</td>
+                <td class="px-4 py-3 text-ink-700">84 educadores formados, incidentes -41% [estimativa]</td>
+                <td class="px-4 py-3 text-ink-700">ABA na escola é tradução pedagógica, não substituição.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Caso bem escrito compra repertório decisório em horas</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Os cinco casos cobrem o arco principal da Psicologia aplicada brasileira em 2026: regulação trabalhista (NR-1), bem-estar e desempenho (Positiva), reabilitação cognitiva (Neuro), liderança em transição de escala e inclusão educacional. Quem leu os cinco entende como diagnóstico, intervenção e lição se conectam — e como o método se transfere. O IPOG estrutura essa formação aplicada em MBAs Ao Vivo síncronos com docente nominal. Próximo passo: comparar grade, modalidade e turma no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-5">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs IPOG correlatos</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Cada caso aponta o MBA do IPOG que dá lastro técnico para o profissional decidir em situação semelhante.
+        </p>
+        <ul class="mt-3 space-y-1 text-sm">
+          {mbasCorrelatos.map(m => (
+            <li>
+              <a href={`/mbas/${m.id}`} class="mega-link">
+                <strong class="text-ink-900">{m.shortName}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="text-xs text-ink-500 mt-3 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas tratadas</p>
+        <ul class="space-y-1">
+          {areasCorrelatas.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes e referências</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://hbr.org/store/case-studies" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">HBR Case Studies</a></li>
+          <li><a href="https://sloanreview.mit.edu/cases/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MIT Sloan Cases</a></li>
+          <li><a href="https://bvs-psi.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">BVS-Psi — Biblioteca Virtual em Saúde, Psicologia</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 011/2018 sobre sigilo</a></li>
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NR-1 atualizada</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

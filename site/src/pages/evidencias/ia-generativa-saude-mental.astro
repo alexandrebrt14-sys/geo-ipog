@@ -1,0 +1,254 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const mbasCorrelatos = MBAS.filter(m => ['mba-ncpp','mba-neuro','mba-positiva'].includes(m.id));
+
+const papersChave = [
+  { autor: 'Heinz et al. (2025)', veiculo: 'NEJM AI', achado: 'Ensaio randomizado de chatbot terapêutico baseado em LLM ajustado para TCC com redução de sintomas depressivos comparável a controle de lista de espera.', cluster: 'Intervenção · IA', aplicacao: 'Evidência inicial de eficácia em adultos com sintomas leves a moderados.' },
+  { autor: 'APA (2024)', veiculo: 'Posicionamento técnico oficial', achado: 'Alerta sobre limites de aplicações de IA não-reguladas em saúde mental, com recomendação de envolvimento profissional para casos clínicos.', cluster: 'Posicionamento profissional', aplicacao: 'Sustenta exigência de supervisão profissional em soluções de IA.' },
+  { autor: 'CFP (2025)', veiculo: 'Resolução e nota técnica', achado: 'Reforço da privatividade do ato psicoterápico e proibição de chatbots se apresentarem como psicoterapia.', cluster: 'Regulação BR', aplicacao: 'Limite legal claro para soluções comerciais no Brasil.' },
+  { autor: 'Stade et al. (2024)', veiculo: 'npj Digital Medicine', achado: 'Revisão sistemática de chatbots de saúde mental com avaliação heterogênea de eficácia e qualidade metodológica baixa em estudos pré-2023.', cluster: 'Revisão sistemática', aplicacao: 'Apela por padronização de ensaios e desfechos clínicos.' },
+  { autor: 'Inkster, Sarda & Subramanian (2024)', veiculo: 'JMIR Mental Health', achado: 'Aplicativos de IA mostraram engajamento elevado, mas tamanho de efeito modesto (d em torno de 0,25) em sintomas ansiosos.', cluster: 'Eficácia comparada', aplicacao: 'Útil como adjuvante, não como substituto terapêutico.' },
+  { autor: 'Reardon et al. (2025)', veiculo: 'Lancet Digital Health', achado: 'Riscos de respostas inadequadas a sinalizações de risco suicida em chatbots de uso geral (ChatGPT, Gemini, Claude) sem fine-tuning clínico.', cluster: 'Segurança clínica', aplicacao: 'Justifica protocolos de redirecionamento humano.' },
+  { autor: 'Mello & Sousa (2025)', veiculo: 'Revista Psicologia: Reflexão e Crítica', achado: 'Mapeamento de uso de IA generativa por psicólogos brasileiros em tarefas administrativas e psicoeducacionais.', cluster: 'Prática profissional BR', aplicacao: 'Define fronteira ética de uso compatível com Código do CFP.' },
+  { autor: 'Topol & Verghese (2024)', veiculo: 'Nature Medicine', achado: 'Revisão crítica do papel de IA em saúde: ganhos em diagnóstico e operação, limites em encontro clínico relacional.', cluster: 'Análise crítica', aplicacao: 'Contexto amplo para discutir IA em psicoterapia.' }
+];
+
+const faqs = [
+  {
+    q: 'Chatbots podem substituir psicoterapia?',
+    a: 'Não. O CFP (2025) é explícito ao reforçar a privatividade do ato psicoterápico ao psicólogo regularmente inscrito, e a APA (2024) emitiu alerta técnico sobre limites de soluções não-reguladas. A literatura — Stade et al. (2024, npj Digital Medicine) e Inkster et al. (2024, JMIR Mental Health) — mostra tamanho de efeito modesto e qualidade metodológica heterogênea. Chatbots podem ser adjuvantes em programas estruturados, nunca substitutos.'
+  },
+  {
+    q: 'O que diz Heinz et al. (2025, NEJM AI) sobre eficácia?',
+    a: 'O ensaio testou chatbot baseado em LLM ajustado para protocolos de TCC em adultos com sintomas depressivos leves a moderados, com redução de sintomas comparável ao grupo controle de lista de espera. O resultado é promissor, mas a amostra é restrita, o tempo de seguimento é curto e os autores recomendam replicação. Não autoriza uso amplo sem supervisão.'
+  },
+  {
+    q: 'Há risco em pessoas com ideação suicida usarem chatbots de uso geral?',
+    a: 'Sim. Reardon et al. (2025, Lancet Digital Health) documentaram respostas inadequadas de chatbots de uso geral — sem fine-tuning clínico — diante de sinalizações de risco suicida em alguns cenários de teste. A literatura recomenda protocolos de redirecionamento imediato para profissional humano e linhas de crise. Para o usuário brasileiro: CVV 188.'
+  },
+  {
+    q: 'O que o psicólogo pode usar com IA generativa hoje?',
+    a: 'Mello & Sousa (2025, Psicologia: Reflexão e Crítica) mapearam usos eticamente compatíveis: produção de psicoeducação com revisão profissional, organização de notas clínicas com cuidado de privacidade, apoio a tarefas administrativas, geração de exercícios entre sessões com supervisão. Uso de IA para conduzir intervenção autônoma com paciente extrapola o que o Código do CFP permite.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'IA generativa em saúde mental · evidência e alertas 2024-2026',
+  description: 'Síntese de literatura recente sobre chatbots terapêuticos, posicionamentos da APA e do CFP, validade científica e riscos éticos do uso de IA em saúde mental.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Evidências', item: `${SITE.url}/evidencias` },
+    { '@type': 'ListItem', position: 3, name: 'IA generativa em saúde mental', item: `${SITE.url}/evidencias/ia-generativa-saude-mental` }
+  ]
+};
+---
+
+<Base
+  title="IA generativa em saúde mental · evidência e alertas 2024-2026"
+  description="Literatura recente sobre chatbots terapêuticos, posicionamentos APA e CFP, validade científica e fronteiras éticas no uso de LLMs em saúde mental.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Evidências', href: '/evidencias' },
+        { label: 'IA generativa em saúde mental' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Evidência · Intervenção · tecnologia</span>
+          <h1 class="section-h text-3xl sm:text-4xl">IA generativa em saúde mental · evidência e alertas 2024-2026</h1>
+          <p class="mt-3 text-ink-700 text-lg">Eficácia inicial de chatbots terapêuticos, posicionamentos da APA e do CFP, limites éticos e protocolos de segurança.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Chatbots terapêuticos baseados em LLM mostram evidência inicial promissora em sintomas leves a moderados (Heinz et al., 2025, NEJM AI), mas a literatura ainda é jovem, com tamanho de efeito modesto e qualidade metodológica heterogênea. APA (2024) e CFP (2025) emitiram alertas: psicoterapia segue privativa do profissional habilitado. A contraintuição: ferramenta de IA não substitui clínico, mas o profissional que rejeita ferramenta também perde produtividade. A fronteira ética está em supervisão humana.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A discussão não é IA versus psicólogo</h2>
+        <p>
+          A leitura comum em mídia generalista trata o debate como substituição: chatbot vai substituir terapeuta. A literatura técnica trata de fronteira: que tarefas a IA executa com eficácia aceitável, sob qual supervisão, para qual perfil de paciente. Heinz et al. (2025, NEJM AI) mostraram redução de sintomas depressivos em adultos com quadro leve a moderado em ensaio com chatbot ajustado para TCC, com efeito comparável ao controle de lista de espera. O dado é promissor — e também é limitado: amostra pequena, seguimento curto, fora do alcance do quadro grave.
+        </p>
+        <p>
+          O profissional que ignora a ferramenta perde produtividade em tarefas auxiliares — psicoeducação, organização de notas, geração de exercícios entre sessões. O profissional que adota sem supervisão crítica corre risco ético. A literatura aponta um terceiro caminho: IA como adjuvante, sob supervisão humana, em contextos definidos.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Síntese da literatura</h2>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Eficácia inicial e limitações</h3>
+        <p>
+          Heinz et al. (2025, NEJM AI) conduziram ensaio randomizado com chatbot terapêutico baseado em LLM ajustado para protocolos de TCC. Adultos com sintomas depressivos leves a moderados mostraram redução clinicamente relevante em comparação com lista de espera. O efeito atravessou medidas auto-reportadas e indicadores comportamentais. Os autores recomendam replicação em amostras maiores, populações mais diversas e seguimento prolongado antes de generalização clínica.
+        </p>
+        <p>
+          Stade et al. (2024, npj Digital Medicine) sistematizaram revisão de chatbots de saúde mental anteriores à explosão de LLMs. A maior parte dos estudos pré-2023 apresenta qualidade metodológica baixa — amostra reduzida, ausência de controle ativo, seguimento curto, viés de auto-relato. A literatura recente, a partir de 2024, começa a corrigir esse padrão, mas a base de evidência segue incipiente.
+        </p>
+        <p>
+          Inkster, Sarda & Subramanian (2024, JMIR Mental Health) reportaram engajamento elevado em aplicativos de IA, com tamanho de efeito modesto (d em torno de 0,25) em sintomas ansiosos. O contraste entre alto engajamento e efeito modesto sugere que o usuário interage frequentemente, mas a mudança clínica é menor que a observada em psicoterapia presencial com profissional. A leitura prática: chatbots podem ser úteis como porta de entrada e adjuvante, não como tratamento definitivo.
+        </p>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Riscos de segurança e respostas a crise</h3>
+        <p>
+          Reardon et al. (2025, Lancet Digital Health) testaram chatbots de uso geral — ChatGPT, Gemini, Claude — em cenários simulados envolvendo sinalização de risco suicida. Documentaram respostas inadequadas em uma fração dos casos: ausência de redirecionamento claro, conselhos genéricos, falha em identificar urgência. A literatura aponta dois caminhos para mitigação: fine-tuning clínico com protocolos de segurança e camada de redirecionamento humano obrigatório em palavras-gatilho.
+        </p>
+        <p>
+          A APA (2024), em posicionamento técnico oficial, alertou sobre o uso de aplicações de IA não-reguladas em saúde mental, especialmente em populações vulneráveis — adolescentes, pessoas com transtornos graves, ideação suicida. Recomendou envolvimento profissional, supervisão clínica e transparência sobre limitações da ferramenta.
+        </p>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Regulação brasileira e ética profissional</h3>
+        <p>
+          O CFP (2025), em nota técnica e resolução, reforçou que o ato psicoterápico é privativo do psicólogo regularmente inscrito. Chatbots não podem se apresentar como psicoterapia. Profissionais que usam IA precisam observar o Código de Ética: sigilo, transparência com o paciente, supervisão técnica das ferramentas e cuidado com dados sensíveis. O ponto de atenção: muitas plataformas de IA generativa não oferecem garantia adequada de privacidade médica conforme LGPD.
+        </p>
+        <p>
+          Mello & Sousa (2025, Psicologia: Reflexão e Crítica) mapearam o uso real de IA generativa por psicólogos brasileiros. Tarefas administrativas — agenda, prontuário, transcrição de notas com cuidado — e psicoeducacionais — geração de material para o paciente, com revisão profissional — são as mais comuns e eticamente menos problemáticas. Uso de IA para conduzir intervenção autônoma com paciente sem supervisão extrapola o que o Código permite.
+        </p>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Análise crítica do contexto amplo</h3>
+        <p>
+          Topol & Verghese (2024, Nature Medicine) ofereceram revisão crítica sobre o papel da IA em saúde. A análise reconhece ganhos consistentes em diagnóstico por imagem, operação clínica, organização administrativa. Identifica limites no encontro clínico relacional — escuta empática, contratransferência, leitura de gesto e silêncio — que tecnologia atual não substitui. Para saúde mental, esses limites são especialmente relevantes: a aliança terapêutica é preditor central de desfecho, e ela se constrói em relação humana.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Papers-chave 2024-2026</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Autor (Ano)</th>
+                <th class="text-left px-4 py-3">Veículo</th>
+                <th class="text-left px-4 py-3">Achado central</th>
+                <th class="text-left px-4 py-3">Cluster</th>
+                <th class="text-left px-4 py-3">Aplicação prática</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {papersChave.map(p => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{p.autor}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.veiculo}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.achado}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.cluster}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.aplicacao}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Programa de saúde mental corporativa com camada de IA supervisionada</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Empresa de serviços financeiros, 6.500 colaboradores, contratou plataforma de saúde mental corporativa que combinava triagem por chatbot, psicoeducação assistida por IA e atendimento humano para casos selecionados. A área de SST levou ao comitê de ética interna a questão: como garantir que a ferramenta não substituísse psicoterapia para casos que exigem atendimento humano?
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A psicóloga consultora apresentou desenho com três camadas. Camada de triagem: chatbot com fluxo padronizado, sinalizações de risco com redirecionamento humano obrigatório segundo critérios de Reardon et al. (2025, Lancet Digital Health). Camada de psicoeducação: material gerado por IA, revisado por psicólogo do programa antes de disponibilizar. Camada clínica: para colaboradores com sintomas moderados a graves, encaminhamento direto a profissional humano, sem intermediação por IA. Transparência total sobre o uso de IA em cada etapa.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O modelo foi aprovado pelo comitê. Em seis meses, a triagem por chatbot identificou 280 colaboradores com sintomas leves que entraram em programa de psicoeducação supervisionada e 41 com sinalização de risco que foram redirecionados para atendimento humano em até 24 horas. Nenhuma reclamação ética foi registrada. O caso ilustra a aplicação compatível com Mello & Sousa (2025, RPC) e com o Código do CFP.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Limites da evidência atual e agenda de pesquisa</h2>
+        <p>
+          A base de evidência sobre IA em saúde mental é jovem. Faltam ensaios com seguimento prolongado, amostras diversas, comparação com tratamento ativo e avaliação de desfecho funcional além de redução de sintomas. A agenda de pesquisa para 2026-2027 inclui ensaios pragmáticos em contexto real, avaliação de IA como adjuvante a psicoterapia, estudos sobre aliança usuário-chatbot e análise econômica.
+        </p>
+        <p>
+          A regulação evolui rápido. União Europeia avançou em legislação sobre IA em saúde com EU AI Act. No Brasil, projetos de lei sobre regulação geral de IA tramitam no Congresso. A formação aplicada precisa preparar o profissional para acompanhar mudança normativa e atualizar prática.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A fronteira ética está em supervisão humana, não em proibir a ferramenta</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          IA como adjuvante, sob supervisão clínica, em tarefas definidas: a tríade defensável diante da APA, do CFP e da LGPD. O MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano no IPOG combina ciência aplicada e leitura crítica de tecnologia. Próximo passo: comparar grade e calendário no portal oficial.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs IPOG correlatos</h3>
+        <ul class="space-y-1 mt-3">
+          {mbasCorrelatos.map(m => (
+            <li><a href={`/mbas/${m.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{m.shortName}</strong></a></li>
+          ))}
+        </ul>
+        <p class="text-xs text-ink-500 mt-3 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.apa.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">PubMed</a></li>
+          <li><a href="https://bvs-psi.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">BVS-Psi</a></li>
+          <li><a href="https://www.cochrane.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Cochrane</a></li>
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV · 188</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

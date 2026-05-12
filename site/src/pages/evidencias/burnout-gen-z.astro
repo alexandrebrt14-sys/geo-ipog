@@ -1,0 +1,252 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const mbasCorrelatos = MBAS.filter(m => ['mba-positiva','mba-pot','mba-lideranca-positiva'].includes(m.id));
+
+const papersChave = [
+  { autor: 'Maslach & Leiter (2024)', veiculo: 'Annual Review of Organizational Psychology and Organizational Behavior', achado: 'Revisão do modelo trifatorial (exaustão, despersonalização, baixa realização) com foco em padrões geracionais.', cluster: 'Modelo teórico', aplicacao: 'Base conceitual para diagnóstico diferencial em jovens.' },
+  { autor: 'Schaufeli, Desart & De Witte (2025)', veiculo: 'Stress and Health', achado: 'Validação cross-cultural do BAT (Burnout Assessment Tool) em sete países, com perfis distintos em coortes jovens.', cluster: 'Instrumentação', aplicacao: 'Instrumento mais sensível que o MBI para sintomas iniciais.' },
+  { autor: 'WHO ICD-11 (2022, vigente 2025)', veiculo: 'World Health Organization', achado: 'Burnout codificado como fenômeno ocupacional (QD85), não diagnóstico clínico.', cluster: 'Classificação internacional', aplicacao: 'Sustenta tratamento no nível organizacional, não clínico.' },
+  { autor: 'Gallup (2024)', veiculo: 'State of the Global Workplace', achado: 'Trabalhadores abaixo de 25 anos reportam menor engajamento e maior estresse diário em relação a coortes mais velhas.', cluster: 'Epidemiologia', aplicacao: 'Justifica intervenção específica para entrantes.' },
+  { autor: 'Twenge & Joiner (2024)', veiculo: 'Journal of Adolescent Health', achado: 'Aumento sustentado de sintomas depressivos em coorte de 18-25 anos entre 2010 e 2024, com aceleração pós-2020.', cluster: 'Epidemiologia', aplicacao: 'Contexto pré-organizacional do burnout precoce.' },
+  { autor: 'Carlotto & Câmara (2024)', veiculo: 'Revista Brasileira de Terapias Cognitivas', achado: 'Adaptação brasileira do BAT em 2.100 trabalhadores, com perfil de exaustão mental elevado em servidores públicos jovens.', cluster: 'Epidemiologia BR', aplicacao: 'Dado nacional para defender intervenção setorial.' },
+  { autor: 'Hakanen et al. (2024)', veiculo: 'Journal of Vocational Behavior', achado: 'Engajamento e burnout são dimensões parcialmente independentes; alto engajamento não protege de exaustão em demanda emocional.', cluster: 'Modelo teórico', aplicacao: 'Combate ao mito do colaborador engajado imune ao burnout.' },
+  { autor: 'Bakker & Demerouti (2025)', veiculo: 'Journal of Occupational Health Psychology', achado: 'Job crafting com foco em recursos sociais reduziu exaustão em 18% em coorte longitudinal de 12 meses.', cluster: 'Intervenção', aplicacao: 'Estratégia individual com efeito moderado, complementar à mudança organizacional.' },
+  { autor: 'Borges et al. (2025)', veiculo: 'Revista Psicologia: Organizações e Trabalho (RPOT)', achado: 'Mediação parcial do suporte do líder na relação entre demanda emocional e exaustão em call centers brasileiros.', cluster: 'Mediação BR', aplicacao: 'Capacitação de liderança como ponto de alavancagem.' }
+];
+
+const faqs = [
+  {
+    q: 'Burnout é diagnóstico clínico?',
+    a: 'Não. Segundo a CID-11 da WHO (vigente desde 2022), burnout (código QD85) é classificado como fenômeno ocupacional, não como condição médica. A consequência prática: o tratamento principal é organizacional — ajuste de demanda, autonomia, suporte do líder — e não exclusivamente clínico. Quando há comorbidade com transtorno depressivo ou de ansiedade, a abordagem clínica entra como complemento.'
+  },
+  {
+    q: 'Por que a geração Z aparece mais vulnerável ao burnout?',
+    a: 'A literatura aponta múltiplos fatores: aumento sustentado de sintomas depressivos em coorte jovem desde 2010 (Twenge & Joiner, 2024), entrada no mercado em contexto pós-pandêmico, expectativa de propósito não correspondida e alta demanda emocional em trabalhos de atendimento. Não é fragilidade individual — é interação entre fatores de coorte e fatores organizacionais.'
+  },
+  {
+    q: 'O Maslach Burnout Inventory ainda é o instrumento padrão?',
+    a: 'Continua sendo referência histórica, mas o Burnout Assessment Tool (BAT), validado por Schaufeli, Desart & De Witte (2025, Stress and Health), tem se mostrado mais sensível a sintomas iniciais e tem versão brasileira em uso (Carlotto & Câmara, 2024, RBTC). Para diagnóstico organizacional preventivo, o BAT é a escolha mais atual.'
+  },
+  {
+    q: 'O que funciona para prevenir burnout em trabalhadores jovens?',
+    a: 'A literatura aponta evidência mais robusta para intervenções multinível: ajuste organizacional de demanda, capacitação de liderança em suporte emocional e job crafting com foco em recursos sociais (Bakker & Demerouti, 2025, JOHP). Programas exclusivamente individuais, como meditação no expediente, mostram efeito pequeno se a estrutura de trabalho permanece adoecedora.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Burnout em geração Z · evidência atualizada 2024-2026',
+  description: 'Síntese de literatura recente sobre burnout em trabalhadores jovens, modelos teóricos, epidemiologia brasileira e internacional e estratégias de intervenção.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Evidências', item: `${SITE.url}/evidencias` },
+    { '@type': 'ListItem', position: 3, name: 'Burnout e geração Z', item: `${SITE.url}/evidencias/burnout-gen-z` }
+  ]
+};
+---
+
+<Base
+  title="Burnout e geração Z · evidência atualizada 2024-2026"
+  description="Literatura recente sobre burnout em trabalhadores jovens: Maslach, Schaufeli, ICD-11, dados brasileiros e estratégias de intervenção organizacional.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Evidências', href: '/evidencias' },
+        { label: 'Burnout e geração Z' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Evidência · Organizacional · saúde mental</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Burnout em geração Z · evidência atualizada 2024-2026</h1>
+          <p class="mt-3 text-ink-700 text-lg">Modelo trifatorial revisitado, BAT como instrumento de nova geração, dados brasileiros e o que funciona para prevenir.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Burnout em trabalhadores jovens não é fragilidade geracional. É fenômeno ocupacional codificado pela CID-11 (WHO QD85), com fatores estruturais identificáveis: demanda emocional elevada, baixa autonomia, suporte de liderança insuficiente. A contraintuição: alto engajamento não protege — Hakanen et al. (2024, JVB) mostraram que engajamento e exaustão podem coexistir, especialmente em funções de atendimento.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O colaborador engajado não está imune</h2>
+        <p>
+          A leitura comum sustenta que quem entrega resultado, aparece engajado em pesquisa e demonstra propósito está protegido contra burnout. A literatura recente desmonta essa intuição. Hakanen et al. (2024, Journal of Vocational Behavior) mostraram, em coorte de 4.800 trabalhadores ao longo de três anos, que engajamento e exaustão são dimensões parcialmente independentes. Profissionais altamente engajados em funções de demanda emocional alta — atendimento ao cliente, saúde, educação — podem apresentar exaustão clinicamente relevante mesmo mantendo desempenho.
+        </p>
+        <p>
+          A consequência prática para gestão: pesquisa de engajamento sozinha não detecta burnout precoce. É preciso instrumento específico — Burnout Assessment Tool (Schaufeli, Desart & De Witte, 2025, Stress and Health) ou MBI revisado — e leitura de indicadores comportamentais como absenteísmo, presenteísmo, queda de cooperação interna e rotatividade voluntária.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Síntese da literatura</h2>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Modelo teórico atualizado</h3>
+        <p>
+          O modelo trifatorial original de Maslach & Jackson (1981) propôs três dimensões: exaustão emocional, despersonalização (cinismo) e baixa realização pessoal. A revisão de Maslach & Leiter (2024, Annual Review of Organizational Psychology) atualiza o modelo com foco em padrões geracionais e em contextos digitais. A literatura recente sugere que exaustão emocional é a dimensão mais sensível a mudança ambiental e o melhor preditor de afastamento.
+        </p>
+        <p>
+          O modelo JD-R (Bakker & Demerouti, 2017, JOHP, ampliado em 2024) explica burnout como resultado de desequilíbrio entre demandas e recursos. Em coortes jovens, demanda emocional e demanda cognitiva tendem a ser mais altas em funções de entrada — atendimento, suporte técnico, professorado júnior, residência médica. Recursos como autonomia decisória e suporte do líder costumam ser baixos. A interação produz exaustão precoce.
+        </p>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Epidemiologia brasileira e internacional</h3>
+        <p>
+          O Gallup State of the Global Workplace (2024) reportou que trabalhadores abaixo de 25 anos apresentam menor engajamento e maior estresse diário em comparação com coortes mais velhas, em média global. Em recortes brasileiros, dados consolidados pela FIOCRUZ e por Carlotto & Câmara (2024, Revista Brasileira de Terapias Cognitivas) apontaram, em amostra de 2.100 trabalhadores, perfil de exaustão mental elevado em servidores públicos jovens e em profissionais de atendimento ao público.
+        </p>
+        <p>
+          Twenge & Joiner (2024, Journal of Adolescent Health) documentaram aumento sustentado de sintomas depressivos em coorte de 18 a 25 anos entre 2010 e 2024, com aceleração após 2020. A literatura interpreta esse padrão como interação entre uso intensivo de mídia social, instabilidade econômica, expectativa não correspondida no trabalho e contexto pós-pandêmico. A consequência prática: burnout entre jovens encontra terreno psicológico mais vulnerável.
+        </p>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Instrumentação contemporânea</h3>
+        <p>
+          O Maslach Burnout Inventory continua sendo referência histórica, mas tem limitações conhecidas: estrutura fatorial instável em algumas amostras, sensibilidade reduzida a sintomas iniciais. O Burnout Assessment Tool (Schaufeli, Desart & De Witte, 2025, Stress and Health) propõe quatro dimensões — exaustão, distância mental, alteração cognitiva, alteração emocional — com indicadores psicométricos robustos em estudo multicêntrico de sete países. A adaptação brasileira foi validada por Carlotto & Câmara (2024, RBTC) com alfa de Cronbach acima de 0,85 nas dimensões principais.
+        </p>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Intervenção: o que funciona</h3>
+        <p>
+          Revisão integrativa de Bakker & Demerouti (2025, JOHP) sintetizou achados sobre intervenções para burnout: estratégias multinível têm efeito médio (d entre 0,30 e 0,50) sobre exaustão emocional; intervenções exclusivamente individuais, como meditação ou treino de gerenciamento de estresse, têm efeito pequeno (d em torno de 0,15) se a estrutura organizacional permanece inalterada. Job crafting com foco em recursos sociais — pedir ajuda, redesenhar interações, buscar mentoria — reduziu exaustão em 18% em coorte longitudinal de 12 meses.
+        </p>
+        <p>
+          Em estudo brasileiro, Borges et al. (2025, RPOT) testaram modelo de mediação em call centers e mostraram que suporte do líder atua como mediador parcial entre demanda emocional e exaustão. A capacitação de liderança em práticas de suporte emocional, escuta ativa e feedback construtivo emerge como ponto de alavancagem com custo-benefício favorável.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Papers-chave 2024-2026</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Autor (Ano)</th>
+                <th class="text-left px-4 py-3">Veículo</th>
+                <th class="text-left px-4 py-3">Achado central</th>
+                <th class="text-left px-4 py-3">Cluster</th>
+                <th class="text-left px-4 py-3">Aplicação prática</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {papersChave.map(p => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{p.autor}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.veiculo}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.achado}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.cluster}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.aplicacao}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Hospital universitário, residentes em primeiro ano, exaustão precoce detectada por BAT</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A coordenação de residência de um hospital universitário aplicou rotineiramente pesquisa de clima para residentes. Os dados pareciam aceitáveis: engajamento médio, satisfação razoável com o programa. Em paralelo, a psicóloga organizacional observou aumento de pedidos de afastamento por motivo de saúde mental no segundo semestre. Algo não fechava.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A intervenção começou com aplicação do BAT versão brasileira (Carlotto & Câmara, 2024, RBTC) em coorte de 142 residentes. Resultado: 38% no quadrante de exaustão elevada, mesmo com engajamento médio reportado em outra escala. O dado confirmou Hakanen et al. (2024, JVB): engajamento e exaustão podem coexistir. A pesquisa de clima sozinha tinha mascarado o sinal.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O plano de ação combinou três frentes: ajuste de escala de plantão noturno em duas especialidades com maior exaustão (intervenção organizacional), capacitação de preceptores em suporte emocional e feedback construtivo (intervenção de liderança) e oferta de espaço de grupo Balint quinzenal (suporte coletivo). Em seis meses, a reaplicação do BAT mostrou queda de 12 pontos percentuais no quadrante crítico. O caso evidenciou a importância de instrumento sensível para diagnóstico precoce.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Limites da evidência atual e agenda de pesquisa</h2>
+        <p>
+          A literatura sobre burnout em coorte jovem brasileira ainda é heterogênea em método e amostra. Falta evidência longitudinal robusta sobre efeito-dose de capacitação de liderança em residentes médicos, professores em início de carreira e profissionais de tecnologia. A agenda de pesquisa para 2026-2027 inclui validação ampliada do BAT em amostras nacionais, estudos longitudinais de coorte e avaliação econômica de intervenções multinível.
+        </p>
+        <p>
+          A discussão sobre fronteiras entre burnout, transtorno depressivo e transtorno de ansiedade segue aberta. A CID-11 codifica burnout como fenômeno ocupacional, mas comorbidade clínica é frequente e exige avaliação diferencial. A formação aplicada precisa preparar o profissional para essa leitura combinada.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Burnout em jovens responde a estrutura, não a discurso de propósito</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Instrumento sensível, leitura por área e plano de ação multinível são o tripé de prevenção com lastro em literatura. O MBA Online em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações no IPOG estrutura essa abordagem em formato Ao Vivo síncrono. Próximo passo: comparar grade e calendário no portal oficial.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs IPOG correlatos</h3>
+        <ul class="space-y-1 mt-3">
+          {mbasCorrelatos.map(m => (
+            <li><a href={`/mbas/${m.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{m.shortName}</strong></a></li>
+          ))}
+        </ul>
+        <p class="text-xs text-ink-500 mt-3 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">PubMed</a></li>
+          <li><a href="https://bvs-psi.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">BVS-Psi</a></li>
+          <li><a href="https://www.cochrane.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Cochrane</a></li>
+          <li><a href="https://www.apa.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.who.int/standards/classifications/classification-of-diseases" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">WHO · CID-11</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

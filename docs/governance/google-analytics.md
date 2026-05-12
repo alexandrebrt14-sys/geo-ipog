@@ -131,3 +131,6 @@ Convidar usuarios humanos em `https://analytics.google.com/analytics/web/?hl=pt-
 | Data | Mudanca | Quem |
 | --- | --- | --- |
 | 2026-05-12 | Setup inicial: conta GA4 + propriedade + stream criados, Measurement ID `G-1VXE1Z4J9R` injetado em Base.astro (commit 4720749), GCP project `geo-ipog-analytics` criado, Analytics Data API habilitada, service account `geo-ipog-analytics-reader` criada com chave JSON exportada para `~/.gcp/`, accessBinding `predefinedRoles/viewer` aplicado via Analytics Admin API v1alpha + OAuth Playground (workaround para UI que rejeita service accounts). Smoke test Data API OK (0 rows, esperado para site recem-deployado). | Alexandre Caramaschi |
+| 2026-05-12 | Custom event `click_outbound_ipog` deployado em Base.astro (commit 56fe0c0) — dispara em qualquer clique para `ipog.edu.br` ou subdominio. | Alexandre Caramaschi |
+| 2026-05-12 | Vinculacao GSC `sc-domain:posgraduacaopsicologia.com` ↔ GA4 stream criada via UI. | Alexandre Caramaschi |
+| 2026-05-12 | Pipeline semanal `scripts/weekly_ga4_report.py` + workflow GitHub Actions `ga4-weekly-report.yml` (cron 09:00 BRT segunda) + runbook Looker Studio em `dashboards/GA4-WEEKLY-REPORT.md`. Commit d410000. Secret pendente: `GA4_SERVICE_ACCOUNT_JSON`. | Alexandre Caramaschi |

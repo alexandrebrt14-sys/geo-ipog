@@ -1,0 +1,363 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mbaPos = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+const areaPositiva = AREAS.find(a => a.id === 'psicologia-positiva')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Alinhar com saúde ocupacional antes do regresso',
+    aplicacao: 'O retorno começa antes do primeiro dia de volta. A medicina do trabalho conduz exame de retorno, mas a literatura ocupacional (OMS, 2022; Cochrane Review de intervenções de retorno, 2020) recomenda também uma reunião técnica entre saúde ocupacional, RH, líder direto e — quando autorizada pelo colaborador — psicólogo assistente. O objetivo é construir o plano de retorno escalonado, não decidir aptidão.',
+    armadilha: 'Restringir a conversa ao exame médico. Sem plano de retorno escalonado, o colaborador volta no mesmo cenário que produziu o adoecimento.'
+  },
+  {
+    n: 2,
+    titulo: 'Construir o plano de retorno escalonado',
+    aplicacao: 'Protocolo recomendado em literatura ocupacional: jornada reduzida nos primeiros 30 dias (50% a 70%), ampliação progressiva em janelas de duas semanas, retorno integral entre dia 45 e dia 60. As tarefas devem ser segmentadas em três faixas — alta cognitiva, média, baixa — com retorno gradual à faixa alta. Maslach (2022 reformulação do MBI) descreve burnout em três dimensões: exaustão, despersonalização e baixa realização. O plano precisa endereçar as três.',
+    armadilha: 'Forçar retorno em jornada cheia "para não estigmatizar". O efeito é oposto: a recaída é o estigma duradouro.'
+  },
+  {
+    n: 3,
+    titulo: 'Conversar com o líder direto antes do regresso',
+    aplicacao: 'A conversa estruturada com o líder direto, mediada pelo RH, deve cobrir três pontos: o que o líder precisa saber (sigilo de diagnóstico mantido, plano de retorno conhecido), o que muda na rotina (escala, prazos, escopo), o que o colaborador prefere comunicar à equipe. O líder não é informado do diagnóstico; é informado do plano. Materiais oficiais: OMS mhGAP-IG e diretrizes do NHS Talking Therapies sobre return-to-work.',
+    armadilha: 'Compartilhar diagnóstico com o líder sem consentimento. Quebra de sigilo, exposição jurídica e quebra de confiança com o colaborador.'
+  },
+  {
+    n: 4,
+    titulo: 'Definir ajustes razoáveis e documentá-los',
+    aplicacao: 'Ajustes razoáveis em saúde mental, conforme literatura de OMS (2022) e prática consolidada em modelos como NHS Talking Therapies, incluem: jornada flexível, pausa estruturada, prioridade de trabalho remoto em parte da semana, redução de reuniões nos primeiros 30 dias, escopo reduzido, mentor de retorno. Documentar com data de revisão é regra; ajustes sem prazo viram permanente sem decisão.',
+    armadilha: 'Tratar ajustes como informalidade entre colaborador e líder. Sem documento, o ajuste se perde com troca de chefia.'
+  },
+  {
+    n: 5,
+    titulo: 'Combinar acompanhamento clínico paralelo',
+    aplicacao: 'O retorno bem feito pressupõe que o tratamento clínico — psicoterapia, acompanhamento médico, quando indicado — segue em paralelo. A empresa não conduz tratamento; viabiliza o tempo e o acesso. Plano de saúde com cobertura adequada, agenda flexível para sessões, sigilo absoluto. Encaminhamento, quando o colaborador ainda não tem psicólogo, segue cadastro de profissionais credenciados.',
+    armadilha: 'Confundir programa de apoio psicológico corporativo com tratamento. EAP atende crise pontual; psicoterapia é trajeto longo conduzido por psicólogo escolhido pelo colaborador.'
+  },
+  {
+    n: 6,
+    titulo: 'Monitorar nos primeiros 30 dias',
+    aplicacao: 'O primeiro mês concentra o risco. Check-in semanal estruturado de 20 a 30 minutos entre colaborador e RH (não líder direto), com perguntas curtas sobre carga percebida, qualidade do sono, sinais de exaustão. Instrumento prático: escala de Maslach (MBI) ou Oldenburg Burnout Inventory aplicado mensalmente. Em sinal de piora, acionar saúde ocupacional para reavaliação do plano.',
+    armadilha: 'Achar que silêncio significa estabilidade. Em retorno de saúde mental, ausência de queixa pode ser presença de medo de retaliação.'
+  },
+  {
+    n: 7,
+    titulo: 'Revisar aos 90 dias',
+    aplicacao: 'Aos 90 dias, revisão técnica formal entre RH, líder, saúde ocupacional e — com consentimento — psicólogo assistente. Pontos: aderência ao plano, jornada efetiva, escopo, indicadores de bem-estar. Decisão: manter, ajustar ou encerrar o plano de retorno. Cochrane Review (2020) aponta que retornos sem revisão estruturada apresentam taxa de recidiva entre 24% e 38% em 12 meses.',
+    armadilha: 'Encerrar o plano antes da revisão de 90 dias "porque tudo parece bem". Apresentação de bem-estar inicial é fisiológica do retorno; sustentação só se mede em janela.'
+  },
+  {
+    n: 8,
+    titulo: 'Acompanhar aos 180 dias e endereçar a estrutura',
+    aplicacao: 'Aos 180 dias, segunda revisão, com foco diferente: investigar o que da estrutura organizacional produziu o adoecimento. Cargas, prazos, conflito de papel, liderança. Sem essa investigação, a empresa devolve o colaborador ao cenário que adoeceu e tende a perdê-lo de novo. NR-1 (Brasil, 2024) prevê esse tipo de análise como parte da gestão de risco psicossocial.',
+    armadilha: 'Tratar a saída do plano como vitória individual. Burnout é fenômeno organizacional (Maslach, 2022); o desfecho individual sem mudança estrutural é frágil.'
+  },
+  {
+    n: 9,
+    titulo: 'Encerrar com documento e aprendizado de gestão',
+    aplicacao: 'O encerramento do plano deve produzir documento de encerramento com histórico do retorno, ajustes mantidos como rotina, lições para a área. Esse documento, anonimizado, alimenta o relatório agregado de NR-1 e o plano de prevenção. O caso individual encerra; o aprendizado sistêmico fica.',
+    armadilha: 'Arquivar caso individual sem extrair aprendizado. A empresa repete o ciclo no próximo afastamento — desperdiçando ativo de gestão.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Alinhamento prévio', indicador: 'Ata de reunião técnica', quem: 'Saúde ocupacional + RH', quando: 'Antes do D0', status: 'Pendente' },
+  { passo: '2 · Plano escalonado', indicador: 'Documento assinado', quem: 'RH + colaborador', quando: 'D0', status: 'Pendente' },
+  { passo: '3 · Conversa com líder', indicador: 'Plano comunicado', quem: 'RH + líder', quando: 'D-3 a D0', status: 'Pendente' },
+  { passo: '4 · Ajustes razoáveis', indicador: 'Lista com data de revisão', quem: 'RH', quando: 'D0', status: 'Pendente' },
+  { passo: '5 · Tratamento paralelo', indicador: 'Acompanhamento confirmado', quem: 'Colaborador', quando: 'Contínuo', status: 'Pendente' },
+  { passo: '6 · Check-in 30 dias', indicador: 'Pulse semanal + MBI mensal', quem: 'RH', quando: 'D1 a D30', status: 'Pendente' },
+  { passo: '7 · Revisão 90 dias', indicador: 'Decisão documentada', quem: 'Comitê', quando: 'D90', status: 'Pendente' },
+  { passo: '8 · Revisão 180 dias', indicador: 'Análise estrutural', quem: 'Comitê + SESMT', quando: 'D180', status: 'Pendente' },
+  { passo: '9 · Encerramento', indicador: 'Doc de aprendizado', quem: 'RH', quando: 'D180+', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Retornar em jornada cheia para "não chamar atenção"',
+    texto: 'A literatura ocupacional (Cochrane, 2020; OMS, 2022) é firme: retorno sem escalonamento eleva recidiva em três vezes. O cuidado com estigma é legítimo; a solução é cultura, não esconder o plano clínico atrás de jornada desproporcional.'
+  },
+  {
+    titulo: 'Quebrar sigilo do diagnóstico com o líder',
+    texto: 'Diagnóstico é informação sensível, protegida por sigilo profissional e LGPD. O líder precisa do plano operacional, não do CID. Compartilhamento sem consentimento gera exposição jurídica e destrói a relação com o colaborador.'
+  },
+  {
+    titulo: 'Tratar EAP corporativo como substituto de psicoterapia',
+    texto: 'Programa de apoio psicológico corporativo cobre crise pontual e orientação inicial. Psicoterapia é trajeto longo, conduzido por psicólogo escolhido pelo colaborador, com sigilo absoluto. Confundir as duas coisas atrasa cuidado real.'
+  },
+  {
+    titulo: 'Não revisar estrutura organizacional após o retorno',
+    texto: 'Burnout é fenômeno organizacional (Maslach, 2022). Devolver o colaborador ao mesmo cenário sem mexer em jornada, escopo e liderança é estatisticamente equivalente a planejar a próxima licença.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'O empregador pode exigir laudo detalhado para autorizar o retorno?',
+    a: 'Não. O empregador exige apenas o atestado de retorno emitido pela medicina do trabalho, que se manifesta sobre aptidão ao cargo. Diagnóstico clínico e prontuário pertencem ao colaborador, com sigilo profissional protegido pelo Código de Ética Profissional do Psicólogo (CFP) e por LGPD. Empregador pode pedir informação sobre restrições funcionais, não sobre CID.'
+  },
+  {
+    q: 'Quem pode coordenar tecnicamente o plano de retorno?',
+    a: 'A coordenação técnica reúne medicina do trabalho (aptidão), RH (logística, ajustes, documentação) e, idealmente, psicólogo organizacional (escuta, acompanhamento). O psicoterapeuta assistente do colaborador participa quando autorizado. A coordenação não exige um único responsável; exige rotina compartilhada de informação.'
+  },
+  {
+    q: 'Quanto tempo dura um plano de retorno bem feito?',
+    a: 'A literatura ocupacional padrão indica plano formal de 90 a 180 dias, com escalonamento intensivo nos primeiros 30 dias, revisão aos 90 e aos 180. Ajustes razoáveis incorporados como rotina permanente podem persistir indefinidamente sem prejuízo de carreira — desde que documentados como prática consolidada, não como exceção.'
+  },
+  {
+    q: 'Como o MBA em Psicologia Positiva do IPOG ajuda nesse tipo de protocolo?',
+    a: 'O MBA cobre prevenção de burnout, retorno ao trabalho, NR-1, segurança psicológica e modelos de cuidado evidence-based — exatamente as bases técnicas necessárias para profissional de RH, saúde ocupacional ou consultor que conduz essa rotina. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir o retorno ao trabalho pós-burnout',
+  description: 'Guia em 9 passos para conduzir retorno gradual ao trabalho após licença por saúde mental, com plano escalonado, ajustes razoáveis e acompanhamento de 90 e 180 dias.',
+  totalTime: 'PT18M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como conduzir o retorno ao trabalho pós-burnout: guia passo-a-passo',
+  description: 'Protocolo de 9 passos para retorno ao trabalho após licença por saúde mental, com plano escalonado e revisões em 30, 90 e 180 dias.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Retorno ao trabalho pós-burnout', item: `${SITE.url}/guias/retorno-ao-trabalho-pos-burnout` }
+  ]
+};
+---
+
+<Base
+  title="Retorno ao trabalho pós-burnout — guia 9 passos · plano escalonado e revisão 90/180 dias"
+  description="Protocolo passo-a-passo para retorno gradual ao trabalho após licença por saúde mental: comunicação com líder, ajustes razoáveis, monitoramento e revisão estrutural.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Retorno ao trabalho pós-burnout' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir o retorno ao trabalho pós-burnout</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Protocolo de retorno gradual após licença por saúde mental: comunicação com líder, ajustes razoáveis, acompanhamento aos 30, 90 e 180 dias e investigação estrutural.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~18 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos, RH, médicos do trabalho</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Psicologia Positiva
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir retorno escalonado após licença por saúde mental, com sigilo, ajustes razoáveis, monitoramento e revisão estrutural.</li>
+          <li><strong>Pré-requisitos:</strong> medicina do trabalho ativa, RH com mandato, plano de saúde funcional, política interna de retorno documentada.</li>
+          <li><strong>Resultado esperado:</strong> retorno sustentável, com revisão aos 90 e 180 dias e aprendizado sistêmico para prevenção.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A intuição organizacional sobre retorno pós-licença de saúde mental costuma ser proteger o colaborador da exposição. Esconder o afastamento, abreviar a conversa, normalizar rápido. Esse cuidado, bem-intencionado, produz o efeito oposto. Maslach (2022, reformulação do MBI) e a Cochrane Review sobre return-to-work (2020) convergem em um achado: retorno sem plano escalonado, sem revisão estruturada e sem investigação estrutural eleva a probabilidade de recidiva em janela de 12 meses.
+        </p>
+        <p>
+          A inversão prática: retorno bem feito é processo público de gestão, com sigilo de diagnóstico preservado e plano operacional explícito. O líder sabe o plano, não o CID. O colaborador volta gradualmente, com revisões marcadas. A organização investiga o que adoeceu — não para culpar, mas para corrigir o sistema. Burnout é fenômeno organizacional; o desfecho individual sem mudança coletiva é frágil.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Cronograma típico de 180 dias. Adapte ao quadro clínico e ao parecer da medicina do trabalho.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Gerente de operações, indústria de bens de consumo, retorno em 180 dias</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em outubro de 2025, uma gerente de operações de indústria de bens de consumo no Sul, com 7 anos de casa, afastou-se com CID F32.2 após 14 meses de jornada acima de 60 horas semanais em projeto de implantação de ERP. A licença durou 92 dias. Antes do retorno, reunião técnica entre medicina do trabalho, RH, líder direto e — com consentimento da colaboradora — psicóloga assistente, definiu plano de 180 dias: 50% de jornada nos primeiros 30 dias, 70% até dia 60, integral a partir do dia 90, com revisões formais em D30, D90 e D180.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O escopo foi redesenhado: a colaboradora retomou o time direto sem o projeto ERP (que migrou para outro gerente), com mentor de retorno designado (par da diretoria). Em D90, revisão indicou estabilidade, com manutenção dos ajustes. Em D180, a revisão estrutural foi para a equipe inteira — não apenas para o caso individual — e produziu mudança de governança do projeto ERP (steering committee mensal com participação do líder de operações). Em 12 meses, sem recidiva. O aprendizado, anonimizado, virou parte do plano de NR-1 da fábrica.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.who.int/publications/i/item/9789240053052" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS 2022 — Guidelines on mental health at work</a></li>
+          <li><a href="https://www.cochrane.org/CD006389/MUSKEL_return-work-coordination-programmes-improving-return-work-workers-sick-leave" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Cochrane Review — Return-to-work coordination (2020)</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng212" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG212 — Mental wellbeing at work</a></li>
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NR-1 atualizada</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Código de Ética Profissional</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Retorno bem feito é gestão pública com sigilo clínico preservado.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Protocolo de retorno combina plano escalonado, ajustes razoáveis documentados, acompanhamento clínico em paralelo e revisão em 30, 90 e 180 dias. A revisão estrutural aos 180 dias é o ponto que diferencia retorno sustentável de retorno frágil. Para profissional de RH, saúde ocupacional ou consultor, o MBA em Psicologia Positiva do IPOG consolida o fundamento técnico em formato Ao Vivo síncrono.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBA no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPos.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPos.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPos.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPos.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+          <li><a href={`/areas/${areaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaPositiva.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.who.int/publications/i/item/9789240053052" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS 2022</a></li>
+          <li><a href="https://www.cochrane.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Cochrane Library</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng212" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG212</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~18 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

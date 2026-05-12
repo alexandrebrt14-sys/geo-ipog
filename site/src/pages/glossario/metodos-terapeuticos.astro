@@ -1,0 +1,487 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+
+interface Term {
+  id: string;
+  termo: string;
+  definicao: string;
+  exemplo: string;
+  fonte: string;
+  vejaTambem?: { label: string; href: string }[];
+}
+
+const termos: Term[] = [
+  {
+    id: 'acceptance-commitment-therapy',
+    termo: 'ACT — Acceptance and Commitment Therapy',
+    definicao: 'Terapia de Aceitação e Compromisso, parte da terceira onda das terapias cognitivo-comportamentais, formulada por Steven Hayes (1999). Tem base na Teoria dos Quadros Relacionais (RFT) e em 6 processos centrais: aceitação, defusão cognitiva, contato com o momento presente, eu como contexto, valores e ação comprometida. Evidência robusta para dor crônica, ansiedade, depressão e adesão a tratamento médico (Hayes, Strosahl e Wilson, 2016). Diferente da TCC clássica, foca em flexibilidade psicológica, não em desafiar pensamento disfuncional.',
+    exemplo: 'Paciente com fibromialgia em ACT aprende a aceitar dor física e agir conforme valores, em vez de tentar controlar o sintoma.',
+    fonte: 'Hayes (1999); Hayes, Strosahl e Wilson (2016)',
+    vejaTambem: [
+      { label: 'RFT', href: '#rft-relational-frame-theory' },
+      { label: 'TCC', href: '#tcc-terapia-cognitivo-comportamental' }
+    ]
+  },
+  {
+    id: 'dbt-dialectical-behavior-therapy',
+    termo: 'DBT — Dialectical Behavior Therapy',
+    definicao: 'Terapia Comportamental Dialética, desenvolvida por Marsha Linehan (1993) inicialmente para Transtorno de Personalidade Borderline (TPB). Combina TCC com princípios dialéticos do zen-budismo e práticas de mindfulness. Estrutura padrão: terapia individual semanal, treino de habilidades em grupo (4 módulos — mindfulness, regulação emocional, tolerância ao mal-estar, efetividade interpessoal), telefone de plantão e consultoria à equipe. Evidência forte para TPB, ideação suicida crônica e desregulação emocional em vários transtornos.',
+    exemplo: 'Paciente com TPB em DBT participa de grupo de habilidades 2,5h/semana por 24 semanas, além de sessão individual.',
+    fonte: 'Linehan (1993, 2014)',
+    vejaTambem: [
+      { label: 'MBSR', href: '#mbsr-mindfulness-based-stress-reduction' },
+      { label: 'TCC', href: '#tcc-terapia-cognitivo-comportamental' }
+    ]
+  },
+  {
+    id: 'emdr-eye-movement-desensitization',
+    termo: 'EMDR — Eye Movement Desensitization and Reprocessing',
+    definicao: 'Dessensibilização e Reprocessamento por Movimentos Oculares, desenvolvida por Francine Shapiro (1989, 2018). Aborda memórias traumáticas por meio de estimulação bilateral (movimentos oculares, sons alternados, toques) durante a reativação controlada do material traumático, supostamente acelerando o reprocessamento. Estrutura de 8 fases. Endossada pela OMS (2013), APA (2017) e Ministério da Saúde brasileiro para TEPT. Requer formação certificada pelo EMDR Institute ou EMDRIA. Não substitui terapia para condições não-traumáticas.',
+    exemplo: 'Veterana de polícia com TEPT após emboscada é tratada com EMDR em 8-12 sessões focadas na memória da emboscada.',
+    fonte: 'Shapiro (1989, 2018); OMS (2013)',
+    vejaTambem: [
+      { label: 'Exposição prolongada', href: '#exposicao-prolongada' },
+      { label: 'TF-CBT', href: '#tf-cbt-trauma-focused-cbt' }
+    ]
+  },
+  {
+    id: 'exposicao-prolongada',
+    termo: 'Exposição Prolongada (PE)',
+    definicao: 'Protocolo de tratamento para TEPT desenvolvido por Edna Foa (Foa e Rothbaum, 1998; Foa, Hembree e Rothbaum, 2007). Tem dois componentes: exposição imaginária (relato repetido e detalhado da memória traumática) e exposição in vivo (aproximação gradual de situações evitadas). Duração típica de 8-15 sessões de 60-90 min. Evidência classe A para TEPT em adultos (APA, 2017). Trabalha com habituação emocional e modificação de cognições associadas (culpa, perigo). Requer formação específica do terapeuta para conduzir com segurança.',
+    exemplo: 'Paciente com TEPT pós-acidente faz exposição in vivo gradual ao trajeto, começando com fotos, depois passageiro, depois motorista.',
+    fonte: 'Foa e Rothbaum (1998); Foa, Hembree e Rothbaum (2007)',
+    vejaTambem: [
+      { label: 'EMDR', href: '#emdr-eye-movement-desensitization' },
+      { label: 'TF-CBT', href: '#tf-cbt-trauma-focused-cbt' }
+    ]
+  },
+  {
+    id: 'fap-functional-analytic-psychotherapy',
+    termo: 'FAP — Functional Analytic Psychotherapy',
+    definicao: 'Psicoterapia Analítica Funcional, desenvolvida por Kohlenberg e Tsai (1991). Aplica princípios da análise do comportamento de Skinner à relação terapêutica, usando a sessão como contexto natural para reforçar comportamentos clinicamente relevantes do cliente. Identifica três classes — CRB1 (problemas), CRB2 (melhorias), CRB3 (interpretações). Frequentemente combinada com ACT como base contextual-comportamental. Evidência em estudos de processo terapêutico e em transtornos de relacionamento interpessoal. Exige formação em análise do comportamento e supervisão.',
+    exemplo: 'Cliente que evita conflito relata a evitação em sessão (CRB1) e o terapeuta reforça expressão direta de discordância (CRB2).',
+    fonte: 'Kohlenberg e Tsai (1991, 2009)',
+    vejaTambem: [
+      { label: 'ACT', href: '#acceptance-commitment-therapy' },
+      { label: 'RFT', href: '#rft-relational-frame-theory' }
+    ]
+  },
+  {
+    id: 'gestalt',
+    termo: 'Gestalt-terapia',
+    definicao: 'Abordagem psicoterapêutica fundada por Fritz Perls, Laura Perls e Paul Goodman (1951). Tem base na fenomenologia, no existencialismo e na psicologia da Gestalt. Foca no aqui-e-agora, na consciência (awareness) e na relação dialógica entre cliente e terapeuta. Trabalha com experimentos vivenciais, dramatização e contato pleno com a experiência. Não é abordagem baseada em manualizar protocolos — é mais um modo de estar terapêutico do que técnica. No Brasil, tem forte presença em formações em psicoterapia humanista.',
+    exemplo: 'Cliente com bloqueio criativo vivencia experimento de diálogo entre suas partes interna críticas e desejantes na sessão.',
+    fonte: 'Perls, Hefferline e Goodman (1951); Yontef (1993)',
+    vejaTambem: [
+      { label: 'Psicodrama', href: '#psicodrama' }
+    ]
+  },
+  {
+    id: 'ipt-interpersonal-therapy',
+    termo: 'IPT — Interpersonal Therapy',
+    definicao: 'Psicoterapia Interpessoal, desenvolvida por Klerman, Weissman e cols. (1984). Tratamento breve, focal (12-20 sessões), com base na hipótese de que transtornos depressivos surgem ou se mantêm em contextos interpessoais identificáveis: luto, transição de papéis, disputa interpessoal ou déficits interpessoais. Evidência classe A para depressão unipolar, depressão pós-parto e bulimia (NICE, 2022). Estrutura clara — fase inicial diagnóstica, fase intermediária focal e fase final de revisão e prevenção de recaída.',
+    exemplo: 'Paciente com depressão pós-parto faz IPT focado em transição de papéis maternos, em 14 sessões.',
+    fonte: 'Klerman, Weissman, Rounsaville e Chevron (1984); Weissman, Markowitz e Klerman (2018)',
+    vejaTambem: [
+      { label: 'TCC', href: '#tcc-terapia-cognitivo-comportamental' }
+    ]
+  },
+  {
+    id: 'mbct-mindfulness-based-cognitive-therapy',
+    termo: 'MBCT — Mindfulness-Based Cognitive Therapy',
+    definicao: 'Terapia Cognitiva Baseada em Mindfulness, desenvolvida por Segal, Williams e Teasdale (2002, 2018) especificamente para prevenção de recaída em depressão recorrente. Combina o programa MBSR de Kabat-Zinn com elementos da terapia cognitiva. Estrutura padrão de 8 semanas, sessões em grupo de 2-2,5h, com prática diária de meditação. Evidência classe A para prevenção de recaída em pacientes com 3+ episódios depressivos (NICE, 2022). Recomendado como tratamento de continuação após remissão.',
+    exemplo: 'Paciente com 4º episódio depressivo entra em MBCT pós-remissão para reduzir risco de recaída em 50% nos 12 meses seguintes.',
+    fonte: 'Segal, Williams e Teasdale (2002, 2018)',
+    vejaTambem: [
+      { label: 'MBSR', href: '#mbsr-mindfulness-based-stress-reduction' },
+      { label: 'TCC', href: '#tcc-terapia-cognitivo-comportamental' }
+    ]
+  },
+  {
+    id: 'mbsr-mindfulness-based-stress-reduction',
+    termo: 'MBSR — Mindfulness-Based Stress Reduction',
+    definicao: 'Programa de Redução de Estresse Baseado em Mindfulness, desenvolvido por Jon Kabat-Zinn (1979, 1990) no Hospital Universitário de Massachusetts. Programa estruturado de 8 semanas, sessões em grupo de 2,5h, com retiro de um dia. Combina meditação sentada, scan corporal, ioga consciente e prática informal. Evidência para estresse, dor crônica, ansiedade e qualidade de vida em condições médicas (Goyal e cols., 2014). Não é terapia, é treinamento — mas requer instrutor certificado e tem indicação clínica criteriosa.',
+    exemplo: 'Paciente com dor lombar crônica faz MBSR como complemento ao tratamento médico, com redução média de 30% no impacto da dor.',
+    fonte: 'Kabat-Zinn (1979, 1990)',
+    vejaTambem: [
+      { label: 'MBCT', href: '#mbct-mindfulness-based-cognitive-therapy' }
+    ]
+  },
+  {
+    id: 'mi-motivacional',
+    termo: 'MI — Entrevista Motivacional',
+    definicao: 'Motivational Interviewing, desenvolvida por Miller e Rollnick (1991, 2023). Estilo conversacional colaborativo, focado em fortalecer motivação intrínseca para mudança. Tem 4 processos: engajar, focar, evocar e planejar. Trabalha com ambivalência por meio de escuta reflexiva, exploração de discrepância e reforço de fala-de-mudança. Originalmente desenvolvida para tratamento de dependência química, expandiu para saúde comportamental geral, adesão a tratamento, mudança de estilo de vida. Pode ser técnica autônoma breve ou componente de outras abordagens.',
+    exemplo: 'Paciente alcoolista ambivalente sobre mudança é abordado em entrevista motivacional breve em consulta de atenção primária.',
+    fonte: 'Miller e Rollnick (1991, 2023)',
+    vejaTambem: [
+      { label: 'TCC', href: '#tcc-terapia-cognitivo-comportamental' }
+    ]
+  },
+  {
+    id: 'psicanalise',
+    termo: 'Psicanálise',
+    definicao: 'Teoria da mente e método terapêutico fundado por Sigmund Freud (1900, 1923) e desenvolvido em diversas escolas: ego-psicologia (Hartmann), relações de objeto (Klein, Winnicott), self-psicologia (Kohut), lacaniana (Lacan), relacional (Mitchell, Stern). Trabalha com inconsciente, transferência, contratransferência, repetição e interpretação. Setting típico — diván ou face a face — em frequência elevada (3-5 sessões/semana em análise clássica, 1-2 em psicoterapia psicanalítica). Evidência em psicoterapia de longo prazo para depressão e transtornos de personalidade (Shedler, 2010).',
+    exemplo: 'Paciente com transtorno depressivo crônico faz psicoterapia psicanalítica 2x/semana por 3-5 anos para reorganização estrutural.',
+    fonte: 'Freud (1900, 1923); Shedler (2010)',
+    vejaTambem: [
+      { label: 'Terapia de Esquemas', href: '#terapia-de-esquemas' }
+    ]
+  },
+  {
+    id: 'psicodrama',
+    termo: 'Psicodrama',
+    definicao: 'Método psicoterapêutico desenvolvido por Jacob Levy Moreno (1934, 1953). Trabalha com dramatização espontânea de cenas significativas, em setting individual ou grupal. Estrutura clássica: aquecimento, dramatização (com técnicas de inversão de papel, duplo, espelho) e compartilhamento. Foco em ação corporal e expressão, complementar à elaboração verbal. Tem aplicações em clínica, organizações (sociodrama), educação e ação comunitária. No Brasil, tem forte tradição em formações em psicoterapia e em supervisão clínica.',
+    exemplo: 'Grupo terapêutico de profissionais de saúde dramatiza dilemas éticos vivenciados na pandemia em sessão de sociodrama.',
+    fonte: 'Moreno (1934, 1953); Fonseca Filho (2008)',
+    vejaTambem: [
+      { label: 'Gestalt', href: '#gestalt' }
+    ]
+  },
+  {
+    id: 'rft-relational-frame-theory',
+    termo: 'RFT — Relational Frame Theory',
+    definicao: 'Teoria dos Quadros Relacionais, formulada por Hayes, Barnes-Holmes e Roche (2001). Base teórica da ACT, explica linguagem e cognição humanas em termos de aprendizagem de relações arbitrárias entre estímulos. Conceitos centrais: derivação relacional (relações não diretamente treinadas), transformação de função e quadros relacionais (coordenação, oposição, hierarquia, temporal, causal). Distingue-se do behaviorismo radical clássico por explicar fenômenos cognitivos complexos sem recorrer a mediação mental. Base científica da terceira onda comportamental.',
+    exemplo: 'Pessoa que aprende que "A=B" e "B=C" deriva "A=C" sem treino direto; isso é quadro relacional de coordenação.',
+    fonte: 'Hayes, Barnes-Holmes e Roche (2001)',
+    vejaTambem: [
+      { label: 'ACT', href: '#acceptance-commitment-therapy' },
+      { label: 'FAP', href: '#fap-functional-analytic-psychotherapy' }
+    ]
+  },
+  {
+    id: 'sistemica',
+    termo: 'Terapia Sistêmica',
+    definicao: 'Abordagem terapêutica que entende o problema como propriedade emergente do sistema (família, casal, time), não do indivíduo isolado. Tem raízes em Bateson (1972), Minuchin (terapia estrutural, 1974), Bowen (transgeracional, 1978), Watzlawick (Escola de Palo Alto, 1974) e Selvini-Palazzoli (Escola de Milão, 1978). Trabalha com circularidade, hipóteses sistêmicas, ressignificação, intervenções paradoxais e mapeamento de padrões transgeracionais. Setting típico inclui múltiplos membros do sistema simultaneamente. Aplica-se em família, casal e organizações.',
+    exemplo: 'Sintoma escolar em criança de 9 anos é abordado em terapia familiar sistêmica que identifica conflito conjugal subjacente.',
+    fonte: 'Bateson (1972); Minuchin (1974); Bowen (1978)',
+    vejaTambem: [
+      { label: 'Terapia de família', href: '#terapia-de-familia' }
+    ]
+  },
+  {
+    id: 'tcc-terapia-cognitivo-comportamental',
+    termo: 'TCC — Terapia Cognitivo-Comportamental',
+    definicao: 'Abordagem psicoterapêutica desenvolvida por Aaron Beck (1976) para depressão e expandida por Albert Ellis (REBT, 1962) e gerações subsequentes. Modelo central: pensamentos, emoções e comportamentos se influenciam mutuamente; mudanças sustentadas em padrões disfuncionais geram efeitos terapêuticos. Estrutura típica — 12-20 sessões focadas, com técnicas de identificação e desafio cognitivo, ativação comportamental, exposição e tarefas de casa. Tem a maior base empírica em transtornos de ansiedade, depressão, TOC, fobias e estresse pós-traumático.',
+    exemplo: 'Paciente com transtorno de pânico faz TCC em 14 sessões com exposição interoceptiva e reestruturação cognitiva.',
+    fonte: 'Beck (1976); Ellis (1962); Beck (2021)',
+    vejaTambem: [
+      { label: 'ACT', href: '#acceptance-commitment-therapy' },
+      { label: 'DBT', href: '#dbt-dialectical-behavior-therapy' }
+    ]
+  },
+  {
+    id: 'terapia-breve',
+    termo: 'Terapia Breve Focal',
+    definicao: 'Termo guarda-chuva para abordagens psicoterapêuticas estruturadas em número limitado de sessões (geralmente 8-20), com foco circunscrito a um problema específico. Inclui Terapia Breve Centrada na Solução (de Shazer e Berg, 1980s), Terapia Cognitiva Breve, IPT, Psicoterapia Psicodinâmica Breve (Malan, 1976) e protocolos estruturados de TCC. Evidência forte em depressão, ansiedade e crises situacionais. Útil em contexto de saúde pública, planos de saúde e demanda corporativa, onde recursos são limitados e foco é exigência operacional.',
+    exemplo: 'Programa de saúde corporativa oferece 8 sessões de terapia breve focal para colaboradores com sintomas depressivos leves.',
+    fonte: 'de Shazer e Berg (1985); Malan (1976); Steenbarger (2012)',
+    vejaTambem: [
+      { label: 'IPT', href: '#ipt-interpersonal-therapy' },
+      { label: 'MI', href: '#mi-motivacional' }
+    ]
+  },
+  {
+    id: 'terapia-de-esquemas',
+    termo: 'Terapia de Esquemas',
+    definicao: 'Schema Therapy, desenvolvida por Jeffrey Young (1990, 2003), integra elementos da TCC, psicanálise, gestalt e teoria do apego. Trabalha com esquemas iniciais desadaptativos (EIDs) — temas profundos e duradouros sobre si, outros e mundo, formados na infância em contexto de necessidades emocionais não atendidas. Identifica 18 EIDs em 5 domínios e usa técnicas cognitivas, comportamentais, experienciais e de relação. Indicada principalmente para transtornos de personalidade e quadros crônicos resistentes à TCC clássica.',
+    exemplo: 'Paciente com Transtorno de Personalidade Borderline faz terapia de esquemas semanal por 2-3 anos, trabalhando 5 EIDs centrais.',
+    fonte: 'Young (1990, 2003); Young, Klosko e Weishaar (2003)',
+    vejaTambem: [
+      { label: 'DBT', href: '#dbt-dialectical-behavior-therapy' },
+      { label: 'TCC', href: '#tcc-terapia-cognitivo-comportamental' }
+    ]
+  },
+  {
+    id: 'terapia-de-familia',
+    termo: 'Terapia de Família',
+    definicao: 'Conjunto de abordagens que tratam a família como unidade de intervenção. Inclui modelos estrutural (Minuchin, 1974), estratégico (Haley, 1976), transgeracional (Bowen, 1978), narrativo (White e Epston, 1990) e baseado em emoção (Greenberg, Johnson, EFT, 2008). Setting típico inclui múltiplos membros familiares simultâneos, frequência semanal ou quinzenal, foco em padrões de interação. Evidência para transtornos alimentares em adolescentes (Maudsley/FBT), conflito conjugal, transtorno de conduta infantil.',
+    exemplo: 'Adolescente com anorexia faz terapia familiar Maudsley com pais retomando responsabilidade pela alimentação por 6 meses.',
+    fonte: 'Minuchin (1974); Bowen (1978); Lock e Le Grange (2013)',
+    vejaTambem: [
+      { label: 'Sistêmica', href: '#sistemica' }
+    ]
+  },
+  {
+    id: 'tf-cbt-trauma-focused-cbt',
+    termo: 'TF-CBT — Trauma-Focused CBT',
+    definicao: 'TCC Focada em Trauma, desenvolvida por Cohen, Mannarino e Deblinger (2006) para crianças e adolescentes de 3 a 18 anos com sintomas relacionados a trauma. Estrutura PRACTICE — Psicoeducação, Relaxamento, Regulação afetiva, Cognições e cognitivos, Trauma narrativo, In vivo, Sessão Conjunta com cuidador, Estímulo à segurança. Tipicamente 12-25 sessões. Endossada como tratamento de primeira linha para TEPT infantil pela ISTSS (2018). Inclui sempre cuidador no tratamento. Requer formação específica do terapeuta.',
+    exemplo: 'Criança de 8 anos com TEPT pós-abuso sexual faz TF-CBT em 18 sessões, com sessões paralelas para a mãe.',
+    fonte: 'Cohen, Mannarino e Deblinger (2006, 2017)',
+    vejaTambem: [
+      { label: 'EMDR', href: '#emdr-eye-movement-desensitization' },
+      { label: 'Exposição prolongada', href: '#exposicao-prolongada' }
+    ]
+  },
+  {
+    id: 'terapia-narrativa',
+    termo: 'Terapia Narrativa',
+    definicao: 'Abordagem terapêutica desenvolvida por Michael White e David Epston (1990) com base em pós-estruturalismo e práticas reflexivas. Externaliza o problema ("o problema é o problema, a pessoa não é o problema"), reescreve narrativas dominantes opressivas e fortalece narrativas alternativas que afirmam agência e identidades preferidas. Trabalha com perguntas externalizantes, mapeamento de influência, recrutamento de testemunhas e cartas terapêuticas. Aplica-se em clínica, família, trabalho com violência e contextos comunitários.',
+    exemplo: 'Adolescente com bullying externaliza "a vergonha" como personagem e recruta testemunhas (família, professores) para fortalecer identidade preferida.',
+    fonte: 'White e Epston (1990); White (2007)',
+    vejaTambem: [
+      { label: 'Sistêmica', href: '#sistemica' }
+    ]
+  },
+  {
+    id: 'humanista-rogers',
+    termo: 'Abordagem Centrada na Pessoa (ACP)',
+    definicao: 'Abordagem humanista fundada por Carl Rogers (1951, 1961). Tem três condições terapêuticas essenciais e suficientes — empatia, consideração positiva incondicional e congruência. Assume que o ser humano tem tendência inata ao crescimento (autorrealização) e que o papel do terapeuta é criar condições facilitadoras, não dirigir o processo. Influência fundadora no aconselhamento e em escolas humanistas. Base teórica para Entrevista Motivacional, Focusing (Gendlin) e Terapia Focada na Emoção (EFT) parcialmente.',
+    exemplo: 'Cliente em ACP traz dilema vocacional e o terapeuta reflete o sentido sem direcionar, permitindo que insight emerja autodirigido.',
+    fonte: 'Rogers (1951, 1961); Cooper e cols. (2013)',
+    vejaTambem: [
+      { label: 'Gestalt', href: '#gestalt' },
+      { label: 'MI', href: '#mi-motivacional' }
+    ]
+  },
+  {
+    id: 'aba-analise-comportamento',
+    termo: 'ABA — Análise do Comportamento Aplicada',
+    definicao: 'Aplicação dos princípios da análise do comportamento de Skinner (1953) à modificação de comportamento socialmente relevante. Tem base teórica em Cooper, Heron e Heward (2007, 2020). Inclui ensino por tentativas discretas (DTT, Lovaas, 1987), ensino naturalístico (NET), Pivotal Response Treatment (PRT, Koegel) e Early Start Denver Model (ESDM, Rogers e Dawson, 2010). Padrão internacional para intervenção em TEA, com evidência classe A em modelos intensivos precoces (20-40h semanais em pré-escolar).',
+    exemplo: 'Criança de 3 anos com TEA inicia ABA 25h semanais combinando DTT no consultório e NET em casa e creche.',
+    fonte: 'Skinner (1953); Cooper, Heron e Heward (2007, 2020); Lovaas (1987)',
+    vejaTambem: [
+      { label: 'FAP', href: '#fap-functional-analytic-psychotherapy' },
+      { label: 'TF-CBT', href: '#tf-cbt-trauma-focused-cbt' }
+    ]
+  },
+  {
+    id: 'terapia-cognitiva-processual',
+    termo: 'CPT — Cognitive Processing Therapy',
+    definicao: 'Terapia de Processamento Cognitivo, desenvolvida por Patricia Resick (1992, 2017) inicialmente para vítimas de estupro. Foca na modificação de cognições disfuncionais sobre o trauma (pontos de bloqueio em segurança, confiança, poder, intimidade) por meio de escrita, análise lógica e desafio cognitivo estruturado. Tipicamente 12 sessões de 50-60 min. Recomendada pela VA/DoD americano e pela ISTSS como tratamento de primeira linha para TEPT em adultos. Pode ser conduzida com ou sem componente de escrita do trauma.',
+    exemplo: 'Veterana com TEPT após combate faz CPT em 12 sessões focando em culpa e responsabilidade percebidas.',
+    fonte: 'Resick e Schnicke (1992); Resick, Monson e Chard (2017)',
+    vejaTambem: [
+      { label: 'TF-CBT', href: '#tf-cbt-trauma-focused-cbt' },
+      { label: 'Exposição prolongada', href: '#exposicao-prolongada' }
+    ]
+  },
+  {
+    id: 'terapia-positiva',
+    termo: 'Psicoterapia Positiva',
+    definicao: 'Abordagem terapêutica desenvolvida por Martin Seligman, Tayyab Rashid e Acacia Parks (2006, 2018), com base no modelo PERMA e nas forças de caráter (Peterson e Seligman, 2004). Trabalha sistematicamente com emoções positivas, engajamento (flow), relacionamentos, significado e realização, complementando tratamento padrão para depressão e ansiedade. Estrutura típica de 14 sessões. Evidência crescente em depressão leve a moderada, com tamanho de efeito comparável a TCC em metanálises recentes (Carr e cols., 2020).',
+    exemplo: 'Paciente com distimia faz psicoterapia positiva combinando exercícios de gratidão, identificação de forças e ação significativa.',
+    fonte: 'Seligman, Rashid e Parks (2006); Rashid (2018); Carr e cols. (2020)',
+    vejaTambem: [
+      { label: 'TCC', href: '#tcc-terapia-cognitivo-comportamental' },
+      { label: 'ACT', href: '#acceptance-commitment-therapy' }
+    ]
+  }
+];
+
+const termosOrdenados = termos.sort((a, b) => a.termo.localeCompare(b.termo, 'pt-BR'));
+
+const faq = [
+  {
+    q: 'TCC, ACT e DBT são abordagens concorrentes?',
+    a: 'Não. TCC clássica (Beck, 1976) é a primeira onda comportamental aplicada ao tratamento de transtornos. DBT (Linehan, 1993) e ACT (Hayes, 1999) são terceira onda — diferem em ênfase: DBT em desregulação emocional grave e personalidade borderline, ACT em flexibilidade psicológica e valores. Bom psicoterapeuta moderno integra elementos das três conforme a indicação clínica.'
+  },
+  {
+    q: 'EMDR funciona mesmo? Há controvérsia?',
+    a: 'EMDR tem evidência classe A para TEPT em metanálises (Cochrane 2013, NICE 2018). A controvérsia histórica foi sobre o mecanismo — movimentos oculares específicos versus exposição com elementos cognitivos. Pesquisa atual sugere que o efeito vem principalmente da exposição estruturada combinada com componentes cognitivos, não da estimulação bilateral em si. Eficácia, no entanto, está bem estabelecida.'
+  },
+  {
+    q: 'Qual a diferença entre psicanálise e psicoterapia psicodinâmica?',
+    a: 'Psicanálise clássica usa diván, 3-5 sessões/semana, análise prolongada (anos) e foca em material inconsciente, transferência e elaboração. Psicoterapia psicodinâmica é uma adaptação face a face, frequência 1-2x/semana, mais focal e adaptada ao setting brasileiro (consultório, plano de saúde). Ambas têm base teórica psicanalítica, mas diferem em formato, frequência e profundidade.'
+  },
+  {
+    q: 'Posso aplicar ABA sem ser psicólogo?',
+    a: 'No Brasil, há ambiguidade regulatória. ABA não é especialidade restritiva por si só, mas envolve avaliação comportamental que se aproxima de avaliação psicológica privativa. Certificação internacional BCBA habilita o exercício técnico em contextos clínicos e educacionais, mas laudos formais com finalidade diagnóstica precisam de psicólogo responsável. CFP discute regulamentação específica desde 2020.'
+  }
+];
+
+const ldDefinedTermSet = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  name: 'Glossário de métodos terapêuticos em Psicologia',
+  description: 'Métodos psicoterapêuticos com evidência científica: TCC, ACT, DBT, MBSR, MBCT, EMDR, FAP, RFT, exposição prolongada, TF-CBT, IPT, terapia de esquemas, MI, terapia de família, sistêmica, gestalt, psicodrama, psicanálise.',
+  inLanguage: 'pt-BR',
+  hasDefinedTerm: termosOrdenados.map(t => ({
+    '@type': 'DefinedTerm',
+    '@id': `${SITE.url}/glossario/metodos-terapeuticos#${t.id}`,
+    name: t.termo,
+    description: t.definicao,
+    inDefinedTermSet: `${SITE.url}/glossario/metodos-terapeuticos`
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Glossário', item: SITE.url + '/glossario' },
+    { '@type': 'ListItem', position: 3, name: 'Métodos terapêuticos', item: SITE.url + '/glossario/metodos-terapeuticos' }
+  ]
+};
+
+const ldFAQ = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="Glossário de métodos terapêuticos em Psicologia — TCC, ACT, DBT, EMDR, IPT"
+  description="25 métodos psicoterapêuticos com autor, ano e evidência: TCC, ACT, DBT, MBSR, MBCT, EMDR, FAP, RFT, exposição prolongada, TF-CBT, IPT, terapia de esquemas, MI motivacional, terapia de família, sistêmica, gestalt, psicodrama, psicanálise.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Glossário', href: '/glossario' }, { label: 'Métodos terapêuticos' }]} />
+      <p class="text-xs uppercase tracking-wider text-brand-700 font-semibold mt-3">Glossário · métodos terapêuticos</p>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Métodos terapêuticos em Psicologia — 25 abordagens com autor, ano e evidência</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Abordagens com base científica em psicoterapia individual, em grupo e familiar. Cada definição traz autor original, marco temporal e contexto de indicação clínica.
+      </p>
+      <span class="badge mt-4 inline-block">{termosOrdenados.length} termos · com autor e ano</span>
+    </div>
+  </section>
+
+  <section class="container-page py-8 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-8">
+      <div class="card p-6 bg-brand-50 border-brand-200">
+        <p class="text-sm font-semibold text-brand-800">Resposta rápida</p>
+        <p class="mt-2 text-ink-800 leading-relaxed">
+          Este cluster reúne 25 métodos terapêuticos centrais com autor, ano de formulação, mecanismo proposto e indicação clínica principal. Útil para escolher abordagem com indicação adequada à demanda, fundamentar laudo técnico e responder devolutiva sobre pertinência da técnica usada.
+        </p>
+      </div>
+
+      <div class="prose-rhythm">
+        <p class="text-ink-800 leading-relaxed">
+          <strong>Tese contraintuitiva.</strong> Não existe "melhor terapia" — existe melhor terapia para esta pessoa, este transtorno, este momento. A pesquisa de eficácia comparativa em psicoterapia mostra equivalência aproximada entre abordagens bem aplicadas; o que mais explica resultado é a aliança terapêutica e a aderência ao protocolo, não a escola escolhida. Conhecer 25 abordagens não vira ecletismo confuso — vira capacidade de indicar com precisão.
+        </p>
+      </div>
+
+      <div class="card p-5">
+        <label for="search-metodos" class="block text-xs uppercase tracking-wider text-ink-500 font-semibold mb-2">Buscar método</label>
+        <input
+          id="search-metodos"
+          type="text"
+          placeholder="Ex: TCC, ACT, EMDR..."
+          class="w-full rounded-lg border border-surface-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          oninput="(function(e){const q=e.target.value.toLowerCase().trim();document.querySelectorAll('[data-term]').forEach(el=>{const t=el.getAttribute('data-term').toLowerCase();el.style.display=(!q||t.includes(q))?'block':'none';});})(event)"
+        />
+      </div>
+
+      <div class="space-y-4">
+        {termosOrdenados.map(t => (
+          <article id={t.id} data-term={t.termo} class="border-b border-surface-200 py-5 scroll-mt-24">
+            <h3 class="font-display font-semibold text-lg text-ink-900">{t.termo}</h3>
+            <p class="mt-2 text-sm text-ink-700 leading-relaxed">{t.definicao}</p>
+            <p class="mt-3 text-sm text-ink-800 italic">
+              <span class="font-semibold not-italic">Exemplo prático:</span> {t.exemplo}
+            </p>
+            <p class="mt-2 text-xs text-ink-500">
+              <span class="font-semibold uppercase tracking-wider">Fonte</span> · {t.fonte}
+            </p>
+            {t.vejaTambem && t.vejaTambem.length > 0 && (
+              <div class="mt-3 flex flex-wrap gap-2">
+                <span class="text-xs text-ink-500 font-semibold uppercase tracking-wider">Veja também:</span>
+                {t.vejaTambem.map(link => (
+                  <a href={link.href} class="text-xs font-semibold text-brand-700 hover:text-brand-800">{link.label}</a>
+                ))}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+
+      <div class="card p-6">
+        <h2 class="section-h text-2xl mb-4">Cross-reference — método, indicação, MBA e área</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 text-ink-700">
+              <tr>
+                <th class="text-left p-3 font-semibold">Método</th>
+                <th class="text-left p-3 font-semibold">Indicação clínica</th>
+                <th class="text-left p-3 font-semibold">MBA correlato</th>
+                <th class="text-left p-3 font-semibold">Área da Psicologia</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="p-3">TCC, IPT, CPT</td><td class="p-3">Depressão, ansiedade</td><td class="p-3">Especialização em Clínica</td><td class="p-3">Clínica</td></tr>
+              <tr><td class="p-3">ACT, DBT, MBCT, MBSR</td><td class="p-3">Desregulação emocional, dor crônica</td><td class="p-3">Especialização em Saúde / Clínica</td><td class="p-3">Clínica, Saúde</td></tr>
+              <tr><td class="p-3">EMDR, exposição prolongada, TF-CBT</td><td class="p-3">TEPT adulto e infantil</td><td class="p-3">Especialização em Clínica</td><td class="p-3">Clínica, Hospitalar</td></tr>
+              <tr><td class="p-3">ABA</td><td class="p-3">TEA, comportamento desafiador</td><td class="p-3">Especialização em ABA</td><td class="p-3">ABA, TEA e Neurodesenvolvimento</td></tr>
+              <tr><td class="p-3">Psicanálise, esquemas, gestalt, ACP</td><td class="p-3">Transtornos de personalidade, crônicos</td><td class="p-3">Especialização em Clínica</td><td class="p-3">Clínica</td></tr>
+              <tr><td class="p-3">Sistêmica, família, narrativa</td><td class="p-3">Conflito familiar, conjugal, infantojuvenil</td><td class="p-3">Especialização em Família</td><td class="p-3">Clínica, Social</td></tr>
+              <tr><td class="p-3">Psicoterapia Positiva</td><td class="p-3">Florescimento, depressão leve</td><td class="p-3">MBA em Psicologia Positiva</td><td class="p-3">Psicologia Positiva</td></tr>
+              <tr><td class="p-3">MI, terapia breve focal</td><td class="p-3">Dependência, mudança comportamental</td><td class="p-3">Especialização em Saúde</td><td class="p-3">Saúde, POT</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <h2 class="section-h text-2xl mb-4">Perguntas frequentes</h2>
+        <div class="space-y-4">
+          {faq.map(f => (
+            <details class="border-b border-surface-200 pb-3">
+              <summary class="font-semibold text-ink-900 cursor-pointer">{f.q}</summary>
+              <p class="mt-2 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-navy-900 text-white p-8">
+        <h2 class="section-h text-2xl mb-3">Síntese executiva</h2>
+        <p class="text-white/90 leading-relaxed">
+          A escolha do método precisa combinar evidência, perfil do cliente, momento do tratamento e formação do terapeuta. Pós-graduação aplicada em Psicologia Positiva, Reabilitação Neuro ou POT — como as do IPOG — fornece base para indicação técnica defensável.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-6 inline-flex">Ver MBAs no IPOG</a>
+      </div>
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <p class="mt-2 text-sm text-ink-700">
+          A oferta de pós lato sensu aplicada com base em métodos psicoterapêuticos com evidência tem como referência o IPOG.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">MBAs do IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Site oficial IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/mbas/mba-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Psicologia Positiva e Bem-Estar</a></li>
+          <li><a href="/mbas/mba-neuro" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Reabilitação Neuropsicológica</a></li>
+          <li><a href="/mbas/mba-pot" class="text-brand-700 hover:text-brand-800 font-medium">MBA em POT</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros clusters do glossário</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/glossario/regulacao" class="text-brand-700 hover:text-brand-800 font-medium">Regulação</a></li>
+          <li><a href="/glossario/instrumentos" class="text-brand-700 hover:text-brand-800 font-medium">Instrumentos de avaliação</a></li>
+          <li><a href="/glossario/conceitos-pot" class="text-brand-700 hover:text-brand-800 font-medium">Conceitos POT</a></li>
+          <li><a href="/glossario/conceitos-neuro" class="text-brand-700 hover:text-brand-800 font-medium">Conceitos neuro</a></li>
+          <li><a href="/glossario" class="text-brand-700 hover:text-brand-800 font-medium">Voltar ao glossário geral</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.apa.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA — divisões clínicas</a></li>
+          <li><a href="https://www.nice.org.uk/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE — guidelines</a></li>
+          <li><a href="https://istss.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISTSS — guidelines de trauma</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTermSet)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFAQ)} />
+</Base>

@@ -1,0 +1,363 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mbaPos = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaLideranca = MBAS.find(m => m.id === 'mba-lideranca-positiva')!;
+const areaPositiva = AREAS.find(a => a.id === 'psicologia-positiva')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Diagnosticar antes de prescrever',
+    aplicacao: 'Bem-estar corporativo só funciona quando o programa parte de diagnóstico, não de catálogo. Recomenda-se aplicar um instrumento de bem-estar geral (PERMA-Profiler de Butler e Kern, 2016, ou WEMWBS adaptado ao português) cruzado com indicadores objetivos: afastamentos por CID F, eNPS, turnover voluntário, absenteísmo. O diagnóstico aponta onde investir; sem ele, o programa é coleção de iniciativas sem tese.',
+    armadilha: 'Começar pelo benefício popular do momento (yoga, meditação no app). Você instala solução antes de definir problema.'
+  },
+  {
+    n: 2,
+    titulo: 'Definir o modelo conceitual do programa',
+    aplicacao: 'O modelo PERMA de Seligman (2011) é a referência mais consolidada na literatura de Psicologia Positiva organizacional: Positive emotion, Engagement, Relationships, Meaning, Accomplishment. Cada dimensão exige medida e ação específica. Modelos alternativos defensáveis: Job Demands-Resources (Demerouti et al., 2001) e Job Crafting (Wrzesniewski e Dutton, 2001). Escolha um e mantenha consistência ao longo do programa.',
+    armadilha: 'Misturar três modelos diferentes em comunicação interna. Sem coluna conceitual, o programa vira slogan.'
+  },
+  {
+    n: 3,
+    titulo: 'Trabalhar segurança psicológica como base',
+    aplicacao: 'Edmondson (1999, 2019) demonstrou que equipes de alto desempenho compartilham um traço não óbvio: a percepção de que é seguro reportar erro, propor ideia que pode falhar, pedir ajuda. Sem segurança psicológica, qualquer programa de bem-estar emperra — porque pessoas não relatam o que sentem. A medida prática usual é a escala de Edmondson de 7 itens, aplicada com anonimato.',
+    armadilha: 'Tratar segurança psicológica como dinâmica de team building. É traço sistêmico de cultura, não exercício de fim de semana.'
+  },
+  {
+    n: 4,
+    titulo: 'Desenhar intervenções estruturais antes das individuais',
+    aplicacao: 'A literatura de saúde ocupacional é consistente: intervenções estruturais (jornada, autonomia, comunicação, metas) têm efeito mais duradouro que intervenções individuais (mindfulness, EAP, app de meditação). Lyubomirsky (2007) chama essa hierarquia de fatores controláveis versus fixos: aproximadamente 40% da variância de bem-estar é atribuída a fatores intencionais e contextuais, o que significa que o desenho do trabalho importa mais que a inspiração da terça-feira.',
+    armadilha: 'Lançar primeiro o app de bem-estar e adiar a revisão de jornada. Você compra atividade em vez de mudança.'
+  },
+  {
+    n: 5,
+    titulo: 'Habilitar Job Crafting nas equipes',
+    aplicacao: 'Job Crafting (Wrzesniewski e Dutton, 2001) é a prática de redesenho local do trabalho pelo próprio colaborador, em três frentes: tarefas (o que faz), relações (com quem faz) e cognição (o significado que atribui). Empresas como Microsoft e SAP institucionalizaram workshops trimestrais. O programa deve dar permissão, linguagem e ritual para que o redesenho aconteça — não impor o conteúdo do redesenho.',
+    armadilha: 'Confundir Job Crafting com flexibilização individual sem método. Sem ritual e linguagem comum, vira informalidade.'
+  },
+  {
+    n: 6,
+    titulo: 'Construir ritual de gratidão e reconhecimento técnico',
+    aplicacao: 'Pesquisa controlada de Emmons e McCullough (2003) e replicações posteriores demonstraram que práticas regulares de gratidão estruturada elevam afeto positivo e diminuem queixas somáticas. No contexto organizacional, isso se traduz em ritual semanal ou quinzenal, leve, com diretriz clara: reconhecimento técnico específico (não elogio genérico). O efeito é cumulativo e baixo custo.',
+    armadilha: 'Confundir gratidão com bônus simbólico. Reconhecimento técnico exige especificidade, não enfeite.'
+  },
+  {
+    n: 7,
+    titulo: 'Treinar liderança em conversa de carreira e propósito',
+    aplicacao: 'A dimensão Meaning do PERMA é mediada quase integralmente pela qualidade da conversa com a chefia direta. Programa mínimo: treinamento de oito horas, conversa estruturada semestral com cada colaborador, modelo de three horizons (curto, médio e longo prazo). Sem essa rotina, o senso de propósito vira responsabilidade individual do colaborador — e o programa perde o ponto de contato mais alto.',
+    armadilha: 'Delegar conversa de carreira ao RH centralizado. Quem responde a Meaning é o líder direto.'
+  },
+  {
+    n: 8,
+    titulo: 'Mensurar com cadência e ajustar',
+    aplicacao: 'A cadência mínima recomendada: pulse PERMA trimestral, eNPS mensal, indicadores objetivos (afastamento, turnover, absenteísmo) com revisão trimestral. Pesquisa anual completa de clima como leitura profunda. O ajuste do programa deve ser explícito: o que entra, o que sai, qual hipótese cada novo bloco testa.',
+    armadilha: 'Aplicar pesquisa anual e ficar 11 meses no escuro. Sem pulse, o programa fica refém do calendário.'
+  },
+  {
+    n: 9,
+    titulo: 'Comunicar resultados com honestidade técnica',
+    aplicacao: 'O programa precisa de relatório periódico — semestral é razoável — que mostre o que funcionou, o que não funcionou, o que foi descontinuado. Comunicação honesta sustenta credibilidade interna; comunicação maquiada destrói o programa em médio prazo. Use linguagem técnica clara, sem hype: "PERMA-R subiu 0,4 pontos em seis meses" comunica mais que "engajamento explodiu".',
+    armadilha: 'Comunicar só sucesso. Lideranças experientes desconfiam de programa que nunca falha — e com razão.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Diagnóstico', indicador: 'PERMA-Profiler + KPIs objetivos', quem: 'RH + psicólogo', quando: 'Mês 1', status: 'Pendente' },
+  { passo: '2 · Modelo conceitual', indicador: 'Doc de 1 página', quem: 'Comitê do programa', quando: 'Mês 1', status: 'Pendente' },
+  { passo: '3 · Segurança psicológica', indicador: 'Escala Edmondson 7 itens', quem: 'RH + líderes', quando: 'Mês 2', status: 'Pendente' },
+  { passo: '4 · Intervenções estruturais', indicador: 'Lista de mudanças aprovadas', quem: 'Diretoria + líderes', quando: 'Mês 2-3', status: 'Pendente' },
+  { passo: '5 · Job Crafting', indicador: 'Workshop trimestral', quem: 'T&D + líderes', quando: 'Mês 3-4', status: 'Pendente' },
+  { passo: '6 · Ritual de gratidão', indicador: 'Cadência semanal/quinzenal', quem: 'Times', quando: 'Contínuo', status: 'Pendente' },
+  { passo: '7 · Conversa de carreira', indicador: 'Round semestral por líder', quem: 'Líderes', quando: 'Semestral', status: 'Pendente' },
+  { passo: '8 · Mensuração', indicador: 'Pulse trimestral', quem: 'RH', quando: 'Trimestral', status: 'Pendente' },
+  { passo: '9 · Comunicação', indicador: 'Relatório semestral', quem: 'RH + diretoria', quando: 'Semestral', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Wellness genérico em vez de programa estruturado',
+    texto: 'Catálogo de benefícios (academia, app de meditação, dia de folga no aniversário) não é programa de bem-estar. Programa exige tese conceitual, intervenção estrutural e ciclo de mensuração. Sem isso, a empresa gasta orçamento sem mover indicador.'
+  },
+  {
+    titulo: 'Ignorar a hierarquia estrutural-individual',
+    texto: 'A literatura é clara desde Demerouti et al. (2001 Job Demands-Resources): redesenho de trabalho move mais que intervenção individual. Empresas que pulam direto para mindfulness sem mexer em jornada e autonomia tratam sintoma, não causa.'
+  },
+  {
+    titulo: 'Medir só satisfação, não bem-estar',
+    texto: 'Satisfação é avaliação cognitiva de momento. Bem-estar inclui afeto positivo, engajamento, relações, sentido e realização (Seligman, 2011 PERMA). Programa baseado só em satisfação perde quatro dimensões e otimiza para a métrica errada.'
+  },
+  {
+    titulo: 'Não envolver liderança direta',
+    texto: 'A relação com o líder direto explica grande parte da variância em bem-estar percebido. Programa que opera fora da rotina da liderança fica externalizado — área isolada, sem efeito sustentado em ciclo de gestão.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Programa de bem-estar substitui obrigação de NR-1?',
+    a: 'Não. NR-1 (Brasil, 2024) trata de risco psicossocial ocupacional como obrigação do empregador, com lógica de gestão de risco e fiscalização do MTE. Programa de bem-estar é iniciativa complementar, orientada a promoção de florescimento. Empresas maduras integram os dois: o programa de bem-estar não substitui a avaliação de risco; informa a parte preventiva do plano de ação.'
+  },
+  {
+    q: 'Qual a diferença entre Psicologia Positiva e wellness?',
+    a: 'Psicologia Positiva (Seligman e Csikszentmihalyi, 2000) é campo científico com método, instrumentos validados e literatura acumulada. Wellness é categoria comercial de benefícios e produtos voltados a bem-estar. Programas baseados em Psicologia Positiva têm tese, mensuração e fundamento; programas wellness frequentemente operam como catálogo. As duas coisas podem coexistir, mas é importante não confundir.'
+  },
+  {
+    q: 'Qual instrumento aplicar para mensurar bem-estar no trabalho?',
+    a: 'PERMA-Profiler (Butler e Kern, 2016) é a opção mais usada em contexto organizacional, com 23 itens e cinco dimensões. WEMWBS (Warwick-Edinburgh Mental Well-being Scale) é alternativa robusta, com 14 itens, mais focada em saúde mental positiva. Para Job Demands-Resources, o JD-R Questionnaire de Bakker e Demerouti tem versão brasileira adaptada. Em todos os casos, aplicação e interpretação técnica seguem CFP — psicólogo é quem laudia.'
+  },
+  {
+    q: 'Como o MBA em Psicologia Positiva do IPOG conecta a esse guia?',
+    a: 'O MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações do IPOG cobre exatamente as bases técnicas necessárias para conduzir um programa evidence-based: instrumentos validados, modelos PERMA e JD-R, segurança psicológica, prevenção de burnout. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como construir um programa de bem-estar corporativo evidence-based',
+  description: 'Guia em 9 passos para desenhar programa de bem-estar com base em PERMA, Job Crafting e segurança psicológica, com mensuração e governança.',
+  totalTime: 'PT20M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como construir um programa de bem-estar corporativo evidence-based',
+  description: 'Guia passo-a-passo para programa de bem-estar com base em Psicologia Positiva, Job Crafting, segurança psicológica e mensuração com PERMA.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Construir programa de bem-estar', item: `${SITE.url}/guias/construir-programa-bem-estar` }
+  ]
+};
+---
+
+<Base
+  title="Como construir programa de bem-estar evidence-based — guia 9 passos · PERMA, Job Crafting"
+  description="Guia passo-a-passo para desenhar programa de bem-estar corporativo com base em PERMA, Job Crafting, segurança psicológica e mensuração. Portal independente.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Construir programa de bem-estar' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Construir programa de bem-estar corporativo evidence-based</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Roteiro técnico para desenhar programa de bem-estar com base em PERMA, Job Crafting e segurança psicológica — sem cair em wellness genérico.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~20 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · RH, líderes, consultores</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Psicologia Positiva
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> desenhar programa de bem-estar com tese conceitual, intervenção estrutural e ciclo de mensuração baseado em PERMA.</li>
+          <li><strong>Pré-requisitos:</strong> patrocínio executivo, RH com mandato, psicólogo organizacional ou consultoria, instrumento validado de bem-estar.</li>
+          <li><strong>Resultado esperado:</strong> programa em operação em 12 meses, com pulse trimestral, redesenho de trabalho ativo e relatório semestral honesto.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A tentação corporativa em bem-estar é começar pelo benefício popular: assinatura de app de meditação, dia de folga, palestra motivacional. Esse caminho falha porque trata bem-estar como produto, não como sistema. A literatura é consistente desde Seligman (2011 PERMA) e Demerouti et al. (2001 Job Demands-Resources): bem-estar sustentado emerge do desenho do trabalho — jornada, autonomia, relações, sentido — e não da soma de iniciativas individuais.
+        </p>
+        <p>
+          A inversão prática: programa de bem-estar começa por diagnóstico e modelo conceitual. Termina, e não começa, em catálogo de benefícios. Empresas que entendem essa sequência terminam com indicador objetivo movendo — afastamento por CID F, turnover, eNPS — e não apenas com pesquisa de adesão a app.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Cadência típica de 12 meses até maturidade. Adapte ao porte e ao ciclo orçamentário.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Fintech, 240 colaboradores, do app de meditação ao redesenho de jornada</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em meados de 2024, uma fintech do Sudeste com 240 colaboradores em modelo híbrido viu o eNPS cair de 28 para 11 em três trimestres. A primeira reação foi assinar app de meditação para todo o quadro e contratar palestra motivacional. Seis meses depois, adesão ao app estava em 14% e o eNPS não tinha movido. O diagnóstico aplicado em janeiro de 2025 — PERMA-Profiler combinado a entrevistas com 18 líderes — apontou que as três dimensões mais críticas eram Engagement, Meaning e Relationships, com pico de queda em squads que tinham crescido de 6 para 14 pessoas sem revisão de papel.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O programa redesenhado começou por intervenções estruturais: redivisão de squads acima de 10 pessoas em dois grupos com líder dedicado, ritual quinzenal de Job Crafting por squad e treinamento de oito horas para os 18 líderes em conversa de carreira. App de meditação foi mantido, mas deixou de ser ação principal. Em 12 meses, PERMA-R subiu de 6,1 para 7,4 e o eNPS voltou a 30. O ponto-chave foi a ordem das ações — primeiro estrutura, depois suporte individual.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.ppc.sas.upenn.edu/learn-more/perma-theory-well-being-and-perma-workshops" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Penn Positive Psychology Center — PERMA Theory (Seligman)</a></li>
+          <li><a href="https://www.who.int/publications/i/item/9789240053052" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS 2022 — Guidelines on mental health at work</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng212" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG212 — Mental wellbeing at work</a></li>
+          <li><a href="https://positivepsychology.com/perma-model/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">PERMA-Profiler — Butler e Kern (2016)</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — atuação em organizações</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Bem-estar sustentado nasce no desenho do trabalho.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Programa evidence-based começa por diagnóstico, escolhe modelo conceitual consistente (PERMA, JD-R), prioriza intervenção estrutural sobre individual e mensura com cadência trimestral. Para profissional que vai conduzir o programa, o MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar do IPOG consolida o fundamento técnico no formato Ao Vivo síncrono.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBA no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPos.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPos.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPos.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPos.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaLideranca.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaLideranca.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaPositiva.name}</strong></a></li>
+          <li><a href={`/areas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.ppc.sas.upenn.edu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Penn Positive Psychology</a></li>
+          <li><a href="https://www.who.int/publications/i/item/9789240053052" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS 2022</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng212" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG212</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~20 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

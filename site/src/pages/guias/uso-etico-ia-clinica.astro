@@ -1,0 +1,365 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+const mbaLideranca = MBAS.find(m => m.id === 'mba-lideranca-positiva')!;
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaPot = AREAS.find(a => a.id === 'psicologia-organizacional-trabalho')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Conhecer o marco regulatório vigente',
+    aplicacao: 'O ponto de partida não é o software. É a regra. O CFP (Resolução de 2024 sobre uso de IA em prática profissional) e a APA (Statement on AI in clinical practice, 2024-2026) estabelecem princípios consolidados: a IA é ferramenta de apoio, não substituta de juízo profissional; o psicólogo permanece responsável pelos atos; sigilo e proteção de dados são intransferíveis. Antes de digitar qualquer prompt, leia esses documentos.',
+    armadilha: 'Adotar IA na rotina sem ler a regulação específica do conselho. Você descobre o limite no processo ético, não antes.'
+  },
+  {
+    n: 2,
+    titulo: 'Mapear riscos de sigilo e LGPD',
+    aplicacao: 'Inputs em ferramentas como ChatGPT, Claude, Gemini ou Copilot podem ser usados pelos provedores para treinamento de modelo, salvo em contratos empresariais específicos com opt-out de dados. A LGPD (Lei 13.709/2018) classifica dado de saúde como dado pessoal sensível, com proteção reforçada. Conclusão prática: nome de paciente, número de prontuário, identificadores diretos ou indiretos não entram em prompt de ferramenta não contratada com cláusula de não treinamento.',
+    armadilha: 'Colar trecho de prontuário "só para resumir" em chat público. Quebra de sigilo configurada, com pena prevista no CFP e exposição à ANPD.'
+  },
+  {
+    n: 3,
+    titulo: 'Definir casos de uso permitidos e proibidos',
+    aplicacao: 'A APA (Statement 2024-2026) e a leitura técnica do CFP convergem em um padrão prático. Permitido: redação de comunicação geral, organização de literatura, esboço de psicoeducação, simulação de diálogo hipotético sem dado real, apoio administrativo (calendário, formulários). Proibido sem proteção adicional: análise de caso identificado, redação de laudo sobre paciente real, decisão diagnóstica delegada à IA, registro de prontuário em ferramenta pública. A linha divisória é a presença de dado sensível.',
+    armadilha: 'Tratar "anonimização leve" como suficiente. Re-identificação por triangulação é risco real quando há detalhes contextuais específicos.'
+  },
+  {
+    n: 4,
+    titulo: 'Adotar ferramenta com cláusula de não treinamento',
+    aplicacao: 'Para uso profissional, opte por ferramenta com contrato empresarial e cláusula explícita de não uso dos dados para treinamento de modelo (ChatGPT Enterprise, Claude for Business, Microsoft 365 Copilot com tenant corporativo, Google Workspace com proteções específicas). Ainda assim, decisão clínica final permanece com o psicólogo. Plataformas gratuitas não são adequadas para conteúdo com dado sensível, mesmo com cuidado de anonimização.',
+    armadilha: 'Confiar na versão gratuita "porque é só um teste". Teste sem dado real é teste; teste com dado real é incidente.'
+  },
+  {
+    n: 5,
+    titulo: 'Documentar consentimento informado quando aplicável',
+    aplicacao: 'Quando o uso de IA toca o cuidado direto — por exemplo, transcrição de sessão por ferramenta, análise textual de diários — o consentimento informado do paciente é exigência ética. O documento deve detalhar: qual ferramenta, qual finalidade, quais dados, qual janela de armazenamento, possibilidade de revogação. CFP (Resolução 06/2019 sobre documentos psicológicos) é referência útil sobre formalização.',
+    armadilha: 'Adotar ferramenta nova sem revisar termo de consentimento existente. Termo desatualizado não cobre uso superveniente.'
+  },
+  {
+    n: 6,
+    titulo: 'Avaliar viés algorítmico de cada saída',
+    aplicacao: 'Modelos de linguagem refletem viés do corpus de treinamento. Estudos recentes (Bender et al., 2021; APA 2024-2026) apontam viés de gênero, raça, classe e cultura em saídas de modelos generalistas, com efeito sensível em contextos clínicos. A regra técnica: tratar saída da IA como rascunho de profissional júnior — útil, mas exige revisão crítica antes de adoção. Em apresentações culturais específicas, viés pode produzir leitura clinicamente errada.',
+    armadilha: 'Aceitar saída como se fosse parecer técnico. IA produz texto plausível, não verdade clínica.'
+  },
+  {
+    n: 7,
+    titulo: 'Manter responsabilidade profissional intransferível',
+    aplicacao: 'CFP e APA convergem em um ponto inegociável: o psicólogo permanece responsável por qualquer ato profissional, independentemente da ferramenta usada. Se o laudo, prontuário, comunicação ou decisão clínica foi influenciada por IA, a responsabilidade segue do profissional. Não há defesa do tipo "a IA disse". Em processos éticos, essa defesa é tratada como ausência de juízo profissional.',
+    armadilha: 'Usar IA para tomar decisão clínica que o profissional não tem segurança técnica para tomar. A IA não resolve déficit de formação; oculta o déficit por mais tempo.'
+  },
+  {
+    n: 8,
+    titulo: 'Treinar a equipe e supervisionar adoção',
+    aplicacao: 'Em clínica de mais de um profissional, a adoção de IA exige política interna escrita, treinamento estruturado e supervisão de uso. A política mínima cobre: ferramentas autorizadas, casos de uso, regras de sigilo e LGPD, consentimento, revisão periódica. Sem política, cada profissional adota por conta própria — e a clínica acumula risco invisível até o primeiro incidente.',
+    armadilha: 'Achar que adoção individual de IA não exige política coletiva. Em prática multiprofissional, o risco é compartilhado.'
+  },
+  {
+    n: 9,
+    titulo: 'Revisar política a cada 6 meses',
+    aplicacao: 'O ritmo de evolução das ferramentas de IA é alto. Modelos, contratos, regulações e jurisprudência mudam em janelas curtas. A política interna precisa de revisão semestral, com leitura de atualizações do CFP, da APA, da ANPD e da literatura técnica. Política congelada vira política desatualizada — e desatualização é exposição em mudança regulatória.',
+    armadilha: 'Aprovar política e esquecer por dois anos. Em IA, dois anos é eternidade.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Marco regulatório', indicador: 'Leitura CFP + APA', quem: 'Profissional', quando: 'Mês 0', status: 'Pendente' },
+  { passo: '2 · Risco LGPD', indicador: 'Doc de mapeamento', quem: 'Profissional', quando: 'Mês 0', status: 'Pendente' },
+  { passo: '3 · Casos de uso', indicador: 'Lista permitido/proibido', quem: 'Profissional', quando: 'Mês 1', status: 'Pendente' },
+  { passo: '4 · Ferramenta contratada', indicador: 'Plano com não treinamento', quem: 'Profissional', quando: 'Mês 1', status: 'Pendente' },
+  { passo: '5 · Consentimento', indicador: 'Termo atualizado', quem: 'Profissional', quando: 'Mês 1', status: 'Pendente' },
+  { passo: '6 · Revisão de viés', indicador: 'Checklist de saída', quem: 'Profissional', quando: 'Por uso', status: 'Pendente' },
+  { passo: '7 · Responsabilidade', indicador: 'Registro de revisão humana', quem: 'Profissional', quando: 'Por uso', status: 'Pendente' },
+  { passo: '8 · Política e treinamento', indicador: 'Doc + treinamento equipe', quem: 'Coordenação clínica', quando: 'Mês 2', status: 'Pendente' },
+  { passo: '9 · Revisão semestral', indicador: 'Calendário', quem: 'Coordenação', quando: 'Semestral', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Tratar IA como segunda opinião clínica',
+    texto: 'Modelos generalistas geram texto plausível, não diagnóstico técnico. APA (2024-2026) é firme: IA é apoio, não conselho clínico. Profissional que delega decisão à IA assume risco ético que não desaparece com nota de rodapé.'
+  },
+  {
+    titulo: 'Colar dado identificado em ferramenta pública',
+    texto: 'É a falha mais comum. Mesmo em chat percebido como privado, sem contrato empresarial, dados podem ser usados para treinamento. Em dado de saúde, isso é violação de LGPD e quebra de sigilo. A barreira é ferramenta contratada, não cuidado pessoal.'
+  },
+  {
+    titulo: 'Não revisar viés de saída',
+    texto: 'Estudos de Bender et al. (2021), e revisões da APA (2024-2026), apontam viés sistemático em modelos generalistas. Aceitar a primeira saída sem revisão crítica importa viés para o consultório — com efeitos especialmente sensíveis em apresentações culturais e de gênero específicas.'
+  },
+  {
+    titulo: 'Adoção individual em clínica coletiva sem política',
+    texto: 'Cada profissional adotando ferramenta por conta própria cria exposição coletiva. Política interna, treinamento e supervisão de uso são prática mínima de prudência. Sem isso, a clínica acumula risco invisível até o primeiro incidente.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Posso usar ChatGPT gratuito para redigir comunicação geral com paciente?',
+    a: 'Para mensagens administrativas sem dado clínico sensível (lembrete de horário, política de cancelamento, texto institucional), o uso é geralmente aceitável. Para qualquer conteúdo que toque diagnóstico, plano clínico ou narrativa identificada, a recomendação é ferramenta com cláusula de não treinamento. A linha divisória prática é a presença de dado pessoal sensível, conforme LGPD (Brasil, 2018).'
+  },
+  {
+    q: 'IA pode substituir psicoterapia em casos leves?',
+    a: 'A APA (Statement on AI in clinical practice, 2024-2026) é cuidadosa: chatbots de saúde mental podem ter papel em psicoeducação e apoio entre sessões, mas não substituem psicoterapia conduzida por profissional habilitado. A evidência de efeito sustentado em quadros clínicos ainda é limitada, e há relatos preocupantes de respostas inadequadas em situações de risco. O psicólogo permanece como interlocutor central.'
+  },
+  {
+    q: 'Como anonimizar caso para usar em consultoria com IA?',
+    a: 'Anonimização robusta vai além de trocar nome. Inclui remoção de identificadores indiretos (idade exata, profissão específica, localização, datas precisas, detalhes singulares do caso). Mesmo com cuidado, a recomendação técnica é evitar inserção de caso real em ferramenta pública — preferir ferramenta contratada com cláusula de não treinamento e sigilo, e em casos de alta sensibilidade, abster-se do uso.'
+  },
+  {
+    q: 'Como o MBA em POT do IPOG conecta a esse guia?',
+    a: 'O MBA em POT aborda IA, people analytics e ética em dados em contexto organizacional — fundamento útil para profissional que vai conduzir adoção de IA em clínica ou consultoria. Formato Ao Vivo síncrono com corpo docente nominal. Para grade vigente, consulte ipog.edu.br. A discussão técnica e ética estruturada em ambiente acadêmico complementa a leitura da regulação isolada.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como usar IA generativa na prática clínica com ética',
+  description: 'Guia em 9 passos para uso ético de IA generativa em prática clínica: sigilo, LGPD, viés, ferramenta contratada, consentimento e revisão semestral.',
+  totalTime: 'PT19M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como usar IA generativa na prática clínica com ética: guia passo-a-passo',
+  description: 'Protocolo em 9 passos para uso ético de IA generativa na prática clínica, com sigilo, LGPD, viés, consentimento e responsabilidade profissional.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Uso ético de IA na clínica', item: `${SITE.url}/guias/uso-etico-ia-clinica` }
+  ]
+};
+---
+
+<Base
+  title="Uso ético de IA generativa na clínica — guia 9 passos · sigilo, LGPD, viés, CFP, APA"
+  description="Guia passo-a-passo para uso ético de ChatGPT, Claude e Copilot em prática clínica: sigilo, LGPD, viés algorítmico, consentimento, alertas APA 2024-2026 e Resolução CFP.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Uso ético de IA na clínica' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Usar IA generativa na prática clínica com ética</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Protocolo de uso de ChatGPT, Claude e Copilot em consultório: sigilo, LGPD, viés algorítmico, consentimento, alertas APA 2024-2026 e Resolução CFP.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~19 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos e organizacionais</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em POT no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> usar IA generativa em prática clínica com sigilo, LGPD, ferramenta contratada, consentimento e responsabilidade preservada.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, leitura prévia das resoluções CFP sobre IA, plataforma contratada com cláusula de não treinamento.</li>
+          <li><strong>Resultado esperado:</strong> rotina de uso defensável em 60 dias, com política escrita, consentimento atualizado e revisão semestral.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura comum sobre IA na clínica é estática: ou se proíbe tudo, ou se adota sem reservas. As duas posições falham. A APA (Statement on AI in clinical practice, 2024-2026) e o CFP (Resolução sobre IA, 2024) convergem em uma posição intermediária bem definida: a IA é ferramenta útil, com casos de uso permitidos e proibidos, e a responsabilidade profissional permanece intransferível. A pergunta não é "usar ou não usar". É "usar como, em quê, com que proteção".
+        </p>
+        <p>
+          A inversão prática: comece pela regulação, não pelo software. Mapeie risco de sigilo e LGPD antes do prompt. Defina casos de uso por escrito. Adote ferramenta contratada. Mantenha o juízo profissional como instância final. Revise política a cada 6 meses. Quem segue esse trajeto integra a IA à rotina como o consultório integrou outras tecnologias — com prudência e método.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Implementação típica em 60 dias. Adapte ao tamanho da clínica e à complexidade da prática.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Clínica com 6 profissionais, política de IA em 8 semanas</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Clínica de psicologia em capital do Sudeste, com 6 profissionais autônomos compartilhando estrutura, decidiu formalizar adoção de IA após constatar que 4 dos 6 já usavam ChatGPT gratuito em rotina informal. Auditoria interna identificou três incidentes potenciais: trecho de prontuário colado para "ajudar a redigir laudo", uso de transcritor automático sem consentimento, redação de comunicação geral em ferramenta sem contrato. Nenhum incidente havia sido reportado, mas o risco era real.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em 8 semanas, a coordenação clínica implementou: leitura coletiva da Resolução CFP e do Statement da APA, contratação de planos com cláusula de não treinamento para todos os profissionais, política interna escrita com casos de uso permitidos e proibidos, atualização do termo de consentimento informado, treinamento de 4 horas com simulação de prompts, calendário de revisão semestral. Em 6 meses, três indicadores: zero incidentes reportados, 78% de adoção das ferramentas autorizadas, eNPS interno da equipe sobre clareza ética em IA em 9 de 10. Política viva, com primeira revisão em mês 6 incorporando atualizações da regulação.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções e Código de Ética</a></li>
+          <li><a href="https://www.apa.org/practice/artificial-intelligence" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA — AI in Psychology Practice</a></li>
+          <li><a href="https://www.gov.br/anpd/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANPD — Autoridade Nacional de Proteção de Dados</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LGPD — Lei 13.709/2018</a></li>
+          <li><a href="https://www.who.int/publications/i/item/9789240029200" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — Ethics and governance of AI for health (2021)</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">IA na clínica é apoio com responsabilidade preservada — não substituição.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O uso ético começa pela regulação, mapeia risco de sigilo e LGPD, define casos de uso por escrito, adota ferramenta contratada com cláusula de não treinamento, atualiza consentimento, revisa viés, mantém responsabilidade profissional e revisa política a cada 6 meses. Para profissional que conduz essa frente em clínica ou consultoria, o MBA em POT do IPOG oferece fundamento técnico e ético em IA, people analytics e dados em contexto profissional. Formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBA no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPot.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaLideranca.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaLideranca.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaPot.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.apa.org/practice/artificial-intelligence" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA AI</a></li>
+          <li><a href="https://www.gov.br/anpd/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANPD</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LGPD</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~19 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

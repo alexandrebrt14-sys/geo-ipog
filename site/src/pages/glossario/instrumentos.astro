@@ -1,0 +1,468 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+
+interface Term {
+  id: string;
+  termo: string;
+  definicao: string;
+  exemplo: string;
+  fonte: string;
+  vejaTambem?: { label: string; href: string }[];
+}
+
+const termos: Term[] = [
+  {
+    id: 'abnt-14724',
+    termo: 'ABNT NBR 14724',
+    definicao: 'Norma técnica da Associação Brasileira de Normas Técnicas que estabelece as regras gerais para apresentação de trabalhos acadêmicos no Brasil — TCC, monografia, dissertação e tese. Define estrutura (elementos pré-textuais, textuais e pós-textuais), formatação (margens, fontes, espaçamento), citações (NBR 10520) e referências (NBR 6023). Em pós-graduação em Psicologia, é a referência inescapável para apresentação do trabalho final, exceto em programas que adotam normas próprias (APA, Vancouver).',
+    exemplo: 'TCC do MBA em POT segue ABNT 14724 com 30-50 páginas, margens 3-2-3-2 cm e citações autor-data.',
+    fonte: 'ABNT NBR 14724:2011',
+    vejaTambem: [
+      { label: 'Lato sensu', href: '/glossario/regulacao#lato-sensu' }
+    ]
+  },
+  {
+    id: 'ados-2',
+    termo: 'ADOS-2 — Autism Diagnostic Observation Schedule',
+    definicao: 'Protocolo semiestruturado para avaliação diagnóstica de Transtorno do Espectro Autista, considerado padrão-ouro internacional. Versão 2, publicada por Lord, Rutter e cols. (2012), tem 5 módulos para faixas etárias diferentes (desde 12 meses até adultos verbais). Avalia comunicação social recíproca, interação social, jogo simbólico e comportamentos restritos ou repetitivos. No Brasil, está em processo de validação no SATEPSI; aplicação exige treinamento formal certificado. Combina com ADI-R para diagnóstico robusto.',
+    exemplo: 'Criança de 4 anos com suspeita de TEA é avaliada com ADOS-2 Módulo 2, combinado com entrevista parental (ADI-R).',
+    fonte: 'Lord, Rutter, DiLavore, Risi, Gotham e Bishop (2012); WPS',
+    vejaTambem: [
+      { label: 'RAADS-R', href: '#raads-r' },
+      { label: 'AQ-50', href: '#aq-50' }
+    ]
+  },
+  {
+    id: 'aq-50',
+    termo: 'AQ-50 — Autism-Spectrum Quotient',
+    definicao: 'Escala de autorrelato de 50 itens desenvolvida por Baron-Cohen e cols. (2001) para rastreamento de traços do espectro autista em adultos com inteligência média ou superior. Não é instrumento diagnóstico — é triagem que orienta encaminhamento para avaliação clínica. Pontuação de corte tradicional é 32, embora estudos brasileiros sugiram ajustes culturais. Em adultos com suspeita tardia de TEA, AQ-50 alto motiva avaliação completa com ADOS-2 ou RAADS-R no Brasil.',
+    exemplo: 'Adulto de 35 anos com sofrimento social e AQ-50=38 deve ser encaminhado para avaliação especializada.',
+    fonte: 'Baron-Cohen, Wheelwright, Skinner, Martin e Clubley (2001)',
+    vejaTambem: [
+      { label: 'ADOS-2', href: '#ados-2' },
+      { label: 'RAADS-R', href: '#raads-r' }
+    ]
+  },
+  {
+    id: 'asrs',
+    termo: 'ASRS — Adult ADHD Self-Report Scale',
+    definicao: 'Escala de autorrelato desenvolvida pela OMS em parceria com Kessler e cols. (2005) para rastreamento de TDAH em adultos. A versão curta (6 itens, ASRS-6) é considerada equivalente ao instrumento completo (18 itens). É triagem, não diagnóstico — sintomas positivos devem ser confirmados por avaliação clínica com critérios DSM-5-TR ou CID-11, incluindo histórico de infância e exclusão de comorbidades. Amplamente usada em saúde corporativa e pesquisa epidemiológica.',
+    exemplo: 'Profissional de 28 anos com dificuldades crônicas de organização e ASRS positivo é encaminhado para avaliação neuropsicológica.',
+    fonte: 'Kessler, Adler, Ames e cols. (2005)',
+    vejaTambem: [
+      { label: 'Vanderbilt', href: '#vanderbilt' },
+      { label: 'Wisconsin', href: '#wisconsin' }
+    ]
+  },
+  {
+    id: 'bai',
+    termo: 'BAI — Beck Anxiety Inventory',
+    definicao: 'Inventário de autorrelato de 21 itens desenvolvido por Beck, Epstein, Brown e Steer (1988) para medir sintomas de ansiedade em adultos. Foi projetado para discriminar ansiedade de depressão (problema comum em outras escalas). Cada item é pontuado de 0 a 3, com escore total de 0 a 63. Pontos de corte: 0-7 mínimo, 8-15 leve, 16-25 moderado, 26-63 grave. Validada no Brasil por Cunha (2001). Aprovado no SATEPSI. Aplicação privativa de psicólogo.',
+    exemplo: 'Cliente em terapia cognitivo-comportamental para TAG faz BAI semanal para monitorar resposta ao tratamento.',
+    fonte: 'Beck, Epstein, Brown e Steer (1988); Cunha (2001)',
+    vejaTambem: [
+      { label: 'BDI-II', href: '#bdi-ii' },
+      { label: 'GAD-7', href: '#gad-7' }
+    ]
+  },
+  {
+    id: 'bdi-ii',
+    termo: 'BDI-II — Beck Depression Inventory',
+    definicao: 'Inventário de autorrelato de 21 itens, revisado por Beck, Steer e Brown (1996), que avalia gravidade de sintomas depressivos em adultos e adolescentes. Itens cobrem sintomas cognitivos, afetivos, motivacionais e somáticos da depressão, alinhados aos critérios do DSM-IV/DSM-5. Pontos de corte: 0-13 mínimo, 14-19 leve, 20-28 moderado, 29-63 grave. Adaptação brasileira de Cunha (2001). Aprovado no SATEPSI. Não substitui entrevista clínica nem diagnóstico médico.',
+    exemplo: 'Avaliação inicial em transtorno depressivo maior combina BDI-II com PHQ-9 e entrevista estruturada (SCID-5).',
+    fonte: 'Beck, Steer e Brown (1996); Cunha (2001)',
+    vejaTambem: [
+      { label: 'BAI', href: '#bai' },
+      { label: 'PHQ-9', href: '#phq-9' }
+    ]
+  },
+  {
+    id: 'copsoq',
+    termo: 'COPSOQ — Copenhagen Psychosocial Questionnaire',
+    definicao: 'Questionário psicossocial de Copenhague, desenvolvido pelo NRCWE dinamarquês (Kristensen e cols., 2005), atualmente na versão III (COPSOQ III, Burr e cols., 2019). Mede 8 grandes dimensões de risco psicossocial no trabalho: demandas, organização e conteúdo, relações sociais e liderança, interface trabalho-vida, valores no local de trabalho, saúde e bem-estar, comportamento ofensivo. Tem versão validada em português (Rosário e cols., 2017). Padrão europeu para mapear riscos psicossociais NR-1.',
+    exemplo: 'Indústria de 800 funcionários aplica COPSOQ III anualmente para alimentar o inventário de riscos psicossociais do GRO.',
+    fonte: 'Kristensen e cols. (2005); Burr e cols. (2019); Rosário e cols. (2017)',
+    vejaTambem: [
+      { label: 'ERI Effort-Reward', href: '#eri-effort-reward' },
+      { label: 'MBI-GS', href: '#mbi-gs' }
+    ]
+  },
+  {
+    id: 'epds',
+    termo: 'EPDS — Edinburgh Postnatal Depression Scale',
+    definicao: 'Escala de Edimburgo de Depressão Pós-parto, desenvolvida por Cox, Holden e Sagovsky (1987). Tem 10 itens de autorrelato, formato simples, focada em sintomas afetivos (não somáticos) para evitar falsos positivos no puerpério, quando alterações de sono e apetite são esperadas. Ponto de corte 10-12 sugere triagem positiva; ≥13 indica probabilidade alta de depressão pós-parto. Validada no Brasil por Santos e cols. (1999, 2007). Recomendada em rotina obstétrica e pediátrica em primeira consulta após o parto.',
+    exemplo: 'UBS aplica EPDS 30 dias após parto; mãe com escore 14 é encaminhada para psicólogo de saúde da família.',
+    fonte: 'Cox, Holden e Sagovsky (1987); Santos e cols. (1999)',
+    vejaTambem: [
+      { label: 'PHQ-9', href: '#phq-9' }
+    ]
+  },
+  {
+    id: 'eri-effort-reward',
+    termo: 'ERI — Effort-Reward Imbalance',
+    definicao: 'Modelo e questionário de Esforço-Recompensa formulado por Siegrist (1996, 2017). Mede a discrepância entre esforço investido no trabalho (demandas e responsabilidades) e recompensas recebidas (salário, reconhecimento, segurança no emprego, oportunidades). Razão esforço/recompensa >1 indica desequilíbrio, fortemente associado a doenças cardiovasculares, depressão e burnout. O questionário tem 23 itens, com versão curta de 16. Validado no Brasil por Chor e cols. (2008). Junto com Demanda-Controle de Karasek, é um dos dois principais modelos de risco psicossocial.',
+    exemplo: 'Hospital com plantonistas mal remunerados e alta exigência tem ERI elevado, com risco coletivo de adoecimento.',
+    fonte: 'Siegrist (1996, 2017); Chor e cols. (2008)',
+    vejaTambem: [
+      { label: 'COPSOQ', href: '#copsoq' },
+      { label: 'MBI-GS', href: '#mbi-gs' }
+    ]
+  },
+  {
+    id: 'gad-7',
+    termo: 'GAD-7 — Generalized Anxiety Disorder Scale',
+    definicao: 'Escala de autorrelato de 7 itens desenvolvida por Spitzer, Kroenke, Williams e Löwe (2006) para rastreamento e mensuração de gravidade do Transtorno de Ansiedade Generalizada. Cada item é pontuado de 0 a 3, com escore total de 0 a 21. Pontos de corte: 5 leve, 10 moderado, 15 grave. Sensibilidade alta também para transtorno de pânico, fobia social e estresse pós-traumático em atenção primária. Validação brasileira por Moreno e cols. (2016). Acompanha o PHQ-9 em rastreamento de saúde mental em UBS.',
+    exemplo: 'Programa de saúde corporativa aplica GAD-7 e PHQ-9 semestralmente; positivos vão para psicólogo conveniado.',
+    fonte: 'Spitzer, Kroenke, Williams e Löwe (2006); Moreno e cols. (2016)',
+    vejaTambem: [
+      { label: 'BAI', href: '#bai' },
+      { label: 'PHQ-9', href: '#phq-9' }
+    ]
+  },
+  {
+    id: 'mbi-gs',
+    termo: 'MBI-GS — Maslach Burnout Inventory General Survey',
+    definicao: 'Versão geral do Maslach Burnout Inventory, desenvolvida por Schaufeli, Leiter, Maslach e Jackson (1996) para aplicação em qualquer profissão (não apenas saúde, educação). Mede 3 dimensões: exaustão emocional (5 itens), cinismo (5 itens) e eficácia profissional (6 itens). Validação brasileira por Tamayo e Tróccoli (2009). Combina-se com COPSOQ e ERI em diagnósticos organizacionais. Maslach e Leiter (2022) reformularam a teoria para incluir o modelo das 6 áreas de worklife — atualizando o uso prático.',
+    exemplo: 'Departamento de RH aplica MBI-GS anualmente; média de cinismo crescente em uma área aciona intervenção em prevenção primária.',
+    fonte: 'Schaufeli, Leiter, Maslach e Jackson (1996); Maslach e Leiter (2022)',
+    vejaTambem: [
+      { label: 'ERI', href: '#eri-effort-reward' },
+      { label: 'COPSOQ', href: '#copsoq' }
+    ]
+  },
+  {
+    id: 'mmpi-2',
+    termo: 'MMPI-2 — Minnesota Multiphasic Personality Inventory',
+    definicao: 'Inventário de personalidade de 567 itens, revisado por Butcher, Dahlstrom, Graham, Tellegen e Kaemmer (1989). Avalia padrões de personalidade e psicopatologia em adultos por meio de 10 escalas clínicas e múltiplas escalas de validade. Aplicação tradicional em perícia psiquiátrica, seleção de profissões de risco (segurança pública, aviação) e avaliação clínica complexa. Versão atual no Brasil: MMPI-2 (Pasquali e cols., 2014). Aprovado no SATEPSI. Aplicação e interpretação restritas a psicólogos com formação específica.',
+    exemplo: 'Avaliação psicológica para porte de arma em segurança privada usa MMPI-2 combinado com entrevista clínica.',
+    fonte: 'Butcher, Dahlstrom, Graham, Tellegen e Kaemmer (1989); Pasquali e cols. (2014)',
+    vejaTambem: [
+      { label: 'PERMA-Profiler', href: '#perma-profiler' }
+    ]
+  },
+  {
+    id: 'perma-profiler',
+    termo: 'PERMA-Profiler',
+    definicao: 'Questionário desenvolvido por Butler e Kern (2016) para medir bem-estar com base no modelo PERMA de Seligman (2011): Positive emotion, Engagement, Relationships, Meaning, Accomplishment. Tem 23 itens, escala 0 a 10. Não é instrumento clínico — é medida de florescimento aplicada em contextos positivos como Psicologia Positiva, coaching e saúde organizacional. Adaptação brasileira em estudos recentes. Combina com Job Crafting e Engagement (UWES) em diagnósticos de bem-estar corporativo.',
+    exemplo: 'Empresa que adota cultura de bem-estar mede PERMA semestralmente para acompanhar evolução do florescimento.',
+    fonte: 'Butler e Kern (2016); Seligman (2011)',
+    vejaTambem: [
+      { label: 'MBI-GS', href: '#mbi-gs' }
+    ]
+  },
+  {
+    id: 'phq-9',
+    termo: 'PHQ-9 — Patient Health Questionnaire',
+    definicao: 'Escala de 9 itens, desenvolvida por Spitzer, Kroenke e Williams (1999, 2001), que mede gravidade de depressão maior alinhada aos critérios DSM. Cada item pontuado de 0 a 3, total de 0 a 27. Pontos de corte: 5 leve, 10 moderado, 15 moderadamente grave, 20 grave. Inclui item 9 sobre ideação suicida, com fluxo de manejo obrigatório quando positivo. Validação brasileira por Santos e cols. (2013). Padrão internacional em atenção primária — usado em UBS, programas corporativos e telessaúde.',
+    exemplo: 'Médico de família aplica PHQ-9 em consulta anual; escore 18 com item 9 positivo aciona encaminhamento imediato a psiquiatra e psicólogo.',
+    fonte: 'Spitzer, Kroenke e Williams (1999, 2001); Santos e cols. (2013)',
+    vejaTambem: [
+      { label: 'BDI-II', href: '#bdi-ii' },
+      { label: 'GAD-7', href: '#gad-7' }
+    ]
+  },
+  {
+    id: 'raads-r',
+    termo: 'RAADS-R — Ritvo Autism Asperger Diagnostic Scale Revised',
+    definicao: 'Escala de autorrelato de 80 itens, desenvolvida por Ritvo, Ritvo, Guthrie e cols. (2011) para identificação de traços de TEA em adultos com inteligência preservada, incluindo aqueles que receberiam o diagnóstico antigo de Síndrome de Asperger. Tem 4 subescalas: linguagem, relação social, interesses sensorial-motores, circunscritos. Ponto de corte 65 para encaminhamento. Não é diagnóstico — é triagem robusta para adultos com suspeita tardia de TEA, frequente após filho diagnosticado. Validação preliminar no Brasil.',
+    exemplo: 'Mulher de 42 anos com filha autista, que se reconhece nos sintomas, faz RAADS-R como primeiro passo para investigação própria.',
+    fonte: 'Ritvo, Ritvo, Guthrie e cols. (2011)',
+    vejaTambem: [
+      { label: 'ADOS-2', href: '#ados-2' },
+      { label: 'AQ-50', href: '#aq-50' }
+    ]
+  },
+  {
+    id: 'ravlt',
+    termo: 'RAVLT — Rey Auditory Verbal Learning Test',
+    definicao: 'Teste de aprendizagem auditivo-verbal de Rey, desenvolvido por André Rey (1958), com normas modernas de Schmidt (1996). Avalia memória episódica verbal por meio de 5 ensaios de aprendizagem de lista de 15 palavras, interferência, evocação tardia e reconhecimento. Sensível a comprometimento mnêmico em demências, TCE, AVC, epilepsia e quimioterapia. Aprovado no SATEPSI em versão brasileira (Malloy-Diniz e cols., 2007). Aplicação por psicólogo, idealmente neuropsicólogo, em avaliação cognitiva ampla.',
+    exemplo: 'Idoso com queixa de memória recente realiza RAVLT em avaliação para diferenciar declínio normal de CCL.',
+    fonte: 'Rey (1958); Schmidt (1996); Malloy-Diniz e cols. (2007)',
+    vejaTambem: [
+      { label: 'Rey', href: '#rey' },
+      { label: 'WAIS-IV', href: '#wais-iv' }
+    ]
+  },
+  {
+    id: 'rey',
+    termo: 'Rey — Figura Complexa de Rey',
+    definicao: 'Teste neuropsicológico desenvolvido por André Rey (1941) para avaliar percepção visuoespacial, organização perceptiva, planejamento e memória visual. Aplicação em três fases: cópia (organização e planejamento), evocação imediata e evocação tardia (memória visual). Detecta disfunção executiva (lobo frontal) e comprometimento visuoespacial (lobo parietal direito). Adaptação brasileira de Oliveira (2004). Componente padrão de bateria neuropsicológica em demência, TCE, AVC e transtornos do desenvolvimento. Aplicação por psicólogo com formação em neuropsicologia.',
+    exemplo: 'Avaliação de demência precoce inclui Rey para discriminar Alzheimer (déficit mnêmico) de demência frontotemporal (déficit executivo).',
+    fonte: 'Rey (1941); Oliveira (2004)',
+    vejaTambem: [
+      { label: 'RAVLT', href: '#ravlt' },
+      { label: 'Trail Making', href: '#trail-making' }
+    ]
+  },
+  {
+    id: 'trail-making',
+    termo: 'Trail Making Test (TMT)',
+    definicao: 'Teste neuropsicológico de Trilhas, desenvolvido originalmente pelo US Army (1944) e padronizado por Reitan (1958). Tem duas partes: TMT-A (conectar números em sequência, mede velocidade de processamento e atenção visual) e TMT-B (alternar entre números e letras, mede flexibilidade cognitiva e atenção dividida). Sensível a disfunção executiva e demências. Adaptação brasileira de Hamdan e Pereira (2009). Frequente em bateria neuropsicológica padrão. Aplicação por psicólogo com formação em neuropsicologia.',
+    exemplo: 'Tempo elevado em TMT-B sugere déficit executivo, comum em TDAH adulto, esclerose múltipla e demência frontotemporal.',
+    fonte: 'Reitan (1958); Hamdan e Pereira (2009)',
+    vejaTambem: [
+      { label: 'Wisconsin', href: '#wisconsin' },
+      { label: 'Rey', href: '#rey' }
+    ]
+  },
+  {
+    id: 'vanderbilt',
+    termo: 'Vanderbilt — Vanderbilt ADHD Diagnostic Rating Scale',
+    definicao: 'Escala de avaliação de TDAH em crianças (idades 6 a 12 anos), desenvolvida por Wolraich e cols. (1998) na Vanderbilt University. Tem versões para pais e professores, com itens para os 18 sintomas de TDAH (DSM) e itens para comorbidades comuns (transtorno de oposição desafiante, conduta, ansiedade, depressão). Item de prejuízo funcional discrimina sintoma observado de transtorno propriamente dito. Padrão de uso em pediatria americana, validação brasileira em curso. Combina com Conners e SNAP-IV.',
+    exemplo: 'Pediatra coleta Vanderbilt de pais e da escola antes de encaminhar criança de 8 anos para avaliação neuropsicológica.',
+    fonte: 'Wolraich, Hannah, Pinnock, Baumgaertel e Brown (1998)',
+    vejaTambem: [
+      { label: 'ASRS', href: '#asrs' }
+    ]
+  },
+  {
+    id: 'wais-iv',
+    termo: 'WAIS-IV — Wechsler Adult Intelligence Scale',
+    definicao: 'Escala Wechsler de Inteligência para Adultos, quarta edição (Wechsler, 2008), versão brasileira em 2013. Avalia inteligência geral (QI Total) e quatro índices fatoriais: Compreensão Verbal, Raciocínio Perceptual, Memória Operacional e Velocidade de Processamento. Tem 10 subtestes principais e 5 suplementares. Faixa etária 16-90 anos. Padrão-ouro internacional para avaliação cognitiva em adultos. Aprovada no SATEPSI. Aplicação privativa de psicólogo, com kit oficial Pearson/Casa do Psicólogo. Uso em perícia, neuropsicologia, orientação profissional e pesquisa.',
+    exemplo: 'Adulto com suspeita de TDAH faz WAIS-IV em bateria neuropsicológica completa para mapear funções cognitivas.',
+    fonte: 'Wechsler (2008); Casa do Psicólogo (2013)',
+    vejaTambem: [
+      { label: 'WISC-V', href: '#wisc-v' },
+      { label: 'RAVLT', href: '#ravlt' }
+    ]
+  },
+  {
+    id: 'wisc-v',
+    termo: 'WISC-V — Wechsler Intelligence Scale for Children',
+    definicao: 'Escala Wechsler de Inteligência para Crianças, quinta edição (Wechsler, 2014), com versão brasileira em 2022. Avalia inteligência em crianças de 6 a 16 anos por meio de QI Total e cinco índices: Compreensão Verbal, Visuoespacial, Raciocínio Fluido, Memória Operacional e Velocidade de Processamento. Substituiu o WISC-IV. Aprovada no SATEPSI. Padrão-ouro em avaliação cognitiva infantil para diagnóstico de transtornos do neurodesenvolvimento, altas habilidades e avaliação escolar. Aplicação exclusiva de psicólogo com formação adequada.',
+    exemplo: 'Criança de 9 anos com dificuldades escolares passa por WISC-V para identificar perfil cognitivo (TDAH, dislexia, altas habilidades).',
+    fonte: 'Wechsler (2014); Pearson Brasil (2022)',
+    vejaTambem: [
+      { label: 'WAIS-IV', href: '#wais-iv' }
+    ]
+  },
+  {
+    id: 'wisconsin',
+    termo: 'Wisconsin Card Sorting Test (WCST)',
+    definicao: 'Teste de classificação de cartas, desenvolvido por Berg (1948) e padronizado por Heaton e cols. (1993). Avalia funções executivas — flexibilidade cognitiva, formação de conceitos abstratos, manutenção de set e capacidade de inibição. O examinando classifica cartas conforme regras implícitas que mudam sem aviso. Sensível a lesões do córtex pré-frontal. Versão brasileira por Cunha (2005). Aprovado no SATEPSI. Aplicação por psicólogo com formação em neuropsicologia. Usado em TCE, esquizofrenia, demências e TDAH.',
+    exemplo: 'Paciente com lesão frontal pós-AVC apresenta erros perseverativos elevados em WCST, indicando rigidez cognitiva.',
+    fonte: 'Berg (1948); Heaton e cols. (1993); Cunha (2005)',
+    vejaTambem: [
+      { label: 'Trail Making', href: '#trail-making' },
+      { label: 'WAIS-IV', href: '#wais-iv' }
+    ]
+  }
+];
+
+const termosOrdenados = termos.sort((a, b) => a.termo.localeCompare(b.termo, 'pt-BR'));
+
+const faq = [
+  {
+    q: 'Quem pode aplicar testes psicológicos no Brasil?',
+    a: 'Aplicação, correção e interpretação de testes psicológicos aprovados no SATEPSI são privativas de psicólogo com inscrição ativa no CRP (Lei 4.119/1962, Art. 13). Profissionais correlatos (psiquiatras, neurologistas, fonoaudiólogos) não podem aplicar instrumentos do SATEPSI, mesmo em equipe multiprofissional. O laudo final precisa ter assinatura de psicólogo responsável.'
+  },
+  {
+    q: 'Qual a diferença entre teste, escala e questionário?',
+    a: 'Teste psicológico no Brasil é instrumento que precisa estar aprovado no SATEPSI para uso profissional (WAIS-IV, WISC-V, MMPI-2). Escala é instrumento estruturado, geralmente de autorrelato (BDI-II, BAI, PHQ-9), com algumas no SATEPSI. Questionário é termo mais amplo, podendo incluir instrumentos não-clínicos (COPSOQ, ERI, PERMA). Em laudos formais, a distinção importa: só os do SATEPSI sustentam parecer privativo de psicólogo.'
+  },
+  {
+    q: 'Posso usar PHQ-9 ou GAD-7 em consultório?',
+    a: 'Sim. PHQ-9, GAD-7, EPDS e ASRS são escalas de domínio público de uso aberto em rotina clínica e pesquisa, sem restrições de licença. São triagem, não diagnóstico. O psicólogo aplica e interpreta no contexto da avaliação, sempre combinando com entrevista clínica e observação. São especialmente úteis em saúde corporativa, atenção primária e telessaúde.'
+  },
+  {
+    q: 'WAIS-IV, WISC-V e MMPI-2 podem ser aplicados online?',
+    a: 'Pearson Brasil e editoras dispõem de versões com aplicação remota desde 2020, exigindo cuidados específicos: ambiente controlado, supervisão visual, ausência de auxílio externo. CFP, via Resolução 11/2018 e Nota Técnica 03/2020, autoriza modalidade online com critérios de equivalência psicométrica documentada. Bateria neuropsicológica complexa, contudo, mantém preferência pela aplicação presencial.'
+  }
+];
+
+const ldDefinedTermSet = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  name: 'Glossário de instrumentos de avaliação psicológica',
+  description: 'Termos técnicos sobre instrumentos de avaliação em Psicologia: WAIS-IV, WISC-V, RAVLT, Rey, Trail Making, Wisconsin, MMPI-2, BDI-II, BAI, PHQ-9, GAD-7, EPDS, AQ-50, ADOS-2, RAADS-R, ASRS, Vanderbilt, PERMA-Profiler, MBI-GS, COPSOQ, ERI, ABNT 14724.',
+  inLanguage: 'pt-BR',
+  hasDefinedTerm: termosOrdenados.map(t => ({
+    '@type': 'DefinedTerm',
+    '@id': `${SITE.url}/glossario/instrumentos#${t.id}`,
+    name: t.termo,
+    description: t.definicao,
+    inDefinedTermSet: `${SITE.url}/glossario/instrumentos`
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Glossário', item: SITE.url + '/glossario' },
+    { '@type': 'ListItem', position: 3, name: 'Instrumentos', item: SITE.url + '/glossario/instrumentos' }
+  ]
+};
+
+const ldFAQ = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="Glossário de instrumentos de avaliação psicológica — WAIS-IV, MMPI-2, PHQ-9, COPSOQ"
+  description="22 instrumentos de avaliação em Psicologia: WAIS-IV, WISC-V, RAVLT, Rey, Trail Making, Wisconsin, MMPI-2, BDI-II, BAI, PHQ-9, GAD-7, EPDS, AQ-50, ADOS-2, RAADS-R, ASRS, Vanderbilt, PERMA-Profiler, MBI-GS, COPSOQ, ERI, ABNT 14724.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Glossário', href: '/glossario' }, { label: 'Instrumentos' }]} />
+      <p class="text-xs uppercase tracking-wider text-brand-700 font-semibold mt-3">Glossário · instrumentos</p>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Instrumentos de avaliação em Psicologia — 22 termos com autor, ano e uso clínico</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Testes psicométricos, escalas clínicas, questionários organizacionais e instrumentos neuropsicológicos. Cada termo traz autor, ano de origem, validação brasileira e exemplo aplicado.
+      </p>
+      <span class="badge mt-4 inline-block">{termosOrdenados.length} termos · com autor e ano</span>
+    </div>
+  </section>
+
+  <section class="container-page py-8 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-8">
+      <div class="card p-6 bg-brand-50 border-brand-200">
+        <p class="text-sm font-semibold text-brand-800">Resposta rápida</p>
+        <p class="mt-2 text-ink-800 leading-relaxed">
+          Este cluster reúne 22 instrumentos centrais para avaliação clínica, neuropsicológica e organizacional em Psicologia aplicada. Cada definição traz autor original, ano de publicação, validação brasileira quando existe e exemplo de uso. Útil para escolher bateria de avaliação, alimentar laudo técnico e responder mestrado.
+        </p>
+      </div>
+
+      <div class="prose-rhythm">
+        <p class="text-ink-800 leading-relaxed">
+          <strong>Tese contraintuitiva.</strong> Avaliação psicológica não é coleção de testes — é hipótese clínica testada por triangulação de instrumentos. Quem aplica WAIS-IV sem RAVLT, Rey e Trail Making não avalia cognição; mede QI. Quem aplica MBI-GS sem COPSOQ e ERI não diagnostica burnout; mede sintoma. O bom psicólogo escolhe o instrumento pela pergunta clínica, não pelo cardápio do editor.
+        </p>
+      </div>
+
+      <div class="card p-5">
+        <label for="search-instrumentos" class="block text-xs uppercase tracking-wider text-ink-500 font-semibold mb-2">Buscar instrumento</label>
+        <input
+          id="search-instrumentos"
+          type="text"
+          placeholder="Ex: WAIS, PHQ, COPSOQ, Rey..."
+          class="w-full rounded-lg border border-surface-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          oninput="(function(e){const q=e.target.value.toLowerCase().trim();document.querySelectorAll('[data-term]').forEach(el=>{const t=el.getAttribute('data-term').toLowerCase();el.style.display=(!q||t.includes(q))?'block':'none';});})(event)"
+        />
+      </div>
+
+      <div class="space-y-4">
+        {termosOrdenados.map(t => (
+          <article id={t.id} data-term={t.termo} class="border-b border-surface-200 py-5 scroll-mt-24">
+            <h3 class="font-display font-semibold text-lg text-ink-900">{t.termo}</h3>
+            <p class="mt-2 text-sm text-ink-700 leading-relaxed">{t.definicao}</p>
+            <p class="mt-3 text-sm text-ink-800 italic">
+              <span class="font-semibold not-italic">Exemplo prático:</span> {t.exemplo}
+            </p>
+            <p class="mt-2 text-xs text-ink-500">
+              <span class="font-semibold uppercase tracking-wider">Fonte</span> · {t.fonte}
+            </p>
+            {t.vejaTambem && t.vejaTambem.length > 0 && (
+              <div class="mt-3 flex flex-wrap gap-2">
+                <span class="text-xs text-ink-500 font-semibold uppercase tracking-wider">Veja também:</span>
+                {t.vejaTambem.map(link => (
+                  <a href={link.href} class="text-xs font-semibold text-brand-700 hover:text-brand-800">{link.label}</a>
+                ))}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+
+      <div class="card p-6">
+        <h2 class="section-h text-2xl mb-4">Cross-reference — instrumento, contexto, MBA e área</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 text-ink-700">
+              <tr>
+                <th class="text-left p-3 font-semibold">Instrumento</th>
+                <th class="text-left p-3 font-semibold">Contexto de uso</th>
+                <th class="text-left p-3 font-semibold">MBA correlato</th>
+                <th class="text-left p-3 font-semibold">Área da Psicologia</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="p-3">WAIS-IV, WISC-V, RAVLT, Rey, Wisconsin, Trail Making</td><td class="p-3">Avaliação cognitiva</td><td class="p-3">MBA em Reabilitação Neuro</td><td class="p-3">Neuropsicologia, Avaliação Psicológica</td></tr>
+              <tr><td class="p-3">MMPI-2</td><td class="p-3">Perícia, seleção de risco</td><td class="p-3">Especialização em Avaliação</td><td class="p-3">Avaliação Psicológica, Jurídica</td></tr>
+              <tr><td class="p-3">BDI-II, BAI, PHQ-9, GAD-7, EPDS</td><td class="p-3">Triagem clínica</td><td class="p-3">Especialização em Clínica</td><td class="p-3">Clínica, Saúde</td></tr>
+              <tr><td class="p-3">AQ-50, ADOS-2, RAADS-R</td><td class="p-3">Triagem e diagnóstico TEA</td><td class="p-3">Especialização em ABA</td><td class="p-3">ABA, TEA e Neurodesenvolvimento</td></tr>
+              <tr><td class="p-3">ASRS, Vanderbilt</td><td class="p-3">Triagem TDAH</td><td class="p-3">MBA em Reabilitação Neuro</td><td class="p-3">Neuropsicologia</td></tr>
+              <tr><td class="p-3">MBI-GS, COPSOQ, ERI</td><td class="p-3">Risco psicossocial, burnout</td><td class="p-3">MBA em POT, MBA em Liderança Positiva</td><td class="p-3">POT, Saúde Mental nas Organizações</td></tr>
+              <tr><td class="p-3">PERMA-Profiler</td><td class="p-3">Florescimento e bem-estar</td><td class="p-3">MBA em Psicologia Positiva</td><td class="p-3">Psicologia Positiva</td></tr>
+              <tr><td class="p-3">ABNT NBR 14724</td><td class="p-3">TCC e trabalhos acadêmicos</td><td class="p-3">Todos</td><td class="p-3">Pós-graduação</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <h2 class="section-h text-2xl mb-4">Perguntas frequentes</h2>
+        <div class="space-y-4">
+          {faq.map(f => (
+            <details class="border-b border-surface-200 pb-3">
+              <summary class="font-semibold text-ink-900 cursor-pointer">{f.q}</summary>
+              <p class="mt-2 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-navy-900 text-white p-8">
+        <h2 class="section-h text-2xl mb-3">Síntese executiva</h2>
+        <p class="text-white/90 leading-relaxed">
+          Cada instrumento responde a uma pergunta diagnóstica específica e tem um conjunto restrito de inferências válidas. Pós-graduação aplicada em Psicologia Positiva, POT, Neuropsicologia ou Avaliação — como as do IPOG — ensina a montar baterias defensáveis, em vez de catálogo de testes.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-6 inline-flex">Ver MBAs no IPOG</a>
+      </div>
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <p class="mt-2 text-sm text-ink-700">
+          A oferta de pós lato sensu aplicada em Avaliação, Neuropsicologia, POT e Psicologia Positiva tem como referência o IPOG.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">MBAs do IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Site oficial IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/mbas/mba-neuro" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Reabilitação Neuropsicológica</a></li>
+          <li><a href="/mbas/mba-pot" class="text-brand-700 hover:text-brand-800 font-medium">MBA em POT</a></li>
+          <li><a href="/mbas/mba-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Psicologia Positiva</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros clusters do glossário</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/glossario/regulacao" class="text-brand-700 hover:text-brand-800 font-medium">Regulação</a></li>
+          <li><a href="/glossario/metodos-terapeuticos" class="text-brand-700 hover:text-brand-800 font-medium">Métodos terapêuticos</a></li>
+          <li><a href="/glossario/conceitos-pot" class="text-brand-700 hover:text-brand-800 font-medium">Conceitos POT</a></li>
+          <li><a href="/glossario/conceitos-neuro" class="text-brand-700 hover:text-brand-800 font-medium">Conceitos neuro</a></li>
+          <li><a href="/glossario" class="text-brand-700 hover:text-brand-800 font-medium">Voltar ao glossário geral</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.pearsonclinical.com.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Pearson Brasil</a></li>
+          <li><a href="https://www.casadopsicologo.com/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Casa do Psicólogo</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTermSet)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFAQ)} />
+</Base>

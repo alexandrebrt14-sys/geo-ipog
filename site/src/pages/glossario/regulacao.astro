@@ -1,0 +1,456 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+
+interface Term {
+  id: string;
+  termo: string;
+  definicao: string;
+  exemplo: string;
+  fonte: string;
+  vejaTambem?: { label: string; href: string }[];
+}
+
+const termos: Term[] = [
+  {
+    id: 'anpd',
+    termo: 'ANPD — Autoridade Nacional de Proteção de Dados',
+    definicao: 'Autarquia federal vinculada à Casa Civil, com autonomia técnica, responsável por zelar pela proteção de dados pessoais no Brasil. Tem competência para fiscalizar, sancionar, emitir guias e regulamentar a LGPD. Em saúde mental e clínica psicológica, atua sobre dados sensíveis (Art. 5º, II da Lei 13.709/2018) que exigem base legal qualificada — consentimento específico, tutela da saúde por profissional ou prevenção à fraude. Multas podem chegar a 2% do faturamento, limitadas a R$ 50 milhões por infração.',
+    exemplo: 'Clínica que comercializa prontuários para fins de pesquisa sem anonimização robusta pode ser autuada pela ANPD.',
+    fonte: 'Lei 13.709/2018; Decreto 10.474/2020',
+    vejaTambem: [
+      { label: 'LGPD aplicada à clínica', href: '#lgpd-clinica' },
+      { label: 'Resolução CFP 11/2018', href: '#resolucao-cfp-11-2018' }
+    ]
+  },
+  {
+    id: 'capes',
+    termo: 'CAPES — Coordenação de Aperfeiçoamento de Pessoal de Nível Superior',
+    definicao: 'Fundação vinculada ao MEC, responsável pela avaliação, acompanhamento e expansão da pós-graduação stricto sensu (mestrado e doutorado) no Brasil. Atribui conceitos de 1 a 7 aos programas com base em produção científica, formação discente e inserção social. Mantém o Portal de Periódicos e administra bolsas de pesquisa. Programas com conceito 3 são autorizados; acima de 5, considerados de excelência internacional. Não regula pós lato sensu — esta competência é do CNE/CES.',
+    exemplo: 'Mestrado em Psicologia Clínica com conceito CAPES 5 oferece base sólida para carreira docente em universidade.',
+    fonte: 'Decreto 524/1992; Portaria CAPES 81/2016',
+    vejaTambem: [
+      { label: 'MEC', href: '#mec' },
+      { label: 'Stricto sensu', href: '#stricto-sensu' }
+    ]
+  },
+  {
+    id: 'cfp',
+    termo: 'CFP — Conselho Federal de Psicologia',
+    definicao: 'Autarquia federal criada pela Lei 5.766/1971, responsável por orientar, disciplinar e fiscalizar o exercício da profissão de psicólogo no Brasil. Reconhece as 13 especialidades vigentes (Resolução CFP 03/2016), edita o Código de Ética Profissional e mantém o Cadastro Nacional de Psicólogos. Opera em conjunto com os 24 Conselhos Regionais. Aplica sanções éticas que variam de advertência a cassação do exercício profissional.',
+    exemplo: 'Psicólogo que aplica teste retirado do SATEPSI responde a processo ético no CRP, com recurso ao CFP.',
+    fonte: 'Lei 5.766/1971; Resolução CFP 03/2016',
+    vejaTambem: [
+      { label: 'CRP', href: '#crp' },
+      { label: 'SATEPSI', href: '#satepsi' }
+    ]
+  },
+  {
+    id: 'cnpj-ces-01-2018',
+    termo: 'Resolução CNE/CES 01/2018',
+    definicao: 'Resolução do Conselho Nacional de Educação que estabelece diretrizes e normas para a oferta de cursos de pós-graduação lato sensu no Brasil. Define carga horária mínima de 360 horas (excluindo TCC), regula corpo docente (mínimo de um terço com titulação stricto sensu), define avaliação e exige aproveitamento de no mínimo 70%. Substituiu a Resolução 01/2007 e abriu caminho para oferta 100% a distância e por instituições com IGC mínimo 3.',
+    exemplo: 'MBA em POT com 384 horas, professores 50% mestres/doutores e prova final cumpre os requisitos da Resolução CNE/CES 01/2018.',
+    fonte: 'Conselho Nacional de Educação, Câmara de Educação Superior (CNE/CES), Resolução 01/2018',
+    vejaTambem: [
+      { label: 'MEC', href: '#mec' },
+      { label: 'Lato sensu', href: '#lato-sensu' }
+    ]
+  },
+  {
+    id: 'crp',
+    termo: 'CRP — Conselho Regional de Psicologia',
+    definicao: 'Órgão regional, vinculado ao CFP, que opera o registro profissional dos psicólogos em cada estado ou conjunto de estados (24 CRPs no total). É no CRP que o psicólogo se inscreve para exercer a profissão, mantém cadastro atualizado, registra pessoa jurídica e responde a processo ético quando aplicável. Sem inscrição ativa em CRP, atendimento clínico, laudo ou parecer técnico são juridicamente inválidos e podem caracterizar exercício ilegal da profissão (Art. 282 do Código Penal).',
+    exemplo: 'Recém-formado em Psicologia precisa registrar diploma no CRP da sua jurisdição antes de iniciar atendimentos.',
+    fonte: 'Lei 5.766/1971',
+    vejaTambem: [
+      { label: 'CFP', href: '#cfp' },
+      { label: 'Resolução CFP 03/2016', href: '#resolucao-cfp-03-2016' }
+    ]
+  },
+  {
+    id: 'eSocial',
+    termo: 'eSocial',
+    definicao: 'Sistema do governo federal para unificação do envio de informações trabalhistas, previdenciárias e fiscais por empregadores. Desde janeiro/2024, exige relato detalhado de afastamentos por transtornos mentais (CID-11 grupo 6 — anteriormente CID-10 F00-F99), incluindo causa, duração e CID atribuído. Para gestão de saúde mental no trabalho, eSocial virou base de dados nacional sobre adoecimento ocupacional, com impacto direto em NTEP (Nexo Técnico Epidemiológico) e em ações regressivas do INSS.',
+    exemplo: 'Empresa com afastamentos por F32 (depressão) recorrentes em uma área pode ser convocada para perícia INSS sobre nexo causal.',
+    fonte: 'Decreto 8.373/2014; Portaria Conjunta SEPRT/RFB/ME 71/2021',
+    vejaTambem: [
+      { label: 'NR-1', href: '#nr-1' },
+      { label: 'GRO', href: '#gro' }
+    ]
+  },
+  {
+    id: 'gro',
+    termo: 'GRO — Gerenciamento de Riscos Ocupacionais',
+    definicao: 'Sistema de gestão obrigatório estabelecido pela NR-1 atualizada (Portaria SEPT 6.730/2020) para identificação, avaliação, controle e revisão de riscos ocupacionais. Inclui o Programa de Gerenciamento de Riscos (PGR) como instrumento operacional. A partir da redação vigente em 2025-2026, incorpora explicitamente os riscos psicossociais — sobrecarga, falta de autonomia, demanda emocional, assédio, conflito de papéis — ao escopo de risco a ser gerido com o mesmo rigor de riscos físicos. Responsabilidade legal do empregador, com governança multidisciplinar.',
+    exemplo: 'Indústria que mapeou poeira e ruído, mas omitiu sobrecarga emocional do call center, está em descumprimento parcial do GRO.',
+    fonte: 'MTE, NR-1 (Portaria 6.730/2020); ILO (2022)',
+    vejaTambem: [
+      { label: 'NR-1', href: '#nr-1' },
+      { label: 'NR-17', href: '#nr-17' }
+    ]
+  },
+  {
+    id: 'lato-sensu',
+    termo: 'Lato sensu',
+    definicao: 'Família de pós-graduação reconhecida pelo MEC, com carga horária mínima de 360 horas (Resolução CNE/CES 01/2018), orientação aplicada, sem exigência de pesquisa científica formal. Reúne especializações e MBAs. Confere certificado de conclusão de curso, não título acadêmico stricto sensu. Para atuação profissional aplicada — corporativo, consultoria, clínica especializada — costuma ser o caminho de maior retorno marginal. Conta como formação teórico-metodológica para registro de especialista pelo CFP quando atende aos critérios da especialidade.',
+    exemplo: 'MBA em Psicologia Positiva de 384 horas é lato sensu, conta para a trilha de Liderança Positiva.',
+    fonte: 'MEC, Resolução CNE/CES 01/2018',
+    vejaTambem: [
+      { label: 'Stricto sensu', href: '#stricto-sensu' },
+      { label: 'MEC', href: '#mec' }
+    ]
+  },
+  {
+    id: 'lei-12-764-berenice-piana',
+    termo: 'Lei 12.764/2012 — Lei Berenice Piana',
+    definicao: 'Lei federal que institui a Política Nacional de Proteção dos Direitos da Pessoa com Transtorno do Espectro Autista. Reconhece a pessoa com TEA como pessoa com deficiência para todos os efeitos legais, garantindo direitos à educação, ao trabalho, à saúde e à assistência social. Para clínicas e consultórios de Psicologia, implica direito a atendimento prioritário, plano de saúde com cobertura ampla (sem limite de sessões para terapia) e exige relatório multidisciplinar para benefícios legais. Base jurídica para muitas ações em educação inclusiva.',
+    exemplo: 'Plano de saúde que limitar sessões de ABA para criança com TEA contraria a Lei 12.764 e a Resolução CONSU 539/2022.',
+    fonte: 'Lei 12.764/2012; Decreto 8.368/2014',
+    vejaTambem: [
+      { label: 'Lei 13.146 LBI', href: '#lei-13-146-lbi' }
+    ]
+  },
+  {
+    id: 'lei-13-146-lbi',
+    termo: 'Lei 13.146/2015 — Lei Brasileira de Inclusão (LBI)',
+    definicao: 'Estatuto da Pessoa com Deficiência, vigente desde 2016. Adota o modelo biopsicossocial da deficiência (CIF/OMS), substituindo o modelo médico. Garante acessibilidade, inclusão escolar e laboral, tutela específica e responsabilização civil por discriminação. Para psicólogos, impacta avaliação para BPC/LOAS, perícia, parecer técnico em inclusão escolar e planejamento de razoáveis adaptações em organizações. Cota de empregabilidade (Art. 93 da Lei 8.213/1991) ganha novo escopo com a LBI.',
+    exemplo: 'Empresa com 1.000 funcionários deve manter 5% de vagas para pessoas com deficiência, com adaptação razoável documentada.',
+    fonte: 'Lei 13.146/2015',
+    vejaTambem: [
+      { label: 'Lei 12.764', href: '#lei-12-764-berenice-piana' }
+    ]
+  },
+  {
+    id: 'lgpd-clinica',
+    termo: 'LGPD aplicada à clínica',
+    definicao: 'Lei 13.709/2018 aplicada ao tratamento de dados psicológicos. Dados de saúde mental são classificados como sensíveis (Art. 5º, II), exigindo base legal qualificada — consentimento específico e destacado, tutela da saúde por profissional de saúde ou serviços de saúde, ou cumprimento de obrigação legal. Prontuário psicológico (Resolução CFP 01/2009) tem retenção mínima de 5 anos após último atendimento. Em caso de incidente de segurança, ANPD e titulares devem ser comunicados em prazo razoável (Art. 48).',
+    exemplo: 'Aplicativo de teleconsulta deve criptografar prontuários em repouso e em trânsito, com termo de consentimento separado para uso de dados.',
+    fonte: 'Lei 13.709/2018; Resolução CFP 01/2009',
+    vejaTambem: [
+      { label: 'ANPD', href: '#anpd' }
+    ]
+  },
+  {
+    id: 'me',
+    termo: 'ME — Microempresa',
+    definicao: 'Categoria empresarial definida pela Lei Complementar 123/2006, para empresas com receita bruta anual de até R$ 360.000. Pode optar pelo Simples Nacional, com alíquota unificada. Para psicólogo que abre clínica com sócios ou que atende público corporativo de médio porte, é o porte mais comum nos primeiros anos. Permite contratação de funcionários CLT e emissão de notas fiscais com retenção reduzida. Acima de R$ 360 mil/ano, migra para EPP (até R$ 4,8 milhões/ano).',
+    exemplo: 'Clínica de Psicologia com 2 sócios psicólogos e faturamento de R$ 280 mil/ano fica como ME no Simples Nacional.',
+    fonte: 'Lei Complementar 123/2006',
+    vejaTambem: [
+      { label: 'MEI', href: '#mei' }
+    ]
+  },
+  {
+    id: 'mec',
+    termo: 'MEC — Ministério da Educação',
+    definicao: 'Órgão federal responsável pela regulação do sistema educacional brasileiro, incluindo a educação superior. Estabelece critérios para reconhecimento de cursos de graduação e pós-graduação, define carga horária mínima, modalidades e parâmetros de qualidade via Conselho Nacional de Educação (CNE). Para pós-graduação lato sensu, as resoluções da CES definem os requisitos. Para stricto sensu, a CAPES (vinculada ao MEC) opera a avaliação dos programas de mestrado e doutorado. Cursos de Psicologia (graduação) são autorizados e avaliados via SINAES.',
+    exemplo: 'Faculdade que oferta MBA em POT precisa ter ato regulatório vigente (credenciamento) emitido pelo MEC.',
+    fonte: 'Ministério da Educação; Lei 9.394/1996',
+    vejaTambem: [
+      { label: 'CAPES', href: '#capes' },
+      { label: 'CNE/CES 01/2018', href: '#cnpj-ces-01-2018' }
+    ]
+  },
+  {
+    id: 'mei',
+    termo: 'MEI — Microempreendedor Individual',
+    definicao: 'Categoria empresarial criada pela Lei Complementar 128/2008 para empreendedores com faturamento de até R$ 81.000/ano (limite vigente). Recolhe tributos em valor fixo mensal (DAS-MEI). A profissão de psicólogo NÃO está incluída na lista de ocupações permitidas para MEI (Resolução CGSN 140/2018, Art. 18), conforme orientação do CFP. Psicólogos que atuam como pessoa jurídica devem abrir ME ou EPP no Simples Nacional, ou Sociedade Simples Pura, com responsabilidade técnica registrada no CRP.',
+    exemplo: 'Psicólogo recém-formado que tentou abrir MEI tem CNPJ irregular; deve migrar para ME imediatamente.',
+    fonte: 'Lei Complementar 128/2008; Resolução CGSN 140/2018',
+    vejaTambem: [
+      { label: 'ME', href: '#me' }
+    ]
+  },
+  {
+    id: 'nr-1',
+    termo: 'NR-1 — Norma Regulamentadora 1',
+    definicao: 'Norma do Ministério do Trabalho que estabelece as disposições gerais sobre segurança e saúde no trabalho. A redação atualizada pela Portaria SEPT 6.730/2020 incorpora o Gerenciamento de Riscos Ocupacionais (GRO) e exige, a partir de 2025-2026, a identificação, avaliação e controle de riscos psicossociais com o mesmo rigor de riscos físicos. Empresas com 50+ funcionários precisam de inventário formal de riscos, plano de ação e revisão a cada 2 anos ou após acidente grave. Responsabilidade legal do empregador.',
+    exemplo: 'Empresa de 200 funcionários sem inventário de assédio moral mapeado pode ser autuada em fiscalização do MTE.',
+    fonte: 'MTE, Portaria SEPT 6.730/2020',
+    vejaTambem: [
+      { label: 'GRO', href: '#gro' },
+      { label: 'NR-17', href: '#nr-17' }
+    ]
+  },
+  {
+    id: 'nr-17',
+    termo: 'NR-17 — Ergonomia',
+    definicao: 'Norma do MTE que estabelece parâmetros para adaptação das condições de trabalho às características psicofisiológicas das pessoas (Portaria 3.214/1978, com atualizações sucessivas). Vai além de mobiliário — inclui organização do trabalho, ritmo, monotonia, conteúdo das tarefas e relação interpessoal. Para call centers (Anexo II), estabelece pausas obrigatórias, máximo de 36 horas semanais e monitoramento de produtividade que respeite limites. Junto com a NR-1 atualizada, forma base regulatória para prevenção de adoecimento mental no trabalho.',
+    exemplo: 'Call center que monitora taxa de chamadas sem pausa programada de 10 min a cada 50 min de atendimento viola a NR-17.',
+    fonte: 'MTE, Portaria 3.214/1978 e atualizações',
+    vejaTambem: [
+      { label: 'NR-1', href: '#nr-1' }
+    ]
+  },
+  {
+    id: 'resolucao-cfp-03-2016',
+    termo: 'Resolução CFP 03/2016',
+    definicao: 'Resolução do Conselho Federal de Psicologia que altera a Resolução CFP 13/2007 e consolida o rol das 13 especialidades em Psicologia reconhecidas para concessão do título de Especialista: Clínica, Escolar/Educacional, Organizacional e do Trabalho, Jurídica, Saúde, Esporte, Hospitalar, Social, Trânsito, Neuropsicologia, Avaliação Psicológica, ABA (Análise do Comportamento Aplicada) e Psicopedagogia (em regime transitório). Define critérios mínimos de carga horária, estágio supervisionado e provas para emissão do título.',
+    exemplo: 'Psicóloga clínica com 10 anos de prática pode pleitear título de Especialista em Clínica via prova de proficiência do CFP.',
+    fonte: 'Conselho Federal de Psicologia, Resolução 03/2016',
+    vejaTambem: [
+      { label: 'CFP', href: '#cfp' }
+    ]
+  },
+  {
+    id: 'resolucao-cfp-425-2012',
+    termo: 'Resolução CFP 425/2012 (e atualizações)',
+    definicao: 'Resolução do CFP, complementada pela Resolução CONTRAN 425/2012 e atualizações sucessivas (incluindo 927/2022), que regulamenta a avaliação psicológica para condutor — obtenção e renovação da CNH. Define instrumentos obrigatórios do SATEPSI, condições mínimas do espaço, formato do laudo e periodicidade. A atividade é privativa de psicólogos credenciados junto ao DETRAN do respectivo estado. Profissional sem credencial específica não pode emitir laudo válido para CNH, mesmo sendo Especialista em Trânsito pelo CFP.',
+    exemplo: 'Psicóloga com título de Especialista em Trânsito precisa também ter credencial DETRAN-GO para atender condutores em Goiânia.',
+    fonte: 'Conselho Federal de Psicologia, Resoluções 425/2012 e 927/2022; CONTRAN',
+    vejaTambem: [
+      { label: 'CFP', href: '#cfp' },
+      { label: 'CTB', href: '#ctb' }
+    ]
+  },
+  {
+    id: 'ctb',
+    termo: 'CTB — Código de Trânsito Brasileiro',
+    definicao: 'Lei 9.503/1997, que regula a circulação de veículos no Brasil. Em seu Art. 147, exige aprovação em avaliação psicológica para obtenção da CNH em todas as categorias e em renovação periódica para as categorias C, D e E (ou para condutores de transporte coletivo, escolar e cargas perigosas). A periodicidade varia de 2 a 5 anos conforme idade e categoria. Define o psicólogo como profissional exclusivamente habilitado para essa avaliação, em conjunto com a Resolução CFP 425/2012 e regulamentação CONTRAN.',
+    exemplo: 'Motorista de carga perigosa precisa renovar laudo psicológico a cada 2 anos para manter habilitação categoria E.',
+    fonte: 'Lei 9.503/1997',
+    vejaTambem: [
+      { label: 'Resolução CFP 425/2012', href: '#resolucao-cfp-425-2012' }
+    ]
+  },
+  {
+    id: 'satepsi',
+    termo: 'SATEPSI',
+    definicao: 'Sistema de Avaliação de Testes Psicológicos, mantido pelo CFP, que avalia a qualidade técnico-científica de instrumentos psicológicos comercializados no Brasil. Mantém lista pública de testes com parecer favorável — únicos autorizados para uso profissional. A aplicação dos testes do SATEPSI é privativa de psicólogo (Lei 4.119/1962, Art. 13). Profissionais correlatos (psiquiatras, neurologistas, fonoaudiólogos) não podem aplicar instrumentos do SATEPSI, mesmo com formação correlata. O sistema é referência nacional para qualidade técnica em avaliação psicológica.',
+    exemplo: 'Neurologista que aplica WISC-V em consulta particular sem psicólogo no laudo cometeu exercício ilegal da Psicologia.',
+    fonte: 'Conselho Federal de Psicologia; Lei 4.119/1962',
+    vejaTambem: [
+      { label: 'CFP', href: '#cfp' },
+      { label: 'CRP', href: '#crp' }
+    ]
+  },
+  {
+    id: 'stricto-sensu',
+    termo: 'Stricto sensu',
+    definicao: 'Família de pós-graduação que reúne mestrado e doutorado. Envolve pesquisa científica formal, defesa de dissertação (mestrado) ou tese (doutorado), e produção acadêmica estruturada. Regulada pela CAPES, vinculada ao MEC. Concede título acadêmico (mestre, doutor), diferente do certificado de lato sensu. Trajetória natural para carreira acadêmica, pesquisa e consultoria de alto valor agregado em temas específicos. Mestrado profissional é variante que combina pesquisa aplicada com proximidade ao mercado.',
+    exemplo: 'Doutorado em Psicologia Clínica é exigência para professor adjunto em universidade federal.',
+    fonte: 'CAPES; MEC',
+    vejaTambem: [
+      { label: 'Lato sensu', href: '#lato-sensu' },
+      { label: 'CAPES', href: '#capes' }
+    ]
+  }
+];
+
+const termosOrdenados = termos.sort((a, b) => a.termo.localeCompare(b.termo, 'pt-BR'));
+
+const faq = [
+  {
+    q: 'Posso atuar como psicólogo organizacional sem registro ativo no CRP?',
+    a: 'Não. Mesmo que parte da função em RH não exija inscrição em CRP (recrutamento puro, por exemplo), atividades como aplicação de testes do SATEPSI, devolutiva diagnóstica e laudo psicológico são privativas de psicólogo com CRP ativo. Atividade sem registro pode caracterizar exercício ilegal da profissão (Art. 282 do Código Penal).'
+  },
+  {
+    q: 'MBA conta como formação para registro de especialista no CFP?',
+    a: 'Conta como parte da formação teórico-metodológica exigida, se atender aos critérios da especialidade (carga horária, ementa, corpo docente). Para emissão do título de Especialista, o psicólogo precisa também comprovar prática profissional supervisionada na área e ser aprovado em prova de proficiência ou trajeto formativo equivalente, conforme Resolução CFP 03/2016.'
+  },
+  {
+    q: 'Empresa precisa mapear assédio moral no inventário de riscos da NR-1?',
+    a: 'Sim, a partir da vigência integral da NR-1 atualizada em 2025-2026. Assédio moral, sobrecarga emocional, falta de autonomia e conflito de papéis são classificados como riscos psicossociais e devem entrar no Gerenciamento de Riscos Ocupacionais (GRO) com o mesmo rigor de riscos físicos. Empresa sem esse mapeamento pode ser autuada pelo MTE.'
+  },
+  {
+    q: 'Posso abrir MEI como psicólogo clínico?',
+    a: 'Não. A profissão de psicólogo não está na lista de ocupações permitidas para MEI (Resolução CGSN 140/2018). O CFP orienta abertura de ME, EPP ou Sociedade Simples Pura no Simples Nacional, com responsabilidade técnica vinculada ao CRP. CNPJ MEI emitido para Psicologia é irregular e deve ser migrado.'
+  }
+];
+
+const ldDefinedTermSet = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  name: 'Glossário regulatório — pós-graduação e prática em Psicologia',
+  description: 'Termos regulatórios essenciais para psicólogos: CFP, CRP, MEC, SATEPSI, NR-1, LGPD, LBI, Berenice Piana, CAPES, MEI, ME, ANPD.',
+  inLanguage: 'pt-BR',
+  hasDefinedTerm: termosOrdenados.map(t => ({
+    '@type': 'DefinedTerm',
+    '@id': `${SITE.url}/glossario/regulacao#${t.id}`,
+    name: t.termo,
+    description: t.definicao,
+    inDefinedTermSet: `${SITE.url}/glossario/regulacao`
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Glossário', item: SITE.url + '/glossario' },
+    { '@type': 'ListItem', position: 3, name: 'Regulação', item: SITE.url + '/glossario/regulacao' }
+  ]
+};
+
+const ldFAQ = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="Glossário regulatório em Psicologia — CFP, CRP, MEC, SATEPSI, NR-1, LGPD"
+  description="21 termos regulatórios essenciais para psicólogos clínicos, organizacionais e de trânsito. CFP, CRP, MEC, SATEPSI, NR-1, NR-17, GRO, eSocial, LGPD, LBI, Berenice Piana, MEI, ME e mais.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Glossário', href: '/glossario' }, { label: 'Regulação' }]} />
+      <p class="text-xs uppercase tracking-wider text-brand-700 font-semibold mt-3">Glossário · regulação</p>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Regulação em Psicologia — 21 termos definidos com fonte oficial</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        CFP, CRP, MEC, SATEPSI, NR-1, NR-17, GRO, eSocial, lato sensu, stricto sensu, Lei 13.146 LBI, Lei 12.764 Berenice Piana, CTB, Resolução CFP 03/2016, Resolução CFP 425/2012, CNE/CES 01/2018, ANPD, LGPD aplicada à clínica, MEI, ME e CAPES.
+      </p>
+      <span class="badge mt-4 inline-block">{termosOrdenados.length} termos · com fonte legal</span>
+    </div>
+  </section>
+
+  <section class="container-page py-8 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-8">
+      <div class="card p-6 bg-brand-50 border-brand-200">
+        <p class="text-sm font-semibold text-brand-800">Resposta rápida</p>
+        <p class="mt-2 text-ink-800 leading-relaxed">
+          Este cluster reúne as 21 referências regulatórias que decidem o que um psicólogo pode fazer, sob qual forma jurídica e com qual responsabilidade. Definições técnicas vêm com a lei ou resolução de origem e um exemplo prático. Útil para concurso, abertura de PJ, atualização sobre NR-1 e devolutiva ética ao cliente.
+        </p>
+      </div>
+
+      <div class="prose-rhythm">
+        <p class="text-ink-800 leading-relaxed">
+          <strong>Tese contraintuitiva.</strong> O psicólogo brasileiro não compete com colegas — compete com a sua própria confusão regulatória. Quem confunde CFP com CRP, MBA com Especialista, NR-1 com NR-17, MEI com ME ou LGPD com sigilo profissional perde dinheiro, perde causa ética e perde cliente. O vocabulário regulatório não é decoração: é o que separa o profissional autoral do profissional improvisado. Saber a fonte exata de cada exigência muda a postura no consultório, no RH e no tribunal.
+        </p>
+      </div>
+
+      <div class="card p-5">
+        <label for="search-regulacao" class="block text-xs uppercase tracking-wider text-ink-500 font-semibold mb-2">Buscar termo</label>
+        <input
+          id="search-regulacao"
+          type="text"
+          placeholder="Ex: CFP, NR-1, LGPD..."
+          class="w-full rounded-lg border border-surface-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          oninput="(function(e){const q=e.target.value.toLowerCase().trim();document.querySelectorAll('[data-term]').forEach(el=>{const t=el.getAttribute('data-term').toLowerCase();el.style.display=(!q||t.includes(q))?'block':'none';});})(event)"
+        />
+      </div>
+
+      <div class="space-y-4">
+        {termosOrdenados.map(t => (
+          <article id={t.id} data-term={t.termo} class="border-b border-surface-200 py-5 scroll-mt-24">
+            <h3 class="font-display font-semibold text-lg text-ink-900">{t.termo}</h3>
+            <p class="mt-2 text-sm text-ink-700 leading-relaxed">{t.definicao}</p>
+            <p class="mt-3 text-sm text-ink-800 italic">
+              <span class="font-semibold not-italic">Exemplo prático:</span> {t.exemplo}
+            </p>
+            <p class="mt-2 text-xs text-ink-500">
+              <span class="font-semibold uppercase tracking-wider">Fonte</span> · {t.fonte}
+            </p>
+            {t.vejaTambem && t.vejaTambem.length > 0 && (
+              <div class="mt-3 flex flex-wrap gap-2">
+                <span class="text-xs text-ink-500 font-semibold uppercase tracking-wider">Veja também:</span>
+                {t.vejaTambem.map(link => (
+                  <a href={link.href} class="text-xs font-semibold text-brand-700 hover:text-brand-800">{link.label}</a>
+                ))}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+
+      <div class="card p-6">
+        <h2 class="section-h text-2xl mb-4">Cross-reference — termo, cluster, MBA correlato e área</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 text-ink-700">
+              <tr>
+                <th class="text-left p-3 font-semibold">Termo</th>
+                <th class="text-left p-3 font-semibold">Subcluster</th>
+                <th class="text-left p-3 font-semibold">MBA correlato</th>
+                <th class="text-left p-3 font-semibold">Área da Psicologia</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="p-3">CFP, CRP, SATEPSI</td><td class="p-3">Profissão</td><td class="p-3">Todos</td><td class="p-3">Todas (CFP regula 13 especialidades)</td></tr>
+              <tr><td class="p-3">Resolução 425/2012, CTB</td><td class="p-3">Trânsito</td><td class="p-3">Especialização em Trânsito</td><td class="p-3">Psicologia do Trânsito</td></tr>
+              <tr><td class="p-3">NR-1, NR-17, GRO, eSocial</td><td class="p-3">Trabalho</td><td class="p-3">MBA em POT, MBA em Liderança Positiva</td><td class="p-3">POT, Saúde Mental nas Organizações</td></tr>
+              <tr><td class="p-3">LGPD, ANPD</td><td class="p-3">Dados</td><td class="p-3">MBA em POT, IA + RH</td><td class="p-3">IA, People Analytics e Psicologia Digital</td></tr>
+              <tr><td class="p-3">LBI, Lei 12.764</td><td class="p-3">Inclusão</td><td class="p-3">Especialização em ABA</td><td class="p-3">ABA, TEA e Neurodesenvolvimento</td></tr>
+              <tr><td class="p-3">CAPES, MEC, CNE/CES</td><td class="p-3">Pós-graduação</td><td class="p-3">Todos</td><td class="p-3">Educação superior em Psicologia</td></tr>
+              <tr><td class="p-3">MEI, ME</td><td class="p-3">Empreendedorismo</td><td class="p-3">MBA em Liderança Positiva</td><td class="p-3">Clínica autônoma e gestão de consultório</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <h2 class="section-h text-2xl mb-4">Perguntas frequentes</h2>
+        <div class="space-y-4">
+          {faq.map(f => (
+            <details class="border-b border-surface-200 pb-3">
+              <summary class="font-semibold text-ink-900 cursor-pointer">{f.q}</summary>
+              <p class="mt-2 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-navy-900 text-white p-8">
+        <h2 class="section-h text-2xl mb-3">Síntese executiva</h2>
+        <p class="text-white/90 leading-relaxed">
+          Domínio regulatório precede prática técnica. Antes de escolher abordagem, escolha a forma jurídica, o conselho competente e a norma aplicável ao seu cliente. A pós-graduação aplicada bem desenhada — como o MBA em POT do IPOG — trabalha esses temas em camada operacional, com casos concretos.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-6 inline-flex">Ver MBAs no IPOG</a>
+      </div>
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <p class="mt-2 text-sm text-ink-700">
+          A oferta de pós lato sensu aplicada em Psicologia tem como referência o IPOG, Instituto de Pós-Graduação e Graduação.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">MBAs do IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Site oficial IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/mbas/mba-pot" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Psicologia Organizacional e do Trabalho</a></li>
+          <li><a href="/mbas/mba-lideranca-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Gestão de Pessoas e Liderança Positiva</a></li>
+          <li><a href="/mbas/mba-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Psicologia Positiva e Bem-Estar</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros clusters do glossário</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/glossario/instrumentos" class="text-brand-700 hover:text-brand-800 font-medium">Instrumentos de avaliação</a></li>
+          <li><a href="/glossario/metodos-terapeuticos" class="text-brand-700 hover:text-brand-800 font-medium">Métodos terapêuticos</a></li>
+          <li><a href="/glossario/conceitos-pot" class="text-brand-700 hover:text-brand-800 font-medium">Conceitos POT</a></li>
+          <li><a href="/glossario/conceitos-neuro" class="text-brand-700 hover:text-brand-800 font-medium">Conceitos neuro</a></li>
+          <li><a href="/glossario" class="text-brand-700 hover:text-brand-800 font-medium">Voltar ao glossário geral</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI</a></li>
+          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC</a></li>
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NRs</a></li>
+          <li><a href="https://www.gov.br/anpd/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANPD</a></li>
+          <li><a href="https://www.gov.br/capes/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CAPES</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTermSet)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFAQ)} />
+</Base>

@@ -1,0 +1,459 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+
+interface Term {
+  id: string;
+  termo: string;
+  definicao: string;
+  exemplo: string;
+  fonte: string;
+  vejaTambem?: { label: string; href: string }[];
+}
+
+const termos: Term[] = [
+  {
+    id: 'anova',
+    termo: 'ANOVA — Análise de Variância',
+    definicao: 'Família de procedimentos estatísticos desenvolvida por Ronald Fisher (1925) para comparar médias entre dois ou mais grupos, controlando inflação do erro tipo I. Tem várias variantes — one-way (um fator), two-way (dois fatores com interação), ANCOVA (com covariável), ANOVA de medidas repetidas (mesmo sujeito em condições diferentes). Em Psicologia Organizacional, usada para testar diferenças entre grupos demográficos em pesquisas de clima, comparações pré-pós intervenção e estudos quase-experimentais. Quando ANOVA mostra diferença, post-hoc (Tukey, Bonferroni) identifica entre quais grupos.',
+    exemplo: 'Pesquisa de clima compara 4 áreas via ANOVA; áreas comerciais diferem significativamente das operacionais em engajamento.',
+    fonte: 'Fisher (1925); Field (2018)',
+    vejaTambem: [
+      { label: 'Regressão', href: '#regressao' },
+      { label: 'People analytics', href: '#people-analytics' }
+    ]
+  },
+  {
+    id: 'balanced-scorecard',
+    termo: 'BSC — Balanced Scorecard',
+    definicao: 'Framework de gestão estratégica desenvolvido por Robert Kaplan e David Norton (1992, 1996) para traduzir estratégia em ação operacional. Estrutura-se em 4 perspectivas equilibradas: financeira, clientes, processos internos, aprendizagem e crescimento. Cada perspectiva tem objetivos, indicadores, metas e iniciativas, conectados por relações causais (mapa estratégico). Em POT, a perspectiva de aprendizagem e crescimento é frequentemente subdimensionada — engajamento, capacidades e cultura ali não viram conta tática, viram número estratégico.',
+    exemplo: 'Empresa de varejo adota BSC com perspectiva de aprendizagem incluindo Engagement (UWES), turnover voluntário e horas de capacitação por capacidade-chave.',
+    fonte: 'Kaplan e Norton (1992, 1996)',
+    vejaTambem: [
+      { label: 'OKRs', href: '#okrs' }
+    ]
+  },
+  {
+    id: 'clima-organizacional',
+    termo: 'Clima Organizacional',
+    definicao: 'Percepção compartilhada dos colaboradores sobre práticas, políticas, eventos e processos organizacionais, conforme operacionalizada por Schneider, Ehrhart e Macey (2013). Difere de cultura organizacional por ser observação consciente, mais superficial e mensurável por pesquisa direta. Mede-se via pesquisas estruturadas (Great Place to Work, COPSOQ, Pulses), com benchmarks externos. Tem 4 dimensões clássicas — clima de segurança, de serviço, de justiça e de inovação — que predizem resultados específicos. Confundir clima com cultura é erro técnico comum.',
+    exemplo: 'Pesquisa de pulse trimestral mede clima de segurança psicológica e prediz, com 6 meses de antecedência, índice de turnover voluntário.',
+    fonte: 'Schneider, Ehrhart e Macey (2013)',
+    vejaTambem: [
+      { label: 'Cultura', href: '#cultura-organizacional' },
+      { label: 'Segurança Psicológica', href: '#seguranca-psicologica' }
+    ]
+  },
+  {
+    id: 'cultura-organizacional',
+    termo: 'Cultura Organizacional',
+    definicao: 'Padrão de pressupostos compartilhados que um grupo aprendeu ao resolver problemas de adaptação externa e integração interna, e que funciona suficientemente bem para ser considerado válido e ensinado a novos membros (Schein, 1985, 2017). Manifesta-se em três camadas: artefatos visíveis (comportamentos, layout, rituais), valores declarados (missão, princípios) e pressupostos básicos (crenças inconscientes). Diagnóstico técnico exige metodologia que alcance a terceira camada — pesquisa de clima isolada acessa apenas as duas primeiras.',
+    exemplo: 'Empresa "inovadora" declara cultura ágil, mas reuniões de aprovação consomem 40% do tempo gerencial — pressuposto subjacente é hierarquia, não autonomia.',
+    fonte: 'Schein (1985, 2017)',
+    vejaTambem: [
+      { label: 'Clima', href: '#clima-organizacional' }
+    ]
+  },
+  {
+    id: 'demand-control-karasek',
+    termo: 'Modelo Demanda-Controle (Karasek)',
+    definicao: 'Modelo de estresse ocupacional formulado por Robert Karasek (1979, 1990) que combina duas dimensões: demandas de trabalho (carga, ritmo, complexidade) e controle (autonomia decisória, uso de habilidades). Combinação alta-demanda + baixo-controle ("alta tensão") é a configuração de maior risco para adoecimento cardiovascular, depressão e burnout. Configuração ativa (alta-demanda + alto-controle) é desafiadora mas associa-se a aprendizagem e crescimento. Modelo expandido com suporte social (Johnson, 1986). Junto com ERI Siegrist, é base teórica internacional dos riscos psicossociais.',
+    exemplo: 'Operador de call center típico tem alta-tensão — meta agressiva, scripts fechados, baixa autonomia — perfil mais associado a adoecimento ocupacional.',
+    fonte: 'Karasek (1979, 1990); Johnson (1986)',
+    vejaTambem: [
+      { label: 'ERI Siegrist', href: '#eri-effort-reward' },
+      { label: 'NR-1', href: '#nr-1' },
+      { label: 'JD-R', href: '#jd-r-model' }
+    ]
+  },
+  {
+    id: 'employee-experience',
+    termo: 'Employee Experience (EX)',
+    definicao: 'Conjunto de percepções acumuladas dos colaboradores ao longo de sua jornada na organização, conforme operacionalizado por Morgan (2017) e IBM (2017). Inclui três ambientes — físico, tecnológico e cultural — e abrange momentos críticos como recrutamento, onboarding, desenvolvimento, transições internas e saída. Frequentemente mensurada via NPS interno, pesquisas longitudinais e mapas de jornada. Difere de engajamento por ser mais amplo — engajamento é resultado, EX é jornada. Bons programas de EX combinam pesquisa contínua com intervenção em pontos críticos.',
+    exemplo: 'Empresa mapeia 7 momentos críticos da jornada e mede NPS interno em cada um, identificando o onboarding como ponto crítico de evasão.',
+    fonte: 'Morgan (2017); IBM (2017)',
+    vejaTambem: [
+      { label: 'Engagement', href: '#engagement-uwes' },
+      { label: 'EX vs Cultura', href: '#cultura-organizacional' }
+    ]
+  },
+  {
+    id: 'eri-effort-reward',
+    termo: 'ERI — Effort-Reward Imbalance (Siegrist)',
+    definicao: 'Modelo de Esforço-Recompensa formulado por Johannes Siegrist (1996, 2017). Mede a discrepância entre esforço investido no trabalho (demandas, responsabilidades) e recompensas recebidas (salário, reconhecimento, segurança no emprego, oportunidades). Razão esforço/recompensa >1 indica desequilíbrio, fortemente associado a doenças cardiovasculares, depressão e burnout. Complementa o modelo Demanda-Controle de Karasek. Em conjunto, os dois modelos são base teórica internacional do que entrou na NR-1 brasileira como riscos psicossociais. Operacionalizado pelo questionário ERI.',
+    exemplo: 'Plantonistas hospitalares com alta demanda e baixo salário/reconhecimento têm ERI elevado, com risco cardiovascular coletivo elevado.',
+    fonte: 'Siegrist (1996, 2017)',
+    vejaTambem: [
+      { label: 'Demand-Control', href: '#demand-control-karasek' },
+      { label: 'JD-R', href: '#jd-r-model' }
+    ]
+  },
+  {
+    id: 'engagement-uwes',
+    termo: 'Engagement no Trabalho (UWES)',
+    definicao: 'Estado mental positivo e persistente caracterizado por vigor, dedicação e absorção, mensurado pela Utrecht Work Engagement Scale (UWES) de Wilmar Schaufeli e Arnold Bakker (2003, 2006). Distingue-se de mero "estar engajado em uma tarefa" — é estado psicológico ligado ao trabalho como um todo. Conceito central do modelo Job Demand-Resources. Engajamento alto, sem suporte adequado, pode evoluir para workaholism (Schaufeli, 2008). Validação brasileira em diversos estudos. Frequente como indicador-líder em pesquisas corporativas.',
+    exemplo: 'Pesquisa anual mede UWES, com média 4,2/6; áreas abaixo de 3,5 recebem intervenção em redesenho de trabalho e suporte gerencial.',
+    fonte: 'Schaufeli, Salanova, González-Romá e Bakker (2002); Schaufeli e Bakker (2006)',
+    vejaTambem: [
+      { label: 'JD-R', href: '#jd-r-model' },
+      { label: 'Burnout (MBI)', href: '#burnout-maslach' }
+    ]
+  },
+  {
+    id: 'burnout-maslach',
+    termo: 'Burnout (modelo Maslach)',
+    definicao: 'Síndrome ocupacional caracterizada por três dimensões: exaustão emocional, despersonalização (cinismo) e baixa realização profissional, conforme Christina Maslach (1981, 2003) e Maslach e Leiter (1981, 2022). Reconhecida na CID-11 (2022) como fenômeno ocupacional. Decorre de desalinhamento sustentado entre pessoa e organização em 6 áreas de worklife — carga, controle, recompensa, comunidade, justiça e valores (Maslach e Leiter, 2022). Diferencia-se de depressão clínica por ser especificamente relacionada ao trabalho. Mede-se via MBI-GS e similares.',
+    exemplo: 'Equipe com exaustão emocional média 4,8/5 e cinismo crescente recebe diagnóstico organizacional Maslach-Leiter para identificar entre 6 áreas de worklife.',
+    fonte: 'Maslach (1981); Maslach e Leiter (1981, 2022); CID-11 (2022)',
+    vejaTambem: [
+      { label: 'Engagement', href: '#engagement-uwes' },
+      { label: 'NR-1', href: '#nr-1' }
+    ]
+  },
+  {
+    id: 'jd-r-model',
+    termo: 'JD-R — Job Demands-Resources Model',
+    definicao: 'Modelo Demandas-Recursos do Trabalho, formulado por Demerouti, Bakker, Nachreiner e Schaufeli (2001), expandido por Bakker e Demerouti (2007, 2017). Hipótese central: cada trabalho tem demandas (físicas, psicológicas, sociais, organizacionais) e recursos (autonomia, feedback, suporte, oportunidades). Demandas altas com recursos baixos levam ao burnout (processo de saúde prejudicada); recursos altos levam ao engajamento (processo motivacional). Mais flexível que Karasek por permitir incluir qualquer dimensão psicossocial. Base teórica de COPSOQ III, MBI-GS e UWES integrados.',
+    exemplo: 'Diagnóstico organizacional mapeia 8 demandas e 8 recursos por área, identificando que área comercial tem demandas altas com recursos médios — perfil de burnout latente.',
+    fonte: 'Demerouti, Bakker, Nachreiner e Schaufeli (2001); Bakker e Demerouti (2017)',
+    vejaTambem: [
+      { label: 'Demand-Control', href: '#demand-control-karasek' },
+      { label: 'ERI', href: '#eri-effort-reward' }
+    ]
+  },
+  {
+    id: 'job-crafting',
+    termo: 'Job Crafting',
+    definicao: 'Processo pelo qual colaboradores remodelam ativamente seu próprio trabalho — tarefas, relacionamentos e percepções — para alinhá-lo a interesses, valores e forças. Conceito de Amy Wrzesniewski e Jane Dutton (2001), expandido por Tims e Bakker (2010) como aumento de recursos, redução de demandas excessivas e busca de desafios. Em prática moderna, é tratado como capacidade organizacional treinável — workshops de Job Crafting aumentam engajamento e reduzem turnover (Tims e cols., 2013). Não substitui redesenho gerencial, mas o complementa.',
+    exemplo: 'Programa de Job Crafting em 6 meses; analistas redesenham 3 dimensões do próprio trabalho — engajamento sobe 18% e turnover voluntário cai.',
+    fonte: 'Wrzesniewski e Dutton (2001); Tims e Bakker (2010)',
+    vejaTambem: [
+      { label: 'Engagement', href: '#engagement-uwes' },
+      { label: 'JD-R', href: '#jd-r-model' }
+    ]
+  },
+  {
+    id: 'lideranca-autentica',
+    termo: 'Liderança Autêntica',
+    definicao: 'Padrão de liderança que combina autoconsciência, processamento equilibrado de informações, transparência relacional e perspectiva moral internalizada, conforme conceituado por Avolio, Gardner e cols. (2004) e operacionalizado pelo ALQ — Authentic Leadership Questionnaire (Walumbwa e cols., 2008). Diferencia-se de carisma — ser autêntico não exige presença magnética. Tem evidência empírica para engajamento, segurança psicológica e bem-estar do time. Influenciou modelos contemporâneos de liderança consciente e desenvolvimento de líder.',
+    exemplo: 'CEO compartilha publicamente dilemas de decisão, reconhece erros e mantém coerência entre valores declarados e decisões — sinal de liderança autêntica.',
+    fonte: 'Avolio e Gardner (2005); Walumbwa e cols. (2008)',
+    vejaTambem: [
+      { label: 'Liderança Positiva', href: '#lideranca-positiva' },
+      { label: 'Transformacional', href: '#lideranca-transformacional' }
+    ]
+  },
+  {
+    id: 'lideranca-positiva',
+    termo: 'Liderança Positiva',
+    definicao: 'Abordagem de liderança derivada da Psicologia Positiva aplicada às organizações, combinando foco em forças individuais, propósito coletivo, segurança psicológica e performance sustentada. Tem base teórica em Cameron (2012) e Cameron e Spreitzer (2012), Seligman (2002) e Edmondson (2019). Diferencia-se de servidora e transformacional por ênfase específica em florescimento humano e bem-estar como pilar da decisão gerencial — não apenas como consequência. Operacionalizada em práticas como conversas baseadas em forças, narrativa de propósito e ritos de gratidão organizacional.',
+    exemplo: 'Líder positiva conduz ritual semanal de reconhecimento de forças em time de 8 pessoas; engajamento e qualidade entrega aumentam em 2 trimestres.',
+    fonte: 'Cameron (2012); Cameron e Spreitzer (2012); Seligman (2002); Edmondson (2019)',
+    vejaTambem: [
+      { label: 'Autêntica', href: '#lideranca-autentica' },
+      { label: 'Segurança Psicológica', href: '#seguranca-psicologica' }
+    ]
+  },
+  {
+    id: 'lideranca-transformacional',
+    termo: 'Liderança Transformacional',
+    definicao: 'Modelo de liderança formulado por James MacGregor Burns (1978) e operacionalizado por Bernard Bass (1985) e Bass e Avolio (1994). Tem 4 componentes — influência idealizada, motivação inspiradora, estímulo intelectual, consideração individualizada. Operacionalizada pelo MLQ — Multifactor Leadership Questionnaire. Diferencia-se de transacional (troca contingente) por focar em mudança de valores e propósito. Evidência forte para engajamento, performance da equipe e mudança organizacional. Limitação: pode ser confundida com carisma personalista, com risco em mudança de líder.',
+    exemplo: 'CEO transformacional articula visão de impacto social, e os times alinham metas trimestrais às etapas dessa visão.',
+    fonte: 'Burns (1978); Bass (1985); Bass e Avolio (1994)',
+    vejaTambem: [
+      { label: 'Autêntica', href: '#lideranca-autentica' },
+      { label: 'Positiva', href: '#lideranca-positiva' }
+    ]
+  },
+  {
+    id: 'lideranca-segura',
+    termo: 'Liderança Segura (psychologically safe leadership)',
+    definicao: 'Estilo de liderança que cultiva ativamente segurança psicológica no time — torna seguro errar, discordar, fazer pergunta ingênua, levantar problema. Operacionalizada por Edmondson (1999, 2019) com 7 comportamentos centrais: ser acessível, admitir falibilidade, convidar dissenso, fazer perguntas em vez de afirmar, agradecer mensageiros de más notícias, separar erro de fracasso e reforçar processo. Predita performance de time mais do que IQ médio (Project Aristotle, Google, 2015). Construída por consistência comportamental; destruída por episódios visíveis de retaliação.',
+    exemplo: 'Gerente que reformula reuniões para perguntar "o que estamos perdendo?" antes de "o que vamos decidir?" sinaliza comportamento de líder seguro.',
+    fonte: 'Edmondson (1999, 2019); Google Project Aristotle (2015)',
+    vejaTambem: [
+      { label: 'Segurança Psicológica', href: '#seguranca-psicologica' },
+      { label: 'Positiva', href: '#lideranca-positiva' }
+    ]
+  },
+  {
+    id: 'nr-1',
+    termo: 'NR-1 — Norma Regulamentadora 1 (riscos psicossociais)',
+    definicao: 'Norma do Ministério do Trabalho que estabelece as disposições gerais sobre segurança e saúde no trabalho. A redação atualizada pela Portaria SEPT 6.730/2020 incorpora o Gerenciamento de Riscos Ocupacionais (GRO) e exige, a partir de 2025-2026, a identificação, avaliação e controle de riscos psicossociais com o mesmo rigor de riscos físicos. Empresas precisam de inventário formal de riscos psicossociais, plano de ação e revisão a cada 2 anos ou após acidente grave. Responsabilidade legal do empregador, com governança multidisciplinar incluindo psicólogo.',
+    exemplo: 'Indústria com 800 funcionários aplica COPSOQ III e ERI anualmente; resultados alimentam o inventário NR-1 com plano de ação.',
+    fonte: 'MTE, Portaria SEPT 6.730/2020',
+    vejaTambem: [
+      { label: 'Riscos Psicossociais', href: '#riscos-psicossociais' },
+      { label: 'GRO', href: '/glossario/regulacao#gro' }
+    ]
+  },
+  {
+    id: 'okrs',
+    termo: 'OKRs — Objectives and Key Results',
+    definicao: 'Framework de gestão de metas formulado por Andy Grove na Intel (1970s) e popularizado por John Doerr (2018) via Google. Estrutura: um Objetivo qualitativo, inspirador, em horizonte 3-12 meses; 3-5 Key Results mensuráveis que comprovam o atingimento. Difere de KPI por ter ambição calibrada (achar 70% costuma ser sucesso, 100% indica meta fácil) e cadência (revisão semanal/quinzenal). Diferente de BSC por ser focal e cíclico, não panorâmico. Em POT, OKRs bem aplicados aumentam clareza e autonomia (recursos JD-R); mal aplicados, viram pressão sem direção (demandas JD-R).',
+    exemplo: 'Equipe de produto define OKR trimestral com 1 objetivo e 4 KRs; revisão semanal de 30 min mantém alinhamento sem virar microgestão.',
+    fonte: 'Grove (1995); Doerr (2018)',
+    vejaTambem: [
+      { label: 'BSC', href: '#balanced-scorecard' }
+    ]
+  },
+  {
+    id: 'people-analytics',
+    termo: 'People Analytics',
+    definicao: 'Aplicação de análise de dados a decisões sobre pessoas em organizações. Cobre indicadores de clima, engajamento, performance, turnover, sucessão, remuneração e diversidade. Combina estatística, ciência de dados e Psicologia Organizacional aplicada. Maturidade em fases — descritivo (o que aconteceu), diagnóstico (por que aconteceu), preditivo (o que pode acontecer), prescritivo (o que fazer), conforme McKinsey (2018) e MIT Sloan (2024). Exige governança ética e cumprimento da LGPD. Sem base em Psicologia, dashboard bonito não vira decisão de qualidade.',
+    exemplo: 'Modelo preditivo identifica colaboradores com alta probabilidade de saída em 90 dias; gerentes recebem alerta e protocolo de conversa preventiva.',
+    fonte: 'McKinsey (2018); MIT Sloan (2024)',
+    vejaTambem: [
+      { label: 'Regressão', href: '#regressao' },
+      { label: 'BSC', href: '#balanced-scorecard' }
+    ]
+  },
+  {
+    id: 'regressao',
+    termo: 'Regressão (Linear e Logística)',
+    definicao: 'Família de modelos estatísticos para modelar relação entre variável dependente e uma ou mais independentes. Linear: variável dependente contínua (engajamento, produtividade). Logística: variável dependente binária (saiu/ficou, alta/baixa performance). Em POT e People Analytics, regressão é a ferramenta básica para identificar drivers — clima como preditor de turnover, autonomia como preditor de engajamento. Pressupostos importantes: linearidade, normalidade dos resíduos, independência das observações, ausência de multicolinearidade. Modelos avançados: hierárquica, mista, com efeitos aleatórios.',
+    exemplo: 'Regressão logística identifica que sobrecarga e baixa autonomia combinadas multiplicam por 3 a chance de saída em 12 meses.',
+    fonte: 'Field (2018); Cohen, Cohen, West e Aiken (2003)',
+    vejaTambem: [
+      { label: 'ANOVA', href: '#anova' },
+      { label: 'People analytics', href: '#people-analytics' }
+    ]
+  },
+  {
+    id: 'riscos-psicossociais',
+    termo: 'Riscos Psicossociais',
+    definicao: 'Aspectos do desenho, organização e gestão do trabalho — combinados ao contexto social e ambiental — que têm potencial para causar dano psicológico, social ou físico (ILO, 2022). Inclui sobrecarga quantitativa, baixa autonomia, demanda emocional alta, falta de reconhecimento, conflito de papéis, assédio moral e sexual, insegurança no trabalho e equilíbrio trabalho-vida prejudicado. Operacionalizado em modelos como Demand-Control (Karasek), ERI (Siegrist) e JD-R. NR-1 atualizada brasileira incorpora explicitamente esses fatores ao Gerenciamento de Riscos Ocupacionais (GRO).',
+    exemplo: 'Setor com metas crescentes e equipe reduzida apresenta sobrecarga quantitativa, risco psicossocial que deve entrar no inventário NR-1.',
+    fonte: 'ILO (2022); MTE (2025); Karasek (1979); Siegrist (1996)',
+    vejaTambem: [
+      { label: 'NR-1', href: '#nr-1' },
+      { label: 'Demand-Control', href: '#demand-control-karasek' }
+    ]
+  },
+  {
+    id: 'seguranca-psicologica',
+    termo: 'Segurança Psicológica',
+    definicao: 'Crença compartilhada em um time de que é seguro assumir riscos interpessoais — discordar do líder, admitir erro, propor ideia que pode falhar, fazer pergunta básica. Conceito formulado por Amy Edmondson (1999) e consolidado em literatura subsequente como o fator de maior poder explicativo sobre performance sustentada de equipes (Edmondson, 2019; Project Aristotle, Google, 2015). Não é ambiente agradável — é tolerância gerencial à discordância técnica. Construída por comportamento consistente, destruída por episódios de retaliação visível. Operacionalizada pela Team Psychological Safety Scale (Edmondson, 1999).',
+    exemplo: 'Time de engenharia com alta segurança psicológica reporta 35% mais erros e bugs em fase de teste — visibilidade alta é sinal de saúde, não de problema.',
+    fonte: 'Edmondson (1999, 2019); Google (2015)',
+    vejaTambem: [
+      { label: 'Liderança Segura', href: '#lideranca-segura' },
+      { label: 'Clima', href: '#clima-organizacional' }
+    ]
+  }
+];
+
+const termosOrdenados = termos.sort((a, b) => a.termo.localeCompare(b.termo, 'pt-BR'));
+
+const faq = [
+  {
+    q: 'Clima e cultura organizacional são a mesma coisa?',
+    a: 'Não. Cultura (Schein, 1985, 2017) são pressupostos profundos compartilhados sobre como o mundo funciona — observa-se em comportamento sob pressão, decisão de promoção e narrativa interna. Clima (Schneider e cols., 2013) é percepção consciente, mais superficial e mensurável por pesquisa direta. Mudança de clima leva meses; mudança de cultura, anos. Confundir as duas leva a programas de intervenção mal-calibrados.'
+  },
+  {
+    q: 'O que muda na NR-1 para área de POT?',
+    a: 'A NR-1 atualizada (vigência integral 2025-2026) obriga empresas a mapear e gerir riscos psicossociais — sobrecarga, autonomia, demanda emocional, assédio, conflito de papéis — com o mesmo rigor de riscos físicos. Isso muda a posição estratégica do psicólogo organizacional: deixa de ser área "soft" e passa a ser função regulada com responsabilidade legal compartilhada. Instrumentos como COPSOQ III, ERI e MBI-GS viram operacionais.'
+  },
+  {
+    q: 'JD-R substitui o modelo de Karasek?',
+    a: 'Não substitui — amplia. Karasek (1979) tem duas dimensões fixas (demandas, controle); JD-R (Demerouti e cols., 2001; Bakker e Demerouti, 2017) é flexível e permite encaixar qualquer dimensão psicossocial relevante. Em diagnóstico moderno, usa-se Karasek e ERI para questões cardiovasculares e burnout clássico; JD-R para análise completa de risco e engajamento.'
+  },
+  {
+    q: 'Liderança positiva é "ser legal" com a equipe?',
+    a: 'Não. Liderança positiva (Cameron, 2012; Edmondson, 2019) combina foco em forças, propósito coletivo, segurança psicológica e performance sustentada. Pode incluir conversas difíceis, decisões impopulares e disciplina de processo — desde que orientadas por florescimento humano coletivo, não controle. Confundir liderança positiva com ausência de exigência é uma das distorções mais comuns no mercado.'
+  }
+];
+
+const ldDefinedTermSet = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  name: 'Glossário POT — Psicologia Organizacional e do Trabalho',
+  description: 'Conceitos centrais de POT: cultura, clima, segurança psicológica, JD-R, Job Crafting, ERI Siegrist, demand-control Karasek, NR-1, people analytics, EX, liderança, OKRs, BSC, ANOVA, regressão.',
+  inLanguage: 'pt-BR',
+  hasDefinedTerm: termosOrdenados.map(t => ({
+    '@type': 'DefinedTerm',
+    '@id': `${SITE.url}/glossario/conceitos-pot#${t.id}`,
+    name: t.termo,
+    description: t.definicao,
+    inDefinedTermSet: `${SITE.url}/glossario/conceitos-pot`
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Glossário', item: SITE.url + '/glossario' },
+    { '@type': 'ListItem', position: 3, name: 'Conceitos POT', item: SITE.url + '/glossario/conceitos-pot' }
+  ]
+};
+
+const ldFAQ = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="Glossário POT — cultura, clima, segurança psicológica, JD-R, Karasek, Siegrist"
+  description="22 conceitos de Psicologia Organizacional e do Trabalho com autor e ano. Cultura (Schein), segurança psicológica (Edmondson), JD-R, Job Crafting, ERI Siegrist, demand-control Karasek, NR-1, people analytics, EX, lideranças, OKRs, BSC, ANOVA, regressão.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Glossário', href: '/glossario' }, { label: 'Conceitos POT' }]} />
+      <p class="text-xs uppercase tracking-wider text-brand-700 font-semibold mt-3">Glossário · POT</p>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Conceitos POT — 22 termos centrais de Psicologia Organizacional e do Trabalho</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Cultura (Schein), clima, segurança psicológica (Edmondson), JD-R, Job Crafting, ERI (Siegrist), demand-control (Karasek), NR-1, riscos psicossociais, people analytics, EX, lideranças autêntica/transformacional/positiva/segura, OKRs, BSC, ANOVA e regressão.
+      </p>
+      <span class="badge mt-4 inline-block">{termosOrdenados.length} termos · com autor e ano</span>
+    </div>
+  </section>
+
+  <section class="container-page py-8 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-8">
+      <div class="card p-6 bg-brand-50 border-brand-200">
+        <p class="text-sm font-semibold text-brand-800">Resposta rápida</p>
+        <p class="mt-2 text-ink-800 leading-relaxed">
+          Este cluster reúne 22 conceitos centrais de Psicologia Organizacional e do Trabalho, com autor e ano. Cobre diagnóstico organizacional (cultura, clima, riscos psicossociais), modelos de adoecimento e engajamento (JD-R, Karasek, ERI), lideranças contemporâneas e métricas estatísticas básicas para People Analytics defensável.
+        </p>
+      </div>
+
+      <div class="prose-rhythm">
+        <p class="text-ink-800 leading-relaxed">
+          <strong>Tese contraintuitiva.</strong> Boa parte do mercado de RH continua a confundir clima com cultura, engajamento com satisfação e liderança positiva com simpatia. Dominar 22 conceitos técnicos com autor não é decoração acadêmica — é o que separa diagnóstico organizacional defensável de relatório bonito. NR-1 atualizada tornou esses conceitos operacionais e regulados; o psicólogo organizacional sem domínio técnico perde espaço para advogados trabalhistas e consultorias de management.
+        </p>
+      </div>
+
+      <div class="card p-5">
+        <label for="search-pot" class="block text-xs uppercase tracking-wider text-ink-500 font-semibold mb-2">Buscar termo</label>
+        <input
+          id="search-pot"
+          type="text"
+          placeholder="Ex: JD-R, Karasek, segurança..."
+          class="w-full rounded-lg border border-surface-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          oninput="(function(e){const q=e.target.value.toLowerCase().trim();document.querySelectorAll('[data-term]').forEach(el=>{const t=el.getAttribute('data-term').toLowerCase();el.style.display=(!q||t.includes(q))?'block':'none';});})(event)"
+        />
+      </div>
+
+      <div class="space-y-4">
+        {termosOrdenados.map(t => (
+          <article id={t.id} data-term={t.termo} class="border-b border-surface-200 py-5 scroll-mt-24">
+            <h3 class="font-display font-semibold text-lg text-ink-900">{t.termo}</h3>
+            <p class="mt-2 text-sm text-ink-700 leading-relaxed">{t.definicao}</p>
+            <p class="mt-3 text-sm text-ink-800 italic">
+              <span class="font-semibold not-italic">Exemplo prático:</span> {t.exemplo}
+            </p>
+            <p class="mt-2 text-xs text-ink-500">
+              <span class="font-semibold uppercase tracking-wider">Fonte</span> · {t.fonte}
+            </p>
+            {t.vejaTambem && t.vejaTambem.length > 0 && (
+              <div class="mt-3 flex flex-wrap gap-2">
+                <span class="text-xs text-ink-500 font-semibold uppercase tracking-wider">Veja também:</span>
+                {t.vejaTambem.map(link => (
+                  <a href={link.href} class="text-xs font-semibold text-brand-700 hover:text-brand-800">{link.label}</a>
+                ))}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+
+      <div class="card p-6">
+        <h2 class="section-h text-2xl mb-4">Cross-reference — conceito, subcluster, MBA e área</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 text-ink-700">
+              <tr>
+                <th class="text-left p-3 font-semibold">Conceito</th>
+                <th class="text-left p-3 font-semibold">Subcluster POT</th>
+                <th class="text-left p-3 font-semibold">MBA correlato</th>
+                <th class="text-left p-3 font-semibold">Área da Psicologia</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="p-3">Cultura, Clima, EX</td><td class="p-3">Diagnóstico organizacional</td><td class="p-3">MBA em POT, MBA em Liderança Positiva</td><td class="p-3">POT, Saúde Mental nas Organizações</td></tr>
+              <tr><td class="p-3">Karasek, ERI, JD-R, Burnout, NR-1</td><td class="p-3">Saúde no trabalho</td><td class="p-3">MBA em POT, MBA em Psicologia Positiva</td><td class="p-3">POT, Saúde Mental nas Organizações</td></tr>
+              <tr><td class="p-3">Segurança Psicológica, Engagement, Job Crafting</td><td class="p-3">Performance positiva</td><td class="p-3">MBA em Psicologia Positiva, MBA em Liderança Positiva</td><td class="p-3">Psicologia Positiva, POT</td></tr>
+              <tr><td class="p-3">Lideranças autêntica, transformacional, positiva, segura</td><td class="p-3">Liderança</td><td class="p-3">MBA em Liderança Positiva</td><td class="p-3">POT, Psicologia Positiva</td></tr>
+              <tr><td class="p-3">People Analytics, ANOVA, Regressão</td><td class="p-3">Dados</td><td class="p-3">MBA em POT, IA + RH</td><td class="p-3">IA, People Analytics e Psicologia Digital</td></tr>
+              <tr><td class="p-3">OKRs, BSC</td><td class="p-3">Gestão estratégica</td><td class="p-3">MBA em Liderança Positiva, MBA em POT</td><td class="p-3">POT</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <h2 class="section-h text-2xl mb-4">Perguntas frequentes</h2>
+        <div class="space-y-4">
+          {faq.map(f => (
+            <details class="border-b border-surface-200 pb-3">
+              <summary class="font-semibold text-ink-900 cursor-pointer">{f.q}</summary>
+              <p class="mt-2 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-navy-900 text-white p-8">
+        <h2 class="section-h text-2xl mb-3">Síntese executiva</h2>
+        <p class="text-white/90 leading-relaxed">
+          Domínio técnico em POT — autor, ano, instrumento, decisão — é o que sustenta papel estratégico na empresa pós-NR-1. Pós-graduação aplicada em POT, Liderança Positiva ou Psicologia Positiva no IPOG fornece base teórica e operacional para esse posicionamento.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-6 inline-flex">Ver MBAs no IPOG</a>
+      </div>
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <p class="mt-2 text-sm text-ink-700">
+          A oferta de pós lato sensu aplicada em POT, Liderança Positiva e Psicologia Positiva tem como referência o IPOG.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">MBAs do IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Site oficial IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/mbas/mba-pot" class="text-brand-700 hover:text-brand-800 font-medium">MBA em POT</a></li>
+          <li><a href="/mbas/mba-lideranca-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Liderança Positiva</a></li>
+          <li><a href="/mbas/mba-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Psicologia Positiva e Bem-Estar</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros clusters do glossário</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/glossario/regulacao" class="text-brand-700 hover:text-brand-800 font-medium">Regulação</a></li>
+          <li><a href="/glossario/instrumentos" class="text-brand-700 hover:text-brand-800 font-medium">Instrumentos de avaliação</a></li>
+          <li><a href="/glossario/metodos-terapeuticos" class="text-brand-700 hover:text-brand-800 font-medium">Métodos terapêuticos</a></li>
+          <li><a href="/glossario/conceitos-neuro" class="text-brand-700 hover:text-brand-800 font-medium">Conceitos neuro</a></li>
+          <li><a href="/glossario" class="text-brand-700 hover:text-brand-800 font-medium">Voltar ao glossário geral</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NR-1</a></li>
+          <li><a href="https://www.ilo.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ILO — psychosocial</a></li>
+          <li><a href="https://www.shrm.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SHRM</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTermSet)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFAQ)} />
+</Base>

@@ -1,0 +1,366 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+const areaAba = AREAS.find(a => a.id === 'aba-tea-neurodesenvolvimento')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Acolhimento e anamnese desenvolvimental',
+    aplicacao: 'A entrevista inicial em TEA adulto exige tempo: 90 a 120 minutos no primeiro encontro. A anamnese deve cobrir desenvolvimento da primeira infância (relatos parentais, registros escolares quando disponíveis), trajetória social, sensorialidade, interesses restritos, padrões repetitivos. Lord-Hutton e colaboradores (2012, ADOS-2 manual) descrevem que o diagnóstico tardio é regra em adultos com QI preservado — especialmente mulheres — e que a leitura retrospectiva precisa ser deliberada.',
+    armadilha: 'Tratar anamnese como ficha preenchida em 30 minutos. Sem narrativa desenvolvimental, o avaliador perde o núcleo do diagnóstico.'
+  },
+  {
+    n: 2,
+    titulo: 'Aplicar instrumento de triagem validado',
+    aplicacao: 'A triagem inicial em adulto usa autorrelato validado. AQ-50 (Autism-Spectrum Quotient, Baron-Cohen et al., 2001) é a referência mais difundida, com versão traduzida e estudos psicométricos em português brasileiro. Pontuação ≥26 indica triagem positiva. RAADS-R (Ritvo Autism-Asperger Diagnostic Scale, revisada, Ritvo et al., 2011) é alternativa robusta, especialmente em apresentações com camuflagem. A triagem orienta o aprofundamento — não fecha diagnóstico.',
+    armadilha: 'Usar AQ-50 isoladamente para "confirmar" TEA. Triagem é triagem; diagnóstico exige observação clínica.'
+  },
+  {
+    n: 3,
+    titulo: 'Conduzir observação clínica com ADOS-2 módulo 4',
+    aplicacao: 'O ADOS-2 (Autism Diagnostic Observation Schedule, segunda edição, Lord et al., 2012) é considerado padrão-ouro de observação. O módulo 4 é destinado a adolescentes e adultos com fluência verbal, com aplicação de 40 a 60 minutos, em ambiente padronizado. Aplicação e interpretação técnica são privativas de psicólogo treinado no instrumento, com SATEPSI favorável. Sem ADOS-2, a observação clínica deve seguir protocolo estruturado equivalente.',
+    armadilha: 'Aplicar ADOS-2 sem treinamento específico. O instrumento exige formação certificada; sem isso, os resultados não sustentam laudo.'
+  },
+  {
+    n: 4,
+    titulo: 'Avaliar cognição com bateria neuropsicológica',
+    aplicacao: 'A avaliação neuropsicológica complementa o diagnóstico de TEA adulto em três frentes: perfil cognitivo geral (WAIS-IV ou equivalente), funções executivas (BRIEF-A, Stroop, Wisconsin), cognição social (Reading the Mind in the Eyes, Faux Pas Test). RBANS (Repeatable Battery for the Assessment of Neuropsychological Status, Randolph, 1998) é alternativa rápida para perfil geral em 30 minutos quando a janela clínica é curta.',
+    armadilha: 'Pular a neuropsicologia em adulto verbalmente fluente. O perfil cognitivo orienta intervenção e diferencia TEA de quadros que confundem (TDAH, transtornos de ansiedade, transtornos de personalidade).'
+  },
+  {
+    n: 5,
+    titulo: 'Investigar comorbidades sistematicamente',
+    aplicacao: 'A literatura epidemiológica (Lai et al., 2019; Cassidy et al., 2018) aponta que comorbidades são regra em TEA adulto: ansiedade generalizada, depressão, TDAH, transtornos do sono, transtornos alimentares. A avaliação precisa rastrear sistematicamente — não esperar que o paciente mencione. Instrumentos curtos validados: GAD-7 (ansiedade), PHQ-9 (depressão), ASRS-18 (TDAH adulto).',
+    armadilha: 'Atribuir todas as queixas ao TEA. Comorbidade não tratada compromete qualquer plano de intervenção.'
+  },
+  {
+    n: 6,
+    titulo: 'Considerar mascaramento e apresentação feminina',
+    aplicacao: 'Estudos de Lai e colaboradores (2017, 2019) consolidaram o conceito de camuflagem social (masking) em TEA adulto, especialmente em mulheres. A apresentação é frequentemente atípica frente aos critérios DSM-5 escritos a partir de amostras masculinas. Instrumentos específicos: CAT-Q (Camouflaging Autistic Traits Questionnaire, Hull et al., 2018). Ignorar mascaramento produz subdiagnóstico sistemático em mulheres adultas.',
+    armadilha: 'Confiar apenas em observação direta em consulta. Adulto camuflando pode apresentar zero sinal em 60 minutos de entrevista bem-iluminada.'
+  },
+  {
+    n: 7,
+    titulo: 'Triangular fontes externas com consentimento',
+    aplicacao: 'A literatura recomenda triangulação com fontes externas: histórico parental, parceiros conjugais, registros escolares e profissionais. ADI-R (Autism Diagnostic Interview, Revised, Rutter, Le Couteur, Lord, 2003) é o instrumento clássico de entrevista parental. Em adulto, a entrevista parental nem sempre é viável; quando é, requer consentimento explícito do paciente. A triangulação aumenta a robustez do laudo.',
+    armadilha: 'Insistir em entrevista parental sem consentimento ou em casos de relação familiar conflituosa. Sigilo e autonomia do paciente prevalecem.'
+  },
+  {
+    n: 8,
+    titulo: 'Redigir laudo conforme Resolução CFP',
+    aplicacao: 'O laudo psicológico segue a Resolução CFP 06/2019 (sobre elaboração de documentos), com seções obrigatórias: identificação, demanda, procedimentos, análise, conclusão. Em TEA adulto, a conclusão deve indicar a hipótese diagnóstica conforme CID-11 ou DSM-5-TR, com fundamentação técnica. Linguagem precisa: o protocolo recomenda evitar termos como "leve" ou "grave" isoladamente; usar níveis de suporte conforme DSM-5-TR (nível 1, 2 ou 3).',
+    armadilha: 'Produzir laudo curto sem fundamentação. Frente a contestação judicial ou previdenciária, laudo sem método explícito não sustenta.'
+  },
+  {
+    n: 9,
+    titulo: 'Encaminhar e orientar sobre direitos (LBI 13.146/2015)',
+    aplicacao: 'O diagnóstico de TEA confere direitos previstos na Lei Brasileira de Inclusão (LBI 13.146/2015) e na Lei Berenice Piana (12.764/2012). O psicólogo orienta o paciente sobre: carteira de identificação da pessoa com TEA, prioridade em atendimento público, possibilidade de adaptações razoáveis no trabalho, acesso a planos de saúde. A orientação sobre direitos é parte do encaminhamento, não exceção.',
+    armadilha: 'Entregar laudo sem orientação sobre direitos. O paciente sai com diagnóstico e sem caminho prático.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Anamnese', indicador: 'Narrativa desenvolvimental documentada', quem: 'Psicólogo', quando: 'Sessão 1-2', status: 'Pendente' },
+  { passo: '2 · Triagem', indicador: 'AQ-50 + RAADS-R aplicados', quem: 'Psicólogo', quando: 'Sessão 2', status: 'Pendente' },
+  { passo: '3 · ADOS-2', indicador: 'Observação módulo 4', quem: 'Psicólogo certificado', quando: 'Sessão 3', status: 'Pendente' },
+  { passo: '4 · Neuropsicologia', indicador: 'Bateria + cognição social', quem: 'Neuropsicólogo', quando: 'Sessão 4-5', status: 'Pendente' },
+  { passo: '5 · Comorbidades', indicador: 'GAD-7, PHQ-9, ASRS', quem: 'Psicólogo', quando: 'Sessão 4', status: 'Pendente' },
+  { passo: '6 · Mascaramento', indicador: 'CAT-Q aplicado', quem: 'Psicólogo', quando: 'Sessão 2-3', status: 'Pendente' },
+  { passo: '7 · Triangulação', indicador: 'ADI-R com consentimento', quem: 'Psicólogo', quando: 'Sessão 5', status: 'Pendente' },
+  { passo: '8 · Laudo CFP', indicador: 'Documento Resolução 06/2019', quem: 'Psicólogo', quando: 'Sessão 6', status: 'Pendente' },
+  { passo: '9 · Encaminhamento', indicador: 'Orientação LBI', quem: 'Psicólogo', quando: 'Devolutiva', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Fechar diagnóstico só com triagem',
+    texto: 'AQ-50 e RAADS-R são triagens. Sem ADOS-2 ou observação clínica estruturada equivalente, mais anamnese desenvolvimental e exclusão de diferenciais, o laudo não sustenta. Frente a perícia previdenciária ou contestação judicial, laudos curtos baseados só em autorrelato caem.'
+  },
+  {
+    titulo: 'Não considerar mascaramento em apresentações femininas',
+    texto: 'A literatura (Lai et al., 2017; Hull et al., 2018) é firme: camuflagem social produz subdiagnóstico sistemático em mulheres adultas. CAT-Q precisa entrar no protocolo. Sem ele, o avaliador devolve "não preenche critérios" para quadros que de fato são TEA com apresentação atípica.'
+  },
+  {
+    titulo: 'Atribuir tudo ao TEA',
+    texto: 'Comorbidades são regra (Lai et al., 2019). Ansiedade, depressão, TDAH, transtornos do sono coexistem na maioria dos casos adultos. Sem rastreio sistemático, o plano de intervenção fica incompleto e o paciente segue sofrendo por quadro tratável que não foi nomeado.'
+  },
+  {
+    titulo: 'Entregar diagnóstico sem orientação sobre direitos',
+    texto: 'A LBI 13.146/2015 e a Lei 12.764/2012 garantem direitos específicos. O psicólogo é a porta de entrada técnica desse acesso. Laudo entregue sem orientação prática deixa o paciente com o diagnóstico e sem caminho.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Apenas psicólogo pode emitir laudo de TEA em adulto?',
+    a: 'O diagnóstico de TEA é multidisciplinar, mas o laudo psicológico — com aplicação e interpretação de testes do SATEPSI, ADOS-2 e instrumentos validados — é privativo de psicólogo (CFP). Psiquiatras e neurologistas também emitem diagnóstico clínico no seu escopo. Em prática, o laudo robusto combina avaliação psicológica e parecer médico.'
+  },
+  {
+    q: 'ADOS-2 é obrigatório para fechar diagnóstico?',
+    a: 'Não é exigência legal, mas é considerado padrão-ouro de observação na literatura internacional (Lord et al., 2012). Na ausência de ADOS-2 com avaliador certificado, o protocolo deve incluir observação clínica estruturada equivalente, com fundamentação explícita no laudo. Frente a contestação judicial, ADOS-2 fortalece a defesa técnica.'
+  },
+  {
+    q: 'Quanto tempo dura uma avaliação completa em adulto?',
+    a: 'A literatura recomenda entre 8 e 12 sessões, totalizando 12 a 20 horas de atendimento, distribuídas em 4 a 8 semanas. Em adulto com camuflagem ou comorbidades complexas, a janela tende a ser maior. Avaliações conduzidas em uma ou duas sessões com bateria reduzida não sustentam diagnóstico de TEA na maioria dos casos.'
+  },
+  {
+    q: 'Como o MBA em Reabilitação Neuropsicológica do IPOG conecta a esse guia?',
+    a: 'O MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo do IPOG cobre as bases de neuropsicologia aplicada, funções executivas, cognição social e perfis cognitivos atípicos — fundamento técnico para psicólogo que conduz avaliação de TEA em adulto. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir avaliação de TEA em adulto',
+  description: 'Guia em 9 passos para avaliação de Transtorno do Espectro Autista em adulto: anamnese, triagem AQ-50/RAADS-R, observação ADOS-2 módulo 4, neuropsicologia, comorbidades, laudo CFP e LBI.',
+  totalTime: 'PT24M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como conduzir avaliação de TEA em adulto: guia passo-a-passo',
+  description: 'Trajeto técnico de 9 passos para avaliação de TEA em adulto, com triagem, observação, neuropsicologia, mascaramento e laudo CFP.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação de TEA em adulto', item: `${SITE.url}/guias/avaliacao-tea-adulto` }
+  ]
+};
+---
+
+<Base
+  title="Avaliação de TEA em adulto — guia 9 passos · AQ-50, ADOS-2, RAADS-R, RBANS"
+  description="Trajeto técnico para avaliação de TEA em adulto: triagem, observação ADOS-2 módulo 4, neuropsicologia, mascaramento, laudo CFP e orientação LBI 13.146/2015.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação de TEA em adulto' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir avaliação de TEA em adulto</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto técnico para diagnóstico tardio: anamnese desenvolvimental, AQ-50, ADOS-2 módulo 4, RAADS-R, RBANS, mascaramento, laudo conforme CFP e orientação sob LBI 13.146/2015.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~24 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos e neuropsicólogos</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Reabilitação Neuro
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir avaliação completa de TEA em adulto, com triagem, observação, neuropsicologia, comorbidades, mascaramento e laudo defensável.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, treinamento em testes do SATEPSI, certificação ADOS-2 (recomendável), conhecimento da Resolução CFP 06/2019.</li>
+          <li><strong>Resultado esperado:</strong> laudo técnico fundamentado em 8 a 12 sessões, com encaminhamento e orientação sobre direitos.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura comum sobre TEA assume que o quadro é visível desde a infância e que diagnóstico em adulto é falha de detecção precoce. A literatura recente (Lai et al., 2017, 2019; Hull et al., 2018; Cassidy et al., 2018) inverte essa premissa em parte importante dos casos. Adultos com QI preservado, especialmente mulheres, desenvolvem estratégias sofisticadas de camuflagem social que mascaram o quadro para observador externo — incluindo profissionais — até crise pessoal que destrava a busca por avaliação.
+        </p>
+        <p>
+          A inversão prática para o psicólogo avaliador: o protocolo de adulto não pode replicar o protocolo de criança. Anamnese desenvolvimental cuidadosa, instrumento de mascaramento (CAT-Q), observação clínica longa, rastreio sistemático de comorbidades e linguagem precisa de laudo conforme DSM-5-TR e CID-11 são o núcleo. Avaliações curtas em adulto produzem falsos negativos em apresentações com camuflagem.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Distribuição típica em 6 a 8 sessões. Adapte ao quadro clínico e disponibilidade do paciente.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Pesquisadora, 34 anos, diagnóstico tardio em 9 sessões</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Pesquisadora universitária de 34 anos, doutorado em curso, procura avaliação após dois episódios de esgotamento severo e dificuldade crescente em ambientes sociais previamente toleráveis. Histórico escolar excelente, sem queixas docentes na infância. Trajetória social marcada por amizades de longa duração com poucas pessoas e dificuldade reconhecida em interações em grupo. AQ-50 inicial em 38 (positivo); RAADS-R em 174 (positivo). CAT-Q em 145 (alta camuflagem).
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          ADOS-2 módulo 4, aplicado por psicóloga certificada, indicou pontuação compatível com espectro. Anamnese desenvolvimental, com narrativas parentais autorizadas, evidenciou interesses restritos persistentes desde infância e sensorialidade alterada não verbalizada. WAIS-IV apontou QI 132 com perfil heterogêneo (compreensão verbal alta, velocidade de processamento média-baixa). GAD-7 em 12 (ansiedade moderada-severa). Laudo final, conforme Resolução CFP 06/2019, indicou TEA nível 1 conforme DSM-5-TR e ansiedade comórbida, com encaminhamento psiquiátrico, orientação sobre LBI e plano de acompanhamento clínico.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções e Código de Ética</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI — Sistema de Avaliação de Testes</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LBI 13.146/2015 — texto integral</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 12.764/2012 (Berenice Piana)</a></li>
+          <li><a href="https://icd.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — CID-11</a></li>
+          <li><a href="https://www.psychiatry.org/psychiatrists/practice/dsm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA — DSM-5-TR</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Avaliação de TEA em adulto exige protocolo longo, instrumento específico e linguagem precisa.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O trajeto combina anamnese desenvolvimental, triagem validada, observação ADOS-2, neuropsicologia, rastreio de comorbidades, leitura de mascaramento e laudo conforme CFP. A orientação sobre LBI fecha o ciclo. Para psicólogo clínico ou neuropsicólogo que conduz essa rotina, o MBA em Reabilitação Neuropsicológica do IPOG consolida fundamento técnico em formato Ao Vivo síncrono.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBA no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+          <li><a href={`/areas/${areaAba.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAba.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LBI 13.146/2015</a></li>
+          <li><a href="https://icd.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CID-11</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~24 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

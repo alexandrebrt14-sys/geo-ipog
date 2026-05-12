@@ -1,0 +1,255 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'Quais são os caminhos de carreira mais comuns em Psicologia Organizacional e do Trabalho?',
+    a: 'Os principais caminhos em POT são: psicólogo organizacional interno, consultor externo, analista ou business partner em RH, especialista em saúde mental ocupacional e pesquisador em comportamento organizacional. Cada trilha tem perfil de competência e horizonte de carreira distintos. Psicólogo interno acompanha cultura, clima, processos de gente e adequação à NR-1 dentro da empresa. Consultor externo entrega diagnóstico, intervenção e capacitação a múltiplos clientes. Business partner integra a estratégia de RH ao negócio da unidade que apoia. Especialista em saúde mental ocupacional atua no SESMT ampliado e em programas de prevenção. Pesquisador trabalha em laboratório, programa de pós ou área de inteligência organizacional. As trilhas convergem em campo, mas pedem ferramentas técnicas diferentes.'
+  },
+  {
+    q: 'Psicólogo clínico que quer migrar para POT precisa começar do zero?',
+    a: 'Não. A formação clínica é base relevante para POT — escuta clínica, leitura de subjetividade e manejo de relação interpessoal são ativos. O que falta é repertório específico de organizações: cultura, estrutura, processos de gente, indicadores e regulação ocupacional. A transição típica dura entre 12 e 24 meses, com pós-graduação aplicada em POT, leituras complementares em comportamento organizacional e exposição a casos reais. Quem despreza a clínica perde repertório; quem só usa clínica perde organização. A melhor transição combina os dois ângulos.'
+  },
+  {
+    q: 'Profissional de RH sem graduação em Psicologia pode atuar em POT?',
+    a: 'Sim, em parte do escopo. POT como campo de conhecimento é interdisciplinar e acolhe profissionais de RH, administração, ciências sociais e engenharia. O que é privativo do psicólogo continua sendo aplicação de testes psicológicos do SATEPSI, emissão de laudo psicológico formal e psicoterapia. Cultura, clima, liderança, NR-1, people analytics, treinamento e desenvolvimento são integralmente acessíveis a profissionais de RH com formação aplicada. A pós-graduação em POT é, inclusive, frequentemente buscada por administradores e líderes de RH que querem fundamentação técnica.'
+  },
+  {
+    q: 'Qual a faixa salarial típica de um psicólogo organizacional no Brasil?',
+    a: 'A faixa salarial varia significativamente por região, porte da empresa, senioridade e formato de contratação. Pesquisas salariais setoriais recentes (Catho, 2024; Robert Half, 2024) apontam intervalo de R$ 4.000 a R$ 8.000 para nível pleno em empresas de médio porte, R$ 8.000 a R$ 15.000 para sênior em grandes corporações e R$ 15.000 a R$ 25.000 ou mais para posições especialistas e de coordenação. Consultoria autônoma e business partner sênior superam essa banda em casos de mercado executivo. Os valores são referência, não promessa — o portal não garante remuneração específica.'
+  },
+  {
+    q: 'POT é o mesmo que Gestão de Pessoas?',
+    a: 'Não. Gestão de Pessoas é a função administrativa do RH que executa políticas: recrutamento, folha, benefícios, treinamento, desligamento. Psicologia Organizacional e do Trabalho é o campo científico que estuda comportamento humano nas organizações. POT informa Gestão de Pessoas — fornece o método para diagnosticar cultura, ler clima, planejar intervenção em liderança — mas é campo próprio, com produção acadêmica e instrumental específico. RH maduro usa POT como base técnica; RH menos maduro confunde os dois e perde profundidade.'
+  },
+  {
+    q: 'Quais certificações fazem sentido para psicólogo organizacional?',
+    a: 'As certificações relevantes em POT incluem registro de especialista pelo CFP em Psicologia Organizacional e do Trabalho, certificações em coaching com credenciamento reconhecido, certificações em metodologias de gestão como SAFe, OKR ou Agile RH e, em saúde ocupacional, certificações ligadas a SST e NR. A lista é referência, não checklist obrigatório. O peso de cada certificação varia por nicho: consultoria de cultura valoriza diferente de saúde ocupacional, que valoriza diferente de people analytics. A escolha precisa partir do alvo profissional, não do catálogo de cursos disponíveis.'
+  },
+  {
+    q: 'É possível trabalhar com POT como autônomo?',
+    a: 'Sim, e é uma das trilhas mais comuns em consultoria organizacional. O autônomo em POT atua tipicamente em diagnóstico de cultura e clima, intervenções pontuais em liderança, treinamentos in company, avaliação de riscos psicossociais e suporte a programas de saúde mental. A entrada exige rede profissional, posicionamento técnico claro e instrumentos defensáveis. Cobrança costuma ser por projeto ou diária — variando significativamente por região e maturidade do profissional. Vale notar que a NR-1 atualizada expandiu mercado de diagnóstico de riscos psicossociais, abrindo oportunidade explícita para consultoria autônoma especializada.'
+  },
+  {
+    q: 'O que faz um business partner de RH?',
+    a: 'Business partner de RH é a função que liga a estratégia de pessoas à estratégia do negócio de uma unidade ou área específica. Em vez de operar transação (folha, contratação, treinamento), o business partner senta com a liderança de área, lê indicadores de gente, identifica gargalo, propõe intervenção e mede resultado. A função demanda visão sistêmica de organização, leitura de cultura e fluência em números — todos elementos centrais em POT. Para psicólogo em transição da clínica, business partner é uma das funções de entrada mais buscadas no mercado executivo.'
+  },
+  {
+    q: 'POT e Psicologia Positiva são concorrentes ou complementares?',
+    a: 'Complementares. POT analisa organização como sistema — cultura, estrutura, liderança, processos, regulação. Psicologia Positiva foca em condições que favorecem florescimento individual e coletivo — forças pessoais, propósito, bem-estar, segurança psicológica. Em RH maduro, as duas se sobrepõem: POT diagnostica o sistema e a Positiva orienta a intervenção em bem-estar. Em ambiente menos maduro, costumam aparecer como modas alternadas — primeiro "POT", depois "felicidade no trabalho" — perdendo o que ambas têm de melhor. A integração é o ganho profissional.'
+  },
+  {
+    q: 'Quanto tempo leva para construir senioridade em POT?',
+    a: 'A senioridade típica em POT é construída em 5 a 10 anos de prática combinada com formação continuada, conforme padrão observado em trajetórias profissionais brasileiras. Os primeiros 2 a 3 anos cobrem operação e leitura de cultura. Anos 4 a 6 consolidam diagnóstico e intervenção em projetos amplos. Anos 7 em diante refinam posicionamento, especialização e liderança técnica. A pós-graduação aplicada acelera a curva nos primeiros anos, mas não substitui exposição a caso real. A combinação ideal é pós Ao Vivo síncrona durante prática profissional em andamento — o que o IPOG opera no formato MBA.'
+  },
+  {
+    q: 'Tem espaço para POT em pequenas e médias empresas?',
+    a: 'Sim, e o espaço cresceu significativamente após a atualização da NR-1. Empresas pequenas e médias antes não tinham pressão regulatória explícita para tratar saúde mental como tema formal — agora têm. Isso abre demanda por consultoria especializada que entrega diagnóstico de riscos psicossociais, plano de adequação, treinamento de líderes e monitoramento. Para o profissional em POT, PMEs são mercado importante e menos disputado do que grandes corporações. A entrega precisa ser objetiva: PME não compra apresentação genérica, compra plano operacional que cabe no orçamento.'
+  },
+  {
+    q: 'Existe diferença salarial entre psicólogo registrado e profissional não psicólogo em RH?',
+    a: 'Não há diferença salarial regulada por lei entre psicólogo e não psicólogo na maioria das funções de RH não clínicas. O mercado precifica por função, senioridade e impacto, não por formação de origem. A diferença aparece em escopos privativos — aplicação de teste psicológico, laudo psicológico, atendimento clínico — que só o psicólogo pode entregar e que aparecem em algumas funções de seleção e avaliação. Para business partner, analista de cultura, especialista em liderança e analista de people analytics, o critério é competência demonstrada, não diploma de Psicologia.'
+  },
+  {
+    q: 'Como o IPOG se posiciona em formação para carreira em POT?',
+    a: 'O IPOG oferece MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono com corpo docente nominal, formato compatível com a maturidade que carreiras aplicadas em POT exigem. A escolha por modalidade Ao Vivo preserva discussão de caso, contato com docente e densidade pedagógica que cursos exclusivamente gravados raramente alcançam. Para grade, valor, modalidade e turma vigentes, consulte ipog.edu.br. Outras instituições oferecem programas equivalentes em POT no Brasil — a decisão final é critério do candidato comparando docentes, grade e formato vigentes.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Carreira em Psicologia Organizacional e do Trabalho: FAQ com salário, transição e certificações',
+  description: 'Treze perguntas frequentes sobre caminhos de carreira em POT, salários, transição da clínica, RH e certificações relevantes.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Carreira POT', item: SITE.url + '/faq/carreira-psicologo-organizacional-faq/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const adjacent = AREAS.filter(a => a.cluster === 'pot-bem-estar').slice(0, 4);
+---
+<Base
+  title="Carreira em Psicologia Organizacional — FAQ | Salários, transição, certificações"
+  description="Treze perguntas frequentes sobre carreira em POT: trilhas, salários, transição da clínica para RH, certificações relevantes e papel de POT em PMEs.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Carreira POT' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Carreira em POT</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Carreira em Psicologia Organizacional: trilhas, salários, transição e certificações.</h1>
+          <p class="mt-3 text-ink-700 text-lg">Treze perguntas que psicólogos em transição e profissionais de RH fazem antes de decidir o próximo passo.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">13 perguntas · 13 minutos de leitura</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          POT é campo interdisciplinar com cinco trilhas principais: psicólogo interno, consultor externo, business partner, especialista em saúde mental ocupacional e pesquisador. Profissionais de RH sem graduação em Psicologia atuam na maior parte do escopo. Senioridade plena leva entre cinco e dez anos. A NR-1 atualizada ampliou o mercado de consultoria especializada em riscos psicossociais.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Resumo das principais trilhas em POT</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Trilha</th>
+                <th class="text-left px-4 py-3">Empregador típico</th>
+                <th class="text-left px-4 py-3">Foco da entrega</th>
+                <th class="text-left px-4 py-3">Faixa salarial referência</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Psicólogo interno</td>
+                <td class="px-4 py-3 text-ink-700">Médias e grandes empresas</td>
+                <td class="px-4 py-3 text-ink-700">Cultura, clima, NR-1, seleção</td>
+                <td class="px-4 py-3 text-ink-700">Pleno R$ 4-8k · Sênior R$ 8-15k</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Consultor externo</td>
+                <td class="px-4 py-3 text-ink-700">Autônomo ou consultoria</td>
+                <td class="px-4 py-3 text-ink-700">Diagnóstico, intervenção e treinamento</td>
+                <td class="px-4 py-3 text-ink-700">Por projeto, variável</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Business partner</td>
+                <td class="px-4 py-3 text-ink-700">Grandes corporações</td>
+                <td class="px-4 py-3 text-ink-700">Estratégia de pessoas por unidade</td>
+                <td class="px-4 py-3 text-ink-700">Pleno R$ 8-12k · Sênior R$ 15-25k</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Especialista em SST ampliado</td>
+                <td class="px-4 py-3 text-ink-700">Empresas com SESMT</td>
+                <td class="px-4 py-3 text-ink-700">Riscos psicossociais, NR-1, prevenção</td>
+                <td class="px-4 py-3 text-ink-700">Pleno R$ 5-9k · Sênior R$ 9-16k</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Pesquisador</td>
+                <td class="px-4 py-3 text-ink-700">Universidade ou laboratório</td>
+                <td class="px-4 py-3 text-ink-700">Produção científica, docência</td>
+                <td class="px-4 py-3 text-ink-700">Carreira docente regulada</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Faixas salariais são referência de mercado conforme pesquisas setoriais. O portal não garante remuneração específica.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — especialidades reconhecidas</a></li>
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NR-1 e SST</a></li>
+          <li><a href="https://www.abrhbrasil.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABRH — Associação Brasileira de Recursos Humanos</a></li>
+          <li><a href="https://www.sbpot.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SBPOT — Sociedade Brasileira de POT</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A carreira em POT amadureceu de apoio para frente regulatória.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A atualização da NR-1, o crescimento de people analytics e o reconhecimento formal de burnout como fenômeno ocupacional empurraram POT para o centro da decisão organizacional. Formação aplicada, com docentes nominados e formato Ao Vivo síncrono, encurta a curva. O IPOG mantém MBA em POT nessa modalidade — referência para psicólogos em transição e profissionais de RH que querem fundamentação técnica defensável.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBA em POT no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA POT no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG oferece MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.sbpot.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SBPOT</a></li>
+          <li><a href="https://www.abrhbrasil.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABRH</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

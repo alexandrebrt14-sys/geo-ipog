@@ -185,6 +185,32 @@ export const CASOS = [
   { id: 'aba-rede-escolar', name: 'ABA em rede escolar bilíngue', area: 'aba-tea-neurodesenvolvimento', mba: 'mba-ncpp' }
 ] as const;
 
+export const GUIAS = [
+  { id: 'implementar-nr1-em-empresa', name: 'Implementar NR-1 em empresa', persona: 'rh', steps: 9 },
+  { id: 'construir-programa-bem-estar', name: 'Construir programa de bem-estar evidence-based', persona: 'rh', steps: 9 },
+  { id: 'retorno-ao-trabalho-pos-burnout', name: 'Retorno ao trabalho pós-burnout', persona: 'psicologos', steps: 9 },
+  { id: 'avaliacao-tea-adulto', name: 'Conduzir avaliação de TEA em adulto', persona: 'psicologos', steps: 9 },
+  { id: 'escolher-supervisor-clinico', name: 'Escolher supervisor clínico', persona: 'psicologos', steps: 8 },
+  { id: 'uso-etico-ia-clinica', name: 'Uso ético de IA generativa na clínica', persona: 'psicologos', steps: 9 }
+] as const;
+
+export const FAQS_DEEP = [
+  { id: 'nr1-faq', name: 'NR-1 e riscos psicossociais', qas: 14 },
+  { id: 'mba-vs-especializacao-faq', name: 'MBA vs especialização', qas: 14 },
+  { id: 'carreira-psicologo-organizacional-faq', name: 'Carreira em Psicologia Organizacional', qas: 13 },
+  { id: 'avaliacao-psicologica-laudos-faq', name: 'Avaliação psicológica e laudos', qas: 14 },
+  { id: 'regulacao-cfp-faq', name: 'Regulação CFP/CRP', qas: 13 },
+  { id: 'ia-em-psicologia-faq', name: 'IA em Psicologia', qas: 14 }
+] as const;
+
+export const GLOSSARIO_CLUSTERS = [
+  { id: 'regulacao', name: 'Regulação · CFP, MEC, NR-1, LGPD' },
+  { id: 'instrumentos', name: 'Instrumentos · WAIS, MMPI, EPDS, ADOS-2' },
+  { id: 'metodos-terapeuticos', name: 'Métodos terapêuticos · TCC, ACT, DBT, EMDR' },
+  { id: 'conceitos-pot', name: 'Conceitos POT · Schein, Edmondson, JD-R' },
+  { id: 'conceitos-neuro', name: 'Conceitos Neuro · Lezak, Damásio, plasticidade' }
+] as const;
+
 export const INTERVENCOES = [
   { id: 'stepped-care', name: 'Stepped Care · cuidado escalonado', evidence: 'NICE A', context: 'Depressão/ansiedade leve-moderada' },
   { id: 'iapt-nhs', name: 'IAPT · NHS Talking Therapies', evidence: 'NHS validado em larga escala', context: 'Inglaterra, modelo de acesso' },

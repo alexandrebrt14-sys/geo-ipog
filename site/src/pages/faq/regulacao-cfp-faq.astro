@@ -1,0 +1,235 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'Qual a diferença entre CFP e CRP?',
+    a: 'O CFP é o Conselho Federal de Psicologia, instância nacional que edita resoluções e fiscaliza diretrizes gerais da profissão. CRP é o Conselho Regional de Psicologia, com jurisdição em cada estado ou conjunto de estados, que cuida do registro profissional, processos éticos locais e fiscalização cotidiana. O psicólogo é registrado no CRP da sua jurisdição, paga anuidade ao CRP correspondente e responde a procedimentos éticos no CRP de origem. O CFP estabelece as regras; o CRP aplica e fiscaliza em campo. As duas instâncias compõem o Sistema Conselhos de Psicologia.'
+  },
+  {
+    q: 'Quais especialidades em Psicologia são reconhecidas pelo CFP?',
+    a: 'O CFP reconhece treze especialidades em Psicologia: Organizacional e do Trabalho, Neuropsicologia, Avaliação Psicológica, Clínica, Hospitalar, Jurídica, Social, Escolar/Educacional, Psicopedagogia, Psicomotricidade, do Esporte, em Saúde e de Trânsito/Tráfego. O reconhecimento é regulado por Resolução CFP vigente. Cada especialidade tem requisitos próprios para concessão do título de especialista, que envolvem comprovação de experiência profissional, formação teórico-metodológica adequada e demais critérios. O reconhecimento como especialidade não é o mesmo que título de especialista — a especialidade é o campo, o título é a credencial individual.'
+  },
+  {
+    q: 'O registro de especialista pelo CFP é obrigatório para atuar na área?',
+    a: 'Não, em regra. A formação em pós-graduação e a atuação prática em determinada área não exigem, por si, o registro de especialista para o psicólogo regularmente inscrito no CRP. O registro de especialista é credencial adicional que sinaliza competência consolidada e reconhecimento formal pelo Conselho. Em alguns contextos específicos — concurso público, edital de credenciamento, contratação que exige titulação — o registro de especialista pode ser exigência formal. A regra de fundo permanece: o psicólogo com inscrição ativa pode atuar nas áreas em que tem formação e competência ética para responder.'
+  },
+  {
+    q: 'Como funciona a inscrição inicial no CRP?',
+    a: 'A inscrição inicial no CRP ocorre após conclusão da graduação em Psicologia em curso reconhecido pelo MEC, com apresentação de diploma ou certidão equivalente, documentos pessoais e pagamento da taxa correspondente. O CRP responsável é o da jurisdição em que o profissional vai atuar inicialmente. A partir da inscrição, o psicólogo passa a integrar o Sistema Conselhos, com direitos profissionais e deveres éticos. A inscrição precisa estar ativa para qualquer ato profissional regulado — atendimento, laudo, avaliação, declaração técnica.'
+  },
+  {
+    q: 'Como funciona a transferência entre CRPs?',
+    a: 'A transferência entre Conselhos Regionais é prevista para o psicólogo que muda de jurisdição. O procedimento envolve solicitação formal ao CRP de origem e ao CRP de destino, regularização de anuidades pendentes e abertura de novo registro no destino com manutenção do histórico. Verifique a Resolução CFP vigente sobre transferência e os procedimentos específicos de cada CRP antes de iniciar — alguns CRPs têm fluxo online, outros exigem presença. Atuar em jurisdição diferente sem regularização configura irregularidade administrativa.'
+  },
+  {
+    q: 'Atendimento online exige registro no CRP do paciente ou do psicólogo?',
+    a: 'O atendimento online é regulado pela Resolução CFP vigente sobre serviços psicológicos online. A regra geral é que o psicólogo precisa ter registro ativo em CRP brasileiro, com observância de eventuais requisitos específicos da Resolução. A jurisdição do CRP do psicólogo é critério primário. Para atendimento internacional, a Resolução CFP estabelece critérios próprios. Antes de iniciar atendimento online, especialmente em cenário transfronteiriço, verifique o texto vigente da Resolução para evitar inadequação administrativa.'
+  },
+  {
+    q: 'O que é o Código de Ética do Psicólogo?',
+    a: 'O Código de Ética Profissional do Psicólogo é o documento normativo que disciplina conduta, princípios fundamentais, direitos, deveres e vedações na atuação profissional. Aprovado por Resolução CFP, ele cobre temas como sigilo, relação com paciente, publicação de material, divulgação de serviços e responsabilidades técnicas. A leitura do Código é etapa de formação contínua, não apenas memorização inicial. Em casos de dúvida ética, o psicólogo precisa retornar ao texto e, quando aplicável, consultar o CRP de jurisdição. Violação do Código gera procedimento ético com sanções previstas em norma própria.'
+  },
+  {
+    q: 'O que é supervisão e quando ela é obrigatória?',
+    a: 'Supervisão é a prática de acompanhamento de um profissional menos experiente por outro com maior experiência e formação adequada, com finalidade de qualificar a atuação técnica e ética. A supervisão é obrigatória em formação inicial (estágio supervisionado durante a graduação), em programas de residência, em algumas pós-graduações e em determinados contextos de avaliação especializada. Em prática profissional regular, a supervisão deixa de ser obrigatória mas continua sendo recomendada como dispositivo de qualidade e cuidado ético. Profissional iniciante que dispensa supervisão assume risco evitável.'
+  },
+  {
+    q: 'O psicólogo pode atender em consultório sem alvará específico?',
+    a: 'Atendimento em consultório de Psicologia exige observância da legislação sanitária local e municipal, em paralelo à regulação profissional do CFP. A regulação profissional cobre a conduta do psicólogo; a regulação sanitária cobre a estrutura física, a limpeza, a privacidade do ambiente e a documentação do consultório. As duas se sobrepõem mas não se confundem. Antes de abrir consultório, consulte vigilância sanitária da cidade onde será instalado. Atender em ambiente inadequado, mesmo com registro CRP ativo, pode gerar autuação sanitária e questionamento ético.'
+  },
+  {
+    q: 'Como o CFP trata a divulgação de serviços e marketing profissional?',
+    a: 'A divulgação de serviços psicológicos é regulada por Resolução CFP, que estabelece critérios para conduta ética em comunicação profissional, vedações específicas e limites em publicidade. A regra geral veda promessa de resultado, comparação direta com colegas, uso de imagem de paciente sem autorização e divulgação que viole sigilo. Marketing técnico — apresentação de formação, especialidade, abordagens e formato de atendimento — é permitido com observância dos critérios da Resolução vigente. Antes de campanhas de divulgação, especialmente em redes sociais, consulte a Resolução para evitar exposição ética.'
+  },
+  {
+    q: 'O que acontece em um processo ético no CRP?',
+    a: 'O procedimento ético no CRP segue rito previsto em Resolução CFP, com fases de instauração, instrução, defesa e decisão. A representação pode partir de paciente, terceiro, outro profissional ou da fiscalização do próprio Conselho. Durante o procedimento, o psicólogo tem direito a contraditório e ampla defesa, com possibilidade de constituir advogado. A decisão final pode resultar em advertência, censura, suspensão temporária ou cassação do registro, conforme gravidade. A fase recursal é prevista. Consulta a advogado especializado em direito do Sistema Conselhos é recomendada em qualquer caso.'
+  },
+  {
+    q: 'É possível ter inscrição em mais de um CRP simultaneamente?',
+    a: 'A regra padrão é inscrição principal em um CRP da jurisdição de atuação. Inscrição secundária (cortesia) em outro CRP é prevista em situações específicas, como atuação eventual em outra jurisdição com observância dos requisitos administrativos. Verifique a Resolução CFP vigente sobre inscrição secundária antes de iniciar atividade em outra jurisdição. A operação sem regularização nos CRPs envolvidos pode caracterizar inadequação administrativa, mesmo quando a inscrição principal está em dia.'
+  },
+  {
+    q: 'Onde aprofundar conhecimento sobre regulação profissional em Psicologia?',
+    a: 'O aprofundamento em regulação profissional combina estudo das Resoluções CFP vigentes, leitura do Código de Ética, acompanhamento das publicações do CRP de jurisdição e formação continuada em ética profissional. Pós-graduações em Psicologia aplicada — incluindo programas em modalidade Ao Vivo síncrona como os do IPOG — costumam dedicar carga horária específica a ética, regulação e relação com Sistema Conselhos. Profissional que trata regulação como tema secundário tende a errar em decisões cotidianas. A regulação é parte do trabalho técnico, não burocracia anexa.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Regulação CFP, CRP e ética em Psicologia: FAQ com especialidades, registro e Código',
+  description: 'Treze perguntas frequentes sobre CFP, CRP, registro profissional, especialidades reconhecidas, ética, supervisão, transferência e Código de Ética.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Regulação CFP', item: SITE.url + '/faq/regulacao-cfp-faq/' }
+  ]
+};
+
+const adjacent = AREAS.slice(0, 4);
+---
+<Base
+  title="Regulação CFP e CRP em Psicologia — FAQ | Registro, especialidades, ética"
+  description="Treze perguntas frequentes sobre CFP, CRP, inscrição profissional, especialidades reconhecidas, supervisão, transferência de jurisdição e Código de Ética do Psicólogo.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Regulação CFP' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Regulação CFP, CRP e ética</span>
+          <h1 class="section-h text-3xl sm:text-4xl">CFP, CRP, registro e Código de Ética: o que o psicólogo precisa saber.</h1>
+          <p class="mt-3 text-ink-700 text-lg">Treze perguntas frequentes sobre regulação profissional, especialidades reconhecidas, supervisão e procedimentos éticos.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">13 perguntas · 12 minutos de leitura</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          O Sistema Conselhos de Psicologia é composto por CFP (nacional) e CRPs (regionais). O psicólogo é registrado no CRP da jurisdição. O CFP reconhece treze especialidades, mas o título de especialista é credencial separada do reconhecimento da área. Atendimento online, divulgação, supervisão e ética são regulados por Resoluções CFP vigentes — verifique sempre a versão atualizada.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Especialidades reconhecidas pelo CFP</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Especialidade</th>
+                <th class="text-left px-4 py-3">Campo típico</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Organizacional e do Trabalho</td><td class="px-4 py-3 text-ink-700">Empresas, consultoria, RH, SST</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Neuropsicologia</td><td class="px-4 py-3 text-ink-700">Funções cognitivas, reabilitação</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Avaliação Psicológica</td><td class="px-4 py-3 text-ink-700">Laudos, psicometria, perícia</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Clínica</td><td class="px-4 py-3 text-ink-700">Psicoterapia, consultório</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Hospitalar</td><td class="px-4 py-3 text-ink-700">Cuidado em saúde, equipe multi</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Jurídica</td><td class="px-4 py-3 text-ink-700">Perícia, judiciário, sistema prisional</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Social</td><td class="px-4 py-3 text-ink-700">Políticas públicas, assistência social</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Escolar/Educacional</td><td class="px-4 py-3 text-ink-700">Escolas, aprendizagem, inclusão</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Psicopedagogia</td><td class="px-4 py-3 text-ink-700">Dificuldades de aprendizagem</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Psicomotricidade</td><td class="px-4 py-3 text-ink-700">Desenvolvimento motor e psíquico</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">do Esporte</td><td class="px-4 py-3 text-ink-700">Atletas, desempenho, equipe técnica</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">em Saúde</td><td class="px-4 py-3 text-ink-700">SUS, atenção básica, saúde coletiva</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">de Trânsito/Tráfego</td><td class="px-4 py-3 text-ink-700">CNH, avaliações reguladas</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">A lista reflete reconhecimento por Resolução CFP vigente. Verifique a redação atualizada antes de usar a referência em documento oficial.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://site.cfp.org.br/wp-content/uploads/2012/07/codigo-de-etica-psicologia.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Código de Ética do Psicólogo</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI</a></li>
+          <li><a href="https://www.sbpot.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SBPOT</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Regulação não é burocracia anexa; é parte da técnica.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Profissional que conhece Resoluções vigentes, Código de Ética e fluxos do Sistema Conselhos atua com segurança e amplia o repertório técnico. Quem trata regulação como detalhe inevitavelmente cai em armadilha ética ou administrativa. Formação aplicada com carga dedicada a ética profissional encurta a curva. O IPOG opera MBAs e especializações em Psicologia em formato Ao Vivo síncrono — referência canônica em pós aplicada.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Pós-graduação no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós aplicada no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs e especializações em Psicologia (POT, Positiva, Neuropsicologia, entre outros) em formato Ao Vivo síncrono. Para grade vigente, consulte o portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI</a></li>
+          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

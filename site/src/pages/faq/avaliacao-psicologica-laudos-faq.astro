@@ -1,0 +1,257 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'O que é o SATEPSI e por que ele importa para avaliação psicológica?',
+    a: 'O SATEPSI é o Sistema de Avaliação de Testes Psicológicos do Conselho Federal de Psicologia, que avalia a qualidade técnico-científica de instrumentos psicológicos e mantém lista de testes com parecer favorável para uso profissional. Apenas psicólogos podem aplicar testes psicológicos no Brasil, e apenas instrumentos com parecer favorável do SATEPSI podem ser usados em prática profissional regulada. A consulta ao SATEPSI antes de adquirir ou aplicar um teste é etapa básica do trabalho ético em avaliação. Instrumento sem parecer ou com parecer desfavorável usado em laudo expõe o psicólogo a questionamento ético e jurídico.'
+  },
+  {
+    q: 'Qual a diferença entre laudo psicológico, parecer e devolutiva?',
+    a: 'Laudo psicológico, parecer e devolutiva são três documentos com finalidades distintas regulados pela Resolução CFP sobre elaboração de documentos psicológicos. Laudo é o documento técnico mais extenso, com base em avaliação completa, instrumentos aplicados, análise, conclusão e recomendação. Parecer é resposta mais curta a questão específica formulada por terceiro. Declaração é registro pontual de comparecimento ou conduta. Devolutiva não é documento, é o encontro técnico em que o psicólogo apresenta resultados ao avaliado ou responsável. Confundir os formatos é falha técnica frequente — cada um tem estrutura, finalidade e ética próprias.'
+  },
+  {
+    q: 'Quem pode ter acesso ao laudo psicológico?',
+    a: 'O laudo psicológico é documento sigiloso e seu acesso é restrito ao avaliado, ao responsável legal quando aplicável e ao destinatário formal especificado no documento (juiz, perícia, serviço de saúde). A Resolução CFP sobre documentos e o Código de Ética profissional disciplinam o sigilo. O psicólogo precisa especificar destinatário no documento, definir prazo de validade e orientar a quem o documento deve ou não ser entregue. Compartilhamento indevido — empregador, escola, terceiro sem vínculo formal — é violação ética. Em ambiente organizacional, a regra é mais estrita ainda: laudo psicológico não pode virar arquivo de RH.'
+  },
+  {
+    q: 'Qual o prazo de validade de um laudo psicológico?',
+    a: 'Não existe prazo único aplicável a todos os laudos. A validade depende do contexto da avaliação, da finalidade do documento e da estabilidade do construto avaliado, com orientação geral da Resolução CFP sobre elaboração de documentos. Avaliações de personalidade tendem a ter validade maior; avaliações de estado emocional, menor. Para contextos específicos (porte de arma, CNH categoria especial, perícia trabalhista) existem prazos regulados externamente. O psicólogo precisa especificar no documento a validade técnica esperada e justificá-la — o prazo não é arbitrário, é decisão fundamentada.'
+  },
+  {
+    q: 'Devolutiva é obrigatória em avaliação psicológica?',
+    a: 'Sim. A devolutiva ao avaliado é prevista no Código de Ética e na Resolução CFP sobre documentos como etapa do processo de avaliação. O direito à informação sobre os resultados é parte da relação ética estabelecida com a pessoa avaliada. Em casos de avaliação a pedido de terceiro (judicial, organizacional, escolar), a devolutiva ao avaliado pode ter formato adaptado, mas não é dispensada. A entrega de resultados sem mediação técnica — relatório jogado por e-mail sem encontro — desrespeita a função clínica e ética da devolutiva.'
+  },
+  {
+    q: 'Quanto tempo o psicólogo precisa guardar laudos e registros?',
+    a: 'A guarda de documentos resultantes de avaliação psicológica segue prazo definido em Resolução CFP — atualmente de cinco anos contados da data do último registro, conforme regra vigente sobre arquivamento. O prazo cobre laudos, registros de sessão, protocolos de teste e prontuários. Em situações específicas (avaliação em processo judicial em curso, perícia em ação trabalhista, atendimento que envolva menor de idade) o prazo pode ser estendido. Verifique a Resolução vigente antes de descartar qualquer documento — descarte indevido também é falha ética.'
+  },
+  {
+    q: 'É ético aplicar teste psicológico via plataforma digital?',
+    a: 'Sim, quando o instrumento está aprovado pelo SATEPSI para uso digital, quando há ambiente controlado e quando o psicólogo garante condições técnicas equivalentes às de aplicação presencial. A Resolução CFP sobre serviços psicológicos online disciplina a prática digital. O SATEPSI publica em sua base se um instrumento tem versão online com parecer favorável. Aplicar versão presencial em formato digital sem validação é falha técnica. Ambiente controlado significa garantia razoável de que o avaliado está em condições adequadas, sem interferência externa que comprometa o resultado.'
+  },
+  {
+    q: 'O que o psicólogo precisa observar ao escolher um instrumento psicológico?',
+    a: 'Quatro critérios sustentam escolha tecnicamente defensável: parecer favorável no SATEPSI, propriedades psicométricas adequadas (validade e fidedignidade documentadas) para o contexto brasileiro, adequação ao construto a ser avaliado e atualidade do manual e normas. A escolha não pode ser por familiaridade ou disponibilidade. Instrumento desatualizado, com normas antigas, gera resultado pouco interpretável. Instrumento aplicado para construto que ele não mede gera laudo equivocado. A literatura técnica sobre avaliação psicológica é consistente nesse ponto (Pasquali, 2020).'
+  },
+  {
+    q: 'É obrigatório aplicar mais de um instrumento em avaliação psicológica?',
+    a: 'Não é obrigatório por regra única, mas a boa prática técnica recomenda triangulação de fontes — mais de um instrumento, entrevista clínica e, quando aplicável, observação ou registro de heteroinformante. A literatura em avaliação psicológica converge em apontar que conclusão baseada em instrumento único é frágil (American Educational Research Association, 2014). O laudo precisa demonstrar consistência entre fontes. Em avaliações em contextos sensíveis (perícia, guarda, porte de arma, CNH categoria especial) a triangulação é praticamente exigência implícita, mesmo quando não escrita literalmente em norma.'
+  },
+  {
+    q: 'O empregador pode exigir laudo psicológico em processo seletivo?',
+    a: 'O empregador pode contratar avaliação psicológica para seleção, mas o laudo é documento de propriedade ética do candidato avaliado, não do empregador. O resultado entregue ao processo seletivo é parecer ou síntese técnica orientada à decisão de seleção — não o laudo completo. O Código de Ética e a Resolução CFP sobre documentos disciplinam essa distinção. O psicólogo responsável precisa garantir sigilo do material bruto, devolutiva ao candidato e uso restrito da síntese técnica à decisão informada para a qual foi contratada. Banco de laudos guardado por RH é prática inadequada.'
+  },
+  {
+    q: 'Como funcionam as exigências para psicólogo perito judicial?',
+    a: 'Psicólogo perito judicial precisa atender aos requisitos da Resolução CFP sobre perícia, incluindo formação adequada, registro ativo no CRP, conhecimento técnico no escopo da perícia e idoneidade. A nomeação é decisão do juízo, em geral via cadastro de perito ou indicação técnica. A literatura sobre perícia psicológica e a Resolução CFP vigente orientam a conduta — incluindo limites de escopo, ética, manejo da relação com partes e estrutura do laudo pericial. Atuação como perito sem formação compatível expõe o profissional a questionamento técnico e ético.'
+  },
+  {
+    q: 'O psicólogo pode usar resultado de teste em laudo sem mencionar o instrumento?',
+    a: 'Não. A Resolução CFP sobre documentos exige menção clara dos instrumentos utilizados, com nome, versão, ano da norma e finalidade no contexto da avaliação. Conclusão fundamentada em instrumento não especificado compromete a verificabilidade técnica do laudo. Em caso de questionamento posterior — judicial, ético, peritagem por outro profissional — a ausência de menção dos instrumentos torna o documento frágil. A regra é simples: o que sustenta a conclusão precisa estar declarado.'
+  },
+  {
+    q: 'É possível usar inteligência artificial para auxiliar na escrita de laudo psicológico?',
+    a: 'O uso de IA para auxiliar etapas administrativas e de organização textual em laudo é tecnicamente possível, mas exige cuidado com sigilo, LGPD e responsabilidade técnica do psicólogo. A Resolução CFP sobre serviços psicológicos e o Código de Ética não autorizam transferência da análise técnica ou do conteúdo clínico sensível a sistemas de terceiros sem garantia de sigilo. Dados de teste, transcrições de entrevista e conteúdo clínico sob sigilo não podem ser submetidos a plataformas que retenham dados ou treinem com input do usuário. A responsabilidade pela análise e pela conclusão permanece integralmente do psicólogo.'
+  },
+  {
+    q: 'Onde aprofundar formação técnica em avaliação psicológica?',
+    a: 'Aprofundamento em avaliação psicológica passa por pós-graduação em Avaliação Psicológica, formação continuada em instrumentos específicos e supervisão por profissional experiente. Programas lato sensu em Avaliação Psicológica cobrem psicometria, instrumentos por área (clínico, organizacional, neuropsicológico, trânsito, perícia), elaboração de documentos e ética. Para profissional que pretende atuar em perícia, ampliação em direito processual aplicado é diferencial. O IPOG oferece formações correlatas em Psicologia aplicada em formato Ao Vivo síncrono com corpo docente nominal — para grade vigente, consulte ipog.edu.br.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliação psicológica e laudos: FAQ com SATEPSI, ética, prazo e instrumentos',
+  description: 'Quatorze perguntas frequentes sobre avaliação psicológica, SATEPSI, laudos, parecer, devolutiva, ética, sigilo, prazos e uso de instrumentos.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação psicológica', item: SITE.url + '/faq/avaliacao-psicologica-laudos-faq/' }
+  ]
+};
+
+const adjacent = AREAS.filter(a => a.cluster === 'neuro-avaliacao').slice(0, 4);
+---
+<Base
+  title="Avaliação psicológica e laudos — FAQ | SATEPSI, ética, prazos, instrumentos"
+  description="Quatorze perguntas frequentes sobre avaliação psicológica, SATEPSI, laudos, parecer, devolutiva, sigilo, guarda de documentos e ética em avaliação.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Avaliação psicológica' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Avaliação psicológica e laudos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliação psicológica: SATEPSI, laudos, parecer, devolutiva e ética.</h1>
+          <p class="mt-3 text-ink-700 text-lg">Quatorze perguntas que psicólogos avaliadores fazem sobre boa prática e regulação.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">14 perguntas · 15 minutos de leitura</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Aplicação de teste psicológico no Brasil é privativa do psicólogo registrado no CRP e exige instrumento com parecer favorável no SATEPSI. Laudo, parecer, declaração e devolutiva têm finalidade e estrutura distintas, disciplinadas por Resolução CFP. Sigilo, guarda de documentos e devolutiva ao avaliado são obrigações éticas verificáveis em fiscalização.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tipos de documento psicológico e sua função</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Documento</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Profundidade</th>
+                <th class="text-left px-4 py-3">Destinatário típico</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Laudo psicológico</td>
+                <td class="px-4 py-3 text-ink-700">Resultado de avaliação ampla</td>
+                <td class="px-4 py-3 text-ink-700">Extenso, técnico, conclusivo</td>
+                <td class="px-4 py-3 text-ink-700">Avaliado, juízo, serviço de saúde</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Parecer psicológico</td>
+                <td class="px-4 py-3 text-ink-700">Resposta a questão específica</td>
+                <td class="px-4 py-3 text-ink-700">Curto, focado</td>
+                <td class="px-4 py-3 text-ink-700">Solicitante formal</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Declaração</td>
+                <td class="px-4 py-3 text-ink-700">Registro pontual</td>
+                <td class="px-4 py-3 text-ink-700">Mínimo, factual</td>
+                <td class="px-4 py-3 text-ink-700">Apresentação a terceiro</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Atestado</td>
+                <td class="px-4 py-3 text-ink-700">Constatação técnica</td>
+                <td class="px-4 py-3 text-ink-700">Curto</td>
+                <td class="px-4 py-3 text-ink-700">Apresentação a empregador, serviço</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Devolutiva</td>
+                <td class="px-4 py-3 text-ink-700">Apresentação de resultados</td>
+                <td class="px-4 py-3 text-ink-700">Encontro (não é documento)</td>
+                <td class="px-4 py-3 text-ink-700">Avaliado ou responsável</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI — Testes com parecer favorável</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções vigentes</a></li>
+          <li><a href="https://site.cfp.org.br/wp-content/uploads/2019/09/Resolu%C3%A7%C3%A3o-CFP-n-06-2019-comentada.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Resolução CFP sobre elaboração de documentos</a></li>
+          <li><a href="https://www.ibapnet.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">IBAP — Instituto Brasileiro de Avaliação Psicológica</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Avaliação psicológica é técnica regulada — não opinião profissional informada.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Instrumento aprovado pelo SATEPSI, triangulação de fontes, sigilo, devolutiva e estrutura de documento conforme Resolução CFP são o piso ético-técnico. Atuar abaixo desse piso expõe o profissional e fragiliza o resultado. Formação aplicada em Avaliação Psicológica encurta a curva e fortalece a prática. Para programas em modalidade Ao Vivo síncrona, consulte o portfólio do IPOG.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Pós em Avaliação Psicológica no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós aplicada no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece formação aplicada em Psicologia (POT, Positiva, Neuropsicologia) em formato Ao Vivo síncrono. Para grade, valor e modalidade vigentes, consulte o portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.ibapnet.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">IBAP</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

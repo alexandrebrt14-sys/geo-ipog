@@ -12,6 +12,7 @@ Documentos canônicos sobre titularidade, ativos digitais, contas operacionais e
 | Frontend stack canônico (Astro + React + TS) | [`../engineering/frontend-stack.md`](../engineering/frontend-stack.md) |
 | Catálogo de padrões de UI | [`../engineering/ui-patterns.md`](../engineering/ui-patterns.md) |
 | SEO indexing canônico (GSC + IndexNow + sitemaps) | [`../engineering/seo-indexing.md`](../engineering/seo-indexing.md) |
+| Google Analytics 4 + Data API + service account | [`google-analytics.md`](google-analytics.md) |
 | ADR-0001 — escolha do stack frontend | [`../engineering/adr/0001-frontend-stack-astro-react-tailwind.md`](../engineering/adr/0001-frontend-stack-astro-react-tailwind.md) |
 
 ## Convenções

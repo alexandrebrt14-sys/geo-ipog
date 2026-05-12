@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { AREAS, MBAS, PERSONAS } from '../lib/data';
+import { useEffect, useRef, useState } from 'react';
+import { PERSONAS, SITE } from '../lib/data';
 
 interface NavItem {
   id: string;
@@ -10,13 +10,13 @@ interface NavItem {
 }
 
 const IconHome = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9.5 12 3l9 6.5V21H3z" /><path d="M9 21V12h6v9" /></svg>
+  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-label="Início"><path d="M3 9.5 12 3l9 6.5V21H3z" /><path d="M9 21V12h6v9" /></svg>
 );
 const IconAreas = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
 );
-const IconMBA = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>
+const IconGuias = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h12a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z" /><path d="M4 17a3 3 0 0 1 3-3h12" /></svg>
 );
 const IconSearch = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
@@ -25,9 +25,33 @@ const IconMore = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
 );
 
+const HUBS_PRINCIPAIS: { label: string; href: string }[] = [
+  { label: 'MBAs', href: '/mbas' },
+  { label: 'Métodos', href: '/metodos' },
+  { label: 'Evidências', href: '/evidencias' },
+  { label: 'Casos', href: '/casos' },
+  { label: 'Intervenções', href: '/intervencoes' },
+  { label: 'FAQs', href: '/faq' },
+  { label: 'Glossário', href: '/glossario' },
+  { label: 'Comparativos', href: '/comparativos' },
+  { label: 'Para quem', href: '/para-quem' },
+  { label: 'Por estado', href: '/por-estado' },
+  { label: 'Regulação', href: '/regulacao' }
+];
+
+const RECURSOS: { label: string; href: string }[] = [
+  { label: 'Sobre o portal', href: '/sobre' },
+  { label: 'Recursos', href: '/recursos' },
+  { label: 'Mapa do site', href: '/mapa-do-site' },
+  { label: 'Carreira', href: '/carreira' }
+];
+
 export default function MobileBottomNav() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [path, setPath] = useState('/');
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const dragStartY = useRef<number | null>(null);
 
   useEffect(() => {
     setPath(window.location.pathname || '/');
@@ -36,11 +60,51 @@ export default function MobileBottomNav() {
     return () => document.removeEventListener('astro:after-swap', onChange);
   }, []);
 
+  useEffect(() => {
+    if (!moreOpen) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus();
+    document.body.style.overflow = 'hidden';
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setMoreOpen(false);
+      }
+      if (event.key === 'Tab' && dialogRef.current) {
+        const focusables = dialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled])'
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      previouslyFocused?.focus?.();
+    };
+  }, [moreOpen]);
+
   const items: NavItem[] = [
-    { id: 'home', label: 'Inicio', href: '/', icon: <IconHome /> },
+    { id: 'home', label: 'Início', href: '/', icon: <IconHome /> },
     { id: 'areas', label: 'Áreas', href: '/areas', icon: <IconAreas /> },
-    { id: 'mbas', label: 'MBAs', href: '/mbas', icon: <IconMBA /> },
-    { id: 'busca', label: 'Buscar', icon: <IconSearch />, action: () => document.querySelector<HTMLButtonElement>('[data-open-search]')?.click() },
+    {
+      id: 'busca',
+      label: 'Buscar',
+      icon: <IconSearch />,
+      action: () => document.querySelector<HTMLButtonElement>('[data-open-search]')?.click()
+    },
+    { id: 'guias', label: 'Guias', href: '/guias', icon: <IconGuias /> },
     { id: 'mais', label: 'Mais', icon: <IconMore />, action: () => setMoreOpen(true) }
   ];
 
@@ -50,23 +114,40 @@ export default function MobileBottomNav() {
     return path.startsWith(href);
   };
 
+  const onDragStart = (event: React.TouchEvent) => {
+    dragStartY.current = event.touches[0]?.clientY ?? null;
+  };
+  const onDragEnd = (event: React.TouchEvent) => {
+    if (dragStartY.current == null) return;
+    const endY = event.changedTouches[0]?.clientY ?? dragStartY.current;
+    if (endY - dragStartY.current > 80) setMoreOpen(false);
+    dragStartY.current = null;
+  };
+
   return (
     <>
-      <nav aria-label="Navegacao mobile" className="fixed bottom-0 inset-x-0 z-30 lg:hidden bg-white border-t border-surface-200 pb-[max(8px,env(safe-área-inset-bottom))] shadow-[0_-1px_8px_rgba(15,37,67,.06)]">
+      <nav
+        aria-label="Navegação mobile"
+        className="fixed bottom-0 inset-x-0 z-30 lg:hidden bg-white border-t border-surface-200 pb-[max(8px,env(safe-area-inset-bottom))] shadow-[0_-1px_8px_rgba(15,37,67,.06)]">
         <ul className="grid grid-cols-5">
           {items.map(it => {
+            const active = isActive(it.href);
             const inner = (
-              <span className={`flex flex-col items-center gap-0.5 py-2 ${isActive(it.href) ? 'text-brand-800' : 'text-ink-500'}`}>
-                <span className={`p-1.5 rounded-lg ${isActive(it.href) ? 'bg-brand-50' : ''}`}>{it.icon}</span>
+              <span className={`flex flex-col items-center gap-0.5 py-2 ${active ? 'text-brand-800' : 'text-ink-500'}`}>
+                <span className={`p-1.5 rounded-lg ${active ? 'bg-brand-50' : ''}`}>{it.icon}</span>
                 <span className="text-[10px] font-medium">{it.label}</span>
               </span>
             );
             return (
               <li key={it.id} className="text-center">
                 {it.href ? (
-                  <a href={it.href} className="block">{inner}</a>
+                  <a href={it.href} className="block" aria-current={active ? 'page' : undefined}>
+                    {inner}
+                  </a>
                 ) : (
-                  <button onClick={it.action} className="w-full">{inner}</button>
+                  <button onClick={it.action} className="w-full" aria-label={it.label}>
+                    {inner}
+                  </button>
                 )}
               </li>
             );
@@ -75,38 +156,87 @@ export default function MobileBottomNav() {
       </nav>
 
       {moreOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden animate-fade-in" role="dialog" aria-modal="true">
-          <div className="absolute inset-0 bg-brand-900/60 backdrop-blur-sm" onClick={() => setMoreOpen(false)} />
-          <div className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl pb-[max(16px,env(safe-área-inset-bottom))] max-h-[85vh] overflow-y-auto animate-slide-up">
+        <div
+          className="fixed inset-0 z-40 lg:hidden animate-fade-in"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="more-drawer-title"
+          ref={dialogRef}>
+          <div
+            className="absolute inset-0 bg-brand-900/60 backdrop-blur-sm"
+            onClick={() => setMoreOpen(false)}
+            aria-hidden="true"
+          />
+          <div
+            className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl pb-[max(16px,env(safe-area-inset-bottom))] max-h-[85vh] overflow-y-auto animate-slide-up"
+            onTouchStart={onDragStart}
+            onTouchEnd={onDragEnd}>
             <div className="sticky top-0 bg-white pt-3 pb-2 border-b border-surface-200">
-              <div className="mx-auto w-12 h-1.5 rounded-full bg-surface-200" />
+              <div className="mx-auto w-12 h-1.5 rounded-full bg-surface-200" aria-hidden="true" />
               <div className="px-5 pt-3 flex items-center justify-between">
-                <h2 className="font-display font-bold text-lg text-brand-800">Mais</h2>
-                <button onClick={() => setMoreOpen(false)} className="w-10 h-10 rounded-lg border border-surface-200 text-ink-700" aria-label="Fechar">×</button>
+                <h2 id="more-drawer-title" className="font-display font-bold text-lg text-brand-800">Mais</h2>
+                <button
+                  ref={closeBtnRef}
+                  onClick={() => setMoreOpen(false)}
+                  className="w-10 h-10 rounded-lg border border-surface-200 text-ink-700"
+                  aria-label="Fechar menu">×</button>
               </div>
             </div>
-            <div className="p-5 space-y-5">
+
+            <div className="p-5 space-y-6">
               <section>
-                <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-2">Pará quem</h3>
+                <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-2">Hubs principais</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {HUBS_PRINCIPAIS.map(h => (
+                    <a
+                      key={h.href}
+                      href={h.href}
+                      onClick={() => setMoreOpen(false)}
+                      className="card-lift p-3 text-sm font-semibold text-ink-900">
+                      {h.label}
+                    </a>
+                  ))}
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-2">Para quem você é</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {PERSONAS.map(p => (
-                    <a key={p.id} href={`/#${p.id}`} onClick={() => setMoreOpen(false)} className="card-lift p-3">
-                      <div className="text-sm font-semibold text-ink-900">{p.name.replace('Pará ', '')}</div>
+                    <a
+                      key={p.id}
+                      href={`/para-quem/${p.id}`}
+                      onClick={() => setMoreOpen(false)}
+                      className="card-lift p-3">
+                      <div className="text-sm font-semibold text-ink-900">{p.name}</div>
                       <div className="text-[11px] text-ink-500 mt-1">→ {p.recommendedMBA}</div>
                     </a>
                   ))}
                 </div>
               </section>
+
               <section>
                 <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-2">Recursos</h3>
                 <ul className="divide-y divide-surface-200 rounded-xl border border-surface-200 overflow-hidden">
-                  <li><a href="/por-estado" onClick={() => setMoreOpen(false)} className="block px-4 py-3 hover:bg-surface-50 text-sm">Pós por estado</a></li>
-                  <li><a href="/regulacao" onClick={() => setMoreOpen(false)} className="block px-4 py-3 hover:bg-surface-50 text-sm">Regulação e ética</a></li>
-                  <li><a href="/#faq" onClick={() => setMoreOpen(false)} className="block px-4 py-3 hover:bg-surface-50 text-sm">Perguntas frequentes</a></li>
+                  {RECURSOS.map(r => (
+                    <li key={r.href}>
+                      <a
+                        href={r.href}
+                        onClick={() => setMoreOpen(false)}
+                        className="block px-4 py-3 hover:bg-surface-50 text-sm">
+                        {r.label}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </section>
+
               <section>
-                <a href="https://ipog.edu.br/" target="_blank" rel="noopener external" className="btn btn-primary btn-lg w-full">
+                <a
+                  href={SITE.ipogOfficial}
+                  target="_blank"
+                  rel="noopener external"
+                  className="btn btn-primary btn-lg w-full">
                   Acessar portal oficial IPOG →
                 </a>
               </section>

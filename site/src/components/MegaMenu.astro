@@ -2,22 +2,93 @@
 interface Props {
   label: string;
   panelWidth?: string;
+  id?: string;
 }
-const { label, panelWidth = '640' } = Astro.props;
+const { label, panelWidth = '640', id } = Astro.props;
+const menuId = id ?? `mega-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 ---
 
-<div class="relative group/menu" data-mega>
-  <button type="button" class="nav-link inline-flex items-center gap-1" aria-haspopup="true">
+<div class="relative group/menu" data-mega data-mega-id={menuId}>
+  <button
+    type="button"
+    class="nav-link inline-flex items-center gap-1"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-controls={`${menuId}-panel`}
+    data-mega-trigger>
     {label}
     <svg class="w-3.5 h-3.5 text-ink-500 transition-transform group-hover/menu:rotate-180" viewBox="0 0 20 20" fill="currentColor">
       <path d="M5.5 7.5 10 12l4.5-4.5z"/>
     </svg>
   </button>
   <div
-    class="absolute left-0 top-full pt-2 z-40 opacity-0 pointer-events-none translate-y-[-6px] transition-all duration-200 group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto group-hover/menu:translate-y-0"
+    id={`${menuId}-panel`}
+    role="region"
+    aria-label={`Menu ${label}`}
+    data-mega-panel
+    class="absolute left-0 top-full pt-2 z-40 opacity-0 pointer-events-none translate-y-[-6px] transition-all duration-200 group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto group-hover/menu:translate-y-0 data-[open=true]:opacity-100 data-[open=true]:pointer-events-auto data-[open=true]:translate-y-0"
     style={`width: ${panelWidth}px`}>
     <div class="card shadow-lift p-4 animate-fade-in">
       <slot name="panel" />
     </div>
   </div>
 </div>
+
+<script>
+  // Click-toggle + ESC + click-outside, complementando o hover do CSS para acessibilidade
+  function initMegaMenus() {
+    const groups = document.querySelectorAll('[data-mega]');
+    groups.forEach(group => {
+      if ((group as HTMLElement).dataset.megaBound === '1') return;
+      (group as HTMLElement).dataset.megaBound = '1';
+      const trigger = group.querySelector<HTMLButtonElement>('[data-mega-trigger]');
+      const panel = group.querySelector<HTMLElement>('[data-mega-panel]');
+      if (!trigger || !panel) return;
+
+      const setOpen = (open: boolean) => {
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) panel.setAttribute('data-open', 'true');
+        else panel.removeAttribute('data-open');
+      };
+
+      trigger.addEventListener('click', (event) => {
+        event.preventDefault();
+        const wasOpen = trigger.getAttribute('aria-expanded') === 'true';
+        // fecha qualquer outro
+        document.querySelectorAll('[data-mega] [data-mega-trigger]').forEach(other => {
+          if (other !== trigger) {
+            other.setAttribute('aria-expanded', 'false');
+            other.parentElement?.querySelector('[data-mega-panel]')?.removeAttribute('data-open');
+          }
+        });
+        setOpen(!wasOpen);
+      });
+
+      panel.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (target.closest('a')) setOpen(false);
+      });
+    });
+  }
+
+  function closeAll() {
+    document.querySelectorAll('[data-mega] [data-mega-trigger]').forEach(trigger => {
+      trigger.setAttribute('aria-expanded', 'false');
+    });
+    document.querySelectorAll('[data-mega-panel]').forEach(panel => {
+      panel.removeAttribute('data-open');
+    });
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeAll();
+  });
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest('[data-mega]')) closeAll();
+  });
+
+  initMegaMenus();
+  document.addEventListener('astro:after-swap', initMegaMenus);
+</script>

@@ -1,0 +1,205 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import {
+  AREAS,
+  MBAS,
+  PERSONAS,
+  TEMAS,
+  GUIAS,
+  FAQS_DEEP,
+  GLOSSARIO_CLUSTERS,
+  EVIDENCIAS,
+  CASOS,
+  INTERVENCOES,
+  METODOS,
+  TEMAS_EMERGENTES_2025_2026,
+  SITE
+} from '@lib/data';
+
+const title = 'Sugestões de busca — Pós-graduação em Psicologia';
+const description = 'Mapa de atalhos populares e buscas por perfil profissional. Áreas, MBAs, guias, FAQs, glossário, evidências, casos, intervenções e métodos do portal independente.';
+const canonical = SITE.url + '/busca/sugestoes';
+
+// Atalhos populares (15 termos canônicos)
+const ATALHOS_POPULARES: { label: string; q: string }[] = [
+  { label: 'NR-1', q: 'NR-1' },
+  { label: 'Burnout', q: 'burnout' },
+  { label: 'POT', q: 'POT' },
+  { label: 'Neuropsicologia', q: 'neuro' },
+  { label: 'IA generativa', q: 'IA generativa' },
+  { label: 'TEA', q: 'TEA' },
+  { label: 'MBA vs especialização', q: 'MBA vs especialização' },
+  { label: 'Supervisor clínico', q: 'supervisor clínico' },
+  { label: 'Retorno ao trabalho', q: 'retorno ao trabalho' },
+  { label: 'Segurança psicológica', q: 'segurança psicológica' },
+  { label: 'People analytics', q: 'people analytics' },
+  { label: 'Avaliação psicológica', q: 'avaliação psicológica' },
+  { label: 'Mindfulness corporativo', q: 'mindfulness corporativo' },
+  { label: 'Liderança positiva', q: 'liderança positiva' },
+  { label: 'Riscos psicossociais', q: 'riscos psicossociais' }
+];
+
+// Buscas por perfil — 4 personas, 5 sugestões cada
+const BUSCAS_POR_PERFIL: { id: string; titulo: string; queries: { label: string; q: string }[] }[] = [
+  {
+    id: 'psicologos',
+    titulo: 'Para psicólogos',
+    queries: [
+      { label: 'Transição clínica para POT', q: 'transição clínica POT' },
+      { label: 'Supervisor clínico', q: 'supervisor clínico' },
+      { label: 'Avaliação de TEA em adulto', q: 'TEA adulto' },
+      { label: 'Uso ético de IA na clínica', q: 'IA clínica' },
+      { label: 'Carreira em psicologia organizacional', q: 'carreira psicologia organizacional' }
+    ]
+  },
+  {
+    id: 'rh',
+    titulo: 'Para profissionais de RH',
+    queries: [
+      { label: 'Implementar NR-1', q: 'implementar NR-1' },
+      { label: 'Programa de bem-estar', q: 'programa de bem-estar' },
+      { label: 'People analytics', q: 'people analytics' },
+      { label: 'Cultura e clima', q: 'cultura e clima' },
+      { label: 'Engajamento e retenção', q: 'engajamento' }
+    ]
+  },
+  {
+    id: 'lideres',
+    titulo: 'Para líderes e executivos',
+    queries: [
+      { label: 'Liderança positiva', q: 'liderança positiva' },
+      { label: 'Segurança psicológica', q: 'segurança psicológica' },
+      { label: 'Performance saudável', q: 'performance saudável' },
+      { label: 'Cultura de bem-estar', q: 'cultura bem-estar' },
+      { label: 'Liderança tóxica', q: 'liderança tóxica' }
+    ]
+  },
+  {
+    id: 'consultores',
+    titulo: 'Para consultores · saúde · educação',
+    queries: [
+      { label: 'Diagnóstico organizacional', q: 'diagnóstico organizacional' },
+      { label: 'Matriciamento na atenção primária', q: 'matriciamento' },
+      { label: 'Stepped care', q: 'stepped care' },
+      { label: 'Psicopedagogia', q: 'psicopedagogia' },
+      { label: 'ABA em rede escolar', q: 'ABA rede escolar' }
+    ]
+  }
+];
+
+interface SectionItem { label: string; href: string; sub?: string }
+interface Section { title: string; href: string; items: SectionItem[] }
+const SECTIONS: Section[] = [
+  { title: 'Áreas da Psicologia', href: '/areas', items: AREAS.map(a => ({ label: a.name, href: `/areas/${a.id}`, sub: a.short })) },
+  { title: 'MBAs', href: '/mbas', items: MBAS.map(m => ({ label: m.shortName, href: `/mbas#${m.id}`, sub: m.tag })) },
+  { title: 'Guias práticos', href: '/guias', items: GUIAS.map(g => ({ label: g.name, href: `/guias/${g.id}`, sub: `${g.steps} passos` })) },
+  { title: 'FAQs profundas', href: '/faq', items: FAQS_DEEP.map(f => ({ label: f.name, href: `/faq/${f.id}`, sub: `${f.qas} perguntas` })) },
+  { title: 'Glossário (clusters)', href: '/glossario', items: GLOSSARIO_CLUSTERS.map(c => ({ label: c.name, href: `/glossario/${c.id}` })) },
+  { title: 'Evidências', href: '/evidencias', items: EVIDENCIAS.map(e => ({ label: e.name, href: `/evidencias/${e.id}`, sub: `${e.papers} papers` })) },
+  { title: 'Casos aplicados', href: '/casos', items: CASOS.map(c => ({ label: c.name, href: `/casos/${c.id}` })) },
+  { title: 'Intervenções', href: '/intervencoes', items: INTERVENCOES.map(i => ({ label: i.name, href: `/intervencoes/${i.id}`, sub: i.evidence })) },
+  { title: 'Métodos terapêuticos', href: '/metodos', items: METODOS.map(m => ({ label: m.name, href: `/metodos/${m.id}` })) },
+  { title: 'Temas centrais', href: '/temas', items: TEMAS.map(t => ({ label: t.name, href: `/temas/${t.id}` })) },
+  { title: 'Temas emergentes · 2025-2026', href: '/temas', items: TEMAS_EMERGENTES_2025_2026.map(t => ({ label: t.name, href: `/temas/${t.id}` })) }
+];
+---
+
+<Base title={title} description={description} canonical={canonical}>
+  <section class="container-page py-10 lg:py-14">
+    <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Busca', href: '/busca' }, { label: 'Sugestões' }]} />
+
+    <header class="mt-6 max-w-3xl">
+      <span class="section-eyebrow">Sitemap visual</span>
+      <h1 class="section-h text-3xl sm:text-4xl">Sugestões de busca</h1>
+      <p class="mt-3 text-base text-ink-700">
+        Mapa completo de atalhos populares, buscas por perfil profissional e índices de cada hub do portal.
+        Útil quando você sabe o que precisa, mas não sabe o termo exato.
+      </p>
+    </header>
+
+    <!-- Atalhos populares -->
+    <section class="mt-10" aria-labelledby="atalhos-populares">
+      <h2 id="atalhos-populares" class="font-display text-xl font-semibold text-ink-900">Atalhos populares</h2>
+      <p class="mt-1 text-sm text-ink-500">Os 15 termos mais procurados no portal — clique para abrir resultados.</p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {ATALHOS_POPULARES.map(item => (
+          <a href={`/busca?q=${encodeURIComponent(item.q)}`} class="chip text-sm">{item.label}</a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Buscas por perfil -->
+    <section class="mt-10" aria-labelledby="buscas-perfil">
+      <h2 id="buscas-perfil" class="font-display text-xl font-semibold text-ink-900">Buscas por perfil</h2>
+      <p class="mt-1 text-sm text-ink-500">Cinco perguntas comuns para cada um dos quatro perfis profissionais.</p>
+
+      <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {BUSCAS_POR_PERFIL.map(perfil => {
+          const persona = PERSONAS.find(p => p.id === perfil.id);
+          return (
+            <article class="card p-5">
+              <header class="flex items-center gap-3">
+                {persona && (
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-800 font-display text-sm font-bold text-white">
+                    {persona.icon}
+                  </span>
+                )}
+                <h3 class="font-display text-base font-semibold text-ink-900">{perfil.titulo}</h3>
+              </header>
+              <ul class="mt-4 space-y-1.5">
+                {perfil.queries.map(q => (
+                  <li>
+                    <a href={`/busca?q=${encodeURIComponent(q.q)}&persona=${perfil.id}`} class="block rounded-lg px-2 py-1.5 text-sm text-ink-900 hover:bg-surface-50 hover:text-brand-800">
+                      <span aria-hidden="true" class="mr-1.5 text-brand-700">→</span>{q.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <footer class="mt-4 border-t border-surface-200 pt-3">
+                <a href={`/para-quem/${perfil.id}`} class="text-xs font-semibold text-brand-700 hover:text-brand-800">
+                  Ver trilha completa para esse perfil <span aria-hidden="true">→</span>
+                </a>
+              </footer>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Índices por hub -->
+    <section class="mt-12" aria-labelledby="indices">
+      <h2 id="indices" class="font-display text-xl font-semibold text-ink-900">Todos os conteúdos por hub</h2>
+      <p class="mt-1 text-sm text-ink-500">Sitemap visual com o índice completo de cada núcleo do portal.</p>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {SECTIONS.map(section => (
+          <article class="rounded-2xl border border-surface-200 bg-white p-5">
+            <header class="flex items-baseline justify-between gap-2">
+              <h3 class="font-display text-base font-semibold text-ink-900">{section.title}</h3>
+              <a href={section.href} class="text-[11px] font-semibold text-brand-700 hover:text-brand-800">Ver hub →</a>
+            </header>
+            <ul class="mt-3 space-y-1">
+              {section.items.map(item => (
+                <li>
+                  <a href={item.href} class="flex items-baseline justify-between gap-2 rounded-md px-1.5 py-1 text-sm text-ink-700 hover:bg-surface-50 hover:text-brand-800">
+                    <span class="truncate">{item.label}</span>
+                    {item.sub && <span class="shrink-0 text-[10px] uppercase tracking-wide text-ink-500">{item.sub}</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <aside class="mt-12 rounded-2xl border border-surface-200 bg-surface-50 p-5 text-sm text-ink-700">
+      <div class="font-semibold text-ink-900">Quer buscar agora?</div>
+      <p class="mt-1">
+        Volte para a <a href="/busca" class="font-semibold text-brand-700 underline-offset-2 hover:underline">busca com filtros</a>
+        ou acesse o <a href="/mapa-do-site" class="font-semibold text-brand-700 underline-offset-2 hover:underline">mapa completo do site</a>.
+      </p>
+    </aside>
+  </section>
+</Base>

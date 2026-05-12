@@ -1,0 +1,55 @@
+---
+/**
+ * TagCloud: nuvem de tags clicáveis baseada em `tagsFor(href)`.
+ * Cada tag aponta para `/busca?q=<label>` (slug ASCII, label acentuado).
+ *
+ * Útil em hubs e ao final de páginas profundas.
+ */
+import { tagsFor } from '@lib/related';
+import { TAGS } from '@lib/taxonomy';
+
+interface Props {
+  href?: string;
+  /** Lista alternativa de tagIds; ignora detecção automática. */
+  tags?: string[];
+  title?: string;
+  eyebrow?: string;
+}
+
+const {
+  href = Astro.url.pathname,
+  tags: tagsProp,
+  title = 'Conceitos abordados',
+  eyebrow = 'Vocabulário',
+} = Astro.props as Props;
+
+const tagIds = (tagsProp && tagsProp.length > 0) ? tagsProp : tagsFor(href);
+
+const resolved = tagIds
+  .map(id => TAGS.find(t => t.id === id))
+  .filter((t): t is { id: string; label: string; cluster: string } => Boolean(t));
+
+const shouldRender = resolved.length > 0;
+---
+
+{shouldRender && (
+  <section class="container-page py-8" aria-labelledby="tag-cloud-title">
+    <div class="rounded-2xl border border-surface-200 bg-surface-50 px-5 py-5 sm:px-6 sm:py-6">
+      <p class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">{eyebrow}</p>
+      <h2 id="tag-cloud-title" class="font-display font-semibold text-lg text-ink-900 mt-1">{title}</h2>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {resolved.map(t => (
+          <li>
+            <a
+              href={`/busca?q=${encodeURIComponent(t.label)}`}
+              class="chip text-xs"
+              data-cluster={t.cluster}
+            >
+              {t.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

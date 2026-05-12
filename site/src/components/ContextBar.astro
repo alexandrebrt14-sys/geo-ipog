@@ -1,0 +1,65 @@
+---
+interface RelatedLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  crumb: string;
+  crumbHref?: string;
+  relatedLinks?: RelatedLink[];
+  searchTerm?: string;
+}
+
+const { crumb, crumbHref, relatedLinks = [], searchTerm } = Astro.props;
+
+const safeRelated = Array.isArray(relatedLinks) ? relatedLinks.slice(0, 5) : [];
+const trimmedTerm = (searchTerm ?? '').trim();
+const searchHref = trimmedTerm
+  ? `/busca?q=${encodeURIComponent(trimmedTerm)}`
+  : '/busca';
+---
+
+<aside
+  aria-label="Barra de contexto"
+  class="hidden lg:flex sticky top-16 z-30 border-b border-surface-200 bg-surface-50/95 backdrop-blur supports-[backdrop-filter]:bg-surface-50/80">
+  <div class="container-page h-11 flex items-center gap-4 text-sm text-ink-700 w-full">
+    <span class="inline-flex items-center gap-2 shrink-0">
+      <svg class="w-3.5 h-3.5 text-ink-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm8-6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Zm0 3a1 1 0 0 1 1 1v2.6l1.7 1a1 1 0 1 1-1 1.74l-2.2-1.27A1 1 0 0 1 9 11V8a1 1 0 0 1 1-1Z" />
+      </svg>
+      <span class="text-xs uppercase tracking-wider text-ink-500">Você está em</span>
+      {crumbHref ? (
+        <a href={crumbHref} class="font-semibold text-brand-800 hover:underline">{crumb}</a>
+      ) : (
+        <span class="font-semibold text-brand-800">{crumb}</span>
+      )}
+    </span>
+
+    {safeRelated.length > 0 && (
+      <span aria-hidden="true" class="text-ink-300">·</span>
+      <span class="text-xs uppercase tracking-wider text-ink-500 shrink-0">Relacionado</span>
+      <ul class="flex items-center gap-2 overflow-x-auto scrollbar-thin">
+        {safeRelated.map(rel => (
+          <li class="shrink-0">
+            <a
+              href={rel.href}
+              class="inline-flex items-center px-2.5 py-1 rounded-full border border-surface-200 bg-white text-xs text-ink-700 hover:border-brand-400 hover:text-brand-800 transition">
+              {rel.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <a
+      href={searchHref}
+      class="ml-auto inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 hover:text-brand-800 hover:underline shrink-0">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      {trimmedTerm ? `Buscar mais sobre "${trimmedTerm}"` : 'Buscar mais'}
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</aside>

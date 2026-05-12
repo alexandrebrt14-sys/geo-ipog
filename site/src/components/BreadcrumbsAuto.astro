@@ -1,0 +1,159 @@
+---
+/**
+ * Breadcrumbs derivados automaticamente de Astro.url.pathname.
+ *
+ * Reconhece padrões:
+ *   /areas, /areas/<slug>
+ *   /mbas, /mbas/<slug>
+ *   /guias, /guias/<slug>
+ *   /faq, /faq/<slug>
+ *   /glossario, /glossario#<cluster>
+ *   /evidencias, /evidencias/<slug>
+ *   /casos, /casos/<slug>
+ *   /intervencoes, /intervencoes/<slug>
+ *   /metodos, /metodos/<slug>
+ *   /por-estado, /por-estado/<uf>
+ *   /temas, /temas/<slug>
+ *   /para-quem, /para-quem/<slug>
+ *   /comparativos, /comparativos/<slug>
+ *   /carreira, /carreira/<slug>
+ *   /pos-graduacao-psicologia, /sobre, /regulacao, /recursos
+ *
+ * Sempre começa com "Início" (/). Resolve nome humano consultando `data.ts`.
+ */
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { AREAS, MBAS, GUIAS, EVIDENCIAS, CASOS, FAQS_DEEP, INTERVENCOES, METODOS, GLOSSARIO_CLUSTERS, ESTADOS, TEMAS, TEMAS_EMERGENTES_2025_2026 } from '@lib/data';
+
+interface Props {
+  pathname?: string;
+  extra?: { label: string; href?: string }[];
+}
+
+const { pathname = Astro.url.pathname, extra } = Astro.props as Props;
+
+interface Crumb { label: string; href?: string; }
+
+// Mapa estático para hubs de nível 1
+const HUB_LABELS: Record<string, string> = {
+  'areas': 'Áreas',
+  'mbas': 'MBAs',
+  'guias': 'Guias',
+  'faq': 'FAQ',
+  'glossario': 'Glossário',
+  'evidencias': 'Evidências',
+  'casos': 'Casos',
+  'intervencoes': 'Intervenções',
+  'metodos': 'Métodos',
+  'por-estado': 'Por estado',
+  'temas': 'Temas',
+  'para-quem': 'Para quem',
+  'comparativos': 'Comparativos',
+  'carreira': 'Carreira',
+  'recursos': 'Recursos',
+  'pos-graduacao-psicologia': 'Pós-graduação em Psicologia',
+  'sobre': 'Sobre',
+  'regulacao': 'Regulação',
+  'busca': 'Busca',
+  'mapa-do-site': 'Mapa do site',
+};
+
+// Resolve slug → nome humano por hub
+function resolveSlug(hub: string, slug: string): string {
+  // Normaliza ASCII slug → string legível
+  const fallback = slug
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+
+  switch (hub) {
+    case 'areas': {
+      const a = AREAS.find(x => x.id === slug);
+      return a?.name || fallback;
+    }
+    case 'mbas': {
+      const m = MBAS.find(x => x.id === slug);
+      return m?.shortName || fallback;
+    }
+    case 'guias': {
+      const g = GUIAS.find(x => x.id === slug);
+      return g?.name || fallback;
+    }
+    case 'faq': {
+      const f = FAQS_DEEP.find(x => x.id === slug);
+      return f?.name || fallback;
+    }
+    case 'evidencias': {
+      const e = EVIDENCIAS.find(x => x.id === slug);
+      return e?.name || fallback;
+    }
+    case 'casos': {
+      const c = CASOS.find(x => x.id === slug);
+      return c?.name || fallback;
+    }
+    case 'intervencoes': {
+      const i = INTERVENCOES.find(x => x.id === slug);
+      return i?.name || fallback;
+    }
+    case 'metodos': {
+      const me = METODOS.find(x => x.id === slug);
+      return me?.name || fallback;
+    }
+    case 'glossario': {
+      const cl = GLOSSARIO_CLUSTERS.find(x => x.id === slug);
+      return cl?.name || fallback;
+    }
+    case 'por-estado': {
+      const uf = ESTADOS.find(x => x.uf.toLowerCase() === slug.toLowerCase());
+      return uf?.nome || slug.toUpperCase();
+    }
+    case 'temas': {
+      const t1 = TEMAS.find(x => x.id === slug);
+      if (t1) return t1.name;
+      const t2 = TEMAS_EMERGENTES_2025_2026.find(x => x.id === slug);
+      if (t2) return t2.name;
+      return fallback;
+    }
+    default:
+      return fallback;
+  }
+}
+
+function buildCrumbs(): Crumb[] {
+  const crumbs: Crumb[] = [{ label: 'Início', href: '/' }];
+  const path = pathname.split('?')[0].split('#')[0];
+  const parts = path.split('/').filter(Boolean);
+
+  if (parts.length === 0) {
+    crumbs[0].href = undefined;
+    return crumbs;
+  }
+
+  const hub = parts[0];
+  const hubLabel = HUB_LABELS[hub] || hub.replace(/-/g, ' ');
+  const hubHref = '/' + hub;
+
+  if (parts.length === 1) {
+    // só hub
+    crumbs.push({ label: hubLabel });
+  } else {
+    // hub clicável + slug terminal
+    crumbs.push({ label: hubLabel, href: hubHref });
+    // Slug final (ignoramos níveis intermediários por simplicidade)
+    const slug = parts[parts.length - 1];
+    crumbs.push({ label: resolveSlug(hub, slug) });
+  }
+
+  // Crumbs extras adicionados pelo chamador (ex.: âncora de tab)
+  if (Array.isArray(extra) && extra.length > 0) {
+    // Remove href do penúltimo (transforma em link clicável) e empurra extras
+    const last = crumbs[crumbs.length - 1];
+    if (last) last.href = pathname;
+    crumbs.push(...extra);
+  }
+
+  return crumbs;
+}
+
+const items = buildCrumbs();
+---
+
+<Breadcrumbs items={items} />

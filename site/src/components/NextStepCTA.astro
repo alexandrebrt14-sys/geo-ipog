@@ -1,0 +1,143 @@
+---
+/**
+ * Bloco de três colunas-CTA ao final do conteúdo:
+ *  - Aprofunde-se   (Evidências + Glossário + Métodos)
+ *  - Veja em prática (Casos + Intervenções + Guias)
+ *  - Encontre seu caminho (Para quem + MBAs + Busca)
+ *
+ * Cada coluna tem 3 links contextuais + 1 CTA primário.
+ *
+ * Quando `nextStepsFor(href, persona)` retorna grupos via Wave 1,
+ * o "top item" de cada coluna é substituído pelo item personalizado.
+ */
+import { nextStepsFor, personaFor } from '@lib/related';
+import type { NextStepBlock } from '@lib/related';
+
+interface Props {
+  href?: string;
+  persona?: string;
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+}
+
+const {
+  href = Astro.url.pathname,
+  persona,
+  eyebrow = 'Próximo passo',
+  title = 'Onde ir a partir daqui',
+  intro = 'Três caminhos curtos para aprofundar, aplicar e decidir.',
+} = Astro.props as Props;
+
+const resolvedPersona = persona ?? personaFor(href) ?? undefined;
+const dynamicGroups: NextStepBlock[] = nextStepsFor(href, resolvedPersona);
+
+interface CTAItem { label: string; href: string; hint?: string; }
+interface CTAColumn {
+  eyebrow: string;
+  title: string;
+  description: string;
+  ctaLabel: string;
+  ctaHref: string;
+  items: CTAItem[];
+}
+
+// Fallbacks estáticos. Wave 1 substitui o primeiro item quando há match.
+const baseColumns: CTAColumn[] = [
+  {
+    eyebrow: 'Aprofunde-se',
+    title: 'Domine a base teórica',
+    description: 'Evidência publicada, conceitos canônicos e métodos clínicos para sustentar decisão técnica.',
+    ctaLabel: 'Ver evidências',
+    ctaHref: '/evidencias',
+    items: [
+      { label: 'Hub de evidências 2025-2026', href: '/evidencias', hint: '6 dossiês de papers' },
+      { label: 'Glossário do portal', href: '/glossario', hint: 'Termos essenciais' },
+      { label: 'Métodos terapêuticos', href: '/metodos', hint: 'TCC, ACT, DBT, EMDR' },
+    ],
+  },
+  {
+    eyebrow: 'Veja em prática',
+    title: 'Aplique no campo real',
+    description: 'Casos concretos, modelos de intervenção e guias passo a passo para sair do diagnóstico à ação.',
+    ctaLabel: 'Ver guias práticos',
+    ctaHref: '/guias',
+    items: [
+      { label: 'Casos reais documentados', href: '/casos', hint: '5 implementações' },
+      { label: 'Modelos de intervenção', href: '/intervencoes', hint: 'Stepped care, IAPT' },
+      { label: 'Guias HowTo', href: '/guias', hint: 'NR-1, bem-estar, TEA' },
+    ],
+  },
+  {
+    eyebrow: 'Encontre seu caminho',
+    title: 'Decida a próxima formação',
+    description: 'Trilhas por persona, MBAs em destaque e busca interna para chegar à decisão técnica em minutos.',
+    ctaLabel: 'Ver MBAs',
+    ctaHref: '/mbas',
+    items: [
+      { label: 'Trilhas por persona', href: '/para-quem', hint: 'RH, líderes, psicólogos' },
+      { label: 'MBAs IPOG em destaque', href: '/mbas', hint: '5 cursos analisados' },
+      { label: 'Buscar tudo no portal', href: '/busca', hint: '174 páginas indexadas' },
+    ],
+  },
+];
+
+// Mapa grupo dinâmico → coluna fallback (substitui top item quando match)
+function mergeDynamicIntoColumns(): CTAColumn[] {
+  const cols = baseColumns.map(c => ({ ...c, items: [...c.items] }));
+  for (const g of dynamicGroups) {
+    if (!g.items || g.items.length === 0) continue;
+    const top = g.items[0];
+    if (!top || !top.label || !top.href) continue;
+    let targetIdx = -1;
+    if (g.kind === 'aprofunde') targetIdx = 0;
+    else if (g.kind === 'pratica') targetIdx = 1;
+    else if (g.kind === 'caminho') targetIdx = 2;
+    if (targetIdx < 0) continue;
+    // Insere top contextual no topo; mantém demais até 3 itens; deduplica por href
+    const existing = cols[targetIdx].items.filter(i => i.href !== top.href);
+    cols[targetIdx].items = [{ label: top.label, href: top.href, hint: top.hint }, ...existing].slice(0, 3);
+  }
+  return cols;
+}
+
+const columns = mergeDynamicIntoColumns();
+---
+
+<section class="container-page py-12 md:py-14" aria-labelledby="next-step-title">
+  <div class="max-w-2xl">
+    <span class="section-eyebrow">{eyebrow}</span>
+    <h2 id="next-step-title" class="section-h text-2xl sm:text-3xl mt-2">{title}</h2>
+    <p class="mt-2 text-ink-700 text-sm sm:text-base">{intro}</p>
+  </div>
+
+  <div class="mt-7 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+    {columns.map(col => (
+      <article class="card-lift p-6 flex flex-col">
+        <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">{col.eyebrow}</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mt-1">{col.title}</h3>
+        <p class="text-sm text-ink-700 mt-2 leading-relaxed">{col.description}</p>
+
+        <ul class="mt-4 space-y-2 flex-1 border-t border-surface-200 pt-4">
+          {col.items.map(item => (
+            <li>
+              <a href={item.href} class="block group">
+                <span class="text-sm font-semibold text-ink-900 group-hover:text-brand-800 transition">
+                  {item.label}
+                  <span aria-hidden="true" class="inline-block ml-1 text-brand-700">→</span>
+                </span>
+                {item.hint && (
+                  <span class="block text-xs text-ink-500 mt-0.5">{item.hint}</span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <a href={col.ctaHref} class="btn btn-primary btn-sm mt-5 w-full justify-center">
+          {col.ctaLabel}
+        </a>
+      </article>
+    ))}
+  </div>
+</section>

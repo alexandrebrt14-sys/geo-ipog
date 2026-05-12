@@ -1,0 +1,82 @@
+---
+/**
+ * Conteúdo relacionado.
+ *
+ * Renderiza até 4 colunas (Áreas / MBAs / Guias / Evidências ou Casos)
+ * com no máximo 3 links cada. Se o bundle estiver vazio, esconde silenciosamente.
+ *
+ * Uso:
+ *   <RelatedContent />                  // usa Astro.url.pathname
+ *   <RelatedContent href="/areas/xx" /> // forçar contexto
+ */
+import { relatedBundleFor, bundleTotal } from '@lib/related';
+import type { RelatedLink } from '@lib/related';
+
+interface Props {
+  href?: string;
+  title?: string;
+  eyebrow?: string;
+  maxItemsPerColumn?: number;
+}
+
+const {
+  href = Astro.url.pathname,
+  title = 'Conteúdo relacionado',
+  eyebrow = 'Continue explorando',
+  maxItemsPerColumn = 3,
+} = Astro.props as Props;
+
+const bundle = relatedBundleFor(href);
+const total = bundleTotal(bundle);
+
+// Selecionar até 4 colunas com mais densidade.
+type Column = { key: string; label: string; items: RelatedLink[] };
+const candidates: Column[] = [
+  { key: 'areas', label: 'Áreas relacionadas', items: bundle.areas },
+  { key: 'mbas', label: 'MBAs e pós-graduações', items: bundle.mbas },
+  { key: 'guias', label: 'Guias práticos', items: bundle.guias },
+  { key: 'evidencias', label: 'Evidências', items: bundle.evidencias },
+  { key: 'casos', label: 'Casos reais', items: bundle.casos },
+  { key: 'faqs', label: 'FAQs aprofundados', items: bundle.faqs },
+  { key: 'metodos', label: 'Métodos terapêuticos', items: bundle.metodos },
+  { key: 'intervencoes', label: 'Intervenções', items: bundle.intervencoes },
+];
+
+const columns = candidates.filter(c => c.items.length > 0).slice(0, 4);
+const shouldRender = total > 0 && columns.length > 0;
+
+// Tailwind precisa de classes literais
+const gridColsClass =
+  columns.length === 1 ? 'md:grid-cols-1'
+  : columns.length === 2 ? 'md:grid-cols-2'
+  : columns.length === 3 ? 'md:grid-cols-3'
+  : 'md:grid-cols-2 lg:grid-cols-4';
+---
+
+{shouldRender && (
+  <section class="container-page py-10 md:py-12 border-t border-surface-200" aria-labelledby="related-content-title">
+    <div class="max-w-2xl">
+      <span class="section-eyebrow">{eyebrow}</span>
+      <h2 id="related-content-title" class="section-h text-2xl sm:text-3xl mt-2">{title}</h2>
+      <p class="mt-2 text-ink-700 text-sm sm:text-base">Outras páginas do portal próximas deste tema, ordenadas por afinidade conceitual.</p>
+    </div>
+
+    <div class={`mt-7 grid grid-cols-1 ${gridColsClass} gap-4 sm:gap-5`}>
+      {columns.map(col => (
+        <div class="card-lift p-5 flex flex-col">
+          <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700 mb-3">{col.label}</p>
+          <ul class="space-y-2 flex-1">
+            {col.items.slice(0, maxItemsPerColumn).map(item => (
+              <li>
+                <a href={item.href} class="block text-sm font-semibold text-ink-900 hover:text-brand-800 transition leading-snug">
+                  {item.name}
+                  <span aria-hidden="true" class="inline-block ml-1 text-brand-700">→</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+)}

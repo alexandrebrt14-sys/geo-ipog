@@ -1,0 +1,206 @@
+---
+/**
+ * Bloco horizontal compacto "Explore também" para hubs.
+ *
+ * Renderiza 5 a 7 chips com link e hint curto baseado no mapa estático
+ * `HUB_SIBLINGS`. Componente standalone — sem dependência de taxonomy.
+ *
+ * Uso típico: logo após o hero das páginas de índice de hub.
+ *
+ *   <SmartCrossLinks />               // detecta pelo Astro.url.pathname
+ *   <SmartCrossLinks href="/areas" /> // forçar contexto
+ */
+
+interface Sibling {
+  label: string;
+  href: string;
+  hint: string;
+}
+
+interface Props {
+  href?: string;
+  eyebrow?: string;
+}
+
+const { href = Astro.url.pathname, eyebrow = 'Explore também' } = Astro.props as Props;
+
+// Mapa estático: hub → hubs irmãos com hint curta.
+const HUB_SIBLINGS: Record<string, Sibling[]> = {
+  '/areas': [
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'Métodos terapêuticos', href: '/metodos', hint: 'TCC, ACT, DBT, EMDR' },
+    { label: 'Evidências', href: '/evidencias', hint: 'Papers 2025-2026' },
+    { label: 'Casos reais', href: '/casos', hint: 'Implementação real' },
+    { label: 'Por estado', href: '/por-estado', hint: '27 UFs mapeadas' },
+    { label: 'Para quem', href: '/para-quem', hint: 'Trilhas por persona' },
+  ],
+  '/mbas': [
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'Comparativos', href: '/comparativos', hint: 'Cursos lado a lado' },
+    { label: 'Para quem', href: '/para-quem', hint: 'Trilhas por persona' },
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'Regulação', href: '/regulacao', hint: 'CFP, MEC, lato sensu' },
+    { label: 'Carreira', href: '/carreira', hint: 'Salários e trilhas' },
+  ],
+  '/guias': [
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Intervenções', href: '/intervencoes', hint: 'Stepped care, IAPT' },
+    { label: 'Métodos terapêuticos', href: '/metodos', hint: 'TCC, ACT, DBT' },
+    { label: 'Casos reais', href: '/casos', hint: 'Aplicação prática' },
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'Temas 2026', href: '/temas', hint: 'Burnout, IA, NR-1' },
+  ],
+  '/faq': [
+    { label: 'Glossário', href: '/glossario', hint: 'Termos essenciais' },
+    { label: 'Regulação CFP', href: '/regulacao', hint: 'Especialidades' },
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'Para quem', href: '/para-quem', hint: 'Trilhas por persona' },
+    { label: 'Carreira', href: '/carreira', hint: 'Salários e trilhas' },
+  ],
+  '/glossario': [
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'Regulação CFP', href: '/regulacao', hint: 'Especialidades' },
+    { label: 'Métodos terapêuticos', href: '/metodos', hint: 'TCC, ACT, DBT' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Evidências', href: '/evidencias', hint: 'Papers 2025-2026' },
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Temas 2026', href: '/temas', hint: 'Burnout, IA, NR-1' },
+  ],
+  '/evidencias': [
+    { label: 'Casos reais', href: '/casos', hint: 'Aplicação prática' },
+    { label: 'Intervenções', href: '/intervencoes', hint: 'Stepped care, IAPT' },
+    { label: 'Métodos terapêuticos', href: '/metodos', hint: 'TCC, ACT, DBT' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Temas 2026', href: '/temas', hint: 'Burnout, IA, NR-1' },
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+  ],
+  '/casos': [
+    { label: 'Intervenções', href: '/intervencoes', hint: 'Stepped care, IAPT' },
+    { label: 'Evidências', href: '/evidencias', hint: 'Papers 2025-2026' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Métodos terapêuticos', href: '/metodos', hint: 'TCC, ACT, DBT' },
+    { label: 'Temas 2026', href: '/temas', hint: 'Burnout, IA, NR-1' },
+  ],
+  '/intervencoes': [
+    { label: 'Evidências', href: '/evidencias', hint: 'Papers 2025-2026' },
+    { label: 'Métodos terapêuticos', href: '/metodos', hint: 'TCC, ACT, DBT' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'Casos reais', href: '/casos', hint: 'Aplicação prática' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+  ],
+  '/metodos': [
+    { label: 'Intervenções', href: '/intervencoes', hint: 'Stepped care, IAPT' },
+    { label: 'Evidências', href: '/evidencias', hint: 'Papers 2025-2026' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Casos reais', href: '/casos', hint: 'Aplicação prática' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'Glossário', href: '/glossario', hint: 'Termos essenciais' },
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+  ],
+  '/temas': [
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Evidências', href: '/evidencias', hint: 'Papers 2025-2026' },
+    { label: 'Casos reais', href: '/casos', hint: 'Aplicação prática' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'Métodos terapêuticos', href: '/metodos', hint: 'TCC, ACT, DBT' },
+  ],
+  '/comparativos': [
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Para quem', href: '/para-quem', hint: 'Trilhas por persona' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Regulação', href: '/regulacao', hint: 'CFP, MEC, lato sensu' },
+    { label: 'Carreira', href: '/carreira', hint: 'Salários e trilhas' },
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+  ],
+  '/carreira': [
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Para quem', href: '/para-quem', hint: 'Trilhas por persona' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Casos reais', href: '/casos', hint: 'Aplicação prática' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'Comparativos', href: '/comparativos', hint: 'Cursos lado a lado' },
+  ],
+  '/para-quem': [
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Carreira', href: '/carreira', hint: 'Salários e trilhas' },
+    { label: 'Comparativos', href: '/comparativos', hint: 'Cursos lado a lado' },
+    { label: 'Guias práticos', href: '/guias', hint: 'HowTo passo a passo' },
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'Regulação', href: '/regulacao', hint: 'CFP, MEC, lato sensu' },
+  ],
+  '/por-estado': [
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Para quem', href: '/para-quem', hint: 'Trilhas por persona' },
+    { label: 'Comparativos', href: '/comparativos', hint: 'Cursos lado a lado' },
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'Regulação', href: '/regulacao', hint: 'CFP, MEC, lato sensu' },
+    { label: 'Carreira', href: '/carreira', hint: 'Salários e trilhas' },
+  ],
+  '/regulacao': [
+    { label: 'FAQ aprofundado', href: '/faq', hint: 'Dúvidas reais' },
+    { label: 'Glossário', href: '/glossario', hint: 'Termos essenciais' },
+    { label: 'MBAs IPOG', href: '/mbas', hint: '5 MBAs em destaque' },
+    { label: 'Comparativos', href: '/comparativos', hint: 'Cursos lado a lado' },
+    { label: 'Áreas da Psicologia', href: '/areas', hint: '18 áreas mapeadas' },
+    { label: 'Carreira', href: '/carreira', hint: 'Salários e trilhas' },
+    { label: 'Para quem', href: '/para-quem', hint: 'Trilhas por persona' },
+  ],
+};
+
+// Normaliza href: remove trailing slash (exceto raiz) e descarta query/hash
+function normalizeRoot(p: string): string {
+  const noQuery = p.split('?')[0].split('#')[0];
+  const trimmed = noQuery.replace(/\/+$/, '');
+  if (!trimmed) return '/';
+  // Para path com slug (/areas/xxx) usa o root do hub (/areas)
+  const parts = trimmed.split('/').filter(Boolean);
+  return '/' + parts[0];
+}
+
+const rootHub = normalizeRoot(href);
+const siblings = HUB_SIBLINGS[rootHub] || [];
+const shouldRender = siblings.length > 0;
+---
+
+{shouldRender && (
+  <section class="bg-white border-b border-surface-200" aria-label="Cross-links de hub">
+    <div class="container-page py-5 md:py-6">
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-5">
+        <p class="text-[11px] uppercase tracking-wider font-semibold text-ink-500 shrink-0">
+          {eyebrow}
+        </p>
+        <ul class="flex flex-wrap items-center gap-2">
+          {siblings.map(s => (
+            <li>
+              <a
+                href={s.href}
+                class="group inline-flex items-center gap-2 rounded-full bg-surface-50 border border-surface-200 px-3 py-1.5 text-sm font-medium text-ink-700 hover:border-brand-400 hover:text-brand-800 hover:bg-white transition"
+                title={s.hint}
+              >
+                <span>{s.label}</span>
+                <span class="hidden sm:inline text-[11px] text-ink-500 group-hover:text-brand-700 transition">·</span>
+                <span class="hidden sm:inline text-[11px] text-ink-500 group-hover:text-brand-700 transition">{s.hint}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+)}

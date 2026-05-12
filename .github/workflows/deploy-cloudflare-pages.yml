@@ -1,0 +1,121 @@
+# Deploy automatico para Cloudflare Pages no push para main.
+# Substitui o deploy manual via `wrangler pages deploy site/dist`.
+#
+# Pre-requisitos:
+# - Secret CLOUDFLARE_API_TOKEN configurado (token com permissoes Account
+#   Pages: Edit e Account Settings: Read, ou superior).
+# - Secret CLOUDFLARE_ACCOUNT_ID configurado (account brasilgeo:
+#   792448bf922857a2a0c2230bc5088dee).
+#
+# O job e idempotente: roda o build Astro, gera sitemap, e faz upload
+# incremental para Cloudflare Pages (Pages reaproveita arquivos com hash
+# identico).
+#
+# Trigger:
+# - push para branch main que toque site/, .github/workflows/, ou docs/research/
+# - workflow_dispatch manual
+
+name: "Deploy — Cloudflare Pages posgraduacaopsicologia"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/deploy-cloudflare-pages.yml"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch alvo no Cloudflare Pages (main = production alias)"
+        required: false
+        default: "main"
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: "cloudflare-pages-deploy"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: "Build Astro + Deploy CF Pages"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: "Checkout do repositorio"
+        uses: actions/checkout@v4
+
+      - name: "Setup Node 20"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "site/package-lock.json"
+
+      - name: "Instalar dependencias"
+        working-directory: site
+        run: npm ci
+
+      - name: "Build Astro + sitemap"
+        working-directory: site
+        run: npm run build
+
+      - name: "Verificar artefato"
+        run: |
+          test -f site/dist/index.html || (echo "Build falhou: index.html ausente" && exit 1)
+          test -f site/dist/sitemap.xml || (echo "Sitemap nao gerado" && exit 1)
+          test -f site/dist/llms.txt || (echo "llms.txt ausente em dist" && exit 1)
+          test -f site/dist/robots.txt || (echo "robots.txt ausente em dist" && exit 1)
+          PAGE_COUNT=$(find site/dist -name "index.html" | wc -l)
+          echo "Paginas HTML construidas: $PAGE_COUNT"
+          test "$PAGE_COUNT" -ge 150 || (echo "Build com poucas paginas (esperado >=150)" && exit 1)
+
+      - name: "Deploy para Cloudflare Pages"
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy site/dist --project-name=posgraduacaopsicologia --branch=${{ github.event.inputs.branch || 'main' }}
+
+      - name: "Smoke test pos-deploy"
+        run: |
+          sleep 8
+          URLS=(
+            "https://posgraduacaopsicologia.com/"
+            "https://posgraduacaopsicologia.com/llms.txt"
+            "https://posgraduacaopsicologia.com/robots.txt"
+            "https://posgraduacaopsicologia.com/sitemap.xml"
+            "https://posgraduacaopsicologia.com/areas/"
+            "https://posgraduacaopsicologia.com/mbas/"
+            "https://posgraduacaopsicologia.com/guias/"
+            "https://posgraduacaopsicologia.com/faq/"
+          )
+          FAIL=0
+          for URL in "${URLS[@]}"; do
+            CODE=$(curl -sIL -o /dev/null -w "%{http_code}" "$URL")
+            echo "$CODE $URL"
+            if [ "$CODE" != "200" ]; then FAIL=1; fi
+          done
+          if [ "$FAIL" -ne 0 ]; then
+            echo "Smoke test falhou em pelo menos 1 URL"
+            exit 1
+          fi
+
+      - name: "IndexNow ping (best-effort)"
+        if: success()
+        continue-on-error: true
+        run: |
+          curl -s -X POST 'https://api.indexnow.org/IndexNow' \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            -d '{
+              "host": "posgraduacaopsicologia.com",
+              "key": "d2b9ebce0365f8fc565be54671f9fae8",
+              "keyLocation": "https://posgraduacaopsicologia.com/d2b9ebce0365f8fc565be54671f9fae8.txt",
+              "urlList": [
+                "https://posgraduacaopsicologia.com/",
+                "https://posgraduacaopsicologia.com/sitemap.xml"
+              ]
+            }' \
+            -o /dev/null -w "indexnow: %{http_code}\n"

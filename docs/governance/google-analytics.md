@@ -126,6 +126,38 @@ for row in resp.rows:
 
 Convidar usuarios humanos em `https://analytics.google.com/analytics/web/?hl=pt-br#/a394425908p537256335/admin/suiteusermanagement/property`.
 
+## Proximos passos (roadmap da camada de medicao)
+
+Lista priorizada para evoluir o stack de analytics ao longo das proximas 4-6 semanas. Itens marcados como **dependentes de dados** so podem ser fechados apos a janela mencionada porque a Data API / UI exigem ao menos uma leitura registrada antes de habilitar.
+
+### Curto prazo (proximos 7 dias)
+
+- [ ] **Marcar `click_outbound_ipog` como Key Event** (dependente de dados — aguarda primeiros eventos). Path: GA4 Admin → Eventos → toggle "Marcar como evento principal". Ativa contagem de conversao no GA4 + import como conversao no Google Ads quando linkado.
+- [ ] **Registrar custom dimensions** para os parametros do evento outbound (`link_url`, `link_domain`, `link_text`). Path: GA4 Admin → Definicoes personalizadas → Dimensoes personalizadas → Criar. Sem isso, o relatorio `ipog_clicks` do script semanal nao traz `link_url` (cai na fallback).
+- [ ] **URL Inspection lote 2** (10 hubs novos) — quota GSC reseta diariamente. Lista canonica em `docs/engineering/seo-indexing.md`.
+- [ ] **DebugView smoke test**: ativar GA4 DebugView, visitar `posgraduacaopsicologia.com` com `?debug_mode=1` e confirmar que `page_view` + `click_outbound_ipog` chegam (proxy de qualidade da tag).
+
+### Medio prazo (proximas 4 semanas)
+
+- [ ] **Looker Studio dashboard publicado** seguindo o blueprint em `dashboards/GA4-WEEKLY-REPORT.md` secao "Componentes minimos". Compartilhar com `geo.ipog.edu`, executivos IPOG (Ronan / Bruno) como Leitor.
+- [ ] **Bing Webmaster Tools** — criar propriedade `posgraduacaopsicologia.com`, importar do GSC (botao "Import from GSC"), e linkar ao Microsoft Clarity (heatmap gratuito) para complementar GA4. Sinergia com IndexNow ja ativo.
+- [ ] **Consent Mode v2 minimo** se monitoramento detectar trafego EEE significativo (>5% das sessoes). Implementacao basica: banner duas opcoes (`granted`/`denied`) + `default consent denied` no gtag config.
+- [ ] **Anomaly detection automatica** — habilitar Intelligence Anomalies no GA4 (path: Insights → Configurar) para alertas por email quando `activeUsers` ou `screenPageViews` se desviarem >2 sigma.
+- [ ] **BigQuery export** — habilitar export gratis do GA4 para BigQuery (limite 1M eventos/dia, suficiente). Permite SQL ad-hoc e join com tabelas Brasil GEO (concorrentes, mentions cross-LLM). Path: Admin → Vinculacoes BigQuery.
+
+### Medio-longo (proximas 6-8 semanas)
+
+- [ ] **Audiencias / Segmentos**: criar "Visitantes interessados em MBA Online de Psicologia" (paginas `/mbas/*` + `/areas/*`) e "Quase-leads" (passaram 60s+ em `/pos-graduacao-psicologia/*`). Necessario para retargeting futuro Google Ads.
+- [ ] **Google Ads link** — vincular conta Google Ads quando IPOG aprovar campanha de remarketing. Path: Admin → Vinculacoes Google Ads.
+- [ ] **Server-side GTM** (avaliacao) — para reduzir bloqueio por ad-blockers, considerar GTM server container hospedado em Cloudflare Workers. Estimativa US$ 20-30/mes mas melhora ate +20% na coleta.
+- [ ] **Auditoria LGPD** — revisao formal de retencao (atual: 14 meses padrao GA4), data anonymization, contratos com Google Workspace. Saida: termo de privacidade publicado no portal apontando para o GA4.
+
+### Tarefas com gating externo
+
+- [ ] **Search Ads 360 link** — so quando IPOG decidir investir em search paid. Hoje so com cliente.
+- [ ] **Display & Video 360** — idem; depende de campanha de display planejada.
+- [ ] **Floodlight tags** — idem.
+
 ## Historico
 
 | Data | Mudanca | Quem |

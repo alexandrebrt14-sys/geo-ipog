@@ -133,6 +133,12 @@ Diagnóstico dos 10 concorrentes prioritários do IPOG na vertical de pós-gradu
 - `dashboards/METRICAS-CANONICAS.md` — definição operacional, fórmula, cadência e owner de cada KPI.
 - `dashboards/RUNBOOK-COLETA-LLM.md` — runbook da coleta diária cross-LLM com circuit breaker, retry, fallback, drift detection.
 - `dashboards/FINOPS-DISCIPLINA.md` — preços 2026, budget guards, alocação por LLM, otimizações.
+- `dashboards/GA4-WEEKLY-REPORT.md` — pipeline semanal GA4 Data API + setup Looker Studio + integração GSC. Cron seg 09:00 BRT via GitHub Actions abre PR automático com 7 relatórios.
+- `dashboards/relatorios-ga4/` — relatórios semanais GA4 versionados (HTML + CSV + Markdown + JSON), gerados por `scripts/weekly_ga4_report.py`.
+
+### Camada de medição GA4 (`docs/governance/google-analytics.md`)
+
+Inventário canônico da camada de analytics: Property ID `537256335`, Measurement ID `G-1VXE1Z4J9R`, Service Account `geo-ipog-analytics-reader`, vinculação com Search Console, custom event `click_outbound_ipog` (cliques de saída para `ipog.edu.br` como proxy de conversão), roadmap formal de Key Events, custom dimensions, BigQuery export e Looker Studio publicado. Issue de tracking no GitHub do projeto.
 
 ## Governança operacional
 

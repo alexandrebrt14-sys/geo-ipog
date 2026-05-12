@@ -114,6 +114,25 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
 ---
 
+## Camada de medição (infraestrutura cross-fase)
+
+**Status:** ativo desde **12-05-2026**. Toda a Fase 4 depende dessa camada. Detalhes operacionais em `docs/governance/google-analytics.md` e `dashboards/GA4-WEEKLY-REPORT.md`.
+
+### O que está pronto
+
+- Tag GA4 `G-1VXE1Z4J9R` deployada em `posgraduacaopsicologia.com` (Property `537256335`, Account `Brasil GEO - IPOG` 394425908), com handler `astro:after-swap` para SPA navigation.
+- Custom event `click_outbound_ipog` registrando cliques de saída para `ipog.edu.br` (proxy de conversão MQL).
+- GCP project `geo-ipog-analytics` + Analytics Data API habilitada + service account `geo-ipog-analytics-reader` com Viewer aplicado via Admin API v1alpha (workaround para limitação da UI nova do GA4).
+- Pipeline semanal `scripts/weekly_ga4_report.py` + workflow GitHub Actions `ga4-weekly-report.yml` (cron seg 09:00 BRT). Gera 7 relatórios em HTML+CSV+Markdown+JSON sob `dashboards/relatorios-ga4/YYYY-Wnn/` e abre PR automático.
+- Vinculação GSC `sc-domain:posgraduacaopsicologia.com` ↔ GA4 stream criada — queries orgânicas chegam aos reports GA4 em ~48h.
+- Runbook Looker Studio em `dashboards/GA4-WEEKLY-REPORT.md` (criação manual em 5 min).
+
+### O que falta (referenciar a issue de tracking)
+
+Os próximos passos formais — Key Event, custom dimensions, Bing Webmaster, Looker Studio publicado, BigQuery export, audiências, Google Ads link, Consent Mode v2 — estão consolidados em **`docs/governance/google-analytics.md`** seção "Proximos passos" e em uma issue de tracking aberta no GitHub do projeto. Não bloqueiam Fase 1-3, mas alimentam Fase 4 com qualidade crescente conforme dados se acumulam.
+
+---
+
 ## KPIs principais
 
 - **LLM Mention Rate** do IPOG por persona em prompts-âncora cross-LLM (ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot).

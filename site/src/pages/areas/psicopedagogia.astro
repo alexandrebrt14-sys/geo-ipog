@@ -1,0 +1,291 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+
+const area = AREAS.find(a => a.id === 'psicopedagogia')!;
+const relatedMbas = MBAS.filter(m => area.relatedCourses.includes(m.id));
+const adjacent = AREAS.filter(a => a.id !== area.id && a.cluster === area.cluster).slice(0, 4);
+
+const faqs = [
+  {
+    q: 'Psicopedagogia é privativa de psicólogos?',
+    a: 'Não. A Psicopedagogia é um campo interdisciplinar — não é especialidade privativa de psicólogos. Pedagogos, psicólogos, fonoaudiólogos, professores e profissionais de áreas afins podem se formar em Psicopedagogia. A Associação Brasileira de Psicopedagogia (ABPp) é a entidade que organiza referências técnicas e o título de Especialista em Psicopedagogia para associados que cumpram os critérios. A Lei 13.935/2019 trata da presença de psicólogos e assistentes sociais na educação básica, mas não regulamenta a profissão de psicopedagogo — esse é um pleito legislativo em curso (PL 31/2010 e sucessivos).'
+  },
+  {
+    q: 'Qual a diferença entre Psicopedagogia institucional e clínica?',
+    a: 'Psicopedagogia institucional atua dentro da escola — assessoria pedagógica, formação de professores, articulação entre família e escola, intervenções coletivas, projetos de inclusão. Psicopedagogia clínica atua em atendimento individual ou em pequenos grupos, em consultório, com queixas específicas de aprendizagem. A ABPp organiza as duas frentes como expertises distintas, com instrumentos próprios. A maior parte dos cursos forma para as duas — quem só conhece uma das vertentes opera com repertório metade do necessário.'
+  },
+  {
+    q: 'Dificuldade de aprendizagem é o mesmo que transtorno específico de aprendizagem?',
+    a: 'Não. Dificuldade de aprendizagem é um termo amplo que inclui causas pedagógicas, emocionais, sociais, sensoriais e neurobiológicas. Transtorno específico de aprendizagem, no DSM-5-TR e na CID-11, é uma categoria diagnóstica restrita (inclui dislexia, discalculia, disgrafia/transtorno da expressão escrita) com critérios próprios. Trabalhar a partir dessa distinção evita o erro frequente de "psicopedagogizar" o que é, na verdade, falha de ensino, hipoestímulo ou ambiente inadequado.'
+  },
+  {
+    q: 'Quem pode aplicar a EOCA, a Prova Operatória ou o Boletim Diário?',
+    a: 'Instrumentos da tradição psicopedagógica como a Entrevista Operativa Centrada na Aprendizagem (EOCA), a Prova Operatória de inspiração piagetiana e o Boletim Diário do aluno podem ser aplicados por psicopedagogos formados, independentemente da graduação de origem. São instrumentos pedagógicos e clínicos, não testes psicológicos do SATEPSI. Testes psicológicos formais permanecem privativos de psicólogos (CFP). Diferenciar instrumento pedagógico de teste psicológico é regra ética básica para o psicopedagogo.'
+  },
+  {
+    q: 'Vale a pena pós em Psicopedagogia para professor de escola pública?',
+    a: 'Vale, em geral, com retorno alto em três frentes. Primeiro, retorno financeiro direto, porque a maioria dos planos de carreira do magistério reconhece pós lato sensu em adicional de titulação. Segundo, retorno técnico, porque amplia o repertório para lidar com dificuldades de aprendizagem em sala. Terceiro, retorno de carreira, porque abre possibilidade de atuação em sala de recursos, coordenação pedagógica e atendimento clínico. Verificar se o curso é reconhecido pelo MEC e se a grade dialoga com a ABPp é regra mínima.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Psicopedagogia: aprendizagem, dificuldades escolares e formação interdisciplinar',
+  description: 'Guia técnico de Psicopedagogia: campo interdisciplinar, atuação institucional e clínica, instrumentos, dificuldades de aprendizagem. Referência ABPp. Conteúdo independente.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="Psicopedagogia: aprendizagem, dificuldades escolares e pós interdisciplinar"
+  description="Guia técnico de Psicopedagogia: campo interdisciplinar, atuação institucional e clínica, instrumentos, dificuldades e transtornos de aprendizagem. Referência ABPp, CFP, MEC.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Áreas', href: '/areas' },
+        { label: 'Psicopedagogia' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Área · Cluster demais áreas · Regulação {area.regulatoryLevel}</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Psicopedagogia: aprendizagem, dificuldades escolares e pós interdisciplinar</h1>
+          <p class="mt-3 text-ink-700 text-lg">O campo que estuda como o sujeito aprende — e o que acontece quando o processo falha. Interdisciplinar por natureza, técnico por exigência.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Psicopedagogia é um campo interdisciplinar que estuda o processo de aprendizagem humana e atua na prevenção, diagnóstico e intervenção em dificuldades de aprendizagem. Não é especialidade privativa de psicólogos. Pedagogos, psicólogos, fonoaudiólogos e professores podem se formar. A Associação Brasileira de Psicopedagogia (ABPp) é a entidade que organiza referências técnicas. Atuação possível em duas frentes: institucional (escola) e clínica (consultório).
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A tese contraintuitiva da psicopedagogia</h2>
+        <p>
+          A leitura comum trata a Psicopedagogia como "reforço escolar com sofá". É uma redução grave que apaga a complexidade do campo. Psicopedagogia competente articula epistemologia genética de Piaget, psicologia da aprendizagem, neurociência cognitiva, sociologia da educação e clínica das modalidades de aprendizagem — tradição que Alicia Fernández organizou no eixo "sujeito que aprende" (Fernández, 1991). A diferença prática é que o psicopedagogo formado lê o sintoma de aprendizagem como sinal de um sistema (sujeito, família, escola, conhecimento) e não como falha individual a ser corrigida.
+        </p>
+        <p>
+          A segunda confusão é tratar dificuldade de aprendizagem como sinônimo de transtorno. A literatura contemporânea separa três planos: pedagógico (ensino inadequado, ambiente escolar deficiente), psicológico (questões emocionais, vínculo, desejo de aprender) e neurobiológico (transtornos específicos como dislexia, discalculia, disgrafia). O psicopedagogo técnico opera no entrelaçamento dos três planos sem reduzir um ao outro.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Fundamentação conceitual</h2>
+        <p>
+          O primeiro pilar é a epistemologia genética de Piaget, que estruturou o entendimento contemporâneo de como o conhecimento é construído pelo sujeito em interação com o meio. Os estágios sensório-motor, pré-operatório, operatório concreto e operatório formal, embora atualizados pela literatura, continuam sendo a base do raciocínio psicopedagógico clínico. A Prova Operatória, instrumento clássico do campo, deriva diretamente dessa tradição (Sara Paín, 1985).
+        </p>
+        <p>
+          O segundo pilar é a tradição argentina de Psicopedagogia, organizada por autoras como Sara Paín, Alicia Fernández, Jorge Visca e Norma Filidoro. A formulação central é a de "modalidade de aprendizagem" — o jeito singular pelo qual um sujeito constrói conhecimento, com sua história, seu desejo, suas defesas, seu vínculo com o saber. Trabalhar sem esse conceito é fazer reforço, não psicopedagogia.
+        </p>
+        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
+          "A modalidade de aprendizagem é o modo como o sujeito se aproxima do conhecimento — modo que se forma na relação entre desejo, inteligência, corpo e meio. Não há aprendizagem fora desse entrelaçamento." — Alicia Fernández, A Inteligência Aprisionada (1991).
+        </blockquote>
+        <p>
+          O terceiro pilar é a perspectiva sociocultural de Vygotsky, com os conceitos de Zona de Desenvolvimento Proximal (ZDP), mediação e linguagem como organizadora do pensamento. Em psicopedagogia institucional, especialmente, a leitura vygotskyana sustenta intervenções em sala de aula que respeitam o nível atual do aluno e operam exatamente na franja em que o conhecimento ainda não está consolidado, mas é alcançável com mediação.
+        </p>
+        <p>
+          O quarto pilar é a neurociência da aprendizagem. A literatura contemporânea sobre transtornos específicos de aprendizagem (dislexia, discalculia, disgrafia/transtorno da expressão escrita) e sobre o papel das funções executivas no rendimento escolar (Diamond, 2013) é exigência técnica. **Psicopedagogo que ignora neurociência fica preso a hipóteses afetivas para fenômenos que têm explicação cognitiva e neurobiológica documentada.**
+        </p>
+        <p>
+          O quinto pilar é a clínica institucional. Boa parte das demandas chega como "aluno com problema", mas a investigação técnica frequentemente revela problema no sistema escolar — método de alfabetização inadequado, classe superlotada, professora sob assédio institucional, política pedagógica desencontrada com o que se exige na avaliação. O psicopedagogo institucional competente trabalha com essa leitura sistêmica, articulando família, professor, gestão e estudante.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Diagnóstico diferencial em dificuldades de aprendizagem</h2>
+        <p class="text-ink-700 mt-2">
+          O eixo técnico mais importante do campo é separar planos. A tabela abaixo organiza causas, sinais típicos e profissional indicado.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Plano</th>
+                <th class="text-left px-4 py-3">Origem provável</th>
+                <th class="text-left px-4 py-3">Sinal típico</th>
+                <th class="text-left px-4 py-3">Profissional indicado</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Pedagógico</td>
+                <td class="px-4 py-3 text-ink-700">Método inadequado, hipoestímulo, ambiente escolar.</td>
+                <td class="px-4 py-3 text-ink-700">Defasagem ampla, classe inteira com baixo rendimento.</td>
+                <td class="px-4 py-3 text-ink-700">Psicopedagogo institucional, coordenação pedagógica.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Emocional / vincular</td>
+                <td class="px-4 py-3 text-ink-700">Sofrimento psíquico, luto, violência doméstica.</td>
+                <td class="px-4 py-3 text-ink-700">Queda abrupta de rendimento, recusa escolar.</td>
+                <td class="px-4 py-3 text-ink-700">Psicopedagogo clínico + psicólogo, rede de cuidado.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Cognitivo / executivo</td>
+                <td class="px-4 py-3 text-ink-700">TDAH, baixo controle inibitório, memória de trabalho.</td>
+                <td class="px-4 py-3 text-ink-700">Desatenção, esquecimento, dificuldade de organização.</td>
+                <td class="px-4 py-3 text-ink-700">Neuropsicólogo + psiquiatra + psicopedagogo.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Específico (TEA)</td>
+                <td class="px-4 py-3 text-ink-700">Dislexia, discalculia, disgrafia.</td>
+                <td class="px-4 py-3 text-ink-700">Dificuldade persistente em domínio específico apesar de ensino adequado.</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação neuropsicológica + psicopedagogo + fono.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Sociocultural</td>
+                <td class="px-4 py-3 text-ink-700">Pobreza, insegurança alimentar, baixo capital cultural.</td>
+                <td class="px-4 py-3 text-ink-700">Defasagem associada a contexto territorial.</td>
+                <td class="px-4 py-3 text-ink-700">Rede intersetorial (saúde, assistência, educação).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Quando a "dislexia" do aluno era método fônico mal aplicado</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Escola particular de médio porte, 2.º ano do Ensino Fundamental, 24 alunos. A professora de turma encaminhou seis crianças para "avaliação psicopedagógica urgente" sob suspeita de dislexia. O psicopedagogo institucional, em vez de iniciar bateria diagnóstica em cada estudante, fez três visitas de observação em sala. Encontrou um método fônico aplicado de forma rígida, sem trabalho concomitante com texto e contexto, em uma classe heterogênea, com três alunos vindos de pré-escola sem alfabetização inicial.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A intervenção foi institucional. Reuniões com a professora e a coordenação para revisão da prática, incorporação de momentos de leitura compartilhada, organização de pequenos grupos de nivelamento. Três meses depois, quatro das seis crianças haviam avançado significativamente. Apenas duas seguiram para avaliação neuropsicológica individual, e uma confirmou diagnóstico de dislexia. Lição: a psicopedagogia competente não corre para o diagnóstico individual quando a evidência sugere causa sistêmica. Diagnosticar sem investigar contexto é o caminho mais curto para patologizar criança bem.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Oportunidades emergentes</h2>
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+          <div class="card p-6 border-brand-100 bg-brand-50/40">
+            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Lei 13.935/2019 nas escolas</p>
+            <p class="text-sm text-ink-700">A obrigatoriedade de psicólogos e assistentes sociais nas redes públicas da educação básica abriu espaço amplo para concurso, sala de recursos e equipe multiprofissional. Pós em Psicopedagogia compõe o repertório técnico do profissional contratado.</p>
+          </div>
+          <div class="card p-6 border-brand-100 bg-brand-50/40">
+            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Educação inclusiva e TEA</p>
+            <p class="text-sm text-ink-700">A Lei Berenice Piana (12.764/2012) e a Lei Brasileira de Inclusão (13.146/2015) consolidaram demanda por profissionais qualificados em Atendimento Educacional Especializado e adaptação curricular para estudantes com TEA, TDAH e dificuldades específicas.</p>
+          </div>
+          <div class="card p-6 border-brand-100 bg-brand-50/40">
+            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Clínica privada</p>
+            <p class="text-sm text-ink-700">A demanda por psicopedagogia clínica em consultório tem crescido com o aumento de diagnósticos de TDAH e TEA, e com a maior atenção das famílias ao rendimento escolar. Profissional com boa formação tem agenda consistente em capitais e cidades médias.</p>
+          </div>
+          <div class="card p-6 border-brand-100 bg-brand-50/40">
+            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Educação corporativa e adulta</p>
+            <p class="text-sm text-ink-700">Andragogia, aprendizagem ao longo da vida, formação de adultos em ambiente corporativo e educação técnica abrem nicho ainda pouco explorado pela psicopedagogia, com diálogo direto com T&amp;D em RH.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Psicopedagogia é campo interdisciplinar com método clínico próprio</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A área articula Piaget, Vygotsky, tradição argentina, neurociência cognitiva e clínica institucional. Quem domina o diagnóstico diferencial entre planos pedagógico, emocional, cognitivo e específico atua com rigor técnico — não no terreno do reforço escolar. Pós-graduação que dialoga com ABPp e MEC, com docentes em prática clínica e institucional, é o caminho consistente. Próximo passo: comparar grade vigente e modalidade no portal do IPOG.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós em Psicopedagogia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece programas de pós-graduação interdisciplinares em Psicopedagogia, com formato Ao Vivo síncrono e corpo docente nominal. Para grade, valor, modalidade e turma vigentes, consulte o portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
+          Home IPOG
+        </a>
+      </div>
+
+      {relatedMbas.length > 0 && (
+        <div class="card p-6">
+          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs relacionados</p>
+          <ul class="space-y-2">
+            {relatedMbas.map(m => (
+              <li>
+                <a href={`/mbas/${m.id}`} class="mega-link">
+                  <strong class="text-ink-900 text-sm">{m.shortName}</strong>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {adjacent.length > 0 && (
+        <div class="card p-6">
+          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+          <ul class="space-y-1">
+            {adjacent.map(a => (
+              <li>
+                <a href={`/areas/${a.id}`} class="mega-link">
+                  <strong class="text-ink-900 text-sm">{a.name}</strong>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+        </div>
+      )}
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.abpp.com.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABPp — Associação Brasileira de Psicopedagogia</a></li>
+          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC — Educação básica e pós lato sensu</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://www.in.gov.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 13.935/2019 — Psicólogos e assistentes sociais na educação básica</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+</Base>

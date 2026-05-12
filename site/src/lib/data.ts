@@ -160,6 +160,14 @@ export const FAQS: FAQ[] = [
   { q: 'Este portal vende cursos do IPOG?', a: 'Não. Este é um portal independente de orientação. Toda matrícula, valor, modalidade e turma do IPOG é tratada em ipog.edu.br.' }
 ];
 
+export const METODOS = [
+  { id: 'tcc', name: 'Terapia Cognitivo-Comportamental (TCC)', founder: 'Aaron Beck, Albert Ellis', evidence: 'NICE A · Cochrane', indications: ['Depressão', 'Ansiedade', 'TOC', 'Insônia'] },
+  { id: 'act', name: 'Terapia de Aceitação e Compromisso (ACT)', founder: 'Steven Hayes, Kirk Strosahl, Kelly Wilson', evidence: 'Evidência crescente · meta-análises', indications: ['Dor crônica', 'Ansiedade', 'Estresse'] },
+  { id: 'dbt', name: 'Terapia Comportamental Dialética (DBT)', founder: 'Marsha Linehan', evidence: 'Gold standard para TPB', indications: ['Transtorno de Personalidade Borderline', 'Desregulação emocional', 'Comportamento suicida'] },
+  { id: 'mindfulness', name: 'Mindfulness clínico (MBSR/MBCT)', founder: 'Jon Kabat-Zinn · Segal, Williams, Teasdale', evidence: 'NICE · meta-análises', indications: ['Depressão recorrente', 'Estresse', 'Ansiedade'] },
+  { id: 'emdr', name: 'EMDR', founder: 'Francine Shapiro', evidence: 'OMS · APA · NICE', indications: ['TEPT', 'Trauma complexo'] }
+] as const;
+
 export const NAV_MENUS = {
   guia: [
     { label: 'O que é pós-graduação em Psicologia', href: '/regulacao' },
@@ -169,5 +177,6 @@ export const NAV_MENUS = {
     { label: 'Como escolher uma pós', href: '/regulacao' }
   ],
   mbas: MBAS.map(m => ({ label: m.shortName, href: `/mbas#${m.id}` })),
-  areas: AREAS.map(a => ({ label: a.short, fullLabel: a.name, href: `/areas/${a.id}`, cluster: a.cluster }))
+  areas: AREAS.map(a => ({ label: a.short, fullLabel: a.name, href: `/areas/${a.id}`, cluster: a.cluster })),
+  metodos: METODOS.map(m => ({ label: m.name, href: `/metodos/${m.id}` }))
 };

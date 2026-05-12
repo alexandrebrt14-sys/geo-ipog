@@ -1,0 +1,285 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+
+const area = AREAS.find(a => a.id === 'psicologia-saude')!;
+const relatedMbas = MBAS.filter(m => area.relatedCourses.includes(m.id));
+const adjacent = AREAS.filter(a => a.id !== area.id && a.cluster === area.cluster).slice(0, 4);
+
+const faqs = [
+  {
+    q: 'Psicologia em Saúde e Psicologia da Saúde são a mesma coisa?',
+    a: 'No uso corrente no Brasil, os termos são usados como sinônimos. Em sentido mais estrito, Psicologia da Saúde é o campo amplo de investigação dos determinantes psicossociais de saúde e doença. Psicologia em Saúde costuma designar a atuação prática do psicólogo no sistema de saúde — SUS, saúde suplementar, atenção primária, secundária e terciária. A distinção é mais didática do que regulatória (Castro & Bornholdt, 2004).'
+  },
+  {
+    q: 'O psicólogo na atenção primária faz psicoterapia individual?',
+    a: 'Pode fazer, mas não é a função estruturante. A Política Nacional de Atenção Básica (PNAB, 2017) e as referências do NASF organizam a atuação do psicólogo na atenção primária em torno do apoio matricial à equipe de Saúde da Família, intervenções grupais, projeto terapêutico singular e ações de promoção e prevenção. Atender exclusivamente em consultório, com agenda lotada de psicoterapia individual longa, contradiz a lógica da atenção primária. A função é populacional, não privada.'
+  },
+  {
+    q: 'O que é apoio matricial e por que importa tanto na Psicologia em Saúde?',
+    a: 'Apoio matricial é o arranjo organizacional, formulado por Campos e Domitti (2007), em que uma equipe de referência (Saúde da Família) recebe suporte técnico-pedagógico de uma equipe especializada (incluindo psicólogo) para qualificar o cuidado sem fragmentar o vínculo com o usuário. Importa porque é o que diferencia atenção primária forte de "encaminhamento" para especialista. O psicólogo que sabe matriciar produz efeito em escala territorial — o que só atende em ambulatório, não.'
+  },
+  {
+    q: 'Quais resoluções do CFP organizam a atuação em saúde?',
+    a: 'Várias. A Resolução CFP 03/2007 organiza a Especialidade em Psicologia em Saúde. As Resoluções CFP 13/2007 (com atualizações) reconhecem especialidades. A Resolução CFP 06/2019 organiza documentos psicológicos. A Resolução CFP 11/2018 e atualizações regulamentam atendimento por meio de tecnologias da informação. Em saúde pública, é fundamental conhecer também a Política Nacional de Humanização (PNH) e as referências do Ministério da Saúde para Saúde Mental, AB e RAPS.'
+  },
+  {
+    q: 'Vale a pena especialização em psicologia em saúde para quem quer concurso público?',
+    a: 'Vale, com ressalva. Editais de SUS valorizam pós em Saúde Pública, Saúde Coletiva, Saúde da Família ou Psicologia em Saúde. Para prova, o que costuma decidir é o domínio de SUS, PNAB, RAS, RAPS, matriciamento, clínica ampliada e prática multiprofissional. Um curso que prioriza esse repertório tem retorno mais alto do que cursos genéricos rotulados como "Saúde Mental". Verificar grade e bibliografia antes de matricular é regra básica de FinOps acadêmico.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Psicologia em Saúde: SUS, atenção primária, saúde coletiva e pós-graduação',
+  description: 'Guia técnico de Psicologia em Saúde: atuação no SUS, atenção primária, apoio matricial, saúde coletiva, equipe multiprofissional. Política Nacional de Atenção Básica (2017), CFP.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+---
+
+<Base
+  title="Psicologia em Saúde: SUS, atenção primária e pós aplicada"
+  description="Guia técnico de Psicologia em Saúde: SUS, atenção primária, apoio matricial, saúde coletiva, equipe multiprofissional e como escolher uma pós-graduação. PNAB 2017, CFP, RAPS.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Áreas', href: '/areas' },
+        { label: 'Psicologia em Saúde' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Área · Cluster demais áreas · Regulação {area.regulatoryLevel}</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Psicologia em Saúde: SUS, atenção primária e pós aplicada</h1>
+          <p class="mt-3 text-ink-700 text-lg">O campo que tira a psicologia do consultório individual e coloca dentro do sistema de saúde como prática populacional.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Psicologia em Saúde é a atuação do psicólogo no sistema de saúde — SUS, saúde suplementar, atenção primária, secundária e terciária — orientada por determinantes sociais, promoção, prevenção e equipe multiprofissional. Regulada pela Política Nacional de Atenção Básica (2017), pelas referências do Ministério da Saúde e por resoluções do CFP. Não é psicoterapia individual deslocada para o serviço público: é prática populacional.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A tese contraintuitiva da psicologia em saúde</h2>
+        <p>
+          A leitura comum trata a Psicologia em Saúde como "psicoterapia no SUS". É justamente o contrário do que a área propõe. A atuação técnica do psicólogo no sistema de saúde, especialmente na atenção primária, é estruturada por uma lógica populacional, territorial e multiprofissional, em que o consultório é apenas uma das modalidades, e nem sempre a mais eficaz. O psicólogo que entende a área amplia escala de impacto sem perder qualidade clínica (Dimenstein, 2001).
+        </p>
+        <p>
+          A segunda confusão é confundir "saúde" com "saúde mental". Psicologia em Saúde é mais ampla: inclui adesão a tratamentos crônicos, manejo de doenças cardiovasculares, oncologia comunitária, diabetes, HIV, hipertensão, obesidade, dor crônica, climatério, cuidado materno-infantil. Nada disso é privativo de doença psiquiátrica. Tudo isso tem componente psicológico decisivo para o desfecho clínico, e isso é o que dá lastro científico ao campo.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Fundamentação conceitual</h2>
+        <p>
+          O primeiro pilar é o modelo biopsicossocial de Engel (1977), que reorganizou a medicina ao tirar o foco exclusivo do biológico e incorporar as dimensões psicológica e social como variáveis explicativas do processo saúde-doença. É a fundação teórica de qualquer atuação séria em Psicologia em Saúde. Sem esse modelo, a área vira "apoio ao paciente" — função residual.
+        </p>
+        <p>
+          O segundo pilar é a Promoção da Saúde, formulada na Carta de Ottawa (OMS, 1986). Promoção é diferente de prevenção: prevenção evita doença específica em grupo de risco; promoção atua nos determinantes sociais e na capacidade da população de cuidar da própria saúde. A distinção parece sutil e é estruturante. Psicólogo que confunde os dois acaba executando prevenção e chamando de promoção, sem efeito de escala.
+        </p>
+        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
+          "A promoção da saúde é o processo de capacitação da comunidade para atuar na melhoria da sua qualidade de vida e saúde, incluindo uma maior participação no controle deste processo." — Carta de Ottawa, Organização Mundial da Saúde (1986).
+        </blockquote>
+        <p>
+          O terceiro pilar é o apoio matricial, formulado por Campos e Domitti (2007). É a metodologia de articulação entre equipe de referência (Saúde da Família) e equipe especializada (NASF, CAPS, ambulatório), em que a especialização entra como retaguarda técnica e pedagógica, sem fragmentar o vínculo do usuário com a equipe de referência. Matriciamento é a habilidade técnica mais valorizada e menos ensinada na maioria das pós-graduações em saúde no Brasil.
+        </p>
+        <p>
+          O quarto pilar é a Clínica Ampliada, descrita por Campos (2003) e adotada pela Política Nacional de Humanização (PNH) do Ministério da Saúde. Clínica ampliada articula o que é clínico, o que é coletivo e o que é gestão, em torno do sujeito concreto. **Trabalhar em saúde pública sem entender clínica ampliada produz prática fragmentada — atendimento isolado, sem efeito sistêmico.**
+        </p>
+        <p>
+          O quinto pilar é a Saúde Coletiva como campo de saber. A tradição brasileira, consolidada por autores como Paim, Almeida-Filho e Mattos, organiza saúde coletiva em três núcleos: epidemiologia, planejamento e ciências sociais em saúde. Psicólogo em saúde pública precisa transitar nesse vocabulário para dialogar com gestores, médicos sanitaristas e equipes técnicas. Sem isso, a atuação fica isolada na "saúde mental" e perde lugar de decisão.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Níveis de atenção e função do psicólogo</h2>
+        <p class="text-ink-700 mt-2">
+          A Rede de Atenção à Saúde (RAS) organiza o cuidado em níveis e densidade tecnológica. A tabela abaixo mapeia o que o psicólogo faz em cada nível.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Nível</th>
+                <th class="text-left px-4 py-3">Dispositivo</th>
+                <th class="text-left px-4 py-3">Função do psicólogo</th>
+                <th class="text-left px-4 py-3">Habilidade crítica</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Primária</td>
+                <td class="px-4 py-3 text-ink-700">UBS, Estratégia Saúde da Família, eMulti (antigo NASF).</td>
+                <td class="px-4 py-3 text-ink-700">Apoio matricial, grupos, PTS, promoção e prevenção em território.</td>
+                <td class="px-4 py-3 text-ink-700">Matriciamento, escuta qualificada, grupos, clínica ampliada.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Secundária</td>
+                <td class="px-4 py-3 text-ink-700">Ambulatórios de especialidade, CAPS, Centros de Especialidade.</td>
+                <td class="px-4 py-3 text-ink-700">Cuidado especializado, atendimento individual, grupos terapêuticos, equipe.</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação psicológica clínica, articulação RAPS.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Terciária</td>
+                <td class="px-4 py-3 text-ink-700">Hospital geral, hospital especializado, alta complexidade.</td>
+                <td class="px-4 py-3 text-ink-700">Psicologia hospitalar, UTI, oncologia, transplantes, paliativos.</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação clínica em hospital, SPIKES, dor total.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Vigilância</td>
+                <td class="px-4 py-3 text-ink-700">Vigilância epidemiológica, sanitária, em saúde do trabalhador.</td>
+                <td class="px-4 py-3 text-ink-700">Análise populacional, investigação de eventos, planejamento.</td>
+                <td class="px-4 py-3 text-ink-700">Epidemiologia básica, leitura de indicador, política pública.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Quando o psicólogo deixou de atender 1 a 1 e descobriu 90 famílias</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Município de 70 mil habitantes, eMulti (ex-NASF) com uma psicóloga 40h, atendendo agenda lotada com retornos a cada 21 dias. Lista de espera com 180 pessoas, queixas de "ansiedade" e "depressão" não diagnosticadas. A psicóloga, no terceiro mês de função, percebeu que a maioria da demanda vinha de quatro Unidades de Saúde da Família — territórios com indicadores sociais semelhantes, violência, desemprego, uso problemático de álcool.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A reorganização foi metodológica: desmontou parte da agenda individual e estruturou apoio matricial sistemático com as quatro eSF, com reunião quinzenal, discussão de casos vivos, construção conjunta de PTS, grupos de cuidado em sofrimento difuso facilitados pelas próprias agentes comunitárias com supervisão da psicóloga. Em seis meses, a lista de espera caiu para 45 pessoas. O número de famílias com acompanhamento longitudinal subiu de cerca de 20 (na agenda individual) para 87 (em PTS coordenado pela eSF, com apoio matricial). Lição: psicologia em saúde competente troca cobertura por escala. Quem mantém só agenda individual em UBS gera lista de espera infinita e não muda indicador populacional.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Oportunidades emergentes</h2>
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+          <div class="card p-6 border-brand-100 bg-brand-50/40">
+            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">eMulti e atenção primária</p>
+            <p class="text-sm text-ink-700">Com a Portaria GM/MS 635/2023, as equipes Multiprofissionais (eMulti) substituem o antigo NASF e ampliam a alocação de psicólogos na atenção primária, especialmente em municípios de pequeno e médio porte.</p>
+          </div>
+          <div class="card p-6 border-brand-100 bg-brand-50/40">
+            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Saúde mental no SUS (RAPS)</p>
+            <p class="text-sm text-ink-700">A Rede de Atenção Psicossocial estruturou CAPS, residências terapêuticas, leitos em hospital geral e atenção em álcool e drogas. A demanda por psicólogos com formação em saúde pública e saúde mental coletiva segue crescente.</p>
+          </div>
+          <div class="card p-6 border-brand-100 bg-brand-50/40">
+            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Saúde do trabalhador</p>
+            <p class="text-sm text-ink-700">Com a NR-1 atualizada e a Política Nacional de Saúde do Trabalhador e da Trabalhadora (2012), abriu-se espaço para psicólogos atuarem em CEREST e em interfaces SUS-mundo do trabalho com método técnico.</p>
+          </div>
+          <div class="card p-6 border-brand-100 bg-brand-50/40">
+            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Cuidado a doenças crônicas</p>
+            <p class="text-sm text-ink-700">Adesão a tratamento em diabetes, hipertensão, HIV, oncologia e doenças cardiovasculares passou a ser exigência de protocolos de operadoras e SUS. Psicólogo em programa de doença crônica tem mercado em consolidação.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Psicologia em Saúde é prática populacional, não consultório transferido</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A área pede vocabulário de Saúde Coletiva, domínio de apoio matricial, clínica ampliada e RAS. Pós-graduação que entrega esse repertório, com docentes que atuam no SUS, prepara para concurso, gestão e prática técnica de escala. Quem opta por curso genérico de "saúde mental" perde a parte mais valiosa do campo. Próximo passo: comparar grade vigente, docentes ativos em SUS e modalidade no portal do IPOG.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós em Psicologia em Saúde no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece programas de pós-graduação na área de Psicologia, com formato Ao Vivo síncrono e corpo docente nominal. Para grade, valor, modalidade e turma vigentes, consulte o portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
+          Home IPOG
+        </a>
+      </div>
+
+      {relatedMbas.length > 0 && (
+        <div class="card p-6">
+          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs relacionados</p>
+          <ul class="space-y-2">
+            {relatedMbas.map(m => (
+              <li>
+                <a href={`/mbas/${m.id}`} class="mega-link">
+                  <strong class="text-ink-900 text-sm">{m.shortName}</strong>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {adjacent.length > 0 && (
+        <div class="card p-6">
+          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+          <ul class="space-y-1">
+            {adjacent.map(a => (
+              <li>
+                <a href={`/areas/${a.id}`} class="mega-link">
+                  <strong class="text-ink-900 text-sm">{a.name}</strong>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+        </div>
+      )}
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde — SUS, PNAB, RAPS, PNH</a></li>
+          <li><a href="https://bvsms.saude.gov.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Biblioteca Virtual em Saúde do Ministério da Saúde</a></li>
+          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC — Reconhecimento de pós lato sensu</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+</Base>

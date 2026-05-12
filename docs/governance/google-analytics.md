@@ -128,6 +128,8 @@ Convidar usuarios humanos em `https://analytics.google.com/analytics/web/?hl=pt-
 
 ## Proximos passos (roadmap da camada de medicao)
 
+Issue de tracking: **[#78 — Camada de medicao GA4 — inventario + proximos passos](https://github.com/alexandrebrt14-sys/geo-ipog/issues/78)**. Atualizar checkboxes la em vez de duplicar status aqui.
+
 Lista priorizada para evoluir o stack de analytics ao longo das proximas 4-6 semanas. Itens marcados como **dependentes de dados** so podem ser fechados apos a janela mencionada porque a Data API / UI exigem ao menos uma leitura registrada antes de habilitar.
 
 ### Curto prazo (proximos 7 dias)

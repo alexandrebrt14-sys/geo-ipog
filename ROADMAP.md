@@ -129,7 +129,7 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
 ### O que falta (referenciar a issue de tracking)
 
-Os próximos passos formais — Key Event, custom dimensions, Bing Webmaster, Looker Studio publicado, BigQuery export, audiências, Google Ads link, Consent Mode v2 — estão consolidados em **`docs/governance/google-analytics.md`** seção "Proximos passos" e em uma issue de tracking aberta no GitHub do projeto. Não bloqueiam Fase 1-3, mas alimentam Fase 4 com qualidade crescente conforme dados se acumulam.
+Os próximos passos formais — Key Event, custom dimensions, Bing Webmaster, Looker Studio publicado, BigQuery export, audiências, Google Ads link, Consent Mode v2 — estão consolidados em **`docs/governance/google-analytics.md`** seção "Proximos passos" e na **[Issue #78](https://github.com/alexandrebrt14-sys/geo-ipog/issues/78)** (single source of truth para tracking). Não bloqueiam Fase 1-3, mas alimentam Fase 4 com qualidade crescente conforme dados se acumulam.
 
 ---
 

@@ -138,7 +138,7 @@ Diagnóstico dos 10 concorrentes prioritários do IPOG na vertical de pós-gradu
 
 ### Camada de medição GA4 (`docs/governance/google-analytics.md`)
 
-Inventário canônico da camada de analytics: Property ID `537256335`, Measurement ID `G-1VXE1Z4J9R`, Service Account `geo-ipog-analytics-reader`, vinculação com Search Console, custom event `click_outbound_ipog` (cliques de saída para `ipog.edu.br` como proxy de conversão), roadmap formal de Key Events, custom dimensions, BigQuery export e Looker Studio publicado. Issue de tracking no GitHub do projeto.
+Inventário canônico da camada de analytics: Property ID `537256335`, Measurement ID `G-1VXE1Z4J9R`, Service Account `geo-ipog-analytics-reader`, vinculação com Search Console, custom event `click_outbound_ipog` (cliques de saída para `ipog.edu.br` como proxy de conversão), roadmap formal de Key Events, custom dimensions, BigQuery export e Looker Studio publicado. Tracking em [Issue #78](https://github.com/alexandrebrt14-sys/geo-ipog/issues/78).
 
 ## Governança operacional
 

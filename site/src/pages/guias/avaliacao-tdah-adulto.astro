@@ -1,0 +1,375 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+const areaAba = AREAS.find(a => a.id === 'aba-tea-neurodesenvolvimento')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Anamnese com janela retrospectiva até a infância',
+    aplicacao: 'TDAH em adulto é, por definição diagnóstica, condição com início em infância (DSM-5-TR exige sintomas presentes antes dos 12 anos). A anamnese precisa cobrir trajetória escolar com relatos parentais quando disponíveis, boletins, observações de professores. Faraone e colaboradores (2021; World Federation of ADHD International Consensus Statement) reforçam que a entrevista clínica é o eixo do diagnóstico, com instrumentos como apoio. Janela recomendada: 90 a 120 minutos no primeiro encontro, com permissão explícita para acessar registros antigos.',
+    armadilha: 'Aceitar relato adulto sobre "sempre fui assim" sem ancoragem objetiva. Sem evidência de manifestação na infância, o diagnóstico não fecha pelos critérios atuais.'
+  },
+  {
+    n: 2,
+    titulo: 'Aplicar triagem ASRS-18 (OMS) com leitura técnica',
+    aplicacao: 'ASRS-18 (Adult ADHD Self-Report Scale, Kessler et al., 2005; OMS) é a triagem mais utilizada internacionalmente. A parte A (6 itens) com 4 ou mais marcações em região cinza é o ponto de corte sensível. A versão completa de 18 itens detalha desatenção e hiperatividade-impulsividade. Estudos brasileiros (Mattos et al., 2006) validaram a tradução. O ASRS é triagem: positiva orienta investigação aprofundada, negativa não exclui em todos os casos — especialmente em apresentação predominantemente desatenta.',
+    armadilha: 'Tratar ASRS positivo como diagnóstico. Triagem sensível convive com falsos positivos altos, especialmente em quadros de ansiedade, depressão e burnout.'
+  },
+  {
+    n: 3,
+    titulo: 'Conduzir entrevista DIVA-5 estruturada',
+    aplicacao: 'DIVA-5 (Diagnostic Interview for ADHD in Adults, Kooij et al., 2019) é a entrevista estruturada de referência em TDAH adulto. Cobre todos os critérios DSM-5-TR por sintoma, com exemplos concretos em duas dimensões (atual e infância), e detalha prejuízo funcional em cinco domínios. Duração típica: 60 a 90 minutos. A entrevista estruturada protege o avaliador de viés de confirmação e produz documentação detalhada — essencial em laudos contestados em perícia previdenciária ou trabalhista.',
+    armadilha: 'Improvisar entrevista clínica sem estrutura. Sem DIVA-5 ou equivalente, a documentação clínica fica frágil em contestação.'
+  },
+  {
+    n: 4,
+    titulo: 'Avaliar funções executivas com bateria neuropsicológica',
+    aplicacao: 'A avaliação neuropsicológica é complemento importante, não substituto do diagnóstico clínico. Instrumentos clássicos: TMT-A/B, Stroop, Wisconsin, dígitos diretos e inversos da WAIS-IV, BRIEF-A (autorrelato e relato de informante de funções executivas no cotidiano). Cortese e colaboradores (2021, EAGG) apontam que perfil cognitivo varia: nem todo TDAH apresenta déficit objetivo em testes formais. O valor diagnóstico vem da convergência clínica + ASRS + DIVA-5 + perfil cognitivo, não de teste isolado.',
+    armadilha: 'Esperar que a neuropsicologia confirme ou exclua TDAH. Testes normais em adulto com desempenho preservado não excluem o diagnóstico.'
+  },
+  {
+    n: 5,
+    titulo: 'Investigar diferenciais com TEA, ansiedade e depressão',
+    aplicacao: 'A literatura epidemiológica (Faraone et al., 2021; Hartman et al., 2023) mostra alta sobreposição clínica de TDAH adulto com TEA (queixas de funcionamento executivo é atenção), transtorno de ansiedade generalizada (inquietação, dificuldade de foco), depressão (desatenção secundária), transtorno bipolar (períodos de hiperatividade), uso de substâncias e transtornos do sono. Instrumentos curtos: AQ-50 para TEA, GAD-7 para ansiedade, PHQ-9 para depressão, MDQ para bipolaridade, PSQI para sono. O laudo cuidadoso documenta o diferencial, não apenas a hipótese principal.',
+    armadilha: 'Atribuir todo o quadro ao TDAH sem investigar diferenciais. Em 80% dos casos adultos há ao menos uma comorbidade (Kessler et al., 2006), e o plano sem comorbidade endereçada não funciona.'
+  },
+  {
+    n: 6,
+    titulo: 'Quantificar prejuízo funcional em cinco domínios',
+    aplicacao: 'O critério "prejuízo clinicamente significativo" do DSM-5-TR é frequentemente subdocumentado. Avalie cinco domínios com perguntas-âncora: trabalho/estudo (atrasos, projetos não concluídos, mudanças frequentes), relacionamentos (conflitos por desorganização, distração em conversas), finanças (multas, atrasos, gastos impulsivos), saúde (sono, alimentação, exercício), legal (multas de trânsito, contratos não lidos). Weiss Functional Impairment Rating Scale (WFIRS) é instrumento adicional útil. Documentar prejuízo funcional sustenta o laudo em perícias é amplia a base para plano de intervenção.',
+    armadilha: 'Concluir "preenche critérios" sem narrativa de prejuízo funcional. Em perícia previdenciária, ausência dessa narrativa derruba o laudo.'
+  },
+  {
+    n: 7,
+    titulo: 'Articular plano de intervenção integrado',
+    aplicacao: 'A literatura (Cortese, 2020; NICE NG87) é consistente: tratamento eficaz em adulto combina psicoeducação, intervenções comportamentais (rotinas, ferramentas externas de organização, TCC adaptada), e medicação quando indicada por médico (metilfenidato e lisdexanfetamina têm forte evidência). O psicólogo não prescreve, mas integra: articula com psiquiatria, conduz psicoeducação detalhada, treina estratégias de funcionamento executivo, trabalha emoções secundárias (vergonha, baixa autoestima, autocrítica). Plano sem articulação medicamentosa quando indicada deixa parte da carga clínica fora do alcance.',
+    armadilha: 'Conduzir caso isoladamente sem articulação com psiquiatria. Em TDAH moderado a grave, medicação adequadamente prescrita produz efeito amplo — não articular é desserviço ao paciente.'
+  },
+  {
+    n: 8,
+    titulo: 'Redigir laudo conforme Resolução CFP 06/2019',
+    aplicacao: 'O laudo psicológico segue a Resolução CFP 06/2019, com seções obrigatórias: identificação, demanda, procedimentos, análise, conclusão. Em TDAH adulto, a conclusão indica hipótese diagnóstica conforme CID-11 (6A05) ou DSM-5-TR, com especificação da apresentação (predominantemente desatenta, hiperativa-impulsiva, combinada) e nível de gravidade. Documente: instrumentos aplicados com escores, achados de anamnese, diferenciais considerados é descartados, prejuízo funcional, plano de seguimento. Laudo curto sem fundamentação não sustenta em perícia.',
+    armadilha: 'Entregar laudo de uma página sem documentar instrumentos. Frente a contestação trabalhista, previdenciária ou educacional, laudo sem método explícito cai.'
+  },
+  {
+    n: 9,
+    titulo: 'Orientar sobre direitos é adaptações razoáveis',
+    aplicacao: 'TDAH é reconhecido para fins de adaptação razoável em ambientes educacionais (provas com tempo estendido, sala separada) e trabalhistas (horário flexível, ambiente com menos distração, pausas programadas). A orientação ao paciente cobre: necessidade ou não de laudo médico complementar, direito de pedir adaptações sem expor o diagnóstico em detalhe ao empregador, articulação com RH ou núcleo de acessibilidade educacional. A LBI 13.146/2015 aplica-se quando há prejuízo funcional caracterizado.',
+    armadilha: 'Entregar laudo sem mapa prático de uso. O paciente sai com diagnóstico e não sabe como pedir uma adaptação no trabalho ou na universidade.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Anamnese retrospectiva', indicador: 'Trajetória escolar documentada', quem: 'Psicólogo', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '2 · ASRS-18', indicador: 'Escore + interpretação', quem: 'Psicólogo', quando: 'Sessão 1-2', status: 'Pendente' },
+  { passo: '3 · DIVA-5', indicador: 'Entrevista estruturada concluída', quem: 'Psicólogo', quando: 'Sessão 2-3', status: 'Pendente' },
+  { passo: '4 · Neuropsicologia', indicador: 'Bateria executiva + BRIEF-A', quem: 'Neuropsicólogo', quando: 'Sessão 3-4', status: 'Pendente' },
+  { passo: '5 · Diferenciais', indicador: 'AQ-50, GAD-7, PHQ-9, MDQ', quem: 'Psicólogo', quando: 'Sessão 2-3', status: 'Pendente' },
+  { passo: '6 · Prejuízo funcional', indicador: 'WFIRS + narrativa 5 domínios', quem: 'Psicólogo', quando: 'Sessão 3', status: 'Pendente' },
+  { passo: '7 · Plano integrado', indicador: 'Articulação com psiquiatria', quem: 'Psicólogo', quando: 'Sessão 4-5', status: 'Pendente' },
+  { passo: '8 · Laudo CFP', indicador: 'Documento Resolução 06/2019', quem: 'Psicólogo', quando: 'Sessão 5-6', status: 'Pendente' },
+  { passo: '9 · Adaptações razoáveis', indicador: 'Orientação prática registrada', quem: 'Psicólogo', quando: 'Devolutiva', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Fechar diagnóstico com ASRS-18 positivo isolado',
+    texto: 'ASRS-18 é triagem com sensibilidade alta. Em quadros de ansiedade, depressão e burnout, falsos positivos são regra. Faraone et al. (2021) é a OMS reforçam: ASRS orienta investigação, não fecha diagnóstico. Sem DIVA-5 ou entrevista estruturada equivalente, mais documentação de prejuízo funcional, o laudo não sustenta.'
+  },
+  {
+    titulo: 'Ignorar critério de início na infância',
+    texto: 'DSM-5-TR exige sintomas antes dos 12 anos. Adulto que relata "ficou assim depois do divórcio aos 35" não preenche critérios para TDAH — provavelmente está em outro quadro. A pressão midiática por diagnóstico tardio não autoriza relaxar critério.'
+  },
+  {
+    titulo: 'Não investigar comorbidades',
+    texto: 'Kessler et al. (2006) e dados brasileiros apontam comorbidade em ~80% dos adultos com TDAH. Ansiedade, depressão, transtornos do sono, uso de substâncias. Sem rastreio, o plano endereça apenas parte do quadro — é o paciente segue sem resposta adequada.'
+  },
+  {
+    titulo: 'Conduzir caso sem articulação medicamentosa quando indicada',
+    texto: 'NICE NG87 e Cortese (2020) consolidam: medicação em TDAH moderado a grave tem evidência forte. O psicólogo não prescreve, mas referência psiquiatra e coordena. Caso sem essa articulação, em quadro moderado-grave, deixa carga clínica fora do alcance.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Diagnóstico de TDAH em adulto exige avaliação médica?',
+    a: 'O diagnóstico de TDAH é clínico e pode ser feito por psicólogo ou médico no escopo de cada profissão. O laudo psicológico, com aplicação e interpretação de instrumentos validados, e privativo de psicólogo (CFP). A prescrição de medicação é privativa de médico (CRM). Na prática, o laudo robusto combina avaliação psicológica detalhada e parecer médico psiquiátrico, especialmente quando há indicação medicamentosa.'
+  },
+  {
+    q: 'Qual a diferença entre TDAH apresentação desatenta e TEA em adulto?',
+    a: 'Há sobreposição clínica significativa, especialmente em mulheres adultas (Hartman et al., 2023). Diferenciadores: TEA tem padrões repetitivos, sensorialidade alterada e dificuldade central em cognição social desde infância; TDAH tem desatenção, impulsividade e dificuldade executiva como núcleo. Camuflagem em ambos os quadros torna a distinção exigente. AQ-50, CAT-Q, ADOS-2 e DIVA-5 aplicados conjuntamente orientam o diferencial. Comorbidade TDAH + TEA não é exceção.'
+  },
+  {
+    q: 'Quantas sessões dura uma avaliação completa?',
+    a: 'A literatura recomenda 5 a 8 sessões, totalizando 8 a 12 horas, distribuídas em 4 a 6 semanas. Em adulto com comorbidades complexas ou apresentação atípica, a janela tende a ser maior. Avaliações conduzidas em uma sessão com bateria reduzida e ASRS aplicado isoladamente não sustentam diagnóstico clínico em laudo defensável.'
+  },
+  {
+    q: 'Como o MBA em Reabilitação Neuropsicológica do IPOG conecta a esse guia?',
+    a: 'O MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo do IPOG cobre funções executivas, neurodesenvolvimento, avaliação cognitiva e planos de reabilitação — fundamento técnico para psicólogo que conduz avaliação e plano de intervenção em TDAH adulto. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir avaliação de TDAH em adulto',
+  description: 'Guia em 9 passos para avaliação de TDAH em adulto: anamnese retrospectiva, ASRS-18, DIVA-5, neuropsicologia, diferenciais, prejuízo funcional, plano integrado e laudo CFP.',
+  totalTime: 'PT23M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como conduzir avaliação de TDAH em adulto: guia passo-a-passo',
+  description: 'Protocolo em 9 passos para avaliação de TDAH em adulto, com ASRS-18, DIVA-5, DSM-5-TR, diferenciais TEA/ansiedade, comorbidades e laudo CFP.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação de TDAH em adulto', item: `${SITE.url}/guias/avaliação-tdah-adulto` }
+  ]
+};
+---
+
+<Base
+  title="Avaliação de TDAH em adulto — guia 9 passos · ASRS-18, DIVA-5, DSM-5-TR, laudo CFP"
+  description="Protocolo passo-a-passo para avaliação de TDAH em adulto: anamnese retrospectiva, ASRS-18, DIVA-5, neuropsicologia, diferenciais com TEA/ansiedade, prejuízo funcional, plano integrado e laudo conforme Resolução CFP 06/2019.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação de TDAH em adulto' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir avaliação de TDAH em adulto</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto técnico para diagnóstico em adulto: anamnese retrospectiva, ASRS-18 (Kessler/OMS), DIVA-5 (Kooij), avaliação executiva, diferenciais com TEA é ansiedade, prejuízo funcional em cinco domínios, plano integrado e laudo conforme CFP.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~23 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos e neuropsicólogos</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Reabilitação Neuro
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir avaliação completa de TDAH em adulto com triagem, entrevista estruturada, neuropsicologia, diferenciais, prejuízo funcional e laudo defensável.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, treinamento em ASRS-18 e DIVA-5, conhecimento da Resolução CFP 06/2019, articulação com psiquiatria.</li>
+          <li><strong>Resultado esperado:</strong> laudo técnico fundamentado em 5 a 8 sessões, com plano integrado é orientação prática sobre adaptações razoáveis.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura comum sobre TDAH adulto, amplificada por redes sociais nos últimos anos, assume que sintomas de desatenção crônica em pessoas adultas equivalem a TDAH. A clínica é mais exigente. Faraone e colaboradores (2021), no International Consensus Statement da World Federation of ADHD, são firmes: TDAH é condição com início obrigatório na infância (antes dos 12 anos pelo DSM-5-TR), com prejuízo funcional caracterizado em mais de um domínio e na ausência de explicação melhor por outros quadros. ASRS-18 positivo, isoladamente, convive com taxa alta de falsos positivos — especialmente em adultos sob estresse crônico, ansiedade, depressão, burnout, sono fragmentado e uso de substâncias.
+        </p>
+        <p>
+          A inversão prática para o psicólogo avaliador: o protocolo de adulto exige ancoragem retrospectiva (relatos parentais, registros escolares), entrevista estruturada (DIVA-5), avaliação executiva, rastreio sistemático de diferenciais (TEA, ansiedade, depressão, bipolaridade, sono, substâncias) e documentação rigorosa de prejuízo funcional em cinco domínios. Avaliações curtas com ASRS aplicado isoladamente produzem laudos frágeis em perícia e plano clínico mal direcionado.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Distribuição típica em 5 a 8 sessões. Adapte ao quadro clínico, comorbidades e disponibilidade do paciente.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Gerente de produto, 38 anos, diferencial TDAH × burnout em 7 sessões</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Gerente de produto em scale-up de tecnologia, 38 anos, procura avaliação após receber feedback do RH sobre "perda de foco é atrasos em entregas". Auto-leitura: "tenho TDAH". ASRS-18 inicial: 16 pontos na parte A (positivo). Anamnese retrospectiva: trajetória escolar excelente, sem queixa de desatenção até início da carreira; sintomas atuais começaram há 18 meses após reestruturação da empresa, com sobrecarga de projetos e equipe reduzida. PHQ-9 em 14 (depressão moderada), GAD-7 em 12 (ansiedade moderada), PSQI em 11 (sono ruim), MBI-GS com exaustão alta e cinismo alto.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          DIVA-5 aplicada em sessão 3: sintomas atuais marcados em desatenção, mas dimensão infância sem ancoragem clara. Registros escolares confirmaram desempenho consistente sem queixa docente. Avaliação neuropsicológica: funções executivas preservadas no formal, com queixa subjetiva alta no BRIEF-A. Conclusão técnica: quadro compatível com burnout é ansiedade comórbida em contexto de sobrecarga ocupacional, sem critérios diagnósticos para TDAH (ausência de início na infância). Devolutiva conduziu encaminhamento para tratamento de burnout, articulação com medicina ocupacional e psiquiatria. Em 6 meses de seguimento, com afastamento parcial, intervenção CBT-i para sono e tratamento de ansiedade, ASRS pós-intervenção caiu para 6 pontos na parte A — confirmando que o quadro inicial era secundário, não TDAH.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019 sobre documentos psicológicos</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI — Sistema de Avaliação de Testes</a></li>
+          <li><a href="https://www.divacenter.eu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DIVA Foundation — DIVA-5 oficial</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng87" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG87 — ADHD diagnosis and management</a></li>
+          <li><a href="https://icd.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — CID-11 (6A05)</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliação-tea-adulto" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TEA em adulto</a></li>
+          <li><a href={`/áreas/${areaNeuro.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Neuropsicologia</a></li>
+          <li><a href={`/áreas/${areaAval.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Avaliação Psicológica</a></li>
+          <li><a href="/faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ geral · Avaliação psicológica e laudos</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">TDAH adulto exige ancoragem retrospectiva, entrevista estruturada e diferencial cuidadoso.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O trajeto integra anamnese com janela até a infância, ASRS-18 como triagem, DIVA-5 como entrevista estruturada, bateria executiva, rastreio sistemático de diferenciais, documentação de prejuízo funcional em cinco domínios, plano integrado com psiquiatria quando indicado, laudo conforme CFP 06/2019 e orientação prática sobre adaptações razoáveis. Para psicólogo clínico ou neuropsicólogo que conduz essa rotina, o MBA em Reabilitação Neuropsicológica do IPOG consolida fundamento técnico em funções executivas e neurodesenvolvimento.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBA no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/áreas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/áreas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+          <li><a href={`/áreas/${areaAba.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAba.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI</a></li>
+          <li><a href="https://www.divacenter.eu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DIVA-5</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng87" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG87</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~23 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

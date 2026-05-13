@@ -1,0 +1,415 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'A Resolução CFP 11/2018 autoriza qualquer avaliação psicológica por telessaúde?',
+    a: 'Não. A Resolução CFP 11/2018, com revisões é a Resolução CFP 04/2020 que ampliou o escopo durante a pandemia e em seguida foi consolidada, autoriza prática on-line condicionada a três requisitos centrais: cadastro do profissional no e-Psi, instrumentos validados especificamente para aplicação remota quando exigido pelos manuais técnicos do SATEPSI, e adequação das condições para garantir privacidade, segurança de dados e equivalência de validade. Avaliações para concurso público, contextos judiciais ou periciais têm condições adicionais e, em vários casos, exigem presencialidade. A regra geral é: validar caso a caso, conforme finalidade, instrumento e condição do avaliando.'
+  },
+  {
+    q: 'Os testes psicológicos têm validade igual quando aplicados online?',
+    a: 'Depende do teste. O SATEPSI (Sistema de Avaliação de Testes Psicológicos do CFP) lista quais instrumentos têm normas específicas para aplicação remota. Backhaus et al. (2012, Psychological Services) consolidaram em revisão que muitos testes têm equivalência psicométrica entre formatos, mas alguns — especialmente os com componentes motores, manipulação física ou interpretação de estímulos sensoriais finos — perdem validade em formato remoto. Wechsler digital (WAIS-IV digital, WISC-V digital) tem normas atualizadas pela Pearson. Testes projetivos como Rorschach exigem cuidado adicional pela qualidade de imagem e controle do ambiente. A regra prática: consultar o manual de cada instrumento.'
+  },
+  {
+    q: 'Quais riscos clínicos específicos da avaliação remota o psicólogo precisa gerenciar?',
+    a: 'Cinco riscos recorrentes: (1) controle do ambiente — terceiros presentes, ruído, interrupções afetam validade; (2) qualidade técnica — conexão instável, áudio ruim, iluminação inadequada comprometem observação clínica; (3) segurança de dados — gravação, armazenamento e transmissão precisam atender à LGPD e à Resolução CFP 01/2022 sobre prontuário; (4) acesso desigual — pacientes sem dispositivo adequado, internet estável ou letramento digital ficam excluídos; (5) emergências durante a sessão — protocolo de contato com referência local em caso de ideação suicida ou crise psicótica. A literatura nacional, conforme Bondan et al. (2020) e CFP (2021), reconhece esses cinco como matriz mínima de manejo.'
+  },
+  {
+    q: 'Para psicólogos que querem se especializar em avaliação psicológica, qual o caminho de formação?',
+    a: 'A base é uma pós-graduação ou MBA em Avaliação Psicológica reconhecido pelo MEC, com carga horária mínima de 360 horas e estágio supervisionado. A literatura técnica de referência inclui Pasquali (Psicometria), Anastasi e Urbina, Primi e Almeida. Capacitação específica em testes (WAIS, Rorschach, BFP, Bender, escalas Wechsler) costuma ser feita junto a editoras técnicas certificadas. Para integrar avaliação psicológica com neurociência aplicada e psicopatologia atualizada, MBAs com módulos em neurociência cognitiva é avaliação neuropsicológica oferecem fundamentação ampliada — particularmente úteis para quem atua em interface clínica e organizacional.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Norma fundadora', presencial: 'Lei 4.119/1962 + Resolução CFP 09/2018 (procedimentos)', remota: 'Resolução CFP 11/2018 + Resolução CFP 04/2020 (consolidada)' },
+  { dimensao: 'Cadastro obrigatório', presencial: 'Conselho Regional + comprovação de espaço físico', remota: 'Cadastro no e-Psi (plataforma do CFP) — obrigatório' },
+  { dimensao: 'Controle do ambiente', presencial: 'Sala padronizada — iluminação, ruído, mobiliário sob controle do psicólogo', remota: 'Ambiente do avaliando — psicólogo orienta, mas não controla diretamente' },
+  { dimensao: 'Aplicação de testes', presencial: 'Todos os instrumentos do SATEPSI conforme manual', remota: 'Apenas instrumentos com normas remotas no SATEPSI ou validação publicada' },
+  { dimensao: 'Observação comportamental', presencial: 'Acesso pleno a linguagem corporal, expressões sutis, comportamento espacial', remota: 'Limitada ao enquadramento da câmera — perde sinais periféricos' },
+  { dimensao: 'Manejo de crise na sessão', presencial: 'Encaminhamento direto, contato físico, presença', remota: 'Protocolo de contato com referência local — preparação prévia obrigatória' },
+  { dimensao: 'Privacidade e LGPD', presencial: 'Sala fechada, prontuário em papel ou digital local', remota: 'Plataforma criptografada + termo específico + Resolução CFP 01/2022 sobre prontuário' },
+  { dimensao: 'Acesso geográfico', presencial: 'Limitado ao deslocamento do avaliando', remota: 'Sem limite geográfico — abre acesso para regiões com escassez profissional' },
+  { dimensao: 'Custos diretos do paciente', presencial: 'Deslocamento + tempo de viagem + estacionamento', remota: 'Conexão de internet + dispositivo adequado' },
+  { dimensao: 'Documentos resultantes', presencial: 'Laudo, relatório, parecer ou declaração conforme finalidade', remota: 'Mesmos documentos — com menção explícita à modalidade de aplicação' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'Avaliação cognitiva por WAIS-IV em adulto', presencial: 'Padrão-ouro — normas brasileiras consolidadas', remota: 'WAIS-IV digital com normas Pearson — equivalência demonstrada', vencedor: 'Equivalentes em adultos cooperativos' },
+  { condicao: 'Avaliação cognitiva em criança por WISC-V', presencial: 'Indicado — manejo comportamental presencial é mais rico', remota: 'Restrita — exige cuidador presente como assistente protocolar', vencedor: 'Presencial' },
+  { condicao: 'Avaliação de personalidade por BFP', presencial: 'Aplicação padrão validada', remota: 'Versão online em desenvolvimento; conferir SATEPSI', vencedor: 'Presencial padrão' },
+  { condicao: 'Rorschach Sistema Compreensivo (Exner) ou R-PAS', presencial: 'Padrão — controle de exposição dos estímulos', remota: 'Não recomendado — qualidade de imagem e controle insuficientes', vencedor: 'Presencial' },
+  { condicao: 'Avaliação para CNH (Detran)', presencial: 'Obrigatória por Resolução Contran', remota: 'Não autorizada para esta finalidade', vencedor: 'Presencial — exigência legal' },
+  { condicao: 'Avaliação para concurso público com componente pericial', presencial: 'Padrão na maior parte dos editais', remota: 'Quase sempre vedada pelos editais', vencedor: 'Presencial — exigência legal' },
+  { condicao: 'Avaliação para seleção de pessoal em empresas', presencial: 'Tradicional', remota: 'Crescente — escalas de personalidade e simulação online', vencedor: 'Depende do instrumento' },
+  { condicao: 'Avaliação psicodiagnóstica em adulto cooperativo', presencial: 'Padrão', remota: 'Viável com instrumentos validados e protocolo de ambiente', vencedor: 'Equivalentes em maioria dos casos' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Adulto com queixa cognitiva leve, agenda restrita, em capital', recomendacao: 'Remota com WAIS-IV digital se cooperativo', racional: 'Equivalência psicométrica demonstrada; preserva acesso sem perda significativa de validade' },
+  { perfilPaciente: 'Criança em avaliação para queixa escolar', recomendacao: 'Presencial', racional: 'Observação comportamental ampla é parte da avaliação; manejo da criança em sessão online é tecnicamente desafiador' },
+  { perfilPaciente: 'Avaliação de personalidade para finalidade clínica em adulto', recomendacao: 'Híbrido — entrevista remota + testes presenciais', racional: 'Combina acessibilidade da telessaúde com validade dos instrumentos que ainda exigem aplicação presencial' },
+  { perfilPaciente: 'Avaliação pericial judicial', recomendacao: 'Presencial', racional: 'Contextos forenses costumam exigir presencialidade por exigência legal e robustez probatória' },
+  { perfilPaciente: 'Avaliação em região remota da Amazônia ou interior', recomendacao: 'Remota quando possível, com escolha cuidadosa de instrumento', racional: 'Resolução CFP autoriza modalidade que expande acesso em áreas com escassez de profissionais' },
+  { perfilPaciente: 'Adulto com transtorno mental grave em surto', recomendacao: 'Presencial', racional: 'Manejo de crise, observação clínica e segurança exigem espaço físico estruturado' },
+  { perfilPaciente: 'Avaliação neuropsicológica para suspeita de demência', recomendacao: 'Presencial', racional: 'Bateria neuropsicológica completa exige instrumentos com componentes motores e manipulação física' },
+  { perfilPaciente: 'Avaliação de TDAH em adulto universitário', recomendacao: 'Híbrido viável', racional: 'Entrevistas, ASRS e escalas validadas funcionam online; quando necessário, testes específicos presenciais complementam' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliação psicológica presencial vs remota: comparativo regulamentar e técnico',
+  description: 'Comparativo entre avaliação psicológica presencial e por telessaúde no Brasil. Resolução CFP 11/2018, SATEPSI, equivalência psicométrica e quando cada modalidade é adequada.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação presencial vs remota' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+---
+
+<Base
+  title="Avaliação psicológica presencial vs remota: regulamentação CFP e técnica"
+  description="Comparativo independente entre avaliação psicológica presencial e por telessaúde. Resolução CFP 11/2018, SATEPSI, equivalência psicométrica e indicação por perfil.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Avaliação presencial vs remota' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Avaliação psicológica</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliação psicológica presencial vs remota: o que a Resolução CFP autoriza é o que a evidência sustenta</h1>
+          <p class="mt-3 text-ink-700 text-lg">Não é "qual é melhor". É "para qual instrumento, qual finalidade e qual avaliando cada modalidade é tecnicamente válida e legalmente autorizada".</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A avaliação psicológica remota é autorizada no Brasil pela Resolução CFP 11/2018, consolidada com a Resolução CFP 04/2020, mediante cadastro no e-Psi, uso de instrumentos com normas remotas no SATEPSI é adequação do ambiente. Backhaus et al. (2012) e meta-análises subsequentes mostram equivalência psicométrica para uma parte importante dos instrumentos em adultos cooperativos, particularmente com versões digitais validadas (WAIS-IV digital, WISC-V digital). Mas há restrições claras: avaliação para CNH, perícias judiciais e concursos públicos costumam exigir presencialidade; crianças, pacientes em crise e instrumentos como Rorschach demandam aplicação presencial. A regra: validar caso a caso, instrumento por instrumento, finalidade por finalidade.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que mudou entre 2018 e 2026</h2>
+        <p>
+          Em 2018, a Resolução CFP 11/2018 substituiu a antiga Resolução 11/2012, ampliando significativamente o escopo de prática on-line. Avaliação psicológica passou a ser autorizada por meio digital condicionada a três requisitos centrais: cadastro do profissional no e-Psi (plataforma do CFP), uso de instrumentos com validação específica para aplicação remota quando exigido pelos manuais técnicos do SATEPSI, e adequação das condições para garantir privacidade, segurança de dados e equivalência de validade. Em março de 2020, com a pandemia de COVID-19, a Resolução CFP 04/2020 ampliou temporariamente o escopo — autorização que foi posteriormente consolidada no marco vigente.
+        </p>
+        <p>
+          A literatura técnica brasileira acompanhou. Bondan et al. (2020), na Avaliação Psicológica, e Lins et al. (2021), na Revista Psicologia Ciência e Profissão, publicaram revisões consolidando a equivalência psicométrica de testes específicos entre modalidades. A Pearson Brasil disponibilizou versões digitais da WAIS-IV e WISC-V com normas atualizadas. O SATEPSI passou a indicar, em sua plataforma, quais instrumentos têm normas para aplicação remota. O resultado, em 2026, e um cenário regulamentar relativamente maduro — não é mais terra de ninguém, mas também não é "qualquer avaliação pode ser online".
+        </p>
+        <p>
+          A questão prática no consultório se desloca. O psicólogo brasileiro em 2026 não pergunta mais "posso fazer avaliação online?". A pergunta tornou-se: "este instrumento, para esta finalidade, neste avaliando, e tecnicamente válido e legalmente autorizado em modalidade remota?". A resposta exige consulta a três fontes: a Resolução CFP vigente (e suas atualizações), o SATEPSI para o instrumento específico, e a literatura técnica para a condição clínica. Quem opera dentro desse tripé reduz risco de impugnação e produz avaliação defensável.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo e condições técnicas</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Presencial</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Remota (telessaúde)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.presencial}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.remota}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por tipo de avaliação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Tipo de avaliação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Presencial</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Remota</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Modalidade preferida</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.presencial}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.remota}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo de ação em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A diferença operacional entre presencial e remota não é apenas o canal. É o conjunto de variáveis que o psicólogo controla. Na sala física, o profissional controla a iluminação, o nível de ruído, a temperatura, a posição do avaliando, a ausência de terceiros, o material que ele acessa é o tempo entre estímulos. Esse controle é parte da validade do instrumento — manuais técnicos descrevem condições padronizadas justamente para garantir comparabilidade com a amostra normativa. Quando alguma dessas variáveis se altera, a interpretação dos resultados precisa ser ponderada. Em formato presencial, o psicólogo intervém em tempo real para reestabelecer a condição padronizada.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em formato remoto, o controle se desloca. O psicólogo orienta — pede ambiente fechado, sem interrupção, com câmera enquadrando rosto e mãos quando aplicável, sem terceiros visíveis ou audíveis. Mas não controla diretamente. Backhaus et al. (2012) reportam que muitos estudos de equivalência psicométrica em adultos cooperativos mostram concordância alta entre formatos — desde que o avaliando consiga manter as condições. Em crianças, pacientes psicóticos em surto, idosos com déficit cognitivo grave ou pessoas sem letramento digital, o controle se torna inviável, e a validade cai.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A observação clínica também muda de qualidade. Presencialmente, o psicólogo registra postura, marcha, manejo de objetos, padrão de respiração, sudorese, micromovimentos faciais, distância interpessoal preferida — variáveis que entram na formulação. Remotamente, a câmera mostra um recorte. Variáveis periféricas se perdem. Para entrevistas focadas em conteúdo verbal, escalas estruturadas e instrumentos predominantemente cognitivos, a perda é pequena. Para avaliações onde a observação comportamental ampla é parte central — neuropsicológica em demência, avaliação de criança com TEA, perícia em contexto judicial — a perda é significativa e costuma desabonar a modalidade remota.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O quarto eixo é a segurança é o manejo de risco. Presencialmente, se o avaliando descompensa, o psicólogo intervém — modula o ritmo, oferece pausa, encaminha presencialmente para serviço de emergência se necessário. Remotamente, exige-se protocolo prévio: contato de referência local (familiar, vizinho, serviço de emergência mais próximo), conhecimento do endereço e telefone do avaliando, plano de contingência documentado em prontuário. A Resolução CFP 11/2018, em seu artigo sobre serviços online, e explícita sobre essa preparação. Não tê-la pronta é falha técnica e potencialmente ética.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de avaliando e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do avaliando</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Modalidade recomendada</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher presencial</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Avaliações com finalidade legal exigente</p>
+              <p class="text-sm text-ink-700 mt-1">CNH, concurso público com componente pericial, perícia judicial, avaliações para porte de arma — normalmente exigem presencialidade por exigência legal específica.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Instrumentos sem versão remota validada</p>
+              <p class="text-sm text-ink-700 mt-1">Rorschach Sistema Compreensivo, baterias neuropsicológicas com componentes motores, alguns testes projetivos. Consultar SATEPSI para confirmar.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Avaliandos com restrição clínica ou etária</p>
+              <p class="text-sm text-ink-700 mt-1">Crianças pequenas, idosos com déficit cognitivo, pacientes em crise psiquiátrica, pessoas sem condições de manter ambiente controlado.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher remota</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Adultos cooperativos com instrumento validado online</p>
+              <p class="text-sm text-ink-700 mt-1">WAIS-IV digital, escalas de personalidade validadas, entrevistas semiestruturadas. A modalidade preserva validade em adulto cooperativo com ambiente adequado.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Acesso geográfico restrito</p>
+              <p class="text-sm text-ink-700 mt-1">Avaliandos em região remota da Amazônia, interior do Nordeste, ou áreas com escassez de psicólogos especialistas — telessaúde amplia acesso real.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Finalidades clínicas é organizacionais sem exigência legal de presencialidade</p>
+              <p class="text-sm text-ink-700 mt-1">Avaliação para psicoterapia, orientação profissional, processos seletivos em empresas (com transparência ao candidato), pesquisa acadêmica com IRB.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Modelo híbrido — quando combinar</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Entrevista clínica remota + testes presenciais</p>
+            <p class="text-sm text-ink-700 mt-1">Modelo cada vez mais comum — anamnese, entrevistas e escalas autoaplicáveis em telessaúde, testes que exigem condição padronizada em uma sessão presencial concentrada.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Avaliações em série com componente remoto é devolutiva presencial</p>
+            <p class="text-sm text-ink-700 mt-1">Aplicação remota com instrumentos validados, devolutiva presencial para discussão de resultados — combina acessibilidade com qualidade do encontro final.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Marcos, 34 anos, advogado em Manaus solicita avaliação cognitiva por queixa de memória</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Marcos procurou avaliação psicológica especializada em Manaus após queixa de "memória ruim no trabalho" — esquecimentos frequentes em prazos processuais, dificuldade de manter atenção em audiências longas, ansiedade crescente. A primeira consulta com psicóloga local recomendou avaliação cognitiva mais ampla. Em Manaus, há poucos especialistas em avaliação cognitiva em adulto; a fila para o profissional indicado por colega era de quatro meses.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A psicóloga, cadastrada no e-Psi e com formação específica em avaliação cognitiva, ofereceu protocolo híbrido. Primeira fase: entrevista clínica remota, anamnese estendida, aplicação de escalas autoaplicáveis (ASRS-18 para TDAH, BDI-II para depressão, BAI para ansiedade), e bateria cognitiva remota com WAIS-IV digital — instrumento com normas atualizadas pela Pearson para aplicação online. Marcos preparou o ambiente conforme orientação: sala fechada, computador em mesa estável, câmera em altura adequada, sem terceiros, internet por cabo.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Os resultados mostraram perfil compatível com TDAH em adulto — desempenho cognitivo dentro da média na maior parte dos índices, mas com queda em memória de trabalho e velocidade de processamento, escore alto na ASRS-18, ansiedade secundária ao prejuízo funcional. A psicóloga indicou complementação presencial em uma única viagem do paciente a São Paulo: aplicação de Stroop, TMT-A e TMT-B, dígitos diretos e indiretos com manipulação física, e devolutiva presencial completa. O laudo final integrou aplicação remota e presencial, com menção explícita à modalidade de cada instrumento conforme exige a Resolução CFP. Marcos iniciou tratamento integrado com psiquiatra. A psicóloga registrou: "O modelo híbrido foi o que viabilizou o acesso. A modalidade remota não substituiu a presencial — combinaram-se para preservar validade e expandir alcance".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões descritos em Bondan et al. (2020) e em protocolos de avaliação cognitiva em adulto com TDAH. Modelos híbridos são crescentes em regiões com escassez de especialistas.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções importantes. Primeiro, a regulamentação está em evolução — Resoluções CFP, normas SATEPSI e versões de instrumentos digitais são atualizadas periodicamente. O psicólogo precisa consultar fontes oficiais antes de cada avaliação relevante, não confiar em compilações anteriores. Segundo, equivalência psicométrica demonstrada para um instrumento em adultos cooperativos não se estende automaticamente a crianças, idosos ou populações clínicas específicas — a generalização precisa ser feita com cuidado. Terceiro, modalidade remota não é sinônimo de "mais acessível" — pacientes sem dispositivo adequado, internet estável ou letramento digital ficam excluídos, exigindo políticas complementares para evitar reproduzir desigualdade.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A pergunta operacional do psicólogo brasileiro em 2026 mudou. Não é mais "é permitido fazer online?". A pergunta é "para este instrumento, para esta finalidade, para este avaliando, qual a modalidade tecnicamente válida e legalmente autorizada?". Quem responde com clareza essa pergunta produz avaliação defensável é amplia acesso responsável.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Validade da avaliação é instrumento por instrumento, finalidade por finalidade</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Resolução CFP 11/2018 é atualizações autorizam avaliação remota com requisitos claros — cadastro no e-Psi, instrumentos com normas remotas, ambiente adequado.</li>
+          <li>Adultos cooperativos com instrumentos digitais validados (WAIS-IV digital) têm equivalência psicométrica demonstrada com formato presencial.</li>
+          <li>Crianças, pacientes em crise, instrumentos sem versão remota validada é avaliações com exigência legal específica (CNH, perícia judicial) exigem presencialidade.</li>
+          <li>O modelo híbrido — entrevista remota + testes presenciais selecionados — é cada vez mais utilizado em regiões com escassez de especialistas.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem se aprofundar em avaliação psicológica integrada com neurociência aplicada e reabilitação cognitiva — base útil para atuação em modelo híbrido —, o IPOG mantém MBA em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/laudo-psicológico-vs-laudo-medico" class="text-brand-700 hover:text-brand-800 font-medium">Laudo psicológico vs laudo médico — diferenças normativas e técnicas</a></li>
+          <li><a href="/comparativos/online-vs-presencial" class="text-brand-700 hover:text-brand-800 font-medium">Psicoterapia online vs presencial — modalidade na clínica corrente</a></li>
+          <li><a href="/comparativos/neuropsicologia-vs-reabilitação" class="text-brand-700 hover:text-brand-800 font-medium">Neuropsicologia vs reabilitação neuropsicológica</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG mantém oferta de MBAs em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. A modalidade vigente de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/áreas/avaliação-psicológica" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação psicológica</strong></a></li>
+          <li><a href="/áreas/neuropsicologia" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia</strong></a></li>
+          <li><a href="/legislacao/cfp-resolucoes" class="mega-link"><strong class="text-ink-900 text-sm">Resoluções CFP vigentes</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/online-vs-presencial" class="mega-link"><strong class="text-ink-900 text-sm">Psicoterapia online vs presencial</strong></a></li>
+          <li><a href="/comparativos/laudo-psicológico-vs-laudo-medico" class="mega-link"><strong class="text-ink-900 text-sm">Laudo psicológico vs médico</strong></a></li>
+          <li><a href="/comparativos/neuropsicologia-vs-reabilitação" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia vs reabilitação</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>CFP. Resolução 11/2018. Regulamentação da prestação de serviços psicológicos por meios de tecnologias da informação.</li>
+          <li>CFP. Resolução 04/2020 (consolidada). Atendimento on-line durante é após a pandemia de COVID-19.</li>
+          <li>CFP. Resolução 09/2018. Procedimentos para avaliação psicológica.</li>
+          <li>Backhaus, A. et al. (2012). Videoconferencing psychotherapy: A systematic review. Psychological Services.</li>
+          <li>Bondan, L. et al. (2020). Avaliação psicológica online no Brasil. Avaliação Psicológica.</li>
+          <li>SATEPSI — Sistema de Avaliação de Testes Psicológicos. Conselho Federal de Psicologia.</li>
+          <li>Pasquali, L. (2017). Psicometria: teoria dos testes na psicologia e na educação. Vozes.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

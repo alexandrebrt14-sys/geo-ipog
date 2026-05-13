@@ -1,0 +1,302 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'O que é primeiro episódio psicótico (PEP)?',
+    a: 'Primeiro episódio psicótico (PEP) é a manifestação inicial de sintomas psicóticos — alucinações, delírios, desorganização do pensamento, comportamento desorganizado ou catatônico — que rompem a continuidade do funcionamento prévio da pessoa. O PEP é categoria clínica relevante porque concentra decisões críticas: identificação rápida, primeiro contato com sistema de saúde, definição diagnóstica preliminar e estabelecimento de plano terapêutico. A literatura internacional consolidou nas últimas décadas o conceito de Early Intervention in Psychosis (EIP) — serviços especializados para os primeiros anos do quadro, com evidência consistente de melhor prognóstico funcional e clínico (Birchwood et al., 1998; Kane et al., RAISE-ETP, 2016). O período após o PEP é janela crítica em que decisões boas mudam trajetória.'
+  },
+  {
+    q: 'O que é DUP e por que ela importa tanto?',
+    a: 'Duração da Psicose Não Tratada (DUP, Duration of Untreated Psychosis) é o tempo entre o início dos sintomas psicóticos francos é o início do tratamento adequado. Marshall et al. (2005), em meta-análise de referência, demonstraram associação robusta entre DUP longa e pior desfecho clínico e funcional — maior gravidade de sintomas negativos, pior cognição, menor probabilidade de remissão, maior incapacidade ao longo da vida. A relação é dose-resposta: cada mês adicional de DUP aumenta carga prognóstica. Em países com sistema fragmentado, DUP média ultrapassa um ano. Reduzir DUP é o objetivo central de serviços de EIP em todo o mundo, e a estratégia combina psicoeducação populacional, encaminhamento direto desde atenção primária e protocolo de acesso facilitado.'
+  },
+  {
+    q: 'Quais sinais de pródromo merecem atenção da família?',
+    a: 'O período prodrômico precede o episódio franco e tem sinais inespecíficos mas reconhecíveis: isolamento social progressivo sem causa clara, queda no desempenho escolar ou profissional, mudança de interesses (frequentemente para temas filosóficos, religiosos ou paranormais), alterações do sono, irritabilidade, desconfiança crescente, dificuldade de concentração, sensações sensoriais estranhas (sons abafados, luzes diferentes), ideias bizarras transitórias e relato vago de "estar diferente". A literatura sobre ultra-high-risk (UHR) ou clinical high-risk (CHR) consolidou critérios para identificação prodrômica em pesquisa (Yung et al., 2005). Em prática familiar, o sinal de alerta é o conjunto — mudança qualitativa persistente no funcionamento, com perda de continuidade biográfica. Buscar avaliação especializada é a decisão técnica certa.'
+  },
+  {
+    q: 'O que é EIP e qual a evidência de eficácia?',
+    a: 'Early Intervention in Psychosis (EIP) é modelo de cuidado especializado para os primeiros 2 a 5 anos após PEP, com equipe multiprofissional dedicada (psiquiatra, psicólogo, terapeuta ocupacional, assistente social, enfermagem, suporte vocacional), case management contínuo, intervenção familiar, psicoterapia adaptada para psicose, otimização medicamentosa e plano de continuidade. O estudo RAISE-ETP (Kane et al., 2016), publicado no American Journal of Psychiatry, demonstrou em ensaio randomizado nos EUA que cuidado coordenado especializado (NAVIGATE) produziu melhor qualidade de vida, melhor adesão é melhor funcionamento ocupacional em comparação ao cuidado usual. EIP é hoje recomendação de primeira linha em diretrizes internacionais (NICE, RANZCP, APA).'
+  },
+  {
+    q: 'Como funciona o CAPS no Brasil para casos de psicose?',
+    a: 'O Centro de Atenção Psicossocial (CAPS) é serviço de saúde mental do SUS regulamentado pela Portaria GM 336/2002, com modalidades por porte e perfil (CAPS I, II, III, AD para álcool e drogas, i para infância é adolescência). Para casos de psicose, CAPS II e III são referência típica — funcionam como dispositivo de cuidado territorial, com equipe multiprofissional, atendimento individual, oficinas, intervenção familiar, suporte em crise é articulação com rede. O CAPS III funciona 24 horas é oferece acolhimento noturno, atuando como alternativa à internação tradicional em muitos casos. O sistema é universal — acesso por demanda direta ou encaminhamento — e tem cobertura desigual no território nacional, com lista de espera variável.'
+  },
+  {
+    q: 'Internação psiquiátrica ainda é necessária em PEP?',
+    a: 'Em casos selecionados, sim, mas a literatura é a política pública brasileira (Lei 10.216/2001) priorizam tratamento territorial. Internação se justifica quando há risco iminente para o paciente ou terceiros, quando o tratamento ambulatorial é insuficiente para manejo seguro ou quando há necessidade de estabilização aguda inviável fora do hospital. A internação deve ser tempo-limitada, com plano de saída desde a admissão é articulação com serviço territorial. Internações longas e repetidas têm associação com pior prognóstico funcional e maior estigma. CAPS III, leitos de saúde mental em hospital geral e serviços residenciais terapêuticos são alternativas previstas em rede.'
+  },
+  {
+    q: 'Que papel a família tem no manejo de PEP?',
+    a: 'A família é parceira terapêutica central, com evidência empírica consolidada. Intervenção familiar baseada em psicoeducação e manejo de emoção expressa (Leff e Vaughn, 1985; meta-análises subsequentes) reduz recaídas em até 50% em comparação a tratamento sem intervenção familiar estruturada. Família que entende o quadro, ajusta expectativas, regula emoção expressa (críticas, hostilidade, envolvimento emocional excessivo), participa de plano de cuidado e tem suporte próprio sustenta melhor o paciente. Programas de EIP incluem rotineiramente módulos para família. Isolamento da família do tratamento — comum em modelos antigos — é hoje considerado contraindicação técnica.'
+  },
+  {
+    q: 'Antipsicóticos são sempre necessários em PEP?',
+    a: 'A diretriz internacional (NICE, RANZCP) recomenda antipsicótico de segunda geração como primeira linha em PEP estabelecido, com escolha individualizada por perfil de efeitos adversos. A questão clínica não é "se medicar", e sim qual fármaco, qual dose mínima eficaz, por quanto tempo e como integrar à intervenção psicossocial. Estudos sobre redução é descontinuação supervisionada (Wunderink et al., 2013) sugeriram, em remissão sustentada, possibilidade de redução gradual em parte dos casos, com monitoramento próximo. Decisão é compartilhada — paciente informado participa. Tratamento isolado com medicação raramente é suficiente; a combinação com psicoterapia adaptada para psicose, intervenção familiar e suporte vocacional tem melhor desfecho.'
+  },
+  {
+    q: 'TCC para psicose funciona?',
+    a: 'Sim, com evidência consistente. CBTp (Cognitive Behavioral Therapy for psychosis) é hoje recomendação de primeira linha em diretrizes internacionais para sintomas residuais é para apoio ao manejo de delírios é alucinações persistentes. Meta-análises (Jauhar et al., 2014; Bighelli et al., 2018) confirmam efeito moderado sobre sintomas positivos. Adaptações cuidadosas evitam confronto direto com delírio e priorizam construção de aliança, reformulação suave de crenças, manejo de impacto e enfrentamento. CBTp exige formação específica do terapeuta — abordagem tradicional de TCC para depressão ou ansiedade não substitui. Para implementação em CAPS e EIP, treinamento de equipe é etapa frequentemente subdimensionada.'
+  },
+  {
+    q: 'Pessoa com PEP volta a trabalhar e estudar?',
+    a: 'Sim, na maioria dos casos, especialmente com intervenção precoce de qualidade. Modelo de Individual Placement and Support (IPS), desenvolvido em saúde mental e validado em múltiplos países (Bond et al., 2008), demonstra que suporte vocacional integrado ao tratamento clínico produz melhores taxas de retorno ao trabalho do que abordagens tradicionais de reabilitação pré-vocacional. EIP brasileiros e internacionais incorporam suporte ocupacional como componente padrão. A premissa é: retornar a atividade significativa não atrasa recuperação clínica — sustenta. O grau de retorno depende de gravidade, suporte familiar, qualidade do tratamento e contexto socioeconômico, e o desfecho de longo prazo é heterogêneo, com fração relevante atingindo recuperação funcional sustentada.'
+  },
+  {
+    q: 'Existe diferença entre esquizofrenia, transtorno esquizoafetivo e psicose breve?',
+    a: 'Sim. Esquizofrenia (CID-11, DSM-5) exige sintomas por pelo menos seis meses (DSM) ou um mês (CID-11, com prejuízo funcional). Transtorno esquizoafetivo combina sintomas psicóticos persistentes com episódios significativos de humor (depressivo ou maníaco). Transtorno psicótico breve resolve em até um mês com retorno ao funcionamento prévio. Transtorno esquizofreniforme tem duração intermediária. Em PEP, o diagnóstico definitivo frequentemente exige tempo de observação — o que justifica formulação inicial em "primeiro episódio psicótico" sem rotulação prematura. Diagnósticos diferenciais incluem psicose induzida por substância, psicose secundária a condição médica e episódio psicótico em transtorno do humor.'
+  },
+  {
+    q: 'Como reduzir estigma em torno do diagnóstico de psicose?',
+    a: 'A literatura sobre estigma em saúde mental (Corrigan, Watson e colaboradores, série 2000-2020) consolida três frentes de redução: contato direto com pessoas que vivem com o quadro e tiveram recuperação, educação baseada em evidência sobre o que é é o que não é psicose, e protesto contra representação midiática estigmatizante. Para família e equipe de saúde, linguagem importa — falar em "pessoa com quadro psicótico" e não em "esquizofrênico", evitar narrativas catastrofistas, comunicar expectativa realista de recuperação. Em ambiente de trabalho, divulgação seletiva sob LBI (Lei 13.146/2015) ajuda a obter adaptações sem expor desnecessariamente. Estigma interfere em busca de tratamento, em adesão e em qualidade de vida — combatê-lo é intervenção clínica.'
+  },
+  {
+    q: 'Família pode forçar internação contra vontade da pessoa?',
+    a: 'No Brasil, a Lei 10.216/2001 disciplina internação psiquiátrica em três modalidades: voluntária (com consentimento), involuntária (sem consentimento, a pedido de terceiro, comunicada ao Ministério Público em 72 horas) e compulsória (determinada pela justiça). A involuntária se justifica quando há risco iminente ou incapacidade de discernimento é a pessoa recusa tratamento. Não basta a vontade da família — é necessário laudo médico que sustente indicação e cumprimento dos requisitos legais. Internação prolongada exige acompanhamento e revisão. A regra geral é tratamento territorial; internação é exceção, não primeira escolha. Família que enfrenta crise sem saber o caminho deve buscar CAPS de referência ou SAMU em emergência.'
+  },
+  {
+    q: 'Quais são as comorbidades clínicas mais frequentes em PEP?',
+    a: 'Pessoas com psicose têm risco elevado para um conjunto de comorbidades que precisam de atenção desde o PEP: síndrome metabólica (associada à medicação e estilo de vida), uso problemático de tabaco, álcool e cannabis (com cannabis tendo associação específica documentada — Marconi et al., 2016), depressão pós-psicótica, ansiedade, ideação suicida (com risco elevado nos primeiros anos após PEP) e doenças cardiovasculares. Cuidado integral exige acompanhamento médico clínico paralelo, não só psiquiátrico. EIP qualificado integra monitoramento metabólico, manejo de tabagismo, intervenção em uso de substância e prevenção de suicídio como rotina, não como exceção.'
+  },
+  {
+    q: 'O psicólogo pode atender psicose ou é exclusivo da psiquiatria?',
+    a: 'Psicólogo pode é deve atender psicose, dentro da competência da Psicologia Clínica e da Saúde Mental. O atendimento é interprofissional — psiquiatra prescreve, conduz medicação e participa de decisões farmacológicas; psicólogo conduz psicoterapia adaptada, intervenção familiar, manejo de impacto, suporte vocacional é acompanhamento longitudinal. O Conselho Federal de Psicologia tem produzido orientações sobre atuação em CAPS e em rede de atenção psicossocial. Formação específica para atendimento de psicose exige base sólida em psicopatologia, em CBTp, em intervenção familiar baseada em emoção expressa e em manejo de crise. Atendimento sem essa formação tende a reproduzir abordagens inadequadas para o quadro.'
+  },
+  {
+    q: 'Como articular CAPS, atenção primária é atenção especializada?',
+    a: 'A Rede de Atenção Psicossocial (RAPS), instituída pela Portaria GM 3.088/2011, organiza pontos de atenção em níveis de complexidade: atenção primária (UBS, NASF/NASF-AB) como porta de entrada e seguimento, atenção especializada (CAPS de todas modalidades) para casos de média é alta complexidade, atenção em urgência (UPA, SAMU, hospital geral), atenção residencial (SRT), atenção em desinstitucionalização é atenção em reabilitação. Para PEP, fluxo típico bem desenhado é: identificação na atenção primária ou em emergência, encaminhamento direto para CAPS, avaliação especializada, plano individualizado, articulação com família e suporte vocacional. Onde há serviço dedicado de EIP, o fluxo é mais direto. Onde não há, CAPS faz o papel.'
+  },
+  {
+    q: 'Como pós-graduação aplicada conecta-se a manejo de PEP?',
+    a: 'Profissionais de Psicologia Clínica, Saúde Mental, Hospitalar e Social que pretendem atuar com psicose e PEP precisam de base sólida em psicopatologia contemporânea, em CBTp, em intervenção familiar e em literatura de evidência sobre intervenção precoce. Programas de pós-graduação que integram clínica, neurociência e prática em rede de atenção psicossocial ampliam capacidade técnica para o quadro. O IPOG oferece MBAs e pós aplicados em formato Ao Vivo síncrono com corpo docente nominal, conectando neurociência, neuropsicologia é desenvolvimento humano à clínica contemporânea. Para grade vigente e modalidades correlatas, consulte ipog.edu.br.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Primeiro episódio psicótico: FAQ com DUP, CAPS, EIP, família é antipsicóticos',
+  description: 'Dezessete perguntas frequentes sobre PEP: DUP, EIP, RAISE-ETP, CAPS, intervenção familiar, CBTp, Lei 10.216/2001, RAPS, comorbidades e formação aplicada.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Primeiro episódio psicótico', item: SITE.url + '/faq/primeiro-episodio-psicose-faq/' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const adjacent = AREAS.filter(a => a.cluster === 'neuro-avaliacao' || a.cluster === 'demais').slice(0, 4);
+---
+<Base
+  title="Primeiro episódio psicótico — FAQ | DUP, EIP, CAPS, RAPS, CBTp"
+  description="Dezessete perguntas frequentes sobre primeiro episódio psicótico: DUP, RAISE-ETP, EIP, CAPS, intervenção familiar, CBTp, Lei 10.216/2001 e comorbidades.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Primeiro episódio psicótico' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Primeiro episódio psicótico</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Primeiro episódio psicótico: DUP, intervenção precoce, CAPS é o que muda na rede.</h1>
+          <p class="mt-3 text-ink-700 text-lg">Dezessete perguntas que famílias, psicólogos, psiquiatras e profissionais de saúde mental fazem sobre PEP e early intervention.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">17 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          PEP concentra decisões críticas para trajetória. DUP longa associa-se a pior prognóstico (Marshall et al., 2005). EIP especializado (RAISE-ETP, Kane et al., 2016) produz melhor desfecho funcional e clínico. No Brasil, CAPS (Portaria 336/2002) e RAPS organizam atenção. Intervenção familiar baseada em psicoeducação reduz recaída. CBTp tem evidência para sintomas residuais. Internação é exceção sob Lei 10.216/2001, não primeira escolha.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Quadro de referências canônicas em PEP</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Referência</th>
+                <th class="text-left px-4 py-3">O que estabelece</th>
+                <th class="text-left px-4 py-3">Autor / Ano</th>
+                <th class="text-left px-4 py-3">Tipo</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">DUP e prognóstico</td>
+                <td class="px-4 py-3 text-ink-700">Associação DUP longa → pior desfecho</td>
+                <td class="px-4 py-3 text-ink-700">Marshall et al., 2005</td>
+                <td class="px-4 py-3 text-ink-700">Meta-análise</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">RAISE-ETP / NAVIGATE</td>
+                <td class="px-4 py-3 text-ink-700">Cuidado coordenado especializado em PEP</td>
+                <td class="px-4 py-3 text-ink-700">Kane et al., 2016</td>
+                <td class="px-4 py-3 text-ink-700">Ensaio randomizado</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Intervenção familiar</td>
+                <td class="px-4 py-3 text-ink-700">Redução de recaída via psicoeducação</td>
+                <td class="px-4 py-3 text-ink-700">Leff e Vaughn, 1985 +</td>
+                <td class="px-4 py-3 text-ink-700">Tradição consolidada</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CAPS — Portaria 336</td>
+                <td class="px-4 py-3 text-ink-700">Modalidades de CAPS no SUS</td>
+                <td class="px-4 py-3 text-ink-700">MS, 2002</td>
+                <td class="px-4 py-3 text-ink-700">Norma vigente</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Lei 10.216</td>
+                <td class="px-4 py-3 text-ink-700">Reforma psiquiátrica e modalidades de internação</td>
+                <td class="px-4 py-3 text-ink-700">Brasil, 2001</td>
+                <td class="px-4 py-3 text-ink-700">Marco legal</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.gov.br/saúde/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde — RAPS</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10216.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 10.216/2001 — Reforma Psiquiátrica</a></li>
+          <li><a href="https://www.who.int/health-topics/mental-health" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — Saúde Mental</a></li>
+          <li><a href="https://www.nice.org.uk/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE — Diretrizes clínicas</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/escolher-supervisor-clínico" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Escolher supervisor clínico</p>
+            <p class="text-xs text-ink-700 mt-2">Critérios para clínicos em formação em saúde mental.</p>
+          </a>
+          <a href="/áreas/psicologia-clínica" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Área</p>
+            <p class="font-semibold text-ink-900 mt-2">Psicologia Clínica</p>
+            <p class="text-xs text-ink-700 mt-2">Abordagens, ética, limites e relação terapêutica.</p>
+          </a>
+          <a href="/comparativos/mba-vs-especializacao" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">MBA vs especialização</p>
+            <p class="text-xs text-ink-700 mt-2">Como escolher trilha de formação aplicada.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">PEP é janela crítica; decisão técnica boa muda trajetória de vida.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Reduzir DUP, encaminhar para EIP ou CAPS de referência, integrar família com intervenção baseada em emoção expressa, sustentar tratamento medicamentoso individualizado, adicionar CBTp para sintomas residuais é organizar suporte vocacional desde o primeiro ano — é o conjunto de práticas que diretrizes internacionais recomendam. Formação aplicada em Psicologia Clínica e em Saúde Mental — modalidade Ao Vivo síncrona com corpo docente nominal, como a praticada pelo IPOG — é caminho recorrente para profissionais que pretendem atender PEP com rigor.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em Neurociência e Psicologia Positiva</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaNcpp ? mbaNcpp.description : 'O IPOG oferece MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/áreas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/áreas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.gov.br/saúde/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10216.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 10.216/2001</a></li>
+          <li><a href="https://www.nice.org.uk/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

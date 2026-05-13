@@ -1,0 +1,415 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'IPT (Terapia Interpessoal) tem o mesmo status de primeira linha da TCC em depressão?',
+    a: 'Sim. A IPT, desenvolvida por Klerman e Weissman (1984, Interpersonal Psychotherapy of Depression), figura junto com a TCC nas principais diretrizes — NICE (Reino Unido), APA (American Psychological Association) e OMS — como tratamento de primeira linha em depressão maior. A meta-análise de Cuijpers et al. (2016, American Journal of Psychiatry), com 90 estudos comparando psicoterapias em depressão, mostrou IPT e TCC com tamanhos de efeito equivalentes em adultos. A diferença está no mecanismo proposto (interpessoal versus cognitivo-comportamental) e no perfil de paciente que responde melhor a cada uma.'
+  },
+  {
+    q: 'Por que IPT é menos conhecida que TCC no Brasil?',
+    a: 'Razões históricas e estruturais. Primeiro, a TCC chegou ao Brasil mais cedo e com programas de formação estruturados em institutos privados — Beck Institute em parceria com instituições brasileiras, ABPC, ITC. Segundo, a IPT tem programas de formação ativos no Brasil (Sociedade Brasileira de Psicoterapia Interpessoal, vinculada à International Society for Interpersonal Psychotherapy), mas em escala menor. Terceiro, a literatura técnica em português sobre TCC é mais extensa. Mas o status científico da IPT é equivalente — a invisibilidade relativa não reflete a evidência, e sim a história de formação no país.'
+  },
+  {
+    q: 'IPT funciona bem em depressão pós-parto é depressão em adolescentes?',
+    a: 'Sim, com evidência específica em ambos os contextos. Para depressão pós-parto, O\'Hara et al. (2000) demonstraram IPT como tratamento eficaz, e o modelo é especialmente útil porque endereça transição de papel (de mulher para mãe) — eixo central do problema. Para depressão em adolescentes, IPT-A (versão adaptada por Mufson, Dorta, Moreau, Weissman) tem ensaios clínicos com efeitos consistentes — adolescente costuma engajar bem por se sentir validado em sua experiência relacional. Em ambos os casos, IPT compete tecnicamente com TCC adaptada para os mesmos grupos.'
+  },
+  {
+    q: 'Para um psicólogo brasileiro, vale formar-se em IPT além de TCC?',
+    a: 'A combinação amplia repertório terapêutico significativamente. Pacientes com depressão em luto, transições de papel (divórcio, aposentadoria, parentalidade), conflitos interpessoais persistentes ou déficits relacionais costumam responder bem a IPT — e nem sempre engajam plenamente em TCC clássica. A formação em IPT no Brasil é viável via Sociedade Brasileira de Psicoterapia Interpessoal e cursos internacionais validados. Para profissionais que querem articular psicoterapias baseadas em evidência com bases científicas sólidas, pós-graduações em Psicologia Positiva e Saúde Mental oferecem fundamentação teórica útil antes ou paralela à certificação técnica específica.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Fundador', ipt: 'Gerald Klerman e Myrna Weissman (1984, 2018)', tcc: 'Aaron Beck (1976), Albert Ellis (1957)' },
+  { dimensao: 'Premissa central', ipt: 'Depressão emerge e mantém-se em contexto interpessoal — relações disfuncionais são alvo', tcc: 'Pensamentos disfuncionais geram emoções e comportamentos depressivos' },
+  { dimensao: 'Modelo etiológico de depressão', ipt: 'Quatro focos: luto, disputa interpessoal, transição de papel, déficit interpessoal', tcc: 'Tríade cognitiva negativa (eu, mundo, futuro) + esquemas disfuncionais' },
+  { dimensao: 'Foco da intervenção', ipt: 'Relações atuais do paciente e padrões interpessoais', tcc: 'Pensamentos automáticos e crenças nucleares' },
+  { dimensao: 'Estrutura terapêutica', ipt: 'Fase inicial (formulação interpessoal), intermediária (foco escolhido), terminação', tcc: 'Estrutura por sessão, registro de pensamentos, tarefas de casa' },
+  { dimensao: 'Duração padrão', ipt: '12 a 16 sessões em formato breve', tcc: '12 a 20 sessões em protocolo padrão' },
+  { dimensao: 'Tarefa de casa', ipt: 'Observação interpessoal entre sessões — registros conversacionais', tcc: 'Registros de pensamentos, experimentos comportamentais, leitura' },
+  { dimensao: 'Postura terapêutica', ipt: 'Validação + foco interpessoal + perspectiva otimista', tcc: 'Empirismo colaborativo + questionamento socrático' },
+  { dimensao: 'Mensuração rotineira', ipt: 'PHQ-9, HAM-D em pontos definidos', tcc: 'PHQ-9, BDI-II em toda sessão tipicamente' },
+  { dimensao: 'Adaptações validadas', ipt: 'IPT-A (adolescentes), IPT pós-parto, IPT-grupo, IPT bipolar', tcc: 'Numerosas — depressão adolescente, perinatal, idosos, etc.' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'Depressão maior em adulto', ipt: 'Linha de frente — equivalente à TCC (Cuijpers 2016)', tcc: 'Linha de frente — Cochrane consolidada', vencedor: 'Equivalentes' },
+  { condicao: 'Depressão em luto recente', ipt: 'Linha de frente — foco específico no luto', tcc: 'Efetiva, mas sem foco explícito', vencedor: 'IPT' },
+  { condicao: 'Depressão por transição de papel (divórcio, aposentadoria)', ipt: 'Linha de frente — foco específico', tcc: 'Efetiva, mas sem foco interpessoal explícito', vencedor: 'IPT' },
+  { condicao: 'Depressão pós-parto', ipt: 'O\'Hara et al. (2000) — evidência alta', tcc: 'TCC perinatal validada — evidência alta', vencedor: 'Equivalentes' },
+  { condicao: 'Depressão em adolescentes', ipt: 'IPT-A (Mufson) — evidência consolidada', tcc: 'TCC adolescente — evidência consolidada', vencedor: 'Equivalentes' },
+  { condicao: 'Distimia/depressão persistente', ipt: 'Evidência moderada', tcc: 'CBASP de McCullough especializado nesta condição', vencedor: 'CBASP' },
+  { condicao: 'Depressão com ansiedade generalizada', ipt: 'Eficácia mantida — foco interpessoal indireto', tcc: 'Eficácia mantida — protocolos unificados (Barlow)', vencedor: 'TCC marginal' },
+  { condicao: 'Depressão crônica refratária', ipt: 'Manutenção mensal (IPT-M) tem evidência', tcc: 'TCC de manutenção e MBCT para prevenção de recaída', vencedor: 'Depende — combinar' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Adulto com depressão pós-divórcio recente, três meses de quadro', recomendacao: 'IPT (foco em transição de papel e disputa interpessoal)', racional: 'IPT tem framework explícito para transição relacional e luto da relação anterior — encaixe direto com a fenomenologia do quadro' },
+  { perfilPaciente: 'Adulto com depressão recorrente, padrão ruminativo persistente', recomendacao: 'TCC ou MBCT para prevenção de recaída', racional: 'A ruminação cognitiva é alvo principal da TCC clássica e do mindfulness baseado em cognição; IPT é menos especializada nesse mecanismo' },
+  { perfilPaciente: 'Mulher com depressão pós-parto, três meses após nascimento', recomendacao: 'IPT pós-parto ou TCC perinatal', racional: 'Ambas têm evidência alta; escolha por preferência do paciente, disponibilidade de profissional e foco da queixa (relacional ou cognitivo-comportamental)' },
+  { perfilPaciente: 'Adolescente com depressão e conflitos familiares centrais', recomendacao: 'IPT-A', racional: 'Adolescente tende a engajar bem com foco interpessoal; conflitos familiares (parentais, pares) são alvos diretos do modelo' },
+  { perfilPaciente: 'Idoso com depressão pós-aposentadoria e perda de cônjuge', recomendacao: 'IPT (luto + transição de papel)', racional: 'Os dois principais focos da IPT cobrem exatamente a fenomenologia clínica; idoso costuma engajar mais com narrativa interpessoal do que com registro cognitivo' },
+  { perfilPaciente: 'Adulto com depressão e baixa habilidade interpessoal histórica', recomendacao: 'IPT com foco em déficit interpessoal', racional: 'Quarto foco da IPT é desenhado para este perfil; trabalho em habilidades relacionais é mais explícito que em TCC clássica' },
+  { perfilPaciente: 'Adulto com depressão e ansiedade generalizada concomitante', recomendacao: 'TCC ou protocolo unificado (Barlow)', racional: 'TCC tem ferramental específico para ansiedade; combinação cognitivo-comportamental cobre os dois quadros sem fragmentação' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'IPT vs TCC para depressão: comparativo entre Terapia Interpessoal e Cognitivo-Comportamental',
+  description: 'Comparativo independente entre IPT (Klerman & Weissman, 1984) e TCC (Beck, 1976) em depressão maior. Mecanismo, evidência por subtipo, perfil de paciente e quando combinar.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'IPT vs TCC para depressão' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+---
+
+<Base
+  title="IPT vs TCC para depressão: qual escolher e quando combinar"
+  description="Comparativo independente entre Terapia Interpessoal (Klerman & Weissman) e TCC clássica em depressão maior. Mecanismo, evidência por subtipo, perfil de paciente é decisão clínica.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'IPT vs TCC para depressão' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Tratamento de depressão</span>
+          <h1 class="section-h text-3xl sm:text-4xl">IPT vs TCC para depressão: duas primeiras linhas que o Brasil conhece de modo desigual</h1>
+          <p class="mt-3 text-ink-700 text-lg">Não são abordagens rivais. São métodos com mecanismos diferentes que atendem perfis distintos de depressão — é a evidência consolidada coloca as duas no mesmo patamar de eficácia média.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          IPT (Terapia Interpessoal de Klerman e Weissman, 1984) e TCC (Beck, 1976) figuram juntas como primeira linha em depressão maior nas diretrizes NICE, APA e OMS. A meta-análise de Cuijpers et al. (2016) mostrou tamanhos de efeito equivalentes em adultos. A escolha é menos sobre qual é melhor em geral e mais sobre qual mecanismo se alinha à fenomenologia do quadro: IPT brilha em depressões com componente claro de luto, transição de papel, disputa interpessoal ou déficit relacional; TCC é a escolha quando o eixo é ruminação cognitiva, distorções cognitivas estruturadas ou comorbidade com ansiedade. No Brasil, a IPT é menos conhecida — uma lacuna de formação, não de evidência.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que uma terapia interpessoal foi necessária</h2>
+        <p>
+          No final dos anos 1960, Gerald Klerman e Myrna Weissman, na Universidade de Yale é depois em Columbia, estudavam manutenção do tratamento em depressão. A pergunta inicial era farmacológica: como evitar recaída após resposta a antidepressivos? A intervenção complementar que desenvolveram — inicialmente chamada de "high contact program" — focava em manejo das relações interpessoais do paciente. O resultado clínico foi inesperado: o componente interpessoal não apenas complementava o medicamento, mas funcionava como tratamento autônomo. Em 1984, Klerman, Weissman, Rounsaville e Chevron publicaram o manual fundador, Interpersonal Psychotherapy of Depression — sistematizando o que se tornaria uma das duas terapias de primeira linha consolidadas em depressão.
+        </p>
+        <p>
+          A premissa teórica da IPT é estrutural. Depressão não emerge nem se mantém em vácuo cognitivo — emerge em contexto interpessoal. Quatro focos clínicos foram definidos: luto (morte de figura significativa), disputa interpessoal (conflito persistente com pessoa importante), transição de papel (mudança importante como divórcio, parentalidade, aposentadoria, migração), e déficit interpessoal (padrão histórico de relações empobrecidas). A terapia identifica qual é o foco predominante é organiza a intervenção em torno dele. Klerman descrevia o método como "psicoterapia limitada no tempo, com foco prático, baseada em compreensão psicossocial do contexto da depressão".
+        </p>
+        <p>
+          A consolidação científica veio nas décadas seguintes. O National Institute of Mental Health (NIMH) Treatment of Depression Collaborative Research Program, publicado por Elkin et al. (1989) na Archives of General Psychiatry, comparou IPT, TCC, imipramina e placebo. As três modalidades ativas tiveram resultados superiores ao placebo em quadros moderados; em quadros graves, medicação e IPT tiveram desempenho ligeiramente superior à TCC. A meta-análise extensa de Cuijpers et al. (2016), com 90 estudos comparando psicoterapias, consolidou as duas como equivalentes em depressão em adultos. NICE, APA e OMS incorporaram IPT como primeira linha. No Brasil, a Associação Brasileira de Psiquiatria é o CFP reconhecem IPT como tratamento baseado em evidência.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo de ação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">IPT</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">TCC</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.ipt}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.tcc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por subtipo de depressão</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Subtipo de depressão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">IPT</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">TCC</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Vencedor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.ipt}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.tcc}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A diferença entre IPT e TCC fica visível na primeira sessão. Quando o paciente descreve o quadro depressivo, a terapeuta IPT mapeia o contexto interpessoal — quem são as figuras significativas na vida do paciente, quais relações estão em conflito, houve perda recente, houve transição importante (mudança de cidade, divórcio, aposentadoria, parentalidade, perda de emprego)? A formulação resulta em um dos quatro focos. Se o paciente passou por divórcio há seis meses, há disputa de guarda em curso, e a relação com a ex-cônjuge é central na vida cotidiana — o foco é "transição de papel + disputa interpessoal". A intervenção das próximas sessões se organiza em torno dessas duas dimensões.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A terapeuta TCC, na mesma primeira sessão, mapeia padrões cognitivos. Quais são os pensamentos automáticos do paciente sobre si, sobre o mundo é sobre o futuro (tríade cognitiva de Beck)? Quais distorções aparecem (catastrofização, generalização, leitura mental, raciocínio emocional)? Quais comportamentos foram suprimidos (ativação behavioral)? A formulação resulta em hipótese cognitivo-comportamental. A intervenção combina identificação e teste de pensamentos automáticos, reestruturação cognitiva, ativação comportamental e prevenção de recaída. Os dois métodos chegam ao mesmo resultado em escalas globais de depressão em adulto cooperativo — mas chegam por caminhos distintos.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A pesquisa de mecanismo, conforme Klein et al. (2003) e Cuijpers et al. (2018), sugere que IPT reduz sintomas via aumento de qualidade percebida de relações interpessoais — pacientes que melhoram em IPT reportam diminuição de conflito relacional, aumento de sentimento de suporte percebido, resolução de luto. TCC reduz sintomas via diminuição de pensamentos automáticos negativos é aumento de comportamento ativador. Para o paciente cuja depressão tem componente interpessoal claro (luto, transição, conflito persistente), o caminho IPT é mais direto. Para o paciente cuja depressão é dominantemente ruminativa, com cognições negativas estruturadas em ausência de gatilho relacional claro, TCC é mais direta.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O caso da depressão pós-parto ilustra a complementaridade. O\'Hara et al. (2000) demonstraram IPT como tratamento eficaz — o foco em transição de papel (de mulher para mãe) endereça diretamente a fenomenologia do quadro. Mas TCC perinatal, conforme Milgrom et al. (2011), tem evidência equivalente. A escolha depende menos do quadro e mais da relação que o paciente estabelece com o método e com a terapeuta. Estudos de preferência informada (Swift e Callahan, 2009) consistentemente mostram que pacientes que escolhem entre métodos baseados em evidência têm aderência maior é desfecho ligeiramente melhor que pacientes alocados aleatoriamente.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de paciente e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do paciente</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Recomendação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher IPT</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Depressão com componente interpessoal claro</p>
+              <p class="text-sm text-ink-700 mt-1">Luto recente, divórcio, conflito persistente com pessoa significativa, transição importante de papel. A formulação interpessoal é a porta direta.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Paciente que prefere narrativa relacional a registro cognitivo</p>
+              <p class="text-sm text-ink-700 mt-1">Pacientes que ganham mais com conversação sobre relações do que com preenchimento de registros de pensamentos — IPT respeita esse estilo.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Idosos com depressão pós-perda e isolamento</p>
+              <p class="text-sm text-ink-700 mt-1">População onde luto e transição de papel costumam ser focos clínicos centrais — IPT tem evidência específica e engajamento alto.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher TCC</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Depressão ruminativa com distorções cognitivas estruturadas</p>
+              <p class="text-sm text-ink-700 mt-1">Quando o eixo do quadro é ruminação cognitiva persistente sem gatilho relacional claro, TCC é mais direta.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Depressão com ansiedade ou TOC comórbidos</p>
+              <p class="text-sm text-ink-700 mt-1">Protocolos unificados (Barlow et al.) e TCC clássica têm ferramental robusto para comorbidades — IPT é menos especializada nesse perfil.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Paciente que responde bem a estrutura mensurável</p>
+              <p class="text-sm text-ink-700 mt-1">Perfil que ganha estabilidade com PHQ-9 a cada sessão, tarefa de casa específica, registros estruturados. A gramática TCC é o encaixe.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando combinar ou sequenciar</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Depressão crônica refratária a primeira linha isolada</p>
+            <p class="text-sm text-ink-700 mt-1">Sequência IPT → TCC ou vice-versa é descrita em casos onde a primeira abordagem trouxe ganho parcial. Cuijpers et al. (2020) consolidam que troca de modalidade tem efeito incremental em refratários.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Depressão recorrente em fase de manutenção</p>
+            <p class="text-sm text-ink-700 mt-1">IPT-M (manutenção mensal) e MBCT são modelos validados para prevenção de recaída. Em paciente com três ou mais episódios prévios, manutenção estruturada reduz recaída em meta-análises.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Carlos, 58 anos, depressão pós-aposentadoria após 35 anos na mesma empresa</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Carlos procurou tratamento oito meses após aposentadoria compulsória aos 57 anos, em empresa de telecomunicações onde trabalhou por 35 anos. Quadro: humor deprimido persistente, insônia inicial, anedonia, autocrítica sobre "não saber o que fazer da vida", isolamento crescente da família, sentimento de "perda de identidade". Escore na PHQ-9 de 16 (depressão maior moderada). Filhos adultos preocupados, esposa pressionando para "fazer alguma coisa".
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          O psicólogo, formado em TCC e em IPT pela Sociedade Brasileira de Psicoterapia Interpessoal, conduziu a avaliação inicial considerando os dois métodos. A formulação clínica identificou foco interpessoal predominante: transição de papel (do "engenheiro sênior na empresa" para "aposentado em casa") e disputa interpessoal latente (esposa pressionando por atividades novas, Carlos sentindo a pressão como invalidação). A opção apresentada a Carlos foi IPT, com explicação transparente da alternativa em TCC clássica. Carlos escolheu IPT — "faz mais sentido falar sobre o que mudou na minha vida do que ficar registrando pensamentos".
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Em 14 sessões ao longo de quatro meses, o trabalho focou em duas frentes: a transição de papel (identificar o que se perdeu no fim da carreira, o que pode ser carregado para a nova fase, redefinição de identidade profissional aposentada) é a disputa com a esposa (comunicação aberta sobre como cada um vivia a transição, renegociação de rotinas, reconhecimento mútuo de luto). O PHQ-9 caiu de 16 para 5 na décima segunda sessão e estabilizou. Carlos iniciou consultoria pontual como engenheiro sênior em projeto específico, retomou contato com colega de profissão para caminhadas semanais, e renegociou divisão de tarefas domésticas com a esposa. O psicólogo registrou no encerramento: "TCC poderia também ter funcionado, mas IPT foi mais elegante para este perfil — o quadro tinha endereço interpessoal claro, e Carlos engajou mais com a narrativa relacional do que com registros cognitivos. Escolher a porta certa acelerou".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões clínicos descritos em IPT para depressão geriátrica (Hinrichsen, 2008) e na literatura sobre depressão pós-aposentadoria. A escolha entre IPT e TCC em depressão de transição segue formulação clínica e preferência informada.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções importantes. Primeiro, "IPT" e "TCC" não são blocos únicos — cada abordagem tem múltiplas variantes (IPT-A para adolescentes, IPT-grupo, IPT-M para manutenção, TCC clássica, TCC focada em esquemas, CBASP para distimia, MBCT para prevenção de recaída). A comparação direta exige especificar qual variante. Segundo, a evidência de equivalência média em escalas globais não prediz resposta individual — formulação clínica, aliança terapêutica e preferência informada do paciente continuam sendo preditores fortes. Terceiro, no Brasil a IPT tem menor disponibilidade de profissionais formados — o que torna a "escolha" parcialmente uma questão de acesso, não de pura indicação clínica.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A questão estrutural é de formação. Programas de pós-graduação em Psicologia Clínica no Brasil costumam apresentar TCC de modo extenso e IPT de modo pontual. Profissionais que queiram dominar a IPT precisam buscar formação específica via Sociedade Brasileira de Psicoterapia Interpessoal ou programas internacionais. Para o paciente, a consequência é que IPT segue subutilizada em quadros onde seria a primeira escolha técnica — particularmente em depressões com luto, transição de papel ou disputa interpessoal como núcleo do quadro. Cuijpers (2017, Lancet Psychiatry) chama essa situação de "dissemination gap" — abordagens com evidência consolidada que ficam restritas pela infraestrutura de formação.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Duas primeiras linhas, escolha por fenomenologia e preferência</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>IPT e TCC têm eficácia equivalente em depressão maior em escalas globais — recomendadas como primeira linha por NICE, APA e OMS.</li>
+          <li>IPT brilha em depressões com componente claro de luto, transição de papel, disputa interpessoal ou déficit relacional.</li>
+          <li>TCC é mais direta em depressão ruminativa, com distorções cognitivas estruturadas ou comorbidade ansiosa.</li>
+          <li>A invisibilidade relativa da IPT no Brasil é lacuna de formação, não de evidência — o psicólogo que domina as duas amplia repertório técnico.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem articular psicoterapias baseadas em evidência com fundamentação científica ampliada em Psicologia Positiva, Saúde Mental e bem-estar, o IPOG mantém MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar — formação complementar útil antes ou em paralelo à certificação técnica em IPT ou TCC. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/act-vs-tcc" class="text-brand-700 hover:text-brand-800 font-medium">ACT vs TCC — terceira onda comparada com cognitiva clássica</a></li>
+          <li><a href="/comparativos/dbt-vs-tcc-borderline" class="text-brand-700 hover:text-brand-800 font-medium">DBT vs TCC para borderline — quando desregulação emocional muda o modelo</a></li>
+          <li><a href="/comparativos/emdr-vs-tcc-trauma" class="text-brand-700 hover:text-brand-800 font-medium">EMDR vs TF-CBT para trauma — abordagens de primeira linha em TEPT</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Psicologia Positiva, POT, Neurociência e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. A modalidade vigente de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Métodos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/metodos/ipt" class="mega-link"><strong class="text-ink-900 text-sm">IPT — Terapia Interpessoal</strong></a></li>
+          <li><a href="/metodos/tcc" class="mega-link"><strong class="text-ink-900 text-sm">TCC clássica</strong></a></li>
+          <li><a href="/metodos/mbct" class="mega-link"><strong class="text-ink-900 text-sm">MBCT — Mindfulness Cognitivo</strong></a></li>
+          <li><a href="/metodos/act" class="mega-link"><strong class="text-ink-900 text-sm">ACT</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/act-vs-tcc" class="mega-link"><strong class="text-ink-900 text-sm">ACT vs TCC</strong></a></li>
+          <li><a href="/comparativos/dbt-vs-tcc-borderline" class="mega-link"><strong class="text-ink-900 text-sm">DBT vs TCC para borderline</strong></a></li>
+          <li><a href="/comparativos/mindfulness-vs-act" class="mega-link"><strong class="text-ink-900 text-sm">Mindfulness vs ACT</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Klerman, G. & Weissman, M. (1984). Interpersonal Psychotherapy of Depression. Basic Books.</li>
+          <li>Weissman, M. et al. (2018). The Guide to Interpersonal Psychotherapy. Oxford University Press.</li>
+          <li>Cuijpers, P. et al. (2016). Psychotherapies for depression: meta-analysis. American Journal of Psychiatry.</li>
+          <li>Elkin, I. et al. (1989). NIMH Treatment of Depression Collaborative Research Program. Archives of General Psychiatry.</li>
+          <li>O\'Hara, M. et al. (2000). Efficacy of IPT for postpartum depression. Archives of General Psychiatry.</li>
+          <li>Mufson, L. et al. (2004). IPT-A for adolescents. Guilford.</li>
+          <li>Beck, A. (1976). Cognitive Therapy and the Emotional Disorders. International Universities Press.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

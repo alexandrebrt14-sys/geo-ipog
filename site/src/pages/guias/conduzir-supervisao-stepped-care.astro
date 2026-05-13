@@ -1,0 +1,367 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Mapear a arquitetura do stepped-care no território',
+    aplicacao: 'O ponto de partida não é a sessão; é o desenho do cuidado. Stepped-care, descrito por Bower e Gilbody (2005) e refinado por Clark (2018) no IAPT inglês, organiza o atendimento em degraus de intensidade crescente — psicoeducação é autoajuda guiada nos passos baixos; psicoterapia breve e medicação nos intermediários; equipes especializadas e internação nos altos. No Brasil, a RAPS (Portaria 3.088/2011) é a PNAB (2017) operacionalizam algo análogo via UBS, eMulti, CAPS e leitos hospitalares. Antes de supervisionar, o supervisor desenha em uma página qual degrau cada serviço da rede ocupa.',
+    armadilha: 'Tratar o supervisionando como se ele estivesse em consultório privado isolado. Sem o desenho da rede, decisões clínicas básicas — escalonar, manter, contra-referenciar — viram improviso.'
+  },
+  {
+    n: 2,
+    titulo: 'Definir o modelo de supervisão antes do primeiro encontro',
+    aplicacao: 'Bernard e Goodyear (2019) consolidaram o discrimination model: o supervisor alterna entre três papéis (professor, conselheiro, consultor) e três focos (intervenção, conceituação, personalização). Falender e Shafranske (2017) acrescentam o competency-based supervision, com objetivos formais por ciclo. Em stepped-care no SUS, o ciclo dura tipicamente 3 a 6 meses, com 1 encontro semanal de 60 a 90 minutos e contrato escrito. Sem modelo declarado, o supervisor improvisa entre acolher e cobrar — é o supervisionando perde a referência.',
+    armadilha: 'Começar a supervisão sem contrato escrito. Em rede pública, contratos verbais não sobrevivem à rotatividade de equipe.'
+  },
+  {
+    n: 3,
+    titulo: 'Conduzir matriciamento como supervisão coletiva',
+    aplicacao: 'O matriciamento, descrito por Campos e Domitti (2007), e a peça brasileira que aproxima supervisão da clínica em rede. O psicólogo do CAPS ou da UBS atua como referência técnica para equipes da atenção primária, em encontros mensais de 90 a 120 minutos. A literatura recente (Mendonça et al., 2019; Hirdes, 2015) mostra que matriciamento efetivo reduz encaminhamentos desnecessários ao CAPS é melhora retenção no passo certo. Na supervisão clínica, o matriciamento é vivido pelo supervisionando — é o supervisor revisita a discussão como material clínico.',
+    armadilha: 'Confundir matriciamento com consultoria informal por mensagem. O encontro presencial estruturado é o que produz aprendizagem clínica.'
+  },
+  {
+    n: 4,
+    titulo: 'Calibrar critério de escalonamento por evidência',
+    aplicacao: 'Stepped-care exige critério explícito para mover paciente entre degraus. Clark (2018) descreve no IAPT um sistema com PHQ-9 e GAD-7 aplicados sessão a sessão; ponto de corte é ausência de melhora em janela definida disparam revisão. No SUS, o supervisor estabelece critério análogo com instrumentos validados em português: PHQ-9 (Santos et al., 2013), GAD-7 (Moreno et al., 2016), WHO-5. A regra: escalonamento é decisão de equipe, não pressentimento do clínico de plantão.',
+    armadilha: 'Escalonar pela ansiedade da equipe em vez de pelo dado. Equipes sobrecarregadas tendem a empurrar caso para o CAPS — é o CAPS satura.'
+  },
+  {
+    n: 5,
+    titulo: 'Ensinar formulação clínica integrada',
+    aplicacao: 'Em supervisão de stepped-care, a formulação clínica é o eixo. Persons (2008) e Eells (2015) descrevem a formulação cognitivo-comportamental como hipótese funcional com cinco camadas: lista de problemas, mecanismo, origens, plano de intervenção, obstáculos previstos. Em rede pública, a formulação precisa nomear também o degrau atual, a rede ao redor é a contrapartida de medicação quando há psiquiatria. Sem formulação escrita revisada na supervisão, a clínica vira sequência de queixas atendidas avulso.',
+    armadilha: 'Aceitar formulação verbal genérica do supervisionando. O exercício de escrever a formulação em uma página é onde a aprendizagem clínica acontece.'
+  },
+  {
+    n: 6,
+    titulo: 'Trabalhar transferência e contratransferência com rigor',
+    aplicacao: 'A literatura de supervisão (Ladany et al., 2013; Watkins, 2017) é consistente: contratransferência não revelada na supervisão é fator de impasse clínico é de desistência do supervisionando. O supervisor cria espaço explícito — em geral, último terço do encontro — para o supervisionando narrar reações pessoais ao caso. Em contextos de violência, suicidalidade e luto pesado (frequentes em SUS), esse espaço é proteção do clínico, não luxo. O supervisor distingue acolhimento de psicoterapia: a supervisão lê a reação no campo clínico, não trata o supervisionando.',
+    armadilha: 'Tratar contratransferência como assunto pessoal a ser resolvido fora. Sem espaço protegido na supervisão, o supervisionando vaza para a clínica.'
+  },
+  {
+    n: 7,
+    titulo: 'Documentar com registro técnico defensável',
+    aplicacao: 'Registro de supervisão segue lógica análoga à do prontuário, com proteção adicional de sigilo de terceiros. Falender e Shafranske (2017) recomendam três blocos por encontro: temas trabalhados, decisões clínicas tomadas, próximos passos. Em SUS, o registro também documenta encaminhamentos, escalonamentos e contratos com a equipe matricial. A Resolução CFP 06/2019 sobre documentos psicológicos é referência canônica. Registro sólido protege supervisionando, supervisor e serviço — e é exigência crescente em auditorias.',
+    armadilha: 'Confiar na memória e em mensagens. Sem registro escrito, a supervisão perde rastreabilidade — e em incidente grave, o supervisor expõe-se à própria defesa.'
+  },
+  {
+    n: 8,
+    titulo: 'Encerrar o ciclo com avaliação formal de competências',
+    aplicacao: 'Falender e Shafranske (2017) descrevem o ciclo competency-based com avaliação inicial, intermediária e final, ancorada em rubrica de competências (avaliação, intervenção, ética, supervisão recebida, autocuidado). No fim do ciclo, supervisor e supervisionando completam a rubrica de forma independente e discutem divergências. A literatura mostra (Goodyear, 2014; Watkins, 2017) que avaliação formal reduz viés de simpatia é aumenta aprendizagem clínica relativa em até 20% comparado a feedback informal.',
+    armadilha: 'Encerrar supervisão com "foi ótimo, valeu" verbal. Sem avaliação escrita, o ciclo seguinte recomeça do zero.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Mapa de rede', indicador: 'Diagrama degraus + serviços', quem: 'Supervisor', quando: 'Mês 0', status: 'Pendente' },
+  { passo: '2 · Contrato', indicador: 'Documento assinado', quem: 'Dupla', quando: 'Mês 0', status: 'Pendente' },
+  { passo: '3 · Matriciamento', indicador: 'Agenda mensal definida', quem: 'CAPS/UBS', quando: 'Mês 1', status: 'Pendente' },
+  { passo: '4 · Critério escalonamento', indicador: 'PHQ-9/GAD-7 calibrados', quem: 'Supervisor', quando: 'Mês 1', status: 'Pendente' },
+  { passo: '5 · Formulação', indicador: 'Caso escrito 1 página', quem: 'Supervisionando', quando: 'Sessão 2-4', status: 'Pendente' },
+  { passo: '6 · Contratransferência', indicador: 'Espaço 20 min/encontro', quem: 'Dupla', quando: 'Toda sessão', status: 'Pendente' },
+  { passo: '7 · Registro técnico', indicador: 'Ata 3 blocos por encontro', quem: 'Supervisor', quando: 'Toda sessão', status: 'Pendente' },
+  { passo: '8 · Avaliação final', indicador: 'Rubrica preenchida × 2', quem: 'Dupla', quando: 'Mês 5-6', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Supervisionar em consultório como se fosse SUS',
+    texto: 'Stepped-care sem mapa da rede vira improviso. Bower e Gilbody (2005) e Clark (2018) são consistentes: a aderência ao modelo depende do desenho operacional do território. Supervisor que não conhece os serviços ao redor instrui o supervisionando a tomar decisões clínicas no escuro.'
+  },
+  {
+    titulo: 'Tratar matriciamento como reunião administrativa',
+    texto: 'Campos e Domitti (2007) e Mendonça et al. (2019) mostram que matriciamento estruturado reduz encaminhamentos ao CAPS e mantém o caso no passo correto. Encontro de 90 a 120 minutos com pauta clínica, não troca de mensagens. Sem isso, a equipe matricial vira balcão de pareceres soltos.'
+  },
+  {
+    titulo: 'Escalonar pela ansiedade da equipe',
+    texto: 'No IAPT, o critério de escalonamento é dado por instrumento. No SUS, a saturação do CAPS é regra. Equipe pressionada tende a empurrar caso para cima sem dado. O supervisor precisa proteger o critério técnico mesmo quando há pressão institucional.'
+  },
+  {
+    titulo: 'Ignorar contratransferência sob alegação de tempo',
+    texto: 'Ladany et al. (2013) e Watkins (2017) mostram que contratransferência não trabalhada é fator de impasse clínico é adoecimento do supervisionando. Em SUS, com casos de violência e suicidalidade, isso vira erosão silenciosa da equipe. Reservar 20 minutos por encontro é prática mínima de prudência.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'O modelo IAPT inglês cabe no SUS brasileiro?',
+    a: 'Cabe parcialmente. O IAPT (Clark, 2018) opera em sistema universal com dados em larga escala, treinamento padronizado e instrumentos sessão a sessão. No Brasil, a RAPS é a PNAB têm arquitetura análoga, mas com variação territorial alta. A literatura (Hirdes, 2015; Onocko-Campos, 2019) recomenda incorporar lições do IAPT — critério explícito de escalonamento, medida rotineira de desfecho, capacitação estruturada — sem tentar transplantar a estrutura inteira.'
+  },
+  {
+    q: 'Posso supervisionar equipe de eMulti se não trabalho no SUS?',
+    a: 'Pode, com cautela. A supervisão externa é prevista em diversas portarias, mas exige imersão prévia na rede do território. Recomenda-se: visita técnica aos serviços, leitura da Política Municipal de Saúde Mental, conversa com a coordenação antes do contrato. Sem essa imersão, o supervisor de fora confunde a rotina pública com a rotina privada — é a supervisão perde tração.'
+  },
+  {
+    q: 'Como medir efetividade da supervisão em stepped-care?',
+    a: 'Três indicadores canônicos: (1) adesão ao critério de escalonamento (proporção de casos escalonados com PHQ-9/GAD-7 documentados), (2) redução em encaminhamentos desnecessários ao CAPS após início do matriciamento, (3) competências do supervisionando medidas por rubrica antes é depois do ciclo (Falender e Shafranske, 2017). Indicadores qualitativos complementam: satisfação da equipe matricial e segurança clínica percebida pelo supervisionando.'
+  },
+  {
+    q: 'Como o MBA em Psicologia Positiva do IPOG conecta a esse guia?',
+    a: 'O MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações cobre desenho de cuidado escalonado, prevenção, cultura de cuidado e protocolos de saúde mental em rede — fundamento técnico para supervisor que conduz equipes em SUS, eMulti ou estrutura corporativa de saúde mental. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir supervisão clínica em modelo stepped-care no SUS',
+  description: 'Guia em 8 passos para supervisão em stepped-care: mapa de rede, contrato, matriciamento, critério de escalonamento, formulação, contratransferência é avaliação por rubrica.',
+  totalTime: 'PT22M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como conduzir supervisão clínica em stepped-care no SUS: guia passo-a-passo',
+  description: 'Protocolo em 8 passos para supervisão clínica em stepped-care, com matriciamento, IAPT, discrimination model e competency-based supervision.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Supervisão em stepped-care', item: `${SITE.url}/guias/conduzir-supervisao-stepped-care` }
+  ]
+};
+---
+
+<Base
+  title="Supervisão clínica em stepped-care no SUS — guia 8 passos · matriciamento, IAPT, discrimination model"
+  description="Protocolo passo-a-passo para supervisão clínica em modelo stepped-care no SUS: mapa de rede, matriciamento, critérios de escalonamento por PHQ-9/GAD-7, formulação, contratransferência é avaliação por rubrica.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Supervisão em stepped-care' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 8 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir supervisão clínica em stepped-care no SUS</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Protocolo técnico para supervisor que orienta equipes em CAPS, eMulti e UBS: discrimination model (Bernard & Goodyear), matriciamento (Campos & Domitti), lições do IAPT (Clark) e competency-based supervision (Falender & Shafranske).</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~22 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Supervisores clínicos e coordenadores de equipes</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir supervisão clínica em rede pública com método declarado, critério explícito de escalonamento, matriciamento estruturado é avaliação por rubrica.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, leitura do discrimination model (Bernard & Goodyear, 2019), conhecimento básico de RAPS/PNAB e treinamento em PHQ-9/GAD-7.</li>
+          <li><strong>Resultado esperado:</strong> ciclo de supervisão de 6 meses com contrato escrito, registro técnico defensável, dois encontros de matriciamento por mês é avaliação final ancorada em rubrica de competências.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura comum sobre supervisão clínica assume que o eixo é a sessão entre supervisor e supervisionando, conduzida em consultório, com discussão clínica linha-a-linha. Em stepped-care no SUS, essa leitura quebra. O território, com sua arquitetura de UBS, eMulti, CAPS e leitos, e o primeiro objeto da supervisão. Sem mapa explícito da rede, decisões básicas — manter, escalonar, contra-referenciar — viram intuição do clínico de plantão. Bower e Gilbody (2005), Clark (2018) é a literatura brasileira de matriciamento (Campos & Domitti, 2007; Hirdes, 2015) convergem: aderência ao modelo depende do desenho operacional da rede.
+        </p>
+        <p>
+          A inversão prática para o supervisor: comece pelo mapa, defina o modelo de supervisão por escrito, calibre critérios de escalonamento por instrumento (PHQ-9, GAD-7, WHO-5), incorpore o matriciamento como supervisão coletiva, ensine formulação clínica integrada em uma página, trabalhe contratransferência com rigor protegido em janela de 20 minutos por encontro, registre tudo em três blocos por sessão e feche o ciclo com avaliação por rubrica. Quem segue esse trajeto entrega supervisão defensável tecnicamente, robusta sob auditoria e formativa para o clínico em rede pública.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 8 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Ciclo típico de 6 meses, com encontros semanais de 60 a 90 minutos e matriciamento mensal.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">CAPS II e três UBS em município de 180 mil habitantes, ciclo de 6 meses</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Coordenação de saúde mental em município médio do interior contrata supervisor clínico para acompanhar a equipe de psicologia de um CAPS II é a equipe matricial que atende três UBS. Diagnóstico inicial: encaminhamentos crescentes da atenção primária para o CAPS, fila de 90 dias para primeira consulta no CAPS, equipe matricial relatando "casos difíceis demais" para a UBS. A leitura preliminar apontava demanda real; a leitura técnica mostrou outra coisa.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em 6 meses, o supervisor implementou: mapa visual da rede em uma página afixada nas salas de equipe, contrato escrito de supervisão com objetivos por competência, matriciamento mensal estruturado com pauta de casos rastreados por PHQ-9 e GAD-7, formulação clínica em uma página por caso supervisionado, janela protegida de 20 minutos para contratransferência ao fim de cada encontro, registro técnico em três blocos por sessão. Indicadores no fim do ciclo: redução de 41% em encaminhamentos da UBS ao CAPS por quadros depressivos leves-moderados (que passaram a ser conduzidos com TCC breve na UBS), aumento da retenção dos casos graves no CAPS, rubrica de competências evoluindo de média 2,3 para 3,7 em escala de 5. Coordenação renovou o contrato com cláusula de ampliação para nova equipe.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019 sobre documentos psicológicos</a></li>
+          <li><a href="https://bvsms.saúde.gov.br/bvs/saudelegis/gm/2011/prt3088_23_12_2011_rep.html" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">RAPS — Portaria 3.088/2011</a></li>
+          <li><a href="https://bvsms.saúde.gov.br/bvs/saudelegis/gm/2017/prt2436_22_09_2017.html" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">PNAB 2017 — Portaria 2.436</a></li>
+          <li><a href="https://www.england.nhs.uk/mental-health/adults/nhs-talking-therapies/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NHS Talking Therapies (ex-IAPT)</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/cg90" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE — Stepped Care for Depression</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/escolher-supervisor-clínico" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Escolher supervisor clínico</a></li>
+          <li><a href={`/áreas/${areaSmo.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Saúde Mental nas Organizações</a></li>
+          <li><a href="/faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ geral · Psicologia clínica e regulação</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Supervisão em stepped-care começa pelo mapa da rede, não pela sessão.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O trajeto integra discrimination model, matriciamento, critério de escalonamento ancorado em PHQ-9/GAD-7, formulação clínica em uma página, contratransferência protegida, registro técnico em três blocos é avaliação por rubrica. Para supervisor que conduz essa rotina em saúde mental pública ou corporativa, o MBA em Psicologia Positiva do IPOG consolida fundamento técnico em cultura de cuidado, prevenção e protocolos em rede.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/áreas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+          <li><a href={`/áreas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/áreas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://bvsms.saúde.gov.br/bvs/saudelegis/gm/2011/prt3088_23_12_2011_rep.html" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">RAPS</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/cg90" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE Stepped Care</a></li>
+          <li><a href="https://www.england.nhs.uk/mental-health/adults/nhs-talking-therapies/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NHS Talking Therapies</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~22 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

@@ -1,0 +1,413 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'ABA tradicional e Modelo Denver (ESDM) são abordagens incompatíveis?',
+    a: 'Não. Ambas têm raízes comportamentais — o Modelo Denver (Early Start Denver Model, ESDM) descende explicitamente da análise do comportamento aplicada. A diferença é de framework de aplicação. ABA tradicional, na linha originalmente sistematizada por Lovaas (1987), opera com ensaios discretos altamente estruturados, frequentemente em ambiente clínico, com alta densidade de horas. ESDM, desenvolvido por Sally Rogers e Geraldine Dawson (2010, livro fundador), aplica princípios comportamentais em contexto naturalístico de brincadeira e interação social, integrando desenvolvimentista (modelo de Greenspan) com comportamental. O ensaio clínico randomizado de Dawson et al. (2010, Pediatrics) consolidou ESDM como abordagem com evidência alta em TEA precoce.'
+  },
+  {
+    q: 'O que muda na criança quando se aplica ABA versus ESDM?',
+    a: 'No nível dos princípios, ambas trabalham reforço, modelagem, encadeamento, generalização — vocabulário comum da análise do comportamento. No nível da experiência da criança, a diferença é grande. ABA tradicional típica oferece blocos de 30-40 horas semanais de sessões estruturadas com objetivos discretos (apontar, imitar, nomear, responder). ESDM oferece intervenção integrada em rotinas naturais — brincadeira no chão, momento da refeição, transições — com objetivos comportamentais embutidos em contexto social. Dawson et al. (2010) mostraram que crianças em ESDM com 15-20 horas semanais por dois anos tiveram ganhos em QI, linguagem e comportamento adaptativo comparáveis aos de programas ABA mais intensivos — com diferença significativa em diagnóstico final e funcionamento social.'
+  },
+  {
+    q: 'Qual a evidência específica para TEA precoce (24-48 meses)?',
+    a: 'Em TEA precoce, ESDM é referência consolidada. O ensaio de Dawson et al. (2010), publicado em Pediatrics, randomizou 48 crianças entre 18 e 30 meses com TEA para ESDM por dois anos ou intervenção da comunidade. O grupo ESDM teve melhoria média de 17,6 pontos em QI versus 7 pontos no grupo controle, ganho significativo em comportamento adaptativo, e 8 crianças (29%) tiveram diagnóstico revisto para "TEA não especificado" ou retirada de diagnóstico ao final do segundo ano (versus 1 criança no controle). Rogers et al. (2012, JAACAP) replicaram resultados em segundo estudo. ABA tradicional tem evidência ampla, mas mais densamente validada em faixa etária um pouco maior e em populações com TEA mais severo.'
+  },
+  {
+    q: 'Para um psicólogo brasileiro que quer atuar em TEA, qual formação seguir?',
+    a: 'Depende do contexto de atuação. Para trabalho em centros especializados de intervenção precoce com bebês e crianças de 12-48 meses, ESDM tem corpo de evidência específico mais consolidado. Para trabalho com crianças e adolescentes mais velhos, com TEA mais severo ou com necessidades comportamentais específicas, ABA tradicional segue como referência ampla. Certificações reconhecidas incluem BCBA (Board Certified Behavior Analyst) para ABA e treinamento ESDM Certified pelo MIND Institute da Universidade da Califórnia. No Brasil, programas de pós-graduação em Análise do Comportamento Aplicada e em Psicologia do Desenvolvimento oferecem fundamentação acadêmica. Pós-graduações com módulos em neurociência do desenvolvimento e psicopatologia infantil oferecem base teórica útil em paralelo.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Fundador', aba: 'Ivar Lovaas (1987, UCLA) — pioneiro do ABA em TEA', denver: 'Sally Rogers e Geraldine Dawson (2010, MIND Institute UC Davis)' },
+  { dimensao: 'Premissa central', aba: 'Aprendizagem por princípios da análise do comportamento — reforço, modelagem, generalização', denver: 'Integração de análise do comportamento com modelo desenvolvimentista de Greenspan + Mundy (atenção compartilhada)' },
+  { dimensao: 'Contexto de aplicação', aba: 'Tradicionalmente estruturado em sessões de mesa com ensaios discretos (DTT)', denver: 'Naturalístico em rotinas de brincadeira, refeição, transições — interação social como contexto' },
+  { dimensao: 'Foco da intervenção', aba: 'Comportamentos discretos definidos por objetivos operacionais', denver: 'Desenvolvimento social e comunicativo integrado a objetivos comportamentais' },
+  { dimensao: 'Intensidade típica', aba: '30 a 40 horas semanais em programas intensivos clássicos', denver: '15 a 25 horas semanais com integração familiar' },
+  { dimensao: 'Idade ideal de início', aba: 'Iniciado em qualquer idade conforme protocolo; resultados mais expressivos em precoce', denver: 'Específico para 12 a 48 meses — pico de plasticidade neural' },
+  { dimensao: 'Envolvimento parental', aba: 'Variável conforme programa — pode ser baixo em modelos clínicos puros', denver: 'Central — pais treinados como coterapeutas em rotinas domiciliares' },
+  { dimensao: 'Estilo da sessão', aba: 'Estruturada, repetitiva, com instrução-resposta-consequência (SD-R-Sr)', denver: 'Fluida, baseada em interesses da criança, com objetivos embutidos em brincadeira' },
+  { dimensao: 'Mensuração', aba: 'Coleta de dados sistemática a cada ensaio discreto', denver: 'Curriculum Checklist ESDM + Mullen + ADOS pontos definidos' },
+  { dimensao: 'Profissionais envolvidos', aba: 'Analista comportamental certificado (BCBA) + técnicos (RBT)', denver: 'Profissionais ESDM-certificados (Psicólogos, fonoaudiólogos, terapeutas ocupacionais) + pais treinados' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'TEA precoce diagnosticado entre 12-30 meses', aba: 'Evidência alta em formato precoce intensivo', denver: 'Dawson et al. (2010) — referência consolidada', vencedor: 'ESDM' },
+  { condicao: 'TEA precoce entre 30-48 meses', aba: 'Evidência alta', denver: 'Evidência alta — Rogers et al. (2012)', vencedor: 'Equivalentes' },
+  { condicao: 'TEA em pré-escolar (4-6 anos)', aba: 'Evidência alta — protocolos ampliados', denver: 'Adaptações iniciais — menor corpo de evidência específico', vencedor: 'ABA' },
+  { condicao: 'TEA em escolar (6-12 anos)', aba: 'Linha de frente em comportamentos específicos', denver: 'Fora da faixa etária de validação principal', vencedor: 'ABA' },
+  { condicao: 'TEA com agressividade severa ou autolesão', aba: 'Intervenções comportamentais funcionais consolidadas', denver: 'Não desenhada como foco principal nesta apresentação', vencedor: 'ABA' },
+  { condicao: 'TEA leve com bom potencial de linguagem', aba: 'Eficaz, mas modelo pode ser mais rígido do que necessário', denver: 'Encaixe ideal — naturalístico preserva motivação social', vencedor: 'ESDM' },
+  { condicao: 'TEA com importante envolvimento parental requerido', aba: 'Programas variam — alguns com componente parental robusto', denver: 'Treinamento parental é central ao modelo', vencedor: 'ESDM' },
+  { condicao: 'TEA em contexto com restrição de horas semanais', aba: 'Programas intensivos costumam exigir 25+ horas', denver: '15-25 horas com componente parental amplificador', vencedor: 'ESDM' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Criança 18 meses com diagnóstico recente de TEA, família engajada', recomendacao: 'ESDM (P-ESDM ou G-ESDM)', racional: 'Faixa etária de pico de plasticidade neural e janela de evidência mais densa; envolvimento parental é central' },
+  { perfilPaciente: 'Criança 4 anos com TEA moderado e atraso significativo de linguagem', recomendacao: 'ABA intensiva ou modelo híbrido', racional: 'ABA tem maior corpo de evidência específico nesta faixa; ESDM tem adaptações em desenvolvimento' },
+  { perfilPaciente: 'Criança 7 anos com TEA e comportamento desafiador na escola', recomendacao: 'ABA com avaliação funcional do comportamento', racional: 'Intervenção comportamental funcional (FBA + BIP) é referência consolidada nesta apresentação clínica' },
+  { perfilPaciente: 'Criança 24 meses com TEA leve, alta motivação social', recomendacao: 'ESDM em modelo naturalístico', racional: 'Modelo preserva motivação social espontânea e maximiza ganhos em janela crítica de desenvolvimento' },
+  { perfilPaciente: 'Família com baixa disponibilidade horária semanal', recomendacao: 'P-ESDM (Parent-Implemented ESDM) ou ABA condensada', racional: 'P-ESDM treina pais para conduzir intervenção em rotinas; permite escalar horas terapêuticas com baixa demanda profissional direta' },
+  { perfilPaciente: 'Criança 36 meses com TEA severo e comportamentos restritivos e repetitivos intensos', recomendacao: 'ABA intensiva com componente naturalístico', racional: 'Comportamentos repetitivos severos costumam responder bem a intervenção comportamental sistemática; integração com NDBI amplia ganhos' },
+  { perfilPaciente: 'Adolescente recém-diagnosticado com TEA leve sem suporte prévio', recomendacao: 'Intervenções comportamentais focais + treinamento de habilidades sociais', racional: 'Nem ABA tradicional nem ESDM são desenhadas para adolescência; abordagens NDBI adolescentes e PEERS são alternativas validadas' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'ABA tradicional vs Modelo Denver (ESDM) para TEA precoce: comparativo entre intervenções consolidadas',
+  description: 'Comparativo entre ABA (Lovaas, 1987) e ESDM (Dawson & Rogers, 2010) em TEA precoce. Mecanismo, evidência por faixa etária, perfil de criança e quando combinar.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'ABA vs Modelo Denver' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+---
+
+<Base
+  title="ABA tradicional vs Modelo Denver (ESDM) para TEA precoce"
+  description="Comparativo independente entre ABA (Lovaas) e ESDM (Dawson & Rogers) em TEA precoce. Mecanismo, evidência por faixa etária, perfil de criança e decisão clínica.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'ABA vs Modelo Denver' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Intervenção em TEA</span>
+          <h1 class="section-h text-3xl sm:text-4xl">ABA tradicional vs Modelo Denver: dois caminhos comportamentais para TEA precoce</h1>
+          <p class="mt-3 text-ink-700 text-lg">Não são abordagens rivais. ESDM descende do ABA — compartilha princípios da análise do comportamento, mas opera com framework naturalístico, integração desenvolvimentista e envolvimento parental central. A escolha responde à idade da criança, intensidade clínica e contexto familiar.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          ABA tradicional (Lovaas, 1987) e Modelo Denver (ESDM, Dawson & Rogers, 2010) compartilham princípios da análise do comportamento, mas operam com framework diferente. ABA tradicional usa ensaios discretos altamente estruturados, frequentemente em alta intensidade (30-40 horas semanais). ESDM aplica princípios em contexto naturalístico de brincadeira, integra abordagem desenvolvimentista, e tem o envolvimento parental como componente central. Para TEA precoce (12-48 meses), ESDM tem corpo de evidência específico consolidado (Dawson et al., 2010, Pediatrics — ganhos em QI, linguagem e diagnóstico revisto em 29% das crianças). Para TEA em pré-escolar avançado, escolar e adolescente, ABA tradicional segue com maior corpo de evidência. A escolha responde à idade da criança, perfil clínico e contexto familiar.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">De Lovaas a Dawson — quatro décadas de evolução</h2>
+        <p>
+          Ivar Lovaas, em 1987, publicou no Journal of Consulting and Clinical Psychology o estudo que se tornou fundador para ABA em TEA. Crianças com TEA, randomizadas para programa intensivo de 40 horas semanais de intervenção comportamental por dois anos, apresentaram ganhos significativos em QI e funcionamento adaptativo comparadas a controle. Em torno de 47% das crianças no grupo intensivo alcançaram "funcionamento educacional normal" ao final do estudo (definição metodologicamente debatida posteriormente). A repercussão foi enorme. ABA tornou-se referência mundial, replicada em centenas de centros, e regulamentada como cobertura obrigatória em muitos estados americanos. O protocolo clássico operava com Discrete Trial Training (DTT) — ensaios discretos com instrução, resposta da criança, e consequência (reforço ou correção) registrados sistematicamente.
+        </p>
+        <p>
+          Nas duas décadas seguintes, a literatura em TEA acumulou achados que apontavam para limites do ABA tradicional puro. Crianças em DTT intensivo aprendiam respostas em contexto estruturado, mas a generalização para contextos naturais era variável. O componente social espontâneo — atenção compartilhada, brincadeira simbólica, interação espontânea — nem sempre se desenvolvia paralelamente. Pesquisadores começaram a integrar princípios da análise do comportamento com abordagens desenvolvimentistas. Greenspan e Wieder (Floortime/DIR) e Schreibman (Pivotal Response Treatment) foram referências centrais nesse movimento. A integração se cristalizou em uma categoria chamada NDBI — Naturalistic Developmental Behavioral Interventions — da qual o ESDM é o representante mais validado cientificamente.
+        </p>
+        <p>
+          Sally Rogers, da MIND Institute da Universidade da Califórnia em Davis, e Geraldine Dawson, então em Washington (atualmente em Duke), publicaram o livro fundador do ESDM em 2010 (Early Start Denver Model for Young Children with Autism). O ensaio clínico randomizado de Dawson et al. (2010, Pediatrics) foi metodologicamente robusto: 48 crianças entre 18 e 30 meses com TEA, randomizadas para ESDM por 20 horas semanais durante dois anos ou intervenção da comunidade. Os resultados foram impactantes — o grupo ESDM teve ganho médio de 17,6 pontos em QI versus 7 pontos no controle, ganhos significativos em comportamento adaptativo, e mudanças mensuráveis em atividade neural medida por EEG. O estudo de replicação (Rogers et al., 2012, JAACAP) sustentou os achados. ESDM consolidou-se como referência em TEA precoce.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo e estrutura da intervenção</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">ABA tradicional</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Modelo Denver (ESDM)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.aba}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.denver}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por subgrupo</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Subgrupo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">ABA tradicional</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">ESDM</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Vantagem</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.aba}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.denver}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A diferença prática entre ABA tradicional e ESDM aparece em qualquer sessão observada. Em DTT clássico, a criança senta com a terapeuta em mesa ou pequeno espaço estruturado. A terapeuta apresenta um estímulo discriminativo ("aponte para o cachorro", "imite ‘oi'"), aguarda a resposta da criança, fornece reforço diferenciado (positivo se acertou, correção neutra se errou), e registra o resultado. Repetição. Próximo ensaio. A coleta de dados é sistemática. Os objetivos são definidos operacionalmente. A intensidade típica nos programas clássicos de Lovaas chegava a 30-40 horas semanais — densidade que exige profissionais técnicos (RBTs) supervisionados por analistas comportamentais certificados (BCBAs).
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em ESDM, a sessão tem aparência completamente diferente. A terapeuta entra no chão com a criança, segue o interesse espontâneo dela — se a criança pega um carrinho, a terapeuta entra na brincadeira, modela vocalização ("vrum vrum"), espera reciprocidade, reforça naturalmente com brincadeira ampliada. Os objetivos comportamentais (atenção compartilhada, contato visual funcional, imitação, vocalização) estão embutidos na brincadeira, não em ensaios discretos. A criança aprende que a interação social é gratificante por si mesma — não apenas pelo reforço extrínseco. A coleta de dados é menos granular mas igualmente sistemática, com Curriculum Checklist do ESDM revisada periodicamente. Profissionais ESDM-certificados incluem psicólogos, fonoaudiólogos e terapeutas ocupacionais.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A pesquisa de mecanismo do ESDM, conforme Dawson et al. (2010, 2012), sugere que o componente naturalístico ativa motivação social intrínseca de modo que sessões puramente estruturadas têm dificuldade de fazer. O EEG das crianças no grupo ESDM mostrou padrão de ativação cortical em resposta a faces humanas mais próximo do padrão típico do que o do grupo controle ao final dos dois anos — sugerindo que a intervenção produziu reorganização neural mensurável em circuitos sociais. Para ABA tradicional, a evidência de eficácia é robusta, mas o ganho em motivação social espontânea costuma exigir adição de componentes NDBI ao programa puro.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O envolvimento parental também difere estruturalmente. Em ABA tradicional típica, os pais podem ser parcialmente envolvidos (P-ABA — Parent-Implemented ABA), mas o componente principal é conduzido por equipe profissional em ambiente clínico ou domiciliar. Em ESDM, especialmente em P-ESDM (Parent-Implemented), os pais são treinados como coterapeutas — aprendem a aplicar princípios do modelo durante rotinas naturais (refeição, banho, brincadeira) ao longo do dia. Rogers e Vismara (2014) mostram que essa expansão de "horas terapêuticas" efetivas via integração parental pode produzir ganhos comparáveis aos de programas intensivos de 30+ horas conduzidos apenas por profissionais — com custo significativamente menor para a família.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil da criança e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil da criança</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Recomendação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher ABA tradicional</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Crianças em idade escolar com TEA moderado a severo</p>
+              <p class="text-sm text-ink-700 mt-1">Maior corpo de evidência específico nesta faixa etária; protocolos comportamentais ampliados para objetivos acadêmicos, sociais e de vida diária.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">TEA com comportamento desafiador (agressão, autolesão, fuga)</p>
+              <p class="text-sm text-ink-700 mt-1">Avaliação funcional do comportamento (FBA) e planos de intervenção comportamental (BIP) são padrão-ouro nesta apresentação.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Contextos com infraestrutura de equipe BCBA + RBTs</p>
+              <p class="text-sm text-ink-700 mt-1">Centros com analista comportamental certificado supervisionando técnicos têm vantagem estrutural para programas ABA intensivos consistentes.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher ESDM</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Crianças entre 12 e 48 meses recém-diagnosticadas</p>
+              <p class="text-sm text-ink-700 mt-1">Faixa de pico de plasticidade neural; corpo de evidência específico (Dawson 2010, Rogers 2012) é mais denso nesta janela.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Famílias engajadas e disponíveis para treinamento parental</p>
+              <p class="text-sm text-ink-700 mt-1">P-ESDM amplifica horas terapêuticas via integração de pais como coterapeutas — vantagem estrutural significativa.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">TEA leve com bom potencial de motivação social</p>
+              <p class="text-sm text-ink-700 mt-1">Modelo naturalístico preserva motivação social espontânea e maximiza ganhos em circuitos cerebrais sociais durante janela crítica.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando combinar</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">TEA moderado com componente comportamental desafiador</p>
+            <p class="text-sm text-ink-700 mt-1">Combinar componentes ABA para comportamentos específicos (FBA + BIP) com framework naturalístico ESDM para desenvolvimento social — modelo híbrido amplamente usado.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Transição de ESDM precoce para ABA pré-escolar/escolar</p>
+            <p class="text-sm text-ink-700 mt-1">Sequência natural quando a criança atinge faixa etária fora da janela ESDM primária e necessita de protocolos para objetivos acadêmicos e de vida diária ampliados.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Pedro, 22 meses, diagnóstico recente de TEA com bom potencial de linguagem</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Pedro foi diagnosticado com TEA pelo neuropediatra aos 22 meses após queixa parental de fala atrasada, contato visual limitado e brincadeira estereotipada com carrinhos. M-CHAT-R/F positiva, ADOS-2 confirmando TEA. Avaliação inicial em centro de intervenção em TEA mostrou atraso significativo de linguagem expressiva, mas comunicação receptiva preservada, atenção compartilhada emergente e brincadeira funcional inicial. Família engajada — mãe arquiteta com escritório próprio, pai professor universitário, sem outros filhos.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A psicóloga coordenadora apresentou aos pais três opções com transparência: ABA intensiva (25-30 horas semanais, com técnicos no domicílio supervisionados por BCBA), ESDM clássico (20 horas semanais entre centro e domicílio com profissional ESDM-certificado), e P-ESDM (10-12 horas profissionais + treinamento parental para ampliar horas terapêuticas via integração nas rotinas). A família escolheu P-ESDM — alinhada com filosofia naturalística, intensidade compatível com horas profissionais disponíveis no centro, e disposição parental para treinamento ativo.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Em 18 meses de programa, os ganhos foram significativos. Pedro saiu de cerca de 5 palavras funcionais para mais de 200 e iniciou frases simples de duas palavras antes dos 36 meses. Atenção compartilhada se consolidou. Brincadeira simbólica emergiu. Comportamentos restritivos diminuíram. Avaliação aos 36 meses pelo mesmo neuropediatra mostrou critérios TEA atenuados, com discussão sobre revisão diagnóstica futura. Os pais reportaram aumento significativo de competência percebida na interação com Pedro — mãe descreveu o treinamento parental como "transformador para a relação". A coordenadora documentou: "O encaixe entre P-ESDM e este perfil familiar foi quase ideal. Faixa etária, perfil de TEA leve com bom potencial, engajamento parental disponível, infraestrutura familiar para integrar rotinas. ABA intensiva poderia também ter funcionado, mas teria custo financeiro e logístico maior sem ganhos esperados diferenciais nesta janela".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões descritos em Dawson et al. (2010) e em estudos do Centro de Estudos em Educação e Saúde do Adolescente (CEPESA) e do Programa GADis brasileiro. Resultados em ESDM precoce com famílias engajadas costumam incluir revisão diagnóstica em uma minoria significativa.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Quatro precauções importantes. Primeiro, "ABA" não é um bloco único — engloba DTT clássico, ensino incidental, treinamento de respostas pivotais (PRT), análise funcional e múltiplas variantes. A comparação justa frequentemente é entre uma variante específica do ABA e o ESDM, não com "ABA em geral". Segundo, a evidência alta do ESDM em Dawson et al. (2010) é específica para faixa etária precoce (18-30 meses no estudo original) — generalização para outras faixas exige adaptações com menor corpo de evidência. Terceiro, ambas as abordagens exigem treinamento especializado e supervisão. Aplicação inadequada produz resultados frágeis em qualquer modelo. Quarto, a comunidade neurodiversa tem críticas relevantes a alguns componentes do ABA tradicional clássico — a discussão ética sobre objetivos de intervenção em TEA (normalização versus suporte ao desenvolvimento autêntico) está em curso e merece atenção continuada.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No Brasil, o acesso a ABA é mais consolidado em centros especializados de capitais; o acesso a profissionais ESDM-certificados é mais restrito e geograficamente limitado. A formação de profissionais brasileiros em ESDM cresceu nos últimos anos via programas internacionais do MIND Institute, mas segue como segunda camada em relação ao volume de BCBAs e RBTs. Para famílias em regiões com restrição, a escolha responsável é "qual modalidade o profissional disponível domina com supervisão adequada", e não "qual é teoricamente melhor para esta criança". Acesso é parte da equação.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Dois caminhos comportamentais, escolha por idade e perfil clínico</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>ESDM é referência consolidada em TEA precoce (12-48 meses) — Dawson et al. (2010) mostraram ganhos em QI, linguagem e até revisão diagnóstica em 29% das crianças.</li>
+          <li>ABA tradicional segue como linha de frente em TEA em pré-escolar avançado, escolar e em apresentações com comportamento desafiador severo.</li>
+          <li>P-ESDM amplifica horas terapêuticas via integração parental — vantagem estrutural significativa para famílias engajadas.</li>
+          <li>Modelos híbridos (componentes ABA para comportamentos específicos + framework naturalístico ESDM para desenvolvimento social) são amplamente usados.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem articular intervenção em TEA com fundamentação em neurociência do desenvolvimento e psicopatologia infantil — base útil antes ou em paralelo à certificação em ABA ou ESDM —, o IPOG mantém MBA em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/neuropsicologia-vs-reabilitacao" class="text-brand-700 hover:text-brand-800 font-medium">Neuropsicologia vs reabilitação neuropsicológica</a></li>
+          <li><a href="/comparativos/avaliacao-presencial-vs-remota" class="text-brand-700 hover:text-brand-800 font-medium">Avaliação psicológica presencial vs remota</a></li>
+          <li><a href="/comparativos/laudo-psicologico-vs-laudo-medico" class="text-brand-700 hover:text-brand-800 font-medium">Laudo psicológico vs laudo médico em TEA infantil</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. Modalidade vigente de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/tea" class="mega-link"><strong class="text-ink-900 text-sm">TEA — Transtorno do Espectro Autista</strong></a></li>
+          <li><a href="/metodos/aba" class="mega-link"><strong class="text-ink-900 text-sm">ABA — Análise do Comportamento Aplicada</strong></a></li>
+          <li><a href="/metodos/esdm" class="mega-link"><strong class="text-ink-900 text-sm">ESDM — Modelo Denver</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/neuropsicologia-vs-reabilitacao" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia vs reabilitação</strong></a></li>
+          <li><a href="/comparativos/avaliacao-presencial-vs-remota" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação presencial vs remota</strong></a></li>
+          <li><a href="/comparativos/laudo-psicologico-vs-laudo-medico" class="mega-link"><strong class="text-ink-900 text-sm">Laudo psicológico vs médico</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Lovaas, O. I. (1987). Behavioral treatment and normal educational and intellectual functioning in young autistic children. Journal of Consulting and Clinical Psychology.</li>
+          <li>Dawson, G., Rogers, S. et al. (2010). Randomized, controlled trial of an intervention for toddlers with autism: the Early Start Denver Model. Pediatrics.</li>
+          <li>Rogers, S. & Dawson, G. (2010). Early Start Denver Model for Young Children with Autism. Guilford.</li>
+          <li>Rogers, S. et al. (2012). Effects of a brief Early Start Denver Model based parent intervention. JAACAP.</li>
+          <li>Rogers, S. & Vismara, L. (2014). Interventions for infants and toddlers at risk for autism. Journal of Child Psychology and Psychiatry.</li>
+          <li>Smith, T. & Iadarola, S. (2015). Evidence-based update for autism spectrum disorder. Journal of Clinical Child & Adolescent Psychology.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

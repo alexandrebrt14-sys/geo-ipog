@@ -1,0 +1,375 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Implementar screening universal com EPDS em três momentos',
+    aplicacao: 'A EPDS (Edinburgh Postnatal Depression Scale, Cox, Holden & Sagovsky, 1987) é o instrumento de referência mundial para screening de depressão perinatal. Dez itens, 5 minutos, pontuação ≥ 13 sugere depressão provável; ≥ 10 alerta para investigação. A validação brasileira (Santos et al., 2007) confirmou propriedades psicométricas adequadas. A literatura recente (O\'Hara & McCabe, 2013; ACOG 2018; USPSTF 2019) recomenda screening universal em três momentos: gestação (segundo trimestre), 4-6 semanas pós-parto e 4-6 meses pós-parto. Aplicação isolada perde 30-40% dos casos.',
+    armadilha: 'Aplicar EPDS apenas em "casos com queixa". Screening universal é exatamente o oposto — encontra o que a queixa esconde.'
+  },
+  {
+    n: 2,
+    titulo: 'Acrescentar GAD-7 para ansiedade perinatal',
+    aplicacao: 'A literatura recente (Fawcett et al., 2019, meta-análise; Dennis et al., 2017) consolidou ansiedade perinatal como quadro com prevalência igual ou superior à depressão (15-20% em gestantes), frequentemente comórbida e subdiagnosticada por foco exclusivo em humor. GAD-7 (Spitzer et al., 2006) é instrumento curto, validado em português brasileiro (Moreno et al., 2016), aplicável nos mesmos três momentos do EPDS. Pontuação ≥ 8 sugere ansiedade clínica. O screening conjunto EPDS + GAD-7 é prática mínima de cuidado perinatal contemporâneo.',
+    armadilha: 'Tratar perinatal como "só depressão". Ansiedade perinatal é igualmente prevalente e tem peso clínico próprio — especialmente em parto traumático e gestação de risco.'
+  },
+  {
+    n: 3,
+    titulo: 'Avaliar suicidalidade com item 10 da EPDS e CSSR-S quando indicado',
+    aplicacao: 'Suicídio é causa importante de mortalidade materna em janela perinatal (Cantwell et al., 2011, MBRRACE-UK; OMS 2018). O item 10 da EPDS ("pensamento de me machucar tem passado pela minha cabeça") é gatilho obrigatório para investigação aprofundada. Em pontuação positiva, aplique CSSR-S (Columbia Suicide Severity Rating Scale, Posner et al., 2011) para mensurar ideação, intenção, plano e meios. Em risco elevado, plano de segurança imediato com pessoa-chave da família é articulação com psiquiatria em janela de horas. Documente decisão e justificativa.',
+    armadilha: 'Aplicar EPDS e não revisar o item 10 antes do paciente sair. O encontro precisa abrir espaço para a pergunta direta sobre ideação suicida.'
+  },
+  {
+    n: 4,
+    titulo: 'Caracterizar quadro clínico — depressão maior, ansiedade, OCD perinatal, psicose puerperal',
+    aplicacao: 'A literatura perinatal (O\'Hara, 2014; Bergink et al., 2016; Howard et al., 2014) distingue quadros frequentes e quadros raros com manejo distinto. Depressão maior perinatal: 10-15% das mulheres, manejo análogo a depressão fora da janela, com ajustes farmacológicos. Ansiedade generalizada perinatal: 15-20%. TOC perinatal: prevalência aumentada em pós-parto, com intrusões egodistônicas sobre o bebê (não confundir com ideação de dano em psicose). Psicose puerperal: 1-2 em 1000, emergência psiquiátrica, frequente até 4 semanas pós-parto. Caracterizar com cuidado evita confusões diagnósticas com consequências graves.',
+    armadilha: 'Tratar intrusões egodistônicas em TOC perinatal como sinais de risco para o bebê. Mãé assustada com seu próprio pensamento e psicose puerperal são quadros opostos clinicamente — é o erro produz dano à aliança.'
+  },
+  {
+    n: 5,
+    titulo: 'Integrar com obstetrícia, pediatria e ESF',
+    aplicacao: 'A literatura de cuidado perinatal integrado (NICE CG192; ACOG Committee Opinion 757, 2018) é firme: saúde mental perinatal só funciona em rede com obstetra, pediatra do bebê, equipe de Saúde da Família e, quando indicado, psiquiatra. O psicólogo articula o cuidado: comunica achados de screening (com consentimento), participa de pré-natal psicológico, articula com Equipe de Saúde da Família para visitas domiciliares quando necessário, integra-se ao pediatra do bebê (que vê a mãe semanalmente nos primeiros meses). A literatura brasileira recente (Faisal-Cury & Menezes, 2019) confirma efetividade desse modelo no SUS.',
+    armadilha: 'Conduzir caso isolado sem articulação obstétrica e pediátrica. Em perinatal, a rede é parte essencial do tratamento.'
+  },
+  {
+    n: 6,
+    titulo: 'Conduzir psicoterapia com modelo validado perinatal',
+    aplicacao: 'A literatura perinatal (Sockol, 2018, meta-análise; Cuijpers et al., 2018) consolida dois modelos com evidência robusta: TCC perinatal (Terapia Cognitivo-Comportamental adaptada) e IPT-P (Interpessoal Perinatal, Stuart & Robertson, 2012). Tipicamente 12 a 16 sessões. Em depressão grave, articulação medicamentosa é regra (ISRS com perfil de segurança em amamentação — sertralina é primeira escolha frequente; decisão é médica). Em ansiedade perinatal, TCC com componente de psicoeducação sobre ansiedade normal vs clínica em maternidade.',
+    armadilha: 'Aplicar TCC genérica sem adaptação perinatal. Conteúdos específicos (mudança de identidade, ambivalência, papel materno, sono fragmentado, parto traumático) exigem formulação específica.'
+  },
+  {
+    n: 7,
+    titulo: 'Trabalhar parto traumático e PTSD perinatal quando indicado',
+    aplicacao: 'Ayers e colaboradores (2016, meta-análise) consolidaram TEPT pós-parto como diagnóstico importante: 4% das mulheres após parto vaginal, 19% após parto traumático severo, com efeitos sobre vínculo mãe-bebê e parto subsequente. Avaliação: City Birth Trauma Scale (Ayers, 2018) ou PCL-5 com critério de evento. Intervenção: TF-CBT (Trauma-Focused CBT) ou EMDR adaptada perinatal (Stramrood et al., 2012). A intervenção precoce nos primeiros 6 meses é mais efetiva que tratamento tardio.',
+    armadilha: 'Atribuir reações pós-parto traumático à "dificuldade de adaptação". TEPT perinatal é diagnóstico específico com tratamento específico.'
+  },
+  {
+    n: 8,
+    titulo: 'Encaminhar com critério para psiquiatria, CAPS ou internação',
+    aplicacao: 'Critérios de encaminhamento claros em perinatal (NICE CG192; Howard et al., 2014): EPDS ≥ 13 com prejuízo funcional, ideação suicida ativa, TOC perinatal severo com prejuízo, suspeita de psicose puerperal (emergência), parto traumático com sintomas persistentes, falha de resposta a 8-12 sessões de psicoterapia. CAPS materno-infantil onde disponível. Em psicose puerperal, internação em unidade que mantenha vínculo mãe-bebê é padrão internacional (Mother and Baby Units, embora raras no Brasil); na ausência, articulação cuidadosa para preservar amamentação e vínculo.',
+    armadilha: 'Conduzir psicose puerperal em consultório. É emergência psiquiátrica com risco elevado para mãe e bebê — encaminhamento imediato é regra.'
+  },
+  {
+    n: 9,
+    titulo: 'Manter seguimento até 12 meses pós-parto',
+    aplicacao: 'A literatura (Wisner et al., 2013; O\'Hara, 2014) é firme: 30-50% dos casos de depressão pós-parto persistem além de 6 meses se não tratados, com efeitos documentados sobre desenvolvimento infantil (Goodman et al., 2011, meta-análise). O seguimento estruturado por 12 meses pós-parto inclui: consultas regulares, EPDS e GAD-7 a cada 2-3 meses, articulação com pediatria, monitoramento de vínculo mãe-bebê (Maternal Postnatal Attachment Scale quando indicado), prevenção de recaída em próxima gestação (risco aumentado em 30-50%).',
+    armadilha: 'Encerrar seguimento em 3 meses por melhora aparente. Recaídas no segundo semestre pós-parto são frequentes — é ainda há janela de plasticidade no vínculo.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · EPDS', indicador: '3 aplicações (gestação + 6sem + 6m)', quem: 'Psicólogo/equipe', quando: 'Pré + pós-natal', status: 'Pendente' },
+  { passo: '2 · GAD-7', indicador: '3 aplicações conjuntas', quem: 'Psicólogo/equipe', quando: 'Pré + pós-natal', status: 'Pendente' },
+  { passo: '3 · Suicidalidade', indicador: 'Item 10 + CSSR-S se positivo', quem: 'Psicólogo', quando: 'Toda aplicação', status: 'Pendente' },
+  { passo: '4 · Diagnóstico diferencial', indicador: 'Caracterização clínica', quem: 'Psicólogo', quando: 'Sessão 1-2', status: 'Pendente' },
+  { passo: '5 · Rede integrada', indicador: 'Articulação obstetra/pediatra/ESF', quem: 'Psicólogo', quando: 'Mês 1', status: 'Pendente' },
+  { passo: '6 · Psicoterapia', indicador: 'TCC-P ou IPT-P 12-16 sessões', quem: 'Psicólogo', quando: 'Mês 1-4', status: 'Pendente' },
+  { passo: '7 · TEPT perinatal', indicador: 'Avaliação + intervenção precoce', quem: 'Psicólogo', quando: 'Quando indicado', status: 'Pendente' },
+  { passo: '8 · Encaminhamento', indicador: 'Psiquiatria/CAPS conforme critério', quem: 'Psicólogo', quando: 'Conforme critério', status: 'Pendente' },
+  { passo: '9 · Seguimento 12m', indicador: 'EPDS + GAD-7 a cada 2-3m', quem: 'Psicólogo', quando: 'Até 12m pós-parto', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Aplicar EPDS isoladamente em momento único',
+    texto: 'Cox et al. (1987) e meta-análises subsequentes (O\'Hara & McCabe, 2013) mostram que aplicação isolada perde 30-40% dos casos. ACOG (2018) e USPSTF (2019) recomendam screening universal em três momentos: gestação, 4-6 semanas pós-parto e 4-6 meses pós-parto. Janela única é triagem incompleta.'
+  },
+  {
+    titulo: 'Confundir TOC perinatal com risco para o bebê',
+    texto: 'TOC perinatal com intrusões egodistônicas (mãé assustada com seu próprio pensamento) e psicose puerperal (com ideação egossintônica e perda de teste de realidade) são quadros opostos clinicamente. O erro produz dano à aliança é atrasa tratamento correto. Howard et al. (2014) consolidam a distinção.'
+  },
+  {
+    titulo: 'Não articular com obstetra, pediatra e ESF',
+    texto: 'NICE CG192 e ACOG são consistentes: saúde mental perinatal funciona em rede integrada. Caso isolado em consultório perde sinais importantes (sono do bebê, vínculo, amamentação, retorno ao trabalho) que o pediatra ou a equipe ESF captam primeiro.'
+  },
+  {
+    titulo: 'Conduzir psicose puerperal em consultório',
+    texto: 'Bergink et al. (2016) e Howard et al. (2014) são firmes: psicose puerperal é emergência psiquiátrica com risco elevado para mãe e bebê (incluindo infanticídio em casos extremos). Encaminhamento imediato para serviço de emergência psiquiátrica é regra. Tentar manejo ambulatorial é erro clínico grave.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'EPDS pode ser aplicada por enfermeiro ou ESF, ou só por psicólogo?',
+    a: 'A EPDS é instrumento de screening de aplicação simples, validado para aplicação por diversos profissionais de saúde (Cox, Holden & Sagovsky, 1987; validação brasileira Santos et al., 2007). NICE CG192 e ACOG (2018) descrevem screening universal por equipes obstétricas, pediátricas é de atenção primária como prática recomendada. A interpretação clínica aprofundada, o diagnóstico é a condução psicoterapêutica seguem privativas dos profissionais habilitados (psicólogo, médico). O screening é porta de entrada; o cuidado é multidisciplinar.'
+  },
+  {
+    q: 'Quando encaminhar para psiquiatria em perinatal?',
+    a: 'Critérios consolidados (NICE CG192; Howard et al., 2014): EPDS ≥ 13 com prejuízo funcional caracterizado; ideação suicida ativa; TOC perinatal severo com prejuízo; suspeita de psicose puerperal (emergência); parto traumático com PTSD persistente; falha de resposta a 8-12 sessões de psicoterapia adequada. Em psicose puerperal, encaminhamento é imediato para serviço de emergência. Em depressão grave em amamentação, articulação com psiquiatra que conheça perfis de segurança farmacológica (ex.: sertralina como primeira escolha frequente; decisão é médica).'
+  },
+  {
+    q: 'Como abordar parto traumático sem retraumatizar?',
+    a: 'A literatura (Ayers et al., 2016; Stramrood et al., 2012) é cuidadosa: avaliação inicial sem reexposição forçada, com instrumento padronizado (City Birth Trauma Scale ou PCL-5 adaptado). Em sintomas presentes, intervenções específicas (TF-CBT, EMDR adaptada perinatal) seguem protocolo de estabilização antes de reexposição estruturada. A intervenção precoce nos primeiros 6 meses tem melhor desfecho que tratamento tardio (Ayers, 2018). Conduzir trauma sem treinamento específico é fator de retraumatização — encaminhar para psicólogo especializado é prática responsável.'
+  },
+  {
+    q: 'Como o MBA em Psicologia Positiva do IPOG conecta a esse guia?',
+    a: 'O MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações cobre prevenção, cultura de cuidado, protocolos de saúde mental em rede e bem-estar em contexto profissional e familiar — fundamento técnico para psicólogo que conduz cuidado perinatal em rede, especialmente nas frentes de prevenção de recaída, retorno ao trabalho pós-licença maternidade é articulação com saúde ocupacional. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como avaliar saúde mental perinatal com EPDS, GAD-7 e screening universal',
+  description: 'Guia em 9 passos para avaliação de saúde mental perinatal: EPDS, GAD-7, screening universal, depressão pós-parto, ansiedade perinatal, TEPT pós-parto, psicose puerperal e encaminhamento.',
+  totalTime: 'PT22M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como avaliar saúde mental perinatal: guia passo-a-passo',
+  description: 'Protocolo em 9 passos para avaliação de saúde mental perinatal, com EPDS (Cox 1987), GAD-7, screening universal, depressão pós-parto, ansiedade perinatal e encaminhamento.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Saúde mental perinatal', item: `${SITE.url}/guias/avaliação-saúde-mental-perinatal` }
+  ]
+};
+---
+
+<Base
+  title="Avaliação de saúde mental perinatal — guia 9 passos · EPDS, GAD-7, screening universal, depressão pós-parto"
+  description="Protocolo passo-a-passo para avaliação de saúde mental perinatal: EPDS (Cox 1987), GAD-7, screening universal em três momentos, depressão pós-parto, ansiedade perinatal, TEPT pós-parto, psicose puerperal e encaminhamento.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Saúde mental perinatal' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliar saúde mental perinatal</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto técnico para screening, diagnóstico e cuidado em saúde mental perinatal: EPDS (Cox, Holden & Sagovsky), GAD-7, screening universal em três momentos, diagnóstico diferencial (depressão maior, ansiedade, TOC perinatal, psicose puerperal), TEPT pós-parto e seguimento por 12 meses.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~22 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos, saúde da família, perinatal</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Psicologia Positiva
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir screening universal e cuidado em saúde mental perinatal com EPDS, GAD-7, diagnóstico diferencial e plano integrado por 12 meses pós-parto.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, treinamento em EPDS e instrumentos perinatais, articulação prévia com obstetra, pediatra e ESF, conhecimento de critérios de encaminhamento.</li>
+          <li><strong>Resultado esperado:</strong> screening universal em três momentos, cuidado integrado em rede, redução de casos não identificados, seguimento por 12 meses pós-parto e prevenção de recaída em próxima gestação.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura comum sobre saúde mental perinatal assume que o foco é depressão pós-parto identificada por queixa espontânea da mãe. A literatura consolidada inverte essa premissa. O\'Hara e McCabe (2013), Cox e colaboradores (1987), USPSTF (2019) e ACOG (2018) convergem em um ponto firme: depressão e ansiedade perinatais são frequentemente silenciadas — por vergonha, idealização cultural da maternidade, estigma de "não estar feliz" com o bebê, medo de julgamento e medo de perda de custódia. Screening universal em três momentos (gestação, 4-6 semanas pós-parto, 4-6 meses pós-parto) com EPDS e GAD-7 captura 60-70% dos casos que a queixa espontânea perderia.
+        </p>
+        <p>
+          A inversão prática para o psicólogo é para a equipe de saúde da família: o cuidado perinatal não começa quando a mãe pede ajuda. Começa quando o serviço pergunta, sistematicamente, em janela definida, com instrumento curto. Acrescente ansiedade perinatal ao radar (prevalência igual à da depressão), distinga TOC perinatal de psicose puerperal, articule rede com obstetra, pediatra e ESF, conduza psicoterapia com modelo validado (TCC-P ou IPT-P), trate parto traumático quando indicado, encaminhe psicose puerperal como emergência, mantenha seguimento por 12 meses. Quem segue esse trajeto altera trajetória clínica de mãe e bebê — é a literatura é firme nessa afirmação.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Plano de cuidado em janela de pré-natal até 12 meses pós-parto, com screening universal em três momentos.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Engenheira, 34 anos, ansiedade perinatal capturada em screening na 14ª semana pós-parto</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Engenheira de software, 34 anos, primeira gestação, parto vaginal sem intercorrências graves, em retorno gradual ao trabalho aos 4 meses pós-parto. Chegada ao serviço psicológico do plano de saúde corporativo via screening universal aplicado por ginecologista na consulta dos 4 meses: EPDS 9 (limítrofe), GAD-7 14 (ansiedade moderada). A paciente relatava "estou bem, só um pouco cansada", sem queixa espontânea ao obstetra ou ao pediatra. Sem screening, o caso seguiria invisível.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Avaliação ampliada na sessão 1: GAD-7 confirmado em 14, EPDS estável em 9 (item 10 negativo), City Birth Trauma Scale negativo, sono fragmentado intenso, ansiedade noturna com verificação repetida do bebê (≥ 8 vezes por noite), ruminação sobre retorno ao trabalho, evitação de deixar o bebê com qualquer cuidador. Diagnóstico: ansiedade perinatal generalizada com componente obsessivo subclínico, sem critério para TOC perinatal. Plano: TCC-P em 14 sessões com adaptação perinatal (formulação cognitiva específica sobre identidade materna, retorno ao trabalho, ambivalência), articulação com pediatra do bebê (psicoeducação sobre comportamento normal do bebê para reduzir gatilhos), suporte ao parceiro com 2 sessões conjuntas. Em 16 semanas, GAD-7 caiu para 6, sono melhorou substancialmente, retorno ao trabalho integral aos 6 meses. Seguimento bimestral até 12 meses pós-parto sem recaída.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.nice.org.uk/guidance/cg192" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE CG192 — Antenatal and postnatal mental health</a></li>
+          <li><a href="https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/11/screening-for-perinatal-depression" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ACOG Committee Opinion 757 — Screening for Perinatal Depression</a></li>
+          <li><a href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/perinatal-depression-preventive-interventions" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">USPSTF — Perinatal Depression Preventive Interventions</a></li>
+          <li><a href="https://www.who.int/news-room/fact-sheets/detail/maternal-mental-health" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — Maternal Mental Health</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019 sobre documentos psicológicos</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/protocolo-act-burnout-saúde" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Protocolo ACT para burnout em profissionais da saúde</a></li>
+          <li><a href="/guias/retorno-ao-trabalho-pos-burnout" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Retorno ao trabalho pós-burnout</a></li>
+          <li><a href={`/áreas/${areaSaude.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia em Saúde</a></li>
+          <li><a href="/faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ geral · Psicologia clínica</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Cuidado perinatal começa quando o serviço pergunta — não quando a mãe pede.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O trajeto integra screening universal com EPDS e GAD-7 em três momentos, avaliação de suicidalidade, diagnóstico diferencial entre depressão maior, ansiedade, TOC perinatal e psicose puerperal, articulação com obstetra, pediatra e ESF, psicoterapia com modelo validado (TCC-P ou IPT-P), tratamento de parto traumático quando indicado, encaminhamento criterioso e seguimento por 12 meses. Para psicólogo que conduz cuidado perinatal em rede, o MBA em Psicologia Positiva do IPOG consolida fundamento técnico em prevenção, cultura de cuidado e protocolos em saúde mental.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBA no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/áreas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/áreas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/áreas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.nice.org.uk/guidance/cg192" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE CG192</a></li>
+          <li><a href="https://www.acog.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ACOG</a></li>
+          <li><a href="https://www.uspreventiveservicestaskforce.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">USPSTF</a></li>
+          <li><a href="https://www.who.int/news-room/fact-sheets/detail/maternal-mental-health" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS Maternal MH</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~22 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

@@ -1,0 +1,414 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'O que é o modelo IAPT e por que virou referência internacional?',
+    a: 'IAPT (Improving Access to Psychological Therapies) foi lançado em 2008 no NHS inglês a partir de proposta de David Clark e Richard Layard. A premissa econômica: cada libra investida em psicoterapia baseada em evidência se pagava em redução de absenteísmo e dias de auxílio-doença. O modelo organiza o acesso em duas camadas (low intensity para quadros leves, high intensity para moderados e graves) e exige medição em todas as sessões com escalas validadas (PHQ-9 para depressão, GAD-7 para ansiedade). Clark (2018, Annual Review of Clinical Psychology) reportou que o IAPT atende mais de um milhão de pessoas por ano com taxas de recuperação em torno de 50% — escala que mudou o que se considera politicamente viável em saúde mental pública.'
+  },
+  {
+    q: 'O Brasil tem um modelo IAPT? Como o SUS faz hoje?',
+    a: 'O Brasil não tem um sistema único equivalente ao IAPT. O SUS opera por meio da Rede de Atenção Psicossocial (RAPS), com Centros de Atenção Psicossocial (CAPS) como porta principal é atenção básica via Núcleos de Apoio à Saúde da Família. O modelo brasileiro é territorial e comunitário, herdeiro da Reforma Psiquiátrica e da Lei 10.216/2001 — foca em quadros graves e em desinstitucionalização. Para quadros leves a moderados de depressão e ansiedade, a oferta efetiva no SUS é limitada, com acesso irregular a psicoterapia estruturada. Iniciativas como Programa Mais Saúde Mental (Ministério da Saúde) e projetos em São Paulo (Programa Ambulatorial) tentam aproximar a lógica do stepped care, mas sem padronização nacional.'
+  },
+  {
+    q: 'Qual a evidência comparativa entre IAPT e modelos brasileiros?',
+    a: 'A comparação direta é metodologicamente difícil — os sistemas têm escopo, financiamento e populações-alvo diferentes. O IAPT publica dados anuais transparentes (NHS Digital) com mais de um milhão de pacientes atendidos e taxa de recuperação em torno de 50%, dentro do range esperado por meta-análises de TCC em depressão. O SUS não tem indicador agregado equivalente para psicoterapia. Wakefield et al. (2020, BJPsych Open) reportaram taxas de melhora consistentes ao longo de uma década no IAPT. No Brasil, estudos como o de Ribeiro et al. (2019) em centros CAPS mostram efeito clínico positivo, mas com cobertura populacional muito menor — o gargalo brasileiro é de acesso, não de evidência da intervenção em si.'
+  },
+  {
+    q: 'O que um psicólogo brasileiro deveria saber sobre o modelo IAPT mesmo trabalhando no SUS?',
+    a: 'Três pontos transferíveis. Primeiro, mensuração em toda sessão com escalas validadas (PHQ-9, GAD-7) — prática que aumenta o monitoramento clínico independente do sistema. Segundo, a lógica de stepped care com triagem inicial para alocar intervenção proporcional à gravidade — adaptável à RAPS via protocolos locais. Terceiro, formação curta e estruturada em terapias específicas (TCC para depressão e ansiedade) com supervisão regular. Para profissionais que querem articular gestão de serviços de saúde mental com base científica, pós-graduações em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar oferecem fundamentação útil para liderança em redes assistenciais.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Origem', iapt: 'NHS Inglaterra (2008) — Clark, Layard, Departamento de Saúde', sus: 'Reforma Psiquiátrica brasileira (1989-2001), Lei 10.216/2001' },
+  { dimensao: 'Lógica organizacional', iapt: 'Stepped care com triagem inicial é alocação por gravidade', sus: 'Modelo territorial e comunitário por RAPS' },
+  { dimensao: 'Porta de entrada', iapt: 'Autoencaminhamento, encaminhamento de GP, telefone único', sus: 'Atenção básica (UBS), CAPS, urgência psiquiátrica' },
+  { dimensao: 'Camada inicial (low intensity)', iapt: 'Guided self-help, TCC computadorizada, biblioterapia com Psychological Wellbeing Practitioner (PWP)', sus: 'Acolhimento em UBS, grupos terapêuticos no NASF, atenção primária à saúde mental' },
+  { dimensao: 'Camada superior (high intensity)', iapt: 'TCC estruturada de 12 a 20 sessões com terapeuta certificado, IPT, EMDR', sus: 'CAPS com equipe multiprofissional, projeto terapêutico singular' },
+  { dimensao: 'Quadros-alvo principais', iapt: 'Depressão leve a moderada, ansiedade, TEPT, TOC, fobias', sus: 'Foco em transtornos graves (psicose, transtorno bipolar, dependências) — quadros leves têm cobertura limitada' },
+  { dimensao: 'Mensuração rotineira', iapt: 'PHQ-9 + GAD-7 em toda sessão; PCL-5 em TEPT', sus: 'Variável por serviço — sem indicador nacional padronizado' },
+  { dimensao: 'Financiamento', iapt: 'Centralizado, com orçamento dedicado e meta nacional', sus: 'Repasse federal por procedimento + financiamento estadual e municipal' },
+  { dimensao: 'Cobertura anual', iapt: 'Mais de um milhão de pessoas por ano (NHS Digital 2023)', sus: 'CAPS atendem cerca de 1,5 milhão em quadros moderados/graves; cobertura para depressão leve via psicoterapia estruturada é baixa' },
+  { dimensao: 'Indicador-chave', iapt: 'Recovery rate em torno de 50% (Clark, 2018)', sus: 'Sem indicador agregado equivalente para psicoterapia' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'Depressão leve a moderada', iapt: 'Recovery rate 49% em 2023 (NHS Digital)', sus: 'Cobertura limitada via psicoterapia estruturada', vencedor: 'IAPT por acesso' },
+  { condicao: 'Ansiedade generalizada', iapt: 'TCC alta intensidade — evidência alta', sus: 'Acesso via CAPS para quadros moderados/graves', vencedor: 'IAPT por estruturação' },
+  { condicao: 'TEPT', iapt: 'TF-CBT e EMDR estruturados (Wakefield, 2020)', sus: 'CAPS-III com equipe especializada onde disponível', vencedor: 'IAPT em escala' },
+  { condicao: 'Psicose primeira episódio', iapt: 'Encaminha para serviço especializado fora do IAPT', sus: 'CAPS é referência — modelo territorial reconhecido (OMS)', vencedor: 'SUS' },
+  { condicao: 'Dependência química', iapt: 'Fora do escopo IAPT — encaminhamento', sus: 'CAPS-AD especializado, integração com atenção básica', vencedor: 'SUS' },
+  { condicao: 'Transtorno bipolar grave', iapt: 'Fora do escopo IAPT — saúde mental secundária', sus: 'CAPS-III com manejo medicamentoso e psicossocial', vencedor: 'SUS' },
+  { condicao: 'Crise psiquiátrica aguda', iapt: 'Encaminhamento para crisis team do NHS', sus: 'Rede de urgência psiquiátrica + CAPS 24h em capitais', vencedor: 'SUS' },
+  { condicao: 'Depressão pós-parto', iapt: 'TCC perinatal estruturada no IAPT Plus', sus: 'Atenção básica + CAPS quando moderada/grave', vencedor: 'IAPT por triagem ativa' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Adulto com depressão leve, primeiro episódio, sem ideação', recomendacao: 'IAPT low intensity (PWP, guided self-help)', racional: 'Stepped care prevê camada leve eficiente — no Brasil, equivalente seria grupo terapêutico em UBS quando disponível' },
+  { perfilPaciente: 'Adulto com depressão moderada recorrente', recomendacao: 'IAPT high intensity (TCC 12-20 sessões)', racional: 'Camada de alta intensidade tem evidência consistente; no Brasil, CAPS quando indicado ou serviço-escola universitário' },
+  { perfilPaciente: 'Adulto com primeiro episódio psicótico', recomendacao: 'Modelo brasileiro (CAPS-III) é referência', racional: 'O IAPT encaminha para fora do sistema; o SUS tem modelo territorial e comunitário reconhecido pela OMS' },
+  { perfilPaciente: 'Adolescente com ansiedade escolar', recomendacao: 'Híbrido — IAPT pediátrico ou CAPSi no Brasil', racional: 'Ambos os sistemas têm versão pediátrica; IAPT-CYP escalou em cinco anos a oferta para 25% dos adolescentes ingleses' },
+  { perfilPaciente: 'Profissional com burnout em organização privada', recomendacao: 'EAP corporativo ou rede credenciada de operadora', racional: 'Nem IAPT nem SUS cobrem bem este perfil — solução costuma ser via plano de saúde ou programa interno' },
+  { perfilPaciente: 'Paciente com transtorno bipolar tipo I em estabilização', recomendacao: 'SUS via CAPS-III com manejo integrado', racional: 'Quadros graves estão fora do escopo IAPT; o modelo CAPS é estruturalmente desenhado para este perfil' },
+  { perfilPaciente: 'Adulto com TEPT por trauma único recente', recomendacao: 'IAPT high intensity (TF-CBT ou EMDR)', racional: 'Trauma único agudo tem protocolo IAPT específico; no Brasil, exige serviço especializado ainda escasso na rede pública' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'IAPT vs SUS/stepped care brasileiro: comparativo entre modelos de acesso a psicoterapia pública',
+  description: 'Comparativo entre o modelo IAPT do NHS é o stepped care brasileiro no SUS. Lógica organizacional, cobertura, evidência é o que o psicólogo brasileiro pode adaptar.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'IAPT vs SUS' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+---
+
+<Base
+  title="IAPT vs SUS: comparativo entre modelo NHS e stepped care brasileiro"
+  description="Comparativo independente entre o modelo IAPT do NHS é o sistema brasileiro RAPS/CAPS. Lógica de stepped care, evidência por condição, cobertura é o que adaptar.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'IAPT vs SUS' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Políticas públicas em saúde mental</span>
+          <h1 class="section-h text-3xl sm:text-4xl">IAPT vs stepped care brasileiro: dois modelos diferentes para o mesmo problema de acesso</h1>
+          <p class="mt-3 text-ink-700 text-lg">Não são modelos rivais. São arquiteturas distintas — uma desenhada para escalar TCC em quadros comuns, outra desenhada para desinstitucionalizar quadros graves. Comparar sem misturar é o primeiro passo para extrair lição.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          IAPT (NHS, 2008) é um sistema de stepped care para depressão e ansiedade — atende mais de um milhão de pessoas por ano com taxa de recuperação em torno de 50%, mensuração obrigatória em toda sessão, e financiamento dedicado. O modelo brasileiro RAPS/CAPS, fruto da Reforma Psiquiátrica, e territorial e comunitário, focado em quadros graves é desinstitucionalização — referência internacional da OMS para psicose é dependência química, com cobertura limitada em quadros leves de depressão e ansiedade. A comparação é assimétrica por desenho: o que cada sistema faz bem é parte da identidade que o constituiu.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Dois sistemas, duas perguntas diferentes</h2>
+        <p>
+          Em 2006, o economista britânico Richard Layard publicou na London School of Economics um artigo que mudou a política de saúde mental do Reino Unido. A tese: depressão e ansiedade não tratadas custavam ao Estado britânico mais de 12 bilhões de libras por ano em absenteísmo, benefícios e perda de produtividade. Cada libra investida em TCC baseada em evidência se pagava em três anos. Junto com David Clark, psicólogo clínico da Oxford University, Layard desenhou a proposta IAPT — Improving Access to Psychological Therapies. Em 2008, o NHS lançou o programa em larga escala, com meta nacional explícita, financiamento centralizado e mensuração obrigatória de desfechos.
+        </p>
+        <p>
+          No Brasil, a história começou duas décadas antes e com pergunta diferente. A Reforma Psiquiátrica iniciada em 1989 — com Franco Basaglia como referência teórica e Paulo Delgado como articulador político — não estava perguntando "como atender mais gente com depressão leve". Estava perguntando "como tirar do manicômio quem nunca deveria ter estado lá". A Lei 10.216/2001 consolidou o redirecionamento, e a RAPS (Portaria 3.088/2011) estruturou a rede com CAPS como ponto de atenção principal para quadros graves. O modelo brasileiro virou referência internacional da OMS para desinstitucionalização — a literatura especializada cita o Brasil junto com Itália Trieste como exemplo de transição bem conduzida em escala nacional.
+        </p>
+        <p>
+          A comparação direta entre IAPT e SUS é tecnicamente difícil porque os sistemas resolvem problemas diferentes. O IAPT foi desenhado para escalar TCC em quadros comuns — depressão leve a moderada, ansiedade, TOC, TEPT, fobias. O SUS foi desenhado para desinstitucionalizar quadros graves — psicose, transtorno bipolar, dependência química. Quando o paciente típico do IAPT chega ao Brasil sem plano de saúde, ele não encontra equivalente no SUS para quadros leves — o que existe são UBS com acolhimento variável, NASF onde há, grupos terapêuticos pontuais. Quando o paciente típico do CAPS chega ao Reino Unido, o IAPT o encaminha para fora do sistema, para saúde mental secundária especializada.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo de ação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">IAPT (NHS)</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">SUS/RAPS Brasil</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.iapt}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.sus}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por condição</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Condição</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">IAPT</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">SUS/RAPS</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Vantagem</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.iapt}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.sus}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo de ação em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O IAPT opera sob lógica industrial de stepped care. Quando um paciente entra no sistema — por autoencaminhamento, encaminhamento do médico de família ou telefone único —, passa por triagem inicial padronizada com PHQ-9 (depressão) e GAD-7 (ansiedade). Conforme o escore é a complexidade clínica, e alocado em camada baixa ou alta. A camada baixa é conduzida por Psychological Wellbeing Practitioners (PWP) — profissionais com formação curta e estruturada, supervisão semanal — em formato de guided self-help, biblioterapia, TCC computadorizada (cCBT) e grupos psicoeducativos. A camada alta é TCC estruturada de 12 a 20 sessões com terapeuta certificado, com adições recentes de IPT, EMDR e Counselling for Depression. Tudo medido em toda sessão, com indicador público anual transparente.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O SUS opera sob lógica territorial e comunitária. O CAPS é o ponto central — atenção diária, equipe multiprofissional (psicólogo, psiquiatra, enfermeiro, assistente social, terapeuta ocupacional), projeto terapêutico singular construído com o usuário é a família. Para quadros graves (psicose, transtorno bipolar, esquizofrenia), o modelo é referência internacional. A atenção básica via UBS e NASF — quando há NASF, porque o programa sofreu cortes desde 2017 — faz triagem é acolhimento de quadros leves, com possibilidade de grupos terapêuticos e encaminhamento. A lógica não é "stepped care com TCC padronizada", mas "rede integrada com projeto singular", herança do modelo italiano de Basaglia.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A diferença prática para o usuário é estrutural. Uma pessoa com depressão moderada em Londres pode autoencaminhar-se ao IAPT pelo site, ser triada em duas semanas, e iniciar TCC com terapeuta certificado em até um mês — com 12 sessões previstas, escalas em toda sessão e relatório de desfecho. A mesma pessoa em uma cidade média brasileira sem plano de saúde tende a encontrar oferta menos clara — UBS com fila para psicólogo escasso, encaminhamento para CAPS que avalia que o quadro não justifica a vaga (CAPS prioriza moderados a graves), grupo terapêutico no NASF quando disponível, ou seguir sem tratamento estruturado. A literatura nacional, conforme Hagberg et al. (2019) e Onocko-Campos et al. (2018), reconhece a lacuna brasileira em depressão leve a moderada.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A simetria inversa também é real. Um paciente com primeiro episódio psicótico em Londres entra em sistema separado do IAPT — Early Intervention in Psychosis services, que funciona razoavelmente em algumas áreas e mal em outras. O equivalente em Goiânia, Recife ou Belo Horizonte é o CAPS-III, com manejo integrado, possibilidade de pernoite, manejo de crise, articulação com a família e território. A OMS (Mental Health Atlas 2020) reconhece o modelo brasileiro como referência para países de média renda, especialmente pela combinação de tratamento, reabilitação psicossocial e proteção contra reinternação manicomial.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de paciente e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do paciente</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Sistema recomendado</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Onde o IAPT supera</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Acesso escalado a TCC em quadros comuns</p>
+              <p class="text-sm text-ink-700 mt-1">Mais de um milhão de pessoas por ano com terapia baseada em evidência — escala que nenhum sistema público brasileiro reproduz em depressão e ansiedade leves.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Mensuração transparente é auditável</p>
+              <p class="text-sm text-ink-700 mt-1">PHQ-9 e GAD-7 em toda sessão, indicadores nacionais públicos via NHS Digital. Permite gestão por dado e correção de rota em tempo real.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Triagem rápida é alocação proporcional</p>
+              <p class="text-sm text-ink-700 mt-1">Stepped care evita superuso de psicoterapia intensiva em quadros leves e libera capacidade para casos moderados/graves.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Onde o SUS supera</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Modelo territorial em psicose é dependência</p>
+              <p class="text-sm text-ink-700 mt-1">CAPS é referência internacional da OMS para quadros graves. A integração com território, família e dispositivos sociais é mais profunda do que arranjos de IAPT secundário.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Proteção contra reinternação manicomial</p>
+              <p class="text-sm text-ink-700 mt-1">A Reforma Psiquiátrica é a Lei 10.216 desenharam um sistema com proteção legal e estrutural contra hospitalização prolongada — política pública de longo prazo.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Manejo de crise comunitário</p>
+              <p class="text-sm text-ink-700 mt-1">CAPS-III com retaguarda 24h em capitais oferece resposta de crise sem necessidade de internação psiquiátrica — modelo difícil de replicar em sistemas centralizados.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">O que adaptar do IAPT no Brasil sem desconfigurar a RAPS</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Mensuração rotineira em CAPS e UBS</p>
+            <p class="text-sm text-ink-700 mt-1">PHQ-9 e GAD-7 em sessão são instrumentos curtos, validados em português brasileiro, e independentes de protocolo. Adoção em rede preserva o modelo territorial é adiciona indicador de desfecho.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Formação curta tipo PWP na atenção básica</p>
+            <p class="text-sm text-ink-700 mt-1">Treinar profissionais de atenção primária em TCC focal para depressão leve, com supervisão regular, expandiria capacidade sem competir com CAPS por verba ou foco.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Município de 180 mil habitantes em Minas Gerais implementa stepped care na atenção básica</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Em 2024, a Secretaria Municipal de Saúde de um município mineiro de 180 mil habitantes mapeou um gargalo conhecido: 60% dos encaminhamentos para o único CAPS-II do município eram de depressão leve a moderada, cujos pacientes não preenchiam critério para o serviço, mas também não tinham para onde ir. O resultado era fila de espera com tempo médio de quatro meses, CAPS sobrecarregado em quadros que não eram sua missão, e pacientes leves desistindo no caminho.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A coordenação de saúde mental, com apoio técnico de pesquisadores da UFMG inspirados no modelo IAPT, desenhou um piloto em três UBS estratégicas. Cada UBS recebeu duas profissionais (uma psicóloga, uma enfermeira) treinadas em quatro semanas em TCC focal para depressão e ansiedade leves, com supervisão quinzenal por psicóloga sênior. Adotou-se PHQ-9 e GAD-7 em toda sessão. A oferta foi de grupo psicoeducativo de cinco encontros + acompanhamento individual breve (até oito sessões) para pacientes com PHQ-9 entre 5 e 14 (leve a moderado). Quadros com PHQ-9 acima de 14, ideação ou comorbidade grave seguiam para o CAPS via protocolo direto.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Em 12 meses, os indicadores mudaram. As três UBS atenderam 412 pacientes em depressão e ansiedade leves a moderadas. A taxa de recuperação medida por PHQ-9 (queda de pelo menos 5 pontos é abaixo de corte de 10) foi de 47% — próxima do indicador IAPT. O CAPS-II reduziu encaminhamentos inadequados em 38%, liberando capacidade para quadros graves. O tempo de espera para psicoterapia caiu de quatro meses para três semanas nas UBS piloto. A coordenadora documentou no relatório de avaliação: "Não copiamos o IAPT. Adaptamos a lógica de stepped care e mensuração rotineira preservando o que o SUS já tem de melhor — o vínculo territorial é a equipe da atenção básica".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de iniciativas reais de adaptação do stepped care na atenção primária brasileira descritas por Onocko-Campos et al. (2018) e em projetos do Programa Mais Saúde Mental do Ministério da Saúde.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções importantes. Primeiro, IAPT e SUS resolvem problemas parcialmente diferentes — comparar sem reconhecer isso leva a conclusões superficiais ("o Inglês é melhor", "o Brasileiro é mais humano"). Cada um é o que é por escolhas históricas e financiamento próprios. Segundo, o IAPT tem limites reconhecidos pela literatura — Clark et al. (2018) reportam que a taxa de recuperação caiu em quadros mais graves, e o sistema enfrentou críticas pelo formato industrial e por menor atenção a comorbidades complexas. Terceiro, o SUS tem limites estruturais conhecidos — subfinanciamento crônico, distribuição desigual entre regiões, cobertura insuficiente em quadros leves de depressão e ansiedade. A comparação serve para extrair lição mútua, não para hierarquizar.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A pergunta operacional para o Brasil em 2026 não é "trocar a RAPS pelo IAPT" — proposta que seria politicamente inviável e tecnicamente equivocada. É "como adicionar capacidade de stepped care em depressão e ansiedade leves a moderadas sem desconfigurar o que o modelo brasileiro tem de melhor". Mensuração rotineira, formação curta de profissionais de atenção primária em TCC focal, e triagem com escalas validadas são adaptações compatíveis com a RAPS — e poderiam expandir cobertura em milhões de brasileiros sem competir com CAPS por orçamento ou identidade.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Dois sistemas, duas missões — e duas lições mútuas</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>IAPT escala TCC em quadros comuns com mensuração transparente — modelo industrial bem-sucedido em depressão leve a moderada.</li>
+          <li>RAPS/CAPS é referência internacional em quadros graves, desinstitucionalização e manejo territorial de crise.</li>
+          <li>A lacuna brasileira em depressão e ansiedade leves a moderadas pode ser endereçada com adaptação seletiva — mensuração + formação curta na atenção primária.</li>
+          <li>Não há sistema universal único — há decisões históricas, financiamento e cultura organizacional construindo cada arquitetura.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos e gestores que querem articular liderança em saúde mental pública e privada com base científica e gestão estratégica, o IPOG mantém MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar, e MBA em Psicologia Organizacional. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/online-vs-presencial" class="text-brand-700 hover:text-brand-800 font-medium">Online vs presencial — outra dimensão do acesso a psicoterapia</a></li>
+          <li><a href="/comparativos/ia-vs-terapeuta-humano" class="text-brand-700 hover:text-brand-800 font-medium">IA vs terapeuta humano — automação como camada em stepped care</a></li>
+          <li><a href="/comparativos/positiva-vs-organizacional" class="text-brand-700 hover:text-brand-800 font-medium">Psicologia positiva vs organizacional — duas vias para saúde mental no trabalho</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Psicologia Positiva, POT, Neurociência e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. A modalidade vigente de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+          {mbaPot && <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPot.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/metodos/tcc" class="mega-link"><strong class="text-ink-900 text-sm">TCC — base de IAPT</strong></a></li>
+          <li><a href="/metodos/ipt" class="mega-link"><strong class="text-ink-900 text-sm">IPT — Terapia Interpessoal</strong></a></li>
+          <li><a href="/áreas/saúde-publica" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia em saúde pública</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/brasil-vs-portugal-pos-psi" class="mega-link"><strong class="text-ink-900 text-sm">Pós em Psicologia Brasil vs Portugal</strong></a></li>
+          <li><a href="/comparativos/online-vs-presencial" class="mega-link"><strong class="text-ink-900 text-sm">Online vs presencial</strong></a></li>
+          <li><a href="/comparativos/ia-vs-terapeuta-humano" class="mega-link"><strong class="text-ink-900 text-sm">IA vs terapeuta humano</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Clark, D. (2018). Realizing the mass public benefit of evidence-based psychological therapies. Annual Review of Clinical Psychology.</li>
+          <li>Layard, R. & Clark, D. (2014). Thrive: How Better Mental Health Care Transforms Lives and Saves Money. Penguin.</li>
+          <li>Wakefield, S. et al. (2020). Improvement in outcomes over a decade of IAPT. BJPsych Open.</li>
+          <li>Onocko-Campos, R. et al. (2018). Saúde mental na atenção primária no Brasil. Cadernos de Saúde Pública.</li>
+          <li>Brasil. Lei 10.216/2001. Reforma Psiquiátrica.</li>
+          <li>Brasil. Portaria 3.088/2011. Rede de Atenção Psicossocial.</li>
+          <li>OMS (2020). Mental Health Atlas.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

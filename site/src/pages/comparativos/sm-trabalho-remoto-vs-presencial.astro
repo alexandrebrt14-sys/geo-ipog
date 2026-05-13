@@ -1,0 +1,431 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'Trabalho remoto faz mal à saúde mental?',
+    a: 'A literatura em 2026 não sustenta resposta categórica. Bloom et al. (2024, NBER), em estudo experimental com mais de mil trabalhadores, mostrou que trabalho híbrido (dois a três dias remotos por semana) não reduz produtividade, melhora satisfação e diminui intenção de desligamento. Microsoft Work Trend Index (2024-2025) reporta níveis altos de burnout em trabalhadores totalmente remotos isolados, mas níveis igualmente altos em trabalhadores totalmente presenciais em contextos de alta demanda. A variável mais determinante não é o local, mas a qualidade do trabalho, a autonomia percebida, a clareza de expectativas e a qualidade dos vínculos. Trabalho remoto é fator de risco em certos perfis (jovens em início de carreira, profissionais com isolamento social prévio) e fator protetor em outros (cuidadores, neurodivergentes, trabalhadores com saúde física frágil).'
+  },
+  {
+    q: 'Quais são os principais riscos psicológicos do trabalho remoto?',
+    a: 'Cinco riscos consolidados pela literatura. Primeiro, isolamento social — Microsoft (2024) reporta declínio em redes profissionais informais em trabalhadores totalmente remotos por mais de dois anos. Segundo, dificuldade de desligamento — fronteira difusa entre trabalho e vida pessoal, com aumento de jornadas e respostas fora do horário (Lott & Eng, 2023). Terceiro, perda de feedback presencial — sinais sociais sutis, micropresenças no corredor, conversas informais que sustentam pertencimento. Quarto, ergonomia precária em ambiente não preparado, especialmente em residências pequenas. Quinto, gestão por desconfiança — aumento de monitoramento de atividade, productivity theater e ansiedade vinculada à percepção de estar sendo observado constantemente.'
+  },
+  {
+    q: 'Quais são os riscos psicológicos do trabalho 100% presencial?',
+    a: 'Quatro riscos recorrentes e bem documentados. Primeiro, deslocamento — Stutzer & Frey (2008) e estudos subsequentes consolidam que tempo de deslocamento superior a 60 minutos diários correlaciona com aumento de estresse, redução de tempo para autocuidado e prejuízo em vida familiar. Segundo, exposição a microviolência organizacional sem janelas de pausa — assédio moral, conflitos interpessoais persistentes, microagressões que se acumulam em ambiente fechado. Terceiro, rigidez de horário sem flexibilidade para cuidados pessoais ou de dependentes. Quarto, ambientes físicos hostis — ruído, iluminação inadequada, ausência de privacidade, openspaces que prejudicam concentração e autonomia conforme literatura organizacional consolidada.'
+  },
+  {
+    q: 'Para empresas que querem promover saúde mental dos colaboradores, qual modelo é melhor?',
+    a: 'A evidência converge para modelo híbrido bem desenhado — não para extremos. Bloom et al. (2024) mostram que dois a três dias remotos por semana otimizam satisfação, produtividade e retenção. Mas o que mais determina saúde mental no trabalho não é o local — é a qualidade da gestão, a autonomia, o reconhecimento, o sentido percebido no trabalho, a qualidade dos vínculos e a saúde do líder direto. Programas de saúde mental corporativa eficazes integram: avaliação periódica via escalas validadas (PHQ-9, GAD-7, MBI-GS), formação de lideranças em saúde mental, EAP de qualidade, política de desconexão, e acesso a psicoterapia em rede. Para profissionais que querem liderar essas iniciativas, pós-graduações em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar oferecem fundamentação científica útil.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Estrutura temporal', remoto: 'Flexível — autonomia para alocar tempo de trabalho na agenda do dia', presencial: 'Rígido — horário fixo de chegada, almoço e saída na maioria dos arranjos' },
+  { dimensao: 'Deslocamento', remoto: 'Ausente — ganho médio de 60 a 120 minutos diários (Bloom 2024)', presencial: 'Tempo de deslocamento médio em capitais brasileiras: 90+ minutos diários (IBGE)' },
+  { dimensao: 'Isolamento social', remoto: 'Risco alto em trabalhadores totalmente remotos por longos períodos', presencial: 'Baixo — convivência diária com pares preserva redes informais' },
+  { dimensao: 'Fronteira trabalho-vida', remoto: 'Difusa — risco de jornadas estendidas e dificuldade de desligamento', presencial: 'Mais clara — separação física entre ambientes ajuda transição psicológica' },
+  { dimensao: 'Autonomia percebida', remoto: 'Alta — controle sobre ambiente, ritmo e organização', presencial: 'Variável — depende do estilo de gestão e da cultura organizacional' },
+  { dimensao: 'Acesso a feedback informal', remoto: 'Limitado — perda de conversas de corredor e sinais sociais sutis', presencial: 'Alto — co-presença viabiliza feedback espontâneo' },
+  { dimensao: 'Conciliação com cuidados de dependentes', remoto: 'Facilitada — flexibilidade para cuidar de filhos ou idosos', presencial: 'Desafiadora — depende de rede de cuidado paralela disponível' },
+  { dimensao: 'Risco de assédio moral', remoto: 'Pode persistir (assédio digital), mas com janelas de pausa', presencial: 'Mais exposição a microviolência organizacional sem escape físico' },
+  { dimensao: 'Ergonomia do espaço', remoto: 'Variável — depende de condições residenciais (alto risco em moradias pequenas)', presencial: 'Padronizada — empresa idealmente provê ambiente ergonômico adequado' },
+  { dimensao: 'Vínculos com a equipe', remoto: 'Exige investimento ativo — não acontece espontaneamente', presencial: 'Forma-se naturalmente em interações diárias' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'Burnout (esgotamento profissional)', remoto: 'Risco elevado em trabalhadores totalmente remotos isolados (MS Work Trend 2024)', presencial: 'Risco elevado em contextos de alta demanda sem autonomia', vencedor: 'Híbrido' },
+  { condicao: 'Depressão', remoto: 'Aumento em trabalhadores com isolamento social prévio', presencial: 'Aumento em contextos com assédio ou conflito organizacional', vencedor: 'Depende do contexto' },
+  { condicao: 'Ansiedade', remoto: 'Aumento associado a monitoramento e fronteiras difusas', presencial: 'Aumento associado a deslocamento e pressão de presença', vencedor: 'Híbrido com política clara' },
+  { condicao: 'Satisfação geral no trabalho', remoto: 'Bloom et al. (2024) — satisfação maior em híbrido', presencial: 'Menor em populações com longo deslocamento', vencedor: 'Híbrido' },
+  { condicao: 'Vínculos profissionais e pertencimento', remoto: 'Microsoft 2024 — declínio mensurável em totalmente remoto longo prazo', presencial: 'Vantagem clara — convivência sustenta vínculos espontaneamente', vencedor: 'Presencial em vínculo' },
+  { condicao: 'Retenção de talentos', remoto: 'Bloom et al. (2024) — redução de 35% em intenção de desligamento em híbrido', presencial: 'Maior turnover em empresas que retornaram 100% presencial', vencedor: 'Híbrido' },
+  { condicao: 'Saúde mental de jovens em início de carreira', remoto: 'Risco aumentado — perda de mentoria informal e socialização profissional', presencial: 'Vantagem em socialização inicial e aprendizagem por observação', vencedor: 'Presencial ou híbrido com presença mínima' },
+  { condicao: 'Saúde mental de cuidadores e pessoas com saúde frágil', remoto: 'Fator protetor — flexibilidade e ausência de deslocamento', presencial: 'Fator de risco — rigidez prejudica conciliação', vencedor: 'Remoto ou híbrido flexível' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Jovem em início de carreira em empresa de tecnologia', recomendacao: 'Híbrido com presença mínima de 3 dias/semana', racional: 'Socialização profissional, mentoria informal e aprendizado por observação são parte significativa do desenvolvimento inicial' },
+  { perfilPaciente: 'Mãe ou pai com filhos pequenos em casa', recomendacao: 'Híbrido flexível com prioridade ao remoto', racional: 'Flexibilidade horária e ausência de deslocamento melhoram qualidade de vida e reduzem estresse de conciliação' },
+  { perfilPaciente: 'Profissional em transição de carreira ou aprendendo função nova', recomendacao: 'Híbrido com presença para fase de aprendizado', racional: 'Funções novas exigem feedback frequente, co-presença com mentores e socialização da prática' },
+  { perfilPaciente: 'Profissional com histórico de ansiedade social ou neurodivergente', recomendacao: 'Remoto ou híbrido com poucas presenças', racional: 'Trabalho remoto remove camada de demanda social que pode esgotar antes do trabalho propriamente dito' },
+  { perfilPaciente: 'Pessoa com longo deslocamento (90+ min diários)', recomendacao: 'Remoto ou híbrido flexível', racional: 'Recuperação de tempo de deslocamento amplia significativamente capacidade de autocuidado e tempo familiar' },
+  { perfilPaciente: 'Pessoa com isolamento social prévio e vida pessoal limitada', recomendacao: 'Híbrido com presença consistente', racional: 'Trabalho presencial pode ser principal fonte de vínculo social — totalmente remoto agrava isolamento prévio' },
+  { perfilPaciente: 'Líder gerenciando equipe distribuída', recomendacao: 'Híbrido com encontros regulares definidos', racional: 'Liderança remota pura tende a fragmentar vínculo de equipe; presença periódica preserva cultura sem perder flexibilidade' },
+  { perfilPaciente: 'Cuidador de idoso ou dependente em casa', recomendacao: 'Remoto ou híbrido com prioridade ao remoto', racional: 'Conciliação com cuidado de dependente é facilitada substancialmente por flexibilidade horária e proximidade física' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Saúde mental em trabalho remoto vs presencial: comparativo baseado em evidência 2026',
+  description: 'Comparativo independente entre saúde mental em trabalho remoto e presencial. Microsoft Work Trend Index, Bloom WFH (2024), riscos específicos e recomendações por perfil.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Saúde mental remoto vs presencial' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const mbaLideranca = MBAS.find(m => m.id === 'mba-lideranca-positiva');
+---
+
+<Base
+  title="Saúde mental no trabalho remoto vs presencial: o que a evidência mostra em 2026"
+  description="Comparativo independente entre saúde mental em trabalho remoto e presencial. Microsoft Work Trend Index, Bloom WFH (2024), riscos específicos e recomendações por perfil.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Saúde mental remoto vs presencial' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Saúde mental no trabalho</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Saúde mental no trabalho remoto vs presencial: a pergunta certa não é "qual é melhor"</h1>
+          <p class="mt-3 text-ink-700 text-lg">A literatura de 2024-2026 mostra que o local de trabalho importa, mas é menos determinante do que se imagina. O que mais explica saúde mental é a qualidade da gestão, da autonomia, do reconhecimento e dos vínculos — variáveis que cada arranjo modula de modo diferente.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A evidência consolidada em 2026 (Bloom et al., 2024, NBER; Microsoft Work Trend Index 2024-2025; revisões em Annual Review of Organizational Psychology) converge para modelo híbrido bem desenhado como ótimo médio para saúde mental, produtividade e retenção. Trabalho remoto puro é fator de risco em jovens em início de carreira e em pessoas com isolamento social prévio; é fator protetor em cuidadores, neurodivergentes e pessoas com deslocamento longo. Trabalho 100% presencial é fator de risco em populações com longo deslocamento e em ambientes com microviolência organizacional; é fator protetor em fases iniciais de carreira e em funções que exigem socialização da prática. A variável mais determinante é a qualidade da gestão, não o local — o que muda é o tipo de risco e o tipo de proteção que cada arranjo oferece.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O experimento social mais rápido do século</h2>
+        <p>
+          Entre 2020 e 2022, a pandemia de COVID-19 produziu o experimento social mais rápido sobre arranjo de trabalho na história. Empresas que antes proibiam trabalho remoto migraram bilhões de horas-pessoa para casa em questão de semanas. Pesquisadores que estudavam arranjos flexíveis há décadas — Nicholas Bloom na Stanford, Erik Brynjolfsson no MIT, Lynda Gratton na London Business School — passaram a ter dados em escala impensável. Em paralelo, Microsoft (que opera ferramentas de colaboração de bilhões de pessoas), Slack, Google e empresas similares começaram a publicar Work Trend Index e relatórios sobre padrões de uso. Entre 2023 e 2026, a literatura organizacional consolidou achados antes apenas intuídos.
+        </p>
+        <p>
+          O estudo de Bloom et al. (2024, National Bureau of Economic Research), randomizando trabalhadores entre arranjo híbrido (dois dias remotos por semana) e totalmente presencial em grande empresa chinesa de tecnologia, e referência metodológica. Resultados: arranjo híbrido não reduziu produtividade, aumentou satisfação, e reduziu intenção de desligamento em 35%. A retenção de talento por si só justificava o investimento em flexibilidade. Estudos subsequentes em outros contextos (Choudhury et al., 2024, Strategic Management Journal; ILO 2024) reforçaram os achados em sentidos similares. A literatura econômica desfez o mito de "trabalho remoto destrói produtividade".
+        </p>
+        <p>
+          A literatura em saúde mental, por outro lado, mostrou padrão mais matizado. Microsoft Work Trend Index 2024-2025 reportou aumento de "burnout sinaling" — indicadores comportamentais nas plataformas — em trabalhadores totalmente remotos por mais de dois anos: fragmentação de calendário, aumento de horas extras invisíveis, dificuldade de desligamento, declínio em qualidade de vínculos profissionais. Bloomberg Beat Survey (2024) reportou níveis altos de solidão em jovens trabalhadores remotos. Mas o mesmo período mostrou aumento substancial de afastamentos por saúde mental em populações totalmente presenciais em contextos de alta demanda — call centers, varejo, serviços essenciais. A conclusão estrutural: o local de trabalho importa, mas é mediador de outras variáveis mais determinantes (qualidade da gestão, autonomia percebida, sentido percebido no trabalho, qualidade dos vínculos, saúde do líder direto).
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo psicológico e organizacional</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Trabalho remoto</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Trabalho presencial</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.remoto}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.presencial}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por desfecho de saúde mental</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Desfecho</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Remoto</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Presencial</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Arranjo ideal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.remoto}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.presencial}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O trabalho remoto opera modulando cinco variáveis psicológicas centrais. Aumenta autonomia (controle sobre ambiente, ritmo, organização). Aumenta tempo disponível (ganho médio de 60 a 120 minutos diários sem deslocamento). Reduz exposição involuntária (microviolência organizacional, conflito interpessoal, ambiente sensorialmente hostil). Mas também reduz acesso a recursos sociais (vínculos espontâneos, feedback informal, sinais de pertencimento) e dificulta desligamento psicológico (fronteira física entre trabalho e casa desaparece). O efeito líquido em saúde mental depende de qual conjunto de variáveis pesa mais para o perfil do trabalhador e para o contexto da função.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Bloom et al. (2024), em revisão acumulada sobre WFH (Work From Home), articulam o achado central: o trabalho remoto produz ganho em alguns indicadores (satisfação, retenção, redução de stress por deslocamento) sem perda significativa em produtividade média — mas com perda mensurável em alguns indicadores específicos: socialização de novos contratados, transmissão de conhecimento tácito, formação de líderes em fases iniciais de carreira, manutenção de cultura organizacional ao longo do tempo. Esses são exatamente os indicadores que o trabalho 100% presencial preserva melhor — mas ao custo de impor deslocamento, rigidez horária e exposição a ambientes nem sempre ergonomicamente adequados.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O Microsoft Work Trend Index 2024-2025 acrescentou camada importante ao debate: o que mais correlaciona com burnout no remoto não é o local em si, mas três variáveis culturais. Primeiro, "always-on culture" — expectativa explícita ou implícita de disponibilidade 24/7, mediada por ferramentas como Teams e Slack. Segundo, "productivity theater" — pressão para demonstrar atividade constante (status verde, respostas rápidas, presença em reuniões nem sempre necessárias). Terceiro, "ausência de política de desconexão" — empresas sem regra clara sobre comunicações fora do horário acumulam horas-extras invisíveis. Esses três padrões são corrigíveis sem retornar à presencialidade — exigem desenho organizacional consciente.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Para o trabalhador 100% presencial, a literatura aponta para riscos diferentes. Stutzer e Frey (2008), em "Stress that Doesn't Pay: The Commuting Paradox", consolidaram que tempo de deslocamento longo correlaciona com aumento de estresse percebido sem compensação salarial proporcional — pessoas com mais de 90 minutos diários de deslocamento têm satisfação geral significativamente menor, controlados outros fatores. Em capitais brasileiras, IBGE (PNAD Contínua) reporta tempo médio de deslocamento próximo a 90 minutos. A literatura organizacional brasileira (Codo, Wanderley, e estudos posteriores) também documenta riscos do openspace mal desenhado, ruído ambiental, ausência de privacidade, e exposição prolongada a conflitos interpessoais sem janelas de pausa.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O arranjo híbrido bem desenhado emerge como ótimo médio porque modula seletivamente as cinco variáveis. Preserva alguma autonomia (dias remotos). Preserva alguma socialização (dias presenciais). Reduz deslocamento total (40-60% menos que totalmente presencial). Mantém transmissão de cultura e mentoria informal. Permite desligamento parcial (a casa não é o escritório o tempo todo). Bloom et al. (2024), Choudhury et al. (2024) e revisões na Annual Review of Organizational Psychology convergem: dois a três dias remotos por semana parecem ser o ponto ótimo para a maior parte dos trabalhadores em maior parte das funções. Exceções existem em ambas as direções e dependem de perfil individual e demandas da função.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de trabalhador e arranjo recomendado</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do trabalhador</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Arranjo recomendado</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando o remoto protege saúde mental</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Cuidadores de filhos pequenos ou idosos dependentes</p>
+              <p class="text-sm text-ink-700 mt-1">Flexibilidade horária e ausência de deslocamento reduzem estresse de conciliação e amplificam capacidade de cuidado.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Neurodivergentes (TDAH, TEA, alta sensibilidade sensorial)</p>
+              <p class="text-sm text-ink-700 mt-1">Ambiente controlado, ausência de overload sensorial e flexibilidade de ritmo melhoram funcionamento e reduzem fadiga social.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Trabalhadores com saúde física frágil ou doença crônica</p>
+              <p class="text-sm text-ink-700 mt-1">Conservação de energia, possibilidade de pausas estratégicas e acesso a cuidado em casa são fatores estruturais de proteção.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando o presencial protege saúde mental</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Jovens em início de carreira</p>
+              <p class="text-sm text-ink-700 mt-1">Socialização profissional, mentoria informal e aprendizado por observação são parte do desenvolvimento inicial — difícil reproduzir em totalmente remoto.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Pessoas com isolamento social prévio e vida pessoal limitada</p>
+              <p class="text-sm text-ink-700 mt-1">Trabalho pode ser principal fonte de vínculo social — totalmente remoto agrava risco de isolamento e depressão.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Funções que dependem de presença física ou colaboração tácita</p>
+              <p class="text-sm text-ink-700 mt-1">Saúde, indústria, varejo, serviços essenciais — onde a presença é parte do trabalho, e remoto não é opção real.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Elementos de um híbrido bem desenhado</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Dias presenciais sincronizados na equipe</p>
+            <p class="text-sm text-ink-700 mt-1">Coordenar para que pessoas-chave estejam juntas em dias presenciais — evita o pior dos dois mundos (vir ao escritório e participar de reuniões por vídeo com colegas em casa).</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Política de desconexão clara</p>
+            <p class="text-sm text-ink-700 mt-1">Regras explícitas sobre comunicações fora do horário, expectativa de resposta, e direito de desconexão (frança e portugal têm regulamentação; brasil discute em PL).</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Formação de lideranças em gestão híbrida</p>
+            <p class="text-sm text-ink-700 mt-1">Liderar equipe híbrida exige habilidades diferentes — feedback assíncrono de qualidade, gestão por resultado em vez de por presença, atenção a sinais de burnout via dados.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Avaliação periódica de saúde mental via escalas validadas</p>
+            <p class="text-sm text-ink-700 mt-1">PHQ-9, GAD-7, MBI-GS aplicados periodicamente com proteção de privacidade fornecem indicadores agregados para correção de rota organizacional.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Empresa de tecnologia em São Paulo migra para híbrido 3x2 após dois anos de modelo confuso</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Empresa de tecnologia média em São Paulo, 420 funcionários, operava em modelo confuso desde 2023 — política oficial era "presença flexível", mas na prática cada gestor decidia, gerando expectativas inconsistentes, ressentimento e burnout crescente. A diretora de pessoas, formada em Psicologia Organizacional e com base recente em literatura de WFH e Microsoft Work Trend, propôs revisão estrutural.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Diagnóstico inicial via pesquisa interna com PHQ-9, GAD-7 e MBI-GS (com proteção de privacidade) revelou três achados centrais. Primeiro, 28% da equipe apresentava escores compatíveis com burnout moderado a severo — concentrados em duas áreas (engenharia de produto e vendas). Segundo, jovens em início de carreira (0-2 anos de experiência) reportavam isolamento profissional e dificuldade de aprendizado, com escores de PHQ-9 elevados. Terceiro, pais de filhos pequenos e cuidadores reportavam alto valor em flexibilidade, com escores de bem-estar significativamente acima da média quando podiam alternar dias.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A proposta implementada foi modelo híbrido 3x2 (três dias presenciais, dois remotos), com dias presenciais sincronizados por equipe (terça, quarta, quinta) e política de desconexão explícita (sem comunicações fora do horário em dias remotos, salvo crise definida em playbook). Líderes passaram por treinamento de 16 horas em gestão híbrida com foco em feedback assíncrono e identificação de sinais de burnout. EAP foi reforçado com rede de psicoterapia em modalidade remota. Pesquisa de clima recorrente passou a incluir indicadores de saúde mental.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Após 12 meses, indicadores objetivos mudaram. Escores de burnout caíram de 28% para 14% (recuperação especialmente forte na engenharia de produto). Turnover voluntário caiu de 18% anual para 11%. Pesquisa de clima reportou aumento significativo em "sinto que minha liderança se importa com meu bem-estar". A diretora de pessoas documentou no relatório anual: "Não foi o local de trabalho que mudou tudo. Foi a explicitação de expectativas, a formação de líderes, e a política de desconexão. O híbrido 3x2 viabilizou o resto — mas o que produziu mudança em saúde mental foi gestão consciente, não local físico em si".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões organizacionais documentados em Bloom et al. (2024) e em estudos do Korn Ferry sobre transformação híbrida em empresas brasileiras. A integração entre arranjo flexível, formação de lideranças e política de desconexão é replicada em diversos estudos sobre intervenções organizacionais em saúde mental.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Quatro precauções importantes. Primeiro, "remoto" e "presencial" não são blocos únicos — cada arranjo varia enormemente entre empresas, funções, culturas organizacionais e contextos individuais. Generalizar é necessário para política pública, mas a decisão individual responde a perfil específico. Segundo, a evidência sobre WFH é recente — a maior parte dos estudos sólidos é de 2022-2026 e captura período de transição pós-pandemia. Efeitos de longuíssimo prazo (10+ anos em arranjos puros) ainda são especulação. Terceiro, o debate é cultural além de técnico — diferentes países, gerações e setores têm visões distintas sobre "o que é trabalho legítimo", e essas visões modulam efeitos psicológicos. Quarto, saúde mental no trabalho depende muito mais de qualidade da gestão, autonomia, sentido percebido no trabalho e qualidade dos vínculos do que do local físico — focar apenas no local é responder à pergunta menos importante.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A questão estrutural para empresas brasileiras em 2026 não é "qual modelo é melhor em geral". É "qual modelo funciona para esta empresa, esta cultura, este conjunto de funções, este perfil de pessoas — com qual desenho de política, formação de líderes e infraestrutura de suporte". Empresas que respondem essa pergunta com clareza, sem dogmatismo em nenhuma direção, conseguem proteger saúde mental dos colaboradores enquanto preservam performance organizacional. Empresas que adotam modelo extremo (totalmente remoto sem política consciente, ou totalmente presencial sem reconhecer ganhos de flexibilidade) pagam custo em rotatividade, afastamentos e produtividade real (a que é mensurável em resultado, não em horas-cadeira).
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Local de trabalho importa — mas é menos determinante do que se imagina</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Híbrido bem desenhado (2-3 dias remotos por semana) emerge como ótimo médio em produtividade, satisfação e retenção (Bloom et al., 2024).</li>
+          <li>Remoto puro é fator de risco em jovens em início de carreira e pessoas com isolamento social prévio; é fator protetor em cuidadores, neurodivergentes e pessoas com deslocamento longo.</li>
+          <li>Presencial puro é fator de risco em populações com longo deslocamento e em ambientes com microviolência organizacional; é fator protetor em fases iniciais de socialização profissional.</li>
+          <li>A variável mais determinante é a qualidade da gestão, autonomia, sentido percebido e vínculos — não o local físico em si.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para profissionais que querem articular saúde mental no trabalho, liderança positiva e gestão de pessoas com base científica, o IPOG mantém MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar, MBA em Psicologia Organizacional e MBA em Liderança Positiva. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/positiva-vs-organizacional" class="text-brand-700 hover:text-brand-800 font-medium">Psicologia positiva vs organizacional no trabalho</a></li>
+          <li><a href="/comparativos/pot-vs-gestao-pessoas" class="text-brand-700 hover:text-brand-800 font-medium">POT vs Gestão de Pessoas — duas pós-graduações para gestão</a></li>
+          <li><a href="/comparativos/presencial-vs-hibrido-vs-online" class="text-brand-700 hover:text-brand-800 font-medium">Presencial vs híbrido vs online — formato de pós-graduação</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG mantém oferta de MBAs em Psicologia Positiva, POT, Neurociência e Liderança Positiva — corpo docente nominal e estrutura multicampus. A modalidade vigente de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+          {mbaPot && <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPot.tag}</span></a></li>}
+          {mbaLideranca && <li><a href={`/mbas#${mbaLideranca.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaLideranca.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaLideranca.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/saude-mental-trabalho" class="mega-link"><strong class="text-ink-900 text-sm">Saúde mental no trabalho</strong></a></li>
+          <li><a href="/areas/pot" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Organizacional e do Trabalho</strong></a></li>
+          <li><a href="/areas/lideranca-positiva" class="mega-link"><strong class="text-ink-900 text-sm">Liderança positiva</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/positiva-vs-organizacional" class="mega-link"><strong class="text-ink-900 text-sm">Positiva vs Organizacional</strong></a></li>
+          <li><a href="/comparativos/pot-vs-gestao-pessoas" class="mega-link"><strong class="text-ink-900 text-sm">POT vs Gestão de Pessoas</strong></a></li>
+          <li><a href="/comparativos/presencial-vs-hibrido-vs-online" class="mega-link"><strong class="text-ink-900 text-sm">Presencial vs híbrido vs online</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Bloom, N. et al. (2024). The effects of hybrid working from home. NBER Working Paper / Nature.</li>
+          <li>Microsoft Work Trend Index (2024-2025). Annual Report.</li>
+          <li>Choudhury, P. et al. (2024). Hybrid work and the geography of work. Strategic Management Journal.</li>
+          <li>Stutzer, A. & Frey, B. (2008). Stress that doesn\'t pay: The commuting paradox. Scandinavian Journal of Economics.</li>
+          <li>Lott, Y. & Eng, S. (2023). Flexible work arrangements and work-life conflict. Annual Review of Sociology.</li>
+          <li>ILO (2024). Working from home: From invisibility to decent work.</li>
+          <li>OMS (2022). Mental health at work: Policy brief.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

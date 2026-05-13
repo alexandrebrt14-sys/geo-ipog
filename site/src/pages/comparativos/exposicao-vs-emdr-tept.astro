@@ -1,0 +1,415 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const faqs = [
+  {
+    q: 'Exposição Prolongada e EMDR não são variantes da mesma coisa?',
+    a: 'Não. Compartilham status de primeira linha em TEPT segundo OMS (2013), APA (2017) e NICE, e ambas envolvem ativação da memória traumática durante a intervenção — mas operam sob modelos teóricos distintos. Exposição Prolongada (PE), sistematizada por Edna Foa (Foa & Rothbaum, 2008), opera por habituação e extinção da resposta condicionada de medo via exposição imaginária repetida à narrativa traumática. EMDR, criada por Francine Shapiro (1989, 2018), opera pelo modelo de Processamento Adaptativo da Informação, com estimulação bilateral durante recordação ativa de elementos da memória. Bisson et al. (2013, Cochrane) mostram tamanhos de efeito comparáveis em meta-análises — mas o mecanismo proposto é diferente, e isso tem consequências práticas.'
+  },
+  {
+    q: 'Por que comparar duas abordagens com evidência similar?',
+    a: 'Porque eficácia média em escalas globais não é o único critério clínico. Há diferenças em adesão, velocidade de resposta, tipo de paciente que responde melhor, exigência de tarefa de casa, formação do terapeuta e contexto cultural. PE tem o maior corpo de evidência em veteranos de guerra e trauma sexual em adulto, com protocolo VA dos Estados Unidos consolidado. EMDR tem evidência crescente em trauma único e em populações que não toleram bem a narrativa repetida. Para o paciente brasileiro real, a escolha responde ao perfil clínico é a disponibilidade de terapeuta formado em cada modalidade.'
+  },
+  {
+    q: 'PE retraumatiza o paciente ao fazê-lo narrar o trauma repetidamente?',
+    a: 'O desconforto durante PE é real e parte do mecanismo, mas não constitui retraumatização quando aplicada com protocolo adequado. Foa, Hembree e Rothbaum (2007) e Foa et al. (2018) demonstram que a tolerância à narrativa traumática diminui ao longo de sessões repetidas — a habituação é o próprio mecanismo de mudança. Estudos de abandono em PE reportam taxa em torno de 20%, similar a outras abordagens estruturadas. O risco de piora aparece quando a aplicação é feita sem treinamento adequado, sem estabilização prévia em paciente com desregulação severa, ou em pacientes com dissociação patológica não trabalhada. Em todos os outros casos, PE é segura é altamente eficaz.'
+  },
+  {
+    q: 'Para psicólogo brasileiro que quer atuar em trauma, qual formação faz mais sentido começar?',
+    a: 'Depende do contexto de atuação. Para trabalho em atenção primária, organizações humanitárias, casos de trauma único em adulto e populações que não acessam serviços estruturados, EMDR oferece protocolo mais portátil e menor exigência de tarefa de casa. Para trabalho em centros especializados em TEPT, com veteranos, com profissionais de segurança ou com trauma sexual em adulto, PE tem o maior corpo de evidência específica. A combinação das duas formações amplia repertório. Pós-graduações em Psicologia Clínica com base em neurociência da emoção, regulação emocional e psicopatologia atualizada oferecem fundamentação útil antes ou em paralelo à certificação técnica em cada modalidade.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Fundador', pe: 'Edna Foa (Foa & Rothbaum, 1998, 2008)', emdr: 'Francine Shapiro (1989, 2018)' },
+  { dimensao: 'Modelo teórico', pe: 'Teoria do Processamento Emocional (Foa & Kozak, 1986)', emdr: 'Processamento Adaptativo da Informação (AIP)' },
+  { dimensao: 'Mecanismo proposto', pe: 'Habituação à narrativa traumática + extinção de resposta condicionada de medo + ajuste cognitivo', emdr: 'Reconsolidação de memória durante recordação ativa com estimulação bilateral' },
+  { dimensao: 'Estrutura protocolar', pe: 'Psicoeducação, exposição imaginária à narrativa, exposição in vivo, processamento, prevenção de recaída', emdr: 'Oito fases — história, preparação, avaliação, dessensibilização, instalação, varredura corporal, fechamento, reavaliação' },
+  { dimensao: 'Componente nuclear', pe: 'Narrativa explícita do trauma em sessão + gravação para audição em casa', emdr: 'Foco mental em elementos da memória + estimulação bilateral (oculares, tapping, sons)' },
+  { dimensao: 'Tarefa de casa', pe: 'Audição diária da gravação da sessão (30+ min) + exposição in vivo programada', emdr: 'Mínima a moderada — registro de gatilhos e respostas entre sessões' },
+  { dimensao: 'Duração típica em trauma único', pe: '8 a 16 sessões', emdr: '6 a 12 sessões' },
+  { dimensao: 'Componente bilateral', pe: 'Não previsto', emdr: 'Central — movimentos oculares, toques bilaterais ou sons alternados' },
+  { dimensao: 'Treinamento exigido', pe: 'Workshop intensivo + supervisão de casos com terapeuta certificado', emdr: 'Training do EMDR Institute (parte 1 + parte 2) + consultation' },
+  { dimensao: 'Mensuração rotineira', pe: 'PCL-5, PSS-I, BDI em pontos definidos', emdr: 'SUDS (unidades subjetivas de perturbação) + VOC (validade da cognição positiva)' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'TEPT por trauma único em adulto (acidente, assalto)', pe: 'Linha de frente — APA forte', emdr: 'Linha de frente — APA forte', vencedor: 'Equivalentes' },
+  { condicao: 'TEPT em veteranos de guerra', pe: 'Protocolo VA — maior corpo de evidência específica', emdr: 'Evidência moderada — menor corpo específico em veteranos', vencedor: 'PE' },
+  { condicao: 'TEPT por trauma sexual em adulto', pe: 'Foa et al. (2018) RCT — efeito consolidado', emdr: 'Evidência sólida (Rothbaum 2005)', vencedor: 'PE marginal' },
+  { condicao: 'TEPT em pacientes com baixa tolerância à narrativa', pe: 'Maior risco de abandono', emdr: 'Vantagem clínica — menor exigência de verbalização explícita', vencedor: 'EMDR' },
+  { condicao: 'TEPT pediátrico (crianças é adolescentes)', pe: 'PE-A em adolescentes (Foa 2013)', emdr: 'Evidência crescente em crianças é adolescentes', vencedor: 'PE marginal em adolescentes' },
+  { condicao: 'TEPT comórbido com depressão maior', pe: 'Eficácia preservada', emdr: 'Eficácia preservada', vencedor: 'Equivalentes' },
+  { condicao: 'TEPT com dissociação significativa', pe: 'Cautela — estabilização prévia obrigatória', emdr: 'Cautela — recursos de estabilização integrados em fase 2', vencedor: 'Tratamento por fases' },
+  { condicao: 'TEPT em contextos com restrição de tempo terapêutico', pe: 'Protocolo padrão de 10-12 semanas', emdr: 'Pode resolver trauma único em 6-8 sessões', vencedor: 'EMDR' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Adulto pós-acidente de trânsito grave, trauma único recente', recomendacao: 'EMDR como primeira escolha; PE como alternativa', racional: 'Trauma único em adulto sem comorbidade severa responde bem a ambas; EMDR tende a resolver mais rápido com menor tarefa de casa' },
+  { perfilPaciente: 'Veterano de combate com TEPT crônico', recomendacao: 'PE (protocolo VA)', racional: 'Maior corpo de evidência específica nesta população; protocolo VA dos EUA é referência mundial' },
+  { perfilPaciente: 'Mulher pós-trauma sexual em adulto, três meses após o evento', recomendacao: 'PE (Foa et al. 2018) — alternativa EMDR', racional: 'PE tem o maior corpo de evidência específica em trauma sexual adulto; EMDR é alternativa válida com perfil diferente' },
+  { perfilPaciente: 'Paciente com forte aversão a narrar o trauma em detalhe', recomendacao: 'EMDR', racional: 'EMDR permite trabalhar sobre elementos da memória sem articulação verbal extensa — vantagem clínica para este perfil' },
+  { perfilPaciente: 'Adolescente pós-trauma em contexto comunitário (violência urbana)', recomendacao: 'EMDR ou PE-A', racional: 'EMDR tem evidência crescente em adolescentes com vantagem prática; PE-A é alternativa estruturada' },
+  { perfilPaciente: 'Adulto com TEPT em pequena cidade com terapeuta único', recomendacao: 'A modalidade que o terapeuta domina com supervisão', racional: 'Disponibilidade de profissional certificado é determinante na prática — formação inadequada produz piora em ambas' },
+  { perfilPaciente: 'Profissional de segurança em formação contínua', recomendacao: 'PE com integração em programa de saúde ocupacional', racional: 'Protocolo VA tem framework de manutenção e prevenção de recaída útil em populações ocupacionalmente expostas' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Exposição Prolongada vs EMDR para TEPT: comparativo entre duas primeiras linhas',
+  description: 'Comparativo independente entre Exposição Prolongada (Foa, 2008) e EMDR (Shapiro, 1989) em tratamento de TEPT. Mecanismo, evidência por subtipo, perfil de paciente e quando combinar.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Exposição Prolongada vs EMDR' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+---
+
+<Base
+  title="Exposição Prolongada vs EMDR para TEPT: comparativo entre duas primeiras linhas"
+  description="Comparativo independente entre PE (Foa) e EMDR (Shapiro) em TEPT. Mecanismo, evidência por subtipo, perfil de paciente é decisão clínica.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Exposição Prolongada vs EMDR' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Trauma e TEPT</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Exposição Prolongada vs EMDR: duas portas de primeira linha para o mesmo TEPT</h1>
+          <p class="mt-3 text-ink-700 text-lg">Não são rivais. Compartilham o status de tratamento recomendado pela OMS para TEPT, mas operam sob modelos teóricos distintos — é a diferença de mecanismo tem consequências práticas para o tipo de paciente que cada uma atende melhor.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Exposição Prolongada (Foa, 2008) e EMDR (Shapiro, 1989, 2018) são ambas recomendadas como primeira linha em TEPT pela OMS (2013), APA (2017) e NICE. A meta-análise de Bisson et al. (2013, Cochrane) é a revisão de Watts et al. (2013, JAMA Psychiatry) mostram tamanhos de efeito comparáveis em escalas globais. PE tem o maior corpo de evidência específica em veteranos e em trauma sexual adulto, com protocolo VA dos Estados Unidos como referência mundial. EMDR tem vantagem em trauma único, em pacientes com baixa tolerância à narrativa, e em contextos com restrição de tempo terapêutico. A escolha responde ao perfil clínico, disponibilidade de profissional certificado e preferência informada do paciente.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Duas abordagens construídas por caminhos opostos</h2>
+        <p>
+          Edna Foa, na Universidade da Pensilvânia, desenvolveu a Exposição Prolongada nos anos 1990 a partir de fundamentação teórica robusta. A Teoria do Processamento Emocional (Foa & Kozak, 1986) propunha que o trauma é mantido por estrutura de medo patologicamente armazenada na memória — interpretações distorcidas (perigo generalizado, autorrepresentação degradada, culpa), respostas fisiológicas condicionadas, e evitação que impede a integração. A intervenção é, portanto, ativação dessa estrutura em contexto seguro: exposição imaginária à narrativa traumática, repetida em sessões e em audição de gravação em casa, junto com exposição in vivo a estímulos evitados. A habituação enfraquece a resposta condicionada. A reestruturação cognitiva paralela ajusta crenças disfuncionais. O protocolo é estruturado, mensurável, e o paciente sabe exatamente o que vai fazer.
+        </p>
+        <p>
+          Francine Shapiro, em circunstâncias muito diferentes, descobriu o EMDR caminhando em um parque em 1987. Observou que movimentos oculares espontâneos durante pensamento sobre evento perturbador pareciam reduzir a intensidade da perturbação. A descoberta — inicial e claramente serendípita — foi seguida por sistematização teórica nos anos seguintes. Shapiro (1989, 2018) propôs o modelo de Processamento Adaptativo da Informação (AIP), segundo o qual memórias traumáticas ficam armazenadas de forma disfuncional e podem ser reprocessadas via ativação simultânea de elementos sensoriais, cognitivos, emocionais e somáticos da memória, combinada com estimulação bilateral. O protocolo padronizado em oito fases inclui história, preparação, avaliação, dessensibilização, instalação, varredura corporal, fechamento e reavaliação.
+        </p>
+        <p>
+          A trajetória de validação científica das duas foi diferente. PE foi construída de cima para baixo — teoria primeiro, protocolo depois, ensaios clínicos validando expectativas teóricas. EMDR foi construída de baixo para cima — observação empírica primeiro, teoria depois, ensaios clínicos repetidos para sustentar a eficácia diante de ceticismo inicial. Em 2026, ambas têm corpo de evidência consolidado em meta-análises (Bisson et al., 2013; Mavranezouli et al., 2020; Lewis et al., 2020) é ambas estão nas diretrizes internacionais de primeira linha. A diferença está em ênfase e em populações onde cada uma tem mais dados.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo de ação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Exposição Prolongada (PE)</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">EMDR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.pe}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.emdr}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por subtipo de TEPT</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Subtipo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">PE</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">EMDR</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Vantagem</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.pe}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.emdr}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O contraste prático entre PE e EMDR aparece na sessão. Em PE, a partir da quarta sessão, o paciente é instruído a narrar o trauma em primeira pessoa, presente do indicativo, com detalhe sensorial, durante 45 a 60 minutos. A narrativa é gravada. O paciente ouve a gravação por 30 minutos diários entre sessões. O desconforto é alto inicialmente — a SUDS (Subjective Units of Distress Scale) costuma atingir 80-100 nas primeiras exposições. Sessão após sessão, a SUDS cai. A habituação acontece. A história ganha contexto. A resposta condicionada de medo enfraquece. A literatura, conforme Foa et al. (2018), reporta resposta clínica significativa em 60-80% dos pacientes que completam o protocolo.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em EMDR, a partir da terceira sessão, o paciente identifica o evento mais perturbador, a imagem mais carregada dele, a crença negativa associada ("estou em perigo", "sou culpada", "não tenho controle"), a crença positiva desejada, a emoção dominante, e a sensação corporal. Inicia-se a dessensibilização com estimulação bilateral — movimentos oculares induzidos pela mão da terapeuta, ou tapping bilateral, ou sons alternados em headphones. O paciente foca brevemente nos elementos da memória durante a estimulação, depois reporta o que surge. A terapeuta segue o material que emerge. A SUDS cai ao longo de set após set. A crença negativa enfraquece. A crença positiva ganha validade subjetiva (VOC). O paciente pode estar emocionalmente mobilizado, mas não precisa narrar o trauma em detalhe.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A pesquisa de mecanismo, conforme Lee e Cuijpers (2013) e revisões posteriores, sustenta a eficácia de ambas, mas o debate sobre o componente bilateral específico do EMDR continua aberto. Estudos de desmontagem (dismantling studies) sobre o papel exato dos movimentos oculares mostram resultados mistos. Hipóteses ativas incluem: redução de carga em memória de trabalho durante recordação ativa do trauma; ativação de processos similares ao sono REM facilitando reconsolidação; resposta de orientação reflexa. O efeito clínico do protocolo EMDR em conjunto é consistente — a discussão acadêmica é sobre qual componente carrega o efeito.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A diferença operacional para o paciente é significativa. PE exige tolerância à narrativa repetida, comprometimento com tarefa de casa extensa, e exposição comportamental in vivo a estímulos evitados. O paciente que vai bem em PE é tipicamente aquele que valoriza estrutura clara, mensuração explícita e prontuário detalhado. EMDR exige menos verbalização explícita e menos tarefa de casa, mas tem o componente sensorial-corporal mais ativo durante a sessão. O paciente que vai bem em EMDR é tipicamente aquele que tem dificuldade de narrar mas consegue ativar a memória sem articulação verbal extensa. As taxas de abandono em PE (em torno de 20%) e EMDR (em torno de 18%) são semelhantes nas meta-análises de grandes populações.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de paciente e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do paciente</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Recomendação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher PE</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Veteranos, profissionais de segurança e trauma ocupacional crônico</p>
+              <p class="text-sm text-ink-700 mt-1">Maior corpo de evidência específica nestes grupos; protocolo VA estadunidense é referência mundial em TEPT crônico militar.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Trauma sexual em adulto</p>
+              <p class="text-sm text-ink-700 mt-1">Foa et al. (2018) consolidam evidência robusta. PE foi originalmente desenvolvida para este perfil, e o protocolo está mais densamente validado.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Pacientes que respondem bem a estrutura mensurável</p>
+              <p class="text-sm text-ink-700 mt-1">Perfil que ganha estabilidade com PCL-5 a cada sessão, tarefa de casa extensa, registros estruturados e progressão visível em escalas.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher EMDR</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Trauma único em adulto, sem comorbidade severa</p>
+              <p class="text-sm text-ink-700 mt-1">EMDR costuma resolver TEPT por trauma único em 6 a 10 sessões — vantagem prática em contextos com restrição de tempo.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Pacientes com baixa tolerância à narrativa explícita</p>
+              <p class="text-sm text-ink-700 mt-1">EMDR permite trabalhar elementos da memória sem articulação verbal extensa — vantagem clínica significativa para alguns perfis.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Pacientes com baixa disponibilidade para tarefa de casa</p>
+              <p class="text-sm text-ink-700 mt-1">EMDR exige menos compromisso extra-sessão; PE exige audição diária de 30 minutos de gravação. Para agendas restritas, EMDR pode ser mais factível.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando combinar ou sequenciar</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Trauma complexo com múltiplos eventos</p>
+            <p class="text-sm text-ink-700 mt-1">Modelo por fases (Cloitre et al., 2020): estabilização (STAIR ou habilidades DBT), processamento (PE ou EMDR), integração funcional. Sequência de meses, não semanas.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Resposta parcial após primeira modalidade</p>
+            <p class="text-sm text-ink-700 mt-1">Quando PE produz ganho parcial mas plateau persiste, alguns terapeutas integram componentes de EMDR para elementos específicos da memória ou da identidade; inverso também é descrito.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Sandra, 32 anos, policial militar pós-troca de tiros com ferimento de colega</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Sandra procurou tratamento quatro meses após operação policial em que perdeu colega próximo. Quadro: pesadelos diários, hipervigilância em qualquer situação que lembrasse a operação, evitação de retornar ao serviço operacional, sentimento de culpa por estar viva, alterações do sono. Escore inicial na PCL-5 de 56 — TEPT crônico clinicamente significativo. Diagnóstico confirmado por psiquiatra. Em afastamento médico há dois meses.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A psicóloga, formada em PE pelo programa internacional e em EMDR pelo EMDR Institute Brasil, apresentou as duas opções com transparência. PE com 12 a 16 sessões, com narrativa repetida da operação em sessão, audição de gravação 30 minutos por dia, exposição in vivo gradual a estímulos evitados, mensuração por PCL-5 a cada sessão. EMDR com 8 a 12 sessões, com trabalho sobre elementos da memória sem narração extensa, menor tarefa de casa, foco em recursos de estabilização inicial. Sandra escolheu PE — "como policial, prefiro saber exatamente o que estou fazendo e medir progresso".
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Em 14 sessões ao longo de quatro meses, o PCL-5 caiu de 56 para 14. O sono normalizou na quinta sessão. Os pesadelos cederam por volta da oitava. A evitação foi trabalhada como exposição in vivo nas últimas quatro sessões — visita planejada ao local do evento, retomada gradual de atividades operacionais limitadas, reintegração à academia da corporação. Sandra voltou ao serviço operacional, agora com supervisão de saúde mental ocupacional contínua. A psicóloga registrou no encerramento: "PE foi a escolha técnica certa para este perfil — população onde tem o maior corpo de evidência, paciente que valoriza estrutura mensurável, contexto ocupacional onde o protocolo VA tem framework de manutenção. EMDR poderia também ter funcionado, mas PE foi mais elegante para o conjunto".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões clínicos em TEPT por trauma operacional descritos no protocolo VA dos Estados Unidos e em estudos com profissionais de segurança brasileiros. PE é frequentemente preferida nesta população pela densidade de evidência específica.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções. Primeiro, PE e EMDR exigem treinamento específico e supervisão — não são protocolos que se aplicam a partir de leitura de manual. Aplicação inadequada pode produzir piora clínica em ambas. Segundo, evidência de equivalência média em escalas globais não significa que qualquer paciente responda igual a qualquer abordagem — variabilidade individual é alta e formulação clínica responsável continua sendo o melhor preditor de resposta. Terceiro, trauma complexo, dissociação severa e comorbidades graves pedem avaliação especializada — a escolha entre PE e EMDR neste comparativo se refere a TEPT em adultos com perfil clínico relativamente limpo, com estabilização prévia quando indicada.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No Brasil, a disponibilidade de profissionais certificados em PE é menor que em EMDR — uma assimetria de formação que afeta a escolha real na prática. Sociedades brasileiras de PE e EMDR mantêm programas ativos, mas o acesso fora de capitais segue limitado. Para pacientes em regiões com restrição, a escolha responsável é "qual modalidade o profissional disponível domina com supervisão adequada", e não "qual é teoricamente melhor". Acesso é parte da equação clínica.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Duas primeiras linhas, escolha por perfil clínico é acesso</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>PE e EMDR têm eficácia equivalente em TEPT em escalas globais — recomendadas como primeira linha por OMS, APA e NICE.</li>
+          <li>PE tem maior corpo de evidência em veteranos, trauma sexual em adulto e populações com alta tolerância a estrutura.</li>
+          <li>EMDR brilha em trauma único, pacientes com baixa tolerância à narrativa e contextos com restrição de tempo terapêutico.</li>
+          <li>Trauma complexo, dissociação severa e comorbidades graves pedem tratamento por fases com estabilização prévia.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem articular tratamento de trauma com fundamentação neurocientífica ampliada — base útil para certificação técnica em PE ou EMDR —, o IPOG mantém MBA em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/emdr-vs-tcc-trauma" class="text-brand-700 hover:text-brand-800 font-medium">EMDR vs TF-CBT para trauma — visão ampliada das abordagens cognitivo-comportamentais</a></li>
+          <li><a href="/comparativos/dbt-vs-tcc-borderline" class="text-brand-700 hover:text-brand-800 font-medium">DBT vs TCC para borderline — DBT-PE em TEPT comórbido com borderline</a></li>
+          <li><a href="/comparativos/act-vs-tcc" class="text-brand-700 hover:text-brand-800 font-medium">ACT vs TCC — terceira onda em quadros com componente existencial</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. Modalidade vigente de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Métodos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/metodos/exposicao-prolongada" class="mega-link"><strong class="text-ink-900 text-sm">Exposição Prolongada (PE)</strong></a></li>
+          <li><a href="/metodos/emdr" class="mega-link"><strong class="text-ink-900 text-sm">EMDR</strong></a></li>
+          <li><a href="/metodos/tcc" class="mega-link"><strong class="text-ink-900 text-sm">TCC clássica</strong></a></li>
+          <li><a href="/metodos/dbt" class="mega-link"><strong class="text-ink-900 text-sm">DBT</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/emdr-vs-tcc-trauma" class="mega-link"><strong class="text-ink-900 text-sm">EMDR vs TF-CBT</strong></a></li>
+          <li><a href="/comparativos/act-vs-tcc" class="mega-link"><strong class="text-ink-900 text-sm">ACT vs TCC</strong></a></li>
+          <li><a href="/comparativos/dbt-vs-tcc-borderline" class="mega-link"><strong class="text-ink-900 text-sm">DBT vs TCC para borderline</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Foa, E. & Rothbaum, B. (2008). Treating the Trauma of Rape: Prolonged Exposure. Guilford.</li>
+          <li>Foa, E., Hembree, E., Rothbaum, B. (2007). Prolonged Exposure Therapy for PTSD. Oxford.</li>
+          <li>Shapiro, F. (2018). Eye Movement Desensitization and Reprocessing (3rd ed.). Guilford.</li>
+          <li>Bisson, J. et al. (2013). Psychological therapies for chronic PTSD. Cochrane.</li>
+          <li>Watts, B. et al. (2013). Meta-analysis of psychotherapy for PTSD. JAMA Psychiatry.</li>
+          <li>Mavranezouli, I. et al. (2020). Psychological treatments for PTSD in adults. Psychological Medicine.</li>
+          <li>OMS (2013). Guidelines for the management of conditions specifically related to stress.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

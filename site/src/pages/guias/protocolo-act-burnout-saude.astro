@@ -1,0 +1,368 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+const areaPositiva = AREAS.find(a => a.id === 'psicologia-positiva')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Confirmar caracterização CID-11 é descartar quadros principais',
+    aplicacao: 'A CID-11 (OMS, 2019; entrada em vigor 2022) define burnout como fenômeno ocupacional (QD85), não doença, em três dimensões: exaustão energética, distanciamento mental do trabalho e redução de eficácia profissional. O ponto de partida do protocolo é caracterizar essas três dimensões com MBI-GS (Maslach Burnout Inventory General Survey, Maslach & Leiter, 2016), distinguir burnout de depressão maior (PHQ-9), ansiedade generalizada (GAD-7) e transtorno de adaptação. Burnout puro responde a intervenções de trabalho e contexto; depressão comórbida exige tratamento próprio.',
+    armadilha: 'Pular o diferencial com depressão. Burnout é depressão se sobrepõem clinicamente; tratar burnout sem ver depressão comórbida deixa a peça mais grave intocada.'
+  },
+  {
+    n: 2,
+    titulo: 'Sessão 1 — Hexaflex e formulação inicial em ACT',
+    aplicacao: 'O hexaflex de Hayes, Strosahl e Wilson (2012) organiza a ACT em seis processos centrais: aceitação, desfusão, momento presente, self como contexto, valores, ações comprometidas. Na sessão inicial, conduza formulação rápida com o paciente: o que ele tem evitado, com qual custo, e em que direção quer mover-se. Em profissional da saúde, padrão recorrente: evita reconhecer cansaço por receio de parecer fraco, distancia-se emocionalmente de pacientes para sobreviver, perdeu contato com o sentido original da escolha profissional. A formulação visual em uma página é entregue ao paciente.',
+    armadilha: 'Começar pela psicoeducação extensa antes da formulação. O paciente já leu sobre burnout; o que falta é leitura específica do próprio caso.'
+  },
+  {
+    n: 3,
+    titulo: 'Sessão 2 — Aceitação experiencial e fim da luta com sintomas',
+    aplicacao: 'Profissional da saúde em burnout luta ativamente contra cansaço, irritação é desânimo — frequentemente classificando essas experiências como falha pessoal. Hayes et al. (2012) e Bond e colaboradores (2011) descrevem a aceitação experiencial como abertura intencional para experiências internas difíceis sem tentar mudá-las. Exercícios canônicos: "Demônios no Barco" (visualização do barco-vida com passageiros incômodos a bordo), exercício do termômetro de luta. Tarefa de casa: diário de luta versus abertura em 5 momentos da semana.',
+    armadilha: 'Vender aceitação como resignação. Aceitação em ACT é abertura ativa; resignação é desistência. A confusão derruba a adesão.'
+  },
+  {
+    n: 4,
+    titulo: 'Sessão 3 — Desfusão cognitiva com pensamentos automáticos do trabalho',
+    aplicacao: 'Profissional da saúde em burnout carrega pensamentos automáticos com fusão alta: "não estou dando conta", "se eu parar, alguém morre", "ninguém vai entender". Hayes et al. (2012) e Levin et al. (2014) descrevem a desfusão como observação dos pensamentos como eventos mentais, não verdades. Exercícios: "Tenho o pensamento de que..." (etiquetar), "leite-leite-leite" (repetição até esvaziar significado), pensamento como folha em rio. Em escala de 0 a 10, mede-se "fusão" antes é depois — meta de redução de 2 pontos por exercício.',
+    armadilha: 'Tentar desfundir pensamento que carrega informação clínica útil. Desfusão não é descartar pensamento; é mudar relação com ele.'
+  },
+  {
+    n: 5,
+    titulo: 'Sessão 4 — Self como contexto e perspectivismo',
+    aplicacao: 'Em burnout severo, a identidade profissional invade a identidade pessoal: "sou o médico que falhou". O self como contexto (Hayes et al., 2012) trabalha o "eu" como observador estável das experiências, não como conteúdo dessas experiências. Exercícios: "observador que observa", linha do tempo (você aos 10, 20, 30, 40 anos — quem permaneceu?), exercício do quadro-negro. Em profissional da saúde, esse trabalho frequentemente desbloqueia memória do "eu antes da medicina" — material clínico denso para próximas sessões.',
+    armadilha: 'Pular o self como contexto por parecer abstrato demais. Sem essa peça, valores parecem ameaça à identidade profissional construída.'
+  },
+  {
+    n: 6,
+    titulo: 'Sessão 5 — Esclarecimento de valores em domínios da vida',
+    aplicacao: 'Wilson e Murrell (2004) e Hayes et al. (2012) descrevem valores como direções escolhidas, não objetivos. O exercício canônico é o Valued Living Questionnaire em 10 domínios: família, relacionamentos íntimos, parentalidade, amigos, trabalho, educação, lazer, espiritualidade, cidadania, saúde física. O paciente pontua importância (0-10) e consistência atual (0-10), revela gaps. Em profissional da saúde, gap recorrente: trabalho alto em importância, alto em ação cotidiana, mas baixo em consistência com valores originais; lazer e saúde em gap inverso. A leitura do gap orienta as próximas três sessões.',
+    armadilha: 'Confundir valores com metas. Valor é direção (ser cuidadoso); meta é destino (terminar especialização). A confusão produz plano falho.'
+  },
+  {
+    n: 7,
+    titulo: 'Sessão 6 — Ações comprometidas em três domínios prioritários',
+    aplicacao: 'Hayes et al. (2012) e Levin et al. (2014) consolidam ações comprometidas como SMART vinculadas a valores. O paciente escolhe três domínios com maior gap é define ações observáveis para a semana. Em profissional da saúde: domínio saúde (caminhar 30 min, 3x semana), domínio relacionamentos (uma refeição sem celular com parceiro, 4x semana), domínio trabalho (recusar um plantão extra, sessão de supervisão semanal). A ação não precisa ser grande; precisa ser observável, semanal é ancorada em valor. Métrica de adesão na próxima sessão.',
+    armadilha: 'Aceitar metas ambiciosas demais. "Vou meditar 1 hora por dia" cai em uma semana; "vou meditar 5 minutos por dia, 3 vezes na semana" sustenta.'
+  },
+  {
+    n: 8,
+    titulo: 'Sessão 7-8 — Revisão, prevenção de recaída é articulação com NR-1',
+    aplicacao: 'As duas sessões finais consolidam: revisão de evolução nas três dimensões do MBI-GS, identificação de gatilhos pessoais, plano de prevenção de recaída por escrito, articulação com saúde ocupacional. A NR-1 (Portaria MTE 1.419/2024, vigência 2025) tornou obrigatório o gerenciamento de riscos psicossociais no PGR de toda empresa, com previsão de afastamento e retorno ao trabalho qualificado. O psicólogo articula com SESMT, medicina do trabalho e gestão de pessoas — sem violar sigilo, mas registrando recomendações funcionais (jornada, pausas, carga). Encerramento com booster de 30 e 90 dias previsto em contrato.',
+    armadilha: 'Encerrar protocolo sem articulação com o trabalho. Burnout sem mudança de contexto recidiva em meses.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Diferencial CID-11', indicador: 'MBI-GS + PHQ-9 + GAD-7', quem: 'Psicólogo', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '2 · Hexaflex inicial', indicador: 'Formulação em 1 página', quem: 'Dupla', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '3 · Aceitação', indicador: 'Diário de luta vs abertura', quem: 'Paciente', quando: 'Sessão 2', status: 'Pendente' },
+  { passo: '4 · Desfusão', indicador: 'Escore fusão pré-pós', quem: 'Dupla', quando: 'Sessão 3', status: 'Pendente' },
+  { passo: '5 · Self como contexto', indicador: 'Linha do tempo concluída', quem: 'Dupla', quando: 'Sessão 4', status: 'Pendente' },
+  { passo: '6 · Valores', indicador: 'VLQ em 10 domínios', quem: 'Paciente', quando: 'Sessão 5', status: 'Pendente' },
+  { passo: '7 · Ações comprometidas', indicador: '3 ações SMART semanais', quem: 'Paciente', quando: 'Sessão 6', status: 'Pendente' },
+  { passo: '8 · Encerramento', indicador: 'Plano prevenção + NR-1', quem: 'Psicólogo', quando: 'Sessão 7-8', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Ignorar diferencial com depressão maior',
+    texto: 'A CID-11 é firme: burnout é fenômeno ocupacional, não transtorno mental. Maslach e Leiter (2016) e revisões recentes (Bianchi et al., 2021) mostram alta sobreposição com depressão. PHQ-9 e GAD-7 são obrigatórios na primeira sessão. Tratar burnout em paciente com depressão maior comórbida não tratada produz fracasso terapêutico — e risco clínico.'
+  },
+  {
+    titulo: 'Tratar aceitação como resignação',
+    texto: 'Erro pedagógico clássico em ACT. Aceitação é abertura intencional para experiência interna sem luta; resignação é desistência. Hayes et al. (2012) são explícitos. Profissional da saúde em burnout interpreta "aceitar o cansaço" como "aceitar adoecer" — é desengaja. A formulação correta é "abrir espaço para o cansaço enquanto seguir em direção ao que importa".'
+  },
+  {
+    titulo: 'Encerrar sem articulação com o trabalho',
+    texto: 'Burnout sem mudança de contexto recidiva. A NR-1 (Portaria 1.419/2024) tornou obrigatório o gerenciamento de riscos psicossociais. O psicólogo, sem violar sigilo, articula recomendações funcionais com saúde ocupacional. Protocolo encerrado sem essa peça deixa o paciente exposto ao mesmo gatilho.'
+  },
+  {
+    titulo: 'Conduzir ACT sem treinamento específico',
+    texto: 'ACT exige formação. A ABPMC é a ABRAP têm trilhas reconhecidas. Aplicar exercícios isolados sem o hexaflex articulado produz intervenção rasa. Hayes e colaboradores (2021) descrevem o phenomeon de "ACT-light": exercícios desconectados do modelo, com efeito clínico fraco.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'ACT é mais indicada que TCC clássica para burnout?',
+    a: 'A literatura recente (Hayes et al., 2021; Cochrane review de terceira onda) mostra evidência crescente para ACT em burnout, com tamanhos de efeito comparáveis aos da TCC clássica em ensaios randomizados. A escolha técnica considera preferência do paciente, treinamento do clínico e perfil clínico. Em burnout com fusão cognitiva alta e evitação experiencial central, ACT tende a operar bem; em quadros com forte componente cognitivo distorcido tratável por reestruturação, TCC clássica pode ser melhor primeira escolha. Em prática, abordagens integradas são comuns.'
+  },
+  {
+    q: 'O protocolo de 8 sessões funciona em profissional da saúde com afastamento ativo?',
+    a: 'Funciona com adaptação. Em afastamento, recomenda-se aumentar para 10 a 12 sessões, com primeiras quatro focadas em estabilização e psicoeducação, e introdução do hexaflex a partir da sessão 5. A volta ao trabalho exige planejamento qualificado (NR-1 e literatura de retorno; OMS 2022; Cochrane review), com sessões de transição é articulação formal com medicina do trabalho. Encerramento sem essa transição é fator de recaída documentado.'
+  },
+  {
+    q: 'Como medir resposta clínica ao longo do protocolo?',
+    a: 'Três instrumentos canônicos sessão a sessão: MBI-GS (Maslach Burnout Inventory General Survey, 16 itens, 5 minutos) para as três dimensões do burnout; PHQ-9 para depressão; AAQ-II (Acceptance and Action Questionnaire, Bond et al., 2011) para flexibilidade psicológica, processo central da ACT. Tendência de melhora em AAQ-II precede em 2-3 sessões a melhora no MBI-GS — indicador prognóstico útil.'
+  },
+  {
+    q: 'Como o MBA em Psicologia Positiva do IPOG conecta a esse guia?',
+    a: 'O MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações cobre prevenção de burnout, intervenções baseadas em terceira onda, NR-1 e protocolos de retorno ao trabalho — fundamento técnico para psicólogo que conduz ACT em profissionais da saúde, tanto em clínica privada quanto em estrutura corporativa de saúde mental. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Protocolo ACT em 8 sessões para burnout em profissionais da saúde',
+  description: 'Protocolo passo-a-passo de Terapia de Aceitação e Compromisso para burnout em profissionais da saúde, com hexaflex, MBI-GS, valores, ações comprometidas e NR-1.',
+  totalTime: 'PT22M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Protocolo ACT em 8 sessões para burnout em profissionais da saúde: guia passo-a-passo',
+  description: 'Protocolo de ACT para burnout em profissionais da saúde, com CID-11 dimensões, MBI, valores, desfusão, ações comprometidas é articulação com NR-1.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Protocolo ACT burnout em profissionais da saúde', item: `${SITE.url}/guias/protocolo-act-burnout-saúde` }
+  ]
+};
+---
+
+<Base
+  title="Protocolo ACT 8 sessões para burnout em profissionais da saúde — guia · hexaflex, MBI, NR-1"
+  description="Protocolo de Terapia de Aceitação e Compromisso (ACT) em 8 sessões para burnout em profissionais da saúde: CID-11 dimensões, MBI-GS, hexaflex, desfusão, valores, ações comprometidas e NR-1.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Protocolo ACT burnout em profissionais da saúde' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 8 sessões</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir protocolo ACT para burnout em profissionais da saúde</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto clínico em 8 sessões com Terapia de Aceitação e Compromisso (Hayes, Strosahl & Wilson): diferencial CID-11, MBI-GS, hexaflex, desfusão cognitiva, esclarecimento de valores, ações comprometidas é articulação com NR-1 (Portaria 1.419/2024).</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~22 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos é organizacionais</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Psicologia Positiva
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir protocolo ACT em 8 sessões para burnout em profissionais da saúde, com diferencial CID-11, hexaflex, valores é ações comprometidas.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, treinamento em ACT (ABPMC ou ABRAP), conhecimento da NR-1 (Portaria 1.419/2024) e do MBI-GS.</li>
+          <li><strong>Resultado esperado:</strong> protocolo defensável em 8 sessões, com redução documentada em MBI-GS, melhora em AAQ-II e plano de prevenção de recaída articulado com saúde ocupacional.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura comum sobre burnout pede que o paciente reduza estressores é descanse. A proposta funciona em quadros leves; em burnout instalado em profissional da saúde, com identidade profissional fundida ao papel e evitação experiencial alta, a redução isolada de estressores produz alívio temporário e recaída em seis a doze meses. Hayes, Strosahl e Wilson (2012), Bond e colaboradores (2011), e revisões recentes (Hayes et al., 2021) mostram que a peça que sustenta a recuperação é a flexibilidade psicológica — a capacidade de abrir-se a experiências internas difíceis enquanto se move em direção a valores escolhidos.
+        </p>
+        <p>
+          A inversão prática para o psicólogo: a ACT em 8 sessões não combate o cansaço; abre espaço para ele. Não elimina pensamentos catastróficos sobre o trabalho; muda a relação com eles. Não promete satisfação profissional restaurada por força de vontade; reconecta o profissional com o sentido original da escolha e converte esse sentido em ações comprometidas observáveis. Quando o protocolo articula clínica com NR-1 e saúde ocupacional, a recuperação ganha sustentação estrutural — é a recaída em seis meses cai significativamente.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 8 passos · 8 sessões</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Protocolo típico em 8 sessões semanais, com booster em 30 e 90 dias após encerramento.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Médica residente, 31 anos, 8 sessões + retorno qualificado</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Médica residente de UTI adulto, 31 anos, segundo ano de residência, procura avaliação após dois episódios de choro em troca de plantão e crise de pânico a caminho do hospital. MBI-GS inicial: exaustão 4,8/6, cinismo 4,2/6, eficácia 2,8/6 (perfil clássico de burnout severo). PHQ-9: 11 (depressão leve-moderada). GAD-7: 14 (ansiedade moderada). Diferencial: depressão presente mas não predominante, com curso vinculado ao agravamento ocupacional. Plano: ACT em 8 sessões com encaminhamento psiquiátrico em paralelo para avaliação medicamentosa.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Formulação inicial revelou padrão recorrente: evitar reconhecer o cansaço para "não parecer fraca diante do staff", afastar-se emocionalmente dos pacientes graves para "sobreviver ao plantão", perder contato com o motivo original de escolher medicina. Sessões 2 a 4 trabalharam aceitação, desfusão dos pensamentos "se eu parar, alguém morre" e "ninguém vai entender" e self como contexto com linha do tempo desde os 18 anos. Sessão 5: VLQ revelou gap em saúde física, lazer, relacionamentos íntimos. Sessões 6 e 7: ações comprometidas semanais — caminhar 3x/semana, jantar com parceiro 4x/semana sem celular, recusar plantão extra, supervisão clínica semanal com colega. Sessão 8: revisão final com MBI-GS pós-protocolo (exaustão 2,9, cinismo 2,1, eficácia 4,4), articulação com COREME e medicina do trabalho para retorno qualificado, plano de prevenção de recaída por escrito. Booster em 90 dias confirmou manutenção.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://icd.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — CID-11 QD85 (burnout)</a></li>
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/segurança-e-saúde-no-trabalho/normas-regulamentadoras/nr-1-atualizada-2024.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NR-1 — Portaria 1.419/2024</a></li>
+          <li><a href="https://contextualscience.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ACBS — Association for Contextual Behavioral Science</a></li>
+          <li><a href="https://www.abpmc.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABPMC — Associação Brasileira</a></li>
+          <li><a href="https://www.abrap.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABRAP — Associação Brasileira de ACT</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/retorno-ao-trabalho-pos-burnout" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Retorno ao trabalho pós-burnout</a></li>
+          <li><a href="/guias/implementar-nr1-em-empresa" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Implementar NR-1 em empresa</a></li>
+          <li><a href="/metodos" class="text-brand-700 hover:text-brand-800 font-medium">Métodos terapêuticos · ACT, TCC, DBT, EMDR</a></li>
+          <li><a href={`/áreas/${areaSmo.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Saúde Mental nas Organizações</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">ACT em burnout não combate o cansaço — abre espaço para ele e move em direção a valores.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O protocolo em 8 sessões integra diferencial CID-11, MBI-GS, hexaflex, aceitação experiencial, desfusão cognitiva, self como contexto, esclarecimento de valores, ações comprometidas, articulação com NR-1 e prevenção de recaída. Para psicólogo clínico ou organizacional que conduz essa rotina, o MBA em Psicologia Positiva do IPOG consolida fundamento técnico em terceira onda, prevenção e cultura de cuidado.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBA no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/áreas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+          <li><a href={`/áreas/${areaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaPositiva.name}</strong></a></li>
+          <li><a href={`/áreas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://icd.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CID-11</a></li>
+          <li><a href="https://contextualscience.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ACBS</a></li>
+          <li><a href="https://www.abrap.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABRAP</a></li>
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/segurança-e-saúde-no-trabalho" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NR-1</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~22 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

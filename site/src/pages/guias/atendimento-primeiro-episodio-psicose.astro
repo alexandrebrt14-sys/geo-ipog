@@ -1,0 +1,375 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Reconhecer e medir a Duração da Psicose Não Tratada (DUP)',
+    aplicacao: 'A Duração da Psicose Não Tratada (DUP — Duration of Untreated Psychosis) é o intervalo entre o início dos sintomas psicóticos francos é o primeiro tratamento adequado. Marshall e colaboradores (2005), em meta-análise de referência, demonstraram correlação consistente entre DUP prolongada e pior desfecho funcional, mais resistência ao tratamento e mais sintomas negativos persistentes. Birchwood e colaboradores (1998, 2013) descreveram o "período crítico" dos primeiros 2-5 anos como janela de plasticidade clínica. No primeiro atendimento, mensure DUP retrospectivamente: quando os sintomas francos começaram, e o que aconteceu entre esse momento é o atual.',
+    armadilha: 'Tratar a primeira manifestação franca como início do quadro. Pródromos (retraimento social, ideação esquisita, queda funcional) frequentemente precedem em meses ou anos.'
+  },
+  {
+    n: 2,
+    titulo: 'Conduzir avaliação de risco imediato (suicidalidade, heteroagressão, recusa de cuidado)',
+    aplicacao: 'Primeiro episódio psicótico é janela de risco elevado para suicídio (Robinson et al., 2010), heteroagressão associada a delírios persecutórios e recusa de cuidado por insight comprometido. Avalie sistematicamente: ideação suicida (CSSR-S, Columbia Suicide Severity Rating Scale, Posner et al., 2011), planos e meios, conteúdo de delírios (especialmente conteúdo persecutório dirigido a pessoa específica), uso de substâncias, suporte familiar imediato. A avaliação de risco orienta o destino imediato: ambulatorial qualificado, internação voluntária ou internação involuntária com base na Lei 10.216/2001.',
+    armadilha: 'Adiar avaliação de risco para "depois que estabilizar". Em primeiro episódio, risco agudo é o mais urgente — é o mais subnotificado.'
+  },
+  {
+    n: 3,
+    titulo: 'Estabelecer aliança terapêutica preservando autonomia',
+    aplicacao: 'A literatura de Early Intervention in Psychosis (EIP; Killackey & Yung, 2007; McGorry et al., 2008) é consistente: a aliança terapêutica nas primeiras semanas determina adesão dos próximos meses. Em paciente com insight comprometido, a aliança é construída com escuta cuidadosa do conteúdo subjetivo, sem confronto direto ao delírio, sem promessas que não podem ser cumpridas, com transparência sobre próximos passos. A regra clínica: respeite autonomia onde possível, articule rede de cuidado com consentimento quando viável, intervenha com proteção legal quando há risco grave.',
+    armadilha: 'Confrontar o delírio na primeira sessão. O confronto rompe a aliança; a escuta atenta abre caminho para a intervenção posterior.'
+  },
+  {
+    n: 4,
+    titulo: 'Articular antipsicótico em baixa dose com psiquiatria',
+    aplicacao: 'A literatura de EIP (Tiihonen et al., 2017; McGorry et al., 2008; NICE CG178) recomenda antipsicótico em dose baixa inicial para primeiro episódio psicótico, com titulação cuidadosa. Risperidona, aripiprazol é olanzapina em doses iniciais reduzidas são opções frequentes. O psicólogo não prescreve, mas articula: encaminha para psiquiatria com urgência (em horas a poucos dias, dependendo da gravidade), participa do plano integrado, monitora adesão e efeitos colaterais relatados, alivia a expectativa familiar sobre "remissão rápida". Doses altas iniciais em primeiro episódio aumentam efeitos colaterais sem ganho proporcional de eficácia.',
+    armadilha: 'Adiar encaminhamento psiquiátrico por receio de "rotular cedo demais". DUP prolongada é fator prognóstico negativo bem documentado.'
+  },
+  {
+    n: 5,
+    titulo: 'Implementar Family Intervention estruturada',
+    aplicacao: 'Pitschel-Walz e colaboradores (2001), em meta-análise clássica, demonstraram que Family Intervention reduz taxa de recaída em primeiro episódio em ~20 pontos percentuais comparada a tratamento padrão. NICE CG178 recomenda como intervenção de primeira linha. Componentes essenciais: psicoeducação familiar sobre o quadro, manejo de Emoção Expressa (especialmente crítica e superenvolvimento), comunicação não-confrontativa, resolução de problemas, plano de prevenção de crise. Em 6 a 12 sessões com 1 a 2 familiares-chave, com sigilo do paciente preservado quando aplicável.',
+    armadilha: 'Conduzir psicoeducação informal apenas quando a família "pergunta". Family Intervention estruturada é intervenção, não comunicação institucional.'
+  },
+  {
+    n: 6,
+    titulo: 'Encaminhar para serviço EIP/CAPS qualificado',
+    aplicacao: 'O modelo Early Intervention in Psychosis (EIP), originário do EPPIC australiano (McGorry et al., 1996), opera em equipe multiprofissional com manejo intensivo nos primeiros 2 a 5 anos após o primeiro episódio. No Brasil, o equivalente operacional são os CAPS qualificados, com matriciamento com UBS e UPA. A literatura (Tiihonen et al., 2017; Correll et al., 2018) mostra que serviços EIP melhoram desfecho funcional, reduzem internações é aumentam aderência. Mapeie o serviço disponível no território antes da primeira crise — não durante.',
+    armadilha: 'Conduzir caso isolado em consultório privado sem retaguarda de serviço especializado. Em recaída, o consultório não tem capacidade de manejo intensivo.'
+  },
+  {
+    n: 7,
+    titulo: 'Estruturar TCC para psicose como intervenção complementar',
+    aplicacao: 'A TCC para psicose (TCC-p; Kuipers et al., 1997; NICE CG178; Mehl et al., 2015) é intervenção complementar com evidência consolidada para sintomas positivos persistentes (delírios, alucinações), sintomas negativos é adesão a tratamento. Tipicamente 16 a 20 sessões, com formulação cognitiva específica (modelo ABC, Beck), psicoeducação, trabalho com vozes (Voice Hearing Approach), reestruturação de delírios via questionamento socrático cuidadoso. Em primeiro episódio, TCC-p é introduzida após estabilização inicial (geralmente após 4 a 8 semanas de medicação).',
+    armadilha: 'Iniciar TCC-p antes da estabilização medicamentosa. Em fase aguda, a intervenção cognitiva tem alcance limitado e pode gerar frustração.'
+  },
+  {
+    n: 8,
+    titulo: 'Planejar reabilitação psicossocial e retorno funcional',
+    aplicacao: 'O primeiro episódio é janela crítica para preservar funcionalidade (escola, trabalho, vínculos). Killackey e colaboradores (2008) demonstraram que Individual Placement and Support (IPS) supera reabilitação tradicional em retorno ao trabalho. Componentes: avaliação de funcionalidade pré-mórbida, plano gradual de retorno, suporte ativo no contexto real (não em ambiente protegido), articulação com escola/empregador com consentimento, manejo de estigma. Em CAPS qualificado, o plano de reabilitação integra-se ao Projeto Terapêutico Singular.',
+    armadilha: 'Adiar reabilitação para "quando estiver mais estável". O afastamento prolongado consolida desabilitação que era reversível.'
+  },
+  {
+    n: 9,
+    titulo: 'Documentar e manter seguimento por 2 a 5 anos',
+    aplicacao: 'O período crítico de Birchwood (2013) define os primeiros 2 a 5 anos como janela de maior plasticidade clínica e maior risco de recaída. O seguimento estruturado nesse período reduz hospitalizações é melhora desfecho funcional. Componentes: consultas regulares, mensuração padronizada (PANSS, SOFAS, qualidade de vida), revisão de medicação com psiquiatria, manutenção de Family Intervention adaptada, suporte a vínculos sociais é ocupacionais. Documente em registro técnico conforme Resolução CFP 06/2019.',
+    armadilha: 'Encerrar seguimento aos 6 meses por estabilização aparente. Recaídas no segundo ano são frequentes — é o cuidado contínuo previne.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · DUP', indicador: 'Tempo estimado documentado', quem: 'Psicólogo', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '2 · Risco', indicador: 'CSSR-S + plano de segurança', quem: 'Psicólogo', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '3 · Aliança', indicador: 'Escuta sem confronto direto', quem: 'Psicólogo', quando: 'Sessão 1-2', status: 'Pendente' },
+  { passo: '4 · Psiquiatria', indicador: 'Encaminhamento urgente', quem: 'Psicólogo', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '5 · Family Intervention', indicador: '6-12 sessões agendadas', quem: 'Equipe', quando: 'Semana 2-12', status: 'Pendente' },
+  { passo: '6 · EIP/CAPS', indicador: 'Vínculo formal com serviço', quem: 'Psicólogo', quando: 'Mês 1', status: 'Pendente' },
+  { passo: '7 · TCC-p', indicador: '16-20 sessões agendadas', quem: 'Psicólogo TCC', quando: 'Mês 2-6', status: 'Pendente' },
+  { passo: '8 · Reabilitação', indicador: 'Plano IPS/PTS', quem: 'Equipe', quando: 'Mês 2-12', status: 'Pendente' },
+  { passo: '9 · Seguimento', indicador: 'Consultas + PANSS bimestral', quem: 'Psicólogo', quando: '2-5 anos', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Subestimar a DUP como preditor de desfecho',
+    texto: 'Marshall et al. (2005), em meta-análise de referência, mostraram correlação consistente entre DUP prolongada e pior desfecho funcional, mais sintomas negativos e mais resistência a tratamento. Adiar encaminhamento por receio de "rotular cedo" é decisão clínica frágil — é a evidência é firme em mais de duas décadas de literatura.'
+  },
+  {
+    titulo: 'Confrontar delírio na primeira sessão',
+    texto: 'A literatura de EIP (Killackey & Yung, 2007; McGorry et al., 2008) é consistente: aliança terapêutica nas primeiras semanas determina adesão dos meses seguintes. Confrontar delírio em paciente com insight comprometido rompe aliança. A escuta cuidadosa, sem concordar nem confrontar, abre caminho para a intervenção posterior.'
+  },
+  {
+    titulo: 'Pular Family Intervention estruturada',
+    texto: 'Pitschel-Walz et al. (2001) e NICE CG178 são consistentes: Family Intervention reduz recaída em ~20 pontos percentuais comparada a tratamento padrão. Conduzir psicoeducação informal apenas quando a família pergunta deixa o efeito clínico fora do alcance.'
+  },
+  {
+    titulo: 'Encerrar seguimento aos 6 meses por estabilização aparente',
+    texto: 'Birchwood (2013) define o período crítico em 2 a 5 anos. Recaídas no segundo ano são frequentes. O seguimento estruturado nesse período reduz hospitalizações é melhora desfecho funcional. Encerrar por estabilização aparente é decisão clínica curta.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Posso conduzir caso de primeiro episódio em consultório privado?',
+    a: 'Pode, com retaguarda. Recomenda-se: articulação formal com psiquiatra de referência, vínculo com CAPS qualificado do território, protocolo escrito para situações de risco, capacidade real de manejo de crise (24/48 horas de resposta). Sem essa retaguarda, o consultório isolado não tem capacidade operacional para manejo da fase aguda e da prevenção de recaída — é o paciente fica em risco. Em primeiro episódio com risco elevado, encaminhamento para serviço especializado é prática mínima de prudência.'
+  },
+  {
+    q: 'TCC para psicose substitui medicação?',
+    a: 'Não. NICE CG178 é a literatura consolidada (Mehl et al., 2015; Morrison et al., 2014) descrevem TCC-p como intervenção complementar à medicação, não substituta. Ensaios com TCC-p como única intervenção mostraram resultados em subgrupos selecionados (pacientes com recusa firme de medicação, sintomas leves), mas em primeiro episódio com sintomas francos a literatura recomenda combinação. A decisão sobre medicação é privativa do médico psiquiatra.'
+  },
+  {
+    q: 'Como atuar quando a família pede internação é o paciente recusa?',
+    a: 'A Lei 10.216/2001 (Lei da Reforma Psiquiátrica) regulamenta as modalidades de internação: voluntária (com consentimento), involuntária (sem consentimento, com base em laudo médico, comunicação obrigatória ao Ministério Público em 72h) e compulsória (judicial). A decisão de internação é médica. O psicólogo participa da avaliação clínica, documenta risco, articula com psiquiatria e equipe. Em situações de risco grave imediato, internação involuntária é instrumento legítimo previsto em lei — é adiá-la por receio ideológico pode produzir desfecho catastrófico.'
+  },
+  {
+    q: 'Como o MBA em Reabilitação Neuropsicológica do IPOG conecta a esse guia?',
+    a: 'O MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo do IPOG cobre neurociência, neuroplasticidade, planos de reabilitação cognitiva e neurodesenvolvimento — fundamento técnico para psicólogo que conduz seguimento de longo prazo em primeiro episódio psicótico, especialmente em componentes de reabilitação cognitiva (déficits em memória de trabalho, atenção e funções executivas que persistem após estabilização). Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir primeiro atendimento em primeiro episódio psicótico',
+  description: 'Guia em 9 passos para primeiro atendimento em primeiro episódio psicótico: DUP, avaliação de risco, aliança, antipsicótico em baixa dose, Family Intervention, CAPS/EIP, TCC-p, reabilitação e seguimento.',
+  totalTime: 'PT24M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como conduzir primeiro atendimento em primeiro episódio psicótico: guia passo-a-passo',
+  description: 'Protocolo em 9 passos para primeiro episódio psicótico, com DUP, CAPS, Family Intervention, antipsicóticos baixa dose, Early Intervention (EIP) e período crítico de Birchwood.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Primeiro episódio psicótico', item: `${SITE.url}/guias/atendimento-primeiro-episodio-psicose` }
+  ]
+};
+---
+
+<Base
+  title="Primeiro atendimento em primeiro episódio psicótico — guia 9 passos · DUP, CAPS, EIP, Family Intervention"
+  description="Protocolo passo-a-passo para primeiro atendimento em primeiro episódio psicótico: DUP (Marshall 2005), avaliação de risco, aliança terapêutica, antipsicóticos em baixa dose, Family Intervention, articulação com CAPS/EIP e período crítico de Birchwood.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Primeiro episódio psicótico' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir primeiro atendimento em primeiro episódio psicótico</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto clínico para o primeiro contato com primeiro episódio psicótico: mensuração da Duração da Psicose Não Tratada (DUP), avaliação de risco, aliança terapêutica, articulação com psiquiatria, Family Intervention, encaminhamento a CAPS qualificado e Early Intervention in Psychosis (EIP).</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~24 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos e equipes de saúde mental</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir o primeiro contato em primeiro episódio psicótico com avaliação de DUP, manejo de risco, aliança preservada, articulação medicamentosa, Family Intervention e plano de seguimento de 2 a 5 anos.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, conhecimento da Lei 10.216/2001, articulação prévia com psiquiatra e CAPS de referência, treinamento em manejo de crise.</li>
+          <li><strong>Resultado esperado:</strong> primeiro atendimento defensável tecnicamente, com plano integrado entre clínica, família e serviço especializado, e seguimento estruturado nos primeiros anos.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura comum sobre primeiro episódio psicótico assume que o foco do primeiro contato é o sintoma — qual delírio, qual alucinação, qual quadro nosológico. Marshall e colaboradores (2005), Birchwood e colaboradores (2013) é a literatura consolidada de Early Intervention in Psychosis (McGorry et al., 2008; Killackey & Yung, 2007) deslocam esse foco. O preditor mais consistente de desfecho funcional, em mais de duas décadas de meta-análises, não é o subtipo clínico inicial nem a gravidade dos sintomas francos — é a Duração da Psicose Não Tratada (DUP) é a qualidade do cuidado nos primeiros 2 a 5 anos, o chamado "período crítico".
+        </p>
+        <p>
+          A inversão prática para o psicólogo: o primeiro contato é decisão estratégica, não apenas avaliação clínica. Mensure DUP retrospectivamente, avalie risco imediato com instrumento padronizado, construa aliança preservando autonomia, encaminhe para psiquiatria em janela de horas, implemente Family Intervention estruturada, vincule ao CAPS qualificado, planeje TCC-p após estabilização, estruture reabilitação precoce e mantenha seguimento por 2 a 5 anos. Quem segue esse trajeto altera trajetória clínica — é a literatura é firme em sustentar essa afirmação.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Plano integrado em janela de 2 a 5 anos, com primeira fase intensiva (semanas a meses) e fase de manutenção.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Estudante de engenharia, 22 anos, primeiro episódio em janela de 8 meses</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Estudante de engenharia, 22 anos, terceiro ano de graduação, chega a serviço-escola de psicologia trazido pela mãé após episódio em casa com fala desorganizada e crença persistente de que colegas teriam acessado seu computador para "monitorar pensamentos". Anamnese: queda funcional desde início do segundo semestre (8 meses antes), retraimento social, irritabilidade, redução de sono, queda de notas. Pródromos identificados retrospectivamente; sintomas francos com aproximadamente 4 meses de evolução. DUP estimada: 4 meses.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Primeira sessão: avaliação de risco com CSSR-S (ideação suicida ausente, conteúdo persecutório não dirigido a pessoa específica), uso negado de substâncias, suporte familiar disponível. Aliança construída com escuta cuidadosa do conteúdo, sem confronto direto. Encaminhamento urgente para psiquiatra de referência da rede, com consulta agendada em 48 horas — iniciada risperidona em baixa dose. Vínculo formal com CAPS II do território em 7 dias. Family Intervention estruturada em 10 sessões com mãe e irmã. Após estabilização (semana 8), TCC-p introduzida em 18 sessões. Plano de reabilitação acadêmica articulado com universidade via NAI (Núcleo de Acessibilidade e Inclusão), com retorno gradual em semestre seguinte. Seguimento estruturado por 36 meses, com PANSS bimestral e revisão psiquiátrica trimestral. Aos 24 meses: remissão sintomática, retorno integral aos estudos, sem hospitalização, sem nova crise.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10216.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 10.216/2001 — Reforma Psiquiátrica</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/cg178" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE CG178 — Psychosis and schizophrenia in adults</a></li>
+          <li><a href="https://iepa.org.au/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">IEPA — International Early Psychosis Association</a></li>
+          <li><a href="https://www.orygen.org.au/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Orygen / EPPIC — Modelo EIP de referência</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019 sobre documentos</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/conduzir-supervisao-stepped-care" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Supervisão clínica em stepped-care no SUS</a></li>
+          <li><a href={`/áreas/${areaSaude.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia em Saúde</a></li>
+          <li><a href={`/áreas/${areaClinica.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia Clínica e Psicoterapia</a></li>
+          <li><a href="/faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ geral · Psicologia clínica e regulação</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Primeiro episódio psicótico é decisão estratégica, não apenas avaliação clínica.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O primeiro contato decide trajetória. Mensuração de DUP, avaliação de risco padronizada, aliança preservando autonomia, articulação psiquiátrica em horas, Family Intervention estruturada, vínculo com CAPS qualificado, TCC-p após estabilização, reabilitação precoce e seguimento de 2 a 5 anos. Para psicólogo que conduz essa rotina em saúde mental, o MBA em Reabilitação Neuropsicológica do IPOG consolida fundamento técnico em neurociência clínica e planos de reabilitação cognitiva — frente crítica no seguimento de longo prazo.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/áreas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/áreas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/áreas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10216.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 10.216/2001</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/cg178" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE CG178</a></li>
+          <li><a href="https://iepa.org.au/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">IEPA</a></li>
+          <li><a href="https://www.orygen.org.au/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Orygen / EPPIC</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~24 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

@@ -416,7 +416,11 @@ export const GUIAS = [
   { id: 'protocolo-act-burnout-saude', name: 'Aplicar protocolo ACT de 8 sessões para burnout', persona: 'psicologos', steps: 9 },
   { id: 'integracao-ia-psicodiagnostico-clinica', name: 'Integrar IA generativa no psicodiagnóstico clínico', persona: 'psicologos', steps: 9 },
   { id: 'atendimento-primeiro-episodio-psicose', name: 'Conduzir primeiro atendimento em primeiro episódio psicótico', persona: 'psicologos', steps: 9 },
-  { id: 'avaliacao-saude-mental-perinatal', name: 'Avaliar saúde mental perinatal com método', persona: 'psicologos', steps: 9 }
+  { id: 'avaliacao-saude-mental-perinatal', name: 'Avaliar saúde mental perinatal com método', persona: 'psicologos', steps: 9 },
+  { id: 'avaliacao-tdah-mulheres-adultas', name: 'Conduzir avaliação de TDAH em mulher adulta', persona: 'psicologos', steps: 9 },
+  { id: 'manejo-trauma-complexo-cptsd', name: 'Manejar trauma complexo (CPTSD/TEPT-C) em adulto', persona: 'psicologos', steps: 9 },
+  { id: 'intervencao-crise-suicida-zero-suicide', name: 'Conduzir intervenção em crise suicida (Zero Suicide)', persona: 'psicologos', steps: 9 },
+  { id: 'neuropsi-long-covid-brain-fog', name: 'Avaliar neuropsicologia em long COVID e brain fog', persona: 'psicologos', steps: 9 }
 ] as const;
 
 export const FAQS_DEEP = [
@@ -431,7 +435,12 @@ export const FAQS_DEEP = [
   { id: 'burnout-cid11-faq', name: 'Burnout como CID-11 (QD85) e NR-1 2024', qas: 17 },
   { id: 'primeiro-episodio-psicose-faq', name: 'Primeiro episódio psicótico — DUP, CAPS e EIP', qas: 17 },
   { id: 'saude-mental-perinatal-faq', name: 'Saúde mental perinatal — depressão e ansiedade pós-parto', qas: 17 },
-  { id: 'neurodiversidade-trabalho-faq', name: 'Neurodiversidade no trabalho — LBI e adaptações razoáveis', qas: 17 }
+  { id: 'neurodiversidade-trabalho-faq', name: 'Neurodiversidade no trabalho — LBI e adaptações razoáveis', qas: 17 },
+  { id: 'tdah-mulheres-adultas-faq', name: 'TDAH em mulher adulta — apresentação feminina e hormonal', qas: 17 },
+  { id: 'trauma-complexo-cptsd-faq', name: 'Trauma complexo (CPTSD/TEPT-C) — CID-11 6B41 e fases STAIR', qas: 17 },
+  { id: 'adolescencia-digital-saude-mental-faq', name: 'Adolescência digital — smartphones, redes sociais e Anxious Generation', qas: 17 },
+  { id: 'long-covid-saude-mental-faq', name: 'Long COVID e saúde mental — brain fog e reabilitação cognitiva', qas: 17 },
+  { id: 'prevencao-suicidio-faq', name: 'Prevenção de suicídio — Zero Suicide, C-SSRS e Safety Planning', qas: 17 }
 ] as const;
 
 export const GLOSSARIO_CLUSTERS = [

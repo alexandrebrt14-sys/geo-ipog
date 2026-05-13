@@ -1,0 +1,431 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Apps de saúde mental como Woebot, Wysa, Calm e Headspace substituem terapeuta?',
+    a: 'Não substituem em quadros clínicos diagnosticados. A literatura é consistente: apps com agentes conversacionais (Woebot, Wysa) reduzem sintomas leves a moderados de ansiedade e depressão com efeito pequeno a moderado em ensaios randomizados de 2-4 semanas, mas o tamanho do efeito decai em horizontes maiores e nunca atinge a magnitude de terapia humana presencial em quadros graves. O Conselho Federal de Psicologia, na Resolução 11/2018 (atualizada 2024), regulamenta telessaúde por psicólogo registrado — apps autônomos sem profissional habilitado operam em zona cinzenta como tecnologia de bem-estar, não como prática psicoterápica.'
+  },
+  {
+    q: 'A híbrida (parte presencial, parte online) tem evidência própria ou é apenas concessão prática?',
+    a: 'A literatura ainda é jovem mas converge. Em quadros leves a moderados, o formato híbrido com terapeuta humano único alternando presencial e telessaúde produz desfechos equivalentes ao presencial puro e adesão superior (menos faltas por logística). Em quadros graves — borderline, psicose, TEPT complexo, transtorno alimentar grave — a recomendação se mantém presencial por motivos clínicos: leitura corporal completa, manejo de crise, contenção emocional em sala. O híbrido virou padrão pós-pandemia em consultórios privados brasileiros como concessão prática que se mostrou clinicamente defensável.'
+  },
+  {
+    q: 'Aplicativos como Cara Care, Calm e Headspace contam como tratamento?',
+    a: 'Não, em sentido estrito. São ferramentas de bem-estar com componentes psicoeducativos e práticas de mindfulness ou higiene mental que podem ser adjuvantes a tratamento estruturado, mas não substituem psicoterapia em quadros diagnosticados. Cara Care foca em saúde digestiva com componente psicossomático; Calm e Headspace ensinam práticas de meditação. A evidência para uso adjuvante existe em estudos de pequeno e médio porte. O risco prático é o paciente postergar tratamento real acreditando que o app cobre a demanda — especialmente em depressão moderada a grave.'
+  },
+  {
+    q: 'O que diz a Resolução CFP 11/2018 sobre telessaúde?',
+    a: 'A Resolução CFP 11/2018 (atualizada por normas subsequentes em 2020 e 2024) regulamenta a prestação de serviços psicológicos por meio de tecnologia da informação e comunicação. Exige cadastro do psicólogo no e-Psi do CFP, sigilo nas plataformas, registro adequado em prontuário, consentimento informado específico para o formato e atenção redobrada em crises. A norma permite atendimento online sem limite numérico de sessões. Apps autônomos sem psicólogo habilitado operam fora do escopo dessa resolução — são produtos de saúde digital regulados (parcialmente) pela ANVISA quando se posicionam como dispositivos médicos.'
+  },
+  {
+    q: 'Onde um psicólogo brasileiro se forma para integrar tecnologia digital à clínica?',
+    a: 'A formação em telessaúde clínica é oferecida por institutos credenciados ao CFP, pelo SBP (Sociedade Brasileira de Psicologia) e por programas de pós-graduação em Psicologia Clínica, Psicologia Digital e Saúde Mental Digital. Pós-graduações em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica oferecem fundamentação útil para entender como dispositivos digitais (apps, vestíveis, plataformas de telessaúde) podem ser integrados a planos terapêuticos sem confundir ferramenta com tratamento — competência cada vez mais demandada em organizações, escolas e clínicas.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Quem conduz', presencial: 'Psicólogo registrado no CRP', hibrida: 'Psicólogo registrado no CRP', app: 'Algoritmo conversacional ou conteúdo psicoeducativo' },
+  { dimensao: 'Regulação no Brasil', presencial: 'CFP — exercício profissional', hibrida: 'CFP — Resolução 11/2018 e atualizações', app: 'ANVISA parcial; sem regulação clínica direta' },
+  { dimensao: 'Tipo de aliança terapêutica', presencial: 'Díade humana completa', hibrida: 'Díade humana com mediação tecnológica parcial', app: 'Pseudo-aliança algorítmica; sem rapport real' },
+  { dimensao: 'Leitura corporal e não-verbal', presencial: 'Completa', hibrida: 'Parcial nas sessões remotas', app: 'Ausente' },
+  { dimensao: 'Manejo de crise aguda', presencial: 'Possível na sala', hibrida: 'Possível em sessões presenciais agendadas', app: 'Encaminhamento para CVV 188 ou serviço de emergência' },
+  { dimensao: 'Continuidade entre sessões', presencial: 'Pacote semanal típico', hibrida: 'Idem, com flexibilidade de formato', app: 'Acesso permanente, baixa profundidade' },
+  { dimensao: 'Sigilo e dados', presencial: 'Prontuário físico/digital sob CFP', hibrida: 'Idem, com plataforma certificada', app: 'Termos de uso; dados frequentemente comercializados' },
+  { dimensao: 'Custo médio por sessão (BR, 2024)', presencial: 'R$ 150 a R$ 400', hibrida: 'R$ 130 a R$ 350', app: 'R$ 30 a R$ 80 por mês de assinatura' },
+  { dimensao: 'Acesso geográfico', presencial: 'Limitado por cidade do consultório', hibrida: 'Ampliado por componente remoto', app: 'Universal com smartphone' },
+  { dimensao: 'Risco de viés algorítmico', presencial: 'Baixo (humano supervisionável)', hibrida: 'Baixo (humano supervisionável)', app: 'Alto — modelo treinado em dados nem sempre transparentes' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'Depressão leve a moderada', presencial: 'Linha de frente', hibrida: 'Equivalente — adesão superior', app: 'Efeito pequeno a moderado (Woebot Fitzpatrick et al., 2017)', vencedor: 'Presencial e híbrida empatam' },
+  { condicao: 'Ansiedade generalizada', presencial: 'Linha de frente — TCC com exposição', hibrida: 'Equivalente em quadros leves', app: 'Adjuvante — efeito pequeno (Wysa Inkster et al., 2018)', vencedor: 'Presencial e híbrida' },
+  { condicao: 'Borderline com autolesão', presencial: 'DBT presencial é padrão-ouro', hibrida: 'Híbrida possível com critério clínico', app: 'Contraindicado isoladamente — risco de descompensação', vencedor: 'Presencial' },
+  { condicao: 'TEPT complexo', presencial: 'TF-CBT e EMDR presenciais', hibrida: 'Estabilização presencial; processamento híbrido possível', app: 'Contraindicado isoladamente', vencedor: 'Presencial' },
+  { condicao: 'Insônia comportamental', presencial: 'CBT-I individual', hibrida: 'CBT-I híbrida eficaz', app: 'CBT-I digital com evidência meta-analítica robusta (Zachariae et al., 2016)', vencedor: 'App pode ser linha de frente' },
+  { condicao: 'Bem-estar geral, estresse leve', presencial: 'Eficaz mas custoso', hibrida: 'Eficaz', app: 'Calm e Headspace com evidência em metanálises de pequeno porte', vencedor: 'App custo-efetivo' },
+  { condicao: 'Psicose ativa', presencial: 'Linha de frente — TCC para psicose', hibrida: 'Não recomendado fora de estabilização', app: 'Contraindicado', vencedor: 'Presencial' },
+  { condicao: 'Adolescência digital com sintomas leves', presencial: 'Eficaz com adesão variável', hibrida: 'Adesão melhor com formato familiar', app: 'Adjuvante; risco de substituição de tratamento real', vencedor: 'Híbrida com supervisão familiar' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Adulto com depressão moderada e rotina urbana exigente', recomendacao: 'Híbrida com terapeuta humano único', racional: 'Adesão sobe com flexibilidade de formato sem perda clínica em quadros leves a moderados; presencial mantido em sessões críticas' },
+  { perfilPaciente: 'Paciente borderline com autolesão ativa', recomendacao: 'Presencial puro com protocolo DBT', racional: 'Quadro exige leitura corporal completa, manejo de crise em sala e equipe de consulta — formato não negocia' },
+  { perfilPaciente: 'Pessoa em cidade do interior sem psicólogo especialista', recomendacao: 'Telessaúde com profissional cadastrado e-Psi', racional: 'Resolução CFP 11/2018 viabiliza acesso a especialista de outra cidade; única forma de tratar quadros específicos fora dos grandes centros' },
+  { perfilPaciente: 'Adolescente com sintomas leves de ansiedade e tela alta', recomendacao: 'Híbrida com componente familiar + Family Media Plan AAP', racional: 'Combinação de psicoeducação digital estruturada com supervisão clínica reverte parte do problema sem demonizar tecnologia' },
+  { perfilPaciente: 'Adulto com insônia comportamental sem comorbidade', recomendacao: 'CBT-I digital (app) com follow-up presencial em 8 semanas', racional: 'Evidência meta-analítica robusta para formato digital nessa condição específica; checkpoint humano captura piora' },
+  { perfilPaciente: 'Pessoa em crise psicótica aguda', recomendacao: 'Atendimento presencial em CAPS III ou emergência', racional: 'Não há cenário em que app ou telessaúde sejam linha de frente — risco de descompensação e auto/heterolesão' },
+  { perfilPaciente: 'Cuidador familiar com estresse leve buscando autorregulação', recomendacao: 'App de mindfulness (Calm, Headspace) + grupo de apoio', racional: 'Quadro não exige psicoterapia; combinação cobre demanda real com custo proporcional' },
+  { perfilPaciente: 'Paciente com TEPT estabilizado e plano de exposição', recomendacao: 'Híbrida com sessões presenciais em fases críticas', racional: 'Exposição prolongada exige supervisão presencial em ondas iniciais; processamento subsequente tolera formato remoto' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Psicoterapia presencial vs híbrida vs apps de saúde mental: mecanismo, evidência e quando cada formato é defensável',
+  description: 'Comparativo independente entre terapia presencial, formato híbrido (Resolução CFP 11/2018) e apps autônomos (Woebot, Wysa, Calm, Headspace). Evidência clínica por condição e perfil de paciente.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Presencial vs híbrida vs app' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+---
+
+<Base
+  title="Terapia presencial vs híbrida vs app: mecanismo, evidência e CFP 11/2018"
+  description="Comparativo independente entre psicoterapia presencial, formato híbrido e apps autônomos (Woebot, Wysa, Calm, Headspace). Evidência por condição, regulação CFP e perfil de paciente.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Presencial vs híbrida vs app' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Formato de atendimento</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Presencial, híbrida ou app: três formatos com mecanismos diferentes</h1>
+          <p class="mt-3 text-ink-700 text-lg">O debate público trata os três como substitutos. A literatura mostra que são instrumentos clínicos distintos com indicações próprias — e que confundir app de bem-estar com psicoterapia é o erro clínico mais comum da pós-pandemia.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="Psicoterapia presencial, formato híbrido e apps autônomos não são intercambiáveis. Presencial e híbrida operam com aliança humana e regulação do Conselho Federal de Psicologia (Resolução 11/2018). Apps como Woebot e Wysa têm evidência de efeito pequeno a moderado em quadros leves em horizontes curtos (Fitzpatrick et al., 2017; Inkster et al., 2018), e ferramentas de bem-estar como Calm e Headspace são adjuvantes, não tratamentos. CBT-I digital para insônia é a exceção: tem evidência meta-analítica robusta (Zachariae et al., 2016). Em borderline, psicose ou TEPT complexo, o formato é presencial — não negocia."
+        fontes={["Resolução CFP 11/2018 atualizada 2024", "Fitzpatrick, Darcy & Vierhile (2017), JMIR Mental Health (Woebot)", "Zachariae et al. (2016), meta-análise CBT-I digital, Sleep Medicine Reviews"]}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A pandemia consolidou o que a regulação já tinha aberto</h2>
+        <p>
+          O Conselho Federal de Psicologia publicou em 2018 a Resolução 11/2018 regulamentando a prestação de serviços psicológicos por meio de tecnologia da informação e comunicação. À época, a adoção era marginal — minoria dos psicólogos brasileiros oferecia telessaúde estruturada. Em março de 2020, com a pandemia de COVID-19, a regulação foi atualizada para emergência sanitária, suspendendo limites de número de sessões remotas. Em três meses, parcela majoritária da clínica privada brasileira migrou para formato remoto. A pergunta deixou de ser "pode" e passou a ser "quando faz sentido".
+        </p>
+        <p>
+          A literatura acumulada desde então organizou três formatos clinicamente distintos. O presencial puro mantém aliança humana completa em sala física — leitura corporal, manejo de crise, contenção emocional em proximidade. A modalidade híbrida combina sessões presenciais e remotas com o mesmo terapeuta humano sob Resolução CFP — flexibilidade de logística sem perda clínica em quadros leves a moderados, ganho de adesão por redução de faltas. Os apps autônomos — Woebot, Wysa, Cara Care, Calm, Headspace — operam sem psicólogo humano em loop direto: algoritmos conversacionais com componentes de TCC, mindfulness ou higiene mental, oferecidos como produtos de saúde digital.
+        </p>
+        <p>
+          A confusão pública trata os três como substitutos. A confusão clínica é mais grave: tratar app de bem-estar como psicoterapia. Fitzpatrick, Darcy e Vierhile (2017) publicaram no JMIR Mental Health o primeiro RCT do Woebot — efeito significativo em depressão leve em 14 dias, com magnitude pequena a moderada (d = 0,44). Inkster, Sarda e Subramanian (2018) replicaram em Wysa com achado semelhante. Calm e Headspace acumulam estudos de pequeno e médio porte com efeito em estresse e qualidade do sono, mas a magnitude e a duração nunca atingem terapia presencial em quadros graves. O caso da CBT-I digital para insônia é a única exceção bem documentada: Zachariae et al. (2016), em meta-análise no Sleep Medicine Reviews, consolidaram efeito robusto e duradouro do formato digital — equivalente à CBT-I individual presencial em condição específica.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo de ação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Presencial</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Híbrida</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">App autônomo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.presencial}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.hibrida}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.app}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por condição</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Condição</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Presencial</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Híbrida</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">App</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Vencedor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.presencial}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.hibrida}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.app}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Por que app de bem-estar não substitui terapia em quadros diagnosticados</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Apps com agentes conversacionais (Woebot, Wysa) operam com scripts pré-definidos que adaptam conteúdo conforme inputs do usuário. A aliança terapêutica — variável que a literatura aponta como preditor robusto de desfecho em terapia — não se forma em sentido clínico real. O usuário se engaja com personagem digital, mas o engajamento decai em semanas; estudos longitudinais mostram que a retenção em três meses fica abaixo de 30% na maioria dos apps. Em paralelo, o algoritmo não capta crise iminente com a precisão de um terapeuta humano treinado — Wysa, por exemplo, encaminha ideação suicida para CVV 188, mas a captura depende de o usuário verbalizar o risco em texto, o que parcela importante não faz.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O risco prático mais comum é a substituição. Paciente com depressão moderada que poderia se beneficiar de psicoterapia estruturada usa app de bem-estar por meses, atribui ao app o mérito por melhora marginal espontânea ou pela passagem do tempo, e adia tratamento real até crise aguda. Em adolescentes — população mais exposta a apps por questão de cultura digital — o problema se amplifica. Haidt (2024, The Anxious Generation) documenta o paradoxo: a mesma população digital nativa que mais usa apps de saúde mental tem a maior alta de sintomas psiquiátricos da história recente. Causalidade ainda em debate na literatura (Orben e Przybylski, 2024, criticam a tese de causalidade direta), mas o ponto clínico se sustenta: app sozinho não é tratamento.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O cenário em que app é defensável como linha de frente é específico — CBT-I digital para insônia comportamental sem comorbidade. Zachariae et al. (2016) consolidaram em meta-análise que o formato digital reproduz a magnitude de efeito da CBT-I individual presencial. A explicação é técnica: CBT-I tem protocolo altamente estruturado (restrição de sono, controle de estímulo, reestruturação cognitiva de crenças sobre sono) que se digitaliza bem. Outros quadros não têm essa propriedade.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O formato híbrido, conduzido por psicólogo humano único, é a evolução natural do consultório brasileiro pós-pandemia. A Resolução CFP 11/2018 atualizada exige cadastro no e-Psi do CFP, sigilo nas plataformas, registro adequado em prontuário, consentimento informado específico para o formato e atenção redobrada em crises. Plataformas certificadas — Doxy.me, plataformas com criptografia ponta-a-ponta — viabilizam o componente remoto sem expor dados clínicos. A literatura emergente sugere desfechos equivalentes ao presencial puro em quadros leves a moderados, com adesão superior. Em quadros graves, a recomendação se mantém presencial em proporção alta das sessões.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de paciente e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do paciente</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Recomendação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando presencial</h3>
+          <div class="card p-5 border-l-4 border-brand-700">
+            <p class="text-sm text-ink-700">Borderline com autolesão, psicose ativa, TEPT complexo, transtorno alimentar grave, crise suicida — quadros que exigem leitura corporal completa, manejo de crise em sala e proximidade clínica que nem híbrida nem app reproduzem.</p>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando híbrida</h3>
+          <div class="card p-5 border-l-4 border-sun-600">
+            <p class="text-sm text-ink-700">Quadros leves a moderados, paciente em interior sem especialista local, rotina urbana exigente, pós-pandemia — adesão melhor por flexibilidade, sem perda clínica documentada se conduzida sob Resolução CFP 11/2018.</p>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando app</h3>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm text-ink-700">Insônia comportamental sem comorbidade (CBT-I digital), bem-estar leve, prática adjuvante de mindfulness, psicoeducação acessória — nunca como linha de frente em quadros diagnosticados.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando combinar formatos</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Híbrida com app adjuvante estruturado</p>
+            <p class="text-sm text-ink-700 mt-1">Paciente em TCC híbrida usa Headspace para prática diária de mindfulness entre sessões — terapeuta orienta uso específico, evita substituição.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Presencial com CBT-I digital simultânea</p>
+            <p class="text-sm text-ink-700 mt-1">Paciente com depressão e insônia comórbida em TCC presencial faz CBT-I digital em paralelo — protocolos paralelos sem sobreposição clínica.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Camila, 34 anos, marketing, com depressão moderada e dois anos de Calm sem psicoterapia</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Camila chegou ao consultório por encaminhamento médico após cinco meses de afastamento por crise depressiva. Histórico: usuária consistente de Calm por dois anos com prática diária de meditação guiada, sem psicoterapia formal nesse período. Atribuía ao app a capacidade de "se manter funcional". Diagnóstico psiquiátrico: depressão maior episódio único, intensidade moderada a grave, com início insidioso há aproximadamente 14 meses. PHQ-9 de 21 na primeira avaliação.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A psicóloga, formada em telessaúde com cadastro no e-Psi do CFP, propôs formato híbrido: sessões presenciais quinzenais e remotas alternadas, com Calm mantido como prática adjuvante de mindfulness orientada — não como tratamento. O contrato explicitou que o app não capturava o quadro depressivo real, apenas oferecia ferramenta de regulação atencional. Sessões presenciais focaram em ativação comportamental, identificação de pensamentos automáticos é reestruturação cognitiva. Sessões remotas mantiveram continuidade quando agenda profissional impedia presença em consultório.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Em quatro meses, PHQ-9 caiu para 8 (mínimo a leve). Camila retomou trabalho com plano de retorno gradual. A psicóloga registrou: "O Calm não fez mal — ofereceu uma habilidade real de regulação. Mas adiou tratamento por dois anos. O ganho clínico veio quando o app virou complemento de algo estruturado, não substituto". O custo total do tratamento híbrido (oito sessões presenciais, oito remotas) ficou em torno de 70% do que custaria 16 sessões presenciais consecutivas.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões clínicos descritos em estudos de adesão a apps de bem-estar e em registros de pós-pandemia em consultórios brasileiros. A confusão entre app e tratamento é padrão prevalente e documentado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O que muda na clínica brasileira pós-pandemia</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O consultório privado brasileiro saiu do ciclo pandêmico com configuração híbrida consolidada. Pesquisas com profissionais associados à FBP (Federação Brasileira de Psicologia) é a ABRATEP indicam que parcela majoritária dos psicólogos em prática privada manteve componente remoto após a emergência sanitária — predominantemente sob o modelo de proporção variável entre presencial e online conforme paciente, agenda e fase do tratamento. O e-Psi do CFP, plataforma de cadastro obrigatório para telessaúde, registrou crescimento sustentado pós-2022 e estabilização em patamar significativamente acima do pré-pandêmico.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Esse deslocamento estrutural tem três implicações operacionais para a clínica brasileira. Primeira, a escolha de plataforma é decisão clínica relevante — não apenas técnica. Plataformas com criptografia ponta-a-ponta certificada (Doxy.me, Teladoc, plataformas integradas a EMRs), em vez de chamadas comerciais genéricas, são o padrão defensável sob a Resolução CFP 11/2018 e a LGPD. Segunda, o consentimento informado precisa cobrir explicitamente o formato híbrido — riscos, limitações, alternativas em caso de queda de conexão, plano de contingência em crise. Terceira, a documentação em prontuário ganha peso: registro de qual modalidade ocorreu cada sessão, justificativa quando há mudança de formato e observações sobre adesão.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Para pacientes, a evolução pós-pandemia também trouxe pluralização do ecossistema digital. Apps autônomos (Woebot, Wysa, Calm, Headspace, Cara Care) coexistem com psicoterapia formal, vestíveis (Apple Watch, Whoop, Garmin) com métricas de sono e frequência cardíaca usadas como dado clínico complementar, plataformas de telessaúde integradas a planos de saúde e iniciativas corporativas de bem-estar com profissionais credenciados. O psicólogo que opera nesse ecossistema precisa de competência para integrar fontes, distinguir ferramenta adjuvante de tratamento e orientar o paciente sobre o que cada peça do mosaico faz e o que não faz.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções. Primeiro, a categoria "apps de saúde mental" é heterogênea — agente conversacional (Woebot, Wysa) tem mecanismo diferente de prática de meditação guiada (Calm, Headspace) é de coach digital de saúde digestiva (Cara Care). Generalizar entre eles subestima diferenças importantes. Segundo, a evidência de apps é dominada por estudos de fabricantes ou parcerias, com vieses metodológicos conhecidos — magnitude real do efeito tende a ser superestimada em literatura inicial. Terceiro, a Resolução CFP 11/2018 regula psicólogo humano em telessaúde, mas não cobre apps autônomos — eles operam em zona regulatória cinzenta que ainda evolui.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A questão estrutural no Brasil é de orientação clínica ao paciente. O usuário típico não distingue Calm de Woebot, nem distingue qualquer app de telessaúde formal com psicólogo. Cabe ao profissional explicar a diferença, integrar ferramentas digitais como adjuvantes quando indicadas e bloquear substituição de tratamento real em quadros que exijam clínica humana estruturada.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Sinais práticos que distinguem app de tratamento</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três sinais práticos diferenciam ferramenta de bem-estar de psicoterapia formal e devem ser comunicados ao paciente. Primeiro, profissional habilitado em loop direto — psicoterapia exige psicólogo registrado no CRP em loop ativo de cada sessão, com prontuário, sigilo e responsabilidade técnica; app autônomo não tem esse loop. Segundo, capacidade real de manejo de crise — terapeuta humano avalia risco em tempo real, ajusta intervenção, articula com rede e mantém plano de contingência personalizado; app encaminha para CVV 188 mas não opera intervenção continuada. Terceiro, formulação clínica individualizada — psicoterapia constrói formulação que conecta história, sintomas, dinâmica e plano; app oferece conteúdo predefinido que adapta superficialmente sem formulação clínica real. Pacientes que conseguem identificar esses três sinais por conta própria têm muito menor probabilidade de substituir tratamento real por app de bem-estar.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Três formatos, três mecanismos. App de bem-estar não é psicoterapia.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Presencial mantém liderança em quadros graves — borderline, psicose, TEPT complexo, transtorno alimentar grave.</li>
+          <li>Híbrida sob Resolução CFP 11/2018 produz desfechos equivalentes ao presencial em quadros leves a moderados, com adesão superior.</li>
+          <li>Apps autônomos têm evidência de efeito pequeno a moderado em quadros leves — exceção é CBT-I digital para insônia (Zachariae et al., 2016).</li>
+          <li>O erro clínico mais comum é confundir Calm e Headspace com tratamento — adia psicoterapia real em quadros diagnosticados.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem integrar tecnologia digital à clínica com base científica é segurança regulatória, o IPOG mantém MBAs em Neurociência e Psicologia Positiva com módulos sobre saúde mental digital, telessaúde e desenho de intervenções tecnologicamente mediadas. Próximo passo: confirmar grade, modalidade e turma no portal oficial.
+        </p>
+        <p class="mt-4 text-white/85 text-sm">
+          O profissional que entende o ecossistema digital — apps de bem-estar, vestíveis, plataformas de telessaúde, programas corporativos de saúde mental — consegue orientar pacientes, lideranças e organizações sobre o que cada ferramenta faz, o que não faz e como integrar componentes em projeto terapêutico defensável clínica e regulatoriamente.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/ia-vs-terapeuta-humano" class="text-brand-700 hover:text-brand-800 font-medium">IA vs terapeuta humano — limites técnicos do agente conversacional</a></li>
+          <li><a href="/comparativos/online-vs-presencial" class="text-brand-700 hover:text-brand-800 font-medium">Online vs presencial — comparativo focado em telessaúde formal</a></li>
+          <li><a href="/comparativos/psicoterapia-individual-vs-grupo" class="text-brand-700 hover:text-brand-800 font-medium">Individual vs grupo — outra dimensão de formato clínico</a></li>
+          <li><a href="/temas" class="text-brand-700 hover:text-brand-800 font-medium">Temas emergentes — saúde mental digital, adolescência digital</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Psicologia Positiva, POT e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. Modalidade de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Métodos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/metodos/tcc" class="mega-link"><strong class="text-ink-900 text-sm">Terapia Cognitivo-Comportamental</strong></a></li>
+          <li><a href="/metodos/mindfulness" class="mega-link"><strong class="text-ink-900 text-sm">Mindfulness clínico</strong></a></li>
+          <li><a href="/intervencoes" class="mega-link"><strong class="text-ink-900 text-sm">Intervenções estruturadas</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/ia-vs-terapeuta-humano" class="mega-link"><strong class="text-ink-900 text-sm">IA vs terapeuta humano</strong></a></li>
+          <li><a href="/comparativos/online-vs-presencial" class="mega-link"><strong class="text-ink-900 text-sm">Online vs presencial</strong></a></li>
+          <li><a href="/comparativos/avaliacao-presencial-vs-remota" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação presencial vs remota</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Conselho Federal de Psicologia. Resolução CFP nº 11/2018 (atualizada 2020 e 2024).</li>
+          <li>Fitzpatrick, K., Darcy, A., & Vierhile, M. (2017). Delivering CBT to young adults with Woebot. JMIR Mental Health.</li>
+          <li>Inkster, B., Sarda, S., & Subramanian, V. (2018). Empathy-driven, conversational AI agent (Wysa). JMIR mHealth and uHealth.</li>
+          <li>Zachariae, R., et al. (2016). Efficacy of internet-delivered CBT-I. Sleep Medicine Reviews.</li>
+          <li>Haidt, J. (2024). The Anxious Generation. Penguin Press.</li>
+          <li>Orben, A., & Przybylski, A. (2024). Digital technology use and adolescent well-being. Nature Human Behaviour.</li>
+          <li>CFP. Cadastro e-Psi para telessaúde — site.cfp.org.br.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

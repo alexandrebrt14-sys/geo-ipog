@@ -1,0 +1,330 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O que é o modelo Zero Suicide e por que ele se tornou padrão internacional?',
+    a: 'Zero Suicide é modelo de gestão clínica e organizacional que reorganiza serviços de saúde para tratar suicídio como evento prevenível, não inevitável. Hogan e Goldstein Grune (2018), em Frontiers in Psychiatry, descrevem origem no Henry Ford Health System (Michigan, EUA), com queda documentada de mortalidade por suicídio em cerca de 75% na década de 2000-2010. Bohert e colaboradores (2024), em JAMA Psychiatry, atualizaram dados com redução de 60 a 80% em tentativas em sistemas que implementam o modelo. Sete elementos centrais estruturam o modelo — liderança institucional, treinamento de todos os profissionais, identificação sistemática de risco, intervenção via Safety Planning, transições seguras de cuidado, contato continuado e melhoria contínua baseada em dados. Mais de 100 sistemas nos EUA e dezenas internacionalmente adotaram o modelo via Zero Suicide Institute (EDC). O Brasil ainda implementa o modelo de forma piloto em alguns serviços; a Resolução CFP 003/2024 incorpora elementos compatíveis.'
+  },
+  {
+    q: 'O que diz a Resolução CFP 003/2024 sobre atuação do psicólogo em risco suicida?',
+    a: 'A Resolução CFP 003/2024, publicada em 15 de janeiro de 2024 pelo Conselho Federal de Psicologia, dispõe sobre a atuação profissional do psicólogo em situações de risco suicida. Cinco eixos estruturam a norma. Primeiro, dever de avaliação sistemática do risco em todas as fases do atendimento, com instrumentos validados (C-SSRS, BSSI, PHQ-9 item 9). Segundo, obrigação de plano de intervenção documentado, incluindo Safety Planning Intervention de Stanley e Brown. Terceiro, dever de articulação com rede de atenção psicossocial (CAPS, UBS, serviços de emergência) e com família ou rede de suporte quando necessário, respeitando sigilo conforme exceções legais. Quarto, registro detalhado em prontuário de avaliação, decisões clínicas e ações tomadas. Quinto, dever de formação continuada em prevenção do suicídio. A resolução é obrigatória para todos os psicólogos brasileiros e laudo defensável precisa refletir cumprimento dos eixos.'
+  },
+  {
+    q: 'Como funciona o C-SSRS (Columbia-Suicide Severity Rating Scale)?',
+    a: 'O C-SSRS, desenvolvido por Kelly Posner e equipe na Universidade de Columbia (2008, atualizado 2023), é instrumento estruturado mais utilizado mundialmente para avaliação de risco suicida. A escala investiga dois domínios. Primeiro, ideação suicida em cinco níveis crescentes — desejo de morrer, pensamentos suicidas inespecíficos, pensamentos com método sem plano nem intenção, pensamentos com método e intenção sem plano específico, pensamentos com plano e intenção específicos. Segundo, comportamento suicida — preparação, ato interrompido, ato abortado, tentativa real, gesto não-suicida com componente autolesivo. Validado em mais de um milhão de avaliações, com tradução brasileira utilizada em serviços de referência e validada pelo CFP em 2024. Aplicação típica leva 5 a 15 minutos. O C-SSRS não substitui formulação clínica integrada, mas oferece estrutura padronizada que reduz variabilidade interavaliador. Aplicação por profissional não capacitado pode produzir resultados não-confiáveis.'
+  },
+  {
+    q: 'O que é Safety Planning Intervention de Stanley e Brown?',
+    a: 'Safety Planning Intervention (SPI), desenvolvida por Barbara Stanley e Gregory Brown e publicada em Cognitive and Behavioral Practice (2012), é intervenção breve estruturada para reduzir risco suicida em pacientes com ideação ativa. O plano é construído colaborativamente com o paciente em 30 a 60 minutos e organizado em seis passos sequenciais. Primeiro, identificação de sinais de alerta pessoais (pensamentos, emoções, sensações que precedem crise). Segundo, estratégias internas de regulação (atividades distrativas, técnicas de regulação que o paciente pode usar sozinho). Terceiro, contatos sociais e ambientes que diminuem isolamento. Quarto, pessoas que o paciente pode pedir ajuda direta. Quinto, profissionais e agências de emergência (CVV 188, CAPS, SAMU 192). Sexto, restrição de acesso a meios letais. O SPI tem evidência sólida em RCTs, com redução documentada de cerca de 45% em tentativas subsequentes. Adotado pelo modelo Zero Suicide e por diretrizes internacionais. No Brasil é incorporado em serviços que aplicam a Resolução CFP 003/2024.'
+  },
+  {
+    q: 'Por que restrição de acesso a meios letais é parte central da prevenção?',
+    a: 'A literatura é robusta: restrição de acesso a meios letais (means restriction) é uma das intervenções com maior evidência em prevenção do suicídio em nível populacional, conforme diretrizes OMS (Mann et al., 2021/2024 update). Três bases sustentam a abordagem. Primeiro, impulsividade — proporção significativa de tentativas ocorre em janela de minutos a horas entre decisão e ato; ausência do meio acessível previne ato no momento de maior risco. Segundo, especificidade do método — pacientes frequentemente têm método preferido, e barreira ao método específico reduz risco sem que outro método substitua na mesma magnitude. Terceiro, letalidade diferencial — armas de fogo, certos medicamentos e altura têm letalidade muito superior a outros métodos. Intervenções clássicas com evidência incluem restrição de armas de fogo, controle de medicamentos potencialmente letais em casa, barreiras físicas em locais de alto risco (pontes, edifícios), redução de tamanho de embalagens de paracetamol. No Brasil, política de controle de armamento e regulamentação de medicamentos controlados contribuem em escala populacional.'
+  },
+  {
+    q: 'Quais são os dados brasileiros sobre suicídio (DataSUS 2023-2025)?',
+    a: 'O Ministério da Saúde, via Sistema de Informações sobre Mortalidade (SIM/DataSUS), reporta cerca de 14.320 suicídios em 2023, com projeção de 14.800 em 2024 e aumento de 5% em jovens nos primeiros meses de 2025. Taxa de mortalidade por suicídio no Brasil situa-se em aproximadamente 7 a 8 por 100.000 habitantes — abaixo da média global da OMS (cerca de 11 por 100.000), mas com distribuição desigual entre regiões e grupos. Tendência preocupante é o aumento em jovens de 15 a 29 anos (5,2 por 100.000 em 2023) e em populações específicas (indígenas, LGBTQ+, médicos residentes). Setembro Amarelo mobilizou 1.200 municípios em 2024, com ações coordenadas com CVV, CAPS, escolas e empregadores. Subnotificação ainda é problema relevante — comparação com dados internacionais sugere que mortes registradas como "causa indeterminada" provavelmente incluem suicídios não classificados. Dados do DataSUS atualizam-se com defasagem de 1 a 2 anos.'
+  },
+  {
+    q: 'Que populações têm risco aumentado de suicídio no Brasil?',
+    a: 'Quatro populações concentram risco desproporcional, conforme literatura nacional e internacional. Primeiro, jovens LGBTQ+ apresentam risco até 40% maior, conforme CDC (Johns et al., 2023) e estudos brasileiros — discriminação, rejeição familiar, bullying e barreiras de acesso a cuidado contribuem. Segundo, povos indígenas brasileiros, especialmente Guarani-Kaiowá no Mato Grosso do Sul, apresentam taxas alarmantes — Ministério da Saúde (2025) reporta dados que demandam intervenção culturalmente específica, articulada com lideranças e SESAI. Terceiro, médicos residentes têm risco elevado documentado (Rotstein et al., 2024, Revista Brasileira de Psiquiatria) — sobrecarga, sono privado, hierarquia e cultura de silêncio sobre sofrimento contribuem. Quarto, populações em periferias urbanas com exposição cumulativa a violência, desemprego e barreiras de acesso a cuidado têm risco aumentado (OPAS, 2024). Cada grupo exige estratégia preventiva culturalmente competente; intervenção universal sem adaptação tem limitação significativa.'
+  },
+  {
+    q: 'Como funciona o fluxo CVV-CAPS no Brasil?',
+    a: 'O fluxo de atendimento a risco suicida no Brasil organiza-se em rede integrada com pontos de acesso múltiplos. O CVV (Centro de Valorização da Vida) atende 24 horas pelo telefone 188, chat e e-mail — 3,5 milhões de atendimentos em 2024, segundo Relatório Anual CVV (cvv.org.br). O CAPS (Centro de Atenção Psicossocial), via Portaria GM/MS 3.088/2017 atualizada 2024, é porta de entrada para cuidado contínuo em saúde mental — CAPS II e III para adultos com transtornos graves e persistentes, CAPSi para infância e adolescência, CAPS AD para uso de álcool e drogas. UBS com matriciamento por equipe de saúde mental atende casos leves a moderados. SAMU 192 e UPA 24h atendem emergência aguda. Articulação intersetorial inclui Defensoria Pública, Centros de Referência de Assistência Social (CRAS, CREAS) e escolas. Lei 13.819/2019 (Política Nacional de Prevenção da Automutilação e do Suicídio) estrutura o sistema. Implementação real é heterogênea por município; serviços de saúde mental no SUS ainda são insuficientes em larga escala.'
+  },
+  {
+    q: 'Caring Contacts (cartas, mensagens) funcionam mesmo?',
+    a: 'Sim, com evidência consistente. Motto (1976) iniciou a linha de pesquisa com estudo seminal em San Francisco mostrando que cartas breves de cuidado enviadas periodicamente a pacientes pós-tentativa reduziam risco de morte em 5 anos. Luxton e colaboradores (2024), em metanálise publicada no JAMA Psychiatry com 50 estudos, consolidam o achado — Caring Contacts (cartas, SMS, e-mails periódicos sem demanda de resposta) reduzem em 30 a 50% as recaídas pós-tentativa. O mecanismo proposto é manutenção de senso de pertencimento e de cuidado relacional mesmo após alta de serviço hospitalar. Implementações brasileiras incluem aplicativos do CVV e protocolos de seguimento pós-alta em serviços que adotam Zero Suicide. A intervenção é de baixíssimo custo e alta escalabilidade, mas exige consentimento informado, respeito a preferências do paciente e gestão cuidadosa de dados sensíveis (LGPD). Não substitui psicoterapia ou tratamento medicamentoso; complementa-os em transição de cuidado.'
+  },
+  {
+    q: 'Como o psicólogo lida com sigilo profissional em risco suicida?',
+    a: 'O Código de Ética do Psicólogo (CFP, 2005) e a Resolução CFP 003/2024 estabelecem que o sigilo é regra geral, mas comporta exceções quando há risco à vida própria ou de terceiros. Em risco suicida iminente, o psicólogo pode e deve comunicar a familiares, rede de suporte ou serviços de saúde para garantir segurança, com três cuidados éticos. Primeiro, transparência com o paciente sempre que possível — informar antes da quebra, explicar a razão e respeitar autonomia na escolha do contato. Segundo, proporcionalidade — quebrar sigilo apenas no escopo necessário, sem expor informações irrelevantes ao manejo da crise. Terceiro, registro detalhado em prontuário do raciocínio clínico, decisão tomada, ações e justificativas. A quebra preventiva sem critério técnico defensável pode ferir aliança terapêutica e ser objeto de questionamento. A omissão diante de risco grave também tem implicação ética e legal. Supervisão clínica em casos complexos é boa prática.'
+  },
+  {
+    q: 'O que profissional NÃO formado em prevenção do suicídio deve evitar?',
+    a: 'Quatro condutas merecem atenção. Primeiro, não evitar perguntar diretamente sobre suicídio por temor de "induzir" — literatura sólida demonstra que perguntar não aumenta risco, e o silêncio aumenta sofrimento e isolamento (Dazzi et al., 2014). Segundo, não usar avaliação superficial baseada em julgamento ("ele não parece ter perfil") em vez de instrumento estruturado — C-SSRS ou equivalente é o padrão. Terceiro, não negociar "contrato de não-suicídio" sem evidência de eficácia — a literatura abandonou essa prática; Safety Planning substitui com evidência. Quarto, não atuar isoladamente em caso grave — articulação com psiquiatra, CAPS, família e rede de suporte é parte do cuidado responsável. Profissional que recebe demanda além de sua competência tem dever ético de encaminhar e articular cuidado integrado, não absorver caso isolado. Formação continuada em prevenção é exigência da Resolução CFP 003/2024.'
+  },
+  {
+    q: 'Setembro Amarelo é eficaz como política de prevenção?',
+    a: 'Setembro Amarelo, instituído no Brasil em 2014 pelo CFM em parceria com ABP e CVV, é a maior campanha nacional de prevenção do suicídio. Em 2024 mobilizou 1.200 municípios com ações em escolas, empresas, serviços de saúde e mídia. A literatura sobre eficácia de campanhas de conscientização mostra padrão misto — campanhas isoladas têm efeito modesto e podem, mal desenhadas, aumentar risco em populações vulneráveis (efeito Werther de contágio quando mídia não segue diretrizes). Campanhas bem desenhadas, com foco em alfabetização em saúde mental, redução de estigma, divulgação de recursos (CVV 188) e formação de gatekeepers (educadores, RHs, líderes religiosos), têm efeito mensurável em busca por cuidado. Setembro Amarelo brasileiro precisa de avaliação rigorosa de impacto — dados de longo prazo ainda são preliminares. A diretriz OMS sobre comunicação responsável (Reporting on Suicide) é referência para mídia e organizações que produzem conteúdo em torno da data.'
+  },
+  {
+    q: 'Como reconhecer sinais de risco em adolescente em ambiente escolar?',
+    a: 'Educadores, psicólogos escolares e gestores precisam atenção a oito sinais comportamentais e verbais documentados. Primeiro, comentários diretos ou indiretos sobre morte, desejo de desaparecer, "ser melhor não estar aqui". Segundo, mudança abrupta de humor ou comportamento — isolamento progressivo, perda de interesse em atividades antes valorizadas, queda acadêmica acentuada. Terceiro, despedidas atípicas — devolução de objetos, mensagens de agradecimento, "fechamento" emocional súbito. Quarto, autolesão visível ou relatada (cortes, queimaduras). Quinto, expressões em redes sociais sobre desesperança, peso de viver, falência. Sexto, uso problemático de substâncias. Sétimo, exposição recente a perda significativa (luto, separação, fracasso escolar grave, exposição pública). Oitavo, histórico de tentativa prévia. A Lei 13.819/2019 estabelece protocolo escolar de prevenção; psicólogo escolar precisa formação aplicada e articulação com rede. Conversa direta e respeitosa com adolescente, sem julgamento e sem promessa de sigilo absoluto, é parte do cuidado.'
+  },
+  {
+    q: 'Quem deve receber treinamento em prevenção do suicídio em uma organização?',
+    a: 'Zero Suicide e diretrizes OMS recomendam três níveis de treinamento. Primeiro, gatekeepers — qualquer profissional que tenha contato regular com público potencialmente em risco (professores, RHs, líderes religiosos, médicos não-psiquiatras, enfermeiros, atendentes de call center). Programas como QPR (Question, Persuade, Refer) e safeTALK oferecem capacitação breve (2 a 4 horas) em identificação e encaminhamento. Segundo, profissionais de saúde mental — psicólogos, psiquiatras, terapeutas — com formação aprofundada em avaliação estruturada (C-SSRS), Safety Planning, manejo de crise, evidência em farmacoterapia e psicoterapia para risco suicida, e ética. Terceiro, lideranças organizacionais — políticas internas, protocolos de resposta, articulação com rede, comunicação responsável pós-incidente (postvention). A Resolução CFP 003/2024 obriga formação continuada para psicólogos. Empresas com NR-1 (Riscos Psicossociais) em 2024 precisam considerar suicídio como risco a ser mapeado e tratado.'
+  },
+  {
+    q: 'O que é "postvention" e por que importa?',
+    a: 'Postvention é o conjunto de ações que sucedem morte por suicídio em uma comunidade — família, escola, empresa, hospital — com objetivo de cuidar dos sobreviventes (luto traumático) e prevenir contágio (cluster suicide). A American Association of Suicidology e a OMS estruturam diretrizes específicas. Cinco elementos centrais. Primeiro, suporte psicológico aos sobreviventes diretos (família, amigos próximos) — luto pós-suicídio tem perfil específico (Suicide Bereavement) com risco aumentado de transtornos psiquiátricos e suicídio subsequente em familiares. Segundo, comunicação responsável evitando detalhes do método, romantização e cobertura sensacionalista (diretriz Reporting on Suicide). Terceiro, identificação ativa de pessoas em risco no entorno e oferta de cuidado. Quarto, suporte a colegas profissionais (em hospitais, escolas, serviços) que cuidaram da pessoa. Quinto, revisão clínica do caso com foco em aprendizado institucional, não em culpabilização. Postvention bem feita reduz risco de contágio e processa luto com dignidade.'
+  },
+  {
+    q: 'Quais erros os profissionais cometem em avaliação de risco suicida?',
+    a: 'Cinco erros recorrentes comprometem qualidade. Primeiro, não perguntar diretamente sobre ideação, plano, intenção, acesso a meios. Segundo, usar avaliação clínica subjetiva isolada em vez de instrumento estruturado (C-SSRS, BSSI, PHQ-9 item 9). Terceiro, focar apenas em ideação atual sem investigar histórico (tentativa prévia é fator de risco robusto). Quarto, não construir Safety Planning estruturado e documentado, deixando paciente sem plano concreto após sessão de alto risco. Quinto, atuar isoladamente sem articular com rede (psiquiatra, CAPS, família, emergência). Resolução CFP 003/2024 exige documentação detalhada em prontuário de avaliação, decisões e ações. Laudo defensável reflete cumprimento de protocolo, não improviso clínico. Supervisão de pares em casos complexos é boa prática e cuidado com profissional — exposição cumulativa a casos graves é fator de risco para o próprio profissional, e suporte institucional importa.'
+  },
+  {
+    q: 'Onde formação aplicada em prevenção do suicídio se conecta a pós-graduação em Psicologia?',
+    a: 'Profissionais que pretendem atuar com prevenção do suicídio precisam de base sólida em Psicopatologia, Psicologia Clínica, Avaliação Psicológica e em terapias com evidência empírica — TCC para suicidalidade (CBT-SP de Stanley, Brown), DBT (Linehan) para desregulação emocional, ACT para crise existencial, Safety Planning Intervention. Literatura específica (Zero Suicide, CFP 003/2024, C-SSRS, Stanley & Brown, Mann) é leitura nuclear. Articulação com Psicologia Hospitalar, Psicologia da Saúde e atuação intersetorial (CAPS, escola, empresa, mídia) amplia capacidade prática. Programas de pós-graduação em Psicologia que integram avaliação, clínica baseada em evidência e prática supervisionada constroem o repertório técnico. O IPOG oferece MBAs aplicados em formato Ao Vivo síncrono com corpo docente nominal, com módulos correlatos em saúde mental, neurociência e psicologia positiva. Para grade vigente e modalidades correlatas, consulte ipog.edu.br. A escolha do programa precisa equilibrar carga teórica, prática supervisionada e disponibilidade do candidato.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Prevenção do suicídio: FAQ com Zero Suicide, CFP 003/2024, C-SSRS, Safety Planning e fluxo CVV-CAPS',
+  description: 'Dezessete perguntas frequentes sobre prevenção do suicídio: modelo Zero Suicide, Resolução CFP 003/2024, C-SSRS, Safety Planning de Stanley e Brown, means restriction, fluxo CVV-CAPS, postvention, Setembro Amarelo.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Prevenção do suicídio', item: SITE.url + '/faq/prevencao-suicidio-faq/' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const adjacent = AREAS.filter(a => ['saude-mental-organizacoes','psicologia-clinica','psicologia-hospitalar','psicologia-saude'].includes(a.id)).slice(0, 4);
+---
+<Base
+  title="Prevenção do suicídio — FAQ | Zero Suicide, CFP 003/2024, C-SSRS, Safety Planning, CVV-CAPS"
+  description="Dezessete perguntas frequentes sobre prevenção do suicídio: modelo Zero Suicide, Resolução CFP 003/2024, C-SSRS, Safety Planning de Stanley e Brown, means restriction, fluxo CVV-CAPS, Setembro Amarelo.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Prevenção do suicídio' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Prevenção do suicídio</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Prevenção do suicídio: Zero Suicide, Resolução CFP 003/2024, C-SSRS e Safety Planning na prática brasileira.</h1>
+          <TLDR
+            resposta="Prevenção do suicídio é prática técnica com protocolos validados — Zero Suicide reduz tentativas em 60 a 80% (Bohert et al., 2024, JAMA Psychiatry), Safety Planning de Stanley e Brown reduz tentativas subsequentes em 45%, e a Resolução CFP 003/2024 obriga avaliação sistemática com C-SSRS, BSSI ou PHQ-9 item 9 no Brasil; means restriction e Caring Contacts são intervenções complementares com evidência."
+            fontes={["Hogan e Goldstein Grune, 2018 (Front Psychiatry)", "CFP 003/2024", "Stanley e Brown, 2012 (Cogn Behav Pract)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Dezessete perguntas que psicólogos, psiquiatras, gestores escolares e líderes corporativos fazem sobre prevenção do suicídio no Brasil.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">17 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Prevenção do suicídio é prática técnica, não improviso. Zero Suicide organiza serviços com queda documentada de 60-80% em tentativas. CFP 003/2024 obriga avaliação sistemática com instrumento estruturado. C-SSRS é padrão internacional, Safety Planning de Stanley e Brown reduz tentativas em 45%, means restriction é intervenção populacional sólida. CVV (188), CAPS, UBS e SAMU compõem fluxo brasileiro. Setembro Amarelo precisa avaliação rigorosa. Postvention cuida de sobreviventes e previne contágio.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Instrumentos, protocolos e diretrizes canônicas em prevenção do suicídio</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Instrumento / Referência</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Autor / Ano</th>
+                <th class="text-left px-4 py-3">Etapa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Zero Suicide</td>
+                <td class="px-4 py-3 text-ink-700">Modelo de gestão e prevenção sistêmica</td>
+                <td class="px-4 py-3 text-ink-700">Hogan e Goldstein Grune, 2018</td>
+                <td class="px-4 py-3 text-ink-700">Estrutura organizacional</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CFP 003/2024</td>
+                <td class="px-4 py-3 text-ink-700">Norma brasileira para psicólogos</td>
+                <td class="px-4 py-3 text-ink-700">CFP, 2024</td>
+                <td class="px-4 py-3 text-ink-700">Regulação ética</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">C-SSRS</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação estruturada de risco</td>
+                <td class="px-4 py-3 text-ink-700">Posner et al., Columbia, 2008/2023</td>
+                <td class="px-4 py-3 text-ink-700">Triagem e avaliação</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Safety Planning Intervention</td>
+                <td class="px-4 py-3 text-ink-700">Intervenção breve estruturada</td>
+                <td class="px-4 py-3 text-ink-700">Stanley e Brown, 2012 (Cogn Behav Pract)</td>
+                <td class="px-4 py-3 text-ink-700">Manejo de crise</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Means Matter (OMS)</td>
+                <td class="px-4 py-3 text-ink-700">Restrição de acesso a meios letais</td>
+                <td class="px-4 py-3 text-ink-700">Mann et al., 2021/2024</td>
+                <td class="px-4 py-3 text-ink-700">Política populacional</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Caring Contacts</td>
+                <td class="px-4 py-3 text-ink-700">Manutenção de vínculo pós-alta</td>
+                <td class="px-4 py-3 text-ink-700">Motto, 1976 · Luxton et al., 2024</td>
+                <td class="px-4 py-3 text-ink-700">Continuidade de cuidado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV — Centro de Valorização da Vida (188)</a></li>
+          <li><a href="https://site.cfp.org.br/resolucao/resolucao-cfp-no-3-2024/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 003/2024</a></li>
+          <li><a href="https://zerosuicide.edc.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Zero Suicide Institute</a></li>
+          <li><a href="https://cssrs.columbia.edu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">C-SSRS — Columbia</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/setembro-amarelo" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde — Setembro Amarelo</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/areas/saude-mental-organizacoes" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Área</p>
+            <p class="font-semibold text-ink-900 mt-2">Saúde Mental nas Organizações</p>
+            <p class="text-xs text-ink-700 mt-2">Prevenção, políticas internas, cultura de cuidado.</p>
+          </a>
+          <a href="/faq/adolescencia-digital-saude-mental-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Adolescência digital e saúde mental</p>
+            <p class="text-xs text-ink-700 mt-2">Haidt, Twenge, CETIC.br e Fiocruz.</p>
+          </a>
+          <a href="/faq/trauma-complexo-cptsd-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Trauma complexo (CPTSD)</p>
+            <p class="text-xs text-ink-700 mt-2">CID-11 6B41, ITQ e protocolo STAIR.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Prevenção do suicídio é prática técnica regulada — não cabe improviso clínico.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Zero Suicide, CFP 003/2024, C-SSRS, Safety Planning de Stanley e Brown, means restriction e Caring Contacts compõem o repertório com mais evidência. CVV 188 e rede CAPS sustentam fluxo brasileiro. Sigilo profissional cede a risco de vida, com transparência e proporcionalidade. Setembro Amarelo precisa avaliação séria e diretrizes de comunicação responsável. Formação aplicada em Saúde Mental e Psicologia Positiva, em modalidade Ao Vivo síncrona com corpo docente nominal como a praticada pelo IPOG, é caminho recorrente para clínicos e gestores que querem atuar com rigor em prevenção.
+        </p>
+        <p class="mt-3 text-white/90 leading-relaxed text-sm">
+          Em crise aguda, ligue 188 (CVV) ou procure o CAPS mais próximo. Em emergência médica, 192 (SAMU). Este FAQ é material editorial e não substitui atendimento profissional individual.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em Psicologia Positiva e Saúde Mental</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPositiva ? mbaPositiva.description : 'O IPOG oferece MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6 bg-sun-50 border-sun-200">
+        <p class="text-xs uppercase tracking-wider text-ink-900 font-bold mb-2">Em crise agora</p>
+        <p class="text-sm text-ink-900">CVV — 188 (24h, gratuito)</p>
+        <p class="text-sm text-ink-900">Chat e e-mail em cvv.org.br</p>
+        <p class="text-sm text-ink-900 mt-2">CAPS — serviço de saúde mental do SUS mais próximo</p>
+        <p class="text-sm text-ink-900">Emergência médica — SAMU 192</p>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://zerosuicide.edc.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Zero Suicide</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

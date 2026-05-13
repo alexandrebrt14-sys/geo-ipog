@@ -1,0 +1,430 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'TF-CBT e EMDR são igualmente recomendadas em trauma infantil?',
+    a: 'Não com a mesma força. A diretriz NICE NG116 (2018, atualizada 2023) é a referência regulatória mais conservadora — recomenda TF-CBT (Cohen, Mannarino & Deblinger, 2017) como linha de frente em crianças e adolescentes com TEPT, com EMDR (Shapiro, 2018) como segunda escolha quando TF-CBT não está disponível, recusada ou ineficaz. A WHO mhGAP guidelines (2023) é a APA (2017) listam ambos como tratamentos com evidência forte, mas reconhecem prioridade da TF-CBT em pediatria por base de evidência maior e protocolo mais estruturado para faixa etária 3-18 anos.'
+  },
+  {
+    q: 'Qual a diferença fundamental no mecanismo entre TF-CBT e EMDR?',
+    a: 'A TF-CBT opera por exposição gradual a memórias traumáticas combinada com reestruturação cognitiva, treino parental e habilidades de regulação emocional — modelo PRACTICE de Cohen, Mannarino e Deblinger (psicoeducação, habilidades de relaxamento, regulação afetiva, processamento cognitivo, narrativa do trauma, exposição in vivo, conjoint sessions com cuidador, enhancing safety). O EMDR opera por dessensibilização e reprocessamento mediados por estimulação bilateral (movimentos oculares, tapping, áudio alternado), seguindo o protocolo de oito fases de Shapiro. O mecanismo neurobiológico do EMDR é alvo de debate — hipótese mais aceita envolve sobrecarga da memória de trabalho que reduz vivacidade emocional da memória traumática.'
+  },
+  {
+    q: 'A idade da criança influencia a escolha?',
+    a: 'Sim, de forma material. TF-CBT tem protocolo validado para 3-18 anos, com versões adaptadas para pré-escolares (PCIT-CARES, Lieberman para 0-5 anos como Child-Parent Psychotherapy) é adolescentes. EMDR tem evidência em 6-18 anos, com protocolos pediátricos específicos é storytelling adaptado para crianças menores. Para pré-escolares (0-5 anos), Child-Parent Psychotherapy (CPP) de Lieberman é frequentemente recomendado em vez de TF-CBT ou EMDR isolados — a dependência neurobiológica do cuidador na regulação emocional do bebê e da criança pequena é determinante. NICE NG116 reflete essa estratificação.'
+  },
+  {
+    q: 'O envolvimento do cuidador é igualmente central nas duas abordagens?',
+    a: 'É mais central na TF-CBT. O componente "C" do modelo PRACTICE — conjoint sessions com cuidador é treino parental — é parte estrutural do protocolo, não opcional. Cohen, Mannarino e Deblinger (2017) demonstram que ganhos clínicos são robustamente maiores quando o cuidador participa do tratamento, especialmente em trauma sexual e exposição à violência doméstica. O EMDR pode integrar cuidador em fases iniciais (preparação, segurança), mas o processamento bilateral ocorre tipicamente em díade criança-terapeuta sem participação ativa do cuidador na sessão. Em contextos de cuidador agressor (abuso intrafamiliar), TF-CBT requer adaptações específicas e às vezes EMDR com cuidador alternativo se torna primeira escolha pragmática.'
+  },
+  {
+    q: 'Onde um psicólogo brasileiro se forma em TF-CBT ou EMDR para trauma pediátrico?',
+    a: 'A TF-CBT é certificada pelo TF-CBT Trainings Program da Medical University of South Carolina (Cohen, Mannarino, Deblinger) com cursos virtuais e presenciais; no Brasil, institutos credenciados em TCC infantil (ABCT, IBNeC, IPq-HC-FMUSP) oferecem formação intensiva. O EMDR é certificado internacionalmente pelo EMDR Institute (Shapiro) e pela EMDRIA, com supervisão prática obrigatória; no Brasil, a EMDR-Brasil (associação afiliada) credencia profissionais. Para psicólogos que querem aprofundar fundamentação em neurociência do trauma, regulação emocional e desenvolvimento infantil antes de certificação técnica específica, pós-graduações em Neurociência, Reabilitação Neuropsicológica e Psicologia Positiva oferecem bases científicas complementares — competência cada vez mais valorizada em equipes de saúde mental pediátrica.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Fundadores', tfcbt: 'Cohen, Mannarino & Deblinger (anos 1990; manual canônico 2006/2017)', emdr: 'Francine Shapiro (1989; protocolo de oito fases consolidado 1995/2018)' },
+  { dimensao: 'Mecanismo central', tfcbt: 'Exposição gradual + reestruturação cognitiva + treino parental', emdr: 'Dessensibilização e reprocessamento via estimulação bilateral' },
+  { dimensao: 'Modelo operacional', tfcbt: 'PRACTICE — 8 componentes sequenciais', emdr: 'Protocolo de 8 fases padronizado' },
+  { dimensao: 'Componente parental', tfcbt: 'Estrutural — conjoint sessions obrigatórias', emdr: 'Auxiliar — em fase de preparação e segurança' },
+  { dimensao: 'Narrativa explícita do trauma', tfcbt: 'Construção e leitura ao cuidador (componente N)', emdr: 'Não exige narrativa verbal completa; foco em alvo sensorial' },
+  { dimensao: 'Estimulação bilateral', tfcbt: 'Ausente', emdr: 'Central — movimentos oculares, tapping, áudio alternado' },
+  { dimensao: 'Duração típica', tfcbt: '12 a 16 sessões em protocolo padrão', emdr: '8 a 12 sessões para trauma único; mais em trauma complexo' },
+  { dimensao: 'Faixa etária validada', tfcbt: '3 a 18 anos (versões adaptadas por idade)', emdr: '6 a 18 anos com protocolos pediátricos' },
+  { dimensao: 'Postura do terapeuta', tfcbt: 'Estruturada, psicoeducacional, com treino parental ativo', emdr: 'Estruturada, com facilitação de processamento e contenção' },
+  { dimensao: 'Treinamento exigido', tfcbt: 'Curso TF-CBT MUSC + supervisão; certificação ofertada', emdr: 'EMDR Institute / EMDRIA — dois níveis com supervisão obrigatória' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'TEPT pediátrico por abuso sexual', tfcbt: 'Linha de frente — base de evidência mais robusta (NICE NG116)', emdr: 'Eficaz; segunda escolha em NICE NG116', vencedor: 'TF-CBT' },
+  { condicao: 'Trauma único agudo (acidente, desastre)', tfcbt: 'Eficaz em protocolo de 12-16 sessões', emdr: 'Eficaz; pode ser mais breve em trauma único', vencedor: 'Empate clínico' },
+  { condicao: 'Trauma intrafamiliar com cuidador agressor', tfcbt: 'Requer cuidador não-agressor para componente conjoint', emdr: 'Mais flexível — não exige conjoint sessions', vencedor: 'EMDR pragmático' },
+  { condicao: 'Pré-escolar 0-5 anos com trauma', tfcbt: 'Adaptação PCIT-CARES disponível', emdr: 'Evidência limitada em pré-escolares', vencedor: 'Child-Parent Psychotherapy (Lieberman)' },
+  { condicao: 'Adolescente 13-18 com TEPT crônico', tfcbt: 'Validada com módulos adaptados', emdr: 'Validada com bom engajamento', vencedor: 'Empate; preferência do paciente conta' },
+  { condicao: 'Comorbidade com depressão grave', tfcbt: 'Aborda diretamente via componente C', emdr: 'Aborda parcialmente; pode exigir TCC adjuvante', vencedor: 'TF-CBT' },
+  { condicao: 'Exposição a violência comunitária crônica', tfcbt: 'Adaptações culturais validadas (Cohen et al., 2012)', emdr: 'Eficaz em trauma complexo após estabilização', vencedor: 'Empate; depende do contexto' },
+  { condicao: 'Trauma com dificuldade verbal (transtorno do desenvolvimento)', tfcbt: 'Requer adaptação comunicacional intensiva', emdr: 'Vantagem — menos dependente de verbalização', vencedor: 'EMDR' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Criança 7 anos com TEPT por abuso sexual e cuidadora não-agressora engajada', recomendacao: 'TF-CBT em protocolo completo PRACTICE', racional: 'Cenário canônico do protocolo Cohen-Mannarino-Deblinger; ganhos clínicos máximos com conjoint sessions e treino parental' },
+  { perfilPaciente: 'Adolescente 15 anos com trauma único agudo (acidente automobilístico)', recomendacao: 'EMDR com protocolo pediátrico ou TF-CBT', racional: 'Ambos eficazes em trauma único; preferência informada do adolescente e disponibilidade local definem a escolha' },
+  { perfilPaciente: 'Criança 5 anos com trauma de violência doméstica em curso', recomendacao: 'Estabilização inicial + Child-Parent Psychotherapy (Lieberman)', racional: 'Pré-escolar com cuidador agressor exige proteção e psicoterapia díade primária; TF-CBT e EMDR entram após segurança garantida' },
+  { perfilPaciente: 'Adolescente com TEPT crônico que recusa narrar trauma verbalmente', recomendacao: 'EMDR como porta de entrada', racional: 'Não exige narrativa verbal explícita do trauma; pode reduzir vivacidade emocional antes de TF-CBT em segunda fase' },
+  { perfilPaciente: 'Criança com TEPT comórbido com depressão grave', recomendacao: 'TF-CBT com módulo enhanced em depressão', racional: 'Componentes cognitivos da TF-CBT abordam diretamente a depressão; EMDR pode requerer TCC adjuvante separada' },
+  { perfilPaciente: 'Refugiado adolescente com trauma cumulativo de guerra', recomendacao: 'EMDR ou Narrative Exposure Therapy (NET)', racional: 'Trauma complexo cumulativo responde bem a abordagens que toleram múltiplos eventos sem exigir narrativa cronológica linear' },
+  { perfilPaciente: 'Criança com transtorno do espectro autista e trauma', recomendacao: 'TF-CBT adaptada ou EMDR com suporte visual', racional: 'EMDR pode ser mais acessível por menor dependência verbal; TF-CBT requer adaptações comunicacionais específicas' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'TF-CBT vs EMDR para trauma infantil: mecanismo, evidência meta-analítica e diretriz NICE NG116',
+  description: 'Comparativo independente entre TF-CBT (Cohen, Mannarino & Deblinger) e EMDR (Shapiro) em trauma pediátrico. Diretriz NICE, idade, papel do cuidador e perfil clínico.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'TF-CBT vs EMDR para trauma infantil' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+---
+
+<Base
+  title="TF-CBT vs EMDR para trauma infantil: NICE NG116, idade e papel do cuidador"
+  description="Comparativo independente entre TF-CBT (Cohen, Mannarino & Deblinger) e EMDR (Shapiro) em trauma pediátrico. Evidência meta-analítica, diretriz NICE NG116, papel do cuidador e protocolos por idade.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'TF-CBT vs EMDR para trauma infantil' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Trauma pediátrico</span>
+          <h1 class="section-h text-3xl sm:text-4xl">TF-CBT vs EMDR em trauma infantil: por que NICE prioriza uma das duas</h1>
+          <p class="mt-3 text-ink-700 text-lg">As duas abordagens têm evidência forte. Mas em trauma pediátrico a diretriz NICE NG116 prioriza TF-CBT por motivo técnico: base de evidência maior, protocolo mais estruturado por idade e papel central do cuidador no tratamento.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="TF-CBT e EMDR são tratamentos de evidência forte para TEPT pediátrico, mas a diretriz NICE NG116 (2018, atualizada 2023) prioriza TF-CBT (Cohen, Mannarino & Deblinger, 2017) como linha de frente em crianças e adolescentes, com EMDR (Shapiro, 2018) como segunda escolha. A diferença está em três fatores: base de evidência mais robusta para TF-CBT em pediatria, protocolo estruturado por idade (3-18 anos) e papel central do cuidador via conjoint sessions. EMDR ganha em três cenários: trauma intrafamiliar sem cuidador disponível, recusa em verbalizar o trauma e dificuldade comunicacional do paciente. Para pré-escolares 0-5 anos, Child-Parent Psychotherapy (Lieberman) é frequentemente preferível a qualquer das duas isoladas."
+        fontes={["NICE NG116 (2018, atualizado 2023)", "Cohen, Mannarino & Deblinger (2017), Treating Trauma and Traumatic Grief in Children", "Shapiro (2018), Eye Movement Desensitization and Reprocessing (3rd ed.)"]}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que NICE prioriza TF-CBT sem desqualificar EMDR</h2>
+        <p>
+          A diretriz NICE NG116 — Post-traumatic stress disorder, publicada em dezembro de 2018 e atualizada em 2023 — é a referência regulatória mais conservadora em saúde mental do mundo anglo-saxão. Na seção pediátrica, NICE recomenda TF-CBT como tratamento de primeira linha para crianças e adolescentes com TEPT, com EMDR listado como segunda escolha quando TF-CBT não está disponível, é recusada pela família ou se mostrou ineficaz. A WHO mhGAP guidelines (2023) é a APA Clinical Practice Guideline (2017) chegam à mesma hierarquia em pediatria — ambas reconhecem evidência forte para os dois métodos, mas listam TF-CBT primeiro.
+        </p>
+        <p>
+          O critério técnico que sustenta a hierarquia é triplo. Primeiro, a base de evidência meta-analítica em pediatria é mais robusta para TF-CBT — pelo menos 14 ensaios controlados randomizados com população 3-18 anos consolidados em revisões Cochrane e revisões da APA, contra base menor (embora crescente) para EMDR pediátrico específico. Segundo, o protocolo TF-CBT tem estratificação por idade com manuais distintos para pré-escolares (com adaptações via PCIT-CARES), escolares e adolescentes — granularidade que reflete diferenças neurobiológicas reais no desenvolvimento. Terceiro, e clinicamente mais relevante, o componente parental da TF-CBT é estrutural: conjoint sessions com cuidador não-agressor é treino parental ativo são partes não-opcionais do PRACTICE.
+        </p>
+        <p>
+          O modelo PRACTICE de Cohen, Mannarino e Deblinger (2017, Treating Trauma and Traumatic Grief in Children and Adolescents, 2nd edition) organiza o protocolo em oito componentes sequenciais: psicoeducação, habilidades de relaxamento, regulação afetiva, processamento cognitivo, narrativa do trauma, exposição in vivo, conjoint sessions com cuidador, enhancing safety. A narrativa explícita do trauma — escrita, lida em sessão, eventualmente compartilhada com o cuidador em conjoint — é o componente central e o que mais diferencia o método de qualquer outra abordagem pediátrica. EMDR não exige narrativa verbal explícita, o que é vantagem específica em três cenários: paciente que recusa verbalizar, paciente com transtorno do espectro autista ou dificuldade comunicacional, e trauma intrafamiliar em que conjoint sessions não são viáveis.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo de ação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">TF-CBT</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">EMDR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.tfcbt}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.emdr}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por condição</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Condição</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">TF-CBT</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">EMDR</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Vencedor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.tfcbt}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.emdr}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Os componentes PRACTICE e as oito fases do EMDR</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O PRACTICE da TF-CBT é mnemônico didático e protocolo clínico simultâneo. A psicoeducação inicia a sequência — criança e cuidador aprendem o que é trauma, por que reagem como reagem, e o que esperar do tratamento. As habilidades de relaxamento (P-R) introduzem ferramentas concretas: respiração diafragmática, relaxamento muscular progressivo, imagem segura. A regulação afetiva (A) ensina a nomear e modular emoções intensas. O processamento cognitivo (C) identifica e desafia pensamentos disfuncionais ligados ao trauma — culpa, vergonha, autopercepção distorcida. A narrativa do trauma (T) é o componente exigente e crítico: ao longo de várias sessões, a criança constrói relato escrito do que aconteceu, em ritmo controlado, com graduação de detalhe sensorial. A exposição in vivo (I) trata gatilhos cotidianos. Os conjoint sessions (C) com o cuidador integram a narrativa em díade protegida. O enhancing safety (E) fecha o protocolo com planos de segurança e prevenção.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O EMDR opera com lógica diferente. As oito fases — histórico, preparação, avaliação, dessensibilização, instalação, body scan, fechamento e reavaliação — guiam a sessão. Na fase de dessensibilização, o paciente identifica imagem-alvo do trauma, cognição negativa associada ("foi minha culpa"), cognição positiva desejada ("eu fiz o que pude"), emoção atual e localização corporal. O terapeuta conduz a estimulação bilateral (movimentos oculares horizontais, tapping em ombros, áudio alternado em fones) enquanto o paciente mantém atenção dual entre alvo interno e estímulo externo. Sets de 24-30 segundos são intercalados com checks. O mecanismo neurobiológico hipotetizado é sobrecarga da memória de trabalho que reduz a vivacidade emocional da memória traumática, permitindo reconsolidação. A vantagem prática é que o paciente não precisa verbalizar narrativa cronológica completa do trauma — alvo sensorial é o foco.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em sala de atendimento, o contraste é nítido. Uma criança de 8 anos com TEPT por abuso sexual em TF-CBT, na sessão 9 de 14, está sentada com a terapeuta lendo em voz alta a quarta versão de sua narrativa do trauma — texto que ela construiu ao longo de três semanas, com graduação de detalhe. A leitura é seguida de discussão cognitiva e preparação para a conjoint session com a mãe na semana seguinte. Em EMDR, a mesma criança estaria sentada em frente à terapeuta seguindo com os olhos movimentos da caneta enquanto mantém em mente a imagem-alvo do evento — sem precisar verbalizar a sequência completa, processando carga emocional de forma sensorial. Os dois caminhos chegam ao mesmo destino clínico — redução de sintomas TEPT, melhora funcional — por mecanismos distintos.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O papel do cuidador é o ponto técnico mais subestimado em discussões públicas sobre as duas abordagens. Cohen, Mannarino e Deblinger demonstraram em múltiplos estudos (2004, 2011) que a inclusão do cuidador não-agressor em sessões conjoint produz ganhos clínicos significativamente maiores que TF-CBT-only, especialmente em trauma sexual. O treino parental modula reação emocional do cuidador (que carrega frequentemente o próprio trauma vicariante), ensina respostas adequadas a comportamentos pós-traumáticos da criança e fortalece o sistema de proteção. Esse componente é estrutural — protocolos sem conjoint têm magnitude de efeito menor. Em contextos onde o cuidador é o agressor ou não está disponível, o protocolo TF-CBT requer adaptação significativa, e EMDR ou Child-Parent Psychotherapy com cuidador substituto se tornam alternativas pragmáticas mais defensáveis.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de paciente e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do paciente</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Recomendação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando TF-CBT</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Cuidador não-agressor engajado e disponível</p>
+              <p class="text-sm text-ink-700 mt-1">Conjoint sessions são componente estrutural; ganhos máximos quando o cuidador participa ativamente do tratamento e do treino parental.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Faixa pré-escolar com adaptações por idade</p>
+              <p class="text-sm text-ink-700 mt-1">Manuais estratificados (incluindo versões para 3-6 anos com PCIT-CARES) com base de evidência maior em pediatria.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Comorbidade com depressão ou ansiedade ampla</p>
+              <p class="text-sm text-ink-700 mt-1">Componentes cognitivos do PRACTICE abordam comorbidades simultaneamente sem necessidade de tratamento paralelo.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando EMDR</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Paciente recusa narrativa verbal do trauma</p>
+              <p class="text-sm text-ink-700 mt-1">EMDR não exige verbalização cronológica completa; alvo sensorial substitui narrativa, removendo barreira frequente em adolescentes.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Trauma intrafamiliar sem cuidador disponível</p>
+              <p class="text-sm text-ink-700 mt-1">Quando conjoint sessions não são viáveis (cuidador agressor ou ausente), EMDR opera bem em díade criança-terapeuta isolada.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Dificuldade comunicacional (TEA, transtorno desenvolvimento)</p>
+              <p class="text-sm text-ink-700 mt-1">Menor dependência de verbalização extensa; protocolo pediátrico EMDR pode incluir storytelling e suporte visual.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando combinar ou sequenciar</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">EMDR como porta de entrada para TF-CBT</p>
+            <p class="text-sm text-ink-700 mt-1">Em adolescentes que recusam verbalização inicial, sessões de EMDR podem reduzir carga emocional o suficiente para tolerar TF-CBT em fase subsequente.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Child-Parent Psychotherapy primeiro em pré-escolares</p>
+            <p class="text-sm text-ink-700 mt-1">Para 0-5 anos com cuidador disponível, CPP de Lieberman estabiliza díade antes de qualquer protocolo focado em trauma da criança isoladamente.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Sofia, 9 anos, TEPT por abuso sexual intrafamiliar com mãe não-agressora protetiva</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Sofia chegou ao serviço de saúde mental pediátrica encaminhada pela escola após revelação de abuso sexual pelo padrasto, ocorrido entre os 6 e 8 anos. Diagnóstico confirmado por psiquiatra infantil: TEPT pediátrico, com pesadelos, hipervigilância, evitação de espaços que lembrem o agressor, isolamento social escolar. CPSS (Child PTSD Symptom Scale) inicial de 32 pontos. Padrasto afastado por medida protetiva; mãe não-agressora estava engajada e protetiva, embora carregando intenso sentimento de culpa.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A psicóloga, certificada em TF-CBT pelo TF-CBTWeb da Medical University of South Carolina, propôs protocolo padrão de 16 sessões. As três primeiras focaram em psicoeducação (com Sofia e com a mãe em sessões separadas), habilidades de relaxamento e regulação afetiva. Da sessão 4 à 7, Sofia trabalhou processamento cognitivo de pensamentos como "foi minha culpa porque eu não falei" — reestruturados com apoio de exercícios de evidência e do "balão de pensamento" adaptado para crianças. Da sessão 8 à 11, construção da narrativa do trauma — texto escrito em quatro versões progressivamente detalhadas, com graduação de detalhe sensorial sob ritmo da criança. A sessão 12 foi a primeira conjoint session com a mãe — Sofia leu sua narrativa final, a mãe ouviu sob preparação prévia, e ambas trabalharam comunicação afetiva. Sessões 13-16 fecharam com exposição in vivo (retorno gradual a espaços evitados) e enhancing safety.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Ao fim do protocolo, CPSS caiu para 8 pontos (abaixo do limiar de TEPT clínico). Sofia retomou frequência escolar regular, voltou a brincar com colegas é dormiu pela primeira vez em meses sem pesadelos. A mãe relatou redução de sentimento de culpa e maior competência em responder a comportamentos pós-traumáticos da filha. A terapeuta documentou: "O componente conjoint foi o ponto de virada — Sofia precisava que a mãe ouvisse a narrativa para sentir que estava sendo levada a sério, e a mãe precisava ouvir para encerrar sua própria culpa em loop". O caso ilustra cenário canônico em que TF-CBT entrega o que a literatura promete.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões clínicos descritos em Cohen, Mannarino e Deblinger (2017) e em estudos de implementação TF-CBT em serviços brasileiros. A magnitude de redução de CPSS em protocolo completo é consistente em ensaios randomizados.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções. Primeiro, a hierarquia NICE-TF-CBT-primeiro reflete base de evidência maior, não inferioridade do EMDR em ensaios head-to-head. Estudos comparativos diretos em pediatria são poucos e mostram magnitudes similares quando ambos os métodos são bem aplicados. Segundo, a competência do terapeuta certificado é variável crítica — TF-CBT mal aplicada sem componente conjoint ou EMDR sem supervisão estruturada não reproduzem os resultados da literatura. Treinamento e supervisão continuada definem desfecho real. Terceiro, o contexto brasileiro impõe questão estrutural: a disponibilidade de psicólogos certificados em TF-CBT ou EMDR pediátrico fora das capitais é baixa, e o sistema público raramente oferece protocolo completo. A escolha real para parte expressiva das famílias brasileiras não é "TF-CBT vs EMDR" e sim "qualquer protocolo estruturado disponível" versus terapia eclética sem framework focado em trauma.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A questão estrutural mais grave é de prevenção. Trauma intrafamiliar é o tema clínico mais subnotificado no Brasil. Disque 100, Conselhos Tutelares e sistema de garantias precisam de articulação com serviços de saúde mental pediátrica para que protocolos como TF-CBT ou EMDR cheguem aos casos identificados. Sem articulação, a discussão técnica entre métodos fica restrita aos consultórios privados que atendem uma fração mínima da demanda real.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Há ainda uma dimensão de psicoeducação dos cuidadores que precede qualquer decisão entre TF-CBT e EMDR. Cuidadores que chegam ao serviço de saúde mental pediátrica trazem frequentemente expectativas distorcidas — "queremos que a criança esqueça o que aconteceu", "vocês podem apagar essa memória?", "ela é muito pequena, vai passar sozinha". Nenhuma das duas abordagens promete apagamento de memória. Ambas trabalham com integração da experiência traumática à narrativa de vida da criança de modo que a memória deixe de ser intrusiva e disruptiva. O alinhamento de expectativas com cuidadores na primeira sessão é decisão de prognóstico — famílias que entendem o que o protocolo faz e o que não faz têm engajamento melhor e abandono menor.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O componente neurobiológico que sustenta ambas as abordagens</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          As duas abordagens compartilham racional neurobiológico parcialmente sobreposto. A literatura de memória de trabalho, reconsolidação e plasticidade cerebral em desenvolvimento sugere que tanto TF-CBT quanto EMDR operam favorecendo reconsolidação adaptativa da memória traumática durante janela neurobiológica específica que se abre quando a memória é reativada. A diferença está no canal de reativação — narrativa verbal estruturada e exposição gradual na TF-CBT, alvo sensorial e estimulação bilateral no EMDR. Para o clínico que atua com trauma infantil, entender essa convergência ajuda na decisão: protocolos que ativam a memória sob condições controladas, com regulação emocional preservada e suporte social adequado, oferecem janela terapêutica que medicação isolada raramente reproduz. A neurociência do desenvolvimento — competência crescentemente demandada em equipes pediátricas — sustenta a leitura técnica tanto da TF-CBT quanto do EMDR como intervenções de mecanismo plausível, e não apenas como tradições clínicas competidoras.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">NICE prioriza TF-CBT em pediatria por base de evidência maior e papel central do cuidador.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>TF-CBT é linha de frente em NICE NG116, APA (2017) e WHO mhGAP — base de evidência mais robusta em pediatria.</li>
+          <li>EMDR é segunda escolha em NICE e vantagem específica em três cenários: recusa de narrativa, trauma intrafamiliar sem cuidador, dificuldade comunicacional.</li>
+          <li>Pré-escolares 0-5 anos com cuidador disponível frequentemente se beneficiam mais de Child-Parent Psychotherapy (Lieberman) que de TF-CBT ou EMDR isolados.</li>
+          <li>Competência do terapeuta certificado é variável crítica — protocolo mal aplicado não reproduz a literatura.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem aprofundar bases neurocientíficas do desenvolvimento infantil, regulação emocional e neuroplasticidade — fundamentação útil antes de certificação técnica em TF-CBT ou EMDR pediátrico —, o IPOG mantém MBAs em Neurociência, Reabilitação Neuropsicológica e Psicologia Positiva. Próximo passo: confirmar grade, modalidade e turma no portal oficial.
+          Atuação em equipes pediátricas multiprofissionais — saúde mental hospitalar, CAPSi, ambulatórios universitários — demanda crescentemente psicólogos com competência integrada de neurociência do desenvolvimento, regulação emocional e protocolos focados em trauma. É um perfil profissional em expansão no Brasil.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/emdr-vs-tcc-trauma" class="text-brand-700 hover:text-brand-800 font-medium">EMDR vs TCC para trauma — comparativo focado em adultos</a></li>
+          <li><a href="/comparativos/exposicao-vs-emdr-tept" class="text-brand-700 hover:text-brand-800 font-medium">Exposição prolongada vs EMDR em TEPT adulto</a></li>
+          <li><a href="/comparativos/dbt-vs-tcc-borderline" class="text-brand-700 hover:text-brand-800 font-medium">DBT vs TCC — onde DBT-PE entra para borderline com TEPT</a></li>
+          <li><a href="/temas" class="text-brand-700 hover:text-brand-800 font-medium">Temas — trauma, violência, psicologia da infância</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Reabilitação Neuropsicológica e Psicologia Positiva — corpo docente nominal e estrutura multicampus. Modalidade de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Métodos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/metodos/tcc" class="mega-link"><strong class="text-ink-900 text-sm">TCC e variantes focadas em trauma</strong></a></li>
+          <li><a href="/metodos/dbt" class="mega-link"><strong class="text-ink-900 text-sm">DBT — quando trauma é comórbido com borderline</strong></a></li>
+          <li><a href="/metodos/mindfulness" class="mega-link"><strong class="text-ink-900 text-sm">Mindfulness clínico</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/emdr-vs-tcc-trauma" class="mega-link"><strong class="text-ink-900 text-sm">EMDR vs TCC para trauma adulto</strong></a></li>
+          <li><a href="/comparativos/exposicao-vs-emdr-tept" class="mega-link"><strong class="text-ink-900 text-sm">Exposição vs EMDR em TEPT</strong></a></li>
+          <li><a href="/comparativos/aba-vs-denver-tea-precoce" class="mega-link"><strong class="text-ink-900 text-sm">ABA vs Denver para TEA precoce</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Cohen, J. A., Mannarino, A. P., & Deblinger, E. (2017). Treating Trauma and Traumatic Grief in Children and Adolescents (2nd ed.). Guilford.</li>
+          <li>Shapiro, F. (2018). Eye Movement Desensitization and Reprocessing (EMDR) Therapy (3rd ed.). Guilford.</li>
+          <li>NICE (2018, updated 2023). Post-traumatic stress disorder. NICE Guideline NG116.</li>
+          <li>APA (2017). Clinical Practice Guideline for the Treatment of PTSD in Adults.</li>
+          <li>WHO (2023). mhGAP Intervention Guide for mental, neurological and substance use disorders.</li>
+          <li>Lieberman, A. F., & Van Horn, P. (2008). Psychotherapy with Infants and Young Children (Child-Parent Psychotherapy). Guilford.</li>
+          <li>Cohen, J. A., et al. (2011). Trauma-focused CBT for youth with complex trauma. Child Abuse & Neglect.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

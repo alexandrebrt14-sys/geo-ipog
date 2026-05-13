@@ -1,0 +1,393 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Distinguir TEPT clássico (6B40) de CPTSD (6B41) pela CID-11',
+    aplicacao: 'A CID-11 separou TEPT clássico (6B40) de TEPT-Complexo (6B41) em 2018, com critérios distintos. Karatzias, Cloitre, Maercker et al. (2017, *European Journal of Psychotraumatology*) validaram a separação: TEPT-C exige os três clusters de sintomas TEPT (reexperiência, evitação, hiperexcitabilidade) mais três Disturbances in Self-Organization (DSO) — desregulação afetiva, autoconceito negativo e dificuldades relacionais. Maercker et al. (2020) reportam concordância inter-avaliadores kappa de 0.56 e prevalência de TEPT-C em 43% de amostras clínicas vs. TEPT clássico. O diagnóstico orienta o protocolo — protocolos de TEPT clássico aplicados em CPTSD geram piora ou abandono.',
+    armadilha: 'Aplicar protocolo de TEPT clássico (PE, CPT) em paciente com CPTSD sem fase de estabilização. Risco de reativação, dissociação grave e abandono terapêutico.'
+  },
+  {
+    n: 2,
+    titulo: 'Aplicar International Trauma Questionnaire (ITQ) com algoritmo ICD-11',
+    aplicacao: 'O ITQ (Cloitre, Shevlin, Brewin et al.) é o instrumento de referência para diagnóstico ICD-11 de TEPT e TEPT-C. Karatzias et al. (2017) consolidaram o algoritmo: cluster AD (desregulação afetiva) C1-C5 ≥10 OU C6-C9 ≥8; cluster NSC (autoconceito negativo) C10-C13 ≥8; cluster DR (dificuldades relacionais) C14-C16 ≥6. Para CPTSD, é necessário cumprir TEPT (PTSD) + os três clusters DSO. Aplicação leva 15-20 minutos, com leitura combinada a entrevista clínica. Tradução brasileira em validação acadêmica, com adaptações em uso. ITQ é gratuito para uso clínico.',
+    armadilha: 'Usar PCL-5 isoladamente em suspeita de CPTSD. PCL-5 cobre TEPT do DSM, não os três clusters DSO da CID-11.'
+  },
+  {
+    n: 3,
+    titulo: 'Avaliar segurança imediata e capacidade de regulação antes de qualquer processamento',
+    aplicacao: 'O princípio cardinal em CPTSD é estabilização antes de processamento (Cloitre, protocolo STAIR; ISSTD guidelines). Avalie: (a) segurança física atual — violência doméstica em curso, contato com perpetradores, situações de risco; (b) ideação suicida e autolesão; (c) uso de substâncias como regulação; (d) janela de tolerância — paciente fica em hiper ou hipoarousal frequente? (e) recursos sociais (rede de apoio, vínculos seguros). Sem ancoragem em segurança e regulação básica, processar trauma reativa sistema nervoso central já fragilizado. Em contextos brasileiros (violência doméstica em curso, mulheres em situação de refúgio venezuelano, populações periféricas), avaliação de segurança é precondição absoluta.',
+    armadilha: 'Iniciar EMDR ou processamento na primeira sessão "porque o caso é grave". Você reativa o trauma sem container terapêutico.'
+  },
+  {
+    n: 4,
+    titulo: 'Conduzir Fase 1 — Estabilização e regulação afetiva (STAIR)',
+    aplicacao: 'O protocolo STAIR (Skills Training in Affective and Interpersonal Regulation; Cloitre et al.) é a Fase 1 canônica em CPTSD. Estrutura: 8 a 16 sessões focadas em (a) psicoeducação sobre trauma complexo e janela de tolerância, (b) habilidades de regulação emocional (identificação de emoções, modulação, tolerância ao mal-estar), (c) habilidades interpessoais (limites, comunicação assertiva, escolha de relacionamentos seguros). VA/DoD (2021) e ISTSS (2018) endossam STAIR como tratamento de primeira linha para CPTSD. O foco é construir capacidade de autorregulação antes de tocar a memória traumática diretamente. Sem essa base, processamento descompensa.',
+    armadilha: 'Tratar Fase 1 como "preparação rápida" de 2-3 sessões. STAIR é tratamento em si, com efeito clínico próprio — não preâmbulo.'
+  },
+  {
+    n: 5,
+    titulo: 'Avaliar transição para Fase 2 com critérios objetivos',
+    aplicacao: 'A passagem para processamento traumático (Fase 2) exige critérios objetivos: (a) janela de tolerância expandida — paciente reconhece e regula ativação sem dissociar; (b) ideação suicida estabilizada; (c) uso de substâncias controlado; (d) ambiente de vida seguro; (e) aliança terapêutica consolidada. Sem esses marcos, Fase 2 reativa o quadro. ISTSS (2018) recomenda revisão trimestral dos critérios. Em CPTSD originado em abuso infantil crônico, a Fase 1 pode levar 6 a 12 meses — em violência doméstica recente com paciente já fora da situação, 3 a 4 meses costuma ser suficiente.',
+    armadilha: 'Forçar transição porque "o paciente quer falar do trauma". Querer falar não equivale a estar pronto neurobiologicamente para sustentar processamento.'
+  },
+  {
+    n: 6,
+    titulo: 'Conduzir Fase 2 — Processamento adaptado (CPT-D, EMDR, NET)',
+    aplicacao: 'A Fase 2 usa protocolos de processamento adaptados a CPTSD. CPT-D (Cognitive Processing Therapy desenvolmente-adaptada) demonstrou eficácia em ensaio randomizado com pacientes 14-21 anos com CPTSD pós-abuso infantil (FU Berlin, sem autor especificado, ICD-11 CPTSD trial), com taxa de resposta similar à de TEPT clássico. EMDR pode ser aplicado após estabilização, com adaptações para janelas mais curtas e ancoragem frequente. Narrative Exposure Therapy (NET) é alternativa especialmente útil em refugiados — protocolo Schauer, Neuner & Elbert validado em vítimas de tortura e violência política. Duração típica Fase 2: 16-24 sessões.',
+    armadilha: 'Aplicar Prolonged Exposure (PE) padrão sem adaptação em CPTSD. Exposição prolongada sem regulação pré-estabelecida produz piora.'
+  },
+  {
+    n: 7,
+    titulo: 'Conduzir Fase 3 — Integração e consolidação de vida',
+    aplicacao: 'A Fase 3 (Reintegração) trabalha consolidação de identidade pós-trauma, construção de projeto de vida, reaproximação com vínculos seguros e prevenção de recaída. Cloitre et al. consolidam: integração não é "voltar ao que era antes", é construir nova narrativa que inclui o trauma sem ser definida por ele. Em populações brasileiras vulneráveis (mulheres saídas de violência doméstica, refugiados venezuelanos pós-trauma de deslocamento, sobreviventes de violência urbana), Fase 3 frequentemente exige articulação com serviços sociais — assistência jurídica, suporte habitacional, regularização migratória. Sem essa articulação, ganho terapêutico não consolida.',
+    armadilha: 'Encerrar tratamento ao terminar processamento. Sem Fase 3 de integração, o ganho clínico fica vulnerável a recaída no primeiro estressor.'
+  },
+  {
+    n: 8,
+    titulo: 'Adaptar para contextos brasileiros (violência doméstica, refugiados venezuelanos)',
+    aplicacao: 'A literatura internacional sobre CPTSD (Karatzias, Cloitre, Maercker) foi construída em UK, USA, Alemanha e Lituânia, sem dados específicos sobre violência doméstica brasileira, abuso infantil em contexto latino-americano, violência urbana ou refugiados venezuelanos. Adaptações: (a) em violência doméstica, articulação com Lei Maria da Penha, Casa da Mulher Brasileira, Centro de Referência de Atendimento à Mulher; (b) em refugiados venezuelanos, considerar trauma de deslocamento sobreposto a CPTSD prévio, articulação com Operação Acolhida, ACNUR Brasil; (c) em violência urbana e periférica, integração com CAPS, UBS e rede SUAS. Busca literatura BR: LILACS, SciELO com descritores "transtorno de estresse pós-traumático complexo", "violência doméstica trauma".',
+    armadilha: 'Tratar paciente venezuelana em situação de refúgio com protocolo padrão sem articular rede SUAS e ACNUR. Trauma de deslocamento ativo bloqueia ganho.'
+  },
+  {
+    n: 9,
+    titulo: 'Monitorar dissociação com janela clínica permanente',
+    aplicacao: 'Dissociação é sintoma transversal em CPTSD, frequentemente subdiagnosticada. Aplique DES-II (Dissociative Experiences Scale) ou DES-T como triagem; em pontuação alta, considere SCID-D para diagnóstico diferencial com Transtorno Dissociativo de Identidade. Monitore em sessão: paciente que perde fio do pensamento, sensação de irrealidade, "sair de si", lapsos de memória durante exposição. Em Fase 2 com dissociação ativa, reduzir intensidade, ancorar com técnicas grounding (5-4-3-2-1, respiração diafragmática, gelo na mão), retomar Fase 1 quando necessário. Diferencial com Transtorno Limítrofe de Personalidade é exigente; Maercker et al. (2020) discutem critérios distintos.',
+    armadilha: 'Confundir dissociação com "desinteresse pelo tratamento". Dissociação é sintoma trauma-específico, não falta de adesão.'
+  },
+  {
+    n: 10,
+    titulo: 'Redigir laudo conforme Resolução CFP 06/2019 com narrativa trifásica',
+    aplicacao: 'O laudo segue Resolução CFP 06/2019 (identificação, demanda, procedimentos, análise, conclusão). Em CPTSD, a conclusão indica hipótese diagnóstica conforme CID-11 (6B41), com especificação dos clusters DSO presentes e plano de seguimento em três fases. Documente: instrumentos aplicados (ITQ, DES-II, PCL-5 quando pertinente, escalas de comorbidade), histórico traumático com cuidado ético (sem revitimização desnecessária), diferenciais (TEPT clássico, Transtorno Limítrofe, Transtorno Dissociativo), fase atual de tratamento, articulações de rede. Em contextos brasileiros, laudo pode ser solicitado para finalidades jurídicas (Lei Maria da Penha, processos de guarda, refúgio) — cuide do equilíbrio entre detalhe clínico e proteção da pessoa.',
+    armadilha: 'Detalhar trauma narrativamente no laudo "para fortalecer caso jurídico". Você expõe a pessoa e arrisca quebra de sigilo — Resolução CFP 06/2019 orienta princípio de pertinência.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Diferencial 6B40 × 6B41', indicador: 'CID-11 documentada', quem: 'Psicólogo(a)', quando: 'Sessões 1-2', status: 'Pendente' },
+  { passo: '2 · ITQ + algoritmo ICD-11', indicador: 'Clusters TEPT + DSO calculados', quem: 'Psicólogo(a)', quando: 'Sessão 2', status: 'Pendente' },
+  { passo: '3 · Segurança e janela', indicador: 'Risco + tolerância documentados', quem: 'Psicólogo(a)', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '4 · Fase 1 STAIR', indicador: '8-16 sessões regulação concluídas', quem: 'Psicólogo(a)', quando: 'Sessões 3-18', status: 'Pendente' },
+  { passo: '5 · Critérios transição', indicador: 'Janela expandida + ambiente seguro', quem: 'Psicólogo(a)', quando: 'Pré-Fase 2', status: 'Pendente' },
+  { passo: '6 · Fase 2 processamento', indicador: 'CPT-D, EMDR ou NET aplicado', quem: 'Psicólogo(a) com formação', quando: 'Sessões 19-42', status: 'Pendente' },
+  { passo: '7 · Fase 3 integração', indicador: 'Projeto de vida + rede social', quem: 'Psicólogo(a) + SUAS', quando: 'Sessões 43-60', status: 'Pendente' },
+  { passo: '8 · Adaptação contexto BR', indicador: 'Articulação com rede pertinente', quem: 'Psicólogo(a) + rede', quando: 'Transversal', status: 'Pendente' },
+  { passo: '9 · Monitoramento dissociação', indicador: 'DES-II + observação clínica', quem: 'Psicólogo(a)', quando: 'Transversal', status: 'Pendente' },
+  { passo: '10 · Laudo CFP', indicador: 'Documento Resolução 06/2019', quem: 'Psicólogo(a)', quando: 'Quando solicitado', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Pular Fase 1 e iniciar processamento traumático na primeira sessão',
+    texto: 'A literatura é clara — Cloitre (STAIR), ISSTD, VA/DoD (2021), ISTSS: estabilização precede processamento em CPTSD. Iniciar EMDR ou Prolonged Exposure sem janela de tolerância expandida produz reativação grave, dissociação e abandono. Estimativa típica: Fase 1 dura 8-16 sessões em CPTSD adulto, mais em casos de abuso infantil crônico.'
+  },
+  {
+    titulo: 'Aplicar PCL-5 como instrumento principal em CPTSD',
+    texto: 'PCL-5 cobre TEPT do DSM-5 e ICD-10, mas não os três clusters DSO da CID-11. Em suspeita de CPTSD (6B41), o instrumento canônico é o ITQ (International Trauma Questionnaire), com algoritmo específico publicado por Karatzias, Cloitre et al. (2017). PCL-5 isolado leva a subdiagnóstico de CPTSD.'
+  },
+  {
+    titulo: 'Confundir CPTSD com Transtorno Limítrofe de Personalidade',
+    texto: 'Há sobreposição clínica significativa — desregulação afetiva, autoconceito negativo, dificuldades relacionais. Mas Maercker et al. (2020) consolidam critérios distintos: CPTSD tem origem em trauma identificável (frequentemente crônico interpessoal), com início pós-exposição; TPB tem padrão estável desde adolescência sem necessariamente trauma. O diferencial orienta o protocolo — DBT em TPB, STAIR em CPTSD.'
+  },
+  {
+    titulo: 'Encerrar tratamento ao terminar Fase 2 de processamento',
+    texto: 'Sem Fase 3 de integração, o ganho clínico fica frágil. Em populações brasileiras vulneráveis (violência doméstica, refugiados venezuelanos), Fase 3 frequentemente exige articulação com rede SUAS, ACNUR, Centro de Referência da Mulher. Encerrar prematuramente acelera recaída no primeiro estressor.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Qual a diferença entre TEPT clássico e TEPT-Complexo na CID-11?',
+    a: 'A CID-11 (2018) separou TEPT clássico (6B40) de TEPT-Complexo (6B41). TEPT exige os três clusters clássicos — reexperiência, evitação e hiperexcitabilidade. CPTSD exige esses três mais três Disturbances in Self-Organization (DSO): desregulação afetiva, autoconceito negativo e dificuldades relacionais. CPTSD tipicamente decorre de trauma crônico interpessoal (abuso infantil prolongado, violência doméstica de longa duração, cativeiro, tortura). Karatzias, Cloitre, Maercker et al. (2017) consolidaram a validação empírica — em amostras clínicas, 43% atendem critérios de CPTSD vs. TEPT clássico.'
+  },
+  {
+    q: 'Por que estabilização precede processamento em CPTSD?',
+    a: 'Em CPTSD, o sistema nervoso central frequentemente opera fora da janela de tolerância — hiperarousal crônico, hipoarousal dissociativo. Aplicar processamento traumático (EMDR, Prolonged Exposure, CPT padrão) sem capacidade prévia de autorregulação reativa o sistema, gera dissociação grave, ideação suicida e abandono. STAIR (Cloitre) constrói essa capacidade em 8-16 sessões. ISTSS e VA/DoD endossam o sequenciamento trifásico como tratamento de primeira linha em CPTSD.'
+  },
+  {
+    q: 'Qual protocolo usar em refugiados venezuelanos com CPTSD?',
+    a: 'Em refugiados venezuelanos, há tipicamente sobreposição de trauma prévio (violência política, desabastecimento, ameaças) com trauma de deslocamento ativo (jornada migratória, condições precárias, perda de rede social). Protocolos: NET (Narrative Exposure Therapy; Schauer, Neuner & Elbert) é particularmente validado em refugiados — usa linha do tempo da vida com integração da experiência traumática. Fase 1 STAIR continua sendo precondição. Articulação com Operação Acolhida, ACNUR Brasil, UNHCR e rede SUAS é essencial; sem ambiente estabilizado, processamento não consolida.'
+  },
+  {
+    q: 'Como o MBA em Psicologia Positiva e Bem-Estar do IPOG conecta a esse guia?',
+    a: 'O MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações do IPOG cobre saúde mental aplicada, prevenção de adoecimento, intervenções baseadas em evidência e cultura de cuidado — fundamento técnico complementar para psicólogas e psicólogos que atendem populações expostas a trauma crônico (saúde, assistência social, violência ocupacional). Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir manejo de trauma complexo (CPTSD/TEPT-C)',
+  description: 'Guia em 10 passos para manejo de TEPT-C (CID-11 6B41) em adulto: diferencial TEPT clássico, ITQ, fases STAIR (estabilização-processamento-integração), CPT-D, EMDR adaptado, NET, contextos brasileiros e laudo CFP.',
+  totalTime: 'PT26M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como conduzir manejo de trauma complexo (CPTSD/TEPT-C): protocolo trifásico em 10 passos',
+  description: 'Protocolo passo-a-passo para CPTSD (CID-11 6B41) em adulto: diferencial 6B40, ITQ, três fases Cloitre (STAIR-processamento-integração), CPT-D, EMDR adaptado, NET, adaptações para violência doméstica e refugiados venezuelanos, laudo CFP 06/2019.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Manejo de trauma complexo (CPTSD)', item: `${SITE.url}/guias/manejo-trauma-complexo-cptsd` }
+  ]
+};
+---
+
+<Base
+  title="Manejo de trauma complexo (CPTSD/TEPT-C) — guia 10 passos · CID-11 6B41, ITQ, STAIR, EMDR adaptado"
+  description="Protocolo trifásico para manejo de TEPT-Complexo em adulto: diferencial CID-11 6B40 × 6B41, ITQ International Trauma Questionnaire, fases Cloitre (STAIR-processamento-integração), CPT-D, EMDR adaptado, NET para refugiados, adaptações brasileiras (violência doméstica, venezuelanos) e laudo CFP 06/2019.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Manejo de trauma complexo (CPTSD)' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 10 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir manejo de trauma complexo (CPTSD/TEPT-C)</h1>
+          <TLDR
+            resposta="Manejo de CPTSD (CID-11 6B41) exige sequência trifásica de Cloitre — estabilização (STAIR) antes de processamento (CPT-D, EMDR adaptado, NET) antes de integração — e diagnóstico com ITQ, não PCL-5: aplicar Prolonged Exposure padrão em paciente fora da janela de tolerância reativa o sistema e produz piora."
+            fontes={["Karatzias, Cloitre, Maercker et al., 2017 (Eur J Psychotraumatology)", "Maercker et al., 2020 (Eur Psychiatry)", "ISTSS Complex PTSD Guidelines"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto técnico para CPTSD adulto: diferencial 6B40 × 6B41, ITQ com algoritmo ICD-11, avaliação de segurança e janela de tolerância, Fase 1 STAIR (Cloitre), critérios objetivos de transição, Fase 2 processamento adaptado, Fase 3 integração, adaptações para violência doméstica e refugiados venezuelanos, laudo CFP.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~26 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos com formação em trauma</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Psicologia Positiva
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir manejo trifásico de CPTSD com diagnóstico CID-11, estabilização STAIR, processamento adaptado, integração e adaptações para contextos brasileiros.</li>
+          <li><strong>Pré-requisitos:</strong> CRP ativo, formação em trauma (EMDR, CPT ou NET certificados), conhecimento da CID-11 6B41, articulação com rede SUAS quando pertinente.</li>
+          <li><strong>Resultado esperado:</strong> redução clinicamente significativa de sintomas DSO, capacidade de autorregulação, projeto de vida pós-trauma e rede de suporte ativa.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura comum sobre trauma assume que processamento é o coração do tratamento — quanto antes a pessoa fala do trauma, melhor. A literatura empírica sobre TEPT-Complexo derruba a premissa. Karatzias, Cloitre e Maercker (2017), nos estudos que sustentaram a inclusão de CPTSD na CID-11, demonstraram que pacientes com 6B41 frequentemente operam fora da janela de tolerância — hiperarousal crônico, hipoarousal dissociativo, autoconceito fragmentado, vínculos relacionais marcados por revitimização. Aplicar protocolos de TEPT clássico nesse cenário (Prolonged Exposure padrão, CPT sem adaptação, EMDR sem estabilização prévia) produz reativação, dissociação e abandono. Em amostras clínicas, 43% atendem critérios para CPTSD vs. TEPT clássico — não é exceção, é parcela substancial.
+        </p>
+        <p>
+          A inversão prática para o psicólogo clínico: o protocolo canônico é trifásico. Fase 1 (STAIR; 8-16 sessões) constrói autorregulação afetiva e interpessoal antes de tocar a memória traumática. Fase 2 (16-24 sessões) faz processamento com protocolos adaptados — CPT-D, EMDR com ancoragem, NET para refugiados. Fase 3 consolida integração de identidade pós-trauma e articula rede de suporte. ISTSS e VA/DoD endossam essa sequência como tratamento de primeira linha. Em contextos brasileiros, o protocolo precisa ainda articular Lei Maria da Penha, Operação Acolhida para venezuelanos, CAPS e rede SUAS — sem ambiente seguro estabilizado, processamento não consolida ganho clínico.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 10 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Duração típica de tratamento completo: 40 a 60 sessões em CPTSD adulto, com janelas mais longas em abuso infantil crônico.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Mulher 34 anos, CPTSD pós-violência doméstica crônica, 48 sessões trifásicas</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Procura atendimento três meses após sair de relacionamento de 12 anos com violência psicológica e física intermitente. ITQ inicial: TEPT pleno + os três clusters DSO. PHQ-9 em 18, GAD-7 em 16, DES-II elevado, ideação passiva intermitente sem plano. Avaliação de segurança: medida protetiva ativa, ex-companheiro distante geograficamente, paciente em casa de mãe com apoio. Fase 1 STAIR conduzida em 14 sessões (~3,5 meses) com psicoeducação, habilidades de regulação afetiva (mindfulness adaptado, identificação de emoções, modulação), habilidades interpessoais (limites, escolhas relacionais, comunicação assertiva). Articulação concorrente com Centro de Referência da Mulher e advogada da Defensoria.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Critérios para transição alcançados ao final da Fase 1: janela de tolerância expandida (paciente reconhece e regula ativação), ideação suicida resolvida, ambiente estável, aliança consolidada. Fase 2 com EMDR adaptado (16 sessões), focando episódios traumáticos centrais com ancoragem frequente e contenção. Dissociação leve em duas sessões, manejada com técnicas grounding. Fase 3 (18 sessões em ~4 meses) com integração de identidade pós-relacionamento, retomada de carreira (paciente é arquiteta, retomou freelances), construção de rede social nova, prevenção de recaída. Encerramento aos 48 meses com ITQ pós: TEPT abaixo do cutoff, dois dos três clusters DSO no esperado, autoconceito negativo residual em monitoramento. Follow-up semestral combinado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://icd.who.int/browse11/l-m/en#/http%3A%2F%2Fid.who.int%2Ficd%2Fentity%2F585833559" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — CID-11 6B41 Complex PTSD</a></li>
+          <li><a href="https://istss.org/clinical-resources/treating-trauma/new-istss-prevention-and-treatment-guidelines/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISTSS — Complex PTSD Prevention and Treatment Guidelines</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5774423/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Karatzias, Cloitre, Maercker et al., 2017 — ITQ ICD-11</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7919312/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Maercker et al., 2020 — Desenvolvimento diagnóstico</a></li>
+          <li><a href="https://www.ptsd.va.gov/professional/articles/article-pdf/id52075.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">VA/DoD 2021 — Intervenções ICD-11</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/intervencao-crise-suicida-zero-suicide" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Intervenção em crise suicida (Zero Suicide)</a></li>
+          <li><a href="/metodos/emdr" class="text-brand-700 hover:text-brand-800 font-medium">Método · EMDR (Eye Movement Desensitization and Reprocessing)</a></li>
+          <li><a href="/metodos/dbt" class="text-brand-700 hover:text-brand-800 font-medium">Método · DBT (Terapia Comportamental Dialética)</a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia Clínica e Psicoterapia</a></li>
+          <li><a href="/intervencoes/intervencao-crise" class="text-brand-700 hover:text-brand-800 font-medium">Intervenção · Crise e suicidalidade</a></li>
+          <li><a href="/faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ geral</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">CPTSD exige sequência trifásica e diagnóstico com ITQ — atalhos produzem reativação e abandono.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O trajeto integra diferencial CID-11 (6B40 × 6B41), ITQ com algoritmo ICD-11, avaliação rigorosa de segurança e janela de tolerância, Fase 1 STAIR (8-16 sessões de regulação), critérios objetivos para transição, Fase 2 com CPT-D, EMDR adaptado ou NET (16-24 sessões), Fase 3 de integração com articulação SUAS, monitoramento permanente de dissociação e laudo CFP com narrativa trifásica. Para psicóloga ou psicólogo que atua com populações expostas a trauma crônico, o MBA em Psicologia Positiva e Bem-Estar do IPOG complementa fundamento em saúde mental aplicada e prevenção.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/areas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://icd.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CID-11 (OMS)</a></li>
+          <li><a href="https://istss.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISTSS</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.acnur.org/portugues/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ACNUR Brasil</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~26 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

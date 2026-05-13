@@ -1,0 +1,433 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'A Lei 10.216/2001 proibiu internação psiquiátrica?',
+    a: 'Não. A Lei 10.216, conhecida como Lei da Reforma Psiquiátrica, regulamenta a internação psiquiátrica e estabelece três modalidades formais (voluntária, involuntária e compulsória), todas com requisitos e fiscalização específicos. A lei reorienta o modelo de cuidado para serviços comunitários, mas mantém a internação como recurso disponível quando indicada clinicamente — quando os recursos extra-hospitalares se mostrarem insuficientes. A interpretação correta da lei é "internação é o último recurso, com critério clínico claro, fiscalização do Ministério Público e duração mínima necessária" — não "internação é proibida".'
+  },
+  {
+    q: 'O que é CAPS III e o que ele oferece que CAPS I e II não oferecem?',
+    a: 'O CAPS III é regulamentado pela Portaria GM/MS 336/2002 (e atualizações) como Centro de Atenção Psicossocial com funcionamento 24 horas, 7 dias por semana, com possibilidade de acolhimento noturno de até 7 dias. Atende municípios com população acima de 200 mil habitantes. Oferece o que CAPS I e II não oferecem: continuidade de cuidado intensivo em crise sem necessidade de internação hospitalar, equipe multiprofissional 24h, atenção em fim de semana e madrugada, e leito de acolhimento noturno para estabilização breve. O modelo é a oferta brasileira de "crise residential" — alternativa à internação psiquiátrica em quadros que não exigem ambiente hospitalar.'
+  },
+  {
+    q: 'Quando a internação é clinicamente indicada e quando o CAPS III absorve a crise?',
+    a: 'A literatura internacional e a prática consolidada na RAPS brasileira convergem em quatro critérios clínicos para internação: risco grave e iminente de auto/heteroagressão não manejável em CAPS III; necessidade de procedimento médico que exija ambiente hospitalar (eletroconvulsoterapia, manejo de intoxicação grave, comorbidade clínica que demande UTI); ausência de rede social e de suporte que viabilize manejo em dispositivo aberto; e falha demonstrada de manejo prévio em CAPS III. Crises agudas em paciente com rede mínima preservada, sem risco iminente fora de controle e que respondam a contenção verbal e farmacológica em ambiente aberto são caso de CAPS III — a literatura internacional (Hoult et al., 2002; Tyrer & Steinberg, 2013) é consistente em mostrar desfechos equivalentes a internação com menor estigma, menor desinserção social e menor custo.'
+  },
+  {
+    q: 'A oferta de CAPS III é homogênea no Brasil?',
+    a: 'Não. Dados do Ministério da Saúde indicam expansão significativa pós-pandemia, mas a distribuição é desigual entre regiões e estados. Capitais e regiões metropolitanas têm cobertura maior; municípios médios entre 100 e 200 mil habitantes frequentemente operam com CAPS II sem leito de acolhimento noturno, deixando lacuna no fluxo. Estados do Norte e Nordeste apresentam déficit estrutural mais grave, com proporção maior de internações em hospitais psiquiátricos por ausência de alternativa. Os dados pós-2024 do DataSUS e da Coordenação-Geral de Saúde Mental, Álcool e Outras Drogas do MS mostram aumento sustentado na proporção de crises absorvidas por CAPS III nas capitais que implementaram a rede de forma robusta.'
+  },
+  {
+    q: 'Onde um psicólogo brasileiro se forma para atuar em CAPS III e em equipes de crise?',
+    a: 'A formação canônica passa por residência multiprofissional em saúde mental em hospitais universitários, por estágio em CAPS III referência e por especializações em saúde coletiva, saúde mental e psicologia social comunitária. O Ministério da Saúde e a Fiocruz oferecem cursos de educação permanente para equipes RAPS. Pós-graduações em Psicologia Positiva, Neurociência e Reabilitação Neuropsicológica oferecem fundamentação útil sobre regulação emocional, neurociência da crise, recovery funcional e intervenções baseadas em forças — competências cada vez mais valorizadas em equipes de crise que adotam abordagem que vai além do controle farmacológico imediato.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Marco regulatório', internacao: 'Lei 10.216/2001 (modalidades voluntária/involuntária/compulsória)', caps3: 'Portaria GM/MS 336/2002 e atualizações; Portaria 3.088/2011 (RAPS)' },
+  { dimensao: 'Ambiente físico', internacao: 'Unidade hospitalar fechada ou semifechada', caps3: 'Serviço comunitário aberto com leito de acolhimento noturno' },
+  { dimensao: 'Duração típica', internacao: 'Variável; média entre 15-30 dias em internação aguda', caps3: 'Acolhimento noturno até 7 dias; permanência diurna por tempo necessário' },
+  { dimensao: 'Equipe', internacao: 'Psiquiatra, enfermagem 24h, equipe multiprofissional variável', caps3: 'Equipe multiprofissional 24h: psiquiatra, psicólogo, enfermeiro, TO, assistente social' },
+  { dimensao: 'Restrição de liberdade', internacao: 'Significativa por definição', caps3: 'Mínima — paciente pode sair com plano clínico' },
+  { dimensao: 'Família e rede social', internacao: 'Visitas reguladas; participação variável', caps3: 'Participação ativa, family intervention possível, manutenção de vínculo' },
+  { dimensao: 'Custo aproximado por dia (SUS, 2024)', internacao: 'R$ 400 a R$ 800 em hospital psiquiátrico geral', caps3: 'R$ 150 a R$ 300 por dia de atenção intensiva' },
+  { dimensao: 'Estigma social', internacao: 'Alto — "internado" carrega marcação', caps3: 'Menor — atendimento em CAPS percebido como ambulatorial intensivo' },
+  { dimensao: 'Fiscalização externa', internacao: 'Ministério Público + Conselho Estadual; comunicação obrigatória em involuntárias', caps3: 'Controle social via conselhos locais de saúde + auditoria RAPS' },
+  { dimensao: 'Continuidade pós-crise', internacao: 'Encaminhamento para rede aberta; risco de descontinuidade', caps3: 'Continuidade intrínseca ao serviço — mesmo paciente, mesma equipe' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'Crise psicótica aguda com agitação grave e risco de hetero/autoagressão', internacao: 'Linha de frente quando ambiente comunitário não comporta', caps3: 'Eficaz em casos selecionados com rede mínima preservada', vencedor: 'Internação quando indicada' },
+  { condicao: 'Primeiro episódio psicótico estável após estabilização farmacológica', internacao: 'Tradicional — alta frequente em 2-4 semanas', caps3: 'Alternativa preferível em casos com rede social — Lei 10.216 e RAPS', vencedor: 'CAPS III' },
+  { condicao: 'Crise suicida com plano e meio disponível', internacao: 'Indicada se risco não manejável em ambiente aberto', caps3: 'Possível com leito de acolhimento + safety planning estruturado', vencedor: 'Depende do risco e da rede' },
+  { condicao: 'Tentativa de suicídio recente com baixa letalidade', internacao: 'Frequente, mas nem sempre clinicamente necessária', caps3: 'Eficaz com Caring Contacts e family intervention', vencedor: 'CAPS III na maioria dos casos' },
+  { condicao: 'Mania grave com risco financeiro e social', internacao: 'Frequentemente necessária por desregulação intensa', caps3: 'Possível em casos selecionados com família engajada', vencedor: 'Internação inicial mais comum' },
+  { condicao: 'Depressão grave com sintomas psicóticos', internacao: 'Indicada se ECT considerada ou risco suicida iminente', caps3: 'Possível com retaguarda hospitalar para ECT se necessária', vencedor: 'Depende do recurso' },
+  { condicao: 'Crise de uso de álcool com necessidade de desintoxicação', internacao: 'Indicada se delirium tremens ou comorbidade clínica', caps3: 'Possível em quadro sem complicação clínica grave', vencedor: 'CAPS AD III ou hospitalar conforme gravidade' },
+  { condicao: 'Crise em paciente com transtorno borderline e autolesão', internacao: 'Curta — máximo 72h conforme literatura DBT', caps3: 'Preferível — internação prolongada pode reforçar comportamento', vencedor: 'CAPS III com retaguarda' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Crise psicótica aguda com agitação grave em paciente sem família disponível', recomendacao: 'Internação em ambiente psiquiátrico geral', racional: 'Combinação de gravidade clínica + ausência de scaffolding social torna manejo em CAPS III inviável; transição pós-estabilização para CAPS III' },
+  { perfilPaciente: 'Primeiro episódio psicótico em jovem com família engajada', recomendacao: 'CAPS III com leito de acolhimento + Family Intervention', racional: 'Cenário ideal para acolhimento intensivo aberto; preserva vínculos sociais e educacionais na janela crítica de 2-5 anos' },
+  { perfilPaciente: 'Crise suicida com plano detalhado e meio acessível', recomendacao: 'Internação inicial breve + transição planejada para CAPS III', racional: 'Risco iminente exige contenção em ambiente seguro; transição rápida para serviço aberto reduz estigma e desinserção' },
+  { perfilPaciente: 'Tentativa de suicídio com baixa letalidade em adulto com rede social', recomendacao: 'CAPS III com safety planning de Stanley e Brown + Caring Contacts', racional: 'Internação não tem evidência de redução adicional de risco; serviço aberto com plano estruturado captura o mesmo desfecho com menor dano social' },
+  { perfilPaciente: 'Adolescente com autolesão recorrente e diagnóstico de borderline', recomendacao: 'CAPS III ou CAPSi com retaguarda hospitalar para crises curtas', racional: 'Internação prolongada em borderline tende a reforçar comportamento; protocolo DBT recomenda máximo 72h em internação' },
+  { perfilPaciente: 'Mania grave com gastos abusivos e desinibição sexual', recomendacao: 'Internação inicial para estabilização farmacológica', racional: 'Desregulação intensa frequentemente exige contenção temporária; transição para CAPS III conforme resposta clínica' },
+  { perfilPaciente: 'Crise de uso de crack/cocaína com risco social grave', recomendacao: 'CAPS AD III ou comunidade terapêutica conforme contexto', racional: 'RAPS dispõe de dispositivos específicos para uso de substâncias com componentes de redução de danos é reinserção' },
+  { perfilPaciente: 'Recaída em paciente já vinculado a CAPS III', recomendacao: 'Acolhimento noturno no próprio CAPS III', racional: 'Continuidade com mesma equipe é familiar acelera estabilização e preserva vínculos terapêuticos construídos' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Internação psiquiátrica vs CAPS III na crise aguda: Lei 10.216, Portaria 336 e fluxo da RAPS',
+  description: 'Comparativo independente entre internação psiquiátrica e CAPS III na crise aguda. Lei 10.216/2001, Portaria 336/2002, RAPS, dados Brasil pós-2024 e perfil clínico.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Internação vs CAPS III' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+---
+
+<Base
+  title="Internação psiquiátrica vs CAPS III: Lei 10.216, Portaria 336 e fluxo da crise aguda"
+  description="Comparativo independente entre internação e CAPS III na crise psiquiátrica aguda. Lei da Reforma Psiquiátrica (10.216/2001), Portaria GM/MS 336/2002, Rede de Atenção Psicossocial e perfil clínico.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Internação vs CAPS III' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Crise psiquiátrica aguda</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Internação psiquiátrica vs CAPS III: o que mudou desde a Lei 10.216 e o que ainda não chegou ao Brasil inteiro</h1>
+          <p class="mt-3 text-ink-700 text-lg">A reforma psiquiátrica brasileira não aboliu a internação. Reorganizou a hierarquia: CAPS III absorve a maior parte das crises agudas que antes iam para hospital, e a internação fica reservada a quadros clinicamente irredutíveis ao serviço comunitário. O Brasil real ainda navega entre os dois extremos — e a competência da equipe define o desfecho.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="A Lei 10.216/2001 não aboliu a internação psiquiátrica — regulamentou. As três modalidades (voluntária, involuntária, compulsória) seguem disponíveis com fiscalização do Ministério Público. O CAPS III, regulamentado pela Portaria GM/MS 336/2002, opera 24 horas com leito de acolhimento noturno de até 7 dias e absorve a maior parte das crises agudas que antes iam direto para hospital. A literatura internacional (Hoult et al., 2002; Tyrer & Steinberg, 2013) é consistente: serviços de crise comunitários produzem desfechos equivalentes a internação em quadros selecionados, com menor estigma, melhor preservação de vínculos sociais e menor custo. A escolha clínica entre os dois passa por quatro critérios: gravidade do risco, rede social disponível, necessidade de procedimento médico hospitalar e histórico de manejo prévio."
+        fontes={["Lei 10.216/2001 — Reforma Psiquiátrica brasileira", "Portaria GM/MS 336/2002 — CAPS", "Portaria GM/MS 3.088/2011 — Rede de Atenção Psicossocial (RAPS)"]}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que a Lei 10.216 realmente diz</h2>
+        <p>
+          A Lei 10.216, sancionada em 6 de abril de 2001, é a peça regulatória central da reforma psiquiátrica brasileira. Resultado de mobilização que começou em 1987 com a II Conferência Nacional de Saúde Mental e o Movimento dos Trabalhadores em Saúde Mental, a lei consolidou três proteções fundamentais. Primeira, direitos da pessoa portadora de transtorno mental — proteção contra qualquer forma de abuso e exploração, atendimento humanizado, acesso a tratamento menos invasivo possível. Segunda, regulamentação das três modalidades de internação — voluntária (com consentimento do paciente), involuntária (sem consentimento, a pedido de terceiro, com comunicação ao Ministério Público em 72h) e compulsória (determinada por juiz). Terceira, reorientação do modelo de cuidado para serviços comunitários, com a internação prevista quando os recursos extra-hospitalares se mostrarem insuficientes.
+        </p>
+        <p>
+          A leitura distorcida da lei — internação foi abolida — é fonte recorrente de mal-entendido. A literatura, a jurisprudência e a regulação posterior são consistentes: a internação segue como recurso disponível com critério clínico claro, fiscalização externa e duração mínima necessária. O que mudou foi o lugar da internação na hierarquia de cuidado — passou de primeira escolha a último recurso, com obrigação de oferta de alternativa comunitária estruturada.
+        </p>
+        <p>
+          A estrutura comunitária que a lei pressupõe foi sendo construída em portarias subsequentes. A Portaria GM/MS 336/2002 regulamentou os Centros de Atenção Psicossocial em três modalidades — CAPS I (municípios com 20-70 mil hab), CAPS II (70-200 mil) e CAPS III (acima de 200 mil, com funcionamento 24h e leito de acolhimento noturno). A Portaria 3.088/2011 consolidou a Rede de Atenção Psicossocial (RAPS), articulando CAPS, UPA, Atenção Primária, Serviços Residenciais Terapêuticos, leitos psiquiátricos em hospital geral, equipes Consultório na Rua, comunidades terapêuticas e outras instâncias. Em conjunto, esses dispositivos compõem a oferta brasileira de cuidado em saúde mental fora do paradigma hospital-cêntrico que vigorou por mais de 100 anos.
+        </p>
+        <p>
+          A literatura internacional sobre serviços de crise comunitários — particularmente o trabalho de Leonard Stein e Mary Ann Test em Madison, Wisconsin (modelo PACT — Program of Assertive Community Treatment, anos 1970-80), e os Crisis Resolution Teams do Reino Unido (Hoult et al., 2002; Tyrer & Steinberg, 2013) — converge num achado robusto: serviços de crise estruturados em ambiente comunitário produzem desfechos equivalentes a internação psiquiátrica em quadros selecionados, com benefícios significativos em três dimensões: menor estigma social, melhor preservação de vínculos familiares e profissionais, e custo significativamente menor por episódio. O CAPS III brasileiro é a versão local do modelo, adaptada para um sistema universal de saúde com características próprias.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo é estrutura</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Internação psiquiátrica</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CAPS III</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.internacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.caps3}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por situação clínica</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Condição</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Internação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CAPS III</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Vencedor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.internacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.caps3}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Os quatro critérios clínicos para internação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A literatura internacional e a prática consolidada na RAPS brasileira convergem em quatro critérios para indicar internação em vez de manejo em CAPS III. O primeiro é risco grave e iminente de auto/heteroagressão não manejável em ambiente aberto. Paciente em mania grave com tentativa concreta de agressão, paciente em surto psicótico com plano detalhado de homicídio, paciente em depressão grave com tentativa de suicídio em curso ou meio acessível imediato — todos exigem contenção em ambiente seguro que CAPS III tipicamente não oferece com a mesma robustez.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O segundo critério é necessidade de procedimento médico que exija ambiente hospitalar. Eletroconvulsoterapia ainda é indicada em casos selecionados de depressão refratária grave, catatonia, mania severa e episódios psicóticos refratários — exige retaguarda anestésica que CAPS III não comporta. Manejo de intoxicação grave (delirium tremens, intoxicação por benzodiazepínicos com depressão respiratória, intoxicação por psicofármacos em superdosagem) exige UTI ou enfermaria clínica. Comorbidade clínica aguda em paciente psiquiátrico (descompensação diabética, pneumonia grave, insuficiência cardíaca descompensada) exige hospital geral.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O terceiro critério é ausência de rede social e de suporte que viabilize manejo em dispositivo aberto. Paciente em situação de rua, paciente sem família e sem residência segura, paciente cuja família é fator desestabilizador ativo (alta expressed emotion crônica, violência intrafamiliar) — todos podem precisar de ambiente protegido temporário enquanto se constrói alternativa social. Aqui o critério é tanto clínico quanto estrutural, e o desafio é evitar que a internação se prolongue por falta de alternativa — o desfecho de "morador de hospital" que a reforma psiquiátrica buscou explicitamente eliminar.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O quarto critério é falha demonstrada de manejo prévio em CAPS III. Paciente que teve duas ou três tentativas estruturadas de acolhimento intensivo em CAPS III com piora clínica ou inabilidade do serviço de conter o quadro pode precisar de ambiente hospitalar temporário. Esse critério exige avaliação cuidadosa — falha do CAPS III pode refletir limitação do serviço local (equipe pequena, recursos escassos) e não inadequação intrínseca do paciente ao modelo aberto.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Fora desses quatro critérios, a literatura sustenta CAPS III como primeira escolha. Crises agudas em paciente com rede mínima preservada, sem risco iminente fora de controle e que respondam a contenção verbal e farmacológica em ambiente aberto são caso de CAPS III. A grande vantagem é triple: menor estigma social, melhor preservação de vínculos sociais e profissionais, e menor custo. A grande desvantagem é a heterogeneidade da oferta no país.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de paciente e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do paciente</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Recomendação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando internação é o caminho</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Risco grave e iminente não manejável em CAPS III</p>
+              <p class="text-sm text-ink-700 mt-1">Mania grave com agressividade, surto psicótico com plano homicida, crise suicida com tentativa em curso — quadros que exigem contenção em ambiente seguro hospitalar.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Necessidade de procedimento médico hospitalar</p>
+              <p class="text-sm text-ink-700 mt-1">Eletroconvulsoterapia, manejo de intoxicação grave, comorbidade clínica aguda — situações que exigem retaguarda anestésica, UTI ou enfermaria clínica.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Falha demonstrada de manejo prévio em CAPS III</p>
+              <p class="text-sm text-ink-700 mt-1">Paciente com duas ou três tentativas estruturadas de acolhimento em CAPS III sem estabilização — internação breve estratégica enquanto se reorganiza projeto terapêutico.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando CAPS III é primeira escolha</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Crise aguda com rede social preservada</p>
+              <p class="text-sm text-ink-700 mt-1">Paciente com família engajada, residência segura é histórico de adesão ao tratamento — acolhimento intensivo aberto preserva vínculos e acelera estabilização.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Primeiro episódio psicótico em jovem com projeto educacional</p>
+              <p class="text-sm text-ink-700 mt-1">A janela neurobiológica e funcional crítica de 2-5 anos pós-episódio favorece manutenção de vínculos sociais — CAPS III viabiliza scaffolding sem desinserção.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Borderline com autolesão recorrente</p>
+              <p class="text-sm text-ink-700 mt-1">Internação prolongada em borderline reforça comportamento — protocolo DBT recomenda máximo 72h. CAPS III com retaguarda é o caminho clínico.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Fluxo articulado entre os dois dispositivos</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Internação breve seguida de transição para CAPS III</p>
+            <p class="text-sm text-ink-700 mt-1">Quadro grave estabilizado em 5-7 dias hospitalares transiciona para CAPS III com plano terapêutico construído conjuntamente — evita ruptura e descontinuidade.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">CAPS III como porta de entrada e gestor do caso</p>
+            <p class="text-sm text-ink-700 mt-1">Paciente vinculado a CAPS III tem internação breve quando indicada com retorno imediato à equipe original — continuidade preservada como princípio operacional.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Mariana, 28 anos, transtorno bipolar tipo I em mania moderada</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Mariana chegou à UPA acompanhada da irmã após três noites sem dormir, fala acelerada, irritabilidade crescente e gastos impulsivos com cartão de crédito. Histórico: diagnóstico de transtorno bipolar tipo I aos 22 anos, três episódios prévios (dois maníacos, um depressivo), uma internação anterior aos 25 anos por mania grave com agressividade. Vinculada ao CAPS III referência da capital nos últimos 18 meses com adesão razoável a lítio, comparecimento regular a consultas psiquiátricas e família engajada. Sem ideação suicida, sem alucinações, sem delírios francos, mas com início de psicose hipomaníaca emergente.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A equipe da UPA articulou com a equipe de plantão do CAPS III antes de tomar decisão. Critérios avaliados: risco grave e iminente? Não — sem agressividade física, sem ideação suicida, sem psicose franca. Necessidade de procedimento hospitalar? Não — sem comorbidade clínica grave, ajuste medicamentoso possível ambulatorialmente. Rede social? Sim — irmã engajada, mãe presente, residência segura. Falha prévia em CAPS III? Não — manejo prévio foi adequado, episódio atual é detectado na fase inicial.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Decisão: CAPS III com acolhimento noturno por 5 dias enquanto se otimizava medicação. Mariana foi acolhida no CAPS III mantida na residência diurna do serviço, com sessões diárias de psicoeducação, manejo de família com a irmã e a mãe, otimização farmacológica em parceria com a psiquiatra de referência (lítio + risperidona em baixa dose temporariamente). Em 5 dias, sono retomado, fala em ritmo normal, sem agitação. Alta do acolhimento noturno, transição para frequência diurna 3x/semana por 4 semanas, depois retorno ao plano original. Sem afastamento do trabalho (auxiliar administrativa), sem ruptura de vínculos sociais, sem estigma de "internação psiquiátrica" no prontuário trabalhista. A psicóloga do CAPS III registrou: "O sistema funcionou como projetado. Detecção precoce + acolhimento intensivo aberto + retaguarda hospitalar disponível mas não acionada. Foi o que a Lei 10.216 imaginou".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões clínicos de manejo de mania em CAPS III referência. Pacientes em fase inicial de descompensação com rede preservada são o cenário onde CAPS III mais claramente entrega valor frente à internação tradicional.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções. Primeiro, a oferta de CAPS III é heterogênea no Brasil — capitais e regiões metropolitanas têm cobertura maior; municípios médios e interior frequentemente operam com CAPS II sem leito de acolhimento, deixando lacuna crítica no fluxo. Em regiões com déficit estrutural, a "escolha" entre internação e CAPS III pode ser falsa — só há internação disponível, e a equipe local manda o que aparece para hospital psiquiátrico por ausência de alternativa. Segundo, a qualidade dos serviços é variável: CAPS III bem equipado em capital com equipe completa não é equivalente a CAPS III com déficit de profissionais e estrutura precária. A "preferência por CAPS III" da literatura supõe serviço estruturado e bem operado. Terceiro, internação hospitalar varia também — leito psiquiátrico em hospital geral com equipe de referência é diferente de hospital psiquiátrico tradicional com longa permanência média.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A questão estrutural mais importante segue sendo a expansão da RAPS em regiões com déficit. Dados do DataSUS e da Coordenação-Geral de Saúde Mental, Álcool e Outras Drogas do Ministério da Saúde mostram crescimento sustentado pós-pandemia, mas a desigualdade regional persiste. Estados do Norte e Nordeste apresentam déficit estrutural mais grave. A discussão técnica "internação vs CAPS III" pressupõe um sistema que ainda está em construção em parte significativa do território.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Articulação da rede e papel do psicólogo</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O psicólogo em CAPS III ocupa posição articuladora entre dispositivos da rede que define qualidade do cuidado. Função 1 — avaliação inicial em crise com triagem de risco, articulação com psiquiatria do serviço e decisão clínica sobre acolhimento noturno, frequência diurna ou contrarreferência. Função 2 — condução de oficinas e grupos terapêuticos como dispositivos centrais do CAPS, não como atividades acessórias. Função 3 — family intervention estruturada quando o caso e a equipe permitem. Função 4 — articulação com Atenção Primária, NASF-AB, UPA, hospital de referência, Conselho Tutelar (quando há criança no contexto), assistência social e judiciário. Função 5 — projeto terapêutico singular construído conjuntamente com paciente e família, revisado periodicamente. Essa pluralidade de funções é o que diferencia o psicólogo em CAPS III do psicólogo em consultório isolado — e exige competências que a graduação típica em Psicologia clínica não oferece em profundidade, criando demanda por formação especializada em saúde mental coletiva, reabilitação psicossocial e neurociência do recovery aplicada a quadros graves.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A Lei 10.216 não aboliu internação. Reorganizou a hierarquia.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>CAPS III absorve a maior parte das crises agudas que antes iam direto para hospital, com desfechos equivalentes em quadros selecionados.</li>
+          <li>Quatro critérios clínicos justificam internação: risco grave iminente, procedimento hospitalar necessário, ausência de rede social, falha de manejo prévio em CAPS III.</li>
+          <li>A literatura internacional (Hoult et al., 2002; Tyrer & Steinberg, 2013) é consistente sobre superioridade de serviços comunitários em quadros selecionados.</li>
+          <li>A oferta heterogênea de CAPS III no Brasil ainda é o principal obstáculo à implementação plena da reforma.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem atuar em CAPS III, equipes de crise e dispositivos da RAPS — ou aprofundar fundamentação em saúde mental coletiva e reabilitação psicossocial —, o IPOG mantém MBAs em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica com módulos sobre saúde mental, recovery funcional e intervenções em contextos complexos. Próximo passo: confirmar grade, modalidade e turma no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/antipsicotico-vs-intervencao-psicossocial-pos-crise" class="text-brand-700 hover:text-brand-800 font-medium">Antipsicótico vs intervenção psicossocial pós-primeiro episódio — RAISE-ETP, Birchwood</a></li>
+          <li><a href="/comparativos/iapt-vs-stepped-care-brasil" class="text-brand-700 hover:text-brand-800 font-medium">IAPT vs Stepped Care no Brasil — fluxo organizacional da rede</a></li>
+          <li><a href="/intervencoes" class="text-brand-700 hover:text-brand-800 font-medium">Intervenções estruturadas — Family Intervention, IPS, recovery</a></li>
+          <li><a href="/areas" class="text-brand-700 hover:text-brand-800 font-medium">Áreas — saúde mental, psicologia social comunitária, neurociência</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. Modalidade de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Métodos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/metodos/tcc" class="mega-link"><strong class="text-ink-900 text-sm">TCC e TCC para psicose (CBTp)</strong></a></li>
+          <li><a href="/metodos/dbt" class="mega-link"><strong class="text-ink-900 text-sm">DBT em crise de borderline</strong></a></li>
+          <li><a href="/intervencoes" class="mega-link"><strong class="text-ink-900 text-sm">Intervenções na crise</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/antipsicotico-vs-intervencao-psicossocial-pos-crise" class="mega-link"><strong class="text-ink-900 text-sm">Antipsicótico vs psicossocial</strong></a></li>
+          <li><a href="/comparativos/iapt-vs-stepped-care-brasil" class="mega-link"><strong class="text-ink-900 text-sm">IAPT vs Stepped Care</strong></a></li>
+          <li><a href="/comparativos/psicoterapia-individual-vs-grupo" class="mega-link"><strong class="text-ink-900 text-sm">Individual vs grupo</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Lei nº 10.216, de 6 de abril de 2001 (Reforma Psiquiátrica).</li>
+          <li>Portaria GM/MS nº 336, de 19 de fevereiro de 2002 (CAPS).</li>
+          <li>Portaria GM/MS nº 3.088, de 23 de dezembro de 2011 (Rede de Atenção Psicossocial — RAPS).</li>
+          <li>Hoult, J., et al. (2002). Crisis resolution and home treatment: an evidence-based review. International Review of Psychiatry.</li>
+          <li>Tyrer, P., & Steinberg, D. (2013). Models for Mental Disorders (5th ed.). Wiley.</li>
+          <li>Stein, L. I., & Test, M. A. (1980). Alternative to mental hospital treatment (PACT). Archives of General Psychiatry.</li>
+          <li>Ministério da Saúde / DataSUS — RAPS Brasil, dados pós-2024.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

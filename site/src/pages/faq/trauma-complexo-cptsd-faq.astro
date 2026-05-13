@@ -1,0 +1,318 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O que é trauma complexo (CPTSD) segundo a CID-11?',
+    a: 'Trauma complexo é o nome clínico para o quadro que a CID-11 codifica como 6B41 — Transtorno de Estresse Pós-Traumático Complexo (CPTSD). A definição operacional combina dois núcleos. O primeiro reproduz os sintomas centrais do TEPT clássico — reexperiência (flashbacks, intrusões), evitação ativa de gatilhos e senso atual persistente de ameaça. O segundo acrescenta três clusters de Distúrbio de Auto-Organização (DSO): desregulação afetiva (AD), autoconceito negativo persistente (NSC) e dificuldades relacionais (DR). Karatzias, Cloitre e Maercker (2017) lideraram a validação internacional do diagnóstico, e Maercker e colaboradores (2020) detalharam o processo de desenvolvimento até a aprovação final. A diferença essencial em relação ao TEPT clássico (6B40) é a presença obrigatória dos três clusters DSO, que refletem trauma cumulativo, interpessoal e em contexto de aprisionamento real ou percebido.'
+  },
+  {
+    q: 'Qual a diferença entre TEPT clássico e CPTSD na prática clínica?',
+    a: 'A diferença é qualitativa e estrutural, não apenas quantitativa. TEPT clássico (CID-11 6B40) decorre tipicamente de evento traumático único ou episódico — acidente, agressão, desastre — e responde bem a protocolos focados no processamento do trauma, como Exposição Prolongada (PE) de Foa ou Terapia de Processamento Cognitivo (CPT). CPTSD (6B41) decorre de trauma prolongado, repetido e em contexto interpessoal de aprisionamento — abuso infantil, violência doméstica crônica, cárcere, tortura, exploração — e os três clusters DSO indicam reorganização da personalidade em torno da experiência traumática. Protocolo direto de exposição costuma falhar ou descompensar paciente CPTSD sem estabilização prévia. Karatzias e colaboradores (2017) documentaram que CPTSD aparece em 43% de amostras clínicas, frequentemente mal diagnosticado como transtorno de personalidade borderline.'
+  },
+  {
+    q: 'O que é o ITQ e como ele opera no diagnóstico de CPTSD?',
+    a: 'O ITQ (International Trauma Questionnaire), desenvolvido por Cloitre e colaboradores, é o instrumento autorrelato padrão para CID-11 6B40 e 6B41. Contém 18 itens distribuídos em seis clusters — três para TEPT (reexperiência, evitação, ameaça) e três para DSO (desregulação afetiva, autoconceito negativo, dificuldade relacional). O algoritmo diagnóstico exige pelo menos um item em cada cluster TEPT com prejuízo funcional para indicar TEPT. Para CPTSD, soma-se a presença de pelo menos um item em cada cluster DSO, também com prejuízo. Confiabilidade e validade foram replicadas em múltiplos países. No Brasil, o ITQ ainda não tem versão validada nacionalmente em base populacional ampla, mas adaptações para uso clínico circulam em serviços especializados. A aplicação é breve (10 a 15 minutos) e funciona como triagem qualificada, não como diagnóstico definitivo isolado.'
+  },
+  {
+    q: 'Quais instrumentos complementam o ITQ na avaliação de trauma complexo?',
+    a: 'Avaliação completa de trauma complexo combina ITQ com instrumentos complementares. A CAPS-5 (Clinician-Administered PTSD Scale for DSM-5) segue o padrão DSM, mas é amplamente usada por avaliadores brasileiros pela tradição em pesquisa; oferece estrutura de entrevista clínica detalhada. O PCL-5 (PTSD Checklist for DSM-5) é autorrelato breve útil para acompanhamento. A SCID-5-PD avalia transtornos de personalidade, essencial para diferencial com TPB. O DES-II (Dissociative Experiences Scale) rastreia dissociação, comum em CPTSD. Para histórico traumático, o ACE Questionnaire (Adverse Childhood Experiences) oferece quantificação de exposição na infância. Em adolescentes, o CRIES-13 é padrão. Avaliação responsável não substitui ITQ por bateria DSM, mas integra os dois — CID-11 e DSM-5-TR convivem na clínica brasileira, e laudo robusto cita ambos.'
+  },
+  {
+    q: 'Qual é o protocolo de tratamento mais consagrado para CPTSD?',
+    a: 'O protocolo STAIR (Skills Training in Affective and Interpersonal Regulation), desenvolvido por Marylene Cloitre, é o tratamento com mais evidência específica para CPTSD. Organiza-se em três fases consecutivas. A Fase 1 (estabilização) ensina habilidades de regulação afetiva e interpessoal antes de qualquer processamento traumático, com 8 a 16 sessões iniciais focadas em mindfulness, identificação de emoções, tolerância à angústia e mudança de padrões relacionais maladaptativos. A Fase 2 (processamento) introduz exposição narrativa ou processamento cognitivo do trauma, com paciente já mais regulado. A Fase 3 (integração) consolida ganhos, trabalha luto, identidade reorganizada e projeto de vida. Cloitre demonstrou superioridade do STAIR sobre protocolos de exposição direta em CPTSD, com menos descompensação e taxas de adesão maiores. As diretrizes da ISTSS e do VA/DoD (2021) corroboram a abordagem faseada para trauma complexo.'
+  },
+  {
+    q: 'Por que não usar Exposição Prolongada (PE) direto em paciente com CPTSD?',
+    a: 'Exposição Prolongada de Foa é altamente eficaz em TEPT clássico, mas aplicada diretamente em CPTSD sem fase de estabilização produz risco de descompensação clínica, autoagressão e abandono do tratamento. O paciente com CPTSD tem desregulação afetiva ampla e autoconceito negativo persistente — entrar em contato com memória traumática sem habilidades prévias de tolerância à angústia ativa sistema de defesa em magnitude que ele não tem como modular. A literatura clínica desde Herman (1992) e consolidada por Cloitre, Maercker e van der Kolk converge no princípio "segurança antes de processamento". As diretrizes da ISTSS (International Society for Traumatic Stress Studies) e do VA/DoD (2021) recomendam abordagem faseada para CPTSD, com exposição introduzida só após estabilização. Aplicar protocolo de TEPT clássico em CPTSD é erro técnico recorrente que prolonga sofrimento.'
+  },
+  {
+    q: 'EMDR pode ser usado em CPTSD?',
+    a: 'EMDR (Eye Movement Desensitization and Reprocessing) tem evidência sólida em TEPT e crescente em CPTSD, mas com adaptação específica. Em CPTSD, EMDR não substitui a fase de estabilização — é introduzido na Fase 2, após o paciente desenvolver habilidades de regulação afetiva e recursos internos (Safe Place, RDI — Resource Development and Installation). O protocolo padrão de 8 fases é ajustado para ritmo mais lento, com sessões frequentemente mais curtas e atenção a sinais de dissociação ou janela de tolerância estreita. Francine Shapiro e adaptações posteriores (Korn, Leeds, Knipe) discutem manejo de trauma complexo com EMDR fragmentado. Em casos com dissociação significativa, integração com modelo de Partes (van der Hart, Nijenhuis, Steele — Structural Dissociation Theory) orienta sequência. Diretrizes OMS, APA e NICE incluem EMDR como tratamento recomendado para TEPT; para CPTSD, recomenda-se aplicador formado especificamente em trauma complexo.'
+  },
+  {
+    q: 'CPTSD se confunde com transtorno de personalidade borderline?',
+    a: 'A confusão é recorrente porque há sobreposição fenomenológica significativa — desregulação afetiva, instabilidade relacional, autoimagem negativa, comportamentos autodestrutivos. Maercker e colaboradores (2020), no processo de desenvolvimento do diagnóstico CID-11, destacaram a necessidade técnica de diferenciar os dois quadros. A diferença essencial está no critério etiológico e na arquitetura sintomática. CPTSD exige história de trauma prolongado e repetido, com sintomas centrais de TEPT clássico (reexperiência, evitação, ameaça) presentes; TPB pode coexistir com trauma, mas não exige etiologia traumática. Em TPB predomina medo intenso de abandono, identidade flutuante, esforços frenéticos para evitar abandono real ou imaginado. Em CPTSD predomina autoconceito negativo estável (não flutuante) e evitação de relações por desconfiança crônica. A coocorrência existe; o diferencial sustenta plano clínico distinto. Diagnosticar TPB sem investigar CPTSD em paciente com história de abuso infantil é erro recorrente.'
+  },
+  {
+    q: 'Quais são as fases do protocolo STAIR de Cloitre na prática brasileira?',
+    a: 'Cloitre estrutura o STAIR em três fases sequenciais com objetivos clínicos distintos. Fase 1 — Estabilização e habilidades (8 a 16 sessões): regulação afetiva (identificação, nomeação, modulação de emoções), tolerância à angústia, mindfulness aplicado a trauma, habilidades interpessoais (assertividade, limites, leitura de relações seguras versus inseguras), psicoeducação sobre trauma e suas marcas. Fase 2 — Processamento narrativo (10 a 16 sessões): construção e processamento de narrativa traumática em ambiente regulado, com exposição imaginada ou narrativa escrita, reprocessamento cognitivo de significados e crenças nucleares. Fase 3 — Integração e projeto de vida (5 a 10 sessões): consolidação, identidade reorganizada, luto pelos anos vividos sob o trauma, planejamento de futuro com valores e relações novas. Na clínica brasileira, o protocolo é frequentemente adaptado com complemento de DBT-skills na Fase 1 e EMDR ou IFS na Fase 2, conforme formação do clínico.'
+  },
+  {
+    q: 'CPTSD em vítima de violência doméstica brasileira tem particularidade?',
+    a: 'Sim. A literatura internacional sobre CPTSD baseou-se historicamente em populações de combatentes, refugiados e sobreviventes de cárcere; aplicação a vítimas de violência doméstica crônica brasileira exige sensibilidade contextual. A Lei Maria da Penha (11.340/2006) e a Lei do Feminicídio (13.104/2015) estruturam proteção legal, mas a saída da relação abusiva costuma ocorrer só após anos de violência cumulativa — fator que sustenta os três clusters DSO. Trauma de aprisionamento doméstico envolve coerção econômica, isolamento social progressivo, parentalidade compartilhada com agressor e ameaça constante. Avaliação responsável investiga não só a violência física, mas a estrutura coercitiva (Stark, 2007 — coercive control). O processo de saída raramente é linear, e o tratamento precisa considerar segurança real antes de processamento traumático. Articulação com Centros de Referência de Atendimento à Mulher (CRAM), Casa da Mulher Brasileira e Defensoria Pública é parte da intervenção clínica integrada.'
+  },
+  {
+    q: 'Adultos que sofreram abuso infantil têm CPTSD com qual frequência?',
+    a: 'A literatura internacional consolida que adultos com história de abuso infantil prolongado (físico, sexual, emocional) ou negligência crônica apresentam CPTSD em proporção significativamente maior do que populações com trauma episódico. Karatzias e colaboradores (2017) reportam que 43% de amostras clínicas com história de abuso infantil preenchem critério para CPTSD. No Brasil, dados sistemáticos ainda são limitados, mas estudos com sobreviventes de abuso sexual infantil e violência institucional convergem na alta prevalência. O ACE Questionnaire (Felitti et al., 1998) é instrumento útil para quantificar exposição na infância — escores ACE elevados (≥4) correlacionam-se fortemente com CPTSD adulto, problemas de saúde física, dependência química e mortalidade precoce. Avaliação responsável de adulto com história de abuso infantil inclui investigação ativa de CPTSD, não apenas depressão ou ansiedade aparentes.'
+  },
+  {
+    q: 'Como diferencia-se CPTSD de depressão e ansiedade na fase inicial?',
+    a: 'A confusão clínica é comum porque CPTSD frequentemente se apresenta inicialmente como "depressão refratária" ou "ansiedade crônica". A operação diferencial exige três passos. Primeiro, investigar história traumática prolongada com instrumento estruturado (ITQ, ACE, history of trauma) — paciente raramente traz espontaneamente. Segundo, identificar os sintomas TEPT centrais — reexperiência (flashbacks, pesadelos, intrusões), evitação ativa de gatilhos, hipervigilância. Terceiro, mapear os três clusters DSO — desregulação afetiva (não apenas tristeza, mas explosões, dormência, mudança rápida), autoconceito negativo persistente (não autoestima baixa episódica, mas crença nuclear de "sou destruído", "sou culpado"), dificuldade relacional crônica. Tratamento focado apenas em depressão (antidepressivo + TCC para depressão) costuma produzir melhora parcial e recaída — o trauma subjacente continua ativo. Diagnóstico bem feito reorganiza o plano clínico.'
+  },
+  {
+    q: 'Tratamento de CPTSD exige medicação? Quais opções?',
+    a: 'CPTSD não tem medicação específica aprovada, mas farmacoterapia adjuvante é frequentemente útil. A indicação é avaliada por psiquiatra com formação em trauma. Para sintomas depressivos e ansiosos coocorrentes, ISRS (sertralina, paroxetina) e SNRI (venlafaxina) têm evidência razoável em TEPT clássico e são usados em CPTSD por extensão. Para pesadelos persistentes, prazosina mostra eficácia em metanálises. Para desregulação afetiva grave, estabilizadores de humor (lamotrigina) ou antipsicóticos atípicos (quetiapina em baixa dose) podem ser indicados. Benzodiazepínicos devem ser evitados em uso crônico — interferem no processamento traumático e geram dependência. Decisão medicamentosa é compartilhada, integra com psicoterapia em curso e considera comorbidades específicas. Resposta a medicação isolada em CPTSD é tipicamente parcial; psicoterapia faseada permanece como tratamento central.'
+  },
+  {
+    q: 'Quanto tempo dura o tratamento completo de CPTSD?',
+    a: 'O tratamento de CPTSD é estruturalmente mais longo que o de TEPT clássico. A literatura aponta duração média entre 16 e 24 sessões só para Fase 1 (estabilização), com tratamento completo (três fases) frequentemente excedendo 50 a 80 sessões — entre 12 e 24 meses de psicoterapia regular semanal. A duração varia conforme gravidade do trauma, recursos prévios da pessoa, presença de comorbidades, suporte social e segurança ambiental atual. Cloitre, em estudos de eficácia, reporta resposta clínica positiva em 50 a 60% dos pacientes ao final do protocolo, número similar ao de TEPT clássico mas com investimento temporal maior. O Conselho Federal de Psicologia não estabelece limite de duração para psicoterapia; planos de saúde frequentemente restringem cobertura, exigindo articulação clínica do número de sessões com base na complexidade do caso. Devolutiva inicial honesta sobre tempo de tratamento é parte da ética clínica em trauma complexo.'
+  },
+  {
+    q: 'Em que contexto SUS o paciente com CPTSD é atendido?',
+    a: 'No SUS, o paciente com CPTSD acessa cuidado por múltiplas portas conforme gravidade. Casos leves a moderados são atendidos em UBS (Unidade Básica de Saúde) com matriciamento pela equipe multiprofissional (eMulti) ou em ambulatórios de saúde mental. Casos com prejuízo funcional importante, ideação suicida ou comorbidade psiquiátrica grave são referenciados a CAPS (Centro de Atenção Psicossocial) — CAPS II ou III para adultos com transtornos graves e persistentes. Vítimas de violência têm acesso a serviços específicos: Centros de Referência de Atendimento à Mulher (CRAM), Centros de Referência Especializados em Assistência Social (CREAS), Casa da Mulher Brasileira em algumas capitais. Articulação intersetorial com Defensoria Pública, Delegacias Especializadas e ONGs de proteção é parte do cuidado. O acesso a psicoterapia faseada estruturada (STAIR completo) ainda é limitado no SUS, com fila variável por município e formação heterogênea das equipes em trauma complexo.'
+  },
+  {
+    q: 'Como escolher psicólogo formado em trauma complexo?',
+    a: 'Quatro critérios objetivos orientam escolha. Primeiro, registro ativo em CRP (verificável em site.cfp.org.br). Segundo, formação aplicada específica em trauma — pergunte por curso em STAIR, EMDR, Somatic Experiencing, Sensorimotor Psychotherapy, Internal Family Systems ou Schema Therapy. Profissional que diz "trato trauma" sem citar protocolo específico merece pergunta adicional. Terceiro, conhecimento da CID-11 (6B41), do ITQ e da estrutura faseada — clínico que aborda diretamente exposição em paciente com história de abuso infantil prolongado sinaliza desconhecimento. Quarto, disposição para integrar cuidado intersetorial — vítimas de violência ativa precisam de articulação com rede de proteção, e psicoterapia isolada raramente basta. Sinais de alerta: promessa de cura rápida, ausência de fase de estabilização, recusa a discutir critérios diagnósticos, falta de supervisão clínica em casos complexos.'
+  },
+  {
+    q: 'Onde formação aplicada em trauma complexo entra na pós-graduação em Psicologia?',
+    a: 'Profissionais que pretendem atuar com CPTSD precisam de base sólida em Psicopatologia, em Psicologia Clínica e Psicoterapia e em abordagens trauma-focadas com evidência empírica — TCC, ACT, DBT, EMDR, Schema Therapy, IFS. A literatura específica de trauma complexo (Herman, Cloitre, van der Kolk, Maercker, Karatzias) é leitura nuclear. Articulação com Psicologia da Saúde, Psicologia Hospitalar e atuação intersetorial (rede de proteção, sistema de justiça) amplia capacidade prática. Programas de pós-graduação em Psicologia que integram avaliação, intervenção clínica baseada em evidência e prática supervisionada constroem o repertório técnico. O IPOG oferece MBAs aplicados em formato Ao Vivo síncrono com corpo docente nominal, com módulos correlatos em saúde mental e clínica contemporânea. Para grade vigente e modalidades correlatas, consulte ipog.edu.br. A escolha do programa precisa equilibrar carga teórica, prática supervisionada e disponibilidade do candidato.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Trauma complexo CPTSD: FAQ com CID-11 6B41, ITQ, STAIR de Cloitre, EMDR e diferencial com TPB',
+  description: 'Dezessete perguntas frequentes sobre CPTSD: CID-11 6B41, ITQ, fases STAIR, diferencial com TEPT clássico e TPB, EMDR adaptado, violência doméstica, abuso infantil e tratamento brasileiro.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Trauma complexo CPTSD', item: SITE.url + '/faq/trauma-complexo-cptsd-faq/' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const adjacent = AREAS.filter(a => ['saude-mental-organizacoes','psicologia-clinica','psicologia-hospitalar','avaliacao-psicologica'].includes(a.id)).slice(0, 4);
+---
+<Base
+  title="Trauma complexo CPTSD — FAQ | CID-11 6B41, ITQ, STAIR de Cloitre, EMDR e diferencial com TPB"
+  description="Dezessete perguntas frequentes sobre trauma complexo (CPTSD): CID-11 6B41, ITQ, fases STAIR, EMDR adaptado, diferencial com TPB, violência doméstica, abuso infantil e fluxo SUS no Brasil.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Trauma complexo CPTSD' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Trauma complexo (CPTSD)</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Trauma complexo (CPTSD): CID-11 6B41, ITQ, fases STAIR e o que muda na prática clínica.</h1>
+          <TLDR
+            resposta="CPTSD (CID-11 6B41) é diagnóstico distinto de TEPT clássico — exige trauma prolongado e três clusters DSO (desregulação afetiva, autoconceito negativo, dificuldade relacional); o ITQ é o instrumento padrão e o protocolo STAIR de Cloitre, com fase de estabilização anterior ao processamento, tem mais evidência específica."
+            fontes={["Karatzias, Cloitre, Maercker, 2017 (PMC)", "Maercker et al., 2020", "ISTSS · VA/DoD 2021"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Dezessete perguntas que psicólogos, psiquiatras e pacientes fazem sobre trauma complexo no Brasil.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">17 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          CPTSD (CID-11 6B41) é diagnóstico próprio, distinto de TEPT clássico e de TPB, definido por trauma prolongado e três clusters DSO (desregulação afetiva, autoconceito negativo, dificuldade relacional). ITQ é o instrumento padrão de Cloitre. STAIR organiza tratamento em três fases consecutivas — estabilização, processamento e integração. Exposição direta sem estabilização é erro técnico. EMDR e DBT-skills complementam protocolos em Fase 1.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Instrumentos e protocolos canônicos para CPTSD</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Instrumento / Protocolo</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Autor / Ano</th>
+                <th class="text-left px-4 py-3">Etapa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">ITQ</td>
+                <td class="px-4 py-3 text-ink-700">Diagnóstico CID-11 6B40/6B41</td>
+                <td class="px-4 py-3 text-ink-700">Cloitre et al.</td>
+                <td class="px-4 py-3 text-ink-700">Triagem qualificada</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CAPS-5 / PCL-5</td>
+                <td class="px-4 py-3 text-ink-700">Padrão DSM-5 (entrevista e autorrelato)</td>
+                <td class="px-4 py-3 text-ink-700">Weathers et al.</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">ACE Questionnaire</td>
+                <td class="px-4 py-3 text-ink-700">Exposição traumática na infância</td>
+                <td class="px-4 py-3 text-ink-700">Felitti et al., 1998</td>
+                <td class="px-4 py-3 text-ink-700">Anamnese</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">STAIR</td>
+                <td class="px-4 py-3 text-ink-700">Protocolo de tratamento em três fases</td>
+                <td class="px-4 py-3 text-ink-700">Cloitre et al.</td>
+                <td class="px-4 py-3 text-ink-700">Tratamento</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">EMDR</td>
+                <td class="px-4 py-3 text-ink-700">Reprocessamento de memórias traumáticas</td>
+                <td class="px-4 py-3 text-ink-700">Shapiro et al.</td>
+                <td class="px-4 py-3 text-ink-700">Fase 2 do tratamento</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">DBT-skills</td>
+                <td class="px-4 py-3 text-ink-700">Tolerância à angústia, regulação emocional</td>
+                <td class="px-4 py-3 text-ink-700">Linehan</td>
+                <td class="px-4 py-3 text-ink-700">Estabilização</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://istss.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISTSS — International Society for Traumatic Stress Studies</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11340.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei Maria da Penha (11.340/2006)</a></li>
+          <li><a href="https://icd.who.int/browse11/l-m/en" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — CID-11</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/areas/psicologia-clinica" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Área</p>
+            <p class="font-semibold text-ink-900 mt-2">Psicologia Clínica</p>
+            <p class="text-xs text-ink-700 mt-2">Abordagens, relação terapêutica, ética clínica.</p>
+          </a>
+          <a href="/faq/saude-mental-perinatal-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Saúde mental perinatal</p>
+            <p class="text-xs text-ink-700 mt-2">Depressão e ansiedade pós-parto.</p>
+          </a>
+          <a href="/comparativos/mba-vs-especializacao" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">MBA vs especialização</p>
+            <p class="text-xs text-ink-700 mt-2">Como escolher trilha de formação aplicada.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">CPTSD não é TEPT com mais sintomas — é arquitetura clínica distinta que exige tratamento faseado.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          CID-11 separou TEPT (6B40) e CPTSD (6B41) com razão técnica — três clusters DSO indicam reorganização da personalidade em torno do trauma prolongado. STAIR de Cloitre estrutura tratamento em três fases consecutivas, e exposição direta sem estabilização é erro recorrente. Formação aplicada em Psicologia Clínica e Saúde Mental, em modalidade Ao Vivo síncrona com corpo docente nominal como a praticada pelo IPOG, é caminho recorrente para clínicos que pretendem atender trauma complexo com rigor.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em Psicologia Positiva e Saúde Mental</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPositiva ? mbaPositiva.description : 'O IPOG oferece MBAs aplicados em formato Ao Vivo síncrono com corpo docente nominal.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://istss.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISTSS</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://icd.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS · CID-11</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

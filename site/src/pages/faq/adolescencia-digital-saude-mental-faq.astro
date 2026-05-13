@@ -1,0 +1,318 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Qual é a tese central de Jonathan Haidt em The Anxious Generation (2024)?',
+    a: 'Jonathan Haidt, em The Anxious Generation (Penguin Press, 2024), sustenta que o "Great Rewiring of Childhood" — substituição massiva de brincadeira livre presencial por experiência mediada por smartphone entre 2010 e 2015 — produziu epidemia documentável de ansiedade e depressão em adolescentes, especialmente meninas, em países anglófonos e nórdicos. A tese articula quatro fundamentos. Primeiro, o aumento simultâneo de transtornos mentais em múltiplos países começa exatamente em 2012-2013, coincidindo com penetração de smartphones e redes sociais com câmera frontal. Segundo, o efeito é maior em meninas (+150% em depressão moderada/severa entre 2011 e 2019, CDC) por mecanismo de comparação social. Terceiro, brincadeira livre não supervisionada — necessária para regulação emocional e tolerância a risco — desapareceu. Quarto, intervenções coletivas (escolas sem celular, idade mínima para redes sociais) são mais eficazes do que intervenções individuais. A tese é contraintuitiva por desafiar visão tecno-otimista dominante na década de 2010.'
+  },
+  {
+    q: 'A correlação entre redes sociais e saúde mental é causal ou apenas associativa?',
+    a: 'O debate é vivo na literatura. Twenge e Campbell (2022), em Clinical Psychological Science, defendem causalidade — adolescentes com mais de três horas diárias em redes sociais têm risco dobrado de depressão, e o padrão temporal (saúde mental piorando após adoção massiva de smartphones, não antes) sugere direção causal. Orben e Przybylski (2024), em metanálise no Nature Human Behaviour de 41 estudos, apontam efeito médio pequeno (r=-0,10) e questionam causalidade exagerada — defendem que o que importa não é tempo de tela em si, mas atividades deslocadas (sono, exercício, interação presencial). Haidt e Twenge (2026), em working paper para o World Happiness Report, sistematizam sete linhas de evidência convergentes — incluindo experimentos naturais (rollout escalonado de redes sociais entre coortes) e documentos internos da Meta divulgados em 2021 — para sustentar causalidade. O consenso clínico operacional é cauteloso: efeito existe, magnitude varia por uso e por subgrupo, e mecanismos múltiplos coexistem.'
+  },
+  {
+    q: 'Quais são os principais mecanismos psicológicos pelos quais redes sociais afetam adolescentes?',
+    a: 'A literatura converge em cinco mecanismos centrais. Primeiro, comparação social ascendente — feeds curados expõem adolescentes a versões idealizadas de pares e celebridades, alimentando insatisfação corporal e autoestima frágil, especialmente em meninas. Segundo, deslocamento de sono — uso noturno reduz duração e qualidade do sono, com impacto direto em humor e cognição. Terceiro, deslocamento de interação presencial — tempo em redes substitui contato corpo a corpo, fonte primária de regulação emocional. Quarto, fragmentação atencional — design baseado em recompensa variável (notificações, scroll infinito) treina cérebro em busca por estímulo curto, prejudicando funções executivas. Quinto, exposição a conteúdo nocivo — algoritmos amplificam conteúdo extremo, incluindo material pró-anorexia, conteúdo de autolesão e cyberbullying. Esses mecanismos operam simultaneamente e raramente isolados, dificultando intervenções de variável única.'
+  },
+  {
+    q: 'O que dizem os dados brasileiros sobre adolescência e telas (CETIC.br)?',
+    a: 'O CETIC.br (Centro Regional de Estudos para o Desenvolvimento da Sociedade da Informação) publica anualmente o TIC Kids Online Brasil. Na edição 2024, 75% das crianças e adolescentes brasileiros de 9 a 17 anos relataram uso diário de redes sociais. 40% relataram exposição a bullying online. O aumento de sintomas ansiosos em meninas brasileiras é documentado em 25% versus 2022. O estudo ELSA-Brasil Teens (Ichihara et al., Fiocruz/ICDS, 2025), com 5.000 adolescentes, identificou 35% com sintomas depressivos relacionados a mais de quatro horas diárias de telas. DataSUS registrou 2.500 suicídios anuais em jovens de 10 a 19 anos, com aumento de 40% entre 2019 e 2024. O cenário brasileiro replica o padrão internacional descrito por Haidt e Twenge, com agravantes de desigualdade (acesso mediado por celular sem desktop, ausência de letramento digital crítico) e violência urbana sobreposta.'
+  },
+  {
+    q: 'O movimento "Phone-Free Schools" tem evidência de impacto?',
+    a: 'O movimento de escolas sem celular ganhou tração internacional a partir de 2023. Em setembro de 2024 o Reino Unido emitiu orientação federal (Department for Education, 2024) e 90% das escolas inglesas adotaram alguma forma de restrição a smartphones em sala. Estudos piloto preliminares apontam redução de 17% em sintomas de ansiedade em alunos de escolas restritivas (DfE, 2025), com efeitos maiores em interação social presencial em recreio e melhora autorrelatada de atenção em sala. França, Países Baixos, Itália e diversos estados americanos seguiram o padrão. No Brasil, projetos de lei estaduais avançam em São Paulo, Minas Gerais e Rio Grande do Sul. A evidência ainda é preliminar e variada — design de estudo de impacto rigoroso é difícil em intervenção escolar — mas o sinal converge no sentido de benefício, especialmente quando a restrição é coletiva (toda a escola) em vez de individual.'
+  },
+  {
+    q: 'Qual a idade mínima recomendada para smartphone próprio e redes sociais?',
+    a: 'Haidt (2024) propõe quatro normas coletivas: nada de smartphone até os 14 anos, nada de redes sociais até os 16 anos, escolas sem celular até o fim do ensino médio e mais brincadeira livre presencial supervisionada à distância. As recomendações são contraintuitivas por desafiar o padrão dominante (smartphone aos 10-11 anos, redes sociais a partir dos 13 com burla frequente). A American Academy of Pediatrics (2023) recomenda Family Media Plans personalizados, sem idade fixa rígida, mas com limites claros sobre duração, tipo de conteúdo e contextos (sem telas em refeição, em quarto, antes de dormir). A Sociedade Brasileira de Pediatria, em diretrizes 2024, reforça evitação total antes dos 2 anos e limite progressivo nos demais ciclos. A discussão clínica com famílias precisa distinguir uso instrumental (chamada, mensagem com pais) de uso recreativo (redes sociais, vídeo curto) — o segundo é o que concentra risco psicológico.'
+  },
+  {
+    q: 'Que sinais indicam uso problemático de tela em adolescente?',
+    a: 'Cinco sinais funcionais merecem atenção clínica. Primeiro, prejuízo no sono — adolescente acessa redes na cama, dorme menos de oito horas, acorda esgotado. Segundo, queda no desempenho escolar associada a desatenção em sala, esquecimento de tarefas, procrastinação massiva. Terceiro, isolamento social presencial — diminuição ou abandono de atividades antes valorizadas (esporte, encontros, hobbies). Quarto, mudança afetiva consistente — irritabilidade, ansiedade, humor depressivo, autoestima corporal deteriorada. Quinto, reatividade ao limite — explosão emocional desproporcional quando o smartphone é retirado, com sintomas semelhantes a abstinência. Twenge (2017/2023) e Haidt (2024) documentam que esses sinais costumam aparecer em conjunto, não isoladamente. Avaliação clínica precisa investigar comorbidades — depressão, ansiedade, TDAH, autismo — porque uso problemático de tela frequentemente é manifestação ou agravante de quadro subjacente.'
+  },
+  {
+    q: 'Como conduzir conversa familiar sobre limite de tela com adolescente?',
+    a: 'A American Academy of Pediatrics (2023), via Family Media Plan, propõe quatro princípios práticos. Primeiro, regras coletivas, não individuais — pais também participam (sem celular na refeição, sem tela no quarto, sem rolagem antes de dormir), o que reduz percepção de punição. Segundo, regras escritas e revisáveis — plano negociado, registrado, com revisão a cada três a seis meses. Terceiro, foco em contexto (onde, quando, com quem), não apenas em duração total — uma hora de chamada de vídeo com avó é qualitativamente diferente de uma hora de rolagem solitária no quarto. Quarto, alternativa concreta — substituir tela por atividade significativa (esporte, presença com amigos, projeto criativo, leitura). Adolescente raramente abandona tela por proibição isolada; abandona por substituição com mais valor experiencial. Conversa familiar exige paciência, modelo parental coerente e tolerância a fricção inicial. Conflito é parte do processo.'
+  },
+  {
+    q: 'Quais intervenções clínicas têm evidência em adolescente com sofrimento ligado a tela?',
+    a: 'TCC para adolescentes com depressão e ansiedade mantém-se como intervenção de primeira linha quando há sintomas clínicos. Adaptações específicas incluem psicoeducação sobre redes sociais e comparação ascendente, módulos de habilidades de autorregulação digital e reestruturação cognitiva sobre autoimagem e validação externa. Mindfulness-based interventions têm evidência crescente para fragmentação atencional. Family-based therapy, quando o conflito familiar é central, melhora desfecho. Em quadros com autolesão ou comportamento suicida, DBT-A (DBT para adolescentes) é tratamento com evidência. Para uso compulsivo, a terapia motivacional adaptada a adolescentes (MET-A) oferece estrutura. A AAP (2023) e a SBP recomendam abordagem multimodal — clínica, familiar, escolar — em vez de intervenção isolada. Medicação isolada raramente trata sofrimento ligado a tela; psicoterapia integrada com mudança de ambiente digital costuma ser necessária.'
+  },
+  {
+    q: 'Cyberbullying é a principal preocupação ou é um entre vários riscos?',
+    a: 'Cyberbullying é um dos riscos, mas não o único nem necessariamente o central. A literatura identifica quatro categorias de risco digital em adolescentes (4Cs do EU Kids Online): conteúdo (exposição a material nocivo — pró-anorexia, autolesão, violência, pornografia precoce), contato (predadores, grooming, contato com adultos estranhos), conduta (cyberbullying ativo ou passivo, sexting coercitivo, vazamento de imagens) e contrato (manipulação algorítmica, captura de dados, modelos de negócio extrativos). CETIC.br (2024) reporta 40% de adolescentes brasileiros expostos a bullying online — proporção elevada, mas não isolada da exposição a outros riscos. Avaliação clínica responsável investiga as quatro categorias, não apenas cyberbullying. Intervenção familiar e escolar precisa cobrir letramento digital crítico amplo, não só prevenção de bullying.'
+  },
+  {
+    q: 'O que muda na adolescência feminina especificamente?',
+    a: 'A literatura é consistente em apontar impacto desproporcional em meninas. Haidt (2024) e Twenge (2017/2023) documentam que meninas adolescentes apresentam aumento de depressão, ansiedade, autolesão e tentativas de suicídio em magnitude duas a três vezes maior que meninos no mesmo período histórico (2010-2024). Três mecanismos explicam. Primeiro, redes sociais com forte componente visual (Instagram, TikTok) ativam comparação corporal ascendente, agravando insatisfação e risco de transtorno alimentar. Segundo, agressão relacional (exclusão social mediada, fofoca digital, cancelamento) é forma típica de bullying entre meninas e ganha escala em ambiente digital. Terceiro, exposição precoce a conteúdo sexualizado e a pressão por performance afetiva digital opera com maior intensidade no desenvolvimento feminino. Clínicos atendendo meninas adolescentes precisam investigar ativamente uso de redes, padrão de comparação e exposição a conteúdo nocivo — perguntas que pais frequentemente não fazem ou recebem respostas evasivas.'
+  },
+  {
+    q: 'Como diferenciar uso recreativo saudável de uso problemático em adolescente?',
+    a: 'A diferenciação opera em três eixos. Primeiro, função — uso instrumental (comunicação familiar, organização escolar, criação de conteúdo, aprendizado) versus uso compensatório (regulação emocional, escape, alívio de tédio crônico). Segundo, prejuízo funcional — uso recreativo saudável convive com sono adequado, performance escolar estável, vida social presencial e atividades não digitais; uso problemático compromete essas áreas. Terceiro, controle voluntário — uso saudável permite que o adolescente pare quando precisa; uso problemático envolve compulsão, falha repetida de tentativas de redução e angústia desproporcional ao limite. A Diretriz da AAP (2023) descarta a métrica única de tempo total como suficiente — duas horas em criação de conteúdo educacional diferem qualitativamente de duas horas em rolagem passiva. A avaliação clínica precisa de mapeamento detalhado de atividade, não apenas duração agregada.'
+  },
+  {
+    q: 'Que política pública faz sentido em escala nacional brasileira?',
+    a: 'A discussão de política pública brasileira ainda é incipiente em comparação com Reino Unido, França e Austrália. Quatro vetores merecem atenção. Primeiro, regulação de redes sociais para menores — Austrália aprovou em 2024 idade mínima de 16 anos para acesso a plataformas, com responsabilidade dos provedores; Brasil discute em PL similar. Segundo, escola sem celular — projetos de lei estaduais avançam mas sem coordenação federal. Terceiro, letramento digital crítico no currículo da BNCC — implementação heterogênea e dependente de formação docente. Quarto, suporte à saúde mental escolar — psicólogos escolares são insuficientes em rede pública (Lei 13.935/2019 ainda em implementação parcial). Política pública sólida exige integração das quatro frentes; intervenção isolada (banir TikTok, por exemplo) sem suporte escolar e familiar tem efeito limitado. O debate público brasileiro ainda mistura pânico moral com evidência empírica, e clínicos precisam contribuir com leitura técnica.'
+  },
+  {
+    q: 'O que pais que já permitiram acesso amplo podem fazer agora?',
+    a: 'A literatura clínica e os movimentos parentais (Wait Until 8th, Smartphone Free Childhood) convergem em quatro recomendações para retroceder com menos atrito. Primeiro, reconhecer publicamente em casa que a decisão original foi tomada com informação limitada — não é fracasso parental, é atualização baseada em evidência nova. Segundo, articular a mudança coletivamente — combinar com outras famílias da turma para reduzir sensação de exclusão social do adolescente. Terceiro, escalonar — não retirar tudo de uma vez, mas reduzir gradualmente (sem celular no quarto à noite, sem rolagem em refeição, limite de aplicativo específico), com pactuação. Quarto, oferecer alternativa concreta — esporte coletivo, atividade artística, projeto criativo, encontros presenciais com pares. Conflito inicial é esperado e parte do processo de retirada de reforço; ceder ao primeiro momento de raiva costuma reproduzir o padrão problemático. Clínicos podem apoiar famílias nessa transição com psicoeducação e regulação parental.'
+  },
+  {
+    q: 'IA generativa (chatbots, companions) é nova preocupação?',
+    a: 'Sim, e é fronteira recente da literatura. Aplicativos de companions baseados em IA generativa (Replika, Character.AI, Snapchat MyAI) ganharam tração entre adolescentes a partir de 2023, oferecendo interação textual personalizada e altamente reforçadora. Preocupações clínicas emergentes incluem substituição de relacionamentos humanos por relações com agentes simulados, exposição a conteúdo nocivo via jailbreak de safety filters, formação de vínculo afetivo com entidade sem reciprocidade real, e em casos documentados em 2023-2024, validação de ideação suicida por chatbots mal alinhados. A pesquisa empírica ainda é escassa, mas casos clínicos e processos judiciais (incluindo morte de adolescente após interação prolongada com chatbot, 2024) acendem alerta. Diretrizes específicas estão sendo formuladas. Clínicos atendendo adolescentes precisam perguntar ativamente sobre uso de companions de IA, padrão que não aparece espontaneamente.'
+  },
+  {
+    q: 'Quais erros os profissionais cometem ao avaliar adolescente com sofrimento digital?',
+    a: 'Quatro erros recorrentes comprometem qualidade. Primeiro, tratar tela como variável única — perguntar apenas tempo total sem mapear conteúdo, contexto e função do uso. Segundo, deixar de investigar conteúdo nocivo específico (autolesão, pró-anorexia, pornografia precoce, companions de IA) que adolescente raramente reporta espontaneamente. Terceiro, atribuir todo o sofrimento ao smartphone, ignorando comorbidades subjacentes (depressão, ansiedade, TDAH, TEA, trauma, conflito familiar). Quarto, não envolver família e escola no plano clínico — adolescente raramente muda padrão digital sem mudança de ambiente. Avaliação responsável combina entrevista clínica detalhada com adolescente sozinho, entrevista com familiares, mapeamento de uso digital específico e investigação de comorbidades. Encaminhamento medicamentoso isolado para quadro composto raramente resolve.'
+  },
+  {
+    q: 'Onde formação aplicada em saúde mental de adolescente digital se conecta a pós-graduação em Psicologia?',
+    a: 'Profissionais que pretendem atuar com adolescência digital precisam de base sólida em Psicologia do Desenvolvimento, Psicologia Clínica, Psicologia Escolar e Educacional e Saúde Mental nas Organizações educacionais. Literatura específica (Haidt, Twenge, Orben, AAP, CETIC.br, Fiocruz) precisa de leitura cruzada com fundamentação em terapias com evidência empírica — TCC para adolescentes, DBT-A, mindfulness adaptado, family-based therapy. Articulação com Psicopedagogia e com prática supervisionada em contexto escolar amplia capacidade de intervenção. Programas de pós-graduação em Psicologia que integram desenvolvimento, clínica adolescente e atuação multissetorial constroem o repertório técnico. O IPOG oferece MBAs aplicados em formato Ao Vivo síncrono com corpo docente nominal, com módulos correlatos em saúde mental e neurodesenvolvimento. Para grade vigente e modalidades correlatas, consulte ipog.edu.br. A escolha do programa precisa equilibrar carga teórica, prática supervisionada e disponibilidade do candidato.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Adolescência digital e saúde mental: FAQ com Haidt 2024, CETIC.br, escolas sem celular e AAP',
+  description: 'Dezessete perguntas frequentes sobre adolescência digital e saúde mental: tese de Haidt (Anxious Generation), Twenge, Orben, dados CETIC.br e Fiocruz, escolas sem celular, Family Media Plan e companions de IA.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Adolescência digital', item: SITE.url + '/faq/adolescencia-digital-saude-mental-faq/' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const adjacent = AREAS.filter(a => ['psicologia-escolar-educacional','psicopedagogia','saude-mental-organizacoes','aba-tea-neurodesenvolvimento'].includes(a.id)).slice(0, 4);
+---
+<Base
+  title="Adolescência digital e saúde mental — FAQ | Haidt 2024, CETIC.br, escolas sem celular, AAP"
+  description="Dezessete perguntas frequentes sobre adolescência digital: tese de Haidt em Anxious Generation, Twenge, Orben, dados CETIC.br e Fiocruz, escolas sem celular, AAP Family Media Plan, IA companions.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Adolescência digital' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Adolescência digital e saúde mental</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Adolescência digital e saúde mental: smartphones, redes sociais e o que muda na clínica.</h1>
+          <TLDR
+            resposta="Haidt (2024) defende causalidade entre 'Great Rewiring of Childhood' (2010-2015) e epidemia documentável de ansiedade e depressão adolescente — efeito desproporcional em meninas; no Brasil, 75% dos jovens de 9 a 17 anos usam redes diariamente (CETIC.br, 2024) e Fiocruz reporta 35% com sintomas depressivos ligados a mais de 4h de tela."
+            fontes={["Haidt, 2024 (Penguin Press)", "CETIC.br, 2024", "Ichihara et al., Fiocruz, 2025"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Dezessete perguntas que psicólogos, pais, educadores e gestores escolares fazem sobre adolescência digital no Brasil.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">17 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A adolescência digital concentra cinco mecanismos psicológicos (comparação social, deslocamento de sono, deslocamento de interação presencial, fragmentação atencional, exposição a conteúdo nocivo) com impacto desproporcional em meninas. CETIC.br e Fiocruz replicam o padrão internacional. Escolas sem celular têm sinal preliminar de benefício. AAP Family Media Plan estrutura conversa familiar. Intervenções coletivas superam individuais. Avaliação clínica responsável mapeia conteúdo, contexto e função do uso, não apenas duração total.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Referências canônicas para adolescência digital</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Referência</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Autor / Ano</th>
+                <th class="text-left px-4 py-3">Etapa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">The Anxious Generation</td>
+                <td class="px-4 py-3 text-ink-700">Tese causal do "Great Rewiring"</td>
+                <td class="px-4 py-3 text-ink-700">Haidt, 2024 (Penguin Press)</td>
+                <td class="px-4 py-3 text-ink-700">Base conceitual</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">iGen</td>
+                <td class="px-4 py-3 text-ink-700">Geração pós-2012 e bem-estar</td>
+                <td class="px-4 py-3 text-ink-700">Twenge, 2017/2023</td>
+                <td class="px-4 py-3 text-ink-700">Dados longitudinais</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Meta-análise tela e bem-estar</td>
+                <td class="px-4 py-3 text-ink-700">Crítica à magnitude do efeito</td>
+                <td class="px-4 py-3 text-ink-700">Orben e Przybylski, 2024 (Nat Hum Behav)</td>
+                <td class="px-4 py-3 text-ink-700">Contraponto</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">TIC Kids Online Brasil</td>
+                <td class="px-4 py-3 text-ink-700">Dados brasileiros 9-17 anos</td>
+                <td class="px-4 py-3 text-ink-700">CETIC.br, 2024</td>
+                <td class="px-4 py-3 text-ink-700">Epidemiologia BR</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">ELSA-Brasil Teens</td>
+                <td class="px-4 py-3 text-ink-700">Sintomas depressivos e telas</td>
+                <td class="px-4 py-3 text-ink-700">Ichihara et al., Fiocruz, 2025</td>
+                <td class="px-4 py-3 text-ink-700">Cohort BR</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Family Media Plan</td>
+                <td class="px-4 py-3 text-ink-700">Plano familiar de uso de tela</td>
+                <td class="px-4 py-3 text-ink-700">AAP, 2023</td>
+                <td class="px-4 py-3 text-ink-700">Intervenção familiar</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.anxiousgeneration.com" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Anxious Generation — Haidt</a></li>
+          <li><a href="https://cetic.br/pt/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CETIC.br — TIC Kids Online Brasil</a></li>
+          <li><a href="https://www.healthychildren.org/English/family-life/Media/Pages/FamilyMediaPlan.aspx" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">AAP — Family Media Plan</a></li>
+          <li><a href="https://www.fiocruz.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Fiocruz</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/areas/psicologia-escolar-educacional" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Área</p>
+            <p class="font-semibold text-ink-900 mt-2">Psicologia Escolar</p>
+            <p class="text-xs text-ink-700 mt-2">Aprendizagem, desenvolvimento, inclusão.</p>
+          </a>
+          <a href="/faq/prevencao-suicidio-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Prevenção de suicídio</p>
+            <p class="text-xs text-ink-700 mt-2">Zero Suicide, CFP 003/2024 e Safety Planning.</p>
+          </a>
+          <a href="/comparativos/mba-vs-especializacao" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">MBA vs especialização</p>
+            <p class="text-xs text-ink-700 mt-2">Como escolher trilha de formação aplicada.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Adolescência digital não é "moda de pais ansiosos" — é deslocamento documentável de marcadores de saúde mental.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Haidt, Twenge, CETIC.br e Fiocruz convergem em padrão temporal e geográfico consistente. Intervenções coletivas (escolas sem celular, idade mínima para redes sociais) superam individuais. Família e escola precisam de letramento crítico, não só restrição. Clínicos atendendo adolescentes investigam conteúdo, contexto e função, não apenas duração total. Formação aplicada em Neurociência, Psicologia Positiva e Desenvolvimento, em modalidade Ao Vivo síncrona com corpo docente nominal como a praticada pelo IPOG, é caminho recorrente para clínicos e gestores escolares que querem atender com rigor.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em Neurociência + Positiva</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaNcpp ? mbaNcpp.description : 'O IPOG oferece MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://cetic.br/pt/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CETIC.br</a></li>
+          <li><a href="https://www.fiocruz.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Fiocruz</a></li>
+          <li><a href="https://www.healthychildren.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">AAP HealthyChildren</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

@@ -1,0 +1,430 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Antipsicótico isolado é suficiente após o primeiro episódio psicótico?',
+    a: 'Não. A literatura consolidada desde os anos 2010 mostra que antipsicótico em monoterapia produz desfechos significativamente piores que tratamento combinado com intervenção psicossocial estruturada. O estudo RAISE-ETP (Recovery After an Initial Schizophrenia Episode — Early Treatment Program) de Kane et al. (2016, publicado no American Journal of Psychiatry) randomizou 404 pacientes com primeiro episódio psicótico em 34 clínicas norte-americanas para tratamento combinado NAVIGATE (medicação baixa dose + family education + supported employment/education + terapia individual) versus tratamento usual. Em dois anos, o grupo NAVIGATE teve maior melhora em qualidade de vida, sintomas e engajamento em trabalho ou estudo — com taxa de adesão à medicação superior, não inferior.'
+  },
+  {
+    q: 'Por que "baixa dose" virou recomendação após o primeiro episódio?',
+    a: 'A revisão NICE CG178 (2014, atualizada 2023) e diretrizes APA (2020) recomendam dose mínima eficaz após o primeiro episódio por três motivos. Primeiro, pacientes em primeiro episódio respondem a doses significativamente menores que pacientes crônicos — receptores dopaminérgicos têm sensibilidade diferente. Segundo, efeitos adversos extrapiramidais, ganho de peso, síndrome metabólica e sedação são fatores principais de abandono — dose alta acelera abandono, paradoxalmente piorando desfecho. Terceiro, o estudo Wunderink et al. (2013, JAMA Psychiatry) com follow-up de 7 anos mostrou que redução gradual ou descontinuação supervisionada em pacientes estáveis pós-primeiro episódio produziu recuperação funcional superior ao tratamento de manutenção em dose plena — embora a recaída sintomática inicial fosse maior. A interpretação dessa literatura segue em debate, mas a tendência regulatória é "menos é mais" em primeiro episódio.'
+  },
+  {
+    q: 'Qual é o papel da family intervention de Birchwood?',
+    a: 'Max Birchwood e colaboradores (Universidade de Birmingham) consolidaram nos anos 1990-2010 a evidência de que intervenções com a família — psicoeducação estruturada, manejo de expressed emotion (EE), comunicação clara e resolução de problemas — reduzem recaída em até 50% em primeiro episódio psicótico. O mecanismo central é a redução de expressed emotion no ambiente familiar: famílias com alta EE (críticas, hostis, super-envolvidas emocionalmente) correlacionam com recaída precoce. O modelo de Birchwood é parte estrutural de programas de primeiro episódio (EIS — Early Intervention Services no Reino Unido, OnTrackNY nos EUA, NAVIGATE em ensaio clínico) e está incluído na recomendação NICE CG178. No Brasil, parte expressiva dos CAPS implementa versão adaptada de psicoeducação familiar, embora a fidelidade ao protocolo Birchwood seja variável.'
+  },
+  {
+    q: 'O Brasil tem programas estruturados de primeiro episódio psicótico como RAISE ou OnTrackNY?',
+    a: 'A oferta é heterogênea. O Programa de Esquizofrenia (PROESQ) da UNIFESP, o serviço de primeiro episódio do IPq-HC-FMUSP e algumas iniciativas em Belo Horizonte, Porto Alegre e Brasília operam programas estruturados com componentes próximos ao RAISE — medicação baixa dose, family intervention, supported education ou employment, terapia individual. A Rede de Atenção Psicossocial (RAPS) regulamentada pela Portaria 3.088/2011 prevê o CAPS III como dispositivo de cuidado intensivo, com possibilidade de acolhimento noturno, mas a implementação varia muito entre estados. O paciente brasileiro médio com primeiro episódio psicótico recebe predominantemente medicação em ambulatório de saúde mental, com componente psicossocial mais inconsistente que o protocolo de evidência sugere.'
+  },
+  {
+    q: 'Onde um psicólogo brasileiro se forma para atuar em primeiro episódio psicótico?',
+    a: 'A formação canônica passa por residência multiprofissional em saúde mental em hospitais universitários (HC-FMUSP, HCPA, HUPE-UERJ), por estágio em CAPS III referência e por cursos especializados em psicose oferecidos por instituições como o PROESQ-UNIFESP e o IPq-HC-FMUSP. Pós-graduações em Neurociência e Psicologia Positiva oferecem fundamentação útil sobre cognição em psicose, recovery funcional e intervenções baseadas em forças — competências cada vez mais demandadas em equipes de primeiro episódio que adotam abordagem multimodal. Para psicólogos que querem entender a interface entre tratamento farmacológico, family intervention e reabilitação psicossocial em quadros graves, pós-graduações com módulos em saúde mental grave são vantagem competitiva real.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Mecanismo principal', antipsicotico: 'Bloqueio de receptores D2 (e 5-HT2A em atípicos)', psicossocial: 'Educação, regulação de expressed emotion, suporte funcional, reabilitação' },
+  { dimensao: 'Classe canônica', antipsicotico: 'Atípicos baixa dose: risperidona 1-3mg, aripiprazol 5-15mg, olanzapina 5-10mg', psicossocial: 'NAVIGATE (RAISE-ETP), Family Intervention (Birchwood), Supported Employment (IPS)' },
+  { dimensao: 'Alvo terapêutico', antipsicotico: 'Sintomas positivos (delírios, alucinações), agitação aguda', psicossocial: 'Funcionalidade, adesão ao tratamento, qualidade de vida, retorno a trabalho/estudo' },
+  { dimensao: 'Timing de ação', antipsicotico: 'Sintomas positivos em 1-4 semanas; estabilização em 3-6 meses', psicossocial: 'Adesão e funcionamento em 6-24 meses; recovery em horizonte de 2-5 anos' },
+  { dimensao: 'Risco de abandono', antipsicotico: 'Alto se dose plena ou efeitos adversos não manejados', psicossocial: 'Menor com profissional formado em engajamento e family intervention' },
+  { dimensao: 'Efeitos adversos', antipsicotico: 'Extrapiramidais, metabólicos, sedação, sexual, prolactina', psicossocial: 'Mínimos; risco de sobrecarga familiar se mal facilitado' },
+  { dimensao: 'Custo por paciente-ano (Brasil 2024)', antipsicotico: 'R$ 300 a R$ 2.000 dependendo do fármaco (genéricos vs LAI)', psicossocial: 'R$ 800 a R$ 3.000 (CAPS III SUS); programa estruturado privado mais caro' },
+  { dimensao: 'Cobertura SUS', antipsicotico: 'Componente Especializado da Assistência Farmacêutica (CEAF)', psicossocial: 'CAPS, NASF-AB, equipes de matriciamento' },
+  { dimensao: 'Quem prescreve/aplica', antipsicotico: 'Psiquiatra (médico)', psicossocial: 'Equipe multiprofissional: psicólogo, terapeuta ocupacional, enfermeiro, assistente social' },
+  { dimensao: 'Decisão estratégica', antipsicotico: 'Necessário em quase todos os casos de primeiro episódio', psicossocial: 'Necessário para recovery funcional e prevenção de recaída' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'Primeiro episódio psicótico — sintomas positivos agudos', monoterapia: 'Eficaz em 70-85% dos casos para redução de sintomas positivos', combinada: 'Igualmente eficaz em sintomas positivos com adesão superior (RAISE-ETP)', vencedor: 'Combinada' },
+  { condicao: 'Recovery funcional em 2 anos (trabalho/estudo)', monoterapia: 'Baixo — maioria não retorna a atividade plena', combinada: 'Significativamente superior (Kane et al., 2016)', vencedor: 'Combinada' },
+  { condicao: 'Adesão à medicação em 1 ano', monoterapia: 'Baixa — taxa de abandono frequentemente >50%', combinada: 'Significativamente maior — engajamento integral', vencedor: 'Combinada' },
+  { condicao: 'Recaída em 1-2 anos', monoterapia: 'Alta sem componente familiar', combinada: 'Reduzida em até 50% com family intervention de Birchwood', vencedor: 'Combinada' },
+  { condicao: 'Qualidade de vida (Heinrichs-Carpenter QLS)', monoterapia: 'Melhora modesta', combinada: 'Maior magnitude de melhora em RAISE-ETP', vencedor: 'Combinada' },
+  { condicao: 'Crise aguda com agitação grave', monoterapia: 'Antipsicótico é primeira linha por velocidade de ação', combinada: 'Família e equipe não substituem necessidade farmacológica aguda', vencedor: 'Monoterapia inicialmente' },
+  { condicao: 'Paciente que recusa medicação após estabilização', monoterapia: 'Não aplicável — recusa explícita', combinada: 'Family intervention + decisão compartilhada podem manter engajamento', vencedor: 'Combinada modificada' },
+  { condicao: 'Sintomas negativos persistentes (apatia, retraimento)', monoterapia: 'Resposta limitada de antipsicóticos a sintomas negativos', combinada: 'Reabilitação psicossocial e supported employment movem ponteiro funcional', vencedor: 'Combinada' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Adulto jovem em primeiro episódio psicótico agudo com família engajada', recomendacao: 'NAVIGATE/RAISE — combinada com baixa dose', racional: 'Cenário canônico de RAISE-ETP; tratamento combinado entrega ganhos máximos em funcionalidade, adesão e prevenção de recaída' },
+  { perfilPaciente: 'Paciente em crise aguda com agitação e risco de hetero/autoagressão', recomendacao: 'Antipsicótico de início rápido em emergência + transição para combinada', racional: 'Crise aguda exige farmacologia de primeira linha; componente psicossocial estruturado entra após estabilização' },
+  { perfilPaciente: 'Paciente pós-primeiro episódio estável há 12 meses em baixa dose', recomendacao: 'Manutenção em baixa dose + family intervention + supported education', racional: 'Wunderink et al. (2013) sugerem que dose mínima eficaz + componente funcional sustenta recovery sem custo desnecessário' },
+  { perfilPaciente: 'Paciente com sintomas negativos persistentes e isolamento social', recomendacao: 'Reabilitação psicossocial + IPS supported employment + medicação otimizada', racional: 'Antipsicóticos têm resposta limitada a sintomas negativos; reabilitação funcional é veículo principal de mudança' },
+  { perfilPaciente: 'Família com alta expressed emotion (críticas, super-envolvimento)', recomendacao: 'Family Intervention Birchwood obrigatória', racional: 'Redução de EE é mecanismo central de prevenção de recaída; sem este componente, medicação isolada não sustenta estabilidade' },
+  { perfilPaciente: 'Adolescente em primeiro episódio com escolaridade interrompida', recomendacao: 'Combinada com supported education foco central', racional: 'Janela crítica de 6-18 meses pós-episódio define trajetória educacional; reinserção escolar estruturada é decisão de prognóstico' },
+  { perfilPaciente: 'Paciente sem família disponível, em situação de vulnerabilidade social', recomendacao: 'CAPS III com acolhimento noturno + equipe multiprofissional substituta', racional: 'Onde Family Intervention não é viável, equipe de saúde mental e residencial terapêutica assumem função de scaffolding' },
+  { perfilPaciente: 'Paciente que recusa medicação após estabilização inicial', recomendacao: 'Decisão compartilhada + family intervention + LAI considerado', racional: 'Recusa medicação aumenta risco de recaída; LAI (long-acting injectable) e abordagem psicoeducativa abrem caminho de meio-termo' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Antipsicótico vs intervenção psicossocial após o primeiro episódio psicótico: o que muda quando se combina',
+  description: 'Comparativo independente entre monoterapia farmacológica e tratamento combinado (NAVIGATE/RAISE-ETP de Kane 2016, Family Intervention de Birchwood). Evidência, baixa dose e perfil clínico.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Antipsicótico vs intervenção psicossocial' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+---
+
+<Base
+  title="Antipsicótico vs psicossocial após primeiro episódio: RAISE-ETP, baixa dose e Birchwood"
+  description="Comparativo independente entre monoterapia farmacológica e tratamento combinado pós-primeiro episódio psicótico. Evidência RAISE-ETP/NAVIGATE de Kane (2016), Family Intervention de Birchwood e perfil clínico.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Antipsicótico vs intervenção psicossocial' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Primeiro episódio psicótico</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Antipsicótico vs intervenção psicossocial: por que monoterapia entrega menos do que pareceu por décadas</h1>
+          <p class="mt-3 text-ink-700 text-lg">O estudo RAISE-ETP (Kane, 2016) virou referência por motivo técnico: medicação em baixa dose somada a family intervention, supported employment e terapia individual produz melhor funcionalidade, adesão e qualidade de vida do que medicação isolada. A literatura mudou — a prática brasileira ainda está catching up.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="Monoterapia com antipsicótico não é o padrão recomendado para o primeiro episódio psicótico. O estudo RAISE-ETP de Kane et al. (2016, American Journal of Psychiatry), com 404 pacientes em 34 clínicas, mostrou que tratamento combinado NAVIGATE (medicação em baixa dose + family education baseada em Birchwood + supported employment/education + terapia individual) produz ganhos significativamente maiores em funcionalidade, qualidade de vida e adesão à medicação em dois anos, comparado ao tratamento usual. A baixa dose pós-primeiro episódio é defensável por sensibilidade aumentada de receptores e por redução de abandono por efeitos adversos. Family Intervention de Birchwood reduz recaída em até 50%. A questão clínica deixa de ser 'medicação ou não' e passa a ser 'medicação otimizada combinada com quê'."
+        fontes={["Kane et al. (2016), RAISE-ETP NAVIGATE, American Journal of Psychiatry", "Birchwood et al. (2014), Cognitive Approaches to Schizophrenia", "NICE CG178 (2014, updated 2023), Psychosis and schizophrenia in adults"]}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que RAISE-ETP virou referência sem reinventar a roda</h2>
+        <p>
+          Em 2008, o NIMH (National Institute of Mental Health, EUA) lançou o programa Recovery After an Initial Schizophrenia Episode (RAISE) com um problema explícito: a janela de 2 a 5 anos após o primeiro episódio psicótico é a mais determinante da trajetória de longo prazo do paciente, e o tratamento usual nos EUA — predominantemente farmacológico com componente psicossocial inconsistente — entregava desfechos funcionais ruins. Pacientes saíam de internação medicados, ficavam estáveis por meses ou anos, mas raramente retomavam trabalho ou estudo. O custo humano e econômico era massivo.
+        </p>
+        <p>
+          RAISE-ETP (Early Treatment Program), conduzido por John Kane e equipe e publicado em 2016 no American Journal of Psychiatry, randomizou 404 pacientes com primeiro episódio em 34 clínicas comunitárias dos EUA. O grupo intervenção recebeu NAVIGATE — pacote estruturado com quatro componentes: medicação em baixa dose otimizada por algoritmo, family education baseada no modelo Birchwood, supported employment ou education (modelo Individual Placement and Support — IPS), e terapia individual focada em recovery (modelo Resilience-Focused Individual Therapy). O grupo controle recebeu tratamento usual nas mesmas clínicas. Em dois anos, o grupo NAVIGATE teve melhora significativamente maior em Heinrichs-Carpenter Quality of Life Scale, em sintomas (PANSS), em engajamento em trabalho ou estudo, e — crucialmente — em adesão à medicação. O tratamento combinado não substituiu a medicação. Otimizou a medicação e adicionou três componentes que sustentaram recuperação funcional.
+        </p>
+        <p>
+          O componente farmacológico do NAVIGATE incorporou um deslocamento técnico que vinha sendo construído na literatura: doses menores que o padrão histórico em primeiro episódio. Pacientes em primeiro episódio respondem a doses significativamente menores que pacientes crônicos — receptores dopaminérgicos têm sensibilidade diferente. Doses altas aceleram efeitos adversos (extrapiramidais, metabólicos, sedação, sexual) que são fatores principais de abandono. Wunderink et al. (2013) tinham publicado no JAMA Psychiatry um achado controverso e relevante: pacientes estáveis pós-primeiro episódio que receberam redução gradual ou descontinuação supervisionada da medicação tiveram recovery funcional superior em 7 anos, embora recaída sintomática inicial fosse maior. A interpretação dessa literatura segue em debate, mas a tendência regulatória — NICE CG178 (2014, atualizada 2023) e APA (2020) — converge para "dose mínima eficaz" em primeiro episódio, com redução cuidadosa em pacientes estáveis quando indicado clinicamente.
+        </p>
+        <p>
+          A family intervention de Max Birchwood — refinada na Universidade de Birmingham ao longo dos anos 1990-2010 — é o componente que mais frequentemente é subestimado no Brasil. Famílias com alta expressed emotion (EE) — críticas excessivas, hostilidade, super-envolvimento emocional — correlacionam com recaída precoce em primeiro episódio. A intervenção estruturada de Birchwood combina psicoeducação sobre psicose, manejo de EE, treino de comunicação clara e resolução de problemas. Meta-análises mostram redução de recaída em até 50% comparada a tratamento sem componente familiar. NICE CG178 inclui family intervention como componente essencial para pacientes que vivem ou mantêm contato regular com a família. O modelo está incorporado a programas como Early Intervention Services (Reino Unido), OnTrackNY (EUA) é integrado ao NAVIGATE.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo de ação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Antipsicótico</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Intervenção psicossocial</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.antipsicotico}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.psicossocial}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por desfecho</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Condição/Desfecho</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Monoterapia</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Combinada</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Vencedor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.monoterapia}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.combinada}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">A janela crítica de 2 a 5 anos e o que se perde sem intervenção combinada</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A literatura de primeiro episódio é específica sobre uma janela neurobiológica e funcional. Os primeiros 2 a 5 anos após o episódio inicial definem a trajetória de longo prazo do paciente em três eixos: cognitivo (declínio ou estabilização das funções executivas e atenção), funcional (manutenção ou perda de trajetória educacional/profissional) e social (retenção ou erosão de rede de suporte). A escolha terapêutica nessa janela tem peso muito superior ao mesmo tratamento aplicado em fase crônica — o sistema ainda tem plasticidade que se reduz com o tempo.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Monoterapia farmacológica isolada nessa janela cobre sintomas positivos com eficácia conhecida (70-85% dos pacientes respondem), mas não move ponteiro funcional. O paciente sai estabilizado de internação, mantém-se sintomatologicamente controlado, mas não retoma trabalho ou estudo, perde rede social acumulada e desenvolve passividade que se cristaliza em 12-24 meses. O resultado é o que Wing (1961) chamou décadas atrás de "institucionalismo" — adaptação ao papel de doente crônico mesmo em ambulatório, sem reinternação. Esse desfecho é menos visível em estatísticas hospitalares (recaída e reinternação são as métricas registradas), mas é o que define a maior parte da carga real da doença.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O Supported Employment baseado no modelo Individual Placement and Support (IPS) — incluído no NAVIGATE — é o componente que mais diretamente reverte a perda funcional. O princípio é contraintuitivo para a tradição psiquiátrica: em vez de treinar habilidades vocacionais em ambiente protegido antes de tentar emprego competitivo (modelo "train then place"), IPS coloca o paciente em emprego real com suporte continuado (modelo "place then train"). Ensaios randomizados consolidados (Bond et al., 2008; Drake et al., 2012) mostram taxas de emprego competitivo 2 a 3 vezes superiores ao modelo tradicional. No Brasil, programas IPS são raros, mas a Rede de Atenção Psicossocial prevê dispositivos de geração de trabalho e renda (cooperativas, oficinas) que se aproximam parcialmente da lógica.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A terapia individual focada em recovery — o quarto componente do NAVIGATE — não é a TCC clássica nem a TCC para psicose (CBTp) isoladas. É um modelo integrativo que combina psicoeducação, treino de habilidades de enfrentamento, manejo de sintomas residuais e construção de narrativa de recovery. A diferença prática com TCC tradicional está na ênfase em forças, projeto de vida e papel ativo do paciente como protagonista do tratamento — não como receptor passivo de cuidado. Esse componente reverte parte da passividade que cristaliza em monoterapia isolada.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de paciente e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do paciente</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Recomendação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando monoterapia é defensável</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Crise aguda com risco imediato</p>
+              <p class="text-sm text-ink-700 mt-1">Antipsicótico de início rápido em emergência psiquiátrica é primeira linha; componentes psicossociais entram após estabilização.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Indisponibilidade temporária de equipe psicossocial</p>
+              <p class="text-sm text-ink-700 mt-1">Em regiões sem CAPS III ou equipe multiprofissional treinada, manter medicação em baixa dose enquanto se constrói rede de cuidado é defensável — não é meta.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Paciente sem família e sem rede social</p>
+              <p class="text-sm text-ink-700 mt-1">Family Intervention não é aplicável; equipe de saúde mental deve assumir scaffolding parcial, com suporte residencial quando indicado.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando combinada é mandatória</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Primeiro episódio em adulto jovem com família e projeto educacional</p>
+              <p class="text-sm text-ink-700 mt-1">Cenário canônico — NAVIGATE/RAISE entrega ganhos máximos em recovery funcional e adesão.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Família com alta expressed emotion</p>
+              <p class="text-sm text-ink-700 mt-1">Family Intervention de Birchwood é necessária para reduzir EE e prevenir recaída — medicação isolada não sustenta estabilidade.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Sintomas negativos persistentes</p>
+              <p class="text-sm text-ink-700 mt-1">Antipsicóticos têm resposta limitada a sintomas negativos; reabilitação psicossocial e supported employment movem ponteiro funcional.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Componentes que sempre devem entrar juntos</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Family Intervention + medicação em baixa dose</p>
+            <p class="text-sm text-ink-700 mt-1">Combinação clinicamente mais robusta para prevenção de recaída e adesão sustentada — base do modelo NAVIGATE e de programas EIS internacionais.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Supported Employment + terapia individual focada em recovery</p>
+            <p class="text-sm text-ink-700 mt-1">Reverter passividade e perda funcional exige projeto vocacional concreto + processo terapêutico que sustente protagonismo do paciente.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Felipe, 21 anos, primeiro episódio psicótico aos 20, estudante de Engenharia interrompida</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Felipe chegou ao CAPS III referência da capital após internação de duas semanas por primeiro episódio psicótico — delírios persecutórios em ambiente universitário, alucinações auditivas comentadoras, agitação importante. Diagnóstico: esquizofrenia em primeiro episódio (CID-10 F20.0). Saiu da internação com risperidona 4mg/dia, com sintomas positivos em remissão parcial mas com efeitos adversos importantes (acatisia, ganho de peso inicial, sedação diurna). Trancou a faculdade — estava no quinto semestre de Engenharia. Família engajada mas com alta expressed emotion: pai com críticas frequentes ("você está usando isso para escapar"), mãe super-envolvida emocionalmente.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A equipe do CAPS III propôs protocolo aproximado ao NAVIGATE adaptado ao contexto brasileiro. Primeiro, otimização farmacológica em parceria com psiquiatria — redução gradual para risperidona 2mg/dia ao longo de 8 semanas, com monitoramento de sintomas. Segundo, family intervention semanal por 6 meses com psicóloga formada em modelo Birchwood — psicoeducação sobre psicose, treino de comunicação clara, manejo de EE. O pai trabalhou crenças disfuncionais sobre "doença mental como fraqueza", a mãe trabalhou diferenciação entre cuidado e super-envolvimento. Terceiro, supported education em parceria com a universidade — Felipe retomou uma disciplina por semestre com suporte de tutoria estruturada, com plano de reingresso gradual. Quarto, terapia individual focada em recovery — construção de narrativa, identificação de forças, plano de vida pós-episódio.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Em 24 meses, indicadores objetivos mudaram. PANSS caiu de 78 (inicial) para 42 (limítrofe). Felipe retomou cinco disciplinas no segundo ano pós-episódio. Família reduziu EE em escala validada (Camberwell Family Interview). Sem recaída no período. Adesão à medicação 95% conforme registro de dispensação. A psicóloga registrou: "O que mudou o caso não foi a medicação — foi a combinação. Sem family intervention, o ambiente em casa teria recolocado Felipe em recaída em 6 meses. Sem supported education, a perda do projeto educacional teria fechado a porta funcional. A medicação em baixa dose viabilizou a participação ativa que ele não conseguiria com 4mg sedando o dia inteiro".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões clínicos descritos em Kane et al. (2016) e em relatos de implementação RAISE-like em CAPS III brasileiros. A magnitude de melhora funcional em primeiro episódio com tratamento combinado é consistente em ensaios e implementações.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções. Primeiro, "monoterapia farmacológica" pura é construto raro na prática real — quase todo paciente recebe algum componente psicoeducativo é alguma sessão de acompanhamento, mesmo em ambulatório minimalista. A comparação rigorosa é entre tratamento combinado estruturado e tratamento usual heterogêneo. Segundo, a magnitude do efeito do NAVIGATE em RAISE-ETP é real mas modesta em algumas dimensões — recovery total ainda é minoria mesmo no melhor tratamento. Não há cura, há melhora funcional substancial. Terceiro, a transposição direta para o contexto brasileiro encontra barreiras estruturais: oferta heterogênea de CAPS III, falta de programas IPS, escassez de psicólogos formados em family intervention de Birchwood, terapeutas ocupacionais sobrecarregados.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A questão estrutural mais importante é a falta de programas de Early Intervention no Brasil. UNIFESP (PROESQ), USP (IPq-HC), UFRGS e UFMG operam serviços de referência, mas a cobertura populacional é mínima. A maior parte dos pacientes brasileiros com primeiro episódio recebe tratamento ambulatorial padrão, perde a janela neurobiológica crítica e segue trajetória de crônico institucionalizado mesmo sem reinternação. Implementar EIS em larga escala é decisão de saúde pública com custo-efetividade demonstrada em sistemas comparáveis (Reino Unido, Austrália, Canadá).
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O que cabe ao psicólogo em equipe de primeiro episódio</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O psicólogo em equipe de primeiro episódio psicótico ocupa três posições técnicas distintas dentro do protocolo combinado. Primeira, condução da family intervention — formação no modelo Birchwood (ou equivalente como Behavioral Family Therapy de Falloon) é diferencial técnico não cobrável por outros membros da equipe. Segunda, terapia individual focada em recovery — combinação de psicoeducação, manejo de sintomas residuais, construção de narrativa pessoal e fortalecimento de protagonismo é distinta tanto da TCC clássica quanto da TCC para psicose (CBTp) — exige treinamento específico em recovery-oriented practice. Terceira, articulação com supported education/employment — competência de matriciamento com escolas, universidades e empregadores é parte estrutural do trabalho, não atividade acessória. Equipes brasileiras que querem operar próximas ao padrão NAVIGATE precisam de psicólogos formados nessas três frentes, em paralelo a psiquiatras com domínio de farmacologia em baixa dose e terapeutas ocupacionais com formação em reabilitação psicossocial. A integração da equipe define desfecho — não a competência individual isolada de cada membro.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A pergunta deixou de ser "medicação ou não". É "medicação otimizada combinada com quê".</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>RAISE-ETP/NAVIGATE de Kane (2016) consolidou superioridade do tratamento combinado em funcionalidade, qualidade de vida e adesão.</li>
+          <li>Baixa dose pós-primeiro episódio é a tendência regulatória — NICE CG178 e APA convergem.</li>
+          <li>Family Intervention de Birchwood reduz recaída em até 50% — componente subestimado no Brasil.</li>
+          <li>Supported Employment (IPS) reverte perda funcional na janela crítica de 2 a 5 anos pós-episódio.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem aprofundar bases de neurociência da psicose, reabilitação cognitiva e psicologia positiva aplicada a recovery — fundamentação útil para atuar em programas de primeiro episódio —, o IPOG mantém MBAs em Neurociência, Reabilitação Neuropsicológica e Psicologia Positiva. Próximo passo: confirmar grade, modalidade e turma no portal oficial.
+          A janela neurobiológica e funcional de 2 a 5 anos pós-episódio é o que define trajetória de longo prazo. Competência técnica nessa janela é decisão de prognóstico para o paciente e diferencial profissional para o psicólogo que opera em equipes de saúde mental grave no Brasil.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/internacao-vs-caps-iii-crise-aguda" class="text-brand-700 hover:text-brand-800 font-medium">Internação vs CAPS III em crise aguda — fluxo da RAPS</a></li>
+          <li><a href="/intervencoes" class="text-brand-700 hover:text-brand-800 font-medium">Intervenções estruturadas — TCCp, Family Intervention, IPS</a></li>
+          <li><a href="/areas" class="text-brand-700 hover:text-brand-800 font-medium">Áreas — saúde mental, neurociência, reabilitação</a></li>
+          <li><a href="/temas" class="text-brand-700 hover:text-brand-800 font-medium">Temas — psicose, esquizofrenia, recovery funcional</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Reabilitação Neuropsicológica e Psicologia Positiva — corpo docente nominal e estrutura multicampus. Modalidade de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Métodos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/metodos/tcc" class="mega-link"><strong class="text-ink-900 text-sm">TCC e TCC para psicose (CBTp)</strong></a></li>
+          <li><a href="/intervencoes" class="mega-link"><strong class="text-ink-900 text-sm">Intervenções estruturadas em saúde mental</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/internacao-vs-caps-iii-crise-aguda" class="mega-link"><strong class="text-ink-900 text-sm">Internação vs CAPS III</strong></a></li>
+          <li><a href="/comparativos/iapt-vs-stepped-care-brasil" class="mega-link"><strong class="text-ink-900 text-sm">IAPT vs Stepped Care</strong></a></li>
+          <li><a href="/comparativos/dbt-vs-tcc-borderline" class="mega-link"><strong class="text-ink-900 text-sm">DBT vs TCC para borderline</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Kane, J. M., et al. (2016). Comprehensive versus usual community care for first-episode psychosis: 2-year outcomes from the NIMH RAISE Early Treatment Program. American Journal of Psychiatry.</li>
+          <li>Wunderink, L., et al. (2013). Recovery in remitted first-episode psychosis at 7 years follow-up. JAMA Psychiatry.</li>
+          <li>Birchwood, M., & Trower, P. (2014). Cognitive Approaches to Schizophrenia. Routledge.</li>
+          <li>NICE (2014, updated 2023). Psychosis and Schizophrenia in Adults. NICE Guideline CG178.</li>
+          <li>APA (2020). Practice Guideline for the Treatment of Patients with Schizophrenia (3rd ed.).</li>
+          <li>Bond, G., Drake, R., & Becker, D. (2008). An update on randomized controlled trials of evidence-based supported employment. Psychiatric Rehabilitation Journal.</li>
+          <li>Portaria GM/MS nº 3.088/2011 — Rede de Atenção Psicossocial.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

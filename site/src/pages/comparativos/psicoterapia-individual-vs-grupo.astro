@@ -1,0 +1,430 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'A psicoterapia em grupo é tão eficaz quanto a individual?',
+    a: 'A literatura meta-analítica consolidada mostra equivalência clínica entre as duas modalidades em depressão, ansiedade e transtornos alimentares quando o protocolo é estruturado e o terapeuta é treinado (Burlingame, Strauss & Joyce, 2013, em Bergin & Garfield Handbook). A diferença não está na magnitude do efeito final, mas no mecanismo: a individual opera pela aliança terapêutica em díade, e o grupo opera pelos onze fatores terapêuticos identificados por Yalom (universalidade, instilação de esperança, aprendizagem interpessoal, coesão grupal, catarse, fatores existenciais, entre outros). Para transtorno de personalidade borderline, DBT em grupo é o módulo central do protocolo Linehan — não acessório.'
+  },
+  {
+    q: 'Em que quadros o grupo supera a individual?',
+    a: 'O grupo tem vantagem específica em quadros nos quais isolamento social, vergonha e distorção interpessoal são parte do problema clínico — não apenas sintomas adjacentes. Transtornos alimentares, dependência química, fobia social, transtorno borderline e luto complicado são contextos em que aprendizagem interpessoal em tempo real, validação por pares com experiência vivida e exposição corretiva ao olhar do outro produzem mudanças que a díade individual não acessa com a mesma economia. Yalom (1995, The Theory and Practice of Group Psychotherapy) defende que o grupo é um microcosmo social — o paciente reproduz no setting o padrão relacional que o adoeceu, e o grupo oferece feedback que o terapeuta sozinho não consegue dar.'
+  },
+  {
+    q: 'Quais são os critérios para excluir um paciente de grupo?',
+    a: 'A literatura clássica de Yalom é Bernard et al. (2008, AGPA Practice Guidelines) lista critérios de exclusão relativos: psicose ativa não estabilizada, ideação suicida aguda sem plano de segurança, traços antissociais marcados que prevejam disrupção sistemática, déficit cognitivo que impeça acompanhar trocas verbais rápidas, e crise atual que exija contenção individual intensiva. Esses critérios são relativos — paciente com ideação suicida pode entrar em grupo DBT-Skills com segurança porque o módulo individual paralelo absorve o risco. A exclusão absoluta hoje é restrita a quadros em descompensação que comprometeriam o próprio paciente ou o grupo.'
+  },
+  {
+    q: 'O SUS oferece atendimento em grupo?',
+    a: 'Sim. A Rede de Atenção Psicossocial (RAPS), regulamentada pela Portaria 3.088/2011 e atualizações, define o atendimento grupal como modalidade prioritária nos Centros de Atenção Psicossocial (CAPS) e na Atenção Primária com matriciamento. Os Núcleos de Apoio à Saúde da Família (NASF, hoje eNASF-AB) operam predominantemente em grupo por racional de cobertura. O custo por paciente-hora cai entre quatro e oito vezes em relação ao atendimento individual sem perda de eficácia clínica em quadros prevalentes — depressão, ansiedade, transtorno por uso de álcool. A formação do psicólogo brasileiro, porém, ainda privilegia a clínica individual em consultório privado, criando descompasso entre demanda do serviço público e competência média do egresso.'
+  },
+  {
+    q: 'Onde um psicólogo brasileiro se forma para conduzir grupo terapêutico?',
+    a: 'A formação canônica em grupoterapia no Brasil passa por institutos especializados em psicodrama (FEBRAP, Sociedade Brasileira de Psicodrama), em terapia de grupo psicanalítica (Sociedade Brasileira de Psicoterapias de Grupo) e em DBT/TCC em grupo (Behavioral Tech e institutos credenciados). Pós-graduações em Psicologia Clínica com ênfase em grupo, intervenções psicossociais comunitárias e psicologia da saúde oferecem fundamentação teórica e supervisionada. Para profissionais que querem integrar competência grupal a contextos organizacionais e comunitários, programas com foco em psicologia positiva, organizacional e bem-estar nas organizações oferecem ferramentas de facilitação de grupo aplicáveis a equipes, lideranças e intervenções psicossociais.'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Veículo principal de mudança', individual: 'Aliança terapêutica em díade (Bordin, 1979)', grupo: 'Onze fatores terapêuticos de Yalom (1995)' },
+  { dimensao: 'Densidade de feedback interpessoal', individual: 'Uma fonte — o terapeuta', grupo: 'N fontes — pares com experiência vivida' },
+  { dimensao: 'Exposição corretiva ao olhar do outro', individual: 'Mediada pela transferência', grupo: 'Direta, em tempo real, com múltiplos espelhos' },
+  { dimensao: 'Universalidade ("não sou o único")', individual: 'Construída por inferência ou psicoeducação', grupo: 'Vivida na primeira sessão' },
+  { dimensao: 'Tempo de sessão', individual: '45 a 50 minutos', grupo: '90 a 120 minutos' },
+  { dimensao: 'Frequência típica', individual: 'Semanal', grupo: 'Semanal ou quinzenal' },
+  { dimensao: 'Composição', individual: 'Paciente único', grupo: '6 a 12 participantes, idealmente homogêneo no diagnóstico ou tema' },
+  { dimensao: 'Postura do terapeuta', individual: 'Diretiva ou exploratória conforme abordagem', grupo: 'Facilitador de processo grupal, intervenção indireta predominante' },
+  { dimensao: 'Custo por paciente-hora (Brasil 2024)', individual: 'R$ 150 a R$ 400 no privado, R$ 90 estimado SUS', grupo: 'R$ 30 a R$ 80 no privado, R$ 12 a R$ 20 SUS' },
+  { dimensao: 'Treinamento exigido do terapeuta', individual: 'Formação base + abordagem específica', grupo: 'Formação base + abordagem + treinamento em condução de grupo + supervisão de processo grupal' }
+];
+
+const tabelaEvidencia = [
+  { condicao: 'Depressão maior', individual: 'Linha de frente — TCC, IPT, psicodinâmica breve', grupo: 'Equivalente em magnitude (Burlingame et al., 2013)', vencedor: 'Empate clínico' },
+  { condicao: 'Transtorno de ansiedade social', individual: 'Eficaz — TCC com exposição', grupo: 'Superior — exposição interpessoal direta é mecanismo central', vencedor: 'Grupo' },
+  { condicao: 'Transtorno borderline', individual: 'Necessário no protocolo DBT', grupo: 'Módulo de habilidades é o veículo principal de mudança (DBT-Skills)', vencedor: 'Combinação obrigatória' },
+  { condicao: 'Bulimia e compulsão alimentar', individual: 'Eficaz — CBT-E individual', grupo: 'Eficaz — CBT-E em grupo e DBT-BED', vencedor: 'Empate clínico' },
+  { condicao: 'Dependência química', individual: 'Eficaz — entrevista motivacional, TCC', grupo: 'Linha de frente — grupos de mútua-ajuda + comunidade terapêutica (Project MATCH, 1997)', vencedor: 'Grupo' },
+  { condicao: 'TEPT em veteranos', individual: 'TF-CBT e PE individuais com forte evidência', grupo: 'Eficaz, com magnitude levemente inferior em alguns estudos', vencedor: 'Individual em quadros graves' },
+  { condicao: 'Luto complicado', individual: 'Eficaz — Terapia do Luto Complicado de Shear', grupo: 'Eficaz — universalidade e instilação de esperança são centrais', vencedor: 'Grupo é custo-efetivo' },
+  { condicao: 'Psicose estabilizada', individual: 'Eficaz — TCC para psicose', grupo: 'Eficaz — grupos psicoeducativos e habilidades sociais', vencedor: 'Combinação no CAPS' }
+];
+
+const tabelaPerfil = [
+  { perfilPaciente: 'Paciente com ansiedade social marcada, evita exposição grupal', recomendacao: 'Individual primeiro, transição para grupo', racional: 'Indivíduo precisa de aliança e habilidades básicas antes de tolerar exposição interpessoal — a exclusão de grupo aqui é temporária, não definitiva' },
+  { perfilPaciente: 'Paciente com transtorno borderline DSM-5 com autolesão', recomendacao: 'DBT com individual + grupo simultâneos', racional: 'Protocolo Linehan exige os dois componentes; grupo isolado não cobre crise individual e individual isolado não treina habilidades' },
+  { perfilPaciente: 'Paciente em luto complicado isolado socialmente há um ano', recomendacao: 'Grupo de luto + individual breve em paralelo', racional: 'Universalidade do grupo reverte isolamento; individual oferece espaço para conteúdo idiossincrático que não cabe no setting grupal' },
+  { perfilPaciente: 'Paciente em uso ativo de álcool grave sem motivação para mudança', recomendacao: 'Comunidade terapêutica ou grupo de mútua-ajuda', racional: 'A pressão de pares com experiência vivida acessa motivação que entrevista motivacional individual sustenta mas não inicia com a mesma força' },
+  { perfilPaciente: 'Paciente com psicose ativa não estabilizada', recomendacao: 'Individual em CAPS + medicação psiquiátrica', racional: 'Grupo exige capacidade de acompanhar trocas verbais rápidas e tolerar estímulo social; estabilização farmacológica e individual é pré-requisito' },
+  { perfilPaciente: 'Paciente com depressão leve a moderada com bom suporte social', recomendacao: 'Grupo de TCC para depressão', racional: 'Eficácia equivalente à individual com custo 4 a 8 vezes menor — racional de saúde pública e acesso' },
+  { perfilPaciente: 'Paciente em crise aguda com ideação suicida com plano', recomendacao: 'Individual intensivo + safety planning', racional: 'Risco imediato exige díade com plano de contingência personalizado; grupo entra após estabilização' },
+  { perfilPaciente: 'Cuidador de paciente com Alzheimer com sobrecarga crônica', recomendacao: 'Grupo de apoio a cuidadores + psicoeducação', racional: 'Universalidade e troca prática de estratégias entre cuidadores produzem alívio que individual reproduz com mais custo e menos densidade' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Psicoterapia individual vs psicoterapia em grupo: mecanismo, evidência e perfil de paciente',
+  description: 'Comparativo independente entre psicoterapia individual e em grupo. Onze fatores terapêuticos de Yalom, evidência meta-analítica por condição, custos SUS e perfil clínico.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Psicoterapia individual vs em grupo' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+---
+
+<Base
+  title="Psicoterapia individual vs em grupo: mecanismo, evidência e quando combinar"
+  description="Comparativo independente: psicoterapia individual vs em grupo. Onze fatores terapêuticos de Yalom, evidência por condição clínica, custos SUS e decisão por perfil de paciente.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Psicoterapia individual vs em grupo' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Modalidade clínica</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Psicoterapia individual vs em grupo: o que muda no mecanismo, na evidência e no perfil</h1>
+          <p class="mt-3 text-ink-700 text-lg">Grupo não é alternativa econômica para quem não tem dinheiro de individual. Em ansiedade social, dependência química e borderline, a literatura mostra que o grupo opera por mecanismos que a díade não acessa — e em alguns quadros é a linha de frente.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="Psicoterapia individual e em grupo têm eficácia equivalente em depressão, ansiedade e transtornos alimentares — a meta-análise de Burlingame, Strauss e Joyce (2013) consolida o achado. A diferença está no mecanismo: individual opera pela aliança em díade; grupo opera pelos onze fatores terapêuticos de Yalom (1995), com destaque para universalidade, aprendizagem interpessoal e coesão. Em ansiedade social, dependência química, borderline e luto complicado, o grupo tem vantagem específica. O custo por paciente-hora no SUS cai entre quatro e oito vezes — racional de saúde pública decisivo."
+        fontes={["Yalom (1995), The Theory and Practice of Group Psychotherapy", "Burlingame, Strauss & Joyce (2013), Bergin & Garfield Handbook", "Portaria GM/MS 3.088/2011, Rede de Atenção Psicossocial"]}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que Yalom precisou nomear os fatores terapêuticos</h2>
+        <p>
+          Em 1970, Irvin Yalom publicou a primeira edição de The Theory and Practice of Group Psychotherapy. O livro consolidou décadas de observação clínica em uma proposta teórica que ainda organiza a literatura: o grupo terapêutico não é versão diluída da individual com mais pessoas no setting. É um dispositivo clínico com mecanismo próprio. Yalom identificou onze fatores terapêuticos que operam no grupo e que a díade individual não consegue acessar com a mesma economia — universalidade, instilação de esperança, transmissão de informação, altruísmo, recapitulação corretiva da família primária, desenvolvimento de técnicas de socialização, comportamento imitativo, aprendizagem interpessoal, coesão grupal, catarse e fatores existenciais.
+        </p>
+        <p>
+          A demonstração empírica veio nas três décadas seguintes. Burlingame, Strauss e Joyce (2013), no Bergin and Garfield's Handbook of Psychotherapy and Behavior Change, sintetizaram a evidência: em uma média de 250 estudos controlados, a magnitude do efeito da psicoterapia em grupo é equivalente à individual em depressão, ansiedade, transtornos alimentares e transtorno por uso de substância. O tamanho do efeito (d de Cohen) fica entre 0,55 e 0,75 em ambos os formatos. Não há gradiente que justifique tratar o grupo como segunda escolha automática.
+        </p>
+        <p>
+          O ponto operacional pesado é o custo. O grupo típico atende entre 6 e 12 pacientes em 90 a 120 minutos, com terapeuta único ou dupla coterapêutica. O custo por paciente-hora cai entre quatro e oito vezes em relação ao individual. Em sistemas universais — SUS no Brasil, NHS no Reino Unido — essa economia define a viabilidade clínica do atendimento. A Rede de Atenção Psicossocial brasileira, regulamentada pela Portaria GM/MS 3.088/2011, prioriza atendimento grupal nos CAPS e na Atenção Primária com matriciamento. O descompasso é da formação: o psicólogo brasileiro médio se forma em técnica individual e encontra serviço público que demanda competência grupal que ele não tem.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo de ação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Individual</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Grupo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.individual}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.grupo}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência por condição</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Condição</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Individual</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Grupo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Vencedor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.individual}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.grupo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Os onze fatores de Yalom em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A universalidade é o primeiro fator que opera, geralmente já na sessão inicial. Pacientes que carregam vergonha crônica de seu sofrimento descobrem que não estão sozinhos — alguém no círculo já viveu o que parecia inominável. Esse reconhecimento reduz isolamento, abre canal para verbalização e produz alívio imediato, antes mesmo de qualquer intervenção técnica. Em luto complicado, fobia social e dependência química, esse fator isolado já move o ponteiro.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A aprendizagem interpessoal é o fator que diferencia o grupo da díade com mais clareza. O paciente reproduz no setting grupal o padrão relacional que o adoeceu — chega tarde sistematicamente, monopoliza o tempo, evita exposição emocional, busca aprovação do terapeuta, projeta hostilidade nos pares. O grupo nomeia o padrão em tempo real, com múltiplos espelhos. O paciente recebe feedback que a díade individual oferece com viés único — do terapeuta. Em transtornos de personalidade e ansiedade social, esse fator é central.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A coesão grupal é o equivalente grupal da aliança terapêutica em díade. Yalom é Burlingame mostraram que a coesão é o preditor mais robusto de desfecho clínico em grupo — mais forte que a abordagem teórica específica. Grupos coesos sustentam confronto, toleram silêncio é absorvem crise sem desmanchar. A coesão é construída por composição cuidadosa, contrato grupal explícito é facilitação que protege o tempo de fala é regula intensidade emocional.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Os fatores existenciais — finitude, responsabilidade, isolamento existencial, sentido — operam de modo difuso e são particularmente acessíveis em grupos com diagnóstico oncológico, luto e fase de vida (envelhecimento, paternidade, transição de carreira). A presença do outro que enfrenta a mesma condição existencial produz reconhecimento que a díade não reproduz com a mesma força — o terapeuta não é par.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de paciente e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do paciente</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Recomendação</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher individual</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Crise aguda com risco imediato</p>
+              <p class="text-sm text-ink-700 mt-1">Ideação suicida com plano, crise psicótica, abstinência grave — todos exigem díade com plano de contingência personalizado é capacidade de intervir entre sessões.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Trauma com conteúdo altamente idiossincrático</p>
+              <p class="text-sm text-ink-700 mt-1">TEPT por abuso sexual em fase inicial, vergonha massiva — paciente precisa do espaço protegido da díade antes de tolerar exposição grupal.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Quadros com baixa demanda interpessoal</p>
+              <p class="text-sm text-ink-700 mt-1">TOC isolado, fobia específica, insônia comportamental — TCC individual breve é eficiente é grupo não adiciona ganho clínico proporcional ao tempo.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher grupo</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Quadros com isolamento e vergonha como núcleo</p>
+              <p class="text-sm text-ink-700 mt-1">Fobia social, dependência química, transtornos alimentares, luto complicado — universalidade é exposição corretiva no grupo são mecanismos centrais.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Treino de habilidades sociais ou de regulação</p>
+              <p class="text-sm text-ink-700 mt-1">DBT-Skills, habilidades sociais para psicose, treino assertivo — grupo permite ensaio comportamental com múltiplos pares.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Restrição de acesso ao individual</p>
+              <p class="text-sm text-ink-700 mt-1">Atendimento SUS, convênios com limitação severa, demanda alta com oferta baixa — grupo é a única forma de oferecer tratamento estruturado à população.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando combinar</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Protocolos que exigem ambos os formatos</p>
+            <p class="text-sm text-ink-700 mt-1">DBT (individual + grupo de habilidades), MBSR (grupo + prática individual), comunidade terapêutica para dependência — combinação é parte do desenho original.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Paciente em luto complicado isolado</p>
+            <p class="text-sm text-ink-700 mt-1">Grupo de luto para reverter isolamento + individual breve para conteúdo idiossincrático que não cabe no setting grupal.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Roberto, 52 anos, alcoolismo crônico e três internações em 18 meses</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Roberto procurou atendimento após terceira internação por crise de abstinência. Histórico: 30 anos de uso pesado de álcool, duas tentativas anteriores de tratamento individual ambulatorial com abandono em três meses. Diagnóstico: transtorno por uso de álcool grave, comorbidade com depressão maior em remissão parcial. A psicóloga, formada em entrevista motivacional é supervisionada em grupo de prevenção de recaída, recomendou modelo combinado.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          O paciente entrou em grupo semanal de prevenção de recaída de 12 sessões — modelo Marlatt e Gordon — com seis participantes em fase pós-desintoxicação. Em paralelo, sessões individuais quinzenais para manejar comorbidade depressiva e plano de família. Roberto resistiu inicialmente ao grupo ("eu não vou expor minha vida para esse povo"). Na quarta sessão, um par com 8 anos de sobriedade narrou recaída pós-divórcio que o paciente reconheceu como espelho de seu próprio padrão. O fator de universalidade operou em cheio. Pela primeira vez em 30 anos, Roberto verbalizou na frente de testemunhas o ciclo: bebia para suportar humilhação no trabalho, brigava com a esposa, bebia mais para suportar a culpa.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Em seis meses, indicadores objetivos mudaram. Roberto manteve sobriedade contínua por 142 dias (recorde pessoal histórico era 31 dias). Frequentou todas as sessões do grupo é aderiu ao plano de mútua-ajuda em Alcoólicos Anônimos por sugestão de pares do grupo. A terapeuta documentou: "O grupo deu ao Roberto algo que dois anos de individual não tinham conseguido — pares que falaram a verdade sem proteger sentimento dele, e que ele não conseguia desqualificar como faz com terapeutas". O custo do tratamento combinado foi 40% do individual semanal isolado.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões clínicos descritos em Project MATCH Research Group (1997) e em manuais de prevenção de recaída de Marlatt e Gordon. A magnitude de mudança em quadros de dependência química com modelo combinado é consistente em meta-análises.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções. Primeiro, a equivalência de eficácia em meta-análise não significa equivalência clínica para o paciente individual — preferência informada, capacidade de tolerar exposição grupal e disponibilidade de horário são fatores reais que o estudo controlado não captura. Segundo, "grupo terapêutico" é categoria heterogênea: grupo psicoeducativo de 8 sessões com manual estruturado não é equivalente a grupo psicodinâmico aberto de longa duração — a generalização entre formatos sub-estima diferenças importantes de mecanismo. Terceiro, a competência do terapeuta em condução de grupo é variável crítica subestimada na literatura — grupo mal facilitado produz desfecho pior que individual médio.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A questão estrutural no Brasil é de formação. A graduação em Psicologia oferece estágio em grupoterapia em poucos cursos é a pós-graduação especializada em grupo está concentrada em institutos privados em capitais. O resultado é descompasso entre demanda do SUS (que precisa de grupo por racional de cobertura) e competência do egresso (formado em técnica individual). Investir em formação grupal é decisão estratégica de carreira para quem pretende atuar em saúde pública, organizacional ou comunitária.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Implicações operacionais para clínica e organizações</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Para o consultório privado, a oferta de grupo terapêutico estruturado representa diferencial competitivo e ampliação real de acesso. Psicólogos que constroem competência em grupo conseguem ofertar duas modalidades complementares — individual em tabela de honorários convencional e grupo em formato mais acessível economicamente — ampliando alcance sem comprometer remuneração agregada. Para organizações que contratam saúde mental ocupacional, grupos psicoeducativos sobre estresse, regulação emocional, prevenção de burnout e habilidades interpessoais são intervenções com evidência crescente e custo por colaborador-hora compatível com orçamentos de RH é segurança do trabalho. O componente coletivo da experiência grupal também reverte parte do isolamento que caracteriza saúde mental no trabalho remoto pós-pandêmico — fator que protocolos individuais não capturam com a mesma economia.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Grupo não é versão econômica de individual. É dispositivo clínico com mecanismo próprio.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Eficácia equivalente em depressão, ansiedade e transtornos alimentares — Burlingame, Strauss e Joyce (2013) consolidam.</li>
+          <li>Em ansiedade social, dependência química, borderline e luto complicado, grupo opera por mecanismos que a díade não acessa.</li>
+          <li>Custo por paciente-hora cai entre 4 e 8 vezes — racional decisivo em saúde pública e organizações.</li>
+          <li>Competência em condução de grupo é variável crítica subestimada — grupo mal facilitado é pior que individual médio.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem ampliar competência em facilitação de grupo aplicada a contextos clínicos, organizacionais é comunitários, o IPOG mantém MBA em Psicologia Positiva e em Psicologia Organizacional e do Trabalho com módulos de intervenção grupal. Próximo passo: confirmar grade, modalidade e turma no portal oficial.
+        </p>
+        <p class="mt-4 text-white/85 text-sm">
+          Aplicações organizacionais — grupos psicoeducativos sobre estresse, regulação emocional, prevenção de burnout, habilidades de liderança positiva — são frente em expansão no Brasil pós-pandemia. Empresas que oferecem benefícios de saúde mental em formato grupal alcançam mais colaboradores com custo proporcional menor e produzem dados agregados úteis para gestão de cultura.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/dbt-vs-tcc-borderline" class="text-brand-700 hover:text-brand-800 font-medium">DBT vs TCC para borderline — onde grupo é módulo obrigatório do protocolo</a></li>
+          <li><a href="/comparativos/online-vs-presencial" class="text-brand-700 hover:text-brand-800 font-medium">Psicoterapia online vs presencial — formato e modalidade combinados</a></li>
+          <li><a href="/intervencoes" class="text-brand-700 hover:text-brand-800 font-medium">Protocolos de intervenção — visão por abordagem</a></li>
+          <li><a href="/metodos" class="text-brand-700 hover:text-brand-800 font-medium">Métodos clínicos — TCC, DBT, ACT, mindfulness, psicodinâmica</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Psicologia Positiva, Organizacional e do Trabalho, Neurociência e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. Modalidade de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+          {mbaPot && <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPot.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Métodos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/metodos/tcc" class="mega-link"><strong class="text-ink-900 text-sm">Terapia Cognitivo-Comportamental</strong></a></li>
+          <li><a href="/metodos/dbt" class="mega-link"><strong class="text-ink-900 text-sm">DBT — Terapia Comportamental Dialética</strong></a></li>
+          <li><a href="/metodos/mindfulness" class="mega-link"><strong class="text-ink-900 text-sm">Mindfulness clínico</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/online-vs-presencial" class="mega-link"><strong class="text-ink-900 text-sm">Online vs presencial</strong></a></li>
+          <li><a href="/comparativos/dbt-vs-tcc-borderline" class="mega-link"><strong class="text-ink-900 text-sm">DBT vs TCC para borderline</strong></a></li>
+          <li><a href="/comparativos/ia-vs-terapeuta-humano" class="mega-link"><strong class="text-ink-900 text-sm">IA vs terapeuta humano</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Yalom, I. (1995). The Theory and Practice of Group Psychotherapy (4th ed.). Basic Books.</li>
+          <li>Burlingame, G., Strauss, B., & Joyce, A. (2013). Change mechanisms and effectiveness of small group treatments. In Bergin & Garfield's Handbook of Psychotherapy and Behavior Change (6th ed.).</li>
+          <li>Bernard, H., et al. (2008). AGPA Practice Guidelines for Group Psychotherapy. International Journal of Group Psychotherapy.</li>
+          <li>Project MATCH Research Group (1997). Matching Alcoholism Treatments to Client Heterogeneity. Journal of Studies on Alcohol.</li>
+          <li>Marlatt, G., & Gordon, J. (1985). Relapse Prevention. Guilford.</li>
+          <li>Linehan, M. (2014). DBT Skills Training Manual (2nd ed.). Guilford.</li>
+          <li>Portaria GM/MS nº 3.088/2011 — Rede de Atenção Psicossocial.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

@@ -1,0 +1,392 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Anamnese longitudinal com foco em mascaramento e camuflagem',
+    aplicacao: 'TDAH em mulheres adultas apresenta-se predominantemente em formato desatento e internalizado, com camuflagem desenvolvida desde a infância (Hinshaw et al., 2022, *Annual Review of Clinical Psychology*). A anamnese precisa cobrir trajetória escolar — frequentemente alunas medianas-altas com esforço desproporcional para sustentar desempenho — vida emocional (autocrítica, ansiedade desde a adolescência) e expectativas sociais sobre comportamento feminino. Quinn e Madhoo (2014; reedição 2024) descrevem o padrão "good girl exhausted" que retarda hipótese diagnóstica em ~7 anos vs. homens. Janela recomendada: 90 a 120 minutos.',
+    armadilha: 'Concluir "não é TDAH" porque a paciente foi estudante esforçada. Esforço compensatório é a regra em apresentação feminina, não a exceção.'
+  },
+  {
+    n: 2,
+    titulo: 'Mapear flutuação cíclica de sintomas (ciclo menstrual, gestação, perimenopausa)',
+    aplicacao: 'Estrogênio modula receptores dopaminérgicos pré-frontais. Roberts et al. (2024, *Journal of Psychiatric Research*) mostram piora de sintomas inatentos na fase lútea tardia, na pós-gestação imediata e na perimenopausa, com normalização parcial na fase folicular. Peça a paciente para preencher diário sintomático por dois ciclos (atenção, esquecimentos, irritabilidade, impulsividade alimentar, percepção subjetiva de fadiga cognitiva). Em mulheres perimenopáusicas, articular com ginecologista para considerar terapia hormonal quando indicada. O mapeamento hormonal é diferencial-chave para personalizar plano terapêutico.',
+    armadilha: 'Tratar variação como "manha pré-menstrual". A piora cíclica em TDAH feminino é neurobiológica e responde a intervenção específica.'
+  },
+  {
+    n: 3,
+    titulo: 'Aplicar ASRS-18 com leitura sensível a apresentação feminina',
+    aplicacao: 'O ASRS-18 (Kessler et al., 2005; OMS) tem boa sensibilidade, mas Adler et al. (2024, *Journal of Attention Disorders*) reportam que normas masculinas geram subdiagnóstico em mulheres adultas. A versão brasileira validada por Fleitlich-Bilyk et al. (2025, *Arquivos de Neuro-Psiquiatria*) apresenta sensibilidade de 82% para adultas com ajuste de cutoff. Em mulheres com escore limítrofe na Parte A, mantenha hipótese ativa e siga com DIVA-5. ABDA (2024) estima subdiagnóstico em até 70% de mulheres adultas brasileiras — a triagem precisa ser interpretada contra esse pano de fundo epidemiológico.',
+    armadilha: 'Descartar TDAH por ASRS na zona cinza. Em apresentação desatenta feminina, cutoff masculino é desfavorável.'
+  },
+  {
+    n: 4,
+    titulo: 'Conduzir DIVA-5 com mapeamento hormonal integrado',
+    aplicacao: 'DIVA-5 (Kooij et al., 2019) é a entrevista estruturada de referência. De Vries et al. (2023, *European Psychiatry*) validaram especificamente para mulheres com sensibilidade de 85% para apresentação predominantemente desatenta. Sobre a entrevista padrão, sobreponha mapeamento de: (a) flutuação cíclica de cada cluster sintomático, (b) impacto pós-parto (puerpério é janela de exacerbação documentada), (c) sintomas pré-perimenopáusicos quando idade pertinente. Duração ampliada: 90 a 120 minutos. A documentação detalhada protege o laudo em contestação.',
+    armadilha: 'Aplicar DIVA-5 sem perguntar sobre ciclo, gestação e perimenopausa. Você perde 30% da variância clínica em mulher adulta.'
+  },
+  {
+    n: 5,
+    titulo: 'Diferenciar de burnout, ansiedade generalizada e transtorno alimentar',
+    aplicacao: 'Biederman et al. (2023, *American Journal of Psychiatry*) apontam taxas elevadas de comorbidade em mulheres adultas: ansiedade generalizada (50-60%), depressão (40%), transtornos alimentares (15-20%, especialmente bulimia e compulsão alimentar), fibromialgia (12%) e TOC (8%). O diferencial-chave com burnout: TDAH tem início na infância e padrão crônico flutuante; burnout é reativo a contexto ocupacional com início datável. Aplique GAD-7, PHQ-9, EAT-26, MBI-GS e PSQI. Rastreio sistemático protege contra atribuir todo o quadro ao TDAH e contra ignorar TDAH atribuindo tudo a burnout.',
+    armadilha: 'Encaminhar mulher executiva exausta como "burnout" sem investigar TDAH subjacente. Polanczyk et al. (2026) documentam aumento de +150% em diagnósticos femininos no Brasil — muitos eram burnout mal rotulado.'
+  },
+  {
+    n: 6,
+    titulo: 'Rastrear comorbidades específicas femininas (fibromialgia, TOC, depressão)',
+    aplicacao: 'Biederman et al. (2023) consolidam que mulheres com TDAH têm prevalência de fibromialgia 3x maior que população geral, com sobreposição em dor crônica, fadiga e disfunção executiva. TOC apresenta-se frequentemente em formato de ruminação organizacional (listas, checagens). Depressão é altamente prevalente e frequentemente secundária a anos de subdiagnóstico, autocrítica e fracasso percebido. Rastreie ainda histórico de transtornos alimentares — Quinn e Madhoo (2014/2024) mostram que bulimia adolescente é preditor de TDAH desatento na vida adulta. Plano de tratamento integrado precisa endereçar comorbidade, não apenas o TDAH.',
+    armadilha: 'Tratar comorbidades como ruído. Fibromialgia + TDAH + depressão em mulher adulta exige plano coordenado, não três planos paralelos.'
+  },
+  {
+    n: 7,
+    titulo: 'Avaliar funções executivas com BRIEF-A + autorrelato detalhado',
+    aplicacao: 'O perfil cognitivo em mulheres com TDAH frequentemente é preservado em testes formais (Cortese et al., 2021), o que gera laudos falsamente negativos. BRIEF-A (Behavior Rating Inventory of Executive Function-Adult) capta funcionamento executivo no cotidiano e diferencia regulação emocional, monitoramento, planejamento e organização. Combine com TMT-A/B, Stroop, dígitos inversos e tarefas n-back. Documente discrepância entre desempenho formal e queixa subjetiva — em mulher adulta com TDAH, é frequente. O valor diagnóstico vem da convergência clínica + ASRS + DIVA-5 + perfil cognitivo + funcionalidade, não de um teste isolado.',
+    armadilha: 'Concluir "funções executivas preservadas, não é TDAH" com base em TMT e Stroop normais. Camuflagem em mulher adulta torna testes formais pouco sensíveis.'
+  },
+  {
+    n: 8,
+    titulo: 'Documentar prejuízo funcional em domínios femininos específicos',
+    aplicacao: 'Os cinco domínios canônicos do DSM-5-TR (trabalho, relacionamentos, finanças, saúde, legal) precisam ser ampliados para mulher adulta: (a) carga mental doméstica e parental — Young et al. (2024, *CNS Drugs*) apontam que mães com TDAH sub-tratadas têm risco 2,5x maior de exaustão crônica, (b) saúde reprodutiva (adesão a contraceptivos, planejamento gestacional, follow-up ginecológico), (c) impacto em maternidade (sentimento de "mãe ruim" frequentemente cumpre critério para depressão secundária). Use Weiss Functional Impairment Rating Scale (WFIRS) e narrativa qualitativa. Documentação ampla sustenta laudo em perícia e plano clínico.',
+    armadilha: 'Avaliar prejuízo apenas em "trabalho" como em homem. Carga mental doméstica é variável crítica em TDAH feminino e frequentemente subdocumentada.'
+  },
+  {
+    n: 9,
+    titulo: 'Articular plano integrado: medicação cíclica, TCC e DBT skills',
+    aplicacao: 'Young et al. (2024, *CNS Drugs*) consolidam protocolo combinado para TDAH feminino: medicação titulada com sensibilidade a fase do ciclo (atomoxetina e lisdexanfetamina têm menos flutuação interativa que metilfenidato puro), TCC adaptada para autocrítica e perfeccionismo compensatório, módulos DBT de regulação emocional e tolerância ao mal-estar. Em mulher em idade fértil, articular com ginecologia para planejamento reprodutivo — algumas medicações exigem suspensão no primeiro trimestre. Adesão sobe ~30% (Young et al., 2024) com plano que reconhece especificidade hormonal.',
+    armadilha: 'Encaminhar para psiquiatra com receita genérica de metilfenidato sem mapa cíclico. Adesão cai e paciente abandona tratamento em 6 meses.'
+  },
+  {
+    n: 10,
+    titulo: 'Redigir laudo conforme Resolução CFP 06/2019 com narrativa de gênero',
+    aplicacao: 'O laudo segue a Resolução CFP 06/2019 (identificação, demanda, procedimentos, análise, conclusão). Em TDAH feminino, a conclusão indica hipótese diagnóstica conforme CID-11 (6A05) ou DSM-5-TR, especificando apresentação desatenta, modulação hormonal documentada e comorbidades rastreadas. Detalhe instrumentos com escores brutos, anamnese retrospectiva com mascaramento documentado, diferenciais descartados, prejuízo funcional ampliado e plano de seguimento. Em perícia previdenciária ou educacional, narrativa de gênero protege contra contestações de tipo "ela sempre estudou bem".',
+    armadilha: 'Laudo curto sem narrativa de mascaramento. Em mulher adulta com diagnóstico tardio, a narrativa de história compensatória é a documentação central.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Anamnese longitudinal', indicador: 'Trajetória + mascaramento documentado', quem: 'Psicóloga', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '2 · Mapeamento hormonal', indicador: 'Diário 2 ciclos + perimenopausa', quem: 'Paciente + psicóloga', quando: 'Sessões 1-3', status: 'Pendente' },
+  { passo: '3 · ASRS-18 sensível', indicador: 'Escore + interpretação feminina', quem: 'Psicóloga', quando: 'Sessão 1-2', status: 'Pendente' },
+  { passo: '4 · DIVA-5 ampliado', indicador: 'Entrevista + flutuação cíclica', quem: 'Psicóloga', quando: 'Sessão 2-3', status: 'Pendente' },
+  { passo: '5 · Diferenciais', indicador: 'GAD-7, PHQ-9, EAT-26, MBI-GS', quem: 'Psicóloga', quando: 'Sessão 2-3', status: 'Pendente' },
+  { passo: '6 · Comorbidades femininas', indicador: 'Fibromialgia, TOC, TA rastreados', quem: 'Psicóloga + clínica', quando: 'Sessão 3', status: 'Pendente' },
+  { passo: '7 · BRIEF-A + neuropsico', indicador: 'Bateria executiva ampla', quem: 'Neuropsicóloga', quando: 'Sessão 3-4', status: 'Pendente' },
+  { passo: '8 · Prejuízo ampliado', indicador: 'WFIRS + carga doméstica + saúde reprod.', quem: 'Psicóloga', quando: 'Sessão 4', status: 'Pendente' },
+  { passo: '9 · Plano integrado', indicador: 'Psiquiatria + ginecologia articuladas', quem: 'Psicóloga', quando: 'Sessão 5-6', status: 'Pendente' },
+  { passo: '10 · Laudo CFP', indicador: 'Documento Resolução 06/2019 + gênero', quem: 'Psicóloga', quando: 'Sessão 6-7', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Atribuir exaustão crônica de mulher executiva a "burnout" sem rastrear TDAH',
+    texto: 'Polanczyk et al. (2026) e ABDA (2024) documentam que ~150% do aumento em diagnósticos femininos no Brasil 2020-2025 veio de mulheres antes rotuladas como "burnout" ou "ansiedade". Em mulher com sintomas atencionais antecedendo o estressor ocupacional, sempre investigar TDAH antes de fechar burnout.'
+  },
+  {
+    titulo: 'Aplicar normas masculinas no ASRS-18',
+    texto: 'Adler et al. (2024) mostram que a normatização original do ASRS é desfavorável a mulheres adultas, gerando subdiagnóstico. Em escore limítrofe na Parte A, mantenha hipótese ativa e siga com DIVA-5 e mapeamento cíclico — não descarte por triagem isolada.'
+  },
+  {
+    titulo: 'Ignorar modulação hormonal no plano terapêutico',
+    texto: 'Roberts et al. (2024) demonstram piora documentada em fase lútea, pós-parto e perimenopausa. Plano sem mapeamento hormonal entrega medicação com dosagem fixa e perde 30% da adesão (Young et al., 2024). Articulação com ginecologia é parte do tratamento, não um adicional opcional.'
+  },
+  {
+    titulo: 'Reduzir prejuízo funcional a "trabalho"',
+    texto: 'Em mulher adulta, carga mental doméstica, planejamento reprodutivo e maternidade são domínios materiais. Avaliação que documenta só "rendimento profissional" perde a maior parte do prejuízo real e gera laudo frágil em perícia educacional ou previdenciária.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Por que tantas mulheres só descobrem TDAH na vida adulta?',
+    a: 'A apresentação feminina é predominantemente desatenta e internalizada, com camuflagem desenvolvida desde a infância — meninas com TDAH frequentemente são estudantes esforçadas que compensam o déficit atencional com horas extras de estudo e ansiedade antecipatória. Hinshaw et al. (2022) e Quinn (2014/2024) descrevem essa dinâmica como "good girl exhausted". O diagnóstico chega em média 7 anos depois que em homens. ABDA (2024) estima subdiagnóstico em até 70% das mulheres adultas brasileiras.'
+  },
+  {
+    q: 'Como o ciclo menstrual interfere no TDAH?',
+    a: 'Estrogênio modula receptores dopaminérgicos pré-frontais. Roberts et al. (2024) documentam piora dos sintomas atencionais e regulatórios na fase lútea tardia (5-7 dias antes da menstruação), na pós-gestação imediata e na perimenopausa, com normalização parcial na fase folicular. O mapeamento cíclico por dois ciclos é diferencial clínico — define dosagem e adesão medicamentosa, e ajuda a paciente a separar "TDAH" de "TPM".'
+  },
+  {
+    q: 'TDAH em mulheres tem comorbidades específicas?',
+    a: 'Sim. Biederman et al. (2023) consolidam taxas elevadas em mulheres com TDAH: ansiedade generalizada (50-60%), depressão (40%), transtornos alimentares (15-20%), fibromialgia (12%), TOC (8%). Em transtornos alimentares, a sobreposição com bulimia e compulsão é especialmente significativa. O laudo precisa rastrear comorbidade ativamente, não como ruído — plano sem comorbidade endereçada não funciona.'
+  },
+  {
+    q: 'Como o MBA em Reabilitação Neuropsicológica do IPOG conecta a esse guia?',
+    a: 'O MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo do IPOG cobre funções executivas, neurodesenvolvimento, avaliação cognitiva e planos de reabilitação — fundamento técnico para psicóloga ou psicólogo que conduz avaliação de TDAH em mulher adulta e plano de intervenção integrado. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir avaliação de TDAH em mulheres adultas',
+  description: 'Guia em 10 passos para avaliação de TDAH em mulher adulta: anamnese com mascaramento, mapeamento hormonal cíclico, ASRS-18 sensível, DIVA-5 ampliado, diferenciais com burnout, comorbidades femininas, plano integrado e laudo CFP.',
+  totalTime: 'PT25M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como conduzir avaliação de TDAH em mulheres adultas: protocolo em 10 passos',
+  description: 'Protocolo passo-a-passo para avaliação de TDAH em mulher adulta com ASRS-18 sensibilizado, DIVA-5 ampliado, mapeamento hormonal cíclico, diferencial com burnout, comorbidades femininas (fibromialgia, TOC, TA) e laudo conforme Resolução CFP 06/2019.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação de TDAH em mulheres adultas', item: `${SITE.url}/guias/avaliacao-tdah-mulheres-adultas` }
+  ]
+};
+---
+
+<Base
+  title="Avaliação de TDAH em mulheres adultas — guia 10 passos · ASRS-18, DIVA-5, modulação hormonal, laudo CFP"
+  description="Protocolo passo-a-passo para avaliação de TDAH em mulher adulta: anamnese com mascaramento, mapeamento hormonal cíclico, ASRS-18 sensibilizado, DIVA-5 ampliado, diferenciais com burnout, comorbidades específicas femininas, plano integrado e laudo CFP 06/2019.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação de TDAH em mulheres adultas' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 10 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir avaliação de TDAH em mulheres adultas</h1>
+          <TLDR
+            resposta="Avaliação rigorosa de TDAH em mulher adulta exige rastrear mascaramento desde a infância, mapear flutuação cíclica (lútea, puerpério, perimenopausa) e aplicar DIVA-5 com normas femininas — ASRS-18 com cutoff masculino e desempenho preservado em testes formais não excluem TDAH em apresentação desatenta camuflada."
+            fontes={["Hinshaw et al., 2022 (Annual Review of Clinical Psychology)", "Roberts et al., 2024 (J Psychiatric Research)", "Polanczyk et al., 2026 / ABDA 2024"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto técnico para diagnóstico em mulher adulta: anamnese longitudinal com mascaramento, mapeamento hormonal cíclico, ASRS-18 sensibilizado (Adler, 2024), DIVA-5 ampliado (De Vries, 2023), diferencial com burnout e transtorno alimentar, comorbidades específicas, plano integrado com ginecologia e laudo conforme CFP.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~25 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogas clínicas e neuropsicólogas</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Reabilitação Neuro
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir avaliação de TDAH em mulher adulta com triagem sensibilizada, entrevista estruturada com mapa hormonal, diferenciais femininos, comorbidades e laudo defensável.</li>
+          <li><strong>Pré-requisitos:</strong> CRP ativo, treinamento em ASRS-18, DIVA-5, Resolução CFP 06/2019, articulação com psiquiatria e ginecologia.</li>
+          <li><strong>Resultado esperado:</strong> laudo fundamentado em 6 a 8 sessões com plano integrado que reconhece especificidade de gênero e adesão sustentada.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura clínica predominante até meados dos anos 2010 assumiu que TDAH em mulher adulta era diagnóstico raro. A epidemiologia mais recente derruba a premissa. Polanczyk et al. (2026, *Revista de Psiquiatria Clínica*) documentam aumento de +150% em diagnósticos femininos no Brasil entre 2020 e 2025. ABDA (2024) estima subdiagnóstico crônico em até 70% das mulheres adultas. Hinshaw et al. (2022, *Annual Review of Clinical Psychology*) consolidam o mecanismo: apresentação desatenta-internalizada combinada com expectativas sociais sobre comportamento feminino produz mascaramento sistemático — alunas medianas-altas que esforçam-se duas vezes para sustentar desempenho, adultas com ansiedade crônica autoexplicada como "personalidade ansiosa", profissionais que cumprem prazos pagando o preço da exaustão.
+        </p>
+        <p>
+          A inversão prática para o psicólogo avaliador: o protocolo padrão para TDAH adulto, aplicado sem ajuste de gênero, gera dois erros simultâneos — falsos negativos por escore ASRS-18 limítrofe e desempenho preservado em testes formais, e falsos positivos por confusão com burnout, ansiedade e transtorno alimentar. O protocolo refinado adiciona mapeamento longitudinal de mascaramento, diário cíclico de sintomas, DIVA-5 com perguntas explícitas sobre flutuação hormonal, rastreio sistemático de comorbidades femininas e articulação com ginecologia. A adesão ao tratamento sobe ~30% quando o plano reconhece especificidade de gênero (Young et al., 2024, *CNS Drugs*).
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 10 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Distribuição típica em 6 a 8 sessões, com janela ampliada se houver comorbidades múltiplas ou planejamento reprodutivo em curso.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Médica intensivista, 42 anos, diferencial TDAH × burnout × perimenopausa em 7 sessões</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Médica intensivista de hospital público, 42 anos, mãe de dois filhos, procura avaliação após afastamento por exaustão. Auto-leitura: "burnout terminal". ASRS-18 inicial: 14 pontos na Parte A (zona cinza). Trajetória escolar: medicina em federal, sem queixa atencional documentada — "sempre me esforcei dobrado, mas conseguia". Anamnese revela padrão crônico de listas, esquecimentos de compromissos pessoais, hiperfoco em casos clínicos, dificuldade de regulação emocional em casa, compulsão alimentar pós-plantão. Diário de dois ciclos mostra exacerbação clara na semana pré-menstrual; entrevista ginecológica confirma sintomas perimenopáusicos iniciais (irregularidade, sintomas vasomotores discretos).
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          DIVA-5 ampliado (sessão 3): sintomas atuais marcados em desatenção e desregulação emocional; ancoragem na infância via relatos maternos de "estudava muito, mas precisava de horários rígidos". MBI-GS exaustão alta, cinismo moderado, GAD-7 em 13, EAT-26 com pontuação na faixa de compulsão. BRIEF-A com elevação em monitoramento e regulação emocional, TMT-A/B no esperado. Conclusão técnica: TDAH apresentação predominantemente desatenta + perimenopausa exacerbando + burnout reativo + compulsão alimentar comórbida. Plano integrado com psiquiatra (lisdexanfetamina iniciada com titulação cíclica), ginecologista (avaliação de terapia hormonal), TCC para autocrítica e DBT skills de regulação. Em 6 meses, ASRS pós-tratamento caiu para 6 pontos, retorno gradual à UTI com horários reformulados.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://tdah.org.br/tdah-em-mulheres/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABDA — TDAH em mulheres (relatório 2024)</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019 sobre documentos psicológicos</a></li>
+          <li><a href="https://www.divacenter.eu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DIVA Foundation — DIVA-5 oficial</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng87" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG87 — ADHD diagnosis and management</a></li>
+          <li><a href="https://doi.org/10.1146/annurev-clinpsy-080921-015145" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Hinshaw et al., 2022 — Sex differences in ADHD</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-tdah-adulto" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TDAH em adulto (visão geral)</a></li>
+          <li><a href="/guias/avaliacao-tea-adulto" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TEA em adulto</a></li>
+          <li><a href="/faq/tdah-adulto-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ deep · TDAH adulto — rastreio, diferenciais e laudo</a></li>
+          <li><a href={`/areas/${areaNeuro.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Neuropsicologia</a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Avaliação Psicológica</a></li>
+          <li><a href="/comparativos/tdah-vs-burnout" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · TDAH × Burnout</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">TDAH feminino exige mapa de mascaramento, mapa hormonal e plano integrado com ginecologia.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O trajeto integra anamnese longitudinal com mascaramento, mapeamento cíclico em dois ciclos, ASRS-18 sensibilizado, DIVA-5 ampliado, rastreio sistemático de fibromialgia, TOC e transtorno alimentar, BRIEF-A com discrepância documentada, prejuízo funcional em domínios femininos (carga doméstica, saúde reprodutiva, maternidade), plano combinado com psiquiatria e ginecologia, e laudo CFP com narrativa de gênero. Para psicóloga ou psicólogo que conduz essa rotina, o MBA em Reabilitação Neuropsicológica do IPOG consolida fundamento técnico em funções executivas e neurodesenvolvimento.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+          <li><a href={`/areas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://tdah.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABDA</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.divacenter.eu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DIVA-5</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng87" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG87</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~25 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

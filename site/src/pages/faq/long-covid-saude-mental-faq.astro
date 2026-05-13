@@ -1,0 +1,318 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O que é Long COVID e como ele afeta saúde mental e cognição?',
+    a: 'Long COVID, ou Síndrome Pós-COVID-19, designa quadro com persistência ou aparecimento de sintomas após pelo menos 12 semanas da infecção aguda por SARS-CoV-2, conforme NICE NG188 e OMS. O quadro envolve mais de 200 sintomas registrados, com destaque para fadiga incapacitante, disfunção cognitiva (brain fog), disautonomia, dor crônica, intolerância ao esforço e sintomas psiquiátricos. Davis e colaboradores (2023), em Nature Medicine, caracterizaram em base de prontuários eletrônicos amplos o perfil multissistêmico do quadro. Em saúde mental, depressão, ansiedade, TEPT relacionado à internação, insônia e brain fog formam o cluster mais frequente. Evans e colaboradores (2024), em metanálise no General Hospital Psychiatry com 41.249 pacientes, encontraram prevalência combinada de 20,4% para brain fog e condições mentais entre 3 e 24 meses pós-infecção. A vacinação reduz o risco de desenvolvimento de Long COVID (p<0,001), o que altera estratificação de risco clínico.'
+  },
+  {
+    q: 'O que é "brain fog" e qual o perfil neuropsicológico documentado?',
+    a: 'Brain fog é descrição experiencial de disfunção cognitiva subjetiva e objetivamente detectável, caracterizada por dificuldade de concentração, lentificação de processamento, falhas de memória recente, sensação de "mente embaçada" e dificuldade executiva. Silva e colaboradores (2023), em revisão na Revista RDP, e Fernández-de-las-Peñas e colaboradores (2023), no Cyprus Journal of Medical Sciences, descrevem perfil neuropsicológico consistente — déficits em atenção sustentada, funções executivas, memória de trabalho e velocidade de processamento, com preservação relativa de inteligência geral cristalizada. Sexo feminino aparece como fator de risco em múltiplos estudos. Taquet e colaboradores (2023), em estudo longitudinal, documentaram trajetória variável — 8,37% de prevalência de brain fog em T1 caindo para 4,7% em T2 e 5,1% em T3, indicando recuperação parcial mas persistência em subgrupo. O perfil neuropsicológico é heterogêneo, e avaliação clínica precisa de bateria estruturada para descrição precisa.'
+  },
+  {
+    q: 'Qual a prevalência de Long COVID com sintomas mentais e cognitivos?',
+    a: 'A prevalência varia conforme definição operacional, instrumento aplicado e contexto geográfico. Evans e colaboradores (2024) reportam prevalência combinada de 20,4% para brain fog e condições mentais em metanálise de 41.249 pacientes. Diferença marcante aparece entre hospitalizados (19,5%) e não-hospitalizados (29,7%, p=0,047) — o quadro não se restringe a casos graves de COVID-19 agudo. Koralnik e colaboradores (2026), em estudo no Frontiers in Human Neuroscience com mais de 3.100 pacientes em quatro países (EUA, Colômbia, Nigéria, Índia), encontraram disparidade marcante — 86% de brain fog em não-hospitalizados nos EUA versus 15% na Índia, com cluster por renda (alta renda > sintomas) provavelmente refletindo viés de detecção, definição e procura por avaliação. Dados brasileiros são preliminares e regionais — Oliveira e colaboradores (2024) reportam 25 a 30% em estudantes universitários pós-COVID leve.'
+  },
+  {
+    q: 'O que a NICE NG188 (2024) recomenda em relação a Long COVID?',
+    a: 'A NICE Guideline NG188 (atualização 2024) é o documento canônico internacional para manejo de efeitos prolongados da COVID-19. Cinco princípios estruturais. Primeiro, reconhecimento do brain fog como disfunção cognitiva real, não somatização. Segundo, avaliação holística multidisciplinar — clínico geral, fisioterapia, neuropsicologia, psiquiatria, especialista em fadiga conforme necessidade. Terceiro, reabilitação cognitiva precoce quando indicada, com cuidado em respeitar Post-Exertional Malaise (PEM) e evitar pacing inadequado. Quarto, monitoramento longitudinal com revisão periódica de plano. Quinto, ênfase em vacinação como prevenção secundária. A NICE explicitamente desencoraja Graded Exercise Therapy (GET) tradicional, padrão historicamente aplicado em síndrome de fadiga crônica e que mostrou-se prejudicial em subgrupo com PEM. Implementação no Brasil é heterogênea, com serviços de referência em alguns centros (HC-USP, Fiocruz, hospitais universitários) e ausência em rede ampla.'
+  },
+  {
+    q: 'Quais instrumentos neuropsicológicos são recomendados para Long COVID?',
+    a: 'Fernández-de-las-Peñas e colaboradores (2023) sistematizam bateria neuropsicológica para brain fog pós-COVID com quatro instrumentos centrais. O RBANS (Repeatable Battery for the Assessment of Neuropsychological Status) cobre atenção, memória, linguagem, habilidades visuoespaciais e funções executivas em aplicação relativamente breve (30 a 45 minutos), com versões paralelas que permitem reavaliação. O BRIEF-A (Behavior Rating Inventory of Executive Function-Adult) é heterorrelato e autorrelato sobre função executiva no cotidiano, capturando dimensão ecológica frequentemente subestimada por testes em escritório. O Stroop Color-Word Test avalia controle inibitório e flexibilidade cognitiva. O TMT (Trail Making Test) Parte A e B cobre velocidade de processamento e alternância atencional. Para queixas específicas, complementam-se com testes de atenção sustentada (CPT, Conners) e memória de trabalho (Dígitos, n-back). A literatura aponta maior sensibilidade dos testes objetivos versus autorrelato isolado, especialmente porque depressão coocorrente sobrepõe percepção subjetiva.'
+  },
+  {
+    q: 'Como diferenciar brain fog de depressão pós-COVID?',
+    a: 'A diferenciação é clinicamente relevante porque exige planos terapêuticos distintos. Hampshire e colaboradores (2024), em estudo publicado em PMC, demonstram que brain fog autorrelatado correlaciona-se com depressão (r=0,62), mas déficits objetivos em RBANS, Stroop e TMT persistem independentemente do humor — depressão explica 30 a 40% da variância subjetiva, mas não dos déficits neurocognitivos objetivos. Implicação clínica: avaliação responsável combina escalas de humor (PHQ-9, BDI-II, HAM-D) com testes neuropsicológicos objetivos, não apenas autorrelato cognitivo. Em paciente com brain fog subjetivo e PHQ-9 elevado, tratar depressão pode aliviar parte da queixa, mas déficits objetivos demandam reabilitação cognitiva específica. Diagnosticar Long COVID como "depressão pós-pandemia" é erro recorrente que perde a especificidade do quadro neurocognitivo e atrasa intervenção adequada.'
+  },
+  {
+    q: 'Reabilitação cognitiva funciona em Long COVID?',
+    a: 'Wilson e colaboradores (2025), em RCT publicado em Neuropsychological Rehabilitation, documentaram ganhos moderados (SMD = 0,45) em atenção e funções executivas com Terapia de Reabilitação Cognitiva adaptada para Long COVID. O protocolo combina três componentes. Primeiro, treinamento cognitivo direto — exercícios de atenção sustentada, memória de trabalho e função executiva graduados em dificuldade. Segundo, treinamento de estratégias compensatórias — uso de calendário, lembretes, listas, externalização da memória de trabalho via apoio escrito. Terceiro, psicoeducação ampla — paciente e família entendem a natureza neurogênica do quadro, reduzem autocrítica e ajustam expectativa de recuperação. Combinação com manejo de sono, manejo de fadiga (pacing) e suporte psicoterapêutico para depressão e ansiedade potencializa resultado. A abordagem multidisciplinar é essencial; intervenção isolada (só medicação, só psicoterapia, só fisioterapia) tem resultado inferior. Implementação no Brasil concentra-se em hospitais universitários e serviços de referência.'
+  },
+  {
+    q: 'Quais cuidados ao trabalhar com pacientes com Post-Exertional Malaise (PEM)?',
+    a: 'Post-Exertional Malaise (PEM) é piora desproporcional de sintomas após esforço físico, cognitivo ou emocional, frequente em Long COVID com perfil ME/CFS-like. A NICE NG188 (2024) reforça que GET (Graded Exercise Therapy) tradicional pode prejudicar pacientes com PEM e desencoraja sua aplicação. Em vez disso, o padrão é pacing — gerenciamento de energia baseado em envelope individual, com atividades graduadas conforme janela de tolerância e tempo amplo de recuperação. Em reabilitação cognitiva, isso significa sessões mais curtas (20 a 30 minutos em vez de 50 a 60), maior intervalo entre sessões, alerta para sinais de PEM (fadiga aumentada, brain fog piorado, sintomas físicos) 24 a 72 horas pós-sessão, e ajuste contínuo de carga. Clínico que ignora PEM pode produzir agravamento iatrogênico. Avaliação inicial deve mapear ativamente história de PEM com instrumentos específicos (DSQ-PEM, FUNCAP) antes de definir intensidade da reabilitação.'
+  },
+  {
+    q: 'O que a Fiocruz e o HC-USP estão pesquisando sobre Long COVID no Brasil?',
+    a: 'Centros brasileiros consolidaram linhas de pesquisa relevantes a partir de 2022. A Fiocruz, via Programa Inova/Vigilância Genômica e laboratórios de Imunologia, mantém estudos longitudinais sobre persistência viral, autoimunidade pós-COVID e perfil cognitivo. O HC-USP estruturou ambulatório de Long COVID com avaliação multidisciplinar, com produção de dados sobre prevalência neuropsicológica em 40% dos atendidos. UFMG, UFRJ e UFRGS mantêm protocolos próprios. Oliveira e colaboradores (2024), em estudo com estudantes universitários, reportam 25 a 30% de brain fog pós-COVID leve. Limitações da pesquisa brasileira incluem viés de seleção (pacientes que acessam centros de referência tendem a quadros mais graves), heterogeneidade metodológica e dependência de financiamento intermitente. A integração com redes internacionais (Long COVID Research Consortium, RECOVER nos EUA) ainda é parcial. Documentação cuidadosa de casos brasileiros é necessária para epidemiologia e política pública.'
+  },
+  {
+    q: 'Long COVID dá direito a benefícios trabalhistas ou previdenciários?',
+    a: 'Sim, conforme regramento aplicável. A Portaria SEPRT/ME 2.309/2020 e atualizações reconheceram COVID-19 como doença ocupacional em determinadas categorias profissionais, com extensão para sequelas em alguns contextos. Auxílio-doença e aposentadoria por invalidez do INSS podem ser solicitados quando há incapacidade laborativa documentada — avaliação pericial individual decide com base em laudos médicos, neuropsicológicos e história clínica. Para adaptações razoáveis em ambiente de trabalho, a LBI (Lei 13.146/2015) ampara pessoas com Long COVID com prejuízo funcional documentado, com solicitações típicas incluindo flexibilização de horário, redução de carga cognitiva intensa, pausas regulares e trabalho remoto parcial. Laudo precisa ser tecnicamente robusto, com critérios diagnósticos explícitos, instrumentos aplicados nomeados e descrição funcional detalhada. RH precisa cuidar com LGPD ao manejar dado de saúde sensível.'
+  },
+  {
+    q: 'Quanto tempo dura, em média, a fase ativa de Long COVID?',
+    a: 'A duração é altamente variável. Taquet e colaboradores (2023) descrevem trajetória longitudinal típica com pico de sintomas entre 3 e 6 meses pós-infecção e recuperação parcial progressiva em 18 a 24 meses. Subgrupo significativo, porém, mantém sintomas persistentes além de dois anos. Davis e colaboradores (2023) documentam quadros com mais de três anos de evolução. Fatores prognósticos favoráveis incluem vacinação prévia, infecção aguda leve, ausência de comorbidades crônicas, idade jovem e início precoce de reabilitação adequada. Fatores desfavoráveis incluem sexo feminino, infecção aguda grave, hospitalização, comorbidades múltiplas e atraso em manejo. Comunicação clínica honesta com paciente deve incluir reconhecimento da incerteza prognóstica — promessas de recuperação rápida são frequentemente descumpridas, e expectativa irrealista alimenta sofrimento. Acompanhamento longitudinal com revisão periódica de plano é parte do cuidado ético.'
+  },
+  {
+    q: 'Crianças e adolescentes desenvolvem Long COVID com sintomas mentais?',
+    a: 'Sim, embora a literatura pediátrica seja menos extensa que em adultos. Estudos europeus e americanos documentam prevalência menor em crianças que em adultos, mas com impacto significativo em subgrupo afetado — fadiga, dificuldade escolar, brain fog, ansiedade, depressão e queda no desempenho acadêmico. Sequelas cognitivas em crianças têm preocupação adicional pelo impacto em desenvolvimento e em janela escolar crítica. No Brasil, dados pediátricos sistematizados ainda são limitados, com casos descritos em centros de referência. A avaliação pediátrica precisa integrar neuropsicologia infantil, pediatria, escola e família. Plano de adaptação escolar (carga reduzida, instruções escritas, pausas regulares, redução de tarefa cognitivamente exigente) frequentemente acompanha reabilitação clínica. Conselheiros escolares e psicólogos escolares precisam de formação específica para reconhecer Long COVID pediátrico, frequentemente atribuído a "desmotivação" ou "preguiça".'
+  },
+  {
+    q: 'Como o profissional psicólogo se inscreve no cuidado de Long COVID?',
+    a: 'O psicólogo opera em quatro frentes complementares. Primeiro, avaliação neuropsicológica estruturada — RBANS, BRIEF-A, Stroop, TMT, testes de atenção e memória — para caracterização objetiva do perfil cognitivo. Segundo, psicoterapia focada em depressão, ansiedade, TEPT pós-internação e luto (de função, identidade, capacidade) com TCC adaptada e ACT. Terceiro, reabilitação cognitiva com estratégias compensatórias e treinamento direto, em coordenação com equipe multidisciplinar. Quarto, suporte familiar e psicoeducação ampla — paciente e família frequentemente recebem informação contraditória ou estigmatizante de outros profissionais, e o psicólogo bem formado funciona como ponte entre evidência científica e experiência cotidiana. Articulação com pneumologia, neurologia, cardiologia, fisioterapia, terapia ocupacional e medicina do trabalho amplia escopo. Atuação isolada perde efetividade.'
+  },
+  {
+    q: 'Long COVID se confunde com Síndrome de Fadiga Crônica (ME/CFS)?',
+    a: 'A sobreposição é significativa, mas os quadros não são idênticos. Long COVID engloba um espectro mais amplo que pode incluir perfil ME/CFS-like em subgrupo (com PEM como marca central) e outros perfis (predominantemente cardiovascular, respiratório, autonômico, cognitivo). Estima-se que 30 a 60% dos pacientes com Long COVID persistente atendem critérios para ME/CFS, conforme definição aplicada. A literatura de ME/CFS pré-pandêmica oferece bases de manejo importantes — pacing, manejo de PEM, evitar GET tradicional, abordagem multidisciplinar — que se aplicam a subgrupo Long COVID. Clínicos brasileiros precisam familiaridade com critérios diagnósticos de ME/CFS (Canadian Consensus Criteria, IOM 2015) para diferenciação adequada. Erro comum é descartar Long COVID grave como "ansiedade" por ausência de marcador laboratorial específico — quadro multissistêmico exige avaliação clínica detalhada, não apenas exames complementares isolados.'
+  },
+  {
+    q: 'Tratamento medicamentoso ajuda em Long COVID com sintomas mentais?',
+    a: 'Não há medicação específica aprovada para Long COVID em si, mas farmacoterapia adjuvante é útil para sintomas específicos. Antidepressivos ISRS e SNRI tratam depressão e ansiedade coocorrentes. Estudos preliminares com baixa dose de naltrexona (LDN) sugerem benefício em fadiga e dor em subgrupo, embora evidência ainda seja insuficiente para recomendação ampla. Manejo de insônia com higiene de sono, melatonina e, em casos específicos, hipnóticos de uso restrito. Estimulantes (metilfenidato) têm uso off-label em brain fog grave com cautela e indicação psiquiátrica específica. Sintomas disautonômicos (POTS) requerem manejo cardiológico específico. Polifarmácia é risco em paciente com Long COVID multissistêmico, e revisão crítica de regime medicamentoso é parte do cuidado. Tratamento isolado com medicação raramente resolve quadro; combinação com reabilitação cognitiva, psicoterapia e manejo de energia tem desfecho superior.'
+  },
+  {
+    q: 'Quais erros os profissionais cometem em avaliação de Long COVID?',
+    a: 'Cinco erros recorrentes comprometem qualidade. Primeiro, descartar quadro como "ansiedade" ou "somatização" por ausência de marcador laboratorial — quadro é clínico e neuropsicológico, não puramente laboratorial. Segundo, aplicar GET tradicional em paciente com PEM, com risco de agravamento iatrogênico. Terceiro, focar autorrelato sem aplicar testes neuropsicológicos objetivos, especialmente em paciente com depressão coocorrente (Hampshire et al., 2024). Quarto, tratar depressão isoladamente sem reconhecer disfunção cognitiva subjacente, com melhora parcial e recaída funcional. Quinto, não articular cuidado multidisciplinar, deixando paciente navegar sozinho entre especialistas sem plano integrado. Avaliação responsável combina anamnese detalhada, testes objetivos, mapeamento funcional, investigação de PEM e plano em coordenação com equipe. Wilson e colaboradores (2025) reforçam que abordagem multimodal é essencial; intervenção isolada subaproveita potencial de recuperação.'
+  },
+  {
+    q: 'Onde formação aplicada em Long COVID se conecta a pós-graduação em Psicologia?',
+    a: 'Profissionais que pretendem atuar com Long COVID precisam de base sólida em Neuropsicologia (avaliação cognitiva, reabilitação), Psicologia da Saúde, Psicologia Hospitalar e em terapias com evidência empírica para quadros comórbidos — TCC, ACT, manejo de fadiga, intervenções para insônia. Literatura específica (NICE NG188, Davis, Evans, Wilson, Fernández-de-las-Peñas) precisa leitura cruzada com fundamentos de Reabilitação Cognitiva e Neurociência aplicada. Articulação com pneumologia, neurologia, cardiologia e medicina do trabalho amplia capacidade de intervenção. Programas de pós-graduação em Psicologia que integram Neuropsicologia, Reabilitação e Saúde constroem o repertório técnico. O IPOG oferece MBAs aplicados em formato Ao Vivo síncrono com corpo docente nominal, em particular o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo, que aproxima a literatura de reabilitação contemporânea à prática clínica. Para grade vigente e modalidades correlatas, consulte ipog.edu.br. A escolha do programa precisa equilibrar carga teórica, prática supervisionada e disponibilidade do candidato.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Long COVID e saúde mental: FAQ com brain fog, NICE NG188, RBANS, reabilitação cognitiva e dados Fiocruz',
+  description: 'Dezessete perguntas frequentes sobre Long COVID e saúde mental: brain fog, perfil neuropsicológico, NICE NG188, RBANS, BRIEF-A, reabilitação cognitiva, dados Fiocruz, HC-USP e PEM.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Long COVID', item: SITE.url + '/faq/long-covid-saude-mental-faq/' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const adjacent = AREAS.filter(a => ['neuropsicologia','psicologia-hospitalar','psicologia-saude','avaliacao-psicologica'].includes(a.id)).slice(0, 4);
+---
+<Base
+  title="Long COVID e saúde mental — FAQ | brain fog, NICE NG188, RBANS, reabilitação cognitiva"
+  description="Dezessete perguntas frequentes sobre Long COVID, brain fog e saúde mental: NICE NG188 (2024), perfil neuropsicológico, RBANS, BRIEF-A, reabilitação cognitiva, dados Fiocruz e HC-USP.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Long COVID' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Long COVID e saúde mental</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Long COVID, brain fog e saúde mental: como avaliar, reabilitar e diferenciar de depressão pós-COVID.</h1>
+          <TLDR
+            resposta="Long COVID com sintomas mentais e cognitivos atinge cerca de 20% dos infectados (metanálise Evans 2024, n=41.249) — brain fog tem perfil neuropsicológico específico em atenção, executivas, memória de trabalho e velocidade de processamento; reabilitação cognitiva tem efeito moderado (Wilson 2025, SMD=0,45) e exige cuidado com Post-Exertional Malaise (PEM)."
+            fontes={["NICE NG188 (2024)", "Davis et al., 2023 (Nature Med)", "Evans et al., 2024 (Gen Hosp Psychiatry)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Dezessete perguntas que psicólogos, neuropsicólogos e equipes multidisciplinares fazem sobre Long COVID no Brasil.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">17 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Long COVID com sintomas mentais e cognitivos é quadro real, multissistêmico, com prevalência combinada de 20,4% (Evans 2024). Brain fog tem perfil neuropsicológico documentado e responde a reabilitação cognitiva estruturada (Wilson 2025). NICE NG188 (2024) orienta avaliação multidisciplinar e desaconselha GET em pacientes com PEM. Diferencial com depressão exige testes objetivos. Fiocruz e HC-USP mantêm linhas de pesquisa relevantes no Brasil. Tratamento isolado tem desfecho inferior.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Instrumentos e referências canônicas para Long COVID</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Instrumento / Referência</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Autor / Ano</th>
+                <th class="text-left px-4 py-3">Etapa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">NICE NG188</td>
+                <td class="px-4 py-3 text-ink-700">Guideline canônico de manejo</td>
+                <td class="px-4 py-3 text-ink-700">NICE, 2024 (update)</td>
+                <td class="px-4 py-3 text-ink-700">Diretriz</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">RBANS</td>
+                <td class="px-4 py-3 text-ink-700">Bateria neuropsicológica breve</td>
+                <td class="px-4 py-3 text-ink-700">Randolph et al.</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação cognitiva</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">BRIEF-A</td>
+                <td class="px-4 py-3 text-ink-700">Função executiva ecológica</td>
+                <td class="px-4 py-3 text-ink-700">Roth, Isquith, Gioia</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação executiva</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Stroop e TMT</td>
+                <td class="px-4 py-3 text-ink-700">Atenção, controle inibitório, velocidade</td>
+                <td class="px-4 py-3 text-ink-700">Stroop, 1935 · Reitan</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação focal</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Caracterização Long COVID</td>
+                <td class="px-4 py-3 text-ink-700">Perfil multissistêmico em EHR</td>
+                <td class="px-4 py-3 text-ink-700">Davis et al., 2023 (Nat Med)</td>
+                <td class="px-4 py-3 text-ink-700">Base epidemiológica</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Reabilitação cognitiva RCT</td>
+                <td class="px-4 py-3 text-ink-700">Eficácia em brain fog pós-COVID</td>
+                <td class="px-4 py-3 text-ink-700">Wilson et al., 2025 (Neuropsychol Rehabil)</td>
+                <td class="px-4 py-3 text-ink-700">Tratamento</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.nice.org.uk/guidance/ng188" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG188 — Long COVID</a></li>
+          <li><a href="https://www.fiocruz.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Fiocruz</a></li>
+          <li><a href="https://www.hc.fm.usp.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">HC-USP</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LBI — Lei 13.146/2015</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/areas/neuropsicologia" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Área</p>
+            <p class="font-semibold text-ink-900 mt-2">Neuropsicologia</p>
+            <p class="text-xs text-ink-700 mt-2">Funções cognitivas, avaliação, reabilitação.</p>
+          </a>
+          <a href="/areas/psicologia-hospitalar" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Área</p>
+            <p class="font-semibold text-ink-900 mt-2">Psicologia Hospitalar</p>
+            <p class="text-xs text-ink-700 mt-2">Equipe multiprofissional, humanização, comunicação.</p>
+          </a>
+          <a href="/comparativos/mba-vs-especializacao" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">MBA vs especialização</p>
+            <p class="text-xs text-ink-700 mt-2">Como escolher trilha de formação aplicada.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Long COVID exige protocolo neuropsicológico estruturado e cuidado multidisciplinar — não é depressão pós-pandemia.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Brain fog tem perfil objetivo, NICE NG188 orienta manejo, RBANS e BRIEF-A caracterizam o quadro, reabilitação cognitiva tem efeito moderado e PEM exige pacing. Diferenciar de depressão isolada é parte do trabalho. Formação aplicada em Neuropsicologia e Reabilitação, em modalidade Ao Vivo síncrona com corpo docente nominal como a praticada pelo IPOG, é caminho recorrente para profissionais que querem atender Long COVID com rigor.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em Reabilitação Neuro</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaNeuro ? mbaNeuro.description : 'O IPOG oferece MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.nice.org.uk/guidance/ng188" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG188</a></li>
+          <li><a href="https://www.fiocruz.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Fiocruz</a></li>
+          <li><a href="https://www.hc.fm.usp.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">HC-USP</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

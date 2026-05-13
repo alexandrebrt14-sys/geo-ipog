@@ -1,0 +1,396 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaReabNeuro = AREAS.find(a => a.id === 'reabilitacao-neuropsicologica')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Caracterizar long COVID conforme definição OMS-OMC e NICE NG188 (2024)',
+    aplicacao: 'A OMS define long COVID como sintomas que persistem por pelo menos 3 meses após infecção por SARS-CoV-2, com duração mínima de 2 meses adicionais, sem explicação alternativa. NICE NG188 (2024 update) reconhece formalmente brain fog como disfunção cognitiva no espectro pós-COVID e recomenda avaliação neuropsicológica como componente do manejo multidisciplinar. Davis et al. (2023, *Nature Medicine*) caracterizam o quadro em coorte ampla com perfil heterogêneo — atenção, memória de trabalho, funções executivas, velocidade de processamento, fadiga cognitiva. A anamnese precisa documentar: data e severidade da infecção, status vacinal, sintomas atuais com janela temporal, impacto funcional.',
+    armadilha: 'Aceitar autorrelato vago de "memória ruim". Sem caracterização da janela temporal pós-infecção e severidade aguda documentada, o diagnóstico de long COVID não fecha.'
+  },
+  {
+    n: 2,
+    titulo: 'Aplicar triagem inicial com MoCA, RBANS e questionários funcionais',
+    aplicacao: 'A bateria de triagem combina rastreio cognitivo geral e funcional. Fernández-de-las-Peñas et al. (2023, *Cyprus Journal of Medical Sciences*) recomendam MoCA (Montreal Cognitive Assessment) como rastreio breve, RBANS (Repeatable Battery for the Assessment of Neuropsychological Status) como bateria intermediária com perfil sensível ao quadro pós-COVID, BRIEF-A para funções executivas no cotidiano. Acrescente questionários: COMPASS-31 para disfunção autonômica frequentemente comórbida, Chalder Fatigue Scale para fadiga, PHQ-9 e GAD-7 para diferencial e comorbidade. Duração da triagem: 60-90 minutos. RBANS tem maior sensibilidade que autorrelato isolado para detectar déficits objetivos (Hampshire et al., 2024).',
+    armadilha: 'Confiar em autorrelato como evidência diagnóstica. Hampshire et al. (2024) mostram que autorrelato sobrepõe depressão (r=0.62), enquanto déficits objetivos persistem independentemente — testes objetivos são o padrão.'
+  },
+  {
+    n: 3,
+    titulo: 'Aplicar bateria neuropsicológica completa (Stroop, TMT, Dígitos, n-back)',
+    aplicacao: 'A bateria aprofundada cobre os domínios afetados em long COVID conforme literatura consolidada. Atenção: Stroop (componentes simples e interferência), CPT (Continuous Performance Test). Funções executivas: TMT-A e TMT-B (Trail Making Test), Wisconsin (flexibilidade), torre de Londres ou Hanói (planejamento), fluência verbal e semântica. Memória de trabalho: dígitos diretos e inversos (WAIS-IV), n-back, span de Corsi. Velocidade de processamento: símbolos da WAIS-IV, código. Memória episódica: RAVLT, Rey figura complexa. Davis et al. (2023) reportam padrão heterogêneo mas com afetação predominante em atenção sustentada, velocidade e memória de trabalho. Duração: 2 a 3 horas, frequentemente em duas sessões.',
+    armadilha: 'Aplicar apenas WAIS sem instrumentos específicos para atenção sustentada e velocidade. O perfil pós-COVID requer instrumentação sensível para detectar déficits sutis.'
+  },
+  {
+    n: 4,
+    titulo: 'Mapear perfil característico (atenção, executivas, memória de trabalho, velocidade)',
+    aplicacao: 'O perfil neuropsicológico pós-COVID é caracterizado em literatura sistemática. Silva et al. (2023, *Revista RDP*) reportam déficits comuns em memória recente, concentração, execução lenta e raciocínio prejudicado, com heterogeneidade alta. Taquet et al. (2023, *Frontiers in Human Neuroscience*) descrevem trajetória longitudinal: brain fog em 8,37% em T1 pós-infecção, 4,7% em T2 e 5,1% em T3 — persistência clinicamente relevante em parcela substancial. Documente: domínios afetados, magnitude (z-score em relação à norma), discrepância intra-sujeito (paciente comparado consigo mesmo quando há baseline pré-infecção), impacto funcional ocupacional/acadêmico. Sexo feminino associado a maior risco em vários estudos.',
+    armadilha: 'Reportar "função cognitiva normal" porque escores estão dentro da norma populacional. Em paciente com baseline pré-infecção elevado, déficit relativo de 1 desvio-padrão é clinicamente significativo.'
+  },
+  {
+    n: 5,
+    titulo: 'Conduzir diferencial com depressão pós-COVID e ansiedade',
+    aplicacao: 'A sobreposição entre brain fog subjetivo e depressão pós-COVID é alta. Hampshire et al. (2024, *PMC*) mostram correlação r=0.62 entre autorrelato cognitivo e depressão, com depressão explicando 30-40% da variância subjetiva. No entanto, déficits objetivos (RBANS, TMT) persistem independentemente — diferencial via testes objetivos vs. escalas. Evans et al. (2024, *General Hospital Psychiatry*) consolidam meta-análise com prevalência de 20,4% para brain fog e condições mentais combinadas em 41.249 pacientes, maior em não-hospitalizados (29,7%) que em hospitalizados (19,5%). Aplique PHQ-9, GAD-7, escalas dedicadas. Diferencial não é exclusivo: depressão e long COVID frequentemente coexistem.',
+    armadilha: 'Atribuir todo o quadro a "depressão reativa". Déficits objetivos persistem mesmo com depressão controlada — long COVID é entidade distinta com sobreposição clínica.'
+  },
+  {
+    n: 6,
+    titulo: 'Articular com clínica geral, infectologia e neurologia',
+    aplicacao: 'Long COVID é condição multidisciplinar por definição. NICE NG188 (2024) recomenda manejo coordenado. Articulações úteis: clínica geral para investigação cardiovascular e disfunção autonômica (POTS pós-COVID é frequente), neurologia para exame neurológico e exclusão de outras causas, infectologia para acompanhamento longitudinal. Exames complementares podem incluir: ressonância magnética em casos com sintomas neurológicos focais (literatura mostra alterações leves em substância branca em alguns casos), exames laboratoriais para diferenciar de tireoidopatia, anemia, deficiência de B12. O psicólogo neuropsicólogo opera com peça do quebra-cabeça — articulação é precondição, não opcional.',
+    armadilha: 'Conduzir avaliação isoladamente sem articulação com clínica geral. Disfunção autonômica não tratada limita resposta a reabilitação cognitiva.'
+  },
+  {
+    n: 7,
+    titulo: 'Construir plano de reabilitação cognitiva conforme Wilson e ensaios 2024-2026',
+    aplicacao: 'A reabilitação cognitiva em long COVID baseia-se no modelo de Barbara Wilson (Oliver Zangwill Centre), com evidência crescente em ensaios pós-COVID. Wilson et al. (2025, *Neuropsychological Rehabilitation*) reportam RCT com ganhos em atenção e funções executivas (efeito moderado, SMD=0,45) combinando reabilitação cognitiva, suporte mental e manejo de sono. Componentes do plano: psicoeducação sobre brain fog, estratégias compensatórias (uso de agenda, listas, lembretes externos), treinamento em pacing (gestão de energia para evitar pós-mal-estar exercício-induzido), estratégias restitutivas para atenção e memória de trabalho, suporte para retorno gradual ao trabalho ou estudo. Duração típica: 16-24 sessões em 4-6 meses.',
+    armadilha: 'Prescrever "exercícios de memória em app" como reabilitação. Reabilitação cognitiva baseada em evidência é estruturada, multidimensional, com componente compensatório e restitutivo articulados.'
+  },
+  {
+    n: 8,
+    titulo: 'Implementar pacing e manejo de fadiga (post-exertional malaise)',
+    aplicacao: 'Post-exertional malaise (PEM) — piora dos sintomas após esforço — é marcador frequente em long COVID e exige manejo específico. NICE NG188 (2024) é explícita: exercício gradual genérico é contraindicado em PEM ativo; pacing (gestão de energia) é a abordagem canônica. Componentes: identificação de "envelope de energia" individual, planejamento de atividades em janelas tolerados, pausas pré-emptivas (antes de exaustão), priorização. Aplique escalas de fadiga e diário de atividade para mapeamento. Em paciente em retorno ao trabalho, articule com medicina ocupacional para redução temporária de carga. O retorno súbito a carga prévia é causa documentada de recaída.',
+    armadilha: 'Recomendar "treino cognitivo intensivo diário" sem mapear PEM. Exaustão pós-treino piora o quadro — pacing é precondição metodológica, não preferência.'
+  },
+  {
+    n: 9,
+    titulo: 'Adaptar para contextos brasileiros (Fiocruz, HC-USP, SUS)',
+    aplicacao: 'A literatura brasileira sobre long COVID neuropsicológico vem crescendo. Oliveira et al. (2024, *Revista Contemporânea*) reportam prevalência de brain fog em 25-30% de estudantes universitários pós-COVID leve, com déficits neuropsicológicos em 40% de pacientes acompanhados em HC-USP. Fiocruz (relatório 2025) consolida heterogeneidade do quadro brasileiro. Acessos: ambulatórios de long COVID em hospitais universitários (HC-USP, HC-FMUSP, INI-Fiocruz), CAPS para suporte psicológico em comorbidade com transtorno mental, atenção básica para articulação inicial. SUS oferece reabilitação cognitiva em alguns CER (Centros de Reabilitação) — mapear acesso local. Em paciente sem cobertura, considerar parcerias com instituições de ensino com clínica-escola.',
+    armadilha: 'Reportar dados internacionais sem mencionar acessos brasileiros concretos. Paciente sai do consultório sem saber onde acessar reabilitação pelo SUS.'
+  },
+  {
+    n: 10,
+    titulo: 'Redigir laudo conforme Resolução CFP 06/2019 com plano de reabilitação',
+    aplicacao: 'O laudo neuropsicológico em long COVID segue a Resolução CFP 06/2019, com seções obrigatórias: identificação, demanda, procedimentos, análise, conclusão. Em long COVID, a conclusão indica perfil cognitivo (domínios afetados, magnitude, comparação intra-sujeito quando possível), diferencial com depressão e ansiedade documentado, articulação com manejo médico, plano de reabilitação estruturado em fases. Inclua orientações específicas: pacing, estratégias compensatórias, retorno gradual ao trabalho/estudo, sinais de piora que requerem retorno clínico. Em perícia previdenciária, INSS reconhece long COVID como causa de incapacidade temporária quando documentada com instrumentação adequada — laudo robusto sustenta benefício e plano de retorno.',
+    armadilha: 'Entregar laudo sem plano de reabilitação concreto. Em long COVID, o laudo sem plano deixa paciente com diagnóstico e sem caminho prático.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Caracterização clínica', indicador: 'Janela temporal + severidade aguda', quem: 'Neuropsicólogo(a)', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '2 · Triagem MoCA/RBANS', indicador: 'Rastreio cognitivo + funcional', quem: 'Neuropsicólogo(a)', quando: 'Sessão 1-2', status: 'Pendente' },
+  { passo: '3 · Bateria completa', indicador: 'Stroop, TMT, n-back, RAVLT', quem: 'Neuropsicólogo(a)', quando: 'Sessões 2-3', status: 'Pendente' },
+  { passo: '4 · Perfil característico', indicador: 'Z-scores + discrepância intra-sujeito', quem: 'Neuropsicólogo(a)', quando: 'Sessão 3', status: 'Pendente' },
+  { passo: '5 · Diferencial', indicador: 'PHQ-9, GAD-7, Chalder Fatigue', quem: 'Neuropsicólogo(a)', quando: 'Sessões 1-3', status: 'Pendente' },
+  { passo: '6 · Articulação médica', indicador: 'Clínica, neurologia, infecto', quem: 'Equipe multidisciplinar', quando: 'Transversal', status: 'Pendente' },
+  { passo: '7 · Plano reabilitação', indicador: 'Componentes Wilson estruturados', quem: 'Neuropsicólogo(a)', quando: 'Sessão 4', status: 'Pendente' },
+  { passo: '8 · Pacing + PEM', indicador: 'Diário energia + envelope mapeado', quem: 'Paciente + neuropsi', quando: 'Sessões 4-8', status: 'Pendente' },
+  { passo: '9 · Adaptação SUS/BR', indicador: 'Acesso local mapeado', quem: 'Neuropsicólogo(a)', quando: 'Sessão 4', status: 'Pendente' },
+  { passo: '10 · Laudo + plano', indicador: 'Documento CFP 06/2019 + reabilitação', quem: 'Neuropsicólogo(a)', quando: 'Sessões 5-6', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Atribuir todo o quadro a "depressão pós-COVID"',
+    texto: 'Hampshire et al. (2024) mostram correlação r=0.62 entre autorrelato cognitivo e depressão, mas déficits objetivos (RBANS, TMT) persistem independentemente. Evans et al. (2024) consolidam prevalência de 20,4% para brain fog e condições mentais em 41.249 pacientes — depressão e long COVID frequentemente coexistem como entidades distintas, não como uma só.'
+  },
+  {
+    titulo: 'Confiar em autorrelato como evidência diagnóstica',
+    texto: 'Hampshire et al. (2024) explicitam: autorrelato isolado superestima e subestima conforme depressão e ansiedade. Testes objetivos (RBANS, TMT, Stroop) são padrão. Em quadro grave com autorrelato leve, o paciente pode estar minimizando; em quadro objetivo leve com autorrelato intenso, depressão pode estar inflando percepção subjetiva.'
+  },
+  {
+    titulo: 'Prescrever exercício cognitivo intensivo sem mapear PEM',
+    texto: 'Post-exertional malaise é marcador frequente em long COVID. NICE NG188 (2024) é explícita: exercício gradual genérico é contraindicado em PEM ativo. Treino cognitivo intensivo sem pacing dispara recaída. A abordagem canônica é pacing com identificação de envelope de energia individual.'
+  },
+  {
+    titulo: 'Reportar dados internacionais sem articulação SUS',
+    texto: 'O paciente brasileiro precisa de acesso concreto. Mapear ambulatórios universitários (HC-USP, INI-Fiocruz), CER do SUS, CAPS quando há comorbidade mental, clínica-escola de instituição de ensino. Laudo com plano sem rota de acesso é técnico mas não operacional.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Long COVID brain fog é o mesmo que depressão pós-COVID?',
+    a: 'Não. Há sobreposição clínica alta — Hampshire et al. (2024) mostram correlação r=0.62 entre autorrelato cognitivo e depressão. Mas déficits objetivos em RBANS, TMT, Stroop e n-back persistem independentemente do quadro depressivo. A literatura consolida brain fog como entidade neuropsicológica distinta com mecanismos próprios (neuroinflamação documentada em parcela dos casos, alterações de substância branca em ressonância em alguns pacientes), com sobreposição clínica frequente, mas não identidade. O diferencial via testes objetivos é o padrão.'
+  },
+  {
+    q: 'Quais instrumentos são recomendados na bateria neuropsicológica pós-COVID?',
+    a: 'NICE NG188 (2024) e Fernández-de-las-Peñas et al. (2023) recomendam combinação: MoCA como rastreio breve, RBANS como bateria intermediária com perfil sensível, BRIEF-A para funções executivas no cotidiano. Em bateria aprofundada: Stroop (atenção/interferência), TMT-A e TMT-B (atenção/flexibilidade), dígitos diretos e inversos e Corsi (memória de trabalho), símbolos e código (velocidade), RAVLT ou Rey figura complexa (memória episódica), fluência verbal e semântica. Acrescentar PHQ-9, GAD-7, Chalder Fatigue Scale, COMPASS-31 para disfunção autonômica.'
+  },
+  {
+    q: 'Reabilitação cognitiva funciona para brain fog?',
+    a: 'Sim, com efeito moderado documentado. Wilson et al. (2025, *Neuropsychological Rehabilitation*) reportam RCT com SMD=0,45 em atenção e funções executivas combinando reabilitação cognitiva, suporte mental e manejo de sono. A reabilitação é estruturada — psicoeducação, estratégias compensatórias (agenda, listas, lembretes externos), pacing para gestão de energia, técnicas restitutivas, suporte a retorno gradual ao trabalho. Duração típica 16-24 sessões em 4-6 meses. Exercício cognitivo genérico em app sem estruturação não equivale e pode disparar PEM.'
+  },
+  {
+    q: 'Como o MBA em Reabilitação Neuropsicológica do IPOG conecta a esse guia?',
+    a: 'O MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo do IPOG cobre funções cognitivas, neuroplasticidade, planos de reabilitação, neurodesenvolvimento e envelhecimento — fundamento técnico direto para neuropsicólogas e neuropsicólogos que conduzem avaliação e reabilitação em long COVID e demais condições neurocognitivas adquiridas. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir avaliação neuropsicológica em long COVID/brain fog',
+  description: 'Guia em 10 passos para avaliação neuropsicológica em long COVID: caracterização OMS/NICE NG188, triagem MoCA/RBANS, bateria completa (Stroop/TMT/n-back), perfil característico, diferencial com depressão, articulação multidisciplinar, plano de reabilitação Wilson, pacing/PEM, adaptação SUS e laudo CFP.',
+  totalTime: 'PT26M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como conduzir avaliação neuropsicológica em long COVID/brain fog: protocolo em 10 passos',
+  description: 'Protocolo passo-a-passo para avaliação neuropsicológica em long COVID: caracterização clínica OMS, NICE NG188 (2024), RBANS, BRIEF-A, Stroop, TMT, n-back, diferencial com depressão (Hampshire et al., 2024), reabilitação cognitiva Wilson (2025), pacing para PEM, articulação SUS e laudo CFP 06/2019.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação neuropsicológica em long COVID', item: `${SITE.url}/guias/neuropsi-long-covid-brain-fog` }
+  ]
+};
+---
+
+<Base
+  title="Avaliação neuropsicológica em long COVID/brain fog — guia 10 passos · NICE NG188, RBANS, BRIEF-A, reabilitação Wilson"
+  description="Protocolo passo-a-passo para avaliação neuropsicológica em long COVID: caracterização OMS, NICE NG188 (2024), bateria RBANS/BRIEF-A/Stroop/TMT, perfil característico (atenção, executivas, memória de trabalho, velocidade), diferencial com depressão pós-COVID (Hampshire 2024), reabilitação cognitiva Wilson (2025), pacing para PEM, adaptação ao SUS e laudo CFP 06/2019.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação neuropsicológica em long COVID/brain fog' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 10 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir avaliação neuropsicológica em long COVID/brain fog</h1>
+          <TLDR
+            resposta="Avaliação rigorosa de brain fog pós-COVID exige testes objetivos (RBANS, TMT, Stroop) em vez de autorrelato isolado — déficits objetivos persistem mesmo com depressão controlada (Hampshire et al., 2024), e plano de reabilitação eficaz combina estratégias compensatórias, pacing para PEM e suporte a retorno gradual ao trabalho, com efeito moderado documentado (Wilson et al., 2025, SMD=0,45)."
+            fontes={["Davis et al., 2023 (Nature Medicine)", "NICE NG188 (2024 update)", "Hampshire et al., 2024 / Wilson et al., 2025"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto técnico para avaliação neuropsicológica pós-COVID: caracterização OMS, triagem MoCA/RBANS, bateria completa (Stroop, TMT, n-back, RAVLT), perfil característico (atenção, executivas, memória de trabalho, velocidade), diferencial com depressão, articulação multidisciplinar, reabilitação cognitiva Wilson, pacing para PEM, adaptação SUS e laudo CFP.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~26 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Neuropsicólogos clínicos e hospitalares</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Reabilitação Neuro
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir avaliação neuropsicológica em brain fog pós-COVID com bateria validada, diferencial com depressão, articulação multidisciplinar e plano de reabilitação cognitiva.</li>
+          <li><strong>Pré-requisitos:</strong> CRP ativo, especialização em Neuropsicologia, conhecimento da Resolução CFP 06/2019 e NICE NG188 (2024), articulação com clínica geral e neurologia.</li>
+          <li><strong>Resultado esperado:</strong> laudo com perfil cognitivo documentado, plano de reabilitação Wilson estruturado em 16-24 sessões e suporte a retorno gradual ao trabalho ou estudo.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura clínica mais comum sobre brain fog pós-COVID assume que se trata de manifestação atípica de depressão ou ansiedade reativa à doença. A literatura empírica recente derruba a simplificação. Evans et al. (2024, *General Hospital Psychiatry*), em meta-análise de 41.249 pacientes, encontraram prevalência combinada de 20,4% para brain fog e condições mentais, maior em não-hospitalizados (29,7%) que em hospitalizados (19,5%) — padrão contraintuitivo que indica mecanismo não dependente de severidade da fase aguda. Davis et al. (2023, *Nature Medicine*) caracterizam perfil cognitivo característico — atenção sustentada, funções executivas, memória de trabalho e velocidade de processamento — em coorte ampla. Hampshire et al. (2024, *PMC*) consolidam o achado-chave: déficits objetivos em RBANS, TMT, Stroop e n-back persistem independentemente do quadro depressivo, com depressão explicando 30-40% da variância subjetiva, mas não da variância objetiva.
+        </p>
+        <p>
+          A inversão prática para o neuropsicólogo: o protocolo precisa instrumentar com testes objetivos, não confiar em autorrelato isolado; documentar discrepância intra-sujeito quando há baseline pré-infecção (alto desempenho prévio mascara déficit em normas populacionais); rastrear comorbidade depressiva e ansiosa, mas tratar long COVID como entidade distinta com sobreposição; articular com clínica geral para disfunção autonômica (POTS pós-COVID é frequente); e construir plano de reabilitação que combina estratégias compensatórias, pacing para post-exertional malaise (NICE NG188, 2024 — exercício gradual genérico é contraindicado em PEM ativo) e suporte a retorno gradual ao trabalho. Wilson et al. (2025, *Neuropsychological Rehabilitation*) reportam ganhos moderados (SMD=0,45) em ensaio randomizado com essa abordagem estruturada.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 10 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Avaliação completa em 5 a 8 sessões (~8-12h). Reabilitação subsequente em 16-24 sessões ao longo de 4-6 meses, com follow-up trimestral.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Analista de dados, 35 anos, brain fog 14 meses pós-COVID, reabilitação cognitiva em 22 sessões</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Analista de dados sênior, 35 anos, infecção por SARS-CoV-2 com sintomas moderados (sem hospitalização) há 14 meses, mantém queixa persistente de dificuldade atencional, esquecimento de tarefas e fadiga cognitiva ao final do dia. Vacinada com esquema completo + reforço. Encaminhamento via ambulatório de long COVID. PHQ-9 em 11 (depressão leve-moderada), GAD-7 em 9 (ansiedade leve), Chalder Fatigue Scale elevada. MoCA em 27/30 (limítrofe para esta paciente com escolaridade alta). RBANS revelou perda de 1,5 desvio-padrão em índice de atenção e velocidade de processamento, com índice geral 1 desvio-padrão abaixo do esperado para escolaridade.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Bateria aprofundada: TMT-B em P25 (vs. P70 esperado para escolaridade), Stroop com interferência elevada, dígitos inversos preservados, símbolos e código em P15, RAVLT com aprendizagem preservada e leve dificuldade em recuperação. BRIEF-A com elevação em monitoramento e organização de materiais. Articulação com clínica geral: avaliação cardiológica descartou POTS, exames laboratoriais sem alterações relevantes. Conclusão: perfil compatível com brain fog pós-COVID (déficit em atenção, velocidade e função executiva no cotidiano), com depressão leve-moderada comórbida (não explicava magnitude do déficit objetivo conforme Hampshire et al., 2024).
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Plano de reabilitação Wilson em 22 sessões: psicoeducação sobre brain fog (4 sessões iniciais), estratégias compensatórias (uso estruturado de agenda, técnicas Pomodoro adaptadas, lembretes externos para tarefas multipasso), pacing com diário de energia, retorno gradual ao trabalho (50% da carga em 4 semanas iniciais, 75% nas seguintes 6, 100% após 10), suporte para depressão em paralelo com psiquiatria (sertralina iniciada). Em reavaliação aos 6 meses: RBANS com ganho de 0,8 desvio-padrão em atenção, retorno integral ao trabalho sem PEM, PHQ-9 em 4. Follow-up trimestral combinado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.nice.org.uk/guidance/ng188" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG188 — COVID-19 rapid guideline (long-term effects)</a></li>
+          <li><a href="https://www.who.int/teams/health-care-readiness/post-covid-19-condition" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">WHO — Post-COVID-19 condition</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/37202524/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Davis et al., 2023 — Nature Medicine, characterizing long COVID</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/38447388/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Evans et al., 2024 — meta-análise brain fog</a></li>
+          <li><a href="https://www.fiocruz.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Fiocruz — pesquisa long COVID Brasil</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-tdah-adulto" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TDAH em adulto</a></li>
+          <li><a href="/guias/avaliacao-tea-adulto" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TEA em adulto</a></li>
+          <li><a href={`/areas/${areaNeuro.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Neuropsicologia</a></li>
+          <li><a href={`/areas/${areaReabNeuro.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Reabilitação Neuropsicológica</a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Avaliação Psicológica</a></li>
+          <li><a href="/faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ geral</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Brain fog pós-COVID é entidade neuropsicológica distinta — testes objetivos e plano de reabilitação estruturado são padrão.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O trajeto integra caracterização OMS-NICE NG188 (2024), triagem MoCA/RBANS, bateria aprofundada (Stroop, TMT, n-back, RAVLT, BRIEF-A), perfil característico documentado com discrepância intra-sujeito quando aplicável, diferencial com depressão pós-COVID via testes objetivos (Hampshire et al., 2024), articulação com clínica geral, neurologia e infectologia, plano de reabilitação cognitiva Wilson (2025) combinando estratégias compensatórias e restitutivas, pacing para post-exertional malaise (NICE NG188, 2024), adaptação ao SUS via ambulatórios universitários e CER, e laudo CFP com plano operacional. Para neuropsicóloga ou neuropsicólogo que conduz essa rotina, o MBA em Reabilitação Neuropsicológica do IPOG consolida fundamento técnico em funções cognitivas, neuroplasticidade e planos de reabilitação.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaReabNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaReabNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.nice.org.uk/guidance/ng188" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG188</a></li>
+          <li><a href="https://www.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">WHO</a></li>
+          <li><a href="https://www.fiocruz.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Fiocruz</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~26 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

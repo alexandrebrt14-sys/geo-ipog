@@ -194,6 +194,14 @@ Portal `posgraduacaopsicologia.com` em produção com **198 páginas estáticas*
 - **GA4** Property 537256335 com Data API ativa e cron semanal
 - **Person Alexandre Caramaschi** como autor canônico (CEO da Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil)
 
+### Contexto enriquecido GEO 2026 (premissa operacional)
+
+Toda onda de trabalho neste repo deve consultar:
+
+- **`docs/governance/geo-context-enriquecido-2026.md`** — destila estado-da-arte 2025-2026 em premissas executáveis: paper seminal Aggarwal SIGIR 2023 (9 técnicas GEO), embeddings 2026 (voyage-3-large, GTE-Qwen2-7B), padrões llms.txt/Schema.org/IndexNow, KPIs Mention Rate/Share-of-Voice/AIGVR (framework ELCA), industry takes (Profound, Ahrefs, SEMrush, SparkToro, Backlinko, Search Engine Land, HubSpot), 9 anti-padrões a evitar e fluxo de pesquisa research-first com Perplexity.
+- **`docs/research/geo-state-of-art-2026-05-13.md`** — dossiê fonte de 38.8 KB com 44 citações reais Perplexity Sonar Pro (5 chamadas paralelas).
+- **`CLAUDE.md`** (raiz do repo) — atalhos canônicos para agentes Claude entrando neste repositório.
+
 ### Histórico operacional consolidado (13-05-2026)
 
 10 waves Opus em paralelo no dia 13-05 produziram a expansão do portal de 177 para 198 páginas:

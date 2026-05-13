@@ -85,7 +85,40 @@ Detalhes em `docs/02-contexto-mba-online-psicologia.md`.
 
 ---
 
-## Fase 3 — Execução de conteúdo HBR-grade e Schema
+## Fase 2.5 — Antecipação de conteúdo HBR + Schema E-E-A-T (executada 13-05-2026)
+
+**Janela executada:** 13-05-2026 (dia único, 10 waves Opus em paralelo)
+
+Antecipamos parte da Fase 3 com duas baterias de 5 waves cada, totalizando **20 páginas novas em 13-05-2026** e infraestrutura GEO de discovery (llms.txt v2, llms-full.txt, MCP manifests, ai-policy.json, sub-sitemaps segmentados, Person/Publisher canonical schemas, Speakable schema, TLDR boxes, DefinedTerm no glossário, citation-prompts.json).
+
+**Bateria 1 (commit `63117de`) — 20 páginas novas:**
+- 6 guias HowTo: avaliacao-tdah-adulto, conduzir-supervisao-stepped-care, protocolo-act-burnout-saude, integracao-ia-psicodiagnostico-clinica, atendimento-primeiro-episodio-psicose, avaliacao-saude-mental-perinatal.
+- 6 FAQs deep (17 Q&A cada): tea-adulto-faq, tdah-adulto-faq, burnout-cid11-faq, primeiro-episodio-psicose-faq, saude-mental-perinatal-faq, neurodiversidade-trabalho-faq.
+- 8 comparativos com 3 tabelas mobile-first cada: dbt-vs-tcc-borderline, iapt-vs-stepped-care-brasil, avaliacao-presencial-vs-remota, laudo-psicologico-vs-laudo-medico, ipt-vs-tcc-depressao, exposicao-vs-emdr-tept, aba-vs-denver-tea-precoce, sm-trabalho-remoto-vs-presencial.
+- Citações ancoradas em literatura 2024-2026: Hull CAT-Q 2018, Lai 2019, Faraone WFA 2021, Kessler ASRS 2005, Kooij DIVA-5 2019, Hayes 2012, Maslach-Leiter 2016, Linehan 1993, Stoffers-Winterling Cochrane 2012/2022, Clark IAPT 2018, Cuijpers 2016, Foa/Shapiro, Dawson 2010 Pediatrics, Bloom WFH 2024, Cox EPDS 1987, Marshall DUP 2005, Birchwood EIP 2013, Kane RAISE-ETP 2016, Howard Lancet 2014, Bernard&Goodyear, Falender&Shafranske, NR-1 Portaria 1.419/2024, CFP 06/2019 e 11/2018, DSM-5-TR, CID-11 QD85/6A05.
+
+**Bateria 2 — GEO infrastructure hardening (Schema + llms.txt + MCP):**
+- `src/lib/schemas/person-alexandre.ts` — Person canônico Alexandre Caramaschi (39 knowsAbout, 13 sameAs, 3 alumniOf, 3 hasCredential).
+- `src/lib/schemas/publisher.ts` — Organization Brasil GEO (BRGEO LTDA, CNPJ 66.051.295/0001-33, sede Hub Cerrado Goiânia).
+- `Base.astro` migrado para `@graph` triplo (WebSite + Organization + Person reconciliados por `@id`).
+- 20 páginas novas com `author: alexandrePersonBase` + `publisher: brasilGeoOrganization` no Article schema.
+- `public/llms.txt` v2 (13.8 KB, 198 páginas catalogadas).
+- `public/llms-full.txt` novo (16.5 KB, 45 documents com tese + evidências canônicas).
+- `public/mcp/hubs.json` + `courses.json` atualizados, mais `sitemap-summary.json` e `citation-prompts.json` novos.
+- `public/.well-known/ai-policy.json` — manifesto JSON-LD para LLM usage policy.
+- `scripts/gen-sitemap.mjs` agora gera 5 sub-sitemaps (areas, mbas, guias, faq, comparativos) + sitemap-index.xml.
+- `src/components/TLDR.astro` — bloco "Resposta curta" com classe `.tldr-resposta` para Speakable hook.
+- 12 páginas com TL;DR aplicado (6 guias + 6 FAQs novas).
+- Speakable schema em 12 FAQs deep (CSS selector `.tldr-resposta` + `.faq-answer-text`).
+- DefinedTerm schema confirmado nos 5 clusters de glossário (115 termos).
+
+**Cobertura final pós-bateria:** 198 páginas (era 177), sitemap-index com 6 sitemaps, IndexNow 202/202/202 (Bing, Yandex, api.indexnow.org), smoke prod HTTP 200, astro check 0 errors.
+
+**Resíduo operacional documentado:** memória persistente `feedback_acentuacao_portugues_brasil_canonica` registra proibição definitiva de re-executar `scripts/fix-accents.mjs` cego — o script corrompeu 223 arquivos durante a execução (slugs com acento, propriedades JS, conjunções `e` viradas em verbo `é`), todos revertidos via `git checkout` + script Python cirúrgico de reversão.
+
+---
+
+## Fase 3 — Execução de conteúdo HBR-grade e Schema (continuação)
 
 **Janela:** 14-06-2026 a 15-07-2026 (semanas 7 a 10)
 

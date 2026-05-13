@@ -160,3 +160,44 @@ Inventário canônico da camada de analytics: Property ID `537256335`, Measureme
 ## Status
 
 Início oficial dos trabalhos: **30 de abril de 2026** (ver `docs/01-kickoff-30-04-2026.md`).
+
+### Snapshot 13-05-2026
+
+Portal `posgraduacaopsicologia.com` em produção com **198 páginas estáticas** (Astro 4 + Tailwind 3.4 + Cloudflare Pages), build verde, sitemap-index com 6 sitemaps segmentados, IndexNow 202/202/202 em 3 engines (Bing, Yandex, api.indexnow.org). Cobertura editorial e GEO:
+
+- **18 áreas** da Psicologia (100% da taxonomia profissional brasileira)
+- **27 UFs** mapeadas (100% Brasil)
+- **5 MBAs** IPOG detalhados (POT, Positiva, Neuro, NCPP, Liderança Positiva), cada um com 4 sub-páginas (resumo + grade-curricular + metodologia + perfil-do-aluno)
+- **5 modalidades canônicas** de pós-graduação em Psicologia (Especialização Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada, Híbridas)
+- **25+ temas** em alta 2024-2026 (NR-1, burnout, IA-RH, fadiga-digital, climate-anxiety, neurodiversidade, Gen Z burnout, TEA adulto trabalho, perinatal, psicose primeiro episódio, etc.)
+- **5 métodos terapêuticos** baseados em evidência (TCC, ACT, DBT, Mindfulness, EMDR)
+- **13 guias HowTo** passo-a-passo com Schema.org HowTo
+- **13 FAQs deep** com 168 Q&As totais e Speakable schema
+- **19 comparativos** com 3 tabelas mobile-first cada (mecanismo, evidência, perfil)
+- **6 hubs** editoriais (`/evidencias` 6 sub-páginas, `/casos` 5, `/intervencoes` 5, `/metodos` 5, `/glossario` 5 clusters)
+- **Glossário** com 115 termos (DefinedTermSet schema) em 5 clusters: regulação, instrumentos, métodos terapêuticos, conceitos POT, conceitos neuro
+
+### Infraestrutura GEO (Generative Engine Optimization)
+
+- `public/llms.txt` v2 — sumário Markdown otimizado para LLM-crawler (estilo Anthropic)
+- `public/llms-full.txt` — versão expandida com tese contraintuitiva + evidências canônicas de 45 documents
+- `public/.well-known/ai-policy.json` — manifesto JSON-LD `@type:Policy` declarando usos permitidos, atribuição requerida e licença
+- `public/mcp/{courses, hubs, sitemap-summary, citation-prompts}.json` — quatro manifests legíveis por LLMs e Model Context Protocol clients
+- `public/robots.txt` — 20+ AI bots permitidos (GPTBot, ClaudeBot, PerplexityBot, Claude-Web, Google-Extended, OAI-SearchBot, cohere-ai, Diffbot, etc.)
+- `src/lib/schemas/person-alexandre.ts` + `publisher.ts` — Person canônico de Alexandre Caramaschi (39 knowsAbout, 13 sameAs) + Organization Brasil GEO (BRGEO LTDA, CNPJ 66.051.295/0001-33). Reconciliação por `@id` entre WebSite, Organization, Person, Article, FAQPage, HowTo nas 198 páginas
+- `src/components/TLDR.astro` — bloco "Resposta curta" com classe `.tldr-resposta` para Speakable hook
+- **Speakable schema** em 12 FAQs deep (CSS selectors `.tldr-resposta` + `.faq-answer-text`)
+- **HowTo schema** em 13 guias
+- **FAQPage schema** em 12 FAQs
+- **Article schema** em 19 comparativos + 25 temas + 6 evidências + 5 casos + 5 intervenções
+- **DefinedTermSet** em 5 clusters de glossário (115 termos)
+- **GA4** Property 537256335 com Data API ativa e cron semanal
+- **Person Alexandre Caramaschi** como autor canônico (CEO da Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil)
+
+### Histórico operacional consolidado (13-05-2026)
+
+10 waves Opus em paralelo no dia 13-05 produziram a expansão do portal de 177 para 198 páginas:
+- **Bateria 1 (commit `63117de`)** — 6 guias + 6 FAQs + 8 comparativos com voz HBR e citações 2024-2026 ancoradas (Hull, Lai, Faraone, Kessler, Kooij, Hayes, Maslach-Leiter, Linehan, Stoffers-Winterling, Clark, Cuijpers, Foa, Shapiro, Dawson, Bloom, Cox EPDS, Marshall DUP, Birchwood EIP, Kane RAISE-ETP, Howard, Bernard & Goodyear, Falender & Shafranske, NR-1 Portaria 1.419/2024, CFP 06/2019, CFP 11/2018, DSM-5-TR, CID-11 QD85 e 6A05, Lei 10.216/2001, LBI 13.146/2015).
+- **Bateria 2** — GEO infrastructure hardening (Person/Publisher canonical schemas, llms.txt v2, llms-full.txt, MCP manifests, ai-policy.json, Speakable, TLDR, citation-prompts.json com 50 prompt seeds).
+
+Para detalhes operacionais, consultar `docs/governance/STATUS.md` e o índice de memória persistente do projeto.

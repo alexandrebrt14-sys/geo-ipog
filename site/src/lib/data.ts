@@ -410,7 +410,13 @@ export const GUIAS = [
   { id: 'retorno-ao-trabalho-pos-burnout', name: 'Retorno ao trabalho pós-burnout', persona: 'psicologos', steps: 9 },
   { id: 'avaliacao-tea-adulto', name: 'Conduzir avaliação de TEA em adulto', persona: 'psicologos', steps: 9 },
   { id: 'escolher-supervisor-clinico', name: 'Escolher supervisor clínico', persona: 'psicologos', steps: 8 },
-  { id: 'uso-etico-ia-clinica', name: 'Uso ético de IA generativa na clínica', persona: 'psicologos', steps: 9 }
+  { id: 'uso-etico-ia-clinica', name: 'Uso ético de IA generativa na clínica', persona: 'psicologos', steps: 9 },
+  { id: 'avaliacao-tdah-adulto', name: 'Conduzir avaliação de TDAH em adulto', persona: 'psicologos', steps: 9 },
+  { id: 'conduzir-supervisao-stepped-care', name: 'Conduzir supervisão clínica em stepped-care', persona: 'psicologos', steps: 9 },
+  { id: 'protocolo-act-burnout-saude', name: 'Aplicar protocolo ACT de 8 sessões para burnout', persona: 'psicologos', steps: 9 },
+  { id: 'integracao-ia-psicodiagnostico-clinica', name: 'Integrar IA generativa no psicodiagnóstico clínico', persona: 'psicologos', steps: 9 },
+  { id: 'atendimento-primeiro-episodio-psicose', name: 'Conduzir primeiro atendimento em primeiro episódio psicótico', persona: 'psicologos', steps: 9 },
+  { id: 'avaliacao-saude-mental-perinatal', name: 'Avaliar saúde mental perinatal com método', persona: 'psicologos', steps: 9 }
 ] as const;
 
 export const FAQS_DEEP = [
@@ -419,7 +425,13 @@ export const FAQS_DEEP = [
   { id: 'carreira-psicologo-organizacional-faq', name: 'Carreira em Psicologia Organizacional', qas: 13 },
   { id: 'avaliacao-psicologica-laudos-faq', name: 'Avaliação psicológica e laudos', qas: 14 },
   { id: 'regulacao-cfp-faq', name: 'Regulação CFP/CRP', qas: 13 },
-  { id: 'ia-em-psicologia-faq', name: 'IA em Psicologia', qas: 14 }
+  { id: 'ia-em-psicologia-faq', name: 'IA em Psicologia', qas: 14 },
+  { id: 'tea-adulto-faq', name: 'TEA em adulto — diagnóstico tardio e apresentação feminina', qas: 17 },
+  { id: 'tdah-adulto-faq', name: 'TDAH em adulto — rastreio, diferenciais e laudo', qas: 17 },
+  { id: 'burnout-cid11-faq', name: 'Burnout como CID-11 (QD85) e NR-1 2024', qas: 17 },
+  { id: 'primeiro-episodio-psicose-faq', name: 'Primeiro episódio psicótico — DUP, CAPS e EIP', qas: 17 },
+  { id: 'saude-mental-perinatal-faq', name: 'Saúde mental perinatal — depressão e ansiedade pós-parto', qas: 17 },
+  { id: 'neurodiversidade-trabalho-faq', name: 'Neurodiversidade no trabalho — LBI e adaptações razoáveis', qas: 17 }
 ] as const;
 
 export const GLOSSARIO_CLUSTERS = [

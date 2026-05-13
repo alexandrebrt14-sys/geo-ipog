@@ -1,25 +1,28 @@
 # STATUS · GEO IPOG · posgraduacaopsicologia.com
 
-> **Snapshot:** 2026-05-12 (W20 segunda-feira)
+> **Snapshot:** 2026-05-13 (W20 terça-feira)
 > **Lead Brasil GEO:** Alexandre Caramaschi
-> **Reunião de cadência:** terça-feira 10h00 BRT (próxima: 2026-05-19)
+> **Reunião de cadência:** terça-feira 10h00 BRT (hoje · debrief 10 waves de 13-05)
 > **Arquivo canônico:** este documento. Atualizado a cada commit material de conteúdo, infraestrutura ou observabilidade. Para histórico semanal, ver `docs/relatorios-semanais/`.
 
 ---
 
 ## 1. Visão executiva
 
-| KPI | Estado em 11-05 | Estado em 12-05 | Δ |
+| KPI | Estado em 12-05 | Estado em 13-05 | Δ |
 |---|---:|---:|---:|
-| Páginas estáticas em produção | 95 | **176** | **+81** |
-| Menus top-level (mega-menus) | 4 (Guia, MBAs, Áreas, Por estado) | **7** (+ Métodos, Conhecimento, Guias) | +3 |
-| UFs com página dedicada | 5 (SP, RJ, MG, PR, GO) | **27** (100% Brasil) | +22 |
-| Áreas com página HBR | 12 | **18** (100% taxonomia) | +6 |
-| Sub-páginas por MBA | 0 | **15** (3 por MBA × 5 MBAs) | +15 |
-| Schema.org distintos | Article, FAQ, BreadcrumbList | + EducationalOccupationalProgram + HowTo + HowToStep + DefinedTermSet + CollectionPage | — |
-| Sitemap submetido GSC | 95 URLs | **176 URLs** | +81 |
-| IndexNow propagações 12-05 | 0 | **85 URLs** em 3 engines (indexnow.org, Bing, Yandex) | +85 |
-| Custo orchestrator dia | US$ 0 | **US$ 0,60** (perplexity + gpt4o + gemini + groq + claude_sonnet) | +0,60 |
+| Páginas estáticas em produção | 176 | **198** | **+22** |
+| Guias HowTo | 6 | **13** | +7 |
+| FAQs deep (Q&As totais) | 6 (82) | **12 (168)** | +6 (+86) |
+| Comparativos | 11 | **19** | +8 |
+| Schema.org distintos | Article + FAQPage + HowTo + BreadcrumbList + EducationalOccupationalProgram + DefinedTermSet + CollectionPage | + **@graph (WebSite + Organization + Person)** + **Speakable** + 39-term Person knowsAbout | +3 |
+| Sub-sitemaps segmentados | 1 (sitemap.xml) | **6** (areas, mbas, guias, faq, comparativos + principal) | +5 |
+| Manifests MCP/LLM-readable | 2 (courses, hubs) | **5** (+ sitemap-summary, citation-prompts, ai-policy) | +3 |
+| llms.txt cobertura | 174 páginas (v1) | **198 páginas (v2) + llms-full.txt 45 docs** | — |
+| IndexNow propagações 13-05 | 0 | **24 URLs** em 3 engines · 202/202/202 | — |
+| Smoke prod HTTP 200 | — | **7/7** (sampling guias, FAQs, comparativos, índices) | — |
+| Citation-prompts seeds (monitoramento LLM) | 0 | **50 prompts** (descoberta + comparação + decisão) | +50 |
+| Custo dia 13-05 | — | **~US$ 4** (10 sub-agents Opus + Perplexity Sonar Pro 3 calls) | — |
 
 Status global de fase: **Fase 1 (Baseline + Schema piloto) acelerada** — entrega adiantada sobre o plano de fase 2 (Engenharia de citação + 7 peças HBR). Escopo canônico: Pós-Graduações em Psicologia do IPOG em todas as modalidades (Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada por Conselhos). Risco R-001 (decisão de produto IPOG) permanece em escalada e não bloqueia o avanço editorial enquanto roteia toda menção comercial a pós-graduações em Psicologia do IPOG — em qualquer modalidade — para o portal oficial `ipog.edu.br`.
 

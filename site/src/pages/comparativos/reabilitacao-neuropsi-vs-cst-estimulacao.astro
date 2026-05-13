@@ -1,0 +1,407 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Reabilitação Neuropsicológica e CST são a mesma coisa?',
+    a: 'Não. A Reabilitação Neuropsicológica baseada em evidência (ABE) consolidada por Cicerone et al. (2019, *Archives of Physical Medicine and Rehabilitation*) é um corpo amplo de intervenções individualizadas (restitutivas, compensatórias, holísticas) com hipótese funcional explícita, instrumentação baseline e mensuração de progresso — aplicada em AVC, traumatismo craniano, esclerose múltipla e quadros neurológicos diversos. CST (Cognitive Stimulation Therapy, Spector et al., 2003) é protocolo manualizado de 14 sessões grupais semanais para demência leve a moderada com tema fixo por sessão, base teórica de estimulação cognitiva geral e implementação em grupos pequenos por terapeuta treinado. São intervenções com escopo, base teórica, formato e indicação distintos — não substitutas.'
+  },
+  {
+    q: 'Qual a evidência de eficácia de CST em demência?',
+    a: 'A revisão Cochrane Spector et al. (atualizada 2019) sintetiza ensaios randomizados controlados de CST em demência leve a moderada. Achados consistentes: melhora cognitiva pequena a moderada (SMD em torno de 0,4 em MMSE e ADAS-Cog), melhora em qualidade de vida (QoL-AD), bem-estar do cuidador e custo-efetividade favorável. Combinação com inibidores da colinesterase tem efeito aditivo em alguns estudos. NICE NG97 (Reino Unido, 2018, atualizada) recomenda CST como intervenção não-farmacológica para demência leve a moderada com nível de evidência alto. Protocolo Maintenance CST (Orrell et al., 2014) prolonga benefícios em sessões semanais por 24 semanas adicionais.'
+  },
+  {
+    q: 'CST funciona em CCL ou apenas em demência estabelecida?',
+    a: 'A evidência mais robusta de CST está em demência leve a moderada, conforme protocolo original Spector. Em CCL, a literatura é mais limitada — alguns estudos exploram adaptação para CCL com resultados promissores, mas o nível de evidência não é equivalente. Em CCL, a recomendação canônica é combinação de estimulação cognitiva estruturada com intervenções de prevenção (Livingston et al., 2024, *The Lancet* — 14 fatores modificáveis) e, quando indicado por perfil biológico (A+/T+), discussão de modificadores de doença. Reabilitação Neuropsicológica individualizada com componente compensatório é frequentemente mais apropriada em CCL por ser desenhada para o perfil específico do paciente.'
+  },
+  {
+    q: 'Como o psicólogo se forma para conduzir reabilitação ou CST no Brasil?',
+    a: 'Para Reabilitação Neuropsicológica baseada em evidência: especialização em Neuropsicologia, estágio em centros de reabilitação (hospitais universitários, IBNeuro, instituições de referência), formação em modelo holístico Wilson e protocolos Cicerone, supervisão clínica longitudinal. Para CST: treinamento específico em protocolo Spector — cursos formais via Cochrane Dementia Group, parceiros internacionais ou centros brasileiros credenciados que ofereçam capacitação no manual. MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo no IPOG oferece fundamentação técnica em funções cognitivas, neuroplasticidade e planos de reabilitação — base canônica para neuropsicólogas e neuropsicólogos que vão atuar com reabilitação cognitiva no envelhecimento e em demências.'
+  }
+];
+
+const tabelaBase = [
+  { dimensao: 'Marco fundador', reabilitacao: 'Barbara Wilson e modelo holístico Oliver Zangwill (anos 1980-1990); Cicerone et al. (2019) consolidam diretrizes baseadas em evidência (ABE)', cst: 'Spector et al. (2003); manual Spector et al. (2006); revisão Cochrane Spector et al. (atualizada 2019)' },
+  { dimensao: 'Base teórica', reabilitacao: 'Neuroplasticidade, reorganização funcional, modelo restitutivo + compensatório + holístico, hipótese funcional individualizada', cst: 'Estimulação cognitiva geral, engajamento social, princípios da terapia de orientação à realidade e reminiscência, atividades centradas na pessoa' },
+  { dimensao: 'Mecanismo proposto', reabilitacao: 'Restitutivo (treino direto), compensatório (estratégias externas e internas), psicoeducação ampla, manejo emocional', cst: 'Ativação de redes cognitivas via tarefas variadas, estímulo de comunicação, reserva cognitiva, redução de isolamento social' },
+  { dimensao: 'Indicação primária', reabilitacao: 'AVC, traumatismo craniano, esclerose múltipla, tumor cerebral, long COVID, transtornos do desenvolvimento, envelhecimento com déficit adquirido', cst: 'Demência leve a moderada (Alzheimer, vascular, mista) com MMSE entre 10 e 24 conforme protocolo' },
+  { dimensao: 'Formato canônico', reabilitacao: 'Individual ou pequeno grupo; 1 a 2 sessões semanais; 4 a 12 meses ou mais; cada plano é desenhado caso a caso', cst: '14 sessões grupais (5-8 participantes) de 45 minutos, 2 sessões/semana por 7 semanas; tema fixo por sessão (palavras, dinheiro, sons, infância, alimentação, atualidade, etc.)' },
+  { dimensao: 'Papel do terapeuta', reabilitacao: 'Diagnóstico funcional → hipótese → plano → execução → reavaliação seriada; conduta individualizada', cst: 'Facilitador grupal treinado no manual; conduz dinâmicas predefinidas; estimula participação centrada na pessoa' },
+  { dimensao: 'Componente familiar', reabilitacao: 'Frequente — psicoeducação, ajuste de expectativas, estratégias para o cotidiano em casa', cst: 'iCST (Maintenance individual via Cuidador) tem versão adaptada para uso em casa orientada por cuidador' },
+  { dimensao: 'Avaliação de progresso', reabilitacao: 'Bateria longitudinal específica + medidas funcionais (GAS, COPM); reavaliação a cada 3-6 meses', cst: 'MMSE, ADAS-Cog, QoL-AD pré e pós-protocolo; manutenção opcional por 24 semanas adicionais' },
+  { dimensao: 'Suporte teórico de neuroplasticidade', reabilitacao: 'Central — toda a abordagem assume capacidade de reorganização funcional pós-lesão (Kleim e Jones, 2008)', cst: 'Periférico — base teórica primária é estímulo cognitivo e social, não plasticidade direcionada' }
+];
+
+const tabelaEvidencia = [
+  { aspecto: 'Modelo de ensaio típico', reabilitacao: 'RCTs heterogêneos por condição; meta-análises por população (AVC, TCE, EM); ABE em diretrizes Cicerone consolida nível de evidência por intervenção e por condição', cst: 'RCTs randomizados originais Spector 2003 (n=201); revisão Cochrane com mais de 15 ensaios; padronização do protocolo facilita replicação' },
+  { aspecto: 'Magnitude de efeito', reabilitacao: 'Variável por condição e por componente; em long COVID, Wilson et al. (2025) reportam SMD=0,45 em atenção e funções executivas; em TCE, evidência forte para treino executivo e reabilitação holística', cst: 'SMD em torno de 0,4 em MMSE e ADAS-Cog (Spector et al., 2019 Cochrane); SMD=0,55 em qualidade de vida (QoL-AD)' },
+  { aspecto: 'Nível de evidência (diretrizes)', reabilitacao: 'ABE Cicerone 2019 classifica intervenções em Practice Standards, Practice Guidelines e Practice Options conforme robustez; muitas com nível A', cst: 'NICE NG97 recomenda CST como intervenção não-farmacológica de primeira linha para demência leve a moderada' },
+  { aspecto: 'Resposta heterogênea', reabilitacao: 'Alta — plano individualizado captura variabilidade; resposta depende de etiologia, severidade, timing pós-lesão, suporte social', cst: 'Moderada — protocolo padronizado tem menor variação; pacientes com depressão grave concomitante ou anosognosia podem responder menos' },
+  { aspecto: 'Combinação com farmacoterapia', reabilitacao: 'Frequente — articulação com medicação para humor, atenção, espasticidade conforme caso', cst: 'Aditivo com inibidores da colinesterase (donepezila, rivastigmina, galantamina) em demência por Alzheimer leve a moderada' },
+  { aspecto: 'Custo-efetividade', reabilitacao: 'Variável; intervenções estruturadas em equipe são custo-efetivas em comparação a internação prolongada ou perda de funcionalidade', cst: 'Favorável — protocolo de 14 sessões grupais tem custo por participante baixo; mantém ganhos em qualidade de vida' },
+  { aspecto: 'Duração do benefício', reabilitacao: 'Ganhos restitutivos podem ser duradouros; estratégias compensatórias requerem manutenção; reavaliações periódicas reorientam plano', cst: 'Benefícios cognitivos persistem até cerca de 6 meses pós-protocolo; Maintenance CST prolonga ganhos' },
+  { aspecto: 'Validade transcultural no Brasil', reabilitacao: 'Adaptação caso a caso; uso de instrumentos validados em português brasileiro; cenário cultural específico do paciente é parte da hipótese', cst: 'Manual Spector tem adaptações culturais (Brasil, Portugal, países latino-americanos); temas e atividades ajustados para contexto local' }
+];
+
+const tabelaBrasil = [
+  { contexto: 'CAPS (Centros de Atenção Psicossocial)', reabilitacao: 'Aplicável em CAPS III e CAPSi para paciente com sequela cognitiva pós-crise ou neurodesenvolvimento; equipe geralmente sem recurso para reabilitação individualizada de longa duração', cst: 'Aplicável em grupos de demência leve a moderada em CAPS de idosos quando disponível; protocolo grupal é compatível com lógica comunitária', vencedor: 'CST mais adequada ao formato CAPS' },
+  { contexto: 'CRAS e CREAS', reabilitacao: 'Limitada — equipe sem especialização em neuropsicologia e infraestrutura para reabilitação cognitiva estruturada', cst: 'Possível em grupos comunitários de idosos com facilitador treinado; encaixa lógica de atividade coletiva no SUAS', vencedor: 'CST mais adequada ao perfil' },
+  { contexto: 'CER (Centros Especializados em Reabilitação) do SUS', reabilitacao: 'Indicada — CER tem equipe multiprofissional e estrutura para reabilitação individualizada pós-AVC, TCE, esclerose múltipla', cst: 'Pode ser oferecida em grupos para demência leve a moderada em CER que atendam idosos', vencedor: 'Reabilitação individualizada é o foco do CER' },
+  { contexto: 'Hospital universitário e ambulatório de neurologia', reabilitacao: 'Padrão — equipes especializadas conduzem reabilitação individualizada pós-AVC, TCE, esclerose múltipla, long COVID', cst: 'Frequentemente oferecida em ambulatórios de demência, com grupos liderados por terapeuta ocupacional ou psicólogo treinado', vencedor: 'Combinação articulada' },
+  { contexto: 'Clínica privada de neuropsicologia', reabilitacao: 'Frequente — psicólogos com formação em reabilitação atendem individualmente em pós-AVC, TCE, CCL com componente compensatório', cst: 'Possível em clínicas que oferecem grupos para idosos com demência leve a moderada; depende de demanda local e infraestrutura', vencedor: 'Reabilitação individualizada é mais comum' },
+  { contexto: 'Residenciais e ILPI (Instituições de Longa Permanência)', reabilitacao: 'Limitada — abordagem individualizada exige recurso humano especializado dificilmente disponível em ILPI', cst: 'Indicada — protocolo grupal é compatível com lógica institucional, fortalece convivência, melhora qualidade de vida', vencedor: 'CST é o padrão recomendado' },
+  { contexto: 'Domicílio com cuidador', reabilitacao: 'Possível com supervisão profissional regular; cuidador implementa estratégias compensatórias orientadas por neuropsicólogo', cst: 'iCST (Individual CST) tem manual para implementação por cuidador treinado com supervisão do terapeuta — Orrell et al. (2017) reporta benefícios em RCT', vencedor: 'iCST é a versão domiciliar canônica' },
+  { contexto: 'Centros de convivência para idosos (3ª idade)', reabilitacao: 'Limitada — formato individual não se encaixa lógica recreativa', cst: 'Indicada — grupos abertos com facilitador treinado, integração com outras atividades, foco em qualidade de vida e engajamento social', vencedor: 'CST é o padrão' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Reabilitação Neuropsicológica (Cicerone 2019) vs CST (Spector): bases teóricas, evidência e aplicabilidade no Brasil',
+  description: 'Comparativo entre Reabilitação Neuropsicológica baseada em evidência (Cicerone et al., 2019) e Cognitive Stimulation Therapy (Spector et al.). Bases teóricas, mecanismo, evidência, magnitude de efeito, aplicabilidade em CAPS, CRAS, CER, ILPI e clínica privada brasileira.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Reabilitação Neuropsicológica vs CST' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaReab = AREAS.find(a => a.id === 'reabilitacao-neuropsicologica')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+---
+
+<Base
+  title="Reabilitação Neuropsicológica (Cicerone 2019) vs CST (Spector): bases, evidência e aplicabilidade no Brasil"
+  description="Comparativo entre Reabilitação Neuropsicológica baseada em evidência (Cicerone et al., 2019, ABE) e Cognitive Stimulation Therapy (Spector et al., 2003; Cochrane 2019). Bases teóricas, mecanismo, evidência RCT, magnitude de efeito, aplicabilidade em CAPS, CRAS, CER, ILPI e clínica privada brasileira.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Reabilitação Neuropsicológica vs CST' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Reabilitação e estimulação cognitiva</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Reabilitação Neuropsicológica baseada em evidência (Cicerone 2019) vs Cognitive Stimulation Therapy (Spector): quando cada uma se aplica</h1>
+          <p class="mt-3 text-ink-700 text-lg">Não são substitutas. Cicerone consolida ABE para reabilitação individualizada em quadros neurológicos diversos. Spector consolida protocolo grupal manualizado para demência leve a moderada. O psicólogo brasileiro precisa dominar quando usar cada uma.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="Reabilitação Neuropsicológica baseada em evidência (Cicerone et al., 2019, *Archives of Physical Medicine and Rehabilitation*) e Cognitive Stimulation Therapy (Spector et al., 2003; revisão Cochrane 2019) são intervenções complementares, não substitutas. Reabilitação Neuropsicológica é individualizada, com hipótese funcional explícita e componentes restitutivo, compensatório e holístico — aplicada em AVC, TCE, esclerose múltipla, long COVID e CCL. CST é protocolo grupal manualizado de 14 sessões para demência leve a moderada, com SMD em torno de 0,4 em MMSE/ADAS-Cog e 0,55 em qualidade de vida. No Brasil, ambas têm aplicabilidade — CER para reabilitação individualizada, ILPI e centros de convivência para CST."
+        fontes={["Cicerone et al., 2019 (Archives of Physical Medicine and Rehabilitation)", "Spector et al., 2003 / Cochrane 2019", "Wilson et al., 2025 (Neuropsychological Rehabilitation)"]}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que a confusão entre as duas é frequente</h2>
+        <p>
+          Ambas têm "cognição" no nome. Ambas envolvem o psicólogo. Ambas mostram benefícios em quadros com prejuízo cognitivo. Por isso, é comum que profissionais — incluindo gestores de serviços e familiares de pacientes — peçam genericamente "reabilitação cognitiva" sem distinguir entre o que cada intervenção realmente faz. A confusão tem consequências: pacientes pós-AVC com perfil que pediria reabilitação individualizada acabam em grupos genéricos sem ganho funcional, e idosos com demência leve a moderada acabam em "tratamento intensivo" individual que reproduz baixa efetividade quando o ganho viria de CST grupal estruturada.
+        </p>
+        <p>
+          Cicerone et al. (2019, *Archives of Physical Medicine and Rehabilitation*) consolidam diretrizes baseadas em evidência (ABE — Evidence-Based Recommendations) para Reabilitação Cognitiva, atualizadas a partir do trabalho original publicado em 2000 e revisões em 2005 e 2011. As recomendações classificam intervenções em Practice Standards (nível A — RCTs robustos), Practice Guidelines (nível B — evidência limitada porém positiva) e Practice Options (nível C — promissor mas insuficiente para padronização). O corpus cobre populações distintas — TCE, AVC, esclerose múltipla, demências, transtornos do desenvolvimento — com indicação específica para cada uma. A base teórica é neuroplasticidade direcionada (Kleim e Jones, 2008), com componentes restitutivo (treino direto da função afetada), compensatório (estratégias externas e internas para contornar o déficit) e holístico (modelo Wilson — Oliver Zangwill Centre — que integra cognição, emoção, identidade e funcionamento social).
+        </p>
+        <p>
+          Spector et al. (2003, *British Journal of Psychiatry*) desenharam a Cognitive Stimulation Therapy a partir de tradições anteriores (terapia de orientação à realidade, reminiscência, estimulação cognitiva geral) consolidando em protocolo manualizado de 14 sessões grupais semanais (duas sessões por semana por sete semanas) de 45 minutos cada. Cada sessão tem tema fixo (palavras, dinheiro, sons, infância, alimentação, atualidade, números, etc.) e princípios centrados na pessoa, comunicação e engajamento. O ensaio original (n=201) reportou benefício em cognição (MMSE, ADAS-Cog) e qualidade de vida (QoL-AD). A revisão Cochrane (Spector et al., 2019) consolida o achado com SMD em torno de 0,4 em medidas cognitivas e 0,55 em QoL-AD. NICE NG97 (Reino Unido, 2018) recomenda CST como intervenção não-farmacológica de primeira linha para demência leve a moderada.
+        </p>
+        <p>
+          O ponto-chave: as duas abordagens são intervenções de qualidade com bases científicas sólidas, mas com escopo, público, formato e mecanismo distintos. Em centros maduros, ambas são oferecidas — articuladas, não em oposição.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Base teórica e mecanismo</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Reabilitação Neuropsicológica (Cicerone 2019)</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CST (Spector et al.)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaBase.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.reabilitacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.cst}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Evidência e magnitude de efeito</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A Reabilitação Neuropsicológica baseada em evidência tem corpus heterogêneo por condição. Em TCE adulto, Cicerone et al. (2019) classificam treino de atenção, treino de memória com estratégias internas, treino de função executiva e reabilitação holística como Practice Standards (nível A) para pacientes na fase pós-aguda e crônica. Em AVC, treino de negligência hemiespacial e treino de linguagem (afasia) recebem Practice Standards. Em long COVID, Wilson et al. (2025, *Neuropsychological Rehabilitation*) reportam RCT com ganho moderado (SMD=0,45) em atenção e funções executivas com Reabilitação Cognitiva adaptada para o quadro, combinando treino direto, estratégias compensatórias, pacing para post-exertional malaise (PEM) e suporte mental. Em CCL e Alzheimer leve, evidência mais limitada — alguns RCTs mostram benefício de treino de memória com estratégias compensatórias, mas heterogeneidade alta limita conclusões definitivas.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A CST tem evidência mais homogênea no recorte específico de demência leve a moderada. A revisão Cochrane Spector et al. (atualizada 2019) sintetiza mais de 15 ensaios randomizados controlados com cerca de 700 pacientes, com efeito consistente em MMSE e ADAS-Cog (SMD em torno de 0,4) e em qualidade de vida (QoL-AD, SMD=0,55). O efeito é comparável ao de inibidores da colinesterase em alguns desfechos, e a combinação CST + inibidor mostra efeito aditivo (Spector et al., 2008). Maintenance CST (Orrell et al., 2014) demonstrou que sessões semanais por 24 semanas adicionais prolongam ganhos em qualidade de vida. iCST (Individual CST domiciliar com cuidador treinado, Orrell et al., 2017) é a versão para uso em casa com manual específico — RCT (n=356) reportou benefícios em relação cuidador-paciente, com efeito mais modesto em cognição.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A leitura prática: em quadros neurológicos heterogêneos com déficit adquirido (AVC, TCE, esclerose múltipla, long COVID, CCL com componente individual), Reabilitação Neuropsicológica baseada em evidência é o caminho — plano caso a caso com hipótese funcional explícita. Em demência leve a moderada com grupo viável, CST é o protocolo de primeira linha. Em pacientes com indicação combinada (CCL evoluindo para demência leve, paciente pós-AVC com demência vascular leve), os dois podem ser articulados em sequência ou em paralelo.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência (ensaios randomizados e revisões Cochrane)</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Aspecto da evidência</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Reabilitação Neuropsicológica</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CST</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.aspecto}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.reabilitacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.cst}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Aplicabilidade no Brasil: contextos reais</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A aplicabilidade no Brasil depende do contexto de serviço, do perfil populacional e da estrutura disponível. CER (Centros Especializados em Reabilitação) do SUS são o ambiente canônico para Reabilitação Neuropsicológica individualizada pós-AVC, TCE e esclerose múltipla — equipe multiprofissional, infraestrutura para sessões longas, possibilidade de plano caso a caso. Hospitais universitários e ambulatórios de neurologia oferecem reabilitação individualizada em quadros específicos (long COVID, TCE pós-internação, esclerose múltipla) e frequentemente também CST em grupos para demência leve a moderada — articulação entre as duas é comum em centros maduros.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          CAPS (especialmente CAPS de idosos onde existem) são ambiente adequado para CST grupal — formato grupal compatível com lógica comunitária, baixo custo por participante, fortalece convivência e engajamento social, complementa farmacoterapia. CRAS e centros de convivência para idosos no SUAS também são contextos onde CST é viável quando há facilitador treinado. ILPI (Instituições de Longa Permanência) frequentemente carecem de oferta estruturada — CST é a recomendação para residentes com demência leve a moderada, e iCST tem versão para implementação com cuidador supervisionado quando o paciente está em casa.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Clínica privada de neuropsicologia é o ambiente onde Reabilitação Neuropsicológica individualizada concentra-se em pacientes com convênio ou pagamento particular — atendimento longitudinal em pós-AVC, TCE, CCL com componente compensatório, long COVID. Grupos de CST em clínica privada são menos comuns mas viáveis com agenda estruturada. A barreira estrutural no Brasil é menos a evidência das intervenções e mais a oferta sistemática — capacitação de profissionais, infraestrutura institucional, financiamento. A Comissão Lancet de Prevenção (Livingston et al., 2024, *The Lancet*) reforça que intervenções multidomínio em demência são parte da política pública necessária; CST é uma das peças que entra naturalmente nessa estrutura.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Aplicabilidade por contexto no Brasil (CAPS, CRAS, CER, clínica privada, residenciais)</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Contexto</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Reabilitação Neuropsicológica</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CST</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Recomendação</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaBrasil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.contexto}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.reabilitacao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.cst}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card p-6 border-l-4 border-brand-700">
+          <p class="text-xs uppercase tracking-wider font-semibold text-brand-700 mb-2">Reabilitação Neuropsicológica (Cicerone 2019)</p>
+          <h3 class="font-display font-semibold text-lg text-ink-900">Individualizada, restitutivo + compensatório + holístico</h3>
+          <p class="text-sm text-ink-700 mt-3">
+            Aplicada em quadros neurológicos heterogêneos com déficit adquirido — AVC, TCE, esclerose múltipla, long COVID, CCL com componente individual. Plano caso a caso com hipótese funcional explícita, baseline com bateria neuropsicológica completa, componentes restitutivo e compensatório, articulação multidisciplinar, reavaliação periódica. Duração típica 4-12 meses ou mais. ABE Cicerone classifica intervenções por nível de evidência (A/B/C) para cada condição.
+          </p>
+        </div>
+        <div class="card p-6 border-l-4 border-sun-500">
+          <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">CST (Spector et al.)</p>
+          <h3 class="font-display font-semibold text-lg text-ink-900">Protocolo grupal manualizado para demência leve a moderada</h3>
+          <p class="text-sm text-ink-700 mt-3">
+            14 sessões grupais semanais (5-8 participantes) de 45 minutos com tema fixo por sessão. Recomendação NICE NG97 nível alto para demência leve a moderada. SMD em torno de 0,4 em cognição (MMSE, ADAS-Cog) e 0,55 em qualidade de vida (QoL-AD). Maintenance CST prolonga benefícios. iCST tem versão domiciliar com cuidador treinado. Adequada para CAPS de idosos, ILPI, centros de convivência, ambulatórios de demência.
+          </p>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-brand-100 bg-brand-50/50 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Quando faz sentido oferecer as duas</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Articulação em centros maduros e em pacientes com indicação combinada</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Pacientes com demência por Alzheimer leve em decorrência de progressão de CCL amnéstico podem se beneficiar de combinação. CST grupal estruturada oferece estimulação cognitiva geral, engajamento social e ganho em qualidade de vida; sessões individuais de Reabilitação Neuropsicológica complementam com estratégias compensatórias específicas (uso estruturado de agenda, lembretes externos, organização de medicação) e suporte ao cuidador. Em pacientes pós-AVC com demência vascular emergente, Reabilitação Neuropsicológica trata o déficit pós-AVC enquanto CST sustenta engajamento cognitivo geral. Em pacientes em uso de modificadores de doença (lecanemab, donanemab) com diagnóstico de Alzheimer leve, CST pode compor o plano de cuidado não-farmacológico paralelo. Cicerone et al. (2019) reconhecem que intervenções combinadas, quando indicadas, integram a prática clínica madura.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Dois pacientes, duas intervenções, dois desfechos</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Roberto, 58 anos, ex-motorista, AVC isquêmico em território da artéria cerebral média esquerda há 6 meses, em recuperação motora parcial, mantém afasia leve-moderada de Broca e prejuízo executivo. Encaminhado para CER da região metropolitana. Bateria neuropsicológica baseline: TMT-B no P5, Wisconsin com perseverações elevadas, fluência verbal fonêmica rebaixada, Boston Naming 36/60, déficit em compreensão de sentenças complexas em token test. Plano de Reabilitação Neuropsicológica individualizada baseada em Cicerone et al. (2019, Practice Standards para AVC com afasia e disfunção executiva): treino direto de função executiva (24 sessões em 6 meses), treino de linguagem em parceria com fonoaudiologia (40 sessões), estratégias compensatórias (uso estruturado de agenda, técnicas Pomodoro adaptadas, lembretes em smartphone), suporte familiar com a esposa, articulação com fisioterapia e terapia ocupacional. Reavaliação em 6 meses: TMT-B avança para P25, Boston Naming 48/60, retorno ao trabalho em meia jornada com adaptações. Em 12 meses, retorno integral com plano de manutenção.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Dona Ester, 78 anos, viúva, mora com filha cuidadora, diagnóstico de Alzheimer leve há 18 meses com MMSE 22, ADAS-Cog rebaixada, perfil A+/T+, em uso de donepezila. Acompanhada em ambulatório de demência de hospital universitário. Indicação para CST grupal: participa de protocolo de 14 sessões em grupo de 6 pacientes com facilitação por psicóloga treinada, dois encontros semanais por 7 semanas. Avaliação pré-CST: MMSE 22, ADAS-Cog 28, QoL-AD 32. Avaliação pós-CST: MMSE 24, ADAS-Cog 24, QoL-AD 37. Filha relata engajamento maior em casa, retorno parcial a atividades sociais, melhora de humor. Plano: encaminhamento para Maintenance CST (24 sessões adicionais semanais) e psicoeducação para a filha sobre adaptações no cotidiano. Reavaliação anual neuropsicológica para acompanhamento longitudinal com CDR-SB, ADAS-Cog e MoCA.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Casos compostos ilustrativos. As duas intervenções têm bases científicas sólidas e respondem a problemas diferentes — escolher entre uma e outra com base em moda ou em "intensidade" do tratamento ignora o que cada protocolo realmente faz.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes na escolha</h2>
+        <ol class="mt-4 space-y-3 text-sm text-ink-700 list-decimal list-inside marker:font-bold marker:text-brand-700">
+          <li><strong>Aplicar CST em paciente pós-AVC com afasia e disfunção executiva.</strong> CST é desenhada para demência leve a moderada com grupo, não para reabilitação individualizada de quadros neurológicos focais com afasia. Cicerone Practice Standards é o caminho.</li>
+          <li><strong>Aplicar Reabilitação Neuropsicológica individual intensiva em paciente com demência moderada que se beneficia de grupo.</strong> Em demência leve a moderada com grupo viável, CST tem evidência mais robusta e custo-efetividade superior.</li>
+          <li><strong>Considerar "estimulação cognitiva genérica" equivalente a CST.</strong> CST tem protocolo manualizado específico (Spector et al., 2006), com fidelidade de implementação documentada nos ensaios. Atividades genéricas sem fidelidade ao manual não têm a mesma evidência.</li>
+          <li><strong>Tratar Reabilitação Neuropsicológica como "qualquer exercício cognitivo".</strong> ABE Cicerone classifica intervenções por nível de evidência e por condição específica. Atividade cognitiva sem hipótese funcional, sem baseline e sem mensuração de progresso não é Reabilitação Neuropsicológica baseada em evidência.</li>
+          <li><strong>Ignorar combinação quando indicada.</strong> Em demência leve por Alzheimer com perfil cognitivo específico, CST grupal + sessões individuais de estratégias compensatórias podem ter efeito aditivo. Articulação é parte da prática madura.</li>
+        </ol>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Cicerone para reabilitação individualizada; Spector para demência leve a moderada em grupo. Articulação para casos combinados.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Reabilitação Neuropsicológica baseada em evidência (Cicerone et al., 2019, ABE) é individualizada, com hipótese funcional, restitutivo + compensatório + holístico — para AVC, TCE, esclerose múltipla, long COVID, CCL.</li>
+          <li>CST (Spector et al., 2003; Cochrane 2019) é protocolo grupal manualizado de 14 sessões para demência leve a moderada, com SMD 0,4 em cognição e 0,55 em qualidade de vida.</li>
+          <li>No Brasil: CER para reabilitação individualizada; CAPS de idosos, ILPI e centros de convivência para CST. Clínica privada combina os dois conforme indicação.</li>
+          <li>iCST (Orrell et al., 2017) tem manual para implementação domiciliar com cuidador treinado e supervisão profissional.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para neuropsicólogas e neuropsicólogos brasileiros que desejam conduzir reabilitação cognitiva com fundamentação sólida, o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo do IPOG e o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano consolidam a base técnica. Próximo passo: confirme grade e turma vigentes no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-ccl-biomarcadores-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de CCL com biomarcadores em 2026</a></li>
+          <li><a href="/comparativos/ccl-amnestico-vs-nao-amnestico" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · CCL amnéstico vs não-amnéstico</a></li>
+          <li><a href="/faq/lecanemab-donanemab-brasil-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Lecanemab, donanemab e modificadores de doença</a></li>
+          <li><a href="/comparativos/neuropsicologia-vs-reabilitacao" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · Neuropsicologia vs Reabilitação Neuropsicológica</a></li>
+          <li><a href="/guias/neuropsi-long-covid-brain-fog" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação neuropsicológica em long COVID</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG mantém o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo e o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano em formato Ao Vivo síncrono com corpo docente nominal. Para grade vigente, consulte o portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaReab.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaReab.name}</strong></a></li>
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/ccl-amnestico-vs-nao-amnestico" class="mega-link"><strong class="text-ink-900 text-sm">CCL amnéstico vs não-amnéstico</strong></a></li>
+          <li><a href="/comparativos/neuropsicologia-vs-reabilitacao" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia vs Reabilitação</strong></a></li>
+          <li><a href="/comparativos/online-vs-presencial" class="mega-link"><strong class="text-ink-900 text-sm">Online vs Presencial</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Cicerone KD, et al. (2019). Evidence-based recommendations for cognitive rehabilitation. Archives of Physical Medicine and Rehabilitation, 100:1939-1954.</li>
+          <li>Spector A, et al. (2003). Efficacy of an evidence-based cognitive stimulation therapy programme. British Journal of Psychiatry, 183:248-254.</li>
+          <li>Spector A, et al. (2019). Cognitive stimulation therapy for dementia. Cochrane Database of Systematic Reviews, CD005562.</li>
+          <li>Orrell M, et al. (2014). Maintenance Cognitive Stimulation Therapy (CST). British Journal of Psychiatry, 204:454-461.</li>
+          <li>Orrell M, et al. (2017). Individual cognitive stimulation therapy for dementia (iCST). PLOS Medicine.</li>
+          <li>Wilson BA, et al. (2025). Cognitive rehabilitation in long COVID. Neuropsychological Rehabilitation.</li>
+          <li>Kleim JA, Jones TA. (2008). Principles of experience-dependent neural plasticity. Journal of Speech, Language, and Hearing Research.</li>
+          <li>Livingston G, et al. (2024). Dementia prevention: 14 modifiable factors. The Lancet, 404:1339-1349.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>
+</content>
+</invoke>

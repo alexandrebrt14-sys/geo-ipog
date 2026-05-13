@@ -1,0 +1,411 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O que diferencia o EAP brasileiro do americano e do IAPT inglês?',
+    a: 'O EAP americano (Employee Assistance Program) opera há mais de 50 anos, é regulado por padrões da EAPA (Employee Assistance Professionals Association) e tem escopo amplo — saúde mental, dependência química, finanças pessoais, jurídico, assistência social. Players como LifeWorks (TELUS Health) e ComPsych dominam o mercado com modelo de horas por funcionário e contrato corporativo direto. O IAPT (Improving Access to Psychological Therapies) inglês é programa de saúde pública do NHS, com triagem e psicoterapia baseada em evidência via stepped care, gratuito ao usuário e financiado pelo estado. O modelo brasileiro emergente (Conexa Saúde, Vittude Empresas, Zenklub, Telavita, Cíngulo Empresas) é híbrido — contratação corporativa privada com escopo focado em saúde mental e teleatendimento, opera sob CFP 11/2018, Resolução CFP 11/2018 sobre atendimento online e LGPD. Os três modelos divergem em financiamento, escopo, governança e nível de regulação.'
+  },
+  {
+    q: 'O EAP brasileiro tem regulação específica?',
+    a: 'Não há lei específica de EAP no Brasil. O arcabouço regulatório é composto por: Resolução CFP 11/2018 (atendimento online por psicólogos), Resolução CFP 23/2022 (atualização do atendimento online), Resolução CFP 06/2019 (documentos psicológicos), LGPD (Lei 13.709/2018 — dados pessoais sensíveis), CLT (vínculo trabalhista quando aplicável), e NR-1 atualizada pela Portaria MTE 1.419/2024 (riscos psicossociais no PGR a partir de 26 de maio de 2026). Não existe equivalente brasileiro à EAPA Standards americana ou ao manual do IAPT inglês. Cada provedor (Conexa, Vittude, Zenklub) define seu próprio fluxo de governança, sigilo e supervisão, dentro do arcabouço CFP. A consequência é heterogeneidade — qualidade técnica varia entre provedores e contratos.'
+  },
+  {
+    q: 'Sigilo psicológico em EAP corporativo: como funciona no Brasil?',
+    a: 'Sigilo é definido pela Resolução CFP 11/2018 (atendimento online) e pelo Código de Ética Profissional (Resolução CFP 10/2005). Em EAP corporativo brasileiro, o atendimento individual é estritamente sigiloso — RH não recebe nome, conteúdo de sessão ou diagnóstico. Relatórios à empresa devem ser agregados (mínimo recomendado de 10 respondentes por recorte) para preservar anonimização funcional. Quebra de sigilo só é permitida em situação de risco iminente à vida (do paciente ou de terceiros) e exige documentação no prontuário. LGPD reforça: dados psicológicos são sensíveis (Art. 5º, II), exigem base legal específica e DPO mapeando fluxo. Provedores que entregam relatórios individualizados ao RH operam fora da norma — risco ético e jurídico real.'
+  },
+  {
+    q: 'Qual modelo entrega mais ROI para a empresa brasileira?',
+    a: 'A literatura internacional documenta ROI EAP entre 3:1 e 8:1 (cada dólar investido retorna 3 a 8 em redução de absenteísmo, rotatividade e produtividade) — Attridge et al. (2018) e dados da EAPA. No Brasil, dados públicos são escassos e variam por provedor; cases internos de Conexa, Vittude e Zenklub apontam ROI 4:1 a 6:1 em contratos maduros (12+ meses), mas a metodologia desses cálculos raramente é independente. A NR-1 psicossocial entrando em vigor em 26 de maio de 2026 cria nova variável — empresas com EAP integrado ao PGR psicossocial e a indicadores hard (absenteísmo, F40-F48, QD85, rotatividade) terão melhor sustentação documental em fiscalização e contraditório trabalhista, somando ao ROI tradicional o ROI de mitigação de risco jurídico.'
+  }
+];
+
+const tabelaEscopo = [
+  { dimensao: 'Escopo de serviços', brasil: 'Foco em saúde mental (psicoterapia, psiquiatria, mindfulness, psicoeducação); teleatendimento predominante', americano: 'Amplo — saúde mental, dependência química, jurídico, financeiro, assistência social (LifeWorks, ComPsych); presencial e remoto', iapt: 'Saúde mental focal (TCC, EMDR, IPT) via stepped care; presencial e remoto via NHS' },
+  { dimensao: 'Profissionais envolvidos', brasil: 'Psicólogas/psicólogos com CRP; psiquiatras com CRM; coachs ocasionais (sem regulação)', americano: 'EAP counselors (CEAP), psicólogos, assistentes sociais, advogados, financial advisors', iapt: 'Psychological Wellbeing Practitioners (PWP) treinados em IAPT; high-intensity therapists (TCC, EMDR, IPT)' },
+  { dimensao: 'Modalidade dominante', brasil: 'Teleatendimento (95%+ dos provedores); presencial em capitais', americano: 'Híbrido (telefônico, video, presencial); chamadas 24/7 frequentes', iapt: 'Presencial dominante; remoto pós-COVID em crescimento; chamadas via SPMHS' },
+  { dimensao: 'Sessões típicas por usuário', brasil: '6-12 sessões (varia por contrato)', americano: '3-8 sessões (modelo short-term, encaminha para plano de saúde se prolongar)', iapt: 'Step 2: 6 sessões; Step 3: 12-20 sessões; conforme severidade' },
+  { dimensao: 'Triagem inicial', brasil: 'Variável — alguns provedores usam PHQ-9/GAD-7, outros não estruturam', americano: 'Triagem por counselor; encaminhamento estruturado conforme severidade', iapt: 'PHQ-9, GAD-7, WSAS (Work and Social Adjustment Scale) obrigatórios em cada sessão' },
+  { dimensao: 'Cobertura familiar', brasil: 'Geralmente apenas o colaborador; alguns contratos incluem cônjuge e filhos', americano: 'Cônjuge, filhos e dependentes — padrão na maioria dos contratos', iapt: 'Universal — qualquer residente do Reino Unido com 18+ pode acessar' },
+  { dimensao: 'Provedores típicos', brasil: 'Conexa Saúde, Vittude Empresas, Zenklub, Telavita, Cíngulo Empresas, Mindself', americano: 'LifeWorks (TELUS Health), ComPsych, Magellan, Workplace Options', iapt: 'NHS Talking Therapies (rede pública)' },
+  { dimensao: 'Integração com PGR psicossocial / NR-1', brasil: 'Em construção — alguns provedores integram com pesquisa de clima e diagnóstico psicossocial', americano: 'Integra com workplace health programs (OSHA); não há equivalente direto à NR-1', iapt: 'Integra com Health and Safety Executive (HSE) Management Standards' }
+];
+
+const tabelaRegulacao = [
+  { dimensao: 'Regulação setorial', brasil: 'CFP (Conselho Federal de Psicologia), CFM (Conselho Federal de Medicina), MTE (NR-1), LGPD; sem lei específica de EAP', americano: 'EAPA Standards (voluntários), HIPAA (proteção de dados de saúde), ERISA (planos de benefício)', iapt: 'NHS England, NICE Guidelines, GMC e BPS (regulação profissional)' },
+  { dimensao: 'Certificação profissional específica', brasil: 'Não existe certificação EAP específica; CRP/CRM são exigência mínima', americano: 'CEAP (Certified Employee Assistance Professional) é padrão de mercado', iapt: 'PWP e high-intensity certificações treinadas em programas oficiais do NHS' },
+  { dimensao: 'Sigilo do colaborador', brasil: 'Resolução CFP 11/2018 + Código de Ética CFP 10/2005; LGPD reforça dados sensíveis (Art. 5º, II)', americano: 'HIPAA Privacy Rule; quebra apenas em risco iminente ou subpoena', iapt: 'NHS Confidentiality Code of Practice; quebra apenas em risco iminente' },
+  { dimensao: 'Quebra de sigilo permitida', brasil: 'Apenas em risco iminente à vida; documentação obrigatória em prontuário', americano: 'Risco iminente, suspeita de abuso infantil, ordem judicial', iapt: 'Risco iminente, abuso infantil, terrorismo (regulação específica)' },
+  { dimensao: 'Direito de auditoria do empregador', brasil: 'Apenas em dados agregados; individualizado é violação ética', americano: 'Apenas em dados agregados; HIPAA bloqueia individualizado', iapt: 'Não aplicável — empregador não acessa dados clínicos' },
+  { dimensao: 'Mínimo de respondentes para anonimato em relatório', brasil: 'Boa prática: 10 respondentes por recorte; não há regra fixa', americano: 'EAPA Standards recomendam 30+; boa prática varia', iapt: 'Não aplicável — relatórios são públicos e agregados nacionalmente' },
+  { dimensao: 'Proteção de dados', brasil: 'LGPD — encarregada/DPO obrigatória; consentimento esclarecido', americano: 'HIPAA (federal) + state laws variando por estado', iapt: 'UK GDPR + Data Protection Act 2018; Caldicott Guardians no NHS' },
+  { dimensao: 'Penalidade por violação', brasil: 'Multa LGPD até 2% do faturamento (limitada a R$ 50 milhões por infração) + ação do CFP', americano: 'HIPAA penalties até US$ 1,5 milhão por categoria de violação anual', iapt: 'UK GDPR até £17,5 milhões ou 4% do faturamento global' }
+];
+
+const tabelaMetricas = [
+  { dimensao: 'Métrica primária de adesão', brasil: 'Taxa de utilização (% colaboradores com 1+ sessão / ano) — média 8-15%', americano: 'Utilization rate — média 5-8% (EAPA, 2022); contratos premium chegam a 12-15%', iapt: 'Acesso anual — ~1,2 milhão de pessoas em 2022-2023 (NHS Talking Therapies)' },
+  { dimensao: 'Métrica de desfecho clínico', brasil: 'Variável — alguns provedores aplicam GAD-7 e PHQ-9 antes/depois; reporting heterogêneo', americano: 'Improvement rate — % usuários com melhora clínica documentada; varia por provedor', iapt: 'Recovery rate — meta 50% (PHQ-9 < 10 + GAD-7 < 8 ao final do tratamento); reporting público anual' },
+  { dimensao: 'Métrica de retorno ao trabalho', brasil: 'Em construção — alguns provedores reportam taxa de retorno pós-afastamento', americano: 'Return-to-work rate — métrica padrão em programas integrados a STD/LTD', iapt: 'Reliable recovery + reliable improvement (PHQ-9 reduzido em ≥ 6 pontos + GAD-7 reduzido em ≥ 4 pontos)' },
+  { dimensao: 'ROI documentado em literatura', brasil: 'Cases internos 4:1 a 6:1; sem meta-análise BR consolidada', americano: 'Meta-análises com ROI 3:1 a 8:1 (Attridge et al., 2018; dados EAPA)', iapt: 'ROI 1,75:1 conforme análise NICE 2019; modelo focado em desfecho clínico mais que econômico' },
+  { dimensao: 'Drivers de ROI', brasil: 'Redução de absenteísmo, rotatividade, sinistralidade do plano de saúde corporativo', americano: 'Absenteísmo, presenteísmo, redução de turnover, redução de uso do plano médico', iapt: 'Redução de afastamentos por incapacidade, reinserção no mercado de trabalho, custo evitado em saúde' },
+  { dimensao: 'Indicadores qualitativos', brasil: 'NPS interno, satisfação pós-sessão, percepção de cultura', americano: 'Employee satisfaction surveys, climate surveys', iapt: 'Patient Experience Questionnaire (PEQ), Friends and Family Test (FFT)' },
+  { dimensao: 'Reporting ao empregador', brasil: 'Dashboard trimestral agregado; varia por provedor', americano: 'Relatórios trimestrais agregados; padrão EAPA', iapt: 'Não aplicável — empregador não acessa dados clínicos individuais' },
+  { dimensao: 'Integração com benefícios e plano de saúde', brasil: 'Em construção; alguns contratos integram com planos corporativos (Bradesco Saúde, SulAmérica)', americano: 'Integrado a Health Plans, EAP frequentemente é benefit add-on', iapt: 'Sistema único — não há plano privado paralelo ao NHS no contexto IAPT' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'EAP brasileiro vs internacional: comparativo entre Conexa/Vittude/Zenklub, LifeWorks/ComPsych e IAPT inglês',
+  description: 'Comparativo entre Programas de Apoio ao Empregado no Brasil (Conexa Saúde, Vittude Empresas, Zenklub), modelo EAP americano (LifeWorks, ComPsych) e IAPT inglês — escopo, regulação, sigilo, métricas e ROI.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'EAP brasileiro vs internacional' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+---
+
+<Base
+  title="EAP brasileiro vs internacional: comparativo entre Conexa/Vittude/Zenklub, LifeWorks/ComPsych e IAPT inglês"
+  description="Comparativo técnico entre o modelo emergente brasileiro de Programas de Apoio ao Empregado (Conexa, Vittude, Zenklub), o EAP americano consolidado (LifeWorks, ComPsych) e o IAPT inglês público. Escopo, regulação, sigilo, métricas e ROI sob NR-1, LGPD e Resolução CFP 11/2018.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'EAP brasileiro vs internacional' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Programas de Apoio ao Empregado</span>
+          <h1 class="section-h text-3xl sm:text-4xl">EAP brasileiro vs internacional: três modelos, três governanças</h1>
+          <TLDR
+            resposta="O EAP brasileiro emergente (Conexa, Vittude, Zenklub) é majoritariamente teleatendimento corporativo focado em saúde mental, sob Resolução CFP 11/2018 e LGPD, sem regulação específica de EAP; o americano (LifeWorks, ComPsych) tem escopo amplo (saúde, jurídico, financeiro) e 50+ anos de consolidação sob EAPA Standards e HIPAA; o IAPT inglês é programa público do NHS com stepped care e desfecho clínico mensurado obrigatoriamente (PHQ-9, GAD-7) — modelos diferentes em financiamento, escopo e governança."
+            fontes={["Resolução CFP 11/2018", "Attridge et al., 2018 (EAPA)", "NHS Talking Therapies Manual (2024)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Três operacionalizações distintas de cuidado em saúde mental no trabalho. A escolha do modelo para empresa brasileira em 2026 depende de escopo desejado, integração com NR-1 e maturidade da governança de dados sob LGPD.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          O EAP americano (LifeWorks/TELUS Health, ComPsych, Magellan) opera há 50+ anos com escopo amplo (saúde mental, jurídico, financeiro, dependência química), sob EAPA Standards voluntários e HIPAA, integrado a planos de saúde corporativos. O IAPT inglês (NHS Talking Therapies) é programa público com stepped care e desfecho clínico mensurado a cada sessão (PHQ-9, GAD-7), com meta nacional de recovery rate de 50%. O modelo brasileiro emergente (Conexa Saúde, Vittude Empresas, Zenklub, Telavita, Cíngulo Empresas) é privado-corporativo, dominado por teleatendimento e foco em saúde mental, operando sob Resolução CFP 11/2018, CFP 23/2022, LGPD e — a partir de 26 de maio de 2026 — em integração com NR-1 psicossocial. As três governanças divergem em financiamento, escopo, profissões envolvidas, regulação e métricas. A escolha responde ao contexto da empresa, não a uma hierarquia universal.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Três tradições, três trajetórias</h2>
+        <p>
+          O EAP americano nasceu nos anos 1940-1950 com programas focados em dependência química em fábricas (DuPont, Kodak) e expandiu nas décadas seguintes para um modelo de assistência multidimensional ao empregado e à família. Em 1971, foi fundada a EAPA (Employee Assistance Professionals Association), que padronizou competências, ética e métricas. Hoje, o mercado americano é dominado por players como LifeWorks (adquirida pela TELUS Health em 2022), ComPsych, Magellan Health e Workplace Options, com contratos corporativos que cobrem milhões de empregados e dependentes. O modelo opera com short-term counseling (3-8 sessões), encaminhamento estruturado para plano de saúde quando o caso exige cuidado prolongado, e cobertura ampla — saúde mental, jurídico, financeiro, assistência social, dependência. ROI documentado em meta-análises situa-se entre 3:1 e 8:1 (Attridge et al., 2018, dados EAPA).
+        </p>
+        <p>
+          O IAPT inglês foi lançado em 2008 pelo NHS como resposta à demanda reprimida por psicoterapia baseada em evidência. Construído sobre o modelo stepped care e operacionalizado em programas oficiais de treinamento (Psychological Wellbeing Practitioners em Step 2, high-intensity therapists em Step 3), o programa universalizou acesso a TCC, EMDR, IPT e CCBT para qualquer residente do Reino Unido com 18+ anos. Em 2018, foi renomeado NHS Talking Therapies. A característica diferencial é o desfecho clínico obrigatório — PHQ-9, GAD-7 e WSAS são aplicados a cada sessão, com meta nacional de recovery rate de 50% (PHQ-9 abaixo de 10 e GAD-7 abaixo de 8 ao final do tratamento). Em 2022-2023, o programa atendeu cerca de 1,2 milhão de pessoas. Conforme análise NICE 2019, ROI é estimado em 1,75:1 — financiamento estatal compensado por redução de afastamentos por incapacidade e por uso de serviços médicos.
+        </p>
+        <p>
+          O modelo brasileiro de EAP é fenômeno recente — emergiu fortemente entre 2018 e 2024, impulsionado pela Resolução CFP 11/2018 (atendimento online), Resolução CFP 23/2022 (atualização do atendimento online) e pela aceleração da telessaúde mental durante a pandemia de COVID-19. Provedores como Conexa Saúde, Vittude Empresas, Zenklub, Telavita, Cíngulo Empresas e Mindself dominam um mercado em consolidação. A oferta é majoritariamente teleatendimento, com foco em saúde mental (psicoterapia, psiquiatria, mindfulness, psicoeducação), cobertura geralmente restrita ao colaborador (alguns contratos estendem para cônjuge e filhos), e governança contratual definida bilateralmente entre empresa e provedor — sem padrão setorial vinculante. A entrada em vigor da NR-1 atualizada em 26 de maio de 2026, que torna obrigatórias identificação, avaliação e controle de riscos psicossociais no PGR, cria nova exigência de integração entre EAP, PGR psicossocial e indicadores hard ocupacionais.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Escopo de serviços e modalidade</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">EAP Brasil</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">EAP Americano</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-700 border-b border-surface-300">IAPT (NHS)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEscopo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.brasil}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.americano}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.iapt}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Regulação, sigilo e proteção de dados</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">EAP Brasil</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">EAP Americano</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-700 border-b border-surface-300">IAPT (NHS)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaRegulacao.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.brasil}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.americano}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.iapt}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A diferença operacional central entre os três modelos aparece no que cada um considera unidade mínima de cuidado. No EAP americano, a unidade é o "case" — um colaborador (ou dependente) entra com uma demanda, recebe triagem por counselor, é atendido em short-term (3-8 sessões) e é encaminhado para serviço continuado (plano de saúde, especialista) se o caso requer mais. O foco é resolução pragmática de problema com governança ampla — saúde mental, dependência, jurídico, financeiro, assistência social entram no mesmo balcão. O EAPA Standards organiza isso em fluxos padronizados, e a EAPA mantém certificação CEAP (Certified Employee Assistance Professional) que é selo profissional reconhecido.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No IAPT inglês, a unidade mínima é o "score" — PHQ-9, GAD-7 e WSAS aplicados a cada sessão, com decisão de continuar, intensificar (subir de step), ou encerrar tomada com base em desfecho clínico mensurado. O modelo stepped care opera com Step 2 (intervenções low-intensity: psicoeducação, CCBT, autoajuda guiada) e Step 3 (high-intensity: TCC, EMDR, IPT). A meta nacional de recovery rate (50%) é monitorada e publicada — pressão pública por desempenho clínico é parte do design. O sistema é gratuito ao usuário, financiado pelo NHS, e os profissionais (PWP em Step 2, high-intensity therapists em Step 3) são treinados em programas oficiais. Trade-off: tempo de espera para Step 3 pode chegar a 3-6 meses em regiões pressionadas.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No modelo brasileiro emergente, a unidade mínima ainda está em definição. Alguns provedores (Vittude Empresas, Zenklub) operam com modelo de "horas-psicólogo" — colaborador agenda sessões livres no portal, sem triagem estruturada nem stepped care. Outros (Conexa Saúde, Telavita) integram triagem clínica inicial com PHQ-9/GAD-7 e fluxo de encaminhamento para psicoterapia, psiquiatria ou psicoeducação conforme severidade. A heterogeneidade gera vantagens e desvantagens: vantagem da flexibilidade contratual; desvantagem da inconsistência metodológica que impede meta-análise nacional de ROI e de desfecho. A vinda da NR-1 psicossocial em 2026 deve pressionar o setor para padronização — empresas precisarão de relatórios técnicos integrados ao PGR, com método citado, instrumentos validados e desfecho documentado.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Sigilo é o ponto onde os três modelos convergem em princípio e divergem em operacionalização. Em todos, o atendimento individual é sigiloso e o relatório à empresa é agregado. A diferença está na governança de dados — HIPAA (EUA) e UK GDPR (Reino Unido) impõem penalidades pesadas por violação (HIPAA até US$ 1,5 milhão por categoria/ano, UK GDPR até £17,5 milhões ou 4% do faturamento global). No Brasil, a LGPD opera com penalidade até 2% do faturamento limitada a R$ 50 milhões por infração, mais sanção administrativa da ANPD e ação do CFP. Provedores brasileiros maduros operam com DPO (encarregada/encarregado de dados), consentimento esclarecido documentado e mínimo de respondentes para anonimato em relatório agregado — boa prática recomendada é 10 respondentes por recorte. Empresas que recebem relatórios individualizados ou com recortes pequenos (5 respondentes ou menos) estão expostas.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Métricas e ROI</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">EAP Brasil</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">EAP Americano</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-700 border-b border-surface-300">IAPT (NHS)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMetricas.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.brasil}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.americano}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.iapt}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-base text-ink-900 mb-3">Quando o modelo Brasil encaixa</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Empresa BR com 200-5.000 colaboradores</p>
+              <p class="text-sm text-ink-700 mt-1">Contratação corporativa direta com provedor regulado por CRP, integrável a PGR psicossocial sob NR-1.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Cultura corporativa em transição para saúde mental</p>
+              <p class="text-sm text-ink-700 mt-1">Modelo de teleatendimento reduz barreira de acesso e estigma — utilização típica 8-15% no primeiro ano.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-base text-ink-900 mb-3">Quando o modelo Americano encaixa</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Multinacionais com operação BR + global</p>
+              <p class="text-sm text-ink-700 mt-1">LifeWorks, ComPsych operam globalmente; permitem benefício consistente em todas as operações.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Demanda por escopo amplo (jurídico, financeiro, social)</p>
+              <p class="text-sm text-ink-700 mt-1">Empresas que querem oferecer benefício amplo além de saúde mental tendem a contratar EAP americano consolidado.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-base text-ink-900 mb-3">Quando o modelo IAPT inspira</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-ink-500">
+              <p class="text-sm font-semibold text-ink-900">Política pública de saúde mental no trabalho</p>
+              <p class="text-sm text-ink-700 mt-1">O Ministério da Saúde brasileiro e SUS podem espelhar elementos do stepped care e desfecho clínico mensurado.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-ink-500">
+              <p class="text-sm font-semibold text-ink-900">EAP corporativo brasileiro maduro</p>
+              <p class="text-sm text-ink-700 mt-1">Provedores BR que adotam PHQ-9/GAD-7 obrigatórios + recovery rate como métrica primária se alinham à boa prática IAPT.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Empresa brasileira de tecnologia, 2.300 colaboradores, decisão entre Conexa, LifeWorks e modelo híbrido</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Empresa brasileira de tecnologia com 2.300 colaboradores, sede em São Paulo, operações regionais em quatro capitais e equipe remota distribuída. Diretoria de pessoas recebe demanda da diretoria executiva para implementar EAP em preparação para a NR-1 psicossocial entrar em vigor em 26 de maio de 2026. Três opções avaliadas: Conexa Saúde (provedor brasileiro com integração PGR psicossocial em construção), LifeWorks (escopo amplo com cobertura global), e modelo híbrido (Conexa para saúde mental + provedor jurídico/financeiro à parte).
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Análise técnica considerou: (a) governança de dados sob LGPD — Conexa tem DPO ativo e relatório agregado com mínimo 10 respondentes; LifeWorks tem HIPAA-compliant operations mas exige adaptação para LGPD; (b) integração com NR-1 psicossocial — Conexa começa a estruturar relatório técnico integrável ao PGR, LifeWorks não tem produto equivalente; (c) escopo de serviços — LifeWorks cobre amplitude maior (saúde, jurídico, financeiro), Conexa focada em saúde mental; (d) custo total — Conexa BRL 18-25 por colaborador/mês, LifeWorks USD 4-8 por colaborador/mês com flutuação cambial; (e) profissionais — ambos com CRP/CRM nominados, Conexa com maior densidade de psicoterapeutas em PT-BR, LifeWorks com cobertura multilíngue.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Decisão final: Conexa Saúde como provedor principal por integrabilidade com NR-1 e governança LGPD madura; contrato jurídico/financeiro à parte com provedor especializado para cobrir escopo ampliado. Contratualização incluiu cláusulas específicas — desfecho clínico mensurado a cada sessão (PHQ-9/GAD-7 inspirados no IAPT), relatório trimestral agregado integrável ao PGR, DPO de Conexa em contato com DPO da empresa, e SLA de 48 horas para primeira sessão. Em 12 meses, utilização atingiu 13% (média BR), recovery rate documentada em 47% (alinhada ao benchmark IAPT de 50%), e o relatório do EAP foi integrado ao PGR psicossocial como instrumento de monitoramento contínuo — sustentação documental significativa em eventual fiscalização do MTE.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões observados em contratos corporativos BR em 2025-2026. A escolha entre provedores varia significativamente conforme perfil da empresa, e a maturidade dos provedores brasileiros tem evoluído rapidamente — confirme oferta vigente diretamente com cada provedor.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Quatro precauções importantes. Primeiro, o mercado brasileiro de EAP é jovem e está em rápida transformação — dados de utilização, ROI e desfecho clínico variam por provedor e por contrato, e raramente são auditados por terceiros independentes. Cite com cuidado, declare a fonte e diferencie "case interno do provedor" de "meta-análise revisada por pares". Segundo, a comparação com o IAPT inglês é estrutural — é programa público financiado pelo estado, não modelo replicável diretamente em contexto corporativo privado brasileiro. O que se importa do IAPT é a disciplina de mensuração de desfecho (PHQ-9/GAD-7 a cada sessão, recovery rate como métrica primária), não a arquitetura institucional. Terceiro, EAP não substitui psicoterapia individual continuada quando o caso exige — modelos short-term (3-8 sessões) e stepped care têm limites claros para depressão recorrente severa, TCC para TOC, TEP complexo, transtornos da personalidade. Boa governança contratual prevê encaminhamento para cuidado prolongado. Quarto, a vinda da NR-1 psicossocial em 26 de maio de 2026 muda o equilíbrio do mercado — empresas com EAP integrado ao PGR psicossocial e desfecho clínico mensurado terão posição jurídica significativamente melhor em fiscalização e contraditório trabalhista.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No Brasil de 2026, com afastamentos por burnout crescendo cerca de 800% entre 2021 e 2025 conforme dados da Previdência Social (de 823 para 7.595 casos), o EAP corporativo deixou de ser benefício opcional e tornou-se infraestrutura de mitigação de risco organizacional. A escolha do provedor e do modelo é decisão técnica e jurídica simultaneamente — exige diagnóstico do contexto da empresa (porte, distribuição geográfica, setor, maturidade cultural), análise de governança de dados sob LGPD, integração com PGR psicossocial sob NR-1, e definição prévia de métricas de desfecho. Empresas que tratam EAP como "benefício de RH" sem desfecho mensurado e sem integração regulatória perdem o ativo principal — sustentação documental em fiscalização e contraditório.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Três governanças, três tradições — a escolha responde ao contexto, não a uma hierarquia universal.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>EAP americano (LifeWorks, ComPsych): 50+ anos, escopo amplo, HIPAA + EAPA Standards, ROI 3:1-8:1 em meta-análises.</li>
+          <li>IAPT inglês (NHS Talking Therapies): público, stepped care, desfecho clínico obrigatório, recovery rate como métrica primária.</li>
+          <li>EAP Brasil (Conexa, Vittude, Zenklub, Telavita): privado-corporativo, teleatendimento dominante, CFP + LGPD, integração com NR-1 em construção.</li>
+          <li>NR-1 psicossocial em vigência plena em 26 de maio de 2026 muda o equilíbrio — desfecho mensurado e integração com PGR viram diferencial competitivo.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogas e psicólogos organizacionais que constroem EAP corporativo ou integram com PGR psicossocial sob NR-1, o IPOG mantém MBAs em POT e Psicologia Positiva com módulos em saúde mental no trabalho, riscos psicossociais e gestão de programas. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/bat-vs-mbi-burnout" class="text-brand-700 hover:text-brand-800 font-medium">BAT vs MBI em burnout</a></li>
+          <li><a href="/faq/nr1-implementacao-pratica-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · NR-1 implementação prática 2026</a></li>
+          <li><a href="/guias/escalas-burnout-bat-mbi-olbi-cbi" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Escalas de burnout</a></li>
+          <li><a href="/comparativos/iapt-vs-stepped-care-brasil" class="text-brand-700 hover:text-brand-800 font-medium">IAPT vs stepped care no Brasil</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em POT e Psicologia Positiva — base aplicada para construção de EAP corporativo e integração com NR-1 psicossocial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaPot && <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPot.tag}</span></a></li>}
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/saude-mental-organizacoes" class="mega-link"><strong class="text-ink-900 text-sm">Saúde Mental nas Organizações</strong></a></li>
+          <li><a href="/areas/psicologia-positiva" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Positiva</strong></a></li>
+          <li><a href="/areas/psicologia-saude" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia em Saúde</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Conselho Federal de Psicologia. Resolução CFP 11/2018. Atendimento online.</li>
+          <li>Conselho Federal de Psicologia. Resolução CFP 23/2022. Atualização do atendimento online.</li>
+          <li>Conselho Federal de Psicologia. Resolução CFP 06/2019. Documentos psicológicos.</li>
+          <li>Brasil. Lei 13.709/2018. Lei Geral de Proteção de Dados (LGPD).</li>
+          <li>Attridge, M. et al. (2018). EAP effectiveness research. EAPA Quarterly.</li>
+          <li>NHS England. Talking Therapies Manual (2024). NHS Digital.</li>
+          <li>National Institute for Health and Care Excellence. IAPT economic case (2019).</li>
+          <li>Employee Assistance Professionals Association. EAPA Standards and Professional Guidelines.</li>
+          <li>Ministério do Trabalho e Emprego. Portaria MTE 1.419/2024 e Portaria MTE 765/2025 (NR-1).</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

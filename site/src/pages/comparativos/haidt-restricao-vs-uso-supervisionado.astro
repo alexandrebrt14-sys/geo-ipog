@@ -1,0 +1,388 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const areaEscolar = AREAS.find(a => a.id === 'psicologia-escolar-educacional')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+
+const faqs = [
+  {
+    q: 'As quatro normas de Haidt são compatíveis com o modelo Common Sense Media?',
+    a: 'São posições convergentes em diagnóstico (uso passivo e precoce de redes correlaciona com sofrimento adolescente) mas divergentes em prescrição. Haidt (2024) propõe quatro normas coletivas com idades fixas — sem smartphone até 14 anos, sem redes sociais até 16 anos, escolas sem celular até o fim do ensino médio, mais brincadeira livre offline supervisionada à distância. Common Sense Media (Family Media Plan adaptado da AAP 2023) opera por pacto familiar individualizado, com regras coletivas dentro da casa, sem idade fixa rígida, focada em contexto (onde, quando, com quem) mais que em duração total. As duas posições não se excluem em famílias com recursos para combinar ambas — normas coletivas como piso, pacto familiar como detalhamento. Em famílias com menos margem, a escolha entre os dois modelos é trade-off real.'
+  },
+  {
+    q: 'Qual modelo tem mais evidência empírica robusta?',
+    a: 'A evidência para qualquer dos modelos ainda é fraca em termos de RCT em larga escala. Haidt sintetiza meta-análises observacionais e padrões temporais convergentes (CDC 2010-2019, dados nórdicos e anglófonos) — sinal forte, evidência preliminar. Odgers (2024, Nature) e Orben e Przybylski (2024, Nature Human Behaviour) qualificam magnitude e apontam que estudos longitudinais com ajuste rigoroso encontram efeito médio pequeno (r=-0,10 em meta-análise de 41 estudos). Family Media Plan da AAP tem base em literatura sobre práticas parentais e mediação ativa (Livingstone et al., EU Kids Online, 2017-2023), com magnitude moderada. Beland e Murphy (2016, LSE) — pioneiros em estudo de escola sem celular — encontraram efeito em desempenho escolar. RCTs rigorosos em larga escala ainda são raros para qualquer dos lados. A leitura responsável é cautelosa em ambos.'
+  },
+  {
+    q: 'O modelo de uso supervisionado funciona em família brasileira de baixa renda?',
+    a: 'O modelo enfrenta limites estruturais relevantes. AAP Family Media Plan pressupõe família com tempo de mediação ativa, espaço físico para diferenciar áreas com e sem tela (quarto, sala, refeição), e adultos disponíveis para conversar regularmente. Em famílias de baixa renda no Brasil, com adultos em jornada dupla, casa pequena e acesso ao mundo digital concentrado em celular pessoal (sem desktop, sem console, sem TV smart), o pacto familiar individualizado é mais difícil de implementar consistentemente. A norma coletiva de Haidt, ao operar via escola e via combinado entre famílias da turma, reduz a dependência da capacidade de mediação familiar individual — vantagem comparativa em contexto de desigualdade. CETIC.br (2024) confirma o quadro: adolescentes brasileiros acessam mundo digital majoritariamente por celular pessoal, com mediação parental heterogênea.'
+  },
+  {
+    q: 'Como o psicólogo opera entre os dois modelos na prática clínica?',
+    a: 'A escolha clínica é caso a caso, com três princípios. Primeiro, leitura do contexto familiar — recursos de mediação, padrão de uso já instalado, presença de psicopatologia, redes sociais que cumprem função protetiva (LGBTQ+ em comunidade isolada, conexão com pares que não estão na cidade). Segundo, leitura do risco — em adolescente com ideação ativa ou uso compulsivo grave, restrição firme com componente de Safety Planning supera pacto gradual. Em uso recreativo moderado sem prejuízo funcional, pacto familiar individualizado preserva agência e aliança. Terceiro, leitura da janela coletiva — a Lei 15.100/2024 garante recorte escolar para qualquer caso brasileiro; pacto familiar opera sobre o tempo fora da janela. Em vez de escolher um dos modelos, o profissional combina o que cada um oferece para o caso concreto.'
+  }
+];
+
+const tabelaPressupostos = [
+  { dimensao: 'Pressuposto sobre a tecnologia', haidt: 'Smartphones e redes sociais são vetor central de sofrimento adolescente — "Great Rewiring" de 2010-2015', supervisionado: 'A tecnologia é neutra; o impacto depende de padrão de uso, contexto e mediação familiar' },
+  { dimensao: 'Mecanismo causal central', haidt: 'Exposição precoce a feed algorítmico erode desenvolvimento socioemocional via comparação social, sono e fragmentação atencional', supervisionado: 'Mediação parental ativa e regras coletivas em casa modulam riscos sem proibição etária rígida' },
+  { dimensao: 'Idade mínima recomendada (smartphone)', haidt: '14 anos para smartphone próprio', supervisionado: 'Decisão familiar; AAP recomenda evitar antes de 2 anos, sem idade fixa após' },
+  { dimensao: 'Idade mínima recomendada (redes sociais)', haidt: '16 anos para redes sociais', supervisionado: 'Family Media Plan personalizado, conforme maturidade e contexto' },
+  { dimensao: 'Escola sem celular', haidt: 'Recomendação central; necessária até o fim do ensino médio', supervisionado: 'Defensável por consenso pedagógico, sem o mesmo peso normativo' },
+  { dimensao: 'Brincadeira livre offline', haidt: 'Componente estrutural — mais autonomia, brincadeira sem supervisão direta dos pais', supervisionado: 'Recomendação geral de equilíbrio entre atividades online e offline' },
+  { dimensao: 'Evidência principal', haidt: 'Padrões temporais e meta-análises observacionais (CDC, Eurostat, dados anglófonos e nórdicos)', supervisionado: 'Literatura sobre mediação parental (Livingstone, EU Kids Online) e práticas familiares de uso' },
+  { dimensao: 'Crítica principal', haidt: 'Odgers (2024, Nature) e Orben e Przybylski (2024, Nat Hum Behav) — correlação não é causalidade, efeito médio pequeno em estudos com ajuste', supervisionado: 'Dependência de capacidade de mediação familiar — funciona menos bem em contexto de desigualdade' }
+];
+
+const tabelaAplicabilidade = [
+  { contexto: 'Família de classe média alta com adultos com tempo de mediação', haidt: 'Aplicável — normas coletivas reforçam pacto familiar já viável', supervisionado: 'Aplicável — Family Media Plan opera bem com mediação ativa disponível' },
+  { contexto: 'Família de baixa renda com adultos em jornada dupla', haidt: 'Vantagem comparativa — norma coletiva via escola reduz dependência da mediação individual', supervisionado: 'Limite real — pacto individualizado pressupõe tempo e espaço que faltam' },
+  { contexto: 'Família com pais separados e configurações diferentes em cada casa', haidt: 'Norma coletiva como referência comum facilita coordenação', supervisionado: 'Exige pacto entre casas; viável mas com fricção adicional' },
+  { contexto: 'Adolescente LGBTQ+ em cidade conservadora isolada', haidt: 'Risco — restrição rígida pode reduzir acesso a comunidade protetiva online (Twenge et al., 2024)', supervisionado: 'Maior flexibilidade — uso ativo de redes para comunidade pode ser preservado com mediação' },
+  { contexto: 'Adolescente neurodivergente (TEA, TDAH) com uso de tela como autorregulação', haidt: 'Idades fixas precisam de exceção clínica; protocolo individualizado é obrigatório', supervisionado: 'Família Media Plan se adapta a perfil neurocognitivo com plano terapêutico' },
+  { contexto: 'Adolescente com ideação suicida ativa', haidt: 'Restrição firme + Safety Planning + restrição de meios; convergente com norma', supervisionado: 'Mediação intensiva + restrição temporária; convergente em momento de crise' },
+  { contexto: 'Adolescente em transtorno alimentar com exposição a #ed', haidt: 'Restrição plena de plataformas visuais durante tratamento; convergente', supervisionado: 'Restrição clínica direcionada com mediação ativa; convergente' },
+  { contexto: 'Estudante em comunidade rural com aprendizagem digital remota', haidt: 'Tensão real — restrição etária pode atritar com necessidade educacional', supervisionado: 'Plano familiar acomoda uso educacional com curadoria' }
+];
+
+const tabelaTradeoffs = [
+  { eixo: 'FOMO (medo de ficar de fora) em adolescente sem rede social', haidt: 'Reduzido se a norma é coletiva — várias famílias e a escola aderem juntas', supervisionado: 'Persistente em contexto não coordenado — adolescente sente exclusão isolada' },
+  { eixo: 'Exclusão social presencial em turma com adesão parcial', haidt: 'Risco quando a norma é mal coordenada — adolescente sem celular vira "diferente"', supervisionado: 'Risco menor — pacto familiar com flexibilidade preserva participação' },
+  { eixo: 'Isolamento de adolescente LGBTQ+ em comunidade hostil', haidt: 'Risco real — restrição rígida pode reduzir acesso à comunidade online protetiva', supervisionado: 'Risco menor — mediação preserva uso ativo de redes para comunidade' },
+  { eixo: 'Dependência da capacidade de mediação familiar', haidt: 'Menor — norma coletiva via escola e idade reduz dependência da mediação individual', supervisionado: 'Maior — Family Media Plan exige tempo, espaço e regularidade do adulto' },
+  { eixo: 'Risco transferido para tempo pós-escola', haidt: 'Restrição etária reduz acesso a redes sociais como um todo; menor transferência', supervisionado: 'Sem restrição etária, todo o consumo migra para fora da janela escolar' },
+  { eixo: 'Atrito com agência adolescente em construção', haidt: 'Maior — proibição etária é menos negociável', supervisionado: 'Menor — pacto preserva diálogo e construção de autonomia' },
+  { eixo: 'Adaptabilidade a contexto socioeconômico desigual', haidt: 'Maior — norma coletiva opera no piso comum (escola, lei)', supervisionado: 'Menor — pacto familiar individualizado depende de recursos disponíveis' },
+  { eixo: 'Risco de "pânico moral" e culpabilização parental', haidt: 'Risco real — discurso de "geração ansiosa" pode escorregar para julgamento de famílias', supervisionado: 'Menor — partir da decisão familiar reduz culpabilização externa' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Haidt (quatro normas coletivas) vs Common Sense Media (uso supervisionado): qual modelo regula a adolescência digital?',
+  description: 'Comparativo independente entre as quatro normas de Jonathan Haidt (2024, The Anxious Generation) e o modelo de uso supervisionado da Common Sense Media + AAP Family Media Plan. Pressupostos, evidência, aplicabilidade em famílias brasileiras, trade-offs e FAQ.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Haidt (restrição) vs uso supervisionado' }
+  ]
+};
+---
+
+<Base
+  title="Haidt (restrição) vs uso supervisionado em adolescência digital — comparativo"
+  description="Comparativo independente entre as quatro normas de Haidt (2024, The Anxious Generation) e o modelo Common Sense Media / AAP Family Media Plan. Pressupostos, evidência, aplicabilidade em famílias brasileiras, trade-offs (FOMO, exclusão, LGBTQ+) e FAQ.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Haidt (restrição) vs uso supervisionado' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Adolescência digital</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Haidt (quatro normas coletivas) vs uso supervisionado (Common Sense Media): qual regula a adolescência digital?</h1>
+          <p class="mt-3 text-ink-700 text-lg">As duas posições convergem em diagnóstico — uso passivo e precoce de redes sociais correlaciona com sofrimento adolescente — e divergem em prescrição. Haidt defende restrição etária coletiva; Common Sense Media (e AAP Family Media Plan) defende pacto familiar individualizado. O debate é vivo, e a prática clínica brasileira opera com ambos.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="Haidt (2024, The Anxious Generation, Penguin Press) propõe quatro normas coletivas — sem smartphone até 14 anos, sem redes sociais até 16 anos, escolas sem celular, brincadeira livre offline. Common Sense Media e AAP Family Media Plan (2023) operam por pacto familiar individualizado com foco em contexto. Convergem em diagnóstico (Twenge, Haidt, CETIC.br 2024, PeNSe/IBGE 2024 — 42,9% de irritabilidade crônica em adolescentes brasileiros). Divergem em prescrição. Em famílias de baixa renda no Brasil, norma coletiva via Lei 15.100/2024 reduz dependência de mediação individual — vantagem comparativa em contexto de desigualdade. Em adolescentes LGBTQ+ em comunidade isolada, restrição rígida pode reduzir acesso à comunidade online protetiva (Twenge et al., 2024). A escolha é caso a caso, com leitura de contexto familiar, risco e janela coletiva."
+        fontes={["Haidt, 2024 (The Anxious Generation, Penguin Press)", "AAP Family Media Plan, 2023", "Odgers, 2024 (Nature)", "Lei 15.100/2024 (Brasil)", "PeNSe/IBGE, 2024 (118 mil estudantes)"]}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">As duas posições em uma frase</h2>
+        <p>
+          Haidt sustenta que a transição massiva entre 2010 e 2015 de brincadeira livre presencial para experiência mediada por smartphone — o "Great Rewiring of Childhood" — produziu epidemia documentável de ansiedade e depressão adolescente, especialmente em meninas. A inversão da prescrição é coletiva: idades fixas, escolas sem celular, autonomia offline. A norma coletiva pretende resolver o problema do FOMO (medo de ficar de fora) — se várias famílias e a escola aderem juntas, o adolescente sem celular não fica em exclusão isolada. Common Sense Media e AAP Family Media Plan (2023) partem de pressuposto diferente: tecnologia é neutra; o que importa é mediação parental ativa, regras coletivas em casa (sem tela em refeição, sem aparelho no quarto, sem rolagem antes de dormir), foco em contexto e função do uso, mais que em duração total. A norma individualizada preserva agência adolescente e adapta-se a perfil neurocognitivo e a configuração familiar.
+        </p>
+        <p>
+          O Brasil opera com ambas. A Lei 15.100/2024 (sancionada em janeiro de 2025) instala restrição em educação básica — modelo Haidt em janela escolar. Famílias brasileiras com recursos de mediação adotam Family Media Plan em complemento — modelo Common Sense Media em casa. Famílias sem esses recursos dependem majoritariamente da janela escolar. PeNSe/IBGE 2024 (118.099 estudantes em escolas públicas e privadas) reporta quadro preocupante — 42,9% com irritabilidade crônica, três em cada dez com tristeza persistente, 18,5% afirmando que "a vida não vale a pena", com diferença marcada por gênero (41% das meninas vs 16,7% dos meninos relatam tristeza persistente). CETIC.br 2024 confirma o quadro digital: 75% dos jovens de 9 a 17 anos usam redes diariamente. As duas normas operam sobre o mesmo contexto epidemiológico.
+        </p>
+        <p>
+          A crítica robusta de Candice Odgers (2024, Nature) e a meta-análise de Orben e Przybylski (2024, Nature Human Behaviour) qualificam magnitude da relação causal proposta por Haidt — efeito médio agregado é pequeno (r=-0,10 em meta-análise de 41 estudos longitudinais), e estudos com ajuste rigoroso para variáveis confundidoras frequentemente perdem significância. O que não quer dizer ausência de risco — significa que padrão de uso (ativo vs passivo), conteúdo específico (autolesão, comparação corporal, companions de IA) e contexto (vulnerabilidades como ideação ativa, transtorno alimentar, neurodivergência) importam mais do que tempo total. A leitura clínica responsável combina vigilância do padrão com mediação ativa do contexto.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Pressupostos teóricos e evidência</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Haidt (quatro normas)</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Uso supervisionado (Common Sense / AAP)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPressupostos.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.haidt}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.supervisionado}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Aplicabilidade em famílias brasileiras heterogêneas</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Contexto</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Haidt</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Uso supervisionado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaAplicabilidade.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.contexto}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.haidt}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.supervisionado}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Trade-offs (FOMO, exclusão, isolamento LGBTQ+)</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Eixo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Haidt</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Uso supervisionado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaTradeoffs.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.haidt}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.supervisionado}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando Haidt é mais defensável</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Famílias com baixa capacidade de mediação ativa</p>
+              <p class="text-sm text-ink-700 mt-1">Norma coletiva via escola e idade reduz dependência da capacidade individual — vantagem comparativa em contexto de desigualdade.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Adolescente em ideação suicida ativa ou transtorno alimentar</p>
+              <p class="text-sm text-ink-700 mt-1">Restrição firme com componente clínico de Safety Planning supera pacto gradual em fase aguda.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Quando há possibilidade de coordenação coletiva real</p>
+              <p class="text-sm text-ink-700 mt-1">Várias famílias da turma + escola aderem juntas — FOMO cai, exclusão social não se materializa.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando uso supervisionado é mais defensável</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Adolescente LGBTQ+ em comunidade conservadora isolada</p>
+              <p class="text-sm text-ink-700 mt-1">Uso ativo de redes pode ter função protetiva (acesso a comunidade) — mediação preserva acesso com curadoria.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Adolescente neurodivergente com uso funcional</p>
+              <p class="text-sm text-ink-700 mt-1">TEA, TDAH ou outras condições com função autorregulatória da tela exigem plano individualizado.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Famílias com recursos de mediação ativa</p>
+              <p class="text-sm text-ink-700 mt-1">Family Media Plan personalizado preserva agência adolescente e adapta-se a configuração familiar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">O que os dois modelos combinam bem</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Lei 15.100/2024 (Haidt em janela escolar) + Family Media Plan (Common Sense em casa)</p>
+            <p class="text-sm text-ink-700 mt-1">Janela coletiva de 4-6h sem feed + pacto familiar para o restante do dia — combinação cobre mais terreno que qualquer modelo isolado.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Coordenação entre famílias da turma + projeto pedagógico</p>
+            <p class="text-sm text-ink-700 mt-1">Wait Until 8th adapta o modelo coletivo de Haidt para o pacto entre famílias específicas — reduz FOMO sem depender de lei.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Família com dois filhos, contextos diferentes — qual modelo escolher?</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Família de classe média na capital. Filha de 13 anos, do oitavo ano, em colégio que aplica a Lei 15.100/2024. Sem sintomas clínicos, com uso predominante de WhatsApp para grupo da turma e ocasional TikTok no fim de semana. Filho de 15 anos, do primeiro ano do ensino médio, com TEA leve diagnosticado e uso intensivo de Discord para grupo de jogos online — comunidade que opera como rede social protetiva, com amigos consistentes há dois anos.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A psicóloga em atendimento familiar trabalha com os dois eixos. Para a filha, modelo predominante Haidt em complemento à Lei 15.100/2024: pacto entre famílias da turma para adiar Instagram até 16 anos, plano familiar simples (sem celular em refeição, sem aparelho no quarto, sem rolagem antes de dormir), participação preservada por coordenação social. Para o filho, modelo predominante uso supervisionado: o Discord cumpre função social real (comunidade estável com pares neurodivergentes), restrição rígida romperia rede protetiva; o que se faz é mediação ativa — sem Discord em horário de sono, curadoria conjunta dos grupos, conversa periódica sobre conteúdo, atenção a sinais de uso problemático. A combinação preserva agência sem ignorar risco. A psicóloga registra plano em prontuário com fundamentação técnica.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto. A combinação dos dois modelos em famílias com filhos em contextos diferentes é padrão clínico crescente; a literatura sobre mediação ativa em neurodivergência (Aspy, Grossman et al., 2023) sustenta a flexibilização em casos específicos.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções. Primeiro, "Haidt vs uso supervisionado" é dicotomia útil pedagogicamente mas operacionalmente artificial — quase nenhuma família adota um modelo puro, e os profissionais raramente recomendam apenas um. Segundo, a magnitude da evidência empírica é fraca em qualquer dos lados — RCTs rigorosos em larga escala ainda são raros, e meta-análises observacionais têm limites bem documentados (Orben e Przybylski, 2024). Terceiro, o debate público brasileiro frequentemente mistura pânico moral com leitura técnica; o psicólogo precisa contribuir com diferenciação de mecanismo, padrão de uso e vulnerabilidade individual, em vez de aderir ao lado mais ruidoso da discussão.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A discussão de política pública brasileira é incipiente em comparação com Reino Unido, França, Países Baixos e Austrália. A Lei 15.100/2024 endereça uma fração específica do problema (janela escolar). A Lei 14.811/2024 endereça outra fração (cyberbullying e proteção digital). Discussões sobre ECA Digital (PL 2.628/2022 e correlatos) avançam responsabilização de plataformas. Sem regulação coordenada das quatro frentes — escola, conduta digital, plataforma, letramento crítico — qualquer modelo isolado tem efeito limitado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O que cabe ao psicólogo no debate público</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O psicólogo que atende adolescentes e famílias ocupa posição técnica relevante no debate. Três contribuições. Primeira, diferenciar padrão de uso (passivo vs ativo) e conteúdo (autolesão, comparação corporal, companions de IA, comunidade protetiva) — leitura mais fina do que duração total resolve. Segunda, ler vulnerabilidade individual — adolescente com ideação ativa, transtorno alimentar, TEA com uso funcional, LGBTQ+ em comunidade isolada exigem protocolos diferentes; norma única raramente cobre. Terceira, contribuir com letramento crítico em vez de moralismo — explicar mecanismos (recompensa variável, comparação social ascendente, algoritmos otimizados para engajamento) sem demonizar tecnologia ou culpabilizar família. A literatura é viva e merece leitura cruzada (Haidt, Twenge, Odgers, Orben, AAP, CETIC.br, PeNSe/IBGE), não militância em torno de um polo.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A pergunta deixou de ser "qual modelo está certo". É "qual combinação cabe nesse caso".</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Haidt vence em famílias com baixa capacidade de mediação ativa e em janela escolar coletiva (Lei 15.100/2024).</li>
+          <li>Uso supervisionado vence em famílias com recursos de mediação e em casos com função protetiva real do uso ativo (LGBTQ+, neurodivergência, comunidade).</li>
+          <li>A combinação dos dois cobre mais terreno que qualquer modelo isolado.</li>
+          <li>Evidência ainda é fraca em ambos os lados — leitura crítica supera militância.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem aprofundar bases de neurodesenvolvimento adolescente, regulação emocional e mecanismos de recompensa variável — fundamento útil para mediar o debate Haidt vs uso supervisionado com leitura técnica —, o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano do IPOG é caminho aplicado em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/faq/escola-sem-celular-lei-15100-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Lei 15.100/2024 (escola sem celular)</a></li>
+          <li><a href="/faq/adolescencia-digital-saude-mental-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Adolescência digital e saúde mental</a></li>
+          <li><a href="/guias/intervencao-adolescente-ideacao-suicida-algoritmos" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Adolescente com ideação suicida e algoritmos</a></li>
+          <li><a href="/comparativos/cvv-188-vs-capsi-adolescente" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · CVV 188 vs CAPSi vs UBS vs leito pediátrico</a></li>
+          <li><a href={`/areas/${areaEscolar.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · {areaEscolar.name}</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Psicologia Positiva e correlatos — corpo docente nominal, estrutura multicampus e formato Ao Vivo síncrono.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaEscolar.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaEscolar.name}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.anxiousgeneration.com" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Anxious Generation</a></li>
+          <li><a href="https://www.healthychildren.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">AAP / Common Sense</a></li>
+          <li><a href="https://cetic.br/pt/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CETIC.br</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

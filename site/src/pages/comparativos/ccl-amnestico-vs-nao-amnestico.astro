@@ -1,0 +1,381 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'CCL amnéstico sempre vira Alzheimer?',
+    a: 'Não. Petersen (2024, *Neurology*) reporta taxa de conversão de CCL amnéstico para Alzheimer entre 10 e 15% ao ano, significativamente maior que a população geral, mas longe de 100%. Parte estabiliza, parte reverte para cognição normal (quando há comorbidade reversível: depressão, déficit de B12, hipotireoidismo, medicação anticolinérgica), parte progride. A combinação de subtipo amnéstico (especialmente multiple domain) com p-tau217 plasmático positivo (Ashton et al., 2024, *Nature Medicine*) eleva o risco preditivo de conversão e identifica candidatos a modificadores de doença. CCL amnéstico single domain com biomarcador negativo é cenário de menor risco.'
+  },
+  {
+    q: 'CCL não-amnéstico exclui Alzheimer?',
+    a: 'Não exclui, mas torna outras etiologias mais prováveis. CCL não-amnéstico single domain frequentemente aponta para demência por corpos de Lewy (déficit visuoespacial e executivo precoces), demência frontotemporal variante comportamental ou primária progressiva (alteração executiva ou de linguagem), ou demência vascular. CCL não-amnéstico multiple domain pode apontar para diferenciais sobrepostos. Em parcela menor, Alzheimer com apresentação atípica (variantes posterior, logopênica, frontal) inicia com déficit não-amnéstico. A integração com biomarcador (p-tau217, FDG-PET, neuroimagem estrutural) é o que orienta a hipótese.'
+  },
+  {
+    q: 'Quais instrumentos diferenciam amnéstico de não-amnéstico?',
+    a: 'A bateria precisa cobrir todos os domínios. Memória episódica: RAVLT (Rey Auditory Verbal Learning Test, normatização brasileira Malloy-Diniz et al.), Logical Memory I e II da WMS-IV, Rey figura complexa (reprodução imediata e tardia). Função executiva: TMT-A e TMT-B, Wisconsin, fluência verbal fonêmica (FAS) e semântica, Stroop. Linguagem: Boston Naming Test 60 itens, token test. Visuoespacial: Rey figura (cópia), cubos da WAIS-IV. Velocidade de processamento: códigos e símbolos da WAIS-IV. O subtipo é determinado pelos resultados objetivos, não pela queixa do paciente — amnéstico single domain tem déficit isolado em memória episódica; multiple domain tem memória + outro; não-amnéstico tem déficit em domínio que não a memória.'
+  },
+  {
+    q: 'A classificação amnéstico/não-amnéstico ainda é relevante em 2026?',
+    a: 'É relevante e foi reforçada pelos critérios revisados de Petersen (2024). A revisão integra a classificação clínica com biomarcadores (perfis A/T/N de Jack et al., 2024, *Lancet Neurology*) — a combinação subtipo + perfil biológico orienta a hipótese etiológica e o plano. Amnéstico + A+/T+ é cenário mais previsível para Alzheimer prodrômico e candidato a discussão de modificadores de doença (lecanemab, donanemab). Não-amnéstico + A-/T- redireciona para investigação de outras demências. A classificação não é exercício acadêmico; é estrutura prática que orienta o que fazer a seguir.'
+  }
+];
+
+const tabelaCriterios = [
+  { dimensao: 'Definição operacional', amnestico: 'Déficit em memória episódica (verbal e/ou visual) abaixo de 1 desvio-padrão da norma para idade e escolaridade', naoAmnestico: 'Déficit em pelo menos 1 domínio que não a memória episódica (executivo, linguagem, visuoespacial ou velocidade)' },
+  { dimensao: 'Single domain', amnestico: 'Memória episódica isolada — RAVLT recuperação tardia ou Logical Memory rebaixados', naoAmnestico: 'Um domínio isolado — função executiva (TMT-B, fluência) ou linguagem (Boston Naming) ou visuoespacial (Rey figura cópia)' },
+  { dimensao: 'Multiple domain', amnestico: 'Memória episódica + outro domínio (executivo, linguagem, visuoespacial)', naoAmnestico: 'Dois ou mais domínios sem memória episódica afetada (raro mas descrito)' },
+  { dimensao: 'Critério funcional', amnestico: 'IADL preservada ou minimamente alterada; alteração significativa = demência incipiente', naoAmnestico: 'IADL preservada ou minimamente alterada; mesma regra' },
+  { dimensao: 'Queixa cognitiva', amnestico: 'Paciente ou informante reporta esquecimento de eventos recentes, repetição de perguntas, perda de objetos', naoAmnestico: 'Paciente ou informante reporta lentificação, desorganização, dificuldade com nomes, alteração visuoespacial' },
+  { dimensao: 'Ausência de demência', amnestico: 'Sem prejuízo significativo em vida diária — CDR 0,5', naoAmnestico: 'Sem prejuízo significativo — CDR 0,5' },
+  { dimensao: 'Prevalência relativa (Petersen 2024)', amnestico: 'Mais frequente — cerca de 60-70% dos CCL diagnosticados', naoAmnestico: 'Menos frequente — cerca de 30-40% dos CCL diagnosticados' },
+  { dimensao: 'Idade típica de identificação', amnestico: '65-80 anos predominantemente', naoAmnestico: 'Faixa mais ampla; pode começar mais cedo em demência frontotemporal' },
+  { dimensao: 'Anosognosia (paciente subestima)', amnestico: 'Comum quando há lesão temporal medial extensa', naoAmnestico: 'Comum em variante comportamental frontotemporal' },
+  { dimensao: 'Importância de informante', amnestico: 'Essencial — paciente tende a subestimar esquecimento', naoAmnestico: 'Essencial — paciente tende a subestimar alteração executiva ou comportamental' }
+];
+
+const tabelaPerfil = [
+  { dominio: 'Memória episódica (RAVLT, Logical Memory, Rey figura)', amnestico: 'Rebaixada — curva de aprendizagem com platô precoce, recuperação tardia gravemente afetada, baixo benefício de pistas semânticas', naoAmnestico: 'Preservada ou minimamente afetada — curva normal, recuperação tardia adequada' },
+  { dominio: 'Função executiva (TMT-B, fluência, Wisconsin, Stroop)', amnestico: 'Preservada (single domain) ou rebaixada (multiple domain)', naoAmnestico: 'Frequentemente rebaixada — TMT-B muito acima do P50, fluência semântica baixa, dificuldade de flexibilidade' },
+  { dominio: 'Linguagem (Boston Naming, fluência semântica)', amnestico: 'Preservada (single domain) ou minimamente rebaixada (multiple domain)', naoAmnestico: 'Pode ser o domínio primariamente afetado — anomia, falhas de evocação léxica, fluência semântica rebaixada (sugere DFT variante linguagem)' },
+  { dominio: 'Visuoespacial (Rey figura cópia, cubos)', amnestico: 'Preservada (single domain) ou rebaixada (multiple domain)', naoAmnestico: 'Pode ser o domínio primariamente afetado — déficit em Rey cópia, julgamento de linhas (sugere DCL ou Alzheimer variante posterior)' },
+  { dominio: 'Velocidade de processamento (códigos, símbolos)', amnestico: 'Preservada (single) ou rebaixada (multiple)', naoAmnestico: 'Pode ser primariamente afetada — sugere demência vascular ou DCL' },
+  { dominio: 'Padrão temporal em RAVLT', amnestico: 'Curva A1-A5 baixa, intrusões frequentes, baixo benefício de reconhecimento', naoAmnestico: 'Curva A1-A5 dentro do esperado, sem intrusões, benefício de reconhecimento adequado' },
+  { dominio: 'Atenção sustentada', amnestico: 'Geralmente preservada em single domain', naoAmnestico: 'Frequentemente comprometida — flutuação atencional sugere DCL' },
+  { dominio: 'Hipótese etiológica predominante', amnestico: 'Doença de Alzheimer prodrômica — risco de conversão 10-15% ao ano (Petersen, 2024)', naoAmnestico: 'Heterogêneo — DCL, frontotemporal, vascular, Alzheimer atípico' }
+];
+
+const tabelaTrajetoria = [
+  { aspecto: 'Trajetória mais provável', amnestico: 'Conversão para doença de Alzheimer (10-15% ao ano em amnéstico multiple)', naoAmnestico: 'Conversão para DCL, frontotemporal, vascular ou Alzheimer atípico' },
+  { aspecto: 'Biomarcador plasma p-tau217 (Ashton 2024)', amnestico: 'Frequentemente positivo quando hipótese é Alzheimer — apoia indicação de modificadores de doença', naoAmnestico: 'Frequentemente negativo — orienta investigação de outras etiologias' },
+  { aspecto: 'Perfil A/T/N (Jack 2024)', amnestico: 'A+/T+ define Alzheimer biológico — candidato a lecanemab/donanemab', naoAmnestico: 'A-/T- redireciona; A+/T- ou A-/T+ define perfis intermediários' },
+  { aspecto: 'Neuroimagem estrutural (RNM)', amnestico: 'Atrofia hipocampal e córtex temporal medial; volumetria hipocampal abaixo do esperado para idade', naoAmnestico: 'Padrão depende da etiologia — atrofia frontal/temporal anterior (DFT), córtex posterior (Alzheimer variante posterior), leucoaraiose extensa (vascular)' },
+  { aspecto: 'Neuroimagem funcional', amnestico: 'FDG-PET com hipometabolismo temporoparietal — padrão Alzheimer', naoAmnestico: 'FDG-PET variável conforme etiologia; DaT-SPECT em suspeita de DCL' },
+  { aspecto: 'Conduta clínica em 2026', amnestico: 'Encaminhar para confirmação biológica (PET amiloide ou líquor); se A+/T+, discutir lecanemab/donanemab com paciente e família', naoAmnestico: 'Diferencial ativo — articulação com neurologia para investigação de DCL (com critérios McKeith), DFT (critérios Rascovsky), vascular (NINDS-AIREN)' },
+  { aspecto: 'Reavaliação neuropsicológica', amnestico: 'Anual; semestral se em modificador de doença ou progressão rápida', naoAmnestico: 'Anual; intervalo menor se há suspeita de DCL (flutuação cognitiva é marcador)' },
+  { aspecto: 'Implicação para paciente e família', amnestico: 'Janela de planejamento (procuração, testamento vital), engajamento em prevenção (Livingston 2024 — 14 fatores), discussão de tratamento modificador', naoAmnestico: 'Janela para diagnóstico diferencial ativo — etiologia define manejo (rivastigmina em DCL, abordagem específica em DFT, controle vascular)' },
+  { aspecto: 'Estabilidade ou progressão', amnestico: 'Trajetória mais previsível — declínio linear quando há Alzheimer subjacente', naoAmnestico: 'Trajetória mais variável — pode ter platô, flutuação ou progressão variável conforme etiologia' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'CCL amnéstico vs não-amnéstico: classificação Petersen 2024, perfil neuropsicológico e trajetória com biomarcadores',
+  description: 'Comparativo entre os subtipos de Comprometimento Cognitivo Leve segundo Petersen (2024). Definição, perfil neuropsicológico por domínio, trajetória clínica, integração com p-tau217 e A/T/N, conduta em 2026.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'CCL amnéstico vs não-amnéstico' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaReab = AREAS.find(a => a.id === 'reabilitacao-neuropsicologica')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+---
+
+<Base
+  title="CCL amnéstico vs não-amnéstico — classificação Petersen 2024, perfil neuropsicológico e trajetória com biomarcadores"
+  description="Comparativo entre subtipos de Comprometimento Cognitivo Leve segundo Petersen (2024, Neurology). Definição operacional, perfil neuropsicológico por domínio (RAVLT, TMT, Boston Naming, Rey figura), trajetória clínica, integração com p-tau217 (Ashton 2024) e A/T/N (Jack 2024), conduta em 2026.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'CCL amnéstico vs não-amnéstico' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Neuropsicologia geriátrica</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Comprometimento Cognitivo Leve amnéstico vs não-amnéstico: como o subtipo orienta hipótese, biomarcador e conduta em 2026</h1>
+          <p class="mt-3 text-ink-700 text-lg">A revisão de Petersen (2024) reorganiza a classificação clínica de CCL e a articula com biomarcadores plasmáticos e o framework A/T/N revisto. O subtipo deixa de ser detalhe técnico e passa a definir a estratégia de investigação e de tratamento.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="CCL amnéstico tem déficit em memória episódica como eixo (RAVLT, Logical Memory, Rey figura), taxa de conversão para Alzheimer de 10-15% ao ano e perfil A/T/N frequentemente A+/T+ — candidato a discussão de lecanemab ou donanemab. CCL não-amnéstico tem déficit em outros domínios (executivo, linguagem, visuoespacial, velocidade), perfil etiológico heterogêneo (DCL, frontotemporal, vascular, Alzheimer atípico) e exige diferencial ativo com biomarcador e neuroimagem. A classificação deixou de ser nomenclatura — em 2026, define a hipótese etiológica, a indicação de p-tau217 plasmático e a estratégia clínica."
+        fontes={["Petersen, 2024 (Neurology)", "Ashton et al., 2024 (Nature Medicine)", "Jack et al., 2024 (Lancet Neurology)"]}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que a distinção importa em 2026</h2>
+        <p>
+          A revisão dos critérios diagnósticos de CCL por Petersen (2024, *Neurology*) mantém a estrutura clássica — queixa cognitiva, déficit objetivo em pelo menos um domínio, preservação de atividades instrumentais, ausência de demência — mas reforça a importância clínica da classificação por subtipo. Amnéstico single domain (déficit isolado em memória episódica), amnéstico multiple domain (memória + outro), não-amnéstico single domain (um domínio que não a memória) e não-amnéstico multiple domain (dois ou mais sem memória) não são variações cosméticas. São hipóteses etiológicas embutidas: amnéstico aponta para doença de Alzheimer prodrômica como diagnóstico mais provável; não-amnéstico amplia o leque para demência por corpos de Lewy, frontotemporal, vascular ou Alzheimer com apresentação atípica.
+        </p>
+        <p>
+          A integração com biomarcadores reescreve a equação. Ashton et al. (2024, *Nature Medicine*) consolidaram p-tau217 plasmático com AUC de 0,96 para detectar patologia amiloide cerebral, em coorte populacional ampla (BioFINDER-2 e replicações). Jack et al. (2024, *The Lancet Neurology*) revisaram o framework A/T/N e priorizam p-tau217 como indicador de tau, definindo Alzheimer como diagnóstico biológico mesmo em fase pré-clínica. A combinação subtipo + perfil biológico é o que orienta o que fazer a seguir: paciente com CCL amnéstico multiple domain + A+/T+ é candidato a discussão de modificadores de doença (van Dyck et al., 2023, *NEJM*, CLARITY-AD; Mintun et al., 2024, *JAMA*, TRAILBLAZER-ALZ 2); paciente com CCL não-amnéstico + A-/T- precisa de investigação ampliada para outras etiologias.
+        </p>
+        <p>
+          Para o neuropsicólogo, isso eleva o padrão técnico. A bateria precisa cobrir todos os domínios (não pode ser bateria abreviada que detecta apenas memória), a classificação precisa ser explícita no laudo (não basta "CCL"), e a articulação com biomarcador e neuroimagem é parte do raciocínio clínico. Em 2026, laudo de CCL sem subtipo classificado e sem articulação com perfil biológico está fora do padrão de cuidado.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Definição e critérios Petersen 2024</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">CCL amnéstico</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CCL não-amnéstico</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaCriterios.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.amnestico}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.naoAmnestico}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">A bateria neuropsicológica distingue os subtipos</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A classificação por subtipo depende de instrumentação adequada. Bateria abreviada — apenas MoCA + dígitos — não distingue amnéstico de não-amnéstico com segurança. A bateria precisa cobrir os cinco domínios principais: memória episódica (RAVLT, Logical Memory I e II, Rey figura reprodução), função executiva (TMT-B, Wisconsin, fluência verbal fonêmica e semântica, Stroop), linguagem (Boston Naming Test 60 itens, token test, fluência semântica), visuoespacial (Rey figura cópia, cubos da WAIS-IV, julgamento de orientação de linhas) e velocidade de processamento (códigos e símbolos da WAIS-IV). A documentação por z-score em relação à norma brasileira pareada por idade e escolaridade permite identificar quais domínios estão abaixo de 1 desvio-padrão — o critério operacional para CCL.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O padrão temporal em RAVLT é particularmente informativo. Em CCL amnéstico, a curva A1-A5 é rebaixada com platô precoce, a recuperação tardia é gravemente afetada e o benefício de pistas semânticas ou de reconhecimento é limitado — perfil compatível com lesão temporal medial bilateral, típica de Alzheimer prodrômico. Em CCL não-amnéstico, a curva A1-A5 mantém-se dentro do esperado e a recuperação tardia é adequada; o déficit, quando presente, aparece em domínios não-mnemônicos. Esse padrão diferencial é parte central do laudo.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Perfil neuropsicológico diferencial por domínio</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Domínio cognitivo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">CCL amnéstico</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CCL não-amnéstico</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPerfil.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dominio}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.amnestico}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.naoAmnestico}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Trajetória clínica e integração com biomarcadores</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A trajetória prognóstica diverge entre os subtipos. Em CCL amnéstico multiple domain com p-tau217 plasmático positivo e perfil A/T/N A+/T+, a hipótese de Alzheimer prodrômico é forte, com taxa de conversão para demência por Alzheimer entre 10 e 15% ao ano (Petersen, 2024). Esse cenário define janela para discussão de modificadores de doença: lecanemab no CLARITY-AD desacelerou em 27% o declínio em CDR-SB (van Dyck et al., 2023, *NEJM*); donanemab no TRAILBLAZER-ALZ 2 desacelerou em 35% em iADRS, com efeito superior em carga de tau baixa-intermediária (Mintun et al., 2024, *JAMA*). A indicação depende de critérios adicionais — APOE genotipagem, RNM baseline para microhemorragias, comorbidades, acesso, preferência — mas o subtipo amnéstico é precondição.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em CCL não-amnéstico, o diferencial é ativo. Déficit visuoespacial e executivo precoces sugerem demência por corpos de Lewy — investigar flutuação cognitiva, alucinações visuais bem formadas, parkinsonismo, distúrbio comportamental do sono REM (critérios McKeith et al., 2017). Alteração executiva e comportamental marcada sugere demência frontotemporal variante comportamental — critérios Rascovsky 2011 com cinco de seis itens (desinibição, apatia, perda de empatia, comportamentos perseverativos, hiperoralidade, perfil neuropsicológico executivo). Alteração de linguagem progressiva sugere afasia primária progressiva variantes não-fluente, semântica ou logopênica. Déficit em velocidade de processamento com leucoaraiose extensa em RNM sugere demência vascular (NINDS-AIREN). A integração de bateria, biomarcador e neuroimagem é o que orienta a hipótese.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em ambos os subtipos, a Comissão Lancet de Prevenção da Demência (Livingston et al., 2024, *The Lancet*) consolida 14 fatores modificáveis responsáveis por 45% dos casos de demência potencialmente evitáveis — intervenção multidomínio (controle de HAS, DM, audição, exercício físico, engajamento social e cognitivo, sono, alimentação) reduz risco em coortes seguidas e é parte do plano em qualquer subtipo de CCL.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Trajetória clínica, biomarcadores e conduta em 2026</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Aspecto</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">CCL amnéstico</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CCL não-amnéstico</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaTrajetoria.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.aspecto}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.amnestico}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.naoAmnestico}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card p-6 border-l-4 border-brand-700">
+          <p class="text-xs uppercase tracking-wider font-semibold text-brand-700 mb-2">CCL amnéstico</p>
+          <h3 class="font-display font-semibold text-lg text-ink-900">Memória episódica como eixo</h3>
+          <p class="text-sm text-ink-700 mt-3">
+            Déficit em memória episódica detectado por RAVLT, Logical Memory e Rey figura — curva A1-A5 baixa, recuperação tardia gravemente afetada, baixo benefício de pistas. Hipótese predominante: Alzheimer prodrômico. Em multiple domain, memória + outro domínio. Trajetória mais previsível, com taxa de conversão para Alzheimer de 10-15% ao ano. Candidato a investigação biológica com p-tau217 plasmático e discussão de modificadores de doença quando A+/T+.
+          </p>
+        </div>
+        <div class="card p-6 border-l-4 border-sun-500">
+          <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">CCL não-amnéstico</p>
+          <h3 class="font-display font-semibold text-lg text-ink-900">Outros domínios como eixo</h3>
+          <p class="text-sm text-ink-700 mt-3">
+            Déficit em domínio que não a memória — executivo (TMT-B, Wisconsin), linguagem (Boston Naming), visuoespacial (Rey figura cópia) ou velocidade. Hipóteses heterogêneas: demência por corpos de Lewy, frontotemporal, vascular ou Alzheimer atípico. Diferencial ativo com biomarcadores específicos, neuroimagem estrutural e funcional, critérios McKeith, Rascovsky ou NINDS-AIREN. Trajetória variável; conduta individualizada por etiologia.
+          </p>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Duas pacientes, dois subtipos, duas trajetórias</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Maria, 73 anos, escolaridade superior completa, professora aposentada, queixa de esquecimento progressivo há 12 meses. Filha confirma e descreve repetição de perguntas e perda de objetos. IADL com leve alteração em finanças. MoCA 23/30, MEEM 26, CDR 0,5. RAVLT com A5=7 (esperado mais de 11) e recuperação tardia 2/15. Logical Memory I e II abaixo do esperado. Rey figura cópia preservada, reprodução tardia 10/36. TMT-B no P25, Boston Naming 51/60, Wisconsin normal. Classificação: CCL amnéstico multiple domain (memória + leve função executiva). p-tau217 plasmático: 2,1 pg/mL (positivo). Perfil A/T/N: A+/T+. Hipótese: Alzheimer prodrômico. Encaminhamento para neurologista para discussão de modificador de doença, paralela a plano de prevenção Livingston (audiometria, controle de HAS, exercício, engajamento social).
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Joana, 68 anos, escolaridade média completa, comerciante aposentada, queixa de "lentidão" e "dificuldade de fazer várias coisas ao mesmo tempo" há 10 meses. Marido confirma e descreve episódios em que viu vultos pela casa e teve sonhos agitados nos últimos meses, com movimentos durante o sono. IADL preservada. MoCA 24/30, MEEM 27, CDR 0,5. RAVLT preservada (A5=12, recuperação tardia 11/15). TMT-B no P15 (rebaixado), Rey figura cópia 28/36 (rebaixada para escolaridade), cubos da WAIS-IV no P20, fluência semântica 11 (rebaixada). Boston Naming preservado. Classificação: CCL não-amnéstico multiple domain (executivo + visuoespacial). p-tau217 plasmático: 0,6 pg/mL (negativo). Perfil A/T/N: A-/T-. Hipótese: demência por corpos de Lewy em estágio prodrômico (critérios McKeith ainda não preenchidos plenamente — flutuação cognitiva possível, alucinações visuais incipientes, distúrbio comportamental do sono REM provável). Encaminhamento para neurologia para DaT-SPECT e polissonografia, plano de seguimento semestral.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Casos compostos ilustrativos. A diferença prática entre os dois subtipos não é nomenclatura — é o caminho clínico, o biomarcador indicado, a hipótese etiológica e o plano com o paciente e a família.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes na classificação</h2>
+        <ol class="mt-4 space-y-3 text-sm text-ink-700 list-decimal list-inside marker:font-bold marker:text-brand-700">
+          <li><strong>Reportar apenas "CCL" sem subtipo.</strong> A classificação amnéstico/não-amnéstico e single/multiple domain é parte do laudo em 2026. Sem ela, a hipótese etiológica fica sem orientação e o plano clínico fica sem direção.</li>
+          <li><strong>Concluir CCL amnéstico com bateria abreviada.</strong> MoCA + dígitos não distingue subtipos. Bateria precisa cobrir os cinco domínios — memória episódica, função executiva, linguagem, visuoespacial, velocidade.</li>
+          <li><strong>Solicitar p-tau217 em CCL não-amnéstico sem hipótese clara de Alzheimer.</strong> Ashton et al. (2024) validam o biomarcador para CCL com hipótese de Alzheimer subjacente; uso fora de indicação tem rendimento clínico limitado.</li>
+          <li><strong>Ignorar diferenciais em não-amnéstico.</strong> Flutuação cognitiva, alucinações visuais, alteração de marcha, distúrbio comportamental do sono REM, alteração de personalidade — sinais que ativam diferencial com DCL, frontotemporal, vascular. Sem essa busca, hipótese de Alzheimer atípico é fechada precocemente.</li>
+          <li><strong>Encerrar avaliação sem reavaliação programada.</strong> CCL é entidade longitudinal — Petersen (2024) destaca que mudança intra-sujeito de mais de 0,5 desvio-padrão entre avaliações é sinal de progressão. Sem reavaliação anual, CCL estável e CCL progressivo ficam indistinguíveis.</li>
+        </ol>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">O subtipo não é nomenclatura — é hipótese etiológica embutida.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>CCL amnéstico orienta hipótese de Alzheimer prodrômico — bateria com RAVLT e Logical Memory, p-tau217 plasmático, perfil A/T/N, discussão de modificadores de doença em A+/T+.</li>
+          <li>CCL não-amnéstico amplia o diferencial — DCL, frontotemporal, vascular, Alzheimer atípico — com critérios específicos (McKeith, Rascovsky, NINDS-AIREN) e biomarcadores complementares.</li>
+          <li>Bateria precisa cobrir cinco domínios; classificação por subtipo precisa estar no laudo; reavaliação longitudinal é o que diferencia CCL estável de CCL progressivo.</li>
+          <li>Em 2026, laudo de CCL sem subtipo e sem articulação com biomarcador está fora do padrão de cuidado em centros de referência.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para neuropsicólogas e neuropsicólogos que conduzem essa avaliação, o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo do IPOG e o MBA em Neurociência e Psicologia Positiva consolidam fundamento técnico. Próximo passo: confirmar grade e turma vigentes no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-ccl-biomarcadores-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de CCL com biomarcadores em 2026</a></li>
+          <li><a href="/faq/lecanemab-donanemab-brasil-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Lecanemab, donanemab e modificadores de doença</a></li>
+          <li><a href="/comparativos/reabilitacao-neuropsi-vs-cst-estimulacao" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · Reabilitação Cicerone vs CST</a></li>
+          <li><a href="/comparativos/neuropsicologia-vs-reabilitacao" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · Neuropsicologia vs Reabilitação Neuropsicológica</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG mantém o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo e o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano em formato Ao Vivo síncrono com corpo docente nominal. Para grade vigente, consulte o portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaReab.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaReab.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Petersen RC. (2024). Mild cognitive impairment: update. Neurology.</li>
+          <li>Ashton NJ, et al. (2024). Plasma p-tau217 for Alzheimer diagnosis. Nature Medicine, 30:1710-1718.</li>
+          <li>Jack CR Jr, et al. (2024). Revised criteria and A/T/N. Lancet Neurology, 23:116-127.</li>
+          <li>van Dyck CH, et al. (2023). Lecanemab in early Alzheimer disease. NEJM, 388:9-21.</li>
+          <li>Mintun MA, et al. (2024). Donanemab in early symptomatic Alzheimer disease. JAMA, 330:2302-2313.</li>
+          <li>Livingston G, et al. (2024). Dementia prevention: 14 modifiable factors. The Lancet, 404:1339-1349.</li>
+          <li>McKeith IG, et al. (2017). Diagnosis of dementia with Lewy bodies. Neurology, 89:88-100.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>
+</content>
+</invoke>

@@ -1,0 +1,321 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Qual é o cronograma oficial de vigência da NR-1 atualizada pela Portaria MTE 1.419/2024 em 2026?',
+    a: 'A Portaria MTE 1.419/2024, publicada em agosto de 2024, atualizou o capítulo 1.5 da NR-1 (Gerenciamento de Riscos Ocupacionais) com inclusão explícita de riscos psicossociais. A vigência inicial estava prevista para 26 de maio de 2025, mas foi prorrogada pela Portaria MTE 765/2025 para 26 de maio de 2026 (informação confirmada por análise jurídica publicada em maio de 2026 por Kimura Salmeron Advogados). A partir dessa data, identificação, avaliação, registro e controle de fatores como sobrecarga, assédio moral, metas inalcançáveis, baixa autonomia e pressão por resultados passam a ser obrigatórios no PGR de empresas brasileiras de todos os portes. Confirme a redação vigente no portal gov.br antes de fechar cronograma interno, pois ajustes pontuais podem ocorrer sem revogação da regra geral.'
+  },
+  {
+    q: 'Quem é responsável tecnicamente pela parte psicossocial do PGR sob a NR-1 atualizada?',
+    a: 'A NR-1 não exige por norma um único profissional, mas a parte psicossocial demanda competência técnica em psicometria, riscos organizacionais e Resolução CFP 11/2018 sobre atuação de psicóloga ou psicólogo em organizações. Na prática, três perfis dominam: psicóloga ou psicólogo organizacional com pós-graduação em POT e formação aplicada em NR-1; médica ou médico do trabalho com leitura ampliada em saúde mental ocupacional; equipe SESMT multidisciplinar com coordenação técnica do componente psicossocial atribuída a psicóloga ou psicólogo. A assinatura técnica precisa identificar o profissional pelo CRP ou CRM, registrar método aplicado e datar a documentação. Equipes terceirizadas (consultorias) devem comprovar vínculo do profissional responsável e validade do registro.'
+  },
+  {
+    q: 'A ISO 45003:2021 substitui a NR-1 ou é apenas referência?',
+    a: 'A ISO 45003:2021 (Saúde e segurança ocupacional — Gestão de riscos psicossociais) é norma internacional voluntária e referência técnica de alta qualidade, mas não substitui a NR-1. A norma brasileira é regulamento de cumprimento obrigatório com força de fiscalização do MTE; a ISO 45003 é diretriz que orienta a construção do sistema sem força regulatória direta. Na prática, empresas que adotam ISO 45003 como espinha dorsal e ajustam para os requisitos da NR-1 conseguem economizar trabalho — a estrutura de identificação, avaliação, controle hierárquico e monitoramento se sobrepõe substancialmente. Auditoria ISO 45001/45003 não dispensa fiscalização MTE, e vice-versa.'
+  },
+  {
+    q: 'Como mapear riscos psicossociais com COPSOQ III e instrumentos validados em PT-BR?',
+    a: 'O COPSOQ III (Copenhagen Psychosocial Questionnaire, versão de Burr et al., 2019) é instrumento internacional consolidado para mapeamento de risco psicossocial em escala ocupacional. Tem versão longa (100+ itens), intermediária (~70) e curta (~30). Validação portuguesa por Rosário et al. (2017) é referência mais próxima do português brasileiro; adaptações para PT-BR estão em curso por grupos da Fundacentro e da Fiocruz. O instrumento mapeia demandas (cognitiva, emocional, quantitativa), recursos (autonomia, suporte, reconhecimento), e desfechos (burnout, estresse, satisfação). Para mapeamento de burnout puro, combine com CBI (Kristensen et al., 2005) ou BAT (Schaufeli et al., 2020). Cite referência completa no relatório técnico.'
+  },
+  {
+    q: 'Como hierarquizar as medidas de controle de riscos psicossociais?',
+    a: 'A hierarquia de controle clássica da SST aplica-se também ao componente psicossocial. Primeiro nível: eliminar a fonte (reestruturar processo, redistribuir carga, encerrar prática de assédio identificada). Segundo: controles administrativos (políticas, treinamento de líderes, ajuste de jornada, rotação). Terceiro: capacitação individual (gestão de tempo, mindfulness, ACT, psicoeducação). Quarto: monitoramento contínuo (escalas periódicas, indicadores hard de absenteísmo, rotatividade, F40-F48). A norma rejeita expressamente a lógica de transferir o ônus de saúde mental para o indivíduo — programa "bem-estar" sem reestruturação de processo é cosmético e auditável como insuficiente. Documente cada nível com responsável e prazo.'
+  },
+  {
+    q: 'Qual é a documentação mínima exigida para parte psicossocial do PGR sob NR-1?',
+    a: 'O PGR psicossocial precisa conter: (1) inventário de fatores psicossociais identificados por setor e função; (2) método de avaliação documentado com instrumento citado por referência completa (BAT, CBI, OLBI, MBI, COPSOQ III), tamanho amostral por agrupamento, data e responsável técnico; (3) plano de ação com medidas hierarquizadas (eliminação > controle administrativo > capacitação > monitoramento), responsáveis nominais e prazos; (4) registros de retorno aos trabalhadores (ata de devolutiva, lista de presença); (5) cronograma de revisão periódica (semestral ou anual). Sem rastro auditável, a empresa fica exposta em fiscalização e em ação trabalhista por nexo causal.'
+  },
+  {
+    q: 'Como integrar a parte psicossocial com a NR-1 geral, NR-17 (ergonomia) e outras normas?',
+    a: 'A NR-1 é norma geral que dispõe sobre o GRO; a NR-17 cobre ergonomia organizacional e psicossocial em parte. As duas conversam de modo natural — sobrecarga, ritmo, conteúdo do trabalho e organização temporal aparecem em ambas. A boa prática técnica é construir o PGR único com módulo psicossocial alimentado por inventário NR-1 + Análise Ergonômica do Trabalho (AET) da NR-17. NRs setoriais (NR-32 para saúde, NR-31 para rural, NR-30 para aquaviário) podem agregar exigências específicas. Quanto mais integrado o sistema de gestão de SST, menor o retrabalho.'
+  },
+  {
+    q: 'Qual o impacto da NR-1 atualizada sobre o eSocial?',
+    a: 'O eSocial recebe eventos de SST (S-2210 acidente de trabalho, S-2220 monitoramento de saúde, S-2240 condições ambientais de trabalho, S-2245 treinamentos). Riscos psicossociais devem aparecer no S-2240 como agentes nocivos de natureza psicossocial, conforme atualização do leiaute do eSocial em curso. Empresas devem acompanhar publicação de versões do Manual de Orientação do eSocial (MOS) ao longo de 2026 para confirmar campos específicos. Eventos enviados ao eSocial são prova documental que serve tanto à fiscalização do MTE quanto à perícia previdenciária — coerência entre PGR físico e dados do eSocial é parte da boa governança.'
+  },
+  {
+    q: 'Como a fiscalização do MTE vai operar a NR-1 psicossocial em 2026?',
+    a: 'A fiscalização opera por auditoria fiscal do trabalho — Auditor Fiscal do Trabalho ingressa na empresa, solicita PGR, documentação de avaliação de riscos, registros de capacitação, atas de CIPA e evidência de controle. Em risco psicossocial, espera-se atenção a: (a) existência do inventário com data; (b) método citado por referência; (c) hierarquia de controle aplicada (não apenas treinamento); (d) registros de devolutiva aos trabalhadores. Multas seguem a NR-28 (Anexo II), escalonadas por número de empregados e gravidade. Em 2026, a expectativa é fiscalização majoritariamente orientadora no primeiro ciclo, com autuação concentrada em casos de descumprimento sistêmico — confira orientação técnica publicada pelo MTE.'
+  },
+  {
+    q: 'Qual a relação entre NR-1 psicossocial e CID-11 QD85 (burnout)?',
+    a: 'A CID-11 (Organização Mundial da Saúde, 2019, vigente no Brasil desde 2022 via SUS) classifica burnout como QD85 — fenômeno ocupacional, não doença mental. A NR-1 atualizada alinha-se à CID-11 ao reconhecer risco psicossocial como categoria de risco ocupacional gerenciável. Em perícia previdenciária e trabalhista, a coexistência de avaliação ocupacional (NR-1 + escala validada) e diagnóstico clínico CID-10 F32/F41/F43 ou CID-11 QD85 sustenta nexo causal de modo significativamente mais robusto. Empresas com PGR psicossocial documentado têm posição jurídica melhor — não é blindagem absoluta, mas é evidência de diligência prévia em contraditório.'
+  },
+  {
+    q: 'Em maio de 2026 o TRT-2 decidiu sobre dano moral presumido em burnout. O que muda na prática?',
+    a: 'O TRT-2 reconheceu, em julgado de maio de 2026, que o dano moral decorrente de burnout é presumido quando comprovados o nexo causal entre adoecimento e condições de trabalho e a conduta culposa do empregador (incluindo omissão em gestão de riscos psicossociais). A decisão dispensa a prova de prejuízo específico — basta o nexo e a culpa. Combinada com a vigência plena da NR-1 psicossocial em 26 de maio de 2026, a decisão eleva significativamente o risco jurídico para empresas sem PGR atualizado. Para a defesa empresarial, PGR psicossocial documentado e auditável é o melhor anteparo. Para o reclamante, laudo clínico de burnout coerente com escala validada e nexo ocupacional documentado é peça central.'
+  },
+  {
+    q: 'Quem pode assinar tecnicamente o componente psicossocial do PGR?',
+    a: 'A NR-1 não nomina profissão exclusiva, mas pela natureza técnica e pela Resolução CFP 11/2018 (que regulamenta a atuação de psicólogo organizacional), a assinatura técnica do componente psicossocial é, na prática, atribuída a psicóloga ou psicólogo com CRP ativo, com formação aplicada em POT, riscos psicossociais e instrumentos validados (BAT, CBI, OLBI, MBI, COPSOQ III). Médica ou médico do trabalho pode coordenar o documento global do PGR e assinar a integração; engenheira ou engenheiro de segurança coordena o GRO físico e ergonômico. Em consultorias terceirizadas, o profissional responsável precisa estar identificado nominalmente, com CRP/CRM e contrato vigente. Equipes sem psicóloga ou psicólogo na assinatura do componente psicossocial ficam tecnicamente vulneráveis.'
+  },
+  {
+    q: 'Programas de bem-estar (yoga, mindfulness, ginástica laboral) cumprem a NR-1 psicossocial?',
+    a: 'Não, isoladamente. A NR-1 exige hierarquia de controle — eliminação, controle administrativo, capacitação, monitoramento — e expressamente desloca o ônus para reestruturação organizacional, não para responsabilização individual. Programa de yoga sem revisão de carga de trabalho, mindfulness sem ajuste de gestão de líderes, ginástica laboral sem mudança de jornada não cumprem a norma. Esses programas podem entrar como quarto nível (capacitação individual) em PGR maduro, mas precisam vir acompanhados de medidas estruturais nos níveis superiores. Auditoria fiscal que encontra apenas "wellness" sem reestruturação considera não-conformidade.'
+  },
+  {
+    q: 'Como funciona o ciclo de monitoramento e revisão exigido pela NR-1?',
+    a: 'O GRO opera em ciclo PDCA — planejar (inventário), executar (controles), monitorar (escalas, indicadores hard, ouvidoria), revisar (semestral ou anual). A frequência mínima recomendável de reaplicação de escalas validadas é anual, com janela semestral em setores de alto risco (saúde, atendimento emergencial). Indicadores intermediários — rotatividade, absenteísmo, afastamentos F40-F48 e QD85, NPS interno, índice de assédio relatado — entram em painel mensal com revisão trimestral. Cada ciclo gera ata documentada, plano ajustado e devolutiva aos trabalhadores. Sistema sem ciclo formal é não-conformidade auditável mesmo com inventário inicial bem feito.'
+  },
+  {
+    q: 'Como articular a NR-1 com o programa de retorno ao trabalho pós-afastamento por burnout?',
+    a: 'O retorno ao trabalho pós-afastamento por F32/F43 ou QD85 exige plano formal coordenado entre psicologia, medicina do trabalho e gestão direta. A NR-1 atualizada cobra que o retorno seja antecedido por Análise Ergonômica do Trabalho (AET) atualizada do posto, redução gradual de carga (50% nas duas primeiras semanas, escalonamento de 4-8 semanas conforme caso), revisão de gestão direta (líder treinado em saúde mental ocupacional), e monitoramento com BAT ou CBI a 30, 60 e 90 dias. Sem plano formal, a recidiva chega a 40% em 6 meses, conforme literatura ocupacional (linha base em estudos brasileiros e europeus). O retorno seguro é parte da governança que protege empresa e trabalhador.'
+  },
+  {
+    q: 'Qual a relação entre LGPD e dados psicossociais coletados sob NR-1?',
+    a: 'Dados psicossociais são dados pessoais sensíveis (LGPD Art. 5º, II — relacionados à saúde). A coleta exige base legal própria (cumprimento de obrigação regulatória pela NR-1 + proteção da vida e da saúde), consentimento esclarecido sobre tratamento, e procedimentos de segurança da informação. Resultados individuais não devem circular fora do componente clínico-ocupacional autorizado; relatórios gerenciais devem ser agregados (mínimo 5-10 respondentes por recorte) para preservar anonimização funcional. RH não recebe escore individual sem consentimento expresso. Encarregada ou encarregado de dados (DPO) deve mapear o fluxo de coleta e armazenamento, com retenção limitada ao prazo legal e descarte documentado.'
+  },
+  {
+    q: 'Onde se forma psicóloga ou psicólogo organizacional para conduzir NR-1 psicossocial?',
+    a: 'Formação aplicada combina três camadas. Camada teórica: bases em Psicologia Organizacional e do Trabalho (POT), Psicologia da Saúde Ocupacional, psicometria aplicada, instrumentos validados (BAT, CBI, OLBI, MBI, COPSOQ III), Resolução CFP 11/2018 e legislação trabalhista brasileira (NR-1, NR-17, CLT, eSocial). Camada prática: condução de PGR psicossocial sob supervisão, redação de relatório técnico, articulação com SESMT e jurídico. Camada de evolução continuada: ISO 45003, atualizações regulatórias do MTE, jurisprudência trabalhista em saúde mental. O IPOG mantém MBA em Psicologia Organizacional e do Trabalho com programa que articula POT, riscos psicossociais e implementação prática da NR-1, em formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'NR-1 e saúde mental no PGR em 2026: FAQ prática para psicólogos organizacionais',
+  description: 'Dezessete perguntas frequentes sobre implementação prática da NR-1 atualizada pela Portaria MTE 1.419/2024 em 2026: cronograma, responsabilidade técnica, ISO 45003, COPSOQ III, hierarquia de controle, eSocial, fiscalização MTE e relação com CID-11 QD85.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'NR-1 implementação prática 2026', item: SITE.url + '/faq/nr1-implementacao-pratica-2026-faq/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const adjacent = AREAS.filter(a => a.cluster === 'pot-bem-estar').slice(0, 4);
+---
+<Base
+  title="NR-1 e saúde mental no PGR em 2026: FAQ prática para psicólogos organizacionais"
+  description="Dezessete perguntas frequentes sobre implementação da NR-1 atualizada pela Portaria MTE 1.419/2024 a partir de 26 de maio de 2026 — cronograma, ISO 45003, COPSOQ III, hierarquia de controle, eSocial e fiscalização.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'NR-1 implementação prática 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · NR-1 e saúde mental no PGR · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">NR-1 e saúde mental no PGR em 2026: FAQ prática para psicólogos organizacionais.</h1>
+          <TLDR
+            resposta="A NR-1 atualizada pela Portaria MTE 1.419/2024 entra em vigor em 26 de maio de 2026 (Portaria MTE 765/2025), tornando obrigatório identificar, avaliar e controlar riscos psicossociais no PGR; o TRT-2 já reconheceu em maio de 2026 dano moral presumido por burnout com nexo causal — empresas sem PGR psicossocial ficam expostas em fiscalização e contraditório."
+            fontes={["Portaria MTE 1.419/2024", "Portaria MTE 765/2025", "Kimura Salmeron (mai/2026) sobre julgado TRT-2"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Dezessete perguntas que SESMTs, psicólogos organizacionais e jurídicos fazem sobre implementação prática.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">17 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A NR-1 atualizada pela Portaria MTE 1.419/2024 exige inventário, avaliação, controle hierárquico e monitoramento de riscos psicossociais no PGR a partir de 26 de maio de 2026. O componente técnico psicossocial é, na prática, atribuição de psicóloga ou psicólogo com CRP ativo e formação aplicada (Resolução CFP 11/2018). Instrumentos validados (BAT, CBI, OLBI, MBI, COPSOQ III) sustentam o inventário; ISO 45003:2021 oferece estrutura técnica voluntária complementar. Programa de bem-estar sem reestruturação organizacional não cumpre a norma. PGR psicossocial documentado e auditável é o melhor anteparo em fiscalização do MTE e em contraditório trabalhista — o TRT-2 reconheceu em maio de 2026 dano moral presumido por burnout com nexo causal.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Referências canônicas para NR-1 psicossocial</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Referência</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Autor / Órgão / Ano</th>
+                <th class="text-left px-4 py-3">Etapa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Portaria MTE 1.419/2024</td>
+                <td class="px-4 py-3 text-ink-700">Atualização do capítulo 1.5 da NR-1 com riscos psicossociais</td>
+                <td class="px-4 py-3 text-ink-700">MTE, 2024</td>
+                <td class="px-4 py-3 text-ink-700">Norma vigente</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Portaria MTE 765/2025</td>
+                <td class="px-4 py-3 text-ink-700">Prorrogação da vigência para 26 de maio de 2026</td>
+                <td class="px-4 py-3 text-ink-700">MTE, 2025</td>
+                <td class="px-4 py-3 text-ink-700">Cronograma</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">ISO 45003:2021</td>
+                <td class="px-4 py-3 text-ink-700">Diretrizes técnicas para riscos psicossociais</td>
+                <td class="px-4 py-3 text-ink-700">ISO, 2021</td>
+                <td class="px-4 py-3 text-ink-700">Diretriz complementar</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">COPSOQ III</td>
+                <td class="px-4 py-3 text-ink-700">Questionário psicossocial multidimensional</td>
+                <td class="px-4 py-3 text-ink-700">Burr et al., 2019 (Safety and Health at Work)</td>
+                <td class="px-4 py-3 text-ink-700">Instrumento</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Resolução CFP 11/2018</td>
+                <td class="px-4 py-3 text-ink-700">Regulamentação do psicólogo organizacional</td>
+                <td class="px-4 py-3 text-ink-700">CFP, 2018</td>
+                <td class="px-4 py-3 text-ink-700">Atribuição técnica</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CID-11 QD85</td>
+                <td class="px-4 py-3 text-ink-700">Burnout como fenômeno ocupacional</td>
+                <td class="px-4 py-3 text-ink-700">OMS, 2019 (vigência BR 2022)</td>
+                <td class="px-4 py-3 text-ink-700">Codificação</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="sm:hidden text-xs text-ink-500 mt-2">Arraste a tabela para ver mais colunas.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/seguranca-e-saude-no-trabalho" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — Inspeção do Trabalho e SST</a></li>
+          <li><a href="https://www.iso.org/standard/64283.html" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISO 45003:2021 — saúde mental no trabalho</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://www.fundacentro.gov.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Fundacentro — pesquisa em SST</a></li>
+          <li><a href="https://icd.who.int/browse11" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CID-11 (OMS)</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/faq/burnout-cid11-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Burnout CID-11 (QD85)</p>
+            <p class="text-xs text-ink-700 mt-2">Conceito, diferencial, nexo causal e CID.</p>
+          </a>
+          <a href="/guias/escalas-burnout-bat-mbi-olbi-cbi" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Escalas BAT, MBI, OLBI e CBI</p>
+            <p class="text-xs text-ink-700 mt-2">Como escolher e aplicar instrumentos validados.</p>
+          </a>
+          <a href="/comparativos/bat-vs-mbi-burnout" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">BAT × MBI</p>
+            <p class="text-xs text-ink-700 mt-2">Base teórica, psicometria e cenários de uso.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">NR-1 psicossocial não é programa de bem-estar — é hierarquia de controle organizacional documentada.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Inventário com instrumento validado, plano de ação hierarquizado, monitoramento contínuo e ciclo de revisão. Sem rastro auditável, empresa fica exposta em fiscalização do MTE e em contraditório trabalhista. Para psicóloga ou psicólogo organizacional que pretende conduzir essa rotina, o MBA em POT do IPOG consolida fundamento técnico em riscos psicossociais e implementação prática da norma. Consulte ipog.edu.br para grade vigente.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBA em POT no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em POT</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG oferece MBA em Psicologia Organizacional e do Trabalho com módulos em NR-1 e riscos psicossociais.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.gov.br/trabalho-e-emprego/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.iso.org/standard/64283.html" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISO 45003</a></li>
+          <li><a href="https://icd.who.int/browse11" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CID-11 OMS</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

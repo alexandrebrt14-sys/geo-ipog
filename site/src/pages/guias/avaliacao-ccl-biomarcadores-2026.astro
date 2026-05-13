@@ -1,0 +1,395 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaReabNeuro = AREAS.find(a => a.id === 'reabilitacao-neuropsicologica')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Conduzir anamnese e caracterizar a queixa cognitiva com informante',
+    aplicacao: 'A entrevista inicial em comprometimento cognitivo leve (CCL) precisa caracterizar a queixa em três eixos: domínio cognitivo afetado (memória episódica, função executiva, linguagem, visuoespacial), curso temporal (início, duração, progressão) e impacto funcional (Petersen, 2024, *Neurology*). A informação de um informante próximo (cônjuge, filho, cuidador) é considerada parte do padrão, porque o paciente com CCL tende a subestimar o déficit em entrevista isolada — o Documento de Consenso Deterioro Cognitivo da SEN (2025) recomenda explicitamente entrevista paralela com informante. Documente: idade, escolaridade, ocupação prévia, comorbidades clínicas (HAS, DM, hipotireoidismo, depressão, déficit de B12), medicações com efeito anticolinérgico, padrão de sono, álcool, traumatismo craniano prévio, história familiar de demência. Aplique escala funcional FAQ-Pfeffer ou IADL para mapear independência em atividades instrumentais — em CCL, IADL está preservada ou minimamente afetada; alteração significativa sugere demência incipiente.',
+    armadilha: 'Aceitar queixa subjetiva sem informante e sem mensuração funcional. Sem essa triangulação, CCL com depressão associada é confundido com queda cognitiva primária — e CCL inicial com paciente anosognósico passa despercebido.'
+  },
+  {
+    n: 2,
+    titulo: 'Aplicar triagem com MoCA, MEEM e CDR ajustados a escolaridade',
+    aplicacao: 'A bateria de triagem combina três instrumentos canônicos. MoCA (Montreal Cognitive Assessment, versão 8.1 em português brasileiro validada por Memória et al., 2013) é mais sensível ao CCL que o MEEM, com ponto de corte ajustado por escolaridade: 26 para 12 anos ou mais, com 1 ponto adicional para 4-11 anos e 2 pontos para até 4 anos. MEEM (Mini-Exame do Estado Mental, normatização brasileira Brucki et al., 2003) mantém valor histórico e em pacientes com escolaridade muito baixa, com pontos de corte por faixa (20 para analfabetos, 25 para 5-8 anos, 26 para 9-11 anos, 28 para 12 ou mais). CDR (Clinical Dementia Rating, Morris 1993) com versão estruturada CDR-SB (Sum of Boxes) é o instrumento global por excelência: CDR 0 normal, CDR 0,5 CCL, CDR 1 demência leve. O CDR é aplicado em entrevista semiestruturada com paciente e informante, é o desfecho primário dos ensaios CLARITY-AD (van Dyck et al., 2023, *NEJM*) e TRAILBLAZER-ALZ 2 (Mintun et al., 2024, *JAMA*). Duração da triagem: 60-75 minutos.',
+    armadilha: 'Reportar "MoCA 26, dentro da norma" sem ajuste por escolaridade. Em paciente com formação universitária e desempenho prévio elevado, MoCA 26 é declínio relativo significativo — instrumento e ponto de corte exigem leitura contextualizada.'
+  },
+  {
+    n: 3,
+    titulo: 'Aplicar bateria neuropsicológica aprofundada com perfil por domínio',
+    aplicacao: 'A bateria aprofundada cobre os domínios necessários para classificar o subtipo de CCL (Petersen, 2024). Memória episódica: RAVLT (Rey Auditory Verbal Learning Test, normatização brasileira Malloy-Diniz et al.), Logical Memory I e II da WMS-IV, Rey figura complexa (cópia + reprodução imediata + tardia). Função executiva: TMT-A e TMT-B (Trail Making Test, Tombaugh 2004), Wisconsin Card Sorting Test (flexibilidade), fluência verbal fonêmica (FAS) e semântica (animais, frutas), torre de Londres ou Hanói (planejamento), Stroop. Linguagem: Boston Naming Test versão 60 itens (nomeação por confrontação), token test (compreensão). Visuoespacial: Rey figura complexa (cópia), cubos da WAIS-IV, julgamento de orientação de linhas. Velocidade de processamento: códigos e símbolos da WAIS-IV. Duração: 3-4 horas, frequentemente fracionadas em duas sessões. Documente z-scores por domínio em relação à norma brasileira pareada por idade e escolaridade, e mantenha registro para reavaliação anual — a trajetória longitudinal é mais informativa que o corte transversal isolado em CCL.',
+    armadilha: 'Aplicar apenas WAIS sem instrumentos específicos para memória episódica. CCL amnéstico — subtipo de maior risco de conversão para Alzheimer — exige RAVLT ou Logical Memory para detecção; WAIS sozinho subestima.'
+  },
+  {
+    n: 4,
+    titulo: 'Classificar segundo critérios Petersen 2024: amnéstico vs não-amnéstico, single vs multiple domain',
+    aplicacao: 'Os critérios diagnósticos de CCL revisados por Petersen (2024, *Neurology*) mantêm a estrutura clássica: queixa cognitiva (por paciente ou informante), declínio objetivo em pelo menos um domínio (mais de 1 desvio-padrão abaixo do esperado para idade e escolaridade), preservação de atividades instrumentais (ou alteração mínima), ausência de demência. A partir desses, a classificação por subtipo é determinada pelos resultados da bateria. Amnéstico single domain: déficit isolado em memória episódica. Amnéstico multiple domain: memória episódica + outro domínio (executivo, linguagem, visuoespacial). Não-amnéstico single domain: déficit em um domínio que não a memória (frequentemente executivo ou linguagem). Não-amnéstico multiple domain: dois ou mais domínios sem memória episódica. A classificação importa porque amnéstico single ou multiple domain tem risco maior de conversão para doença de Alzheimer (10-15% ao ano segundo Petersen 2024), enquanto não-amnéstico aponta para outras trajetórias possíveis (demência por corpos de Lewy, frontotemporal, vascular).',
+    armadilha: 'Reportar apenas "CCL" sem subtipo. A classificação amnéstico vs não-amnéstico e single vs multiple domain orienta a hipótese etiológica e a indicação ou não de biomarcador — laudo sem subtipo é incompleto para a clínica de 2026.'
+  },
+  {
+    n: 5,
+    titulo: 'Integrar biomarcador plasmático p-tau217 quando indicado',
+    aplicacao: 'Ashton et al. (2024, *Nature Medicine*) validaram p-tau217 plasmático em coorte populacional ampla (BioFINDER-2 e ramos paralelos), com AUC de 0,96 para detectar patologia amiloide cerebral (referência PET amiloide) e 0,94 para patologia tau (PET tau), superando p-tau181 e GFAP. Em CCL amnéstico, p-tau217 elevado tem valor preditivo positivo alto para conversão para Alzheimer em 3-5 anos. O kit Lumipulse foi liberado pela FDA em 2025 para uso clínico nos EUA; em 2026, plataformas similares (Simoa, Quanterix) estão disponíveis em laboratórios brasileiros de referência (Fleury, Dasa, HC-FMUSP). O psicólogo neuropsicólogo não solicita o biomarcador (atribuição médica), mas precisa entender a leitura: p-tau217 positivo + CCL amnéstico = perfil compatível com Alzheimer pré-clínico ou prodrômico, candidato a discussão de modificadores de doença (lecanemab, donanemab). p-tau217 negativo orienta busca de outras etiologias. A articulação com neurologista ou geriatra para solicitação é a precondição.',
+    armadilha: 'Solicitar p-tau217 indiscriminadamente. O biomarcador é caro (R$ 1.500 a R$ 3.500 em 2026 segundo tabela laboratórios privados), tem indicação clínica precisa (CCL com hipótese de Alzheimer subjacente) e pode confundir em paciente assintomático ou com queixa não objetivada — uso fora de indicação não é screening populacional.'
+  },
+  {
+    n: 6,
+    titulo: 'Aplicar critérios A/T/N revisados (Jack et al., 2024, Lancet Neurology)',
+    aplicacao: 'Os critérios A/T/N revisados (Jack et al., 2024, *The Lancet Neurology*) reformulam o framework biológico de Alzheimer. A (amiloide): positivo por PET amiloide, LCR Aβ42/40 ou plasma Aβ42/40. T (tau): positivo por PET tau, LCR p-tau ou plasma p-tau217 — esta revisão prioriza p-tau217 plasmático como indicador de tau. N (neurodegeneração): atrofia hipocampal em RNM, hipometabolismo em FDG-PET, ou neurofilamentos leves em plasma. A revisão adiciona estágio biológico (0-6) e perfil expandido para outras proteínas malformadas (alfa-sinucleína, TDP-43). Aplicação no CCL: A+/T+ define Alzheimer biologicamente, mesmo na fase pré-clínica; A+/T- ou A-/T+ define perfis intermediários que exigem acompanhamento longitudinal. O neuropsicólogo correlaciona o perfil A/T/N com o perfil neuropsicológico: A+/T+ com déficit amnéstico tem trajetória mais previsível para demência por Alzheimer; A-/T- com déficit em outros domínios redireciona hipótese etiológica.',
+    armadilha: 'Tratar A/T/N como diagnóstico clínico autônomo. O critério é biológico-patológico, não substitui síndrome clínica nem laudo neuropsicológico — paciente A+/T+ assintomático com cognição preservada não tem diagnóstico de Alzheimer clínico, e CCL com A-/T- não exclui outras demências.'
+  },
+  {
+    n: 7,
+    titulo: 'Conduzir diagnóstico diferencial com depressão pseudo-demência, delirium, hidrocefalia e DCL',
+    aplicacao: 'O diferencial em CCL é exigente porque vários quadros mimetizam declínio cognitivo primário. Depressão pseudo-demência (Brodaty & Connors, 2020): paciente com depressão grave apresenta déficit cognitivo reversível com tratamento antidepressivo, perfil neuropsicológico com lentificação e baixa motivação, autorrelato discrepante com desempenho. Aplique GDS-15 (Geriatric Depression Scale) e PHQ-9. Delirium: alteração aguda do nível de consciência, atenção flutuante, frequente em hospitalização — aplique CAM (Confusion Assessment Method). Hidrocefalia normo-pressão (Hakim): tríade clássica de marcha apraxica, incontinência urinária e declínio cognitivo executivo, com possível reversão por derivação ventricular — encaminhe para neurocirurgia se houver suspeita. Demência por corpos de Lewy (DCL, McKeith et al., 2017): flutuação cognitiva marcada, alucinações visuais bem formadas, parkinsonismo, distúrbio comportamental do sono REM — perfil neuropsicológico com déficit visuoespacial e executivo desproporcional à memória. Demência frontotemporal variante comportamental: alterações de personalidade e conduta antes do déficit cognitivo objetivo. Articulação com neurologia é precondição para fechar o diferencial.',
+    armadilha: 'Atribuir todo o quadro à idade ou à "depressão da terceira idade". Cinco diferenciais (depressão pseudo-demência, delirium, hidrocefalia normo-pressão, DCL, demência frontotemporal) têm tratamento distinto — fechar Alzheimer sem afastá-los é erro clínico.'
+  },
+  {
+    n: 8,
+    titulo: 'Construir plano com paciente e família com horizonte realista',
+    aplicacao: 'A devolutiva em CCL exige equilíbrio entre informação técnica e suporte clínico. Apresente o subtipo de CCL, o perfil neuropsicológico, a hipótese etiológica orientada por biomarcador quando disponível, e o intervalo de reavaliação (em geral, anual). Discuta o que muda na vida prática: planejamento financeiro e jurídico (procuração, testamento vital, planejamento patrimonial enquanto o paciente mantém capacidade), revisão de medicações com efeito anticolinérgico, ajuste de comorbidades (HAS, DM, audição), engajamento em estimulação cognitiva e exercício físico, manejo do sono. Em casos com p-tau217 positivo e perfil compatível com Alzheimer prodrômico, articule com neurologista ou geriatra para discussão de modificadores de doença (lecanemab, donanemab) — a decisão de tratamento depende de critérios clínicos, APOE genotipagem, comorbidades, disponibilidade e acesso. A Comissão Lancet de Prevenção da Demência (Livingston et al., 2024, *The Lancet*) consolida 14 fatores modificáveis responsáveis por 45% dos casos de demência potencialmente evitáveis — intervenção multidomínio reduz risco em coortes seguidas.',
+    armadilha: 'Devolver laudo técnico sem plano operacional. CCL é momento de janela terapêutica e de planejamento — paciente e família que saem do consultório sem orientação prática ficam à deriva e perdem oportunidade.'
+  },
+  {
+    n: 9,
+    titulo: 'Documentar para acompanhamento longitudinal com reavaliação seriada',
+    aplicacao: 'CCL é entidade longitudinal, não corte transversal. Documente em laudo conforme Resolução CFP 06/2019: identificação, demanda, procedimentos, análise por domínio com z-scores, conclusão com subtipo e plano. Estabeleça intervalo de reavaliação (em geral anual; semestral se há sinais de progressão rápida ou em ensaio clínico). Use a mesma bateria ou bateria equivalente em reavaliação para detectar trajetória — Petersen (2024) destaca que mudança intra-sujeito de mais de 0,5 desvio-padrão entre avaliações é sinal de progressão. Acompanhamento articulado com neurologista ou geriatra é o padrão: a reavaliação anual integra cognição, biomarcador (quando disponível), neuroimagem e funcionalidade. Em pacientes em uso de modificadores de doença, a bateria longitudinal compõe o desfecho — ensaios reais-world brasileiros (registros em centros como HC-FMUSP) usam CDR-SB, ADAS-Cog e MoCA como métricas seriadas. Mantenha arquivo organizado com escores, planos e devolutivas para que outro profissional possa retomar a sequência.',
+    armadilha: 'Encerrar atendimento após uma única avaliação. CCL sem trajetória longitudinal documentada perde valor clínico — a próxima reavaliação é o que diferencia CCL estável de CCL progressivo.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Anamnese + informante', indicador: 'IADL, comorbidades, medicação anticolinérgica', quem: 'Neuropsicólogo(a)', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '2 · Triagem MoCA/MEEM/CDR', indicador: 'Cortes por escolaridade aplicados', quem: 'Neuropsicólogo(a)', quando: 'Sessão 1-2', status: 'Pendente' },
+  { passo: '3 · Bateria aprofundada', indicador: 'RAVLT, TMT, Boston, Rey, WAIS', quem: 'Neuropsicólogo(a)', quando: 'Sessões 2-3', status: 'Pendente' },
+  { passo: '4 · Classificação Petersen 2024', indicador: 'Subtipo amnéstico/não-amnéstico, single/multiple', quem: 'Neuropsicólogo(a)', quando: 'Sessão 3', status: 'Pendente' },
+  { passo: '5 · Biomarcador p-tau217', indicador: 'Indicação articulada com médico', quem: 'Médico + neuropsi', quando: 'Sessão 3-4', status: 'Pendente' },
+  { passo: '6 · Critérios A/T/N', indicador: 'Perfil biológico correlacionado', quem: 'Equipe', quando: 'Sessão 4', status: 'Pendente' },
+  { passo: '7 · Diferencial', indicador: 'Depressão, delirium, HNP, DCL, DFT', quem: 'Neuropsicólogo(a) + médico', quando: 'Transversal', status: 'Pendente' },
+  { passo: '8 · Plano paciente/família', indicador: 'Devolutiva + horizonte realista', quem: 'Equipe', quando: 'Sessão 5', status: 'Pendente' },
+  { passo: '9 · Documentação longitudinal', indicador: 'Laudo CFP + intervalo de reavaliação', quem: 'Neuropsicólogo(a)', quando: 'Sessão 5-6', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Reportar MoCA sem ajuste por escolaridade',
+    texto: 'A normatização brasileira (Memória et al., 2013) exige ajuste do ponto de corte por anos de escolaridade. MoCA 26 em paciente analfabeto é diferente de MoCA 26 em paciente com graduação universitária. Sem ajuste, há falso-positivo em baixa escolaridade e falso-negativo em alta escolaridade.'
+  },
+  {
+    titulo: 'Solicitar p-tau217 sem indicação clínica',
+    texto: 'Ashton et al. (2024) validam o biomarcador para CCL com hipótese de Alzheimer subjacente. Em paciente assintomático ou com queixa não objetivada, o resultado pode confundir mais que esclarecer — e o custo (R$ 1.500-3.500 em 2026 em laboratórios privados brasileiros) é injustificado. Screening populacional não é a indicação.'
+  },
+  {
+    titulo: 'Atribuir tudo a "depressão da terceira idade"',
+    texto: 'Brodaty & Connors (2020) descrevem depressão pseudo-demência como diferencial obrigatório. Mas paciente com CCL e depressão concomitante (situação frequente) não tem o quadro inteiro explicado pela depressão — déficit objetivo em RAVLT, Boston Naming e Rey figura persiste mesmo com humor controlado. Atribuir tudo à depressão fecha a investigação cedo demais.'
+  },
+  {
+    titulo: 'Encerrar avaliação sem plano de reavaliação',
+    texto: 'CCL é entidade longitudinal. Petersen (2024) destaca que a trajetória é mais informativa que o corte transversal. Sem reavaliação anual ou semestral programada, CCL estável e CCL progressivo (que converterá para Alzheimer) ficam indistinguíveis — e a janela terapêutica para modificadores de doença pode ser perdida.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'CCL sempre vira Alzheimer?',
+    a: 'Não. Petersen (2024, *Neurology*) reporta taxa de conversão de CCL para demência de 10-15% ao ano em CCL amnéstico — significativamente maior que a população geral, mas longe de 100%. Parte dos pacientes mantém estabilidade por anos, parte reverte para cognição normal (especialmente quando há comorbidade reversível como depressão, déficit de B12, hipotireoidismo), e parte progride para Alzheimer ou outra demência. CCL não-amnéstico tem trajetória ainda mais heterogênea — DCL, demência frontotemporal ou vascular são desfechos possíveis. A reavaliação longitudinal é o que distingue CCL estável de CCL progressivo.'
+  },
+  {
+    q: 'p-tau217 plasmático substitui o PET amiloide?',
+    a: 'Em 2026, p-tau217 vem se consolidando como triagem altamente acurada, com AUC de 0,96 para amiloide cerebral em Ashton et al. (2024, *Nature Medicine*). Em vários protocolos clínicos, p-tau217 positivo dispensa PET amiloide na maioria dos casos; p-tau217 negativo praticamente exclui patologia amiloide. PET amiloide e LCR seguem como confirmatórios em casos discordantes ou em ensaios clínicos. O kit Lumipulse foi liberado pela FDA em 2025 para uso clínico, e plataformas similares estão disponíveis em laboratórios brasileiros de referência. A solicitação é atribuição médica, articulada com o laudo neuropsicológico.'
+  },
+  {
+    q: 'Quais instrumentos compõem a bateria mínima para CCL no Brasil?',
+    a: 'Triagem: MoCA (versão 8.1, Memória et al., 2013) com ajuste por escolaridade, MEEM (Brucki et al., 2003) e CDR/CDR-SB. Bateria aprofundada: memória episódica (RAVLT, Logical Memory I e II, Rey figura), função executiva (TMT-A, TMT-B, Stroop, Wisconsin, fluência verbal), linguagem (Boston Naming Test, token test), visuoespacial (Rey figura cópia, cubos da WAIS), velocidade (códigos e símbolos), funcionalidade (FAQ-Pfeffer ou IADL), humor (GDS-15, PHQ-9). Aplicação em 2 a 3 sessões totalizando 3-4 horas. Documente z-scores por domínio com norma brasileira pareada por idade e escolaridade.'
+  },
+  {
+    q: 'Como o MBA em Reabilitação Neuropsicológica do IPOG conecta a esse guia?',
+    a: 'O MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo do IPOG cobre funções cognitivas, neuroplasticidade, planos de reabilitação e envelhecimento — fundamento técnico para neuropsicólogas e neuropsicólogos que conduzem avaliação de CCL e demências e que integram biomarcadores ao raciocínio clínico em 2026. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir avaliação de Comprometimento Cognitivo Leve com biomarcadores em 2026',
+  description: 'Protocolo em 9 passos para avaliação de CCL: anamnese com informante, triagem MoCA/MEEM/CDR, bateria aprofundada por domínio, classificação Petersen 2024 (amnéstico/não-amnéstico), biomarcador plasmático p-tau217, critérios A/T/N revisados, diferencial, plano com paciente e família, documentação longitudinal.',
+  totalTime: 'PT28M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliação de Comprometimento Cognitivo Leve em 2026: protocolo com biomarcadores em plasma, MoCA e diferenciais',
+  description: 'Protocolo de avaliação de CCL com triagem MoCA/MEEM/CDR, bateria aprofundada (RAVLT, TMT, Boston, Rey, WAIS), classificação Petersen 2024, biomarcador plasmático p-tau217 (Ashton 2024, Nat Med), critérios A/T/N (Jack 2024, Lancet Neurology), diferencial e plano longitudinal.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação de CCL com biomarcadores 2026', item: `${SITE.url}/guias/avaliacao-ccl-biomarcadores-2026` }
+  ]
+};
+---
+
+<Base
+  title="Avaliação de Comprometimento Cognitivo Leve em 2026: protocolo com biomarcadores em plasma, MoCA e diferenciais"
+  description="Guia clínico em 9 passos para CCL em 2026: anamnese com informante, triagem MoCA/MEEM/CDR ajustada por escolaridade, bateria aprofundada (RAVLT, TMT, Boston, Rey, WAIS), classificação Petersen 2024 (amnéstico/não-amnéstico, single/multiple domain), biomarcador plasmático p-tau217 (Ashton 2024), critérios A/T/N revisados (Jack 2024), diferencial (depressão pseudo-demência, delirium, HNP, DCL, DFT) e plano longitudinal.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação de CCL com biomarcadores 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliação de Comprometimento Cognitivo Leve em 2026: protocolo com biomarcadores em plasma, MoCA e diferenciais</h1>
+          <TLDR
+            resposta="A avaliação de CCL em 2026 integra triagem MoCA/MEEM/CDR ajustada por escolaridade, bateria aprofundada por domínio, classificação Petersen 2024 (amnéstico/não-amnéstico, single/multiple domain), biomarcador plasmático p-tau217 (Ashton et al., 2024, AUC 0,96 para amiloide cerebral) articulado com critérios A/T/N revisados (Jack et al., 2024) e diferencial estruturado com depressão pseudo-demência, delirium, hidrocefalia normo-pressão e demência por corpos de Lewy."
+            fontes={["Petersen, 2024 (Neurology)", "Ashton et al., 2024 (Nature Medicine)", "Jack et al., 2024 (Lancet Neurology) / Livingston et al., 2024 (Lancet)"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Protocolo passo-a-passo para CCL: anamnese com informante, triagem com cortes ajustados por escolaridade, bateria aprofundada (RAVLT, TMT, Boston Naming, Rey figura, WAIS), classificação por subtipo, integração com p-tau217 plasmático e A/T/N, diferencial com cinco quadros que mimetizam CCL, plano com paciente e família, documentação para acompanhamento longitudinal.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~28 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Neuropsicólogos geriátricos e clínicos</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Reabilitação Neuro
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir avaliação de Comprometimento Cognitivo Leve em 2026 integrando triagem clínica, bateria neuropsicológica aprofundada, biomarcador plasmático p-tau217 e critérios A/T/N revisados.</li>
+          <li><strong>Pré-requisitos:</strong> CRP ativo, especialização em Neuropsicologia, conhecimento da Resolução CFP 06/2019, articulação com neurologia ou geriatria para solicitação de biomarcador e neuroimagem.</li>
+          <li><strong>Resultado esperado:</strong> laudo com subtipo de CCL classificado, perfil neuropsicológico documentado por domínio, hipótese etiológica orientada por biomarcador (quando disponível) e plano de reavaliação longitudinal anual.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura comum sobre CCL ainda trata o quadro como diagnóstico apenas clínico — paciente com queixa cognitiva, MoCA limítrofe, recomendação de "estimular a mente". A literatura de 2024-2026 desloca o eixo. Ashton et al. (2024, *Nature Medicine*) consolidam o biomarcador plasmático p-tau217 com AUC de 0,96 para detectar patologia amiloide cerebral, abrindo triagem laboratorial acurada em escala. Jack et al. (2024, *The Lancet Neurology*) revisam o framework A/T/N e definem Alzheimer como diagnóstico biológico, mesmo na fase pré-clínica, com p-tau217 plasmático como indicador prioritário de tau. van Dyck et al. (2023, *NEJM*, CLARITY-AD) e Mintun et al. (2024, *JAMA*, TRAILBLAZER-ALZ 2) documentam que lecanemab e donanemab reduzem em 27% e 35%, respectivamente, o declínio cognitivo em pacientes com CCL ou Alzheimer leve.
+        </p>
+        <p>
+          A inversão prática para o neuropsicólogo: o CCL em 2026 não é mais entidade puramente sintomática. É a janela clínica em que a integração de avaliação neuropsicológica rigorosa, biomarcador plasmático e critérios A/T/N decide se o paciente é candidato a modificadores de doença, a acompanhamento ativo ou a busca de outras etiologias. A bateria neuropsicológica precisa classificar com precisão o subtipo (amnéstico single/multiple, não-amnéstico single/multiple) porque a literatura de Petersen (2024, *Neurology*) mostra que o subtipo orienta a hipótese — CCL amnéstico tem risco maior de conversão para Alzheimer, enquanto não-amnéstico aponta para DCL, frontotemporal ou vascular. A Comissão Lancet de Prevenção (Livingston et al., 2024) consolida que 45% dos casos de demência são potencialmente preveníveis por intervenção sobre 14 fatores modificáveis — argumento adicional para detecção precoce.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Avaliação completa em 5 a 6 sessões (~8-10h). Reavaliação anual subsequente para detectar trajetória — semestral se houver sinais de progressão rápida ou em ensaio clínico.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Engenheiro aposentado, 71 anos, CCL amnéstico multiple domain com p-tau217 positivo</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Homem de 71 anos, ex-engenheiro civil, ensino superior completo, viúvo, mora com a filha. Encaminhado pelo geriatra por queixa de esquecimento progressivo nos últimos 18 meses — repete perguntas, esquece compromissos, perdeu o caminho de casa em uma ocasião. Filha confirma e descreve dificuldade adicional para organizar finanças, que ele administrava com facilidade até 2 anos atrás. Sem história familiar conhecida de demência. HAS controlada, dislipidemia, uso de sertralina há 6 meses por queixa depressiva leve. GDS-15 em 5/15, PHQ-9 em 7. IADL com alteração em "manejo financeiro" e "uso de medicação", preservada em outras atividades.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Triagem: MoCA 22/30 (esperado mais de 26 para escolaridade), MEEM 25/30, CDR 0,5 com CDR-SB 2,5. Bateria aprofundada: RAVLT com curva de aprendizagem rebaixada (lista de 15 palavras: A1=4, A5=8, esperado A5 mais de 11) e recuperação tardia gravemente afetada (3/15, esperado mais de 9), Logical Memory I e II abaixo do esperado para idade e escolaridade, Rey figura cópia preservada e reprodução tardia rebaixada (10/36, esperado mais de 18). TMT-B no P10 (vs P50 esperado), fluência semântica para animais 9 em 60s (esperado mais de 14), Boston Naming 48/60 (esperado mais de 53). Classificação: CCL amnéstico multiple domain (memória episódica + função executiva + linguagem). p-tau217 plasmático solicitado pelo geriatra: positivo (2,4 pg/mL, corte de 0,8). Perfil A/T/N: A+ (Aβ42/40 plasma alterado), T+ (p-tau217+), N parcial (RNM com discreta atrofia hipocampal bilateral em coronal coronal-T1).
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Devolutiva integrada com o paciente e a filha: perfil compatível com Alzheimer prodrômico (CCL com biomarcador positivo). Articulação com neurologista para discussão de modificadores de doença (lecanemab disponível em centro privado de referência em São Paulo, após análise de APOE e RNM para risco ARIA) — paciente APOE ε3/ε4, considerado elegível com monitoramento. Plano paralelo: ajuste de medicação (revisão de sertralina e revisão de medicações com efeito anticolinérgico, controle rigoroso de HAS, audiometria com aparelho auditivo bilateral, exercício aeróbico regular, engajamento em atividades sociais e cognitivas, planejamento jurídico (procuração e testamento vital enquanto mantém capacidade). Reavaliação neuropsicológica em 6 meses com bateria equivalente e reaplicação de CDR-SB. Em paralelo, suporte psicológico à filha (cuidadora) e psicoeducação sobre trajetória provável.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.nature.com/articles/s41591-024-02869-z" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ashton et al., 2024 — Nature Medicine, p-tau217 plasmático</a></li>
+          <li><a href="https://www.thelancet.com/journals/laneur/article/PIIS1474-4422(23)00472-2/fulltext" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Jack et al., 2024 — Lancet Neurology, A/T/N revisado</a></li>
+          <li><a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01296-0/fulltext" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Livingston et al., 2024 — Lancet Commission, 14 fatores modificáveis</a></li>
+          <li><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2212948" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">van Dyck et al., 2023 — NEJM, CLARITY-AD lecanemab</a></li>
+          <li><a href="https://jamanetwork.com/journals/jama/fullarticle/2807533" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Mintun et al., 2024 — JAMA, TRAILBLAZER-ALZ 2 donanemab</a></li>
+          <li><a href="https://www.sen.es/pdf/2025/DocumentoConsensoDeterioroCognitivo2025.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SEN, 2025 — Documento de Consenso Deterioro Cognitivo</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/neuropsi-long-covid-brain-fog" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação neuropsicológica em long COVID</a></li>
+          <li><a href="/faq/lecanemab-donanemab-brasil-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Lecanemab, donanemab e modificadores de doença no Alzheimer</a></li>
+          <li><a href="/comparativos/ccl-amnestico-vs-nao-amnestico" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · CCL amnéstico vs não-amnéstico</a></li>
+          <li><a href={`/areas/${areaNeuro.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Neuropsicologia</a></li>
+          <li><a href={`/areas/${areaReabNeuro.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Reabilitação Neuropsicológica</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">CCL em 2026 é janela de integração entre neuropsicologia, biomarcador plasmático e A/T/N — laudo sem subtipo classificado e sem plano longitudinal está fora do padrão.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O trajeto integra anamnese com informante (Petersen, 2024), triagem com MoCA/MEEM/CDR ajustada por escolaridade, bateria aprofundada por domínio com z-scores, classificação Petersen (amnéstico/não-amnéstico, single/multiple domain), biomarcador plasmático p-tau217 (Ashton et al., 2024, AUC 0,96), critérios A/T/N revisados (Jack et al., 2024), diferencial com depressão pseudo-demência, delirium, hidrocefalia normo-pressão, demência por corpos de Lewy e frontotemporal, plano operacional com paciente e família, documentação para acompanhamento longitudinal com reavaliação seriada. Para neuropsicóloga ou neuropsicólogo que conduz essa rotina, o MBA em Reabilitação Neuropsicológica do IPOG consolida fundamento técnico em funções cognitivas, neuroplasticidade e planos de reabilitação no envelhecimento.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaReabNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaReabNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.nature.com/nm/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Nature Medicine</a></li>
+          <li><a href="https://www.thelancet.com/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">The Lancet</a></li>
+          <li><a href="https://www.gov.br/anvisa/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANVISA</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~28 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>
+</content>
+</invoke>

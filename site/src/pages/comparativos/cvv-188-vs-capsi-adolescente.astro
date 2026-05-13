@@ -1,0 +1,405 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+const areaEscolar = AREAS.find(a => a.id === 'psicologia-escolar-educacional')!;
+
+const faqs = [
+  {
+    q: 'Quando ligar para o CVV 188 e quando encaminhar direto para CAPSi?',
+    a: 'CVV 188 é suporte emocional 24h gratuito e sigiloso por telefone, chat e e-mail — opera como ponto de contato em qualquer nível de risco, especialmente entre sessões e em horários sem cobertura clínica. CAPSi (Centro de Atenção Psicossocial Infantojuvenil) é dispositivo da RAPS (Portaria GM/MS 3.088/2011) para crianças e adolescentes com sofrimento psíquico grave — acompanhamento multiprofissional, com possibilidade de matriciamento e cuidado intensivo (até diário em fase aguda). Lógica de encaminhamento: em risco baixo a moderado (C-SSRS adolescente escore 1 a 3), psicoterapia ambulatorial individual mantém o caso, com CVV 188 como suporte entre sessões. Em risco moderado a severo (C-SSRS 4 ou superior), articulação CAPSi não é opcional — é exigência pela Resolução CFP 003/2024 e pela lógica da RAPS. CVV 188 segue como suporte 24h paralelo, não substitutivo.'
+  },
+  {
+    q: 'Em que momento acionar SAMU 192 e leito de pediatria psiquiátrica?',
+    a: 'SAMU 192 e leito de pediatria psiquiátrica são acionados em risco iminente — adolescente com plano organizado, intenção declarada, acesso a meios, ou em ato preparatório recente. Critério clínico operacional: C-SSRS adolescente escore 5 (tentativa atual ou comportamento preparatório) ou escore 4 com plano específico e indisponibilidade de cuidado familiar adequado. SAMU 192 conduz o adolescente ao pronto-socorro de referência da rede municipal/estadual. O leito de pediatria psiquiátrica é dispositivo para internação breve em fase aguda, com retorno ao ambulatório e CAPSi após estabilização. Internação não substitui acompanhamento longitudinal — frequentemente é janela curta dentro de plano de cuidado que continua na rede.'
+  },
+  {
+    q: 'A UBS opera como porta de entrada para saúde mental adolescente?',
+    a: 'Sim. A UBS (Unidade Básica de Saúde) é a porta canônica da Atenção Primária à Saúde no SUS, com presença em praticamente todo o território. Para saúde mental adolescente, a UBS opera em três funções. Primeira, acolhimento inicial — escuta qualificada, avaliação preliminar de risco, encaminhamento se necessário. Segunda, matriciamento — equipe da APS recebe apoio técnico da equipe especializada (NASF-AB onde existe, ou CAPS de referência) para sustentar cuidado de casos leves a moderados. Terceira, acompanhamento longitudinal de casos estáveis — adolescente em estabilidade após tratamento intensivo no CAPSi pode ter acompanhamento na APS com retaguarda especializada. A UBS é janela ampla mas com profundidade especializada variável; em casos moderado-graves, encaminhamento ao CAPSi é regra.'
+  },
+  {
+    q: 'Como uma pós-graduação em Psicologia ajuda a navegar a RAPS com adolescentes?',
+    a: 'Profissionais que atuam com adolescentes em sofrimento — em consultório, na escola, no CAPSi, na UBS — precisam dominar a lógica da Rede de Atenção Psicossocial (Portaria GM/MS 3.088/2011), os instrumentos de avaliação validados (C-SSRS adolescente, PHQ-A, GAD-7), os protocolos de Safety Planning (Stanley & Brown, 2012), as Resoluções CFP 003/2024 (atuação em risco suicida), 06/2019 (documentos escritos) e 010/2005 (Psicologia escolar), e a literatura sobre adolescência digital (Haidt, Twenge, Odgers, AAP, CETIC.br, PeNSe/IBGE). O IPOG oferece MBAs aplicados em Neurociência, Psicologia Positiva e correlatos, com módulos em desenvolvimento humano, regulação emocional e saúde mental — formato Ao Vivo síncrono com corpo docente nominal. Para grade e modalidades vigentes, consulte ipog.edu.br.'
+  }
+];
+
+const tabelaCobertura = [
+  { dimensao: 'Cobertura geográfica nacional', cvv: 'Nacional integral — telefone, chat e e-mail acessíveis em qualquer município com conexão', capsi: 'Heterogênea — concentrada em municípios acima de 70 mil habitantes; vazios em regiões norte e nordeste', ubs: 'Capilaridade máxima — quase todo município brasileiro, base da Estratégia Saúde da Família', leito: 'Concentração em capitais e cidades médias; vazios significativos em interior' },
+  { dimensao: 'Horário de funcionamento', cvv: '24h, 7 dias por semana, gratuito e sigiloso', capsi: 'Em geral horário comercial estendido; modalidade CAPS AD III opera 24h em parte dos casos', ubs: 'Horário comercial, com plantão variável; ESF tem cobertura territorial', leito: '24h em hospital geral com pediatria psiquiátrica de referência' },
+  { dimensao: 'Modalidade de contato', cvv: 'Telefone 188, chat e e-mail; voluntários treinados; sem agendamento', capsi: 'Presencial; primeiro contato via acolhimento sem agendamento; depois plano terapêutico singular', ubs: 'Presencial; acolhimento e agendamento conforme estratégia local', leito: 'Internação presencial via SAMU 192 ou encaminhamento de pronto-socorro' },
+  { dimensao: 'Profissionais', cvv: 'Voluntários treinados em escuta empática e protocolos de crise', capsi: 'Equipe multiprofissional — psicólogo, psiquiatra infantil, terapeuta ocupacional, enfermeiro, assistente social', ubs: 'Equipe de APS — médico de família, enfermeiro, agente comunitário, com matriciamento de saúde mental', leito: 'Equipe hospitalar — pediatra, psiquiatra, enfermagem especializada' },
+  { dimensao: 'Custo para o usuário', cvv: 'Gratuito', capsi: 'Gratuito no SUS', ubs: 'Gratuito no SUS', leito: 'Gratuito no SUS quando indicado clinicamente' },
+  { dimensao: 'Marco regulatório', cvv: 'Organização sem fins lucrativos (CVV); reconhecimento institucional como linha de prevenção', capsi: 'Portaria GM/MS 3.088/2011 (RAPS); Portaria 854/2012 e atualizações sobre financiamento e funcionamento', ubs: 'Política Nacional de Atenção Básica (PNAB), 2017', leito: 'Portarias do SUS sobre leitos psiquiátricos em hospital geral' },
+  { dimensao: 'Foco de público', cvv: 'Qualquer pessoa em sofrimento emocional, com escuta voluntária acessível', capsi: 'Crianças e adolescentes com sofrimento psíquico moderado a grave', ubs: 'População geral do território; saúde mental como parte da APS', leito: 'Pacientes em fase aguda com indicação de internação breve' }
+];
+
+const tabelaIntervencao = [
+  { dimensao: 'Tipo de intervenção principal', cvv: 'Escuta empática anônima; suporte emocional em momento de crise; orientação sobre rede', capsi: 'Plano terapêutico singular — psicoterapia, atendimento psiquiátrico, oficinas, intervenção familiar, matriciamento escolar', ubs: 'Acolhimento, avaliação preliminar, encaminhamento, acompanhamento longitudinal de casos leves a moderados estabilizados', leito: 'Internação breve para estabilização, manejo medicamentoso intensivo, contenção de risco iminente' },
+  { dimensao: 'Tempo médio de contato', cvv: '20 a 60 minutos por chamada; sem continuidade pré-pactuada', capsi: 'Acompanhamento longitudinal — semanal a diário conforme fase', ubs: 'Consulta de 20 a 40 minutos; continuidade pela própria equipe ou via matriciamento', leito: 'Internação breve — geralmente 5 a 21 dias' },
+  { dimensao: 'Sigilo', cvv: 'Anônimo; sigiloso por princípio operacional', capsi: 'Sigilo profissional conforme CFP 003/2024 e legislação geral; vínculo identificado no SUS', ubs: 'Sigilo profissional; registro no prontuário eletrônico do município', leito: 'Sigilo profissional; registro hospitalar' },
+  { dimensao: 'Articulação com escola e família', cvv: 'Não articula diretamente; orienta usuário a buscar ajuda na rede', capsi: 'Articulação central — matriciamento escolar, intervenção familiar, plano partilhado', ubs: 'Articulação com escola via NASF-AB ou matriciamento; com família via ESF', leito: 'Articulação no momento da alta — encaminhamento para CAPSi ou ambulatório' },
+  { dimensao: 'Protocolo de risco suicida', cvv: 'Protocolo interno de identificação de risco e orientação para serviço de emergência quando necessário', capsi: 'Resolução CFP 003/2024, C-SSRS adolescente, Safety Planning, articulação SAMU 192 e leito quando indicado', ubs: 'Matriciamento de saúde mental, protocolos do Ministério da Saúde, encaminhamento para serviço especializado', leito: 'Avaliação completa, estabilização, restrição de meios em ambiente hospitalar, plano de alta' },
+  { dimensao: 'Adequação ao adolescente especificamente', cvv: 'Adequado — atendimento independe de idade, com voluntários treinados em comunicação acolhedora', capsi: 'Adequado por desenho — público-alvo central são crianças e adolescentes', ubs: 'Adequação moderada — atende toda a população; equipe nem sempre treinada para especificidades adolescentes', leito: 'Pediatria psiquiátrica é dispositivo específico; nem todo município tem leito dedicado' },
+  { dimensao: 'Limites principais', cvv: 'Sem continuidade longitudinal; sem prescrição; sem articulação direta com rede', capsi: 'Cobertura geográfica heterogênea; lista de espera em parte dos municípios', ubs: 'Profundidade especializada limitada para casos moderado-graves', leito: 'Concentração em capitais; vagas escassas; risco de iatrogenia em internação mal indicada' }
+];
+
+const tabelaRisco = [
+  { nivel: 'Risco baixo (C-SSRS escore 1 — desejo passivo de morrer, sem método)', encaminhamento: 'Psicoterapia ambulatorial individual + CVV 188 como suporte entre sessões + UBS como retaguarda territorial', racional: 'Adolescente com sofrimento emocional e ideação passiva sem método planejado se beneficia de vínculo terapêutico estável; CVV cobre janelas; UBS opera como ponto de cuidado integral' },
+  { nivel: 'Risco baixo a moderado (C-SSRS escore 2 — pensamentos com método inespecífico, sem plano)', encaminhamento: 'Psicoterapia ambulatorial individual com aumento de frequência + CVV 188 + UBS com matriciamento de saúde mental', racional: 'Ideação com método inespecífico exige acompanhamento mais próximo e Safety Planning preliminar; UBS pode operar com apoio especializado via matriciamento' },
+  { nivel: 'Risco moderado (C-SSRS escore 3 — método específico mas sem plano nem intenção)', encaminhamento: 'Psicoterapia individual + articulação com CAPSi para avaliação + Safety Planning Stanley-Brown + CVV 188 + restrição de meios pactuada com família', racional: 'Método identificado mesmo sem plano exige avaliação especializada e plano de segurança formal; CAPSi entra como retaguarda mesmo antes do plano estruturado' },
+  { nivel: 'Risco moderado a severo (C-SSRS escore 4 — plano com intenção parcial)', encaminhamento: 'CAPSi como acompanhamento principal + psicoterapia individual em vínculo + Safety Planning + restrição firme de meios + comunicação familiar pactuada conforme CFP 003/2024 + CVV 188 entre sessões', racional: 'Articulação CAPSi é exigência pela Resolução CFP 003/2024; vínculo individual é mantido; restrição de meios é operacionalizada com guarda familiar; comunicação familiar é dever ético em risco severo' },
+  { nivel: 'Risco severo (C-SSRS escore 5 — ato preparatório ou tentativa atual)', encaminhamento: 'SAMU 192 + pronto-socorro de referência + leito de pediatria psiquiátrica para internação breve + CAPSi como retaguarda na alta + manutenção do vínculo individual', racional: 'Ato preparatório ou tentativa atual exige contenção em ambiente hospitalar; internação breve estabiliza; plano de alta é construído com CAPSi, família e psicóloga individual para continuidade longitudinal' },
+  { nivel: 'Pós-tentativa (qualquer escore, mas com tentativa registrada)', encaminhamento: 'Caring Contacts em 24-48h + CAPSi em frequência diária a semanal + psicoterapia individual mantida + Safety Planning revisado + restrição de meios sustentada + envolvimento familiar com plano partilhado', racional: 'A janela pós-tentativa concentra o maior risco de recaída (Luxton et al., 2024, JAMA Psychiatry); Caring Contacts reduz recaída em 30-50%; CAPSi cobre intensidade necessária na janela' },
+  { nivel: 'Sintomas digitais sem ideação ativa (uso problemático com sofrimento)', encaminhamento: 'Psicoterapia individual + articulação escolar (Lei 15.100/2024) + plano familiar AAP-style + UBS como retaguarda', racional: 'Sofrimento ligado a redes sociais sem ideação ativa é caso típico de psicoterapia ambulatorial com articulação intersetorial; CAPSi entra se houver comorbidade severa' },
+  { nivel: 'Comorbidade severa (TEA descompensado, transtorno alimentar grave, autolesão repetida)', encaminhamento: 'CAPSi como acompanhamento principal + serviço especializado da comorbidade (ambulatório de TEA, ambulatório de transtorno alimentar) + psicoterapia individual + plano partilhado', racional: 'Comorbidade severa exige cuidado multimodal coordenado; CAPSi é centro articulador da rede; serviços especializados sustentam frente clínica específica' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'CVV 188 vs CAPSi vs UBS vs leito de pediatria psiquiátrica: como encaminhar adolescente no SUS',
+  description: 'Comparativo independente entre quatro dispositivos da rede brasileira de saúde mental para adolescentes — CVV 188, CAPSi, UBS e leito de pediatria psiquiátrica. Cobertura, tipo de intervenção, matriz de risco baixo/médio/alto e FAQ.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'CVV 188 vs CAPSi adolescente' }
+  ]
+};
+---
+
+<Base
+  title="CVV 188 vs CAPSi vs UBS vs leito pediátrico — encaminhamento de adolescente no SUS"
+  description="Comparativo independente entre quatro dispositivos da rede brasileira de saúde mental para adolescentes: CVV 188, CAPSi, UBS e leito de pediatria psiquiátrica. Cobertura nacional, tipo de intervenção, matriz de risco baixo/médio/alto, Resolução CFP 003/2024 e RAPS.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'CVV 188 vs CAPSi adolescente' }
+      ]} />
+
+      <div class="mt-4 rounded-2xl bg-rose-50 border border-rose-200 p-5">
+        <p class="text-xs uppercase tracking-wider font-semibold text-rose-800 mb-2">Recursos de crise · disponíveis 24h</p>
+        <ul class="text-sm text-ink-900 leading-relaxed space-y-1">
+          <li><strong>CVV 188</strong> — telefone, chat e e-mail, gratuito, sigiloso, 24h (<a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-rose-800 underline font-semibold">cvv.org.br</a>).</li>
+          <li><strong>CAPSi</strong> — Centro de Atenção Psicossocial Infantojuvenil mais próximo.</li>
+          <li><strong>SAMU 192</strong> — emergência médica em risco iminente.</li>
+          <li><strong>Pediatria psiquiátrica</strong> — pronto-socorro de referência da rede municipal/estadual.</li>
+        </ul>
+        <p class="text-sm text-ink-900 mt-3 leading-relaxed"><strong>A vida adolescente em crise tem saída.</strong> A combinação de cuidado especializado, plano de segurança colaborativo e suporte familiar reduz substancialmente o risco. Buscar ajuda funciona.</p>
+      </div>
+
+      <div class="mt-4 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Rede SUS · Sensível</span>
+          <h1 class="section-h text-3xl sm:text-4xl">CVV 188 vs CAPSi vs UBS vs leito de pediatria psiquiátrica: como encaminhar adolescente no SUS</h1>
+          <p class="mt-3 text-ink-700 text-lg">A Rede de Atenção Psicossocial brasileira (Portaria GM/MS 3.088/2011) combina dispositivos com cobertura, intensidade e função distintas. Para o adolescente em sofrimento, a escolha não é "qual dispositivo é melhor" — é "qual combinação cobre a janela de risco com a intensidade certa".</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="CVV 188 (linha 24h, gratuito, anônimo) cobre janelas entre sessões. CAPSi (Portaria GM/MS 3.088/2011) é dispositivo da RAPS para crianças e adolescentes com sofrimento moderado a grave — articulação não é opcional em C-SSRS escore 4 ou superior, pela Resolução CFP 003/2024. UBS é porta de entrada da APS, com matriciamento de saúde mental para casos leves a moderados estabilizados. Leito de pediatria psiquiátrica é dispositivo de internação breve para risco iminente (escore 5). A combinação cobre matriz de risco baixo, moderado e severo. CVV não substitui CAPSi; CAPSi não substitui leito; leito não substitui acompanhamento longitudinal."
+        fontes={["Portaria GM/MS 3.088/2011 (RAPS)", "Resolução CFP 003/2024", "Stanley & Brown, 2012 (Safety Planning, Cognitive and Behavioral Practice)", "Luxton et al., 2024 (Caring Contacts, JAMA Psychiatry)"]}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A lógica da RAPS aplicada ao adolescente em crise</h2>
+        <p>
+          A Rede de Atenção Psicossocial brasileira foi regulamentada pela Portaria GM/MS 3.088/2011 e atualizada por instrumentos posteriores. Para o adolescente em sofrimento psíquico, a rede combina quatro dispositivos com função distinta. CVV 188 (Centro de Valorização da Vida, organização sem fins lucrativos com reconhecimento institucional) opera como linha 24h gratuita, sigilosa, com voluntários treinados — escuta empática e orientação para a rede sem continuidade longitudinal pré-pactuada. CAPSi (Centro de Atenção Psicossocial Infantojuvenil) é dispositivo específico da RAPS para crianças e adolescentes com sofrimento moderado a grave, com equipe multiprofissional e acompanhamento longitudinal — entrada via acolhimento sem agendamento. UBS (Unidade Básica de Saúde) é porta canônica da Atenção Primária, com capilaridade máxima e matriciamento de saúde mental para casos leves a moderados estabilizados. Leito de pediatria psiquiátrica em hospital geral é dispositivo de internação breve para fase aguda com risco iminente, com retorno a CAPSi e ambulatório após estabilização.
+        </p>
+        <p>
+          Os dispositivos não são alternativos — são complementares em níveis de intensidade e função. PeNSe/IBGE 2024 reporta quadro preocupante: 42,9% dos adolescentes brasileiros relatam irritabilidade crônica, três em cada dez tristeza persistente, 18,5% afirmam que "a vida não vale a pena", com diferença marcada por gênero (41% meninas vs 16,7% meninos em tristeza persistente). A demanda é elevada e a rede precisa operar coordenada para entregar cuidado proporcional à severidade. A Resolução CFP 003/2024 explicita o dever de articulação em risco suicida — articulação CAPSi em escore 4 ou superior do C-SSRS adolescente não é opcional. Manter caso de alto risco em atendimento individual ambulatorial isolado configura falha técnica em evento adverso.
+        </p>
+        <p>
+          A heterogeneidade geográfica é o principal limite operacional. CAPSi têm presença em municípios acima de 70 mil habitantes, com vazios significativos em regiões norte e nordeste e em municípios menores. Leitos de pediatria psiquiátrica concentram-se em capitais e cidades médias. UBS têm capilaridade máxima mas profundidade especializada variável. CVV 188 cobre território nacional via telefone, chat e e-mail — em municípios sem CAPSi, opera como suporte único entre o atendimento individual e a emergência. O psicólogo que atende adolescentes precisa conhecer a rede do seu território concreto — CAPS de referência, UBS com matriciamento, hospital com pediatria psiquiátrica — e operar dentro dela.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Cobertura nacional e porta de entrada</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">CVV 188</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CAPSi</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-700 border-b border-surface-300">UBS</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-rose-700 border-b border-surface-300">Leito pediátrico</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaCobertura.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.cvv}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.capsi}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.ubs}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.leito}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Tipo de intervenção e protocolo</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">CVV 188</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">CAPSi</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-700 border-b border-surface-300">UBS</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-rose-700 border-b border-surface-300">Leito pediátrico</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaIntervencao.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.cvv}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.capsi}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.ubs}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.leito}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Matriz de risco e encaminhamento</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Nível de risco</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Combinação recomendada</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaRisco.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.nivel}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.encaminhamento}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">O que cada dispositivo faz melhor</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">CVV 188 — cobertura 24h em qualquer território</p>
+              <p class="text-sm text-ink-700 mt-1">Janela noturna, fim de semana, feriados, momento de pico de ideação entre sessões — CVV opera quando outros dispositivos estão fechados.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">CAPSi — acompanhamento intensivo multiprofissional</p>
+              <p class="text-sm text-ink-700 mt-1">Cuidado coordenado por equipe multidisciplinar, com matriciamento escolar e familiar, frequência ajustável até diária em fase aguda.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-ink-500">
+              <p class="text-sm font-semibold text-ink-900">UBS — capilaridade territorial e continuidade longitudinal</p>
+              <p class="text-sm text-ink-700 mt-1">Acompanhamento integral em casos leves a moderados estabilizados, com matriciamento de saúde mental e articulação intersetorial.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-rose-700">
+              <p class="text-sm font-semibold text-ink-900">Leito pediátrico — contenção em fase aguda</p>
+              <p class="text-sm text-ink-700 mt-1">Ambiente hospitalar para risco iminente, com manejo medicamentoso intensivo e restrição de meios em ambiente protegido.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">O que cada dispositivo não substitui</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">CVV não substitui vínculo terapêutico longitudinal</p>
+              <p class="text-sm text-ink-700 mt-1">Sem continuidade pré-pactuada nem prescrição; opera como suporte entre sessões e em pico de crise, complementar ao acompanhamento estável.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">CAPSi não substitui internação em risco iminente</p>
+              <p class="text-sm text-ink-700 mt-1">Em escore 5 do C-SSRS adolescente (ato preparatório ou tentativa atual), SAMU 192 e leito hospitalar são primeira linha.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-ink-500">
+              <p class="text-sm font-semibold text-ink-900">UBS não cobre casos moderado-graves isoladamente</p>
+              <p class="text-sm text-ink-700 mt-1">Em C-SSRS escore 4 ou superior, articulação CAPSi é exigência pela Resolução CFP 003/2024 — UBS opera como retaguarda territorial.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-rose-700">
+              <p class="text-sm font-semibold text-ink-900">Leito não substitui acompanhamento longitudinal</p>
+              <p class="text-sm text-ink-700 mt-1">Internação breve estabiliza; a janela pós-alta é a de maior risco de recaída (Luxton et al., 2024) e exige Caring Contacts + CAPSi + vínculo individual.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Adolescente, 16 anos, escore C-SSRS 4 — qual combinação acionar?</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Adolescente do terceiro ano do ensino médio, identificada pela psicóloga escolar com sintomas depressivos sustentados, PHQ-A em 18 e ideação ativa com método específico (medicação acessível em casa) e intenção parcial. C-SSRS adolescente aplicado em sessão: escore 4. Família engajada, com mãe disponível para articulação. Não há tentativa prévia documentada. Cidade média no interior do estado, com CAPSi de referência a 15 km, UBS no bairro com matriciamento de saúde mental mensal, hospital regional com pediatria geral mas sem leito psiquiátrico pediátrico dedicado.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A psicóloga aplica a Resolução CFP 003/2024. Sessão 1 já constrói Safety Planning Stanley-Brown adaptado, com restrição de meios pactuada (entrega de medicamentos à mãe, mudança da farmacinha doméstica para gaveta com chave) e comunicação familiar pactuada com a adolescente. Contato com CAPSi de referência no mesmo dia — acolhimento agendado para o dia seguinte, com plano terapêutico singular que inclui acompanhamento psiquiátrico semanal, oficinas terapêuticas e intervenção familiar. Articulação com psicóloga escolar para alinhamento institucional (sem exposição de diagnóstico, com pacto de acolhimento e monitoramento). UBS mantida como retaguarda territorial, com agente comunitária ciente sem detalhe clínico. CVV 188 explicado à adolescente como contato 24h entre sessões. Em 6 semanas, C-SSRS reduz para 2; em 12 semanas, frequência de CAPSi cai para quinzenal; vínculo individual mantido. Sem necessidade de leito hospitalar no período.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões clínicos descritos na literatura sobre Safety Planning (Stanley et al., 2018) e na lógica da RAPS aplicada a adolescentes com risco moderado a severo. Documentação em prontuário conforme Resolução CFP 003/2024.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Três precauções. Primeira, a heterogeneidade da rede no território brasileiro é o principal limite operacional — em municípios sem CAPSi ou sem leito pediátrico, a combinação ideal precisa ser substituída por arranjo viável (psicoterapia ambulatorial + UBS com matriciamento + CVV + encaminhamento para CAPS adulto adaptado quando indicado). Segunda, a Resolução CFP 003/2024 é jovem e a implementação operacional ainda é desigual entre conselhos regionais e serviços; o profissional precisa conhecer a regulamentação local complementar. Terceira, a internação breve em leito pediátrico psiquiátrico carrega risco de iatrogenia em indicação mal dimensionada — estigma, ruptura escolar, retrocesso em adolescente que poderia ter sido contido com CAPSi intensivo. A escolha do dispositivo precisa de avaliação cuidadosa.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O Brasil registra aproximadamente 14.800 suicídios por ano (DataSUS/SIM, estimativa 2024), com aumento documentado em adolescentes de 10 a 19 anos na última década. A rede vem se expandindo, mas a cobertura especializada (CAPSi, leito pediátrico) ainda é insuficiente em comparação com a demanda. O fortalecimento da APS via UBS com matriciamento real de saúde mental, a expansão do CAPSi em municípios médios e pequenos, a integração da CVV com a rede formal e a formação dos profissionais em protocolos validados são frentes complementares e simultâneas. O psicólogo individual opera dentro desse sistema imperfeito — fazer o caso possível com a rede disponível é parte do trabalho técnico.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A escolha não é "qual dispositivo é melhor". É "qual combinação cobre a janela de risco com a intensidade certa".</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>CVV 188 cobre janela 24h em qualquer território; opera como suporte entre sessões.</li>
+          <li>CAPSi é exigência em C-SSRS adolescente escore 4 ou superior (Resolução CFP 003/2024).</li>
+          <li>UBS opera como retaguarda territorial em casos leves a moderados estabilizados.</li>
+          <li>Leito pediátrico contém fase aguda em escore 5; não substitui acompanhamento longitudinal.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem aprofundar bases de saúde mental adolescente, neurodesenvolvimento e psicologia positiva aplicada — fundamento útil para operar com rigor na RAPS —, o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano do IPOG é caminho aplicado em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <p class="mt-3 text-white/85 text-sm"><strong>A vida do adolescente em crise tem saída.</strong> A combinação de cuidado especializado, plano de segurança e suporte familiar reduz substancialmente o risco. Buscar ajuda funciona.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div class="rounded-2xl bg-rose-50 border border-rose-200 p-5">
+        <p class="text-xs uppercase tracking-wider font-semibold text-rose-800 mb-2">Recursos de crise · 24h</p>
+        <ul class="text-sm text-ink-900 leading-relaxed space-y-1">
+          <li><strong>CVV 188</strong> — gratuito, sigiloso, 24h.</li>
+          <li><strong>CAPSi</strong> — Centro de Atenção Psicossocial Infantojuvenil mais próximo.</li>
+          <li><strong>SAMU 192</strong> — risco iminente.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/guias/intervencao-adolescente-ideacao-suicida-algoritmos" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Adolescente com ideação suicida e algoritmos (9 passos)</a></li>
+          <li><a href="/guias/intervencao-crise-suicida-zero-suicide" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Intervenção em crise suicida (Zero Suicide)</a></li>
+          <li><a href="/faq/prevencao-suicidio-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Prevenção de suicídio</a></li>
+          <li><a href="/comparativos/haidt-restricao-vs-uso-supervisionado" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · Haidt (restrição) vs uso supervisionado</a></li>
+          <li><a href="/comparativos/internacao-vs-caps-iii-crise-aguda" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · Internação vs CAPS III em crise aguda</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Psicologia Positiva e correlatos — corpo docente nominal, estrutura multicampus, formato Ao Vivo síncrono.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/areas/${areaEscolar.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaEscolar.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV 188</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br/assuntos/saude-mental/caps" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CAPSi / RAPS</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP 003/2024</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

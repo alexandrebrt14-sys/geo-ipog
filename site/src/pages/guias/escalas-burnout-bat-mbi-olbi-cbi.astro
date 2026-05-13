@@ -1,0 +1,389 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+const areaPositiva = AREAS.find(a => a.id === 'psicologia-positiva')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Definir o desfecho — clínico individual, epidemiológico ocupacional ou pesquisa acadêmica',
+    aplicacao: 'A escolha da escala depende do desfecho. Para clínica individual (laudo, plano terapêutico, INSS), priorize instrumento com cutoff clínico validado em PT-BR e estrutura interpretável caso a caso — BAT-PT e MBI-HSS/GS validados (Carlotto e Câmara, 2008; Schaufeli et al., 2020). Para epidemiologia ocupacional (PGR, NR-1, inventário psicossocial agregado), CBI e OLBI têm propriedades unidimensionais e bidimensionais que escalam melhor em amostras de centenas a milhares (Kristensen et al., 2005; Demerouti et al., 2003). Para pesquisa, BAT cobre cinco dimensões alinhadas à conceituação contemporânea, com bom ajuste em CFA multissítio. Definir o desfecho antes de escolher a escala evita refazer a coleta.',
+    armadilha: 'Aplicar MBI individual em estudo populacional e tirar prevalência somando "cortes altos em duas dimensões". Maslach e Leiter (2016) explicitam que MBI não foi desenhado para gerar prevalência — gerou décadas de literatura com prevalências inflacionadas.'
+  },
+  {
+    n: 2,
+    titulo: 'BAT (Burnout Assessment Tool, Schaufeli et al., 2020) — 23 itens, quatro dimensões core',
+    aplicacao: 'O BAT (Schaufeli, Desart & De Witte, 2020) operacionaliza burnout em quatro dimensões core — exaustão, distanciamento mental, comprometimento cognitivo e comprometimento emocional — e duas dimensões secundárias (sintomas psicológicos e psicossomáticos). 23 itens na versão completa; existe BAT-12 reduzido para triagem. Escala Likert 1-5, com cutoffs interpretativos verde/laranja/vermelho calibrados em amostras flamengas e holandesas (Schaufeli et al., 2020). Validação brasileira inicial pós-COVID em profissionais de saúde mostra ajuste CFA adequado (CFI > 0,93, RMSEA < 0,06) e alfa por dimensão ≥ 0,85 (Carlotto, comunicação técnica 2022-2024). Recomendado quando interessa diferenciar exaustão de distanciamento e captar componente cognitivo-afetivo separado.',
+    armadilha: 'Usar a versão BAT-12 para diagnóstico clínico. A versão curta é triagem; a interpretação clínica exige BAT-23 com perfil dimensional completo.'
+  },
+  {
+    n: 3,
+    titulo: 'MBI-HSS e MBI-GS (Maslach, Jackson & Leiter, 1996) — padrão histórico, três dimensões',
+    aplicacao: 'O Maslach Burnout Inventory permanece como referência histórica e instrumento mais citado na literatura. MBI-HSS (Human Services Survey) é desenhado para profissionais de saúde, educação e serviços assistenciais — 22 itens em três dimensões: Exaustão Emocional, Despersonalização e Realização Profissional reduzida. MBI-GS (General Survey) é a versão genérica para qualquer ocupação, com Exaustão, Cinismo e Eficácia Profissional reduzida (Schaufeli et al., 1996). Validação brasileira por Carlotto e Câmara (2008, Estudos de Psicologia Natal) confirmou estrutura trifatorial com alfa entre 0,77 e 0,87. Cutoffs originais de Maslach et al. (1996) são heurística, não diagnóstico — Maslach e Leiter (2016, World Psychiatry) explicitam que combinação de escores altos em EE e DP com baixa RP é perfil clinicamente sugestivo, não diagnóstico fechado.',
+    armadilha: 'Reportar prevalência somando "EE alto + DP alto + RP baixa". O próprio grupo Maslach desautorizou esse uso para estimativa populacional. Use BAT ou CBI quando o interesse é epidemiológico.'
+  },
+  {
+    n: 4,
+    titulo: 'OLBI (Oldenburg Burnout Inventory, Demerouti et al., 2003) — 16 itens, dois polos',
+    aplicacao: 'O OLBI (Demerouti, Bakker, Vardakou & Kantas, 2003) opera com 16 itens em duas dimensões — Exaustão e Distanciamento — cada uma com itens positivos e negativos para reduzir viés de aquiescência. Estrutura bidimensional torna o OLBI economicamente atrativo em inventários ocupacionais e em estudos longitudinais. Validação brasileira por Schuster e Dias (2018) e Sinval et al. (2019, Psicologia Reflexão e Crítica) confirma estrutura bifatorial com alfa entre 0,76 e 0,83. Correlação convergente com MBI varia entre 0,65 e 0,75 conforme amostra. Útil em estudos com restrição de tempo de aplicação e em amostras heterogêneas — engloba trabalho cognitivo, manual e relacional sem ajuste de versão.',
+    armadilha: 'Esperar diferenciação fina entre exaustão emocional, física e cognitiva no OLBI. A escala não separa esses subcomponentes — é trabalho do BAT.'
+  },
+  {
+    n: 5,
+    titulo: 'CBI (Copenhagen Burnout Inventory, Kristensen et al., 2005) — três escalas independentes',
+    aplicacao: 'O CBI (Kristensen, Borritz, Villadsen & Christensen, 2005, Work & Stress) divide burnout em três escalas independentes: burnout pessoal (6 itens), burnout relacionado ao trabalho (7 itens) e burnout relacionado a clientes/usuários (6 itens). A arquitetura independente permite aplicar apenas as escalas pertinentes — útil em PGR de empresa sem atendimento ao público externo, em hospital com forte componente paciente-cuidador, ou em pesquisa cross-occupational. Validação brasileira por Fonte e colaboradores (2024, Cadernos de Saúde Pública) em profissionais de saúde do SUS confirmou estrutura com alfa entre 0,85 e 0,89 e correlação convergente com MBI-HSS r ≈ 0,75. CBI é o instrumento de escolha em estudos populacionais dinamarqueses e tem boa aplicabilidade quando interessa prevalência por contexto.',
+    armadilha: 'Aplicar apenas a escala "burnout pessoal" do CBI em estudo ocupacional. O componente trabalho é justamente o que diferencia burnout de fadiga geral.'
+  },
+  {
+    n: 6,
+    titulo: 'Calcular cutoffs e interpretar perfil — verde, laranja, vermelho',
+    aplicacao: 'Cutoffs operacionais por instrumento: BAT total > 3,02 indica risco aumentado, > 3,32 indica burnout clínico provável (Schaufeli et al., 2020). MBI-HSS com EE ≥ 27 e DP ≥ 10 e RP ≤ 33 sugere perfil sintomático (Maslach et al., 1996); MBI-GS análogo com pontos de corte específicos. OLBI > 2,1 em ambas dimensões indica risco (Demerouti et al., 2003). CBI ≥ 50 em qualquer escala (range 0-100) indica nível alto (Kristensen et al., 2005). Para clínica, sempre articular escore com narrativa do paciente — escore alto sem queixa funcional pode refletir sobrecarga aguda transitória; escore moderado com prejuízo funcional marcado merece atenção clínica mesmo abaixo do cutoff. Documente data, instrumento, escore bruto e perfil dimensional.',
+    armadilha: 'Tratar cutoff como diagnóstico binário. Burnout é dimensional; o cutoff é heurística para encaminhamento, não veredito.'
+  },
+  {
+    n: 7,
+    titulo: 'Aplicar em diagnóstico de PGR sob NR-1 — granularidade por setor e função',
+    aplicacao: 'Sob a NR-1 atualizada pela Portaria MTE 1.419/2024 (vigência prorrogada para 26 de maio de 2026 pela Portaria MTE 765/2025), o PGR precisa incluir riscos psicossociais com inventário, avaliação, registro e plano de controle. Para o diagnóstico ocupacional, CBI e OLBI são primeira escolha por economia de itens e escalabilidade. Aplique por setor e função, com no mínimo 30 respondentes por agrupamento para ter poder estatístico minimamente útil. Integre com indicadores hard — rotatividade, absenteísmo, afastamentos CID-10 F40-F48 e CID-11 QD85, NPS interno, índice de assédio relatado. ISO 45003:2021 e instrumento COPSOQ III complementam o BAT/CBI em risco psicossocial mais amplo. Documente método, instrumento, amostragem, cutoff aplicado, plano de retorno e cronograma de revisão.',
+    armadilha: 'Aplicar uma única rodada do BAT em 2026 para "cumprir NR-1". A norma exige ciclo de gestão de risco — diagnóstico, plano, controle, monitoramento, revisão. Foto pontual sem ciclo é não-conformidade auditável.'
+  },
+  {
+    n: 8,
+    titulo: 'Integrar com diário de sono, WFIRS e instrumentos clínicos correlatos',
+    aplicacao: 'Burnout puro raramente aparece isolado. Em avaliação clínica individual, combine a escala de burnout com diário de sono de duas semanas (latência, despertares, eficiência), PSQI (Pittsburgh Sleep Quality Index) e instrumentos de prejuízo funcional como WFIRS (Weiss Functional Impairment Rating Scale). Em comorbidade ansiosa, aplique GAD-7; depressiva, PHQ-9; transtorno de adaptação, IES-R; sintomas dissociativos pós-trauma ocupacional, DES-II. Diferenciais clínicos críticos: depressão maior (humor deprimido contextualmente generalizado, não restrito ao trabalho), transtorno de adaptação (estressor identificável recente, < 6 meses), fadiga crônica relacionada a long COVID (sintomas pós-exercício, neurocognição). Plano clínico integrado começa pela tabela diferencial, não pela medicação.',
+    armadilha: 'Encaminhar para psiquiatra com "burnout" como diagnóstico isolado. Burnout CID-11 (QD85) é fenômeno ocupacional, não transtorno mental; o quadro clínico tratável geralmente é F32, F41 ou F43 coocorrente.'
+  },
+  {
+    n: 9,
+    titulo: 'Redigir documentação clínica e ocupacional — Resolução CFP 06/2019 e ISO 45003',
+    aplicacao: 'Para uso clínico, o laudo segue Resolução CFP 06/2019 (identificação, demanda, procedimentos, análise, conclusão). Especifique instrumento aplicado (BAT-23 versus BAT-12 versus MBI versus CBI), escore bruto por dimensão, percentil ou cutoff aplicado, contexto laboral, nexo causal documentado e plano. Para uso ocupacional sob NR-1, o relatório técnico precisa cumprir requisitos do GRO (1.5.4 da NR-1) — método explícito, escala validada citada por referência completa, amostra, recortes por setor, plano de ação com responsáveis e prazos, cronograma de revisão. ISO 45003:2021 fornece estrutura de relatório de risco psicossocial alinhada ao Sistema de Gestão de SSO (ISO 45001). Documentação inadequada é a principal causa de fragilidade em perícia trabalhista e em fiscalização.',
+    armadilha: 'Reportar apenas "BAT total = 3,5" sem perfil dimensional, sem instrumento citado e sem nexo causal. Laudo curto em burnout vira presa fácil em contraditório judicial.'
+  }
+];
+
+const tabelaComparativo = [
+  { dimensao: 'Nº de itens', bat: 'BAT-23 (BAT-12 reduzido)', mbi: 'MBI 22 (HSS/GS)', olbi: 'OLBI 16', cbi: 'CBI 19 (3 escalas)' },
+  { dimensao: 'Dimensões', bat: '4 core + 2 secundárias', mbi: '3 (EE, DP, RP)', olbi: '2 (Exaustão, Distanciamento)', cbi: '3 escalas independentes' },
+  { dimensao: 'Alinhamento CID-11 QD85', bat: 'Alto — desenhado pós-CID-11', mbi: 'Parcial — anterior à CID-11', olbi: 'Parcial', cbi: 'Parcial' },
+  { dimensao: 'Validação PT-BR', bat: 'Carlotto et al., 2022-2024 (dados técnicos)', mbi: 'Carlotto e Câmara, 2008 (Estudos Psicol)', olbi: 'Sinval et al., 2019 (Psicol Refl Crít)', cbi: 'Fonte et al., 2024 (Cad Saúde Pública)' },
+  { dimensao: 'Cutoff clínico', bat: '> 3,02 (risco) / > 3,32 (clínico)', mbi: 'EE≥27 + DP≥10 + RP≤33', olbi: '> 2,1 em ambas dimensões', cbi: '≥ 50 em qualquer escala' },
+  { dimensao: 'Aplicação ideal', bat: 'Clínica + pesquisa contemporânea', mbi: 'Pesquisa histórica + comparabilidade internacional', olbi: 'Inventário ocupacional rápido', cbi: 'Epidemiologia ocupacional + recortes contextuais' },
+  { dimensao: 'Tempo médio', bat: '8-10 min (BAT-23)', mbi: '10-12 min', olbi: '6-8 min', cbi: '7-9 min' },
+  { dimensao: 'Acesso', bat: 'Site Schaufeli — uso clínico/pesquisa gratuito', mbi: 'Mind Garden — licença paga', olbi: 'Uso acadêmico livre', cbi: 'Uso aberto — autores Copenhagen' }
+];
+
+const erros = [
+  {
+    titulo: 'Misturar versões MBI no mesmo estudo',
+    texto: 'MBI-HSS (serviços humanos) e MBI-GS (geral) têm itens reescritos e cutoffs distintos. Em estudo multissetorial, escolha uma versão e mantenha. Mistura impede comparação interna e enfraquece análise psicométrica posterior.'
+  },
+  {
+    titulo: 'Aplicar instrumento sem validação BR',
+    texto: 'Versões traduzidas mas não validadas com CFA, alfa de Cronbach e estudo de invariância em amostra brasileira têm propriedades psicométricas desconhecidas. Em laudo defensável, cite Carlotto e Câmara (2008) para MBI, Sinval et al. (2019) para OLBI, Fonte et al. (2024) para CBI. Para BAT, ainda há janela de consolidação — declare condição preliminar quando aplicável.'
+  },
+  {
+    titulo: 'Reportar prevalência somando "alto em duas dimensões" do MBI',
+    texto: 'Maslach e Leiter (2016, World Psychiatry) explicitam que MBI não foi desenhado para gerar prevalência populacional. Reporte perfis dimensionais ou use CBI/BAT para prevalência ocupacional.'
+  },
+  {
+    titulo: 'Ignorar diferencial com depressão, ansiedade e long COVID',
+    texto: 'Burnout CID-11 (QD85) é fenômeno ocupacional, não transtorno mental. Quadro clínico tratável geralmente envolve F32, F41 ou F43 coocorrente. Sem diferencial documentado, o laudo não sustenta nexo causal em perícia.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'BAT substitui MBI em 2026?',
+    a: 'BAT é o instrumento contemporâneo mais alinhado à CID-11 (QD85) e capta dimensão cognitivo-afetiva separada da exaustão. MBI permanece como referência histórica e mantém comparabilidade com décadas de literatura internacional. Schaufeli et al. (2020) sugerem BAT para clínica e pesquisa nova; MBI segue útil quando o estudo precisa comparar com séries históricas. Em laudo individual no Brasil, BAT-PT é alternativa moderna com cutoff verde/laranja/vermelho mais interpretável; em PGR de empresa, CBI escala melhor.'
+  },
+  {
+    q: 'Qual escala usar para cumprir a NR-1 atualizada?',
+    a: 'A norma não prescreve instrumento específico — exige método validado, documentado e replicável. Em PGR sob NR-1 (Portaria MTE 1.419/2024, vigência 26 de maio de 2026 pela Portaria MTE 765/2025), CBI e OLBI são primeira escolha por economia de itens em coletas grandes. Para empresas com profissionais de saúde ou atendimento intenso ao público, MBI-HSS ou CBI escala de clientes capturam o componente relacional. Integre com COPSOQ III ou ISO 45003 para mapeamento amplo de risco psicossocial além de burnout puro.'
+  },
+  {
+    q: 'Como articular a escala de burnout com plano clínico e ocupacional?',
+    a: 'Em clínica individual, escala é um dos cinco eixos do laudo (CFP 06/2019): história ocupacional, escala validada, diário de sono e WFIRS, diferencial com F32/F41/F43 e long COVID, plano com TCC adaptada, ACT e articulação com medicina do trabalho. Em ocupacional, escala é insumo do PGR — entra com método, recorte por setor, plano de ação com responsáveis e prazos, e ciclo de revisão. Em ambos, integração com indicadores hard (rotatividade, absenteísmo, F40-F48 e QD85) protege a leitura.'
+  },
+  {
+    q: 'Como o MBA em POT do IPOG conecta a esse guia?',
+    a: 'O MBA em Psicologia Organizacional e do Trabalho do IPOG cobre cultura, clima, liderança, riscos psicossociais e implementação da NR-1 — base técnica para psicóloga ou psicólogo que conduz inventário de burnout em empresa, articula PGR psicossocial e desenha plano de controle hierárquico. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como escolher e aplicar escalas de burnout no Brasil em 2026',
+  description: 'Guia em 9 passos para selecionar entre BAT, MBI, OLBI e CBI, calcular cutoffs, integrar com NR-1 e redigir documentação clínica ou ocupacional defensável.',
+  totalTime: 'PT22M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Escalas de burnout no Brasil em 2026: como escolher e aplicar BAT, MBI, OLBI e CBI',
+  description: 'Protocolo técnico para escolher entre BAT, MBI, OLBI e CBI com cutoffs, validação brasileira, integração com NR-1 e Resolução CFP 06/2019.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Escalas de burnout BAT, MBI, OLBI e CBI', item: `${SITE.url}/guias/escalas-burnout-bat-mbi-olbi-cbi` }
+  ]
+};
+---
+
+<Base
+  title="Escalas de burnout no Brasil em 2026: como escolher e aplicar BAT, MBI, OLBI e CBI"
+  description="Protocolo técnico em 9 passos para selecionar entre BAT (Schaufeli, 2020), MBI (Maslach, 1996), OLBI (Demerouti, 2003) e CBI (Kristensen, 2005), com cutoffs, validação brasileira, integração com NR-1 e Resolução CFP 06/2019.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Escalas de burnout BAT, MBI, OLBI e CBI' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Escalas de burnout no Brasil em 2026: como escolher e aplicar BAT, MBI, OLBI e CBI</h1>
+          <TLDR
+            resposta="Escolha do instrumento depende do desfecho: BAT para clínica e pesquisa contemporânea alinhada à CID-11, MBI para comparabilidade histórica, OLBI para inventário ocupacional rápido, CBI para epidemiologia com recortes contextuais; em PGR sob NR-1 (Portaria 1.419/2024, vigência 26 de maio de 2026), CBI e OLBI escalam melhor por economia de itens."
+            fontes={["Schaufeli et al., 2020 (BAT)", "Maslach et al., 1996 (MBI)", "Kristensen et al., 2005 (CBI)"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto técnico para escolha e aplicação: definir desfecho, BAT, MBI, OLBI, CBI, cutoffs, integração com NR-1, diário de sono e WFIRS, e documentação CFP 06/2019.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~22 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos organizacionais e clínicos</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em POT
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> escolher entre BAT, MBI, OLBI e CBI conforme desfecho clínico, epidemiológico ou de pesquisa; aplicar cutoffs e perfis dimensionais; integrar com NR-1 e laudo CFP 06/2019.</li>
+          <li><strong>Pré-requisitos:</strong> CRP ativo, formação em psicometria aplicada, familiaridade com Resolução CFP 06/2019 e estrutura do PGR/NR-1.</li>
+          <li><strong>Resultado esperado:</strong> instrumentação coerente com o desfecho, perfil dimensional documentado e plano clínico ou ocupacional defensável em fiscalização ou perícia.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A pergunta clínica padrão — "qual escala de burnout aplico?" — está mal colocada. A pergunta correta é "qual desfecho quero medir?". Burnout não é entidade única; é construto dimensional com operacionalização variada entre escolas. O grupo de Maslach (MBI) operacionaliza com três dimensões — exaustão, despersonalização e realização reduzida. O grupo de Demerouti (OLBI) reduz a dois polos opostos por dimensão. Kristensen (CBI) propõe três escalas independentes por contexto. Schaufeli e De Witte (BAT) recompõem quatro dimensões core alinhadas à CID-11 QD85. Cada operacionalização capta um perfil ligeiramente diferente do mesmo fenômeno — e a escolha sem desfecho explícito gera estudos não comparáveis e laudos frágeis.
+        </p>
+        <p>
+          No Brasil de 2026, a urgência regulatória empilha pressão. A Portaria MTE 1.419/2024 atualizou o capítulo 1.5 da NR-1 incluindo riscos psicossociais no Gerenciamento de Riscos Ocupacionais; a vigência foi prorrogada para 26 de maio de 2026 pela Portaria MTE 765/2025. O TRT-2 reconheceu, em maio de 2026, dano moral presumido por burnout com nexo causal e culpa do empregador. A Previdência Social registrou crescimento de cerca de 800% nos afastamentos por burnout entre 2021 (823 casos) e 2025 (7.595 casos), segundo dados divulgados em maio de 2026. Esse cenário transforma a escolha do instrumento em decisão técnica e jurídica simultaneamente — escala mal aplicada gera relatório ocupacional contestável e laudo clínico vulnerável a contraditório.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Comparativo direto BAT × MBI × OLBI × CBI</h2>
+        <p class="text-ink-700 mt-2">Síntese para escolha rápida em sessão clínica ou reunião de SST.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Dimensão</th>
+                <th class="text-left px-4 py-3">BAT</th>
+                <th class="text-left px-4 py-3">MBI</th>
+                <th class="text-left px-4 py-3">OLBI</th>
+                <th class="text-left px-4 py-3">CBI</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {tabelaComparativo.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.dimensao}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.bat}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.mbi}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.olbi}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.cbi}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="sm:hidden text-xs text-ink-500 mt-2">Arraste a tabela para ver mais colunas.</p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Hospital privado, 1.800 colaboradores, escolha entre BAT, CBI e MBI para PGR psicossocial sob NR-1</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Hospital privado em São Paulo com 1.800 colaboradores, faixa etária predominante 25-55 anos, alta concentração em enfermagem e atendimento direto. SESMT recebe demanda do jurídico para conduzir inventário psicossocial sob NR-1 antes da vigência em 26 de maio de 2026. Cenário com restrição de tempo de aplicação (não mais de 12 min por colaborador, em horário de trabalho), necessidade de recorte por setor (UTI, pronto-socorro, enfermaria, administrativo, hotelaria) e exigência de relatório técnico defensável em fiscalização.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Análise técnica recomendou CBI como instrumento primário — três escalas independentes (pessoal, trabalho, clientes/pacientes), tempo médio 8 minutos, alfa entre 0,85 e 0,89 em validação brasileira por Fonte et al. (2024). MBI-HSS foi descartado por licença paga em escala (1.800 aplicações) e por sobreposição com componente relacional já coberto pelo CBI. BAT-12 foi considerado complementar para sub-amostra de 200 profissionais em risco, com perfil dimensional mais granular. Plano integrou COPSOQ III curto para mapeamento psicossocial amplo (sobrecarga, autonomia, suporte de chefia, conflito de papéis). Relatório técnico citou referências completas (Kristensen et al., 2005; Fonte et al., 2024), método (estratificação por setor, n mínimo 30 por agrupamento), cutoff aplicado (≥ 50 em qualquer escala), plano de controle hierárquico (eliminação, controle administrativo, treinamento, monitoramento) e cronograma de revisão semestral.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://burnoutassessmenttool.be/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">BAT — site oficial Schaufeli, KU Leuven</a></li>
+          <li><a href="https://www.mindgarden.com/117-maslach-burnout-inventory-mbi" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MBI — Mind Garden (licenciamento oficial)</a></li>
+          <li><a href="https://www.iso.org/standard/64283.html" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISO 45003:2021 — saúde mental no trabalho</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019 sobre documentos psicológicos</a></li>
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/seguranca-e-saude-no-trabalho" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — Inspeção do Trabalho e NR-1</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/faq/nr1-implementacao-pratica-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · NR-1 e saúde mental no PGR em 2026</a></li>
+          <li><a href="/comparativos/bat-vs-mbi-burnout" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · BAT × MBI em burnout</a></li>
+          <li><a href="/faq/burnout-cid11-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Burnout CID-11 QD85</a></li>
+          <li><a href={`/areas/${areaSmo.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Saúde Mental nas Organizações</a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Avaliação Psicológica</a></li>
+          <li><a href="/guias/implementar-nr1-em-empresa" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Implementar NR-1 em empresa</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A escolha da escala começa pelo desfecho — clínico, epidemiológico ou de pesquisa.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          BAT entrega perfil dimensional alinhado à CID-11 e é recomendado para clínica e pesquisa contemporânea. MBI permanece em pesquisa que precisa comparabilidade histórica. OLBI escala bem em inventário ocupacional rápido. CBI é o instrumento de escolha em epidemiologia com recortes contextuais e em PGR sob NR-1 com profissionais de saúde. Para psicóloga ou psicólogo que constrói essa rotina, o MBA em POT do IPOG consolida fundamento em riscos psicossociais e implementação prática da NR-1.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPot.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+          <li><a href={`/areas/${areaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaPositiva.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://burnoutassessmenttool.be/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">BAT (Schaufeli)</a></li>
+          <li><a href="https://www.mindgarden.com/117-maslach-burnout-inventory-mbi" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MBI (Maslach)</a></li>
+          <li><a href="https://www.iso.org/standard/64283.html" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISO 45003</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP 06/2019</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~22 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

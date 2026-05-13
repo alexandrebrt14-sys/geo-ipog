@@ -1,0 +1,414 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O BAT substitui o MBI?',
+    a: 'Não substitui — coexiste. BAT (Schaufeli, Desart & De Witte, 2020) foi desenhado pós-CID-11 com quatro dimensões core (exaustão, distanciamento mental, comprometimento cognitivo e emocional) e dois sintomas secundários. MBI (Maslach et al., 1996) opera com três dimensões clássicas (exaustão emocional, despersonalização, realização reduzida) e mantém o maior corpo de literatura comparativa internacional. Para clínica contemporânea e PGR sob NR-1, BAT é a escolha por alinhamento com CID-11 QD85. Para estudos que precisam comparabilidade com séries históricas, MBI permanece referência. Schaufeli (2020) propõe transição gradual, não substituição abrupta.'
+  },
+  {
+    q: 'Por que o BAT separa "comprometimento cognitivo" e "comprometimento emocional" do que o MBI chamava de despersonalização?',
+    a: 'A despersonalização do MBI agrupava cinismo, distanciamento e perda funcional em construto único, gerando confusão na clínica e em pesquisa. BAT decompõe em dimensões mais granulares: distanciamento mental (motivação reduzida, desengajamento), comprometimento cognitivo (lapsos de atenção, dificuldade de tomar decisão simples, esquecimento) e comprometimento emocional (irritabilidade, reação desproporcional, dificuldade de regulação). A separação permite perfil dimensional mais útil — paciente com comprometimento cognitivo predominante exige plano clínico diferente de paciente com comprometimento emocional predominante. Schaufeli, Desart & De Witte (2020) defendem essa granularidade como avanço operacional.'
+  },
+  {
+    q: 'Qual instrumento usar em PGR psicossocial sob NR-1?',
+    a: 'Para PGR psicossocial em empresa, a primeira escolha frequentemente é CBI (Kristensen et al., 2005) por escalabilidade e três escalas independentes — não BAT nem MBI. BAT-12 reduzido é alternativa para sub-amostras em risco com perfil dimensional mais rico. MBI-HSS tem licenciamento pago em escala (Mind Garden), o que pesa em empresas com mais de 1.000 colaboradores. Para análise individual posterior em casos identificados, BAT-23 é o instrumento clínico de escolha. A combinação operacional CBI no inventário + BAT em sub-amostra clínica é prática consolidada em SESMTs maduros.'
+  },
+  {
+    q: 'BAT tem validação brasileira completa?',
+    a: 'BAT-PT tem dados de validação brasileira em fase de consolidação (Carlotto, comunicações técnicas 2022-2024) com bom ajuste CFA inicial em amostras de profissionais de saúde pós-COVID (CFI acima de 0,93, RMSEA abaixo de 0,06, alfa por dimensão ≥ 0,85). Em laudo defensável, citar como "validação preliminar BR" ou "adaptação para PT-BR em consolidação" preserva rigor técnico. Para uso em estudo populacional formal, MBI mantém vantagem de validação BR consolidada (Carlotto e Câmara, 2008, Estudos de Psicologia Natal). Para clínica individual e pesquisa contemporânea, BAT já tem propriedades suficientes para uso responsável com declaração de condição preliminar.'
+  }
+];
+
+const tabelaTeoria = [
+  { dimensao: 'Autor original', bat: 'Schaufeli, Desart & De Witte (2020) — KU Leuven', mbi: 'Maslach, Jackson & Leiter (1981; 1996) — UC Berkeley' },
+  { dimensao: 'Ano de publicação', bat: '2020 (pós-CID-11)', mbi: '1981 (MBI-HSS), 1996 (MBI-GS), revisões periódicas' },
+  { dimensao: 'Dimensões core', bat: '4 dimensões — Exaustão, Distanciamento mental, Comprometimento cognitivo, Comprometimento emocional', mbi: '3 dimensões — Exaustão emocional, Despersonalização (HSS) / Cinismo (GS), Realização Profissional reduzida' },
+  { dimensao: 'Dimensões secundárias', bat: 'Sintomas psicológicos e psicossomáticos (não diagnósticas)', mbi: 'Não tem dimensões secundárias formais' },
+  { dimensao: 'Conceituação subjacente', bat: 'Burnout como condição operacionalizada com componentes neurocognitivos e afetivos separados; alinhada à CID-11 QD85', mbi: 'Burnout como síndrome tridimensional de resposta a estressor interpessoal crônico no trabalho' },
+  { dimensao: 'Sintoma cognitivo separado', bat: 'Sim — comprometimento cognitivo é dimensão própria (atenção, decisão, memória)', mbi: 'Embutido em exaustão emocional, sem separação' },
+  { dimensao: 'Distinção emocional vs distanciamento', bat: 'Separados — comprometimento emocional (irritabilidade, reatividade) é diferente de distanciamento mental (desengajamento)', mbi: 'Despersonalização ou cinismo aglutinam ambos' },
+  { dimensao: 'Realização profissional', bat: 'Não é dimensão core (Schaufeli, 2020 considera empiricamente fraca)', mbi: 'Dimensão core — realização pessoal/profissional reduzida' },
+  { dimensao: 'Alinhamento CID-11 (QD85)', bat: 'Alto — desenvolvido em diálogo direto com a CID-11', mbi: 'Parcial — precede a CID-11; sobreposição conceitual mas não operacional total' },
+  { dimensao: 'Premissa epistemológica', bat: 'Burnout como fenômeno multidimensional com base neurocognitiva mensurável', mbi: 'Burnout como síndrome psicossocial de resposta ao trabalho prolongado' }
+];
+
+const tabelaPsicometria = [
+  { dimensao: 'Versão completa', bat: 'BAT-23 (23 itens) — 4 dimensões core; BAT-12 reduzido para triagem', mbi: 'MBI-HSS, MBI-GS, MBI-ES, MBI-SS — 22 itens em média conforme versão' },
+  { dimensao: 'Escala de resposta', bat: 'Likert 1-5 (nunca a sempre)', mbi: 'Likert 0-6 (nunca a todos os dias)' },
+  { dimensao: 'Cutoff clínico', bat: '> 3,02 (risco aumentado); > 3,32 (burnout clínico provável); calibrado em amostra flamenga e holandesa', mbi: 'EE ≥ 27 + DP ≥ 10 + RP ≤ 33 (HSS); cutoffs específicos por versão' },
+  { dimensao: 'Validação BR — alfa de Cronbach', bat: '≥ 0,85 por dimensão em amostras pós-COVID (Carlotto, comunicações técnicas 2022-2024); validação ainda em consolidação', mbi: 'Entre 0,77 e 0,87 conforme dimensão (Carlotto e Câmara, 2008, Estudos de Psicologia Natal)' },
+  { dimensao: 'Validação BR — CFA', bat: 'CFI acima de 0,93, RMSEA abaixo de 0,06 em amostras preliminares brasileiras', mbi: 'CFA confirmando estrutura trifatorial em amostras brasileiras (Carlotto e Câmara, 2008)' },
+  { dimensao: 'Invariância de medida (gênero, idade)', bat: 'Estudos iniciais sugerem invariância configural e métrica; em consolidação', mbi: 'Invariância documentada em séries internacionais; meta-análises disponíveis' },
+  { dimensao: 'Correlação convergente', bat: 'r > 0,70 com MBI em estudos comparativos europeus (Schaufeli et al., 2020)', mbi: 'Convergência ampla com instrumentos clássicos (OLBI, CBI)' },
+  { dimensao: 'Sensibilidade preditiva (afastamento)', bat: 'OR ≈ 2,8 para afastamento em estudo europeu (Schaufeli et al., 2020)', mbi: 'OR ≈ 1,9-2,2 conforme amostra; literatura ampla' },
+  { dimensao: 'Acesso e licenciamento', bat: 'Site Schaufeli (burnoutassessmenttool.be) — uso clínico/pesquisa gratuito com registro', mbi: 'Mind Garden — licença paga (custo por aplicação em escala)' },
+  { dimensao: 'Tempo médio de aplicação', bat: '8-10 min (BAT-23) / 4-5 min (BAT-12)', mbi: '10-12 min' }
+];
+
+const tabelaCenarios = [
+  { cenario: 'Clínica individual — laudo CFP 06/2019', bat: 'Recomendado — perfil dimensional rico, cutoff clínico interpretável, alinhamento CID-11 QD85', mbi: 'Alternativa válida quando precisa comparar com série histórica do paciente ou com literatura clássica' },
+  { cenario: 'Triagem ocupacional em escala (empresa 1.000+ colaboradores)', bat: 'BAT-12 para sub-amostra em risco; CBI/OLBI são primeira escolha em inventário inicial', mbi: 'Inviável em escala por licenciamento pago; aplicável em sub-amostras pequenas' },
+  { cenario: 'Pesquisa acadêmica contemporânea', bat: 'Recomendado para estudos novos pós-CID-11', mbi: 'Indicado quando o estudo precisa comparabilidade com literatura pré-2020' },
+  { cenario: 'Pesquisa longitudinal com série histórica', bat: 'Pode entrar como instrumento secundário para captar dimensão cognitivo-afetiva', mbi: 'Primeira escolha por comparabilidade com onda anterior' },
+  { cenario: 'Profissionais de saúde pós-COVID', bat: 'Recomendado — captura componente cognitivo-afetivo que MBI agrega; literatura emergente forte', mbi: 'Mantém-se útil por comparabilidade com literatura pré-pandemia' },
+  { cenario: 'Educação (professores)', bat: 'Aplicável; literatura BR ainda em consolidação para esta população', mbi: 'MBI-ES (Educators Survey) tem validação BR específica' },
+  { cenario: 'Estudo populacional para política pública', bat: 'Promissor — alinhamento com CID-11 facilita integração com dados INSS/SUS', mbi: 'Tradicional, mas Maslach e Leiter (2016) desaconselham uso para prevalência' },
+  { cenario: 'Reavaliação periódica em ciclo PGR NR-1', bat: 'Recomendado quando a sub-amostra requer perfil dimensional', mbi: 'Custo de licença pesa em ciclos anuais com 1.000+ aplicações' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'BAT vs MBI em burnout: comparativo entre Schaufeli (2020) e Maslach (1996)',
+  description: 'Comparativo técnico entre Burnout Assessment Tool e Maslach Burnout Inventory — base teórica, propriedades psicométricas, cenários de uso, validação brasileira e decisão clínica.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'BAT vs MBI em burnout' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+---
+
+<Base
+  title="BAT vs MBI em burnout: comparativo entre Schaufeli (2020) e Maslach (1996)"
+  description="Comparativo técnico entre Burnout Assessment Tool (Schaufeli, Desart & De Witte, 2020) e Maslach Burnout Inventory (Maslach et al., 1996). Base teórica, propriedades psicométricas e cenários de uso em clínica, NR-1 e pesquisa.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'BAT vs MBI em burnout' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Escalas de burnout</span>
+          <h1 class="section-h text-3xl sm:text-4xl">BAT vs MBI em burnout: duas operacionalizações do mesmo fenômeno, escolha por desfecho</h1>
+          <TLDR
+            resposta="BAT (Schaufeli, 2020) é a escolha para clínica contemporânea e PGR sob NR-1 por alinhamento direto com CID-11 QD85 e separação de comprometimento cognitivo e emocional; MBI (Maslach, 1996) permanece referência para pesquisa com comparabilidade histórica e tem validação BR mais consolidada — a escolha responde ao desfecho, não a uma rivalidade teórica."
+            fontes={["Schaufeli, Desart & De Witte, 2020 (BAT)", "Maslach et al., 1996 (MBI)", "Carlotto e Câmara, 2008 (validação BR MBI)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Não são instrumentos rivais. BAT decompõe a despersonalização do MBI em dimensões cognitivas e afetivas separadas e está alinhado à CID-11. MBI mantém o maior corpo de literatura comparativa internacional e tem validação BR consolidada. A escolha responde ao desfecho — clínica, NR-1, pesquisa histórica, política pública.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          BAT (Schaufeli, Desart & De Witte, 2020) opera com quatro dimensões core (exaustão, distanciamento mental, comprometimento cognitivo, comprometimento emocional) alinhadas à CID-11 QD85, com cutoff verde/laranja/vermelho calibrado em amostras europeias e validação brasileira preliminar (CFI acima de 0,93, RMSEA abaixo de 0,06). MBI (Maslach et al., 1996) opera com três dimensões clássicas (exaustão emocional, despersonalização/cinismo, realização reduzida) e tem validação BR consolidada por Carlotto e Câmara (2008). Em clínica individual e PGR sob NR-1, BAT é a escolha contemporânea; em pesquisa com comparabilidade histórica, MBI permanece referência. Maslach e Leiter (2016, World Psychiatry) desaconselham uso do MBI para gerar prevalência populacional — para epidemiologia, CBI ou BAT são mais adequados.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">De Maslach a Schaufeli — quatro décadas de operacionalização</h2>
+        <p>
+          Christina Maslach publicou em 1981 no Journal of Occupational Behaviour, em coautoria com Susan Jackson, o instrumento que se tornou referência mundial em burnout — o Maslach Burnout Inventory (MBI). A escala operacionalizava o construto em três dimensões: exaustão emocional (sensação de esgotamento dos recursos emocionais), despersonalização (atitude cínica e distante em relação aos receptores do serviço), e realização pessoal reduzida (sentimento de incompetência e baixo desempenho). A versão original (MBI-HSS, Human Services Survey) foi pensada para profissionais de saúde, educação e serviços assistenciais. Em 1996, Schaufeli, Leiter, Maslach e Jackson publicaram a versão genérica (MBI-GS), que substituiu "despersonalização" por "cinismo" e ampliou a aplicabilidade para qualquer ocupação. O MBI consolidou-se como referência por quatro décadas, com tradução para mais de 30 idiomas e milhares de citações.
+        </p>
+        <p>
+          Nas duas décadas seguintes, a literatura acumulou críticas operacionais. O construto "realização pessoal reduzida" mostrava propriedades psicométricas mais fracas que as outras duas dimensões, comportando-se frequentemente como variável de personalidade não responsiva ao tratamento. A despersonalização agregava componentes cognitivos (perda de motivação) e afetivos (cinismo, irritabilidade) que tinham implicações clínicas distintas. Maslach e Leiter (2016, World Psychiatry) explicitaram que o MBI não foi desenhado para gerar estimativas de prevalência populacional — uso comum mas tecnicamente inadequado. Paralelamente, Demerouti e colaboradores (2003) propuseram o OLBI com estrutura bidimensional e Kristensen e colaboradores (2005) propuseram o CBI com três escalas independentes por contexto. O campo amadureceu para uma operacionalização mais granular.
+        </p>
+        <p>
+          Em 2020, Schaufeli, Desart e De Witte publicaram o Burnout Assessment Tool (BAT) em capítulo da KU Leuven em sintonia direta com a CID-11 QD85 (Organização Mundial da Saúde, 2019, vigência no Brasil desde 2022). O BAT recompõe o construto em quatro dimensões core: exaustão (esgotamento físico e mental), distanciamento mental (perda de motivação e engajamento), comprometimento cognitivo (lapsos de atenção, dificuldade de decisão, esquecimento), e comprometimento emocional (irritabilidade, reatividade, dificuldade de regulação). Sintomas psicológicos e psicossomáticos entram como dimensões secundárias não diagnósticas. Cutoff calibrado em amostra flamenga e holandesa: total > 3,02 indica risco aumentado, > 3,32 indica burnout clínico provável. A validação brasileira está em consolidação, com dados preliminares pós-COVID em profissionais de saúde mostrando ajuste CFA adequado e alfa por dimensão ≥ 0,85.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Base teórica e estrutura conceitual</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">BAT (Schaufeli, 2020)</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">MBI (Maslach, 1996)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaTeoria.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.bat}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.mbi}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Propriedades psicométricas e acesso</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Propriedade</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">BAT</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">MBI</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPsicometria.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.bat}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.mbi}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A diferença operacional principal entre BAT e MBI está na granularidade do que cada instrumento separa. Em uma sessão clínica, paciente A relata exaustão acentuada, irritabilidade explosiva e reatividade emocional desproporcional em ambiente doméstico, com motivação preservada para o trabalho. Paciente B relata exaustão similar, mas com perda total de motivação, sensação de "carrinho de inércia", e lapsos cognitivos crescentes (esquecimentos, dificuldade de decisão simples), sem irritabilidade marcada. No MBI, ambos pontuariam alto em exaustão emocional e possivelmente em despersonalização — mas a dimensão "despersonalização" agrega componentes diferentes em cada caso. No BAT, paciente A pontua alto em comprometimento emocional e moderado em distanciamento mental; paciente B pontua alto em distanciamento mental e comprometimento cognitivo, baixo em comprometimento emocional. Plano clínico distinto: A pode beneficiar mais de DBT-skills e regulação emocional; B, de TCC adaptada para reorganização cognitiva e ACT para distanciamento.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A vantagem operacional do BAT em clínica e em PGR sob NR-1 é que esse perfil dimensional informa a escolha de intervenção — não apenas o diagnóstico binário. Schaufeli, Desart e De Witte (2020) defendem que essa granularidade reduz heterogeneidade do construto e melhora a sensibilidade preditiva para afastamento (OR ≈ 2,8) em relação ao MBI (OR ≈ 1,9-2,2 conforme amostra). Por outro lado, MBI tem 40 anos de literatura comparativa internacional e validação brasileira consolidada (Carlotto e Câmara, 2008), o que importa muito em pesquisa epidemiológica longitudinal e em comparação cross-cultural histórica. O instrumento "melhor" depende da pergunta — não há resposta universal.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Outro elemento prático que pesa na escolha é o acesso. BAT é disponibilizado pelo grupo de Schaufeli em burnoutassessmenttool.be para uso clínico e de pesquisa mediante registro, sem custo por aplicação. MBI é licenciado pela Mind Garden, com custo por aplicação que pode pesar significativamente em empresas com 1.000+ colaboradores em ciclos anuais. Em SESMTs maduros, a prática consolidada é CBI ou OLBI no inventário inicial em escala (gratuitos para uso acadêmico) e BAT em sub-amostras clínicas em risco para análise dimensional rica. MBI permanece em pesquisa que precisa comparabilidade histórica internacional.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A relação com a CID-11 QD85 é o último ponto de mecanismo. O QD85 classifica burnout como fenômeno ocupacional caracterizado por exaustão, distanciamento mental do trabalho e redução de eficácia profissional. BAT foi desenhado em diálogo direto com essa conceituação — o que facilita integração com codificação CID-11 em laudo, em prontuário e em perícia. MBI precede a CID-11 e mantém sobreposição conceitual, mas a operacionalização do "cinismo" do MBI-GS e da "despersonalização" do MBI-HSS não mapeia 1-para-1 com o "distanciamento mental" do QD85. Para clínica e perícia contemporâneas no Brasil, BAT oferece vantagem de coerência codificatória.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Cenários de uso e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Cenário</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">BAT</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">MBI</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaCenarios.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.cenario}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.bat}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.mbi}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher BAT</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Clínica individual contemporânea — laudo CFP 06/2019</p>
+              <p class="text-sm text-ink-700 mt-1">Perfil dimensional rico (cognitivo vs emocional) informa escolha de intervenção (DBT-skills, ACT, TCC adaptada).</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Sub-amostra clínica em PGR sob NR-1</p>
+              <p class="text-sm text-ink-700 mt-1">Após triagem com CBI/OLBI, BAT-23 entrega perfil dimensional para casos identificados em risco.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Pesquisa pós-CID-11 com codificação QD85</p>
+              <p class="text-sm text-ink-700 mt-1">Alinhamento direto com a conceituação da OMS facilita integração com bases CID e perícia previdenciária.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher MBI</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Pesquisa longitudinal com série histórica</p>
+              <p class="text-sm text-ink-700 mt-1">Comparabilidade com ondas anteriores e com literatura internacional clássica é o ativo principal.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Educação — professores</p>
+              <p class="text-sm text-ink-700 mt-1">MBI-ES (Educators Survey) tem validação BR específica e literatura aplicada consolidada nesta população.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Estudo cross-cultural internacional</p>
+              <p class="text-sm text-ink-700 mt-1">40 anos de literatura comparativa internacional sustentam meta-análises e comparações entre países.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando combinar</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Pesquisa que precisa comparabilidade histórica + perfil dimensional contemporâneo</p>
+            <p class="text-sm text-ink-700 mt-1">Aplicar MBI para comparabilidade com onda anterior + BAT para captar componente cognitivo-afetivo separado. Custo adicional ~ 5 minutos por respondente.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">PGR psicossocial sob NR-1 com sub-amostra clínica</p>
+            <p class="text-sm text-ink-700 mt-1">CBI/OLBI no inventário inicial em escala + BAT-23 em casos identificados em risco para análise dimensional clínica. Modelo amplamente usado em SESMTs maduros.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Marina, 38 anos, gerente de tecnologia, decisão entre BAT e MBI em laudo clínico</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Marina, gerente de tecnologia em empresa de pagamentos, 38 anos, procurou avaliação clínica após queixa de exaustão progressiva ao longo de 18 meses, irritabilidade explosiva em casa, lapsos de atenção em reuniões (esquecimentos de pauta, dificuldade de decisão simples). Pediu laudo para discutir afastamento com a empresa. Sem histórico psiquiátrico prévio. PHQ-9 = 11 (depressão leve), GAD-7 = 13 (ansiedade moderada), PSQI = 12 (sono ruim). Diferencial inicial entre F32 leve, F41 e burnout F43/QD85.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Psicóloga escolheu aplicar BAT-23 em vez de MBI por três razões: alinhamento com CID-11 QD85 facilita codificação em laudo trabalhista; perfil dimensional separa comprometimento cognitivo (lapsos, decisões) e emocional (irritabilidade explosiva), o que informa plano clínico; acesso gratuito pelo site Schaufeli. Resultado: exaustão = 4,1 (alta), distanciamento mental = 2,8 (moderada), comprometimento cognitivo = 3,9 (alta), comprometimento emocional = 4,2 (muito alta). Total = 3,75 — acima do cutoff clínico (> 3,32). Perfil predominante: emocional-cognitivo, com distanciamento mental relativamente preservado (sugerindo motivação ainda residual, não desengajamento total).
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Plano clínico desenhado a partir do perfil dimensional: DBT-skills para regulação emocional como prioridade nas primeiras 4 sessões; TCC adaptada para reorganização cognitiva da carga (lista de prioridades, time-boxing, redução de reuniões síncronas) a partir da sessão 3; ACT para autocrítica e fusão com narrativa de "fracasso pessoal" a partir da sessão 8; articulação com medicina do trabalho para discutir redução temporária de jornada (não afastamento). Reavaliação BAT em 60 dias. Em 4 meses, Marina reportou BAT total = 2,4 (zona verde), com queda mais marcada em comprometimento emocional (4,2 → 1,8) e cognitivo (3,9 → 2,3). Laudo final citou BAT-23 como instrumento, escore bruto por dimensão, cutoff aplicado, codificação CID-11 QD85 e plano terapêutico documentado.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões clínicos descritos em Schaufeli et al. (2020) e em literatura pós-COVID em profissionais de tecnologia. Aplicar MBI nesta paciente teria identificado burnout, mas sem o perfil dimensional cognitivo-emocional que informou o plano específico.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Cinco precauções importantes. Primeiro, ambos os instrumentos são autorrelato — capturam percepção do respondente, não estado objetivo. Hermenêutica clínica é parte da interpretação. Segundo, BAT tem validação BR ainda em consolidação; em contexto judicial ou pericial conservador, MBI ainda oferece maior segurança documental por validação consolidada. Terceiro, ambos foram desenvolvidos majoritariamente em amostras europeias e norte-americanas; questões de equivalência semântica em PT-BR e invariância de medida em populações específicas (indígenas, quilombolas, profissionais informais) ainda demandam estudos. Quarto, escala isolada nunca fecha diagnóstico — diferencial com F32, F41, F43, hipotireoidismo, anemia, long COVID, transtornos do sono é parte do trabalho clínico. Quinto, cutoffs operam como heurística — escore alto sem prejuízo funcional pode refletir sobrecarga aguda; escore moderado com prejuízo funcional marcado merece atenção clínica mesmo abaixo do ponto de corte.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No Brasil de 2026, com a NR-1 atualizada entrando em vigência plena e o TRT-2 reconhecendo dano moral presumido por burnout com nexo causal, a escolha do instrumento ganhou relevância jurídica adicional. Laudo com instrumento mal aplicado, sem citação completa de referência, sem perfil dimensional documentado e sem diferencial registrado é peça frágil em contraditório. Tanto BAT quanto MBI servem ao propósito quando aplicados com rigor; o que não serve é qualquer instrumento aplicado sem método, escolha justificada e documentação auditável.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Dois instrumentos, escolha por desfecho — clínica, NR-1, pesquisa histórica.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>BAT (Schaufeli, 2020) é a escolha contemporânea para clínica individual e PGR sob NR-1 — alinhamento CID-11 e perfil dimensional rico.</li>
+          <li>MBI (Maslach, 1996) permanece em pesquisa com comparabilidade histórica internacional e tem validação BR consolidada.</li>
+          <li>Em escala empresarial, CBI/OLBI são primeira escolha no inventário inicial; BAT entra em sub-amostras clínicas.</li>
+          <li>Maslach e Leiter (2016) desaconselham uso do MBI para gerar prevalência populacional — CBI ou BAT são mais adequados em epidemiologia.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogas e psicólogos que pretendem articular instrumentação contemporânea de burnout com riscos psicossociais sob NR-1, o IPOG mantém MBA em Psicologia Organizacional e do Trabalho com módulos em escalas validadas, ISO 45003 e implementação prática.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/guias/escalas-burnout-bat-mbi-olbi-cbi" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Escalas BAT, MBI, OLBI e CBI</a></li>
+          <li><a href="/faq/nr1-implementacao-pratica-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · NR-1 implementação prática 2026</a></li>
+          <li><a href="/comparativos/eap-brasileiro-vs-internacional" class="text-brand-700 hover:text-brand-800 font-medium">EAP brasileiro vs internacional</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em POT, Psicologia Positiva e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaPot && <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPot.tag}</span></a></li>}
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/saude-mental-organizacoes" class="mega-link"><strong class="text-ink-900 text-sm">Saúde Mental nas Organizações</strong></a></li>
+          <li><a href="/areas/avaliacao-psicologica" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação Psicológica</strong></a></li>
+          <li><a href="/areas/psicologia-positiva" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Positiva</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Schaufeli, W. B., Desart, S. & De Witte, H. (2020). Burnout Assessment Tool (BAT) — Development, validity, and reliability. KU Leuven.</li>
+          <li>Maslach, C., Jackson, S. E. & Leiter, M. P. (1996). Maslach Burnout Inventory Manual (3rd ed.). Consulting Psychologists Press.</li>
+          <li>Maslach, C. & Leiter, M. P. (2016). Understanding the burnout experience. World Psychiatry, 15(2), 103-111.</li>
+          <li>Schaufeli, W. B. et al. (1996). Maslach Burnout Inventory — General Survey. Consulting Psychologists Press.</li>
+          <li>Carlotto, M. S. & Câmara, S. G. (2008). Análise fatorial do Maslach Burnout Inventory em uma amostra de profissionais brasileiros. Estudos de Psicologia (Natal), 13(2), 113-122.</li>
+          <li>Organização Mundial da Saúde (2019). CID-11 — QD85 burn-out.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

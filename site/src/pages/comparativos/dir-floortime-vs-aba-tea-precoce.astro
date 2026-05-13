@@ -1,0 +1,428 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'DIR/Floortime e ABA são abordagens rivais em TEA?',
+    a: 'Não. ABA e DIR/Floortime partem de pressupostos teóricos distintos — comportamental clássica (Skinner, Lovaas 1987) e desenvolvimentista relacional (Greenspan e Wieder, 1997) — mas a clínica contemporânea de TEA precoce raramente trabalha com versões puras. Boshoff e colaboradores (2024, Autism Research, DOI 10.1002/aur.2998) revisaram sistematicamente 22 ensaios sobre DIR/Floortime e documentam ganhos moderados em comunicação social (tamanho de efeito 0,65) com evidência ainda limitada quanto a transferência funcional ampla. Rogers e Dawson (2019, Early Start Denver Model) consolidaram NDBI (Naturalistic Developmental Behavioral Interventions) como categoria que integra princípios comportamentais com framework desenvolvimentista. O ABA contemporâneo já incorpora elementos naturalísticos; o DIR/Floortime contemporâneo absorveu coleta sistemática de dados. A escolha responde a perfil clínico, idade, contexto familiar e disponibilidade local de profissional formado.'
+  },
+  {
+    q: 'Qual a evidência específica de DIR/Floortime em TEA precoce?',
+    a: 'Boshoff e colaboradores (2024, revisão sistemática de 22 estudos, DOI 10.1002/aur.2998) reportam ganhos moderados em comunicação social (ES 0,65), engajamento relacional e regulação emocional, com 17 dos 22 estudos mostrando efeito positivo em pelo menos um desfecho. Pajareya e Nopmaneejumruslers (2011) randomizaram 32 crianças com TEA precoce para Floortime + intervenção padrão versus apenas padrão por 3 meses, com ganho significativo em FEAS (Functional Emotional Assessment Scale). Solomon e colaboradores (2014) descrevem o programa PLAY Project (Play and Language for Autistic Youngsters) baseado em DIR com gains comparáveis em coorte de 128 crianças. Limitações reconhecidas: variabilidade metodológica entre estudos, amostras pequenas em alguns ensaios, e definição variável de "fidelidade" à abordagem. Para TEA precoce 12-48 meses, evidência é moderada e em consolidação.'
+  },
+  {
+    q: 'ABA em TEA precoce tem corpo de evidência maior que DIR/Floortime?',
+    a: 'Sim, com nuance. ABA tradicional (Lovaas 1987) e Modelo Denver/ESDM (Dawson et al., 2010, Pediatrics) acumulam corpo de evidência mais amplo em TEA precoce, com múltiplos RCTs robustos. Dawson e colaboradores (2010) randomizaram 48 crianças entre 18 e 30 meses para ESDM por 20 horas/semana durante 2 anos, com ganho médio de 17,6 pontos em QI versus 7 do controle, além de revisão diagnóstica em 29% das crianças. DIR/Floortime tem corpo menor mas crescente — Boshoff et al. (2024) consolidam 22 estudos, ainda heterogêneos. A nuance: nem todas as variantes de ABA têm a mesma evidência — DTT clássico (Discrete Trial Training) tem volume maior mas crítica metodológica de generalização; NDBIs (que incluem ESDM e absorvem princípios desenvolvimentistas próximos do DIR) têm evidência intermediária e crescente. A comparação justa é ABA-DTT clássico × DIR/Floortime, ou ESDM × DIR/Floortime — não "ABA em geral" × DIR.'
+  },
+  {
+    q: 'Como acessar DIR/Floortime e ABA no Brasil?',
+    a: 'ABA tem rede mais consolidada no Brasil — centros especializados em capitais com BCBAs (Board Certified Behavior Analysts) supervisionando RBTs (Registered Behavior Technicians). Cobertura por planos de saúde foi ampliada após decisões da ANS e do STJ (Lei 14.454/2022 sobre rol exemplificativo), com terapias com analista comportamental incluídas em planos sob prescrição médica. DIR/Floortime tem rede menor — formação ICDL (Interdisciplinary Council on Development and Learning) é internacional e tem custo elevado, com profissionais brasileiros certificados concentrados em São Paulo e Rio de Janeiro. SUS oferece intervenções em CAPSi (Centros de Atenção Psicossocial Infantojuvenil) e em CER (Centros Especializados em Reabilitação) com abordagens variadas — frequentemente híbridas, conforme formação do profissional disponível. Acesso é parte da equação clínica responsável — "qual modalidade o profissional disponível domina com supervisão adequada" pode ser mais relevante que "qual é teoricamente melhor".'
+  }
+];
+
+const tabelaMecanismo = [
+  { dimensao: 'Fundador / referência', dir: 'Stanley Greenspan e Serena Wieder (1997, Infant Mental Health Journal)', aba: 'Ivar Lovaas (1987, UCLA) — pioneiro do ABA em TEA; ESDM em 2010 com Rogers e Dawson' },
+  { dimensao: 'Pressuposto central', dir: 'Desenvolvimento emocional como matriz da cognição — circuitos de regulação afetiva e engajamento relacional são base para aprendizagem', aba: 'Princípios da análise do comportamento — reforço, modelagem, generalização; ESDM integra desenvolvimentista' },
+  { dimensao: 'Contexto de aplicação', dir: 'Naturalístico em interação afetiva — chão, brincadeira simbólica seguindo afeto da criança', aba: 'Estruturado (DTT clássico) ou naturalístico (NDBI, ESDM); ESDM operando em brincadeira e rotinas' },
+  { dimensao: 'Foco da intervenção', dir: 'Seis estágios funcionais emocionais (FEAS) — atenção compartilhada, engajamento, reciprocidade afetiva, comunicação proposital, ideias, pensamento lógico-emocional', aba: 'Comportamentos discretos definidos operacionalmente; em ESDM, objetivos em contexto natural' },
+  { dimensao: 'Intensidade típica', dir: '20 horas semanais — incluindo sessões com terapeuta e ampliação parental nas rotinas', aba: '20 a 40 horas semanais; ESDM 15 a 25 horas' },
+  { dimensao: 'Idade ideal de início', dir: 'Desde primeiros sinais (8-12 meses) até pré-escolar; foco em janelas de plasticidade emocional', aba: 'ABA: qualquer idade, mais consolidado em 4+ anos; ESDM: 12 a 48 meses' },
+  { dimensao: 'Envolvimento parental', dir: 'Central — pais treinados como agentes primários do Floortime nas rotinas afetivas diárias', aba: 'Variável; ABA tradicional pode ser baixo; ESDM (P-ESDM) tem treino parental central' },
+  { dimensao: 'Coleta de dados', dir: 'FEAS, escalas qualitativas de engajamento, registro narrativo de progresso emocional', aba: 'ABA: dados sistemáticos a cada ensaio discreto (DTT) ou em probes ESDM; Curriculum Checklist em ESDM' },
+  { dimensao: 'Profissionais', dir: 'Terapeutas certificados pelo ICDL (Interdisciplinary Council); psicólogos, fonoaudiólogos, terapeutas ocupacionais', aba: 'ABA: BCBA + RBT; ESDM: profissionais ESDM-certificados (MIND Institute, UC Davis)' },
+  { dimensao: 'Crítica recorrente', dir: 'Heterogeneidade metodológica em estudos; menor corpo de RCT robusto; definição variável de "fidelidade"', aba: 'ABA-DTT clássico: crítica de generalização e ética sobre normalização forçada (movimento neurodiverso); ESDM: faixa etária restrita' }
+];
+
+const tabelaEvidencia = [
+  { dimensao: 'Volume de RCT', dir: '5 RCTs e 17 estudos não randomizados em meta-análise (Boshoff et al., 2024)', aba: 'Mais de 30 RCTs em ABA-DTT desde 1987; ESDM com 5+ RCTs robustos desde 2010', vantagem: 'ABA' },
+  { dimensao: 'Tamanho de efeito em comunicação social', dir: 'ES 0,65 — moderado (Boshoff et al., 2024)', aba: 'ESDM: ganho QI 17,6 pontos vs 7 no controle (Dawson 2010); ABA-DTT: ganhos variáveis', vantagem: 'ABA/ESDM' },
+  { dimensao: 'Generalização para contextos novos', dir: 'Naturalística desde o desenho — generalização embutida', aba: 'ABA-DTT clássico: crítica frequente de generalização limitada; ESDM: generalização melhor que DTT puro', vantagem: 'DIR' },
+  { dimensao: 'Regulação emocional', dir: 'Eixo central da abordagem — ganhos consistentes em FEAS', aba: 'ABA: foco em comportamento, regulação emocional não é alvo direto; ESDM: parcial', vantagem: 'DIR' },
+  { dimensao: 'Comportamentos restritivos e repetitivos severos', dir: 'Não desenhada como foco principal', aba: 'ABA com avaliação funcional do comportamento (FBA) é padrão-ouro', vantagem: 'ABA' },
+  { dimensao: 'Revisão diagnóstica em precoces', dir: 'Casos descritos em estudos qualitativos; sem dados numéricos consolidados', aba: 'ESDM: 29% das crianças com revisão diagnóstica em Dawson et al. (2010)', vantagem: 'ABA/ESDM' },
+  { dimensao: 'Aplicabilidade em famílias com baixa renda', dir: 'P-DIR amplifica horas via integração parental; treinamento de pais é central', aba: 'ABA intensivo exige equipe profissional; ESDM (P-ESDM) tem variante parental', vantagem: 'Equivalente' },
+  { dimensao: 'Aceitação pela comunidade neurodiversa', dir: 'Mais alinhada com paradigma de suporte ao desenvolvimento autêntico', aba: 'ABA-DTT clássico recebe críticas por normalização; ESDM mais aceito', vantagem: 'DIR' },
+  { dimensao: 'Disponibilidade no Brasil', dir: 'Rede pequena — profissionais ICDL-certificados concentrados em SP/RJ', aba: 'Rede ampla — BCBAs e RBTs em todas as capitais', vantagem: 'ABA' }
+];
+
+const tabelaCenarios = [
+  { cenario: 'Criança 24 meses com TEA, família engajada, classe média', sus: 'CAPSi com abordagem híbrida disponível', privado: 'P-ESDM ou DIR/Floortime — escolha por afinidade familiar e profissional disponível', escola: 'Berçário inclusivo com adaptações sensoriais' },
+  { cenario: 'Criança 30 meses com TEA, comportamento desafiador (autolesão, agressividade)', sus: 'CAPSi + acompanhamento neurologia pediátrica', privado: 'ABA intensivo com FBA + BIP em primeira linha', escola: 'Educação especial com mediador escolar' },
+  { cenario: 'Criança 18 meses com sinais precoces de TEA, sem diagnóstico formal', sus: 'CER com avaliação ampla; rede de estimulação precoce', privado: 'DIR/Floortime ou P-ESDM com foco em engajamento relacional', escola: 'Creche com baixa estimulação sensorial' },
+  { cenario: 'Criança 36 meses com TEA leve, boa motivação social, família baixa renda', sus: 'CAPSi + grupo de família; CER pode oferecer Floortime adaptado', privado: 'Frequentemente inviável por custo — articular SUS + escola é caminho prático', escola: 'Escola regular com mediador parcial e plano educacional individualizado' },
+  { cenario: 'Criança 42 meses com TEA, atraso de linguagem expressiva, sem comportamentos desafiadores', sus: 'CAPSi + fonoaudiologia ambulatorial; CER quando disponível', privado: 'NDBI (ESDM ou DIR) com componente comunicacional intenso', escola: 'Educação infantil com fonoaudiologia escolar e adaptações comunicacionais (CAA)' },
+  { cenario: 'Criança 48 meses com TEA, transição para ensino fundamental, comorbidade TDAH', sus: 'CAPSi + psicologia escolar; encaminhamento neuro-pediátrico', privado: 'ABA + acompanhamento psiquiátrico; mediador escolar', escola: 'Plano Educacional Individualizado (PEI) com base na LBI; adaptações curriculares' },
+  { cenario: 'Criança 22 meses com TEA severo, hipersensibilidade sensorial extrema, sem fala', sus: 'CAPSi com terapia ocupacional sensorial; integração com fono', privado: 'NDBI com componente sensorial estruturado + ABA sensorial', escola: 'Adiamento de ingresso escolar ou ambiente especializado (creche-escola TEA)' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'DIR/Floortime vs ABA em TEA precoce: comparativo metodológico, evidência e cenários clínicos brasileiros',
+  description: 'Comparativo entre DIR/Floortime (Greenspan & Wieder, 1997) e ABA (Lovaas 1987; ESDM Rogers & Dawson 2010) em TEA precoce. Base teórica, evidência empírica e cenários brasileiros (SUS/privado/escola).',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'DIR/Floortime vs ABA' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+---
+
+<Base
+  title="DIR/Floortime vs ABA em TEA precoce: base teórica, evidência e cenários brasileiros"
+  description="Comparativo independente entre DIR/Floortime (Greenspan & Wieder, 1997) e ABA (Lovaas; ESDM Rogers & Dawson 2010) em TEA precoce. Mecanismo, evidência empírica e cenários SUS/privado/escola.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'DIR/Floortime vs ABA' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Intervenção em TEA precoce</span>
+          <h1 class="section-h text-3xl sm:text-4xl">DIR/Floortime vs ABA em TEA precoce: dois paradigmas e a integração via NDBI</h1>
+          <TLDR
+            resposta="DIR/Floortime (Greenspan & Wieder, 1997) é abordagem desenvolvimentista relacional com foco em regulação emocional e engajamento afetivo; ABA (Lovaas 1987; ESDM Rogers & Dawson 2010) é comportamental com corpo de evidência mais amplo. Boshoff et al. (2024) revisão sistemática de 22 estudos DIR reporta ganho moderado em comunicação social (ES 0,65); Dawson et al. (2010) ESDM mostrou ganho de 17,6 pontos em QI vs 7 no controle. A clínica contemporânea de TEA precoce raramente trabalha com versões puras — NDBI integra ambos."
+            fontes={["Greenspan & Wieder, 1997", "Boshoff et al., 2024 (Autism Res, DOI 10.1002/aur.2998)", "Rogers & Dawson, 2019 (ESDM)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Não são abordagens rivais. ABA contemporâneo já incorpora elementos naturalísticos via NDBI; DIR/Floortime contemporâneo absorveu coleta sistemática de dados. A escolha responde ao perfil clínico, idade, contexto familiar e disponibilidade local de profissional formado.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          DIR/Floortime parte da matriz desenvolvimentista relacional de Greenspan e Wieder — circuitos de regulação afetiva como base da cognição, com seis estágios funcionais emocionais (FEAS). ABA opera com princípios comportamentais (Skinner-Lovaas), com variantes que vão do DTT clássico estruturado ao NDBI (ESDM, PRT) naturalístico. Boshoff e colaboradores (2024, Autism Research, DOI 10.1002/aur.2998) revisão sistemática de 22 estudos DIR documenta ganho moderado em comunicação social (ES 0,65), com evidência ainda em consolidação. Dawson e colaboradores (2010, Pediatrics) ESDM mostraram ganhos em QI, linguagem e revisão diagnóstica em 29% das crianças. No Brasil, ABA tem rede ampla via BCBAs em capitais; DIR/Floortime tem rede menor e concentrada. Para escolha clínica responsável, ABA tem evidência mais consolidada em volume; DIR tem vantagem em regulação emocional e aceitação pela comunidade neurodiversa.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">De Greenspan a Boshoff — três décadas de DIR/Floortime e integração com NDBI</h2>
+        <p>
+          Stanley Greenspan, pediatra e psiquiatra infantil de Washington, e Serena Wieder publicaram em 1997 no Infant Mental Health Journal o framework conceitual do DIR (Developmental, Individual-differences, Relationship-based). A premissa central inverteu o paradigma cognitivo-comportamental dominante na época: o desenvolvimento emocional, mais especificamente o engajamento afetivo recíproco entre criança e cuidador, é a matriz que sustenta a cognição, a linguagem, a brincadeira simbólica e o pensamento lógico subsequentes. Os seis estágios funcionais emocionais (FEAS — Functional Emotional Assessment Scale) descrevem o desenvolvimento do bebê em camadas: atenção compartilhada e regulação (0-3 meses), engajamento relacional (4-9 meses), reciprocidade afetiva intencional (9-18 meses), comunicação afetiva complexa proposital (18-30 meses), ideias e brincadeira simbólica (30-48 meses) e pensamento lógico-emocional (5 anos em diante).
+        </p>
+        <p>
+          A intervenção Floortime concretiza o framework DIR. Terapeuta e pais sentam no chão com a criança, seguem o foco afetivo dela, abrem círculos de comunicação (a criança aponta um carrinho, o adulto entra na brincadeira e "fecha" o círculo com resposta afetivamente sintonizada), ampliam interações reciprocas, modelam progressão para estágios FEAS mais elevados. O envolvimento parental é central — pais treinados aplicam Floortime nas rotinas afetivas diárias (banho, refeição, brincadeira), ampliando horas terapêuticas efetivas. A coleta de dados em DIR opera com escalas qualitativas de engajamento e com a FEAS, menos granular que a coleta de ensaios discretos em ABA-DTT mas igualmente sistemática.
+        </p>
+        <p>
+          A evidência empírica do DIR/Floortime acumulou-se mais lentamente que a do ABA, em parte porque a abordagem nasceu fora do paradigma RCT clássico. Pajareya e Nopmaneejumruslers (2011, Autism) randomizaram 32 crianças com TEA precoce para Floortime mais intervenção padrão versus padrão isolado por 3 meses, com ganho significativo em FEAS no grupo de intervenção. Solomon e colaboradores (2014, JAMA Pediatrics) descrevem o PLAY Project (Play and Language for Autistic Youngsters), programa baseado em DIR aplicado em coorte de 128 crianças com ganhos em interação social, linguagem e regulação. Boshoff e colaboradores (2024, Autism Research, DOI 10.1002/aur.2998) consolidaram revisão sistemática de 22 estudos, com 17 mostrando efeito positivo em pelo menos um desfecho e tamanho de efeito moderado (0,65) em comunicação social. Limitações reconhecidas — heterogeneidade metodológica, definição variável de "fidelidade", amostras pequenas em alguns ensaios — sustentam que a evidência DIR é moderada e em consolidação, não definitivamente robusta.
+        </p>
+        <p>
+          A clínica contemporânea de TEA precoce raramente trabalha com versões puras. Sally Rogers e Geraldine Dawson, ao desenvolverem o Early Start Denver Model (ESDM) em 2010, integraram explicitamente princípios desenvolvimentistas próximos do DIR com princípios comportamentais do ABA, dando origem à categoria NDBI (Naturalistic Developmental Behavioral Interventions). O ABA contemporâneo praticado em centros qualificados já incorpora elementos naturalísticos (PRT — Pivotal Response Treatment, JASPER — Joint Attention Symbolic Play Engagement and Regulation); o DIR contemporâneo absorveu coleta sistemática de dados e protocolos de fidelidade. Para uma criança específica de 28 meses com TEA, a escolha entre "DIR puro" e "ABA puro" é cada vez mais teórica — a clínica responsável aplica a melhor integração disponível, respeitando o perfil sensorial e relacional da criança, o engajamento familiar e a formação do profissional.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Base teórica e mecanismo</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">DIR/Floortime</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">ABA (clássico e ESDM)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaMecanismo.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.dir}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.aba}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Evidência empírica e tamanho de efeito</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">DIR/Floortime</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">ABA / ESDM</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Vantagem</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.dir}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.aba}</td>
+                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vantagem}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Cenários clínicos brasileiros (SUS, privado, escola)</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Cenário</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">SUS</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Rede privada</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Escola</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaCenarios.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.cenario}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.sus}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.privado}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.escola}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Uma sessão de DIR/Floortime tem aparência específica. A terapeuta entra no chão com a criança e os pais, observa o foco afetivo da criança nos primeiros dois a três minutos, identifica em qual estágio FEAS a criança opera nesta sessão (atenção compartilhada, engajamento, reciprocidade afetiva, etc.), entra em sintonia com o afeto manifesto. Se a criança pega um bicho de pelúcia e o aperta, a terapeuta entra na brincadeira com sintonia afetiva — pode pegar outro bicho, modelar abraço, esperar resposta da criança, ampliar o círculo de comunicação. O objetivo não é "ensinar a apontar" como em DTT clássico, mas ampliar a capacidade da criança de regular afeto, sustentar engajamento, abrir e fechar círculos de comunicação. O progresso é mensurado em FEAS — passagem de um estágio para outro ao longo de meses.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em ESDM (variante ABA-NDBI mais validada cientificamente para TEA precoce), a sessão tem aparência intermediária. A terapeuta também segue interesse da criança e usa brincadeira como contexto, mas objetivos comportamentais discretos (atenção compartilhada, contato visual funcional, imitação, vocalização) estão definidos operacionalmente no Curriculum Checklist, com coleta de dados sistemática. ABA-DTT clássico, em contraste, tem aparência completamente estruturada — ensaios discretos com instrução, resposta da criança, consequência registrada, com alta densidade horária. A categoria NDBI surgiu justamente como ponte — integra princípios comportamentais com framework desenvolvimentista, e ESDM, JASPER, PRT e variantes são representantes.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A pesquisa de mecanismo do DIR sugere que o engajamento afetivo recíproco ativa circuitos límbicos e pré-frontais associados à regulação emocional e à teoria da mente, com efeito cascata sobre cognição e linguagem. Pesquisas qualitativas com famílias DIR descrevem ganhos em conexão afetiva e em qualidade de interação pais-filho que extrapolam medidas padronizadas. ABA contemporâneo, especialmente ESDM, mostra mecanismos comportamentais e neurais documentados — Dawson e colaboradores (2010, 2012) reportam padrão de ativação cortical em resposta a faces humanas mais próximo do padrão típico após dois anos de ESDM, sugerindo reorganização neural mensurável em circuitos sociais. A questão de qual mecanismo "explica melhor" o autismo precoce é teoricamente aberta — clinicamente, integrar é mais útil que polarizar.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher DIR/Floortime</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Crianças muito precoces (12-24 meses) com sinais de TEA emergentes</p>
+              <p class="text-sm text-ink-700 mt-1">Foco em engajamento afetivo e regulação relacional encaixa-se bem em fase pré-verbal e em janela de plasticidade emocional.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Família com engajamento alto e disponibilidade para treinamento parental</p>
+              <p class="text-sm text-ink-700 mt-1">Floortime amplifica horas terapêuticas via integração parental nas rotinas afetivas diárias — vantagem estrutural significativa.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">TEA com componente de desregulação emocional intenso</p>
+              <p class="text-sm text-ink-700 mt-1">Eixo central da abordagem é regulação afetiva — encaixe natural com crianças que apresentam meltdowns frequentes e desorganização emocional.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher ABA (ESDM ou DTT)</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">TEA precoce em 18-30 meses com necessidade de evidência consolidada</p>
+              <p class="text-sm text-ink-700 mt-1">ESDM tem corpo de evidência mais robusto nesta faixa específica (Dawson 2010, Rogers 2012) — escolha de referência.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">TEA com comportamento desafiador (autolesão, agressão, fuga)</p>
+              <p class="text-sm text-ink-700 mt-1">Avaliação funcional do comportamento (FBA) e planos de intervenção comportamental (BIP) são padrão-ouro nesta apresentação.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Contextos com infraestrutura BCBA + RBT disponível e cobertura por plano de saúde</p>
+              <p class="text-sm text-ink-700 mt-1">Rede ABA é mais ampla no Brasil — acesso e cobertura financeira são vantagens estruturais relevantes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando integrar (modelo híbrido NDBI)</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">TEA moderado com desregulação emocional e comportamento desafiador parcial</p>
+            <p class="text-sm text-ink-700 mt-1">Componente DIR/Floortime para regulação emocional e engajamento afetivo, componente ABA para comportamentos específicos via FBA — combinação amplamente usada em centros qualificados.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">Família com filosofia neurodiversa e demanda por evidência empírica</p>
+            <p class="text-sm text-ink-700 mt-1">NDBI (ESDM como representante mais validado) integra princípios desenvolvimentistas próximos do DIR com coleta sistemática de dados — caminho intermediário com aceitação ética mais ampla.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Helena, 26 meses, TEA leve com bom potencial de linguagem, família optou por integração DIR + ESDM</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Helena foi diagnosticada com TEA pelo neuropediatra aos 26 meses após queixa parental de atraso de fala expressiva (apenas 8 palavras funcionais), contato visual seletivo e brincadeira estereotipada com objetos giratórios. M-CHAT-R/F positiva, ADOS-2 módulo Toddler confirmando TEA leve. Avaliação inicial em centro multidisciplinar mostrou atenção compartilhada emergente mas inconsistente, brincadeira funcional inicial, hipersensibilidade auditiva moderada e bom contato afetivo com a mãe especificamente. Família engajada — pai cirurgião dentista, mãe psicopedagoga, com flexibilidade horária moderada e abertura a treinamento parental.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A coordenadora apresentou três caminhos com transparência: ESDM puro (20 horas semanais combinando centro e domicílio, profissional ESDM-certificado), DIR/Floortime puro (sessões com terapeuta ICDL-certificada e treinamento parental intenso), e modelo integrado NDBI (componente ESDM para coleta de dados sistemática e protocolos de fidelidade, componente Floortime para regulação afetiva e engajamento parental). A família escolheu o modelo integrado — alinhada com filosofia neurodiversa, abertura para coleta de dados sistemática, e disposição materna para treinamento parental ativo. O plano: 12 horas semanais profissionais (8 ESDM + 4 Floortime parental supervisionado) + ampliação parental nas rotinas afetivas diárias.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Em 14 meses de programa, ganhos significativos. Helena saiu de 8 palavras funcionais para mais de 150 e iniciou combinações de duas palavras antes dos 38 meses. Atenção compartilhada consolidou-se. Brincadeira simbólica emergiu (alimentar boneca, fazer "carro voar"). Regulação emocional melhorou — meltdowns auditivos reduziram com adaptações sensoriais (fones em ambiente ruidoso, agenda de descompressão pós-creche). Reavaliação aos 40 meses pelo mesmo neuropediatra mostrou critérios TEA atenuados, com manutenção de diagnóstico mas redução de nível de suporte. Os pais reportaram aumento significativo de competência percebida na interação — mãe descreveu Floortime parental como "transformador para a relação afetiva", enquanto o componente ESDM "deu rigor à metodologia". A coordenadora documentou: "O modelo integrado foi viável porque a família trazia engajamento e disponibilidade. Em famílias com menor banda parental, ESDM com P-ESDM e menos componente Floortime puro é frequentemente caminho mais sustentável".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões descritos em Boshoff et al. (2024), Dawson et al. (2010) e em estudos qualitativos com famílias em programas NDBI. Resultados em TEA precoce com famílias engajadas costumam incluir atenuação de critérios em proporção significativa.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Quatro precauções importantes. Primeiro, "ABA" não é um bloco único — engloba DTT clássico, PRT, ESDM, JASPER, análise funcional e múltiplas variantes. A comparação justa frequentemente é entre uma variante específica do ABA e o DIR/Floortime, não com "ABA em geral". Segundo, evidência empírica do DIR/Floortime é moderada e em consolidação — Boshoff e colaboradores (2024) consolidam corpo crescente, mas heterogêneo. Comparações de tamanho de efeito entre estudos DIR e ESDM exigem cautela metodológica. Terceiro, ambas as abordagens exigem treinamento especializado e supervisão. Aplicação inadequada produz resultados frágeis em qualquer modelo. Quarto, a comunidade neurodiversa tem críticas relevantes ao ABA-DTT clássico — discussão ética sobre objetivos de intervenção em TEA (normalização versus suporte ao desenvolvimento autêntico) está em curso e merece atenção continuada. DIR/Floortime e NDBIs como ESDM são vistos como mais alinhados com paradigma de suporte, embora a posição da comunidade autista adulta seja diversa.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No Brasil, o acesso a ABA é mais consolidado em centros especializados de capitais, com cobertura por planos de saúde ampliada após decisões da ANS e STJ. O acesso a profissionais DIR/Floortime-certificados (ICDL) é mais restrito e geograficamente concentrado em SP e RJ. Formação ICDL é internacional, com custo elevado e poucos cursos brasileiros equivalentes. SUS oferece intervenções em CAPSi e CER com abordagens variadas — frequentemente híbridas, conforme formação do profissional disponível. Para famílias em regiões com restrição, a escolha responsável é "qual modalidade o profissional disponível domina com supervisão adequada", e não "qual é teoricamente melhor para esta criança". Acesso é parte da equação.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Dois paradigmas, integração via NDBI, escolha por perfil clínico e disponibilidade local</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>DIR/Floortime (Greenspan & Wieder, 1997) — desenvolvimentista relacional, foco em regulação afetiva e engajamento; ES 0,65 em comunicação social (Boshoff 2024).</li>
+          <li>ABA (Lovaas 1987; ESDM Rogers & Dawson 2010) — comportamental clássico ou NDBI; corpo de evidência maior em volume, ganhos QI 17,6 pts em ESDM (Dawson 2010).</li>
+          <li>NDBI (categoria que inclui ESDM, PRT, JASPER) integra ambos os paradigmas — caminho intermediário mais aceito eticamente.</li>
+          <li>No Brasil, ABA tem rede maior e cobertura por planos de saúde; DIR tem rede concentrada em SP/RJ; SUS via CAPSi e CER opera abordagens híbridas.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que querem articular intervenção em TEA precoce com fundamentação em neurociência do desenvolvimento e psicopatologia infantil — base útil antes ou em paralelo à certificação em ABA, ESDM ou DIR —, o IPOG mantém MBA em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica em formato Ao Vivo síncrono. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/aba-vs-denver-tea-precoce" class="text-brand-700 hover:text-brand-800 font-medium">ABA tradicional vs Modelo Denver (ESDM) — comparativo aprofundado</a></li>
+          <li><a href="/comparativos/transicao-tea-adolescente-vs-adulto" class="text-brand-700 hover:text-brand-800 font-medium">Transição TEA adolescente vs adulto</a></li>
+          <li><a href="/guias/avaliacao-tea-mulheres-adultas" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TEA em mulher adulta</a></li>
+          <li><a href="/faq/tea-mulheres-adultas-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · TEA em mulher adulta</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. Modalidade vigente de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/tea" class="mega-link"><strong class="text-ink-900 text-sm">TEA — Transtorno do Espectro Autista</strong></a></li>
+          <li><a href="/metodos/aba" class="mega-link"><strong class="text-ink-900 text-sm">ABA — Análise do Comportamento Aplicada</strong></a></li>
+          <li><a href="/metodos/esdm" class="mega-link"><strong class="text-ink-900 text-sm">ESDM — Modelo Denver</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/aba-vs-denver-tea-precoce" class="mega-link"><strong class="text-ink-900 text-sm">ABA tradicional vs Modelo Denver</strong></a></li>
+          <li><a href="/comparativos/transicao-tea-adolescente-vs-adulto" class="mega-link"><strong class="text-ink-900 text-sm">Transição TEA adolescente vs adulto</strong></a></li>
+          <li><a href="/comparativos/tf-cbt-vs-emdr-trauma-infantil" class="mega-link"><strong class="text-ink-900 text-sm">TF-CBT vs EMDR em trauma infantil</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Greenspan, S. I. & Wieder, S. (1997). Developmental patterns and outcomes in infants and children with disorders in relating and communicating. Infant Mental Health Journal.</li>
+          <li>Boshoff, K. et al. (2024). Systematic review of DIR/Floortime. Autism Research. DOI: 10.1002/aur.2998.</li>
+          <li>Pajareya, K. & Nopmaneejumruslers, K. (2011). A pilot randomized controlled trial of DIR/Floortime intervention. Autism.</li>
+          <li>Solomon, R. et al. (2014). PLAY Project Home Consultation intervention. JAMA Pediatrics.</li>
+          <li>Lovaas, O. I. (1987). Behavioral treatment and normal educational and intellectual functioning in young autistic children. JCCP.</li>
+          <li>Dawson, G., Rogers, S. et al. (2010). Randomized, controlled trial of an intervention for toddlers with autism: ESDM. Pediatrics.</li>
+          <li>Rogers, S. & Dawson, G. (2019). Early Start Denver Model — manual. Guilford.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

@@ -1,0 +1,248 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O que são lecanemab e donanemab e como atuam?',
+    a: 'Lecanemab (Leqembi) e donanemab (Kisunla) são anticorpos monoclonais humanizados que atacam diferentes formas do peptídeo beta-amiloide (Aβ) acumulado no cérebro na doença de Alzheimer. Lecanemab é IgG1 com afinidade alta por protofibrilas solúveis de Aβ; donanemab é IgG1 dirigido a placas amiloides agregadas (com epítopo N3pG). São os primeiros modificadores de doença aprovados para Alzheimer — a expectativa não é cura, mas desaceleração mensurável do declínio cognitivo. Lecanemab desacelerou em 27% o declínio em CDR-SB ao longo de 18 meses no ensaio CLARITY-AD (van Dyck et al., 2023, *NEJM*, n=1.795). Donanemab desacelerou em 35% o declínio em iADRS em 76 semanas no TRAILBLAZER-ALZ 2 (Mintun et al., 2024, *JAMA*, n=1.736), com efeito maior em pacientes com carga de tau baixa a intermediária.'
+  },
+  {
+    q: 'Qual o status regulatório no Brasil, EUA e Europa?',
+    a: 'EUA: a FDA aprovou lecanemab por via acelerada em janeiro de 2023 e converteu para aprovação plena em julho de 2023, baseada no CLARITY-AD; donanemab teve aprovação plena pela FDA em julho de 2024, baseada no TRAILBLAZER-ALZ 2. Europa: a EMA concedeu autorização de marketing condicional para lecanemab em 2024 via CHMP, com reembolso variável por país (Alemanha e França entre os primeiros). Brasil: até maio de 2026, a ANVISA mantém em análise os dossiês de lecanemab e donanemab — a literatura clínica de referência (Ashton et al., 2024; Jack et al., 2024) opera com a premissa de que aprovação local é provável no horizonte 2026-2027, mas [FALTA EVIDÊNCIA] de aprovação formal publicada. Centros de referência brasileiros (HC-FMUSP, HCPA, HC-UNIFESP) já discutem protocolos e formação de equipes. Para uso autorizado, paciente brasileiro tem acessado o medicamento via importação por receita médica e reembolso particular — caminho caro e logisticamente complexo.'
+  },
+  {
+    q: 'Qual a indicação clínica precisa para lecanemab e donanemab?',
+    a: 'Ambos têm indicação semelhante: pacientes com Comprometimento Cognitivo Leve (CCL) por Alzheimer (CCL-EA) ou doença de Alzheimer em fase leve, com confirmação biológica de patologia amiloide cerebral. A confirmação é feita por PET amiloide, líquor (Aβ42/40, p-tau181 ou p-tau217) ou plasma p-tau217 (Ashton et al., 2024, *Nature Medicine*, AUC 0,96 para amiloide cerebral). Pacientes com demência moderada ou avançada estão fora da indicação — não há evidência de benefício e o risco de ARIA aumenta. Pacientes sem confirmação biológica de amiloide cerebral também estão fora — modificadores de doença anti-amiloide pressupõem a patologia alvo. O neuropsicólogo participa da indicação ao caracterizar perfil compatível com CCL-EA (déficit amnéstico predominante, classificação Petersen 2024) e ao acompanhar a trajetória cognitiva com bateria longitudinal.'
+  },
+  {
+    q: 'Por que o genótipo APOE ε4 importa antes do tratamento?',
+    a: 'APOE ε4 (apolipoproteína E variante ε4) é o principal fator de risco genético modulador para Alzheimer esporádico e, no contexto dos modificadores de doença, é o principal fator de risco para ARIA (Amyloid-Related Imaging Abnormalities). No CLARITY-AD, pacientes homozigotos APOE ε4/ε4 apresentaram incidência de ARIA-E (edema) superior à do ε3/ε3 — 32,6% vs 5,4% em ARIA-E sintomático foi mais frequente no grupo homozigoto. A EMA limitou a indicação de lecanemab a pacientes heterozigotos ou não-portadores de ε4, com exclusão de homozigotos. A FDA mantém indicação ampla com monitoramento específico. Donanemab também tem aumento de ARIA em portadores de ε4. Em 2026, genotipagem APOE pré-tratamento é parte do padrão de cuidado: o resultado orienta seleção, estratificação de risco e plano de monitoramento de RNM.'
+  },
+  {
+    q: 'O que é ARIA e como é monitorada?',
+    a: 'ARIA (Amyloid-Related Imaging Abnormalities) é o conjunto de alterações em RNM associadas ao tratamento anti-amiloide. ARIA-E é edema vasogênico (em FLAIR); ARIA-H é hemorragia ou microhemorragia (em SWI/T2*). Incidência no CLARITY-AD: 12,6% para ARIA-E e 17,3% para ARIA-H, com cerca de 3% de eventos sintomáticos. Incidência no TRAILBLAZER-ALZ 2 (donanemab): 24% para ARIA-E (2% grave), maior em portadores APOE ε4. Sintomas, quando ocorrem, incluem cefaleia, confusão, alterações visuais, náusea e, em casos raros, eventos neurológicos graves. Monitoramento padrão envolve RNM de baseline pré-tratamento, RNM em pontos pré-definidos do protocolo (em geral pré-5ª, 7ª, 14ª infusão para lecanemab; pré-2ª, 3ª, 4ª, 7ª infusão para donanemab) e RNM diante de qualquer sintoma novo. O papel do psicólogo neuropsicólogo é detectar mudança cognitiva ou comportamental que sugira ARIA sintomática e comunicar à equipe médica de imediato.'
+  },
+  {
+    q: 'Como é a infusão e o cronograma de tratamento?',
+    a: 'Lecanemab: infusão endovenosa de 10 mg/kg a cada 2 semanas, ad eternum até decisão clínica (interrupção por progressão para demência moderada, ARIA grave ou opção do paciente). Cada infusão dura cerca de 1 hora. Donanemab: infusão endovenosa de 700 mg na 1ª, 2ª e 3ª dose (cada 4 semanas) e 1400 mg da 4ª dose em diante (cada 4 semanas), com regime finito — o paciente pode interromper o tratamento quando a carga de amiloide cerebral cai abaixo de limiar (centiloide PET < 24,1) em ressonâncias seriadas, frequentemente entre 4 e 7 infusões. Donanemab tem vantagem logística e potencialmente econômica pelo regime finito; lecanemab é contínuo. Em 2026, a escolha entre as duas moléculas é discussão clínica considerando perfil de tau, APOE, comorbidades, acesso e preferência do paciente.'
+  },
+  {
+    q: 'Qual o custo no SUS e na rede privada?',
+    a: 'SUS: até maio de 2026, lecanemab e donanemab não têm cobertura pública no Brasil, dado o status regulatório pendente na ANVISA. Quando aprovados, a incorporação ao SUS dependerá de avaliação pela CONITEC (Comissão Nacional de Incorporação de Tecnologias) com análise de custo-efetividade. Rede privada: nos EUA, o custo anual de lecanemab gira em torno de US$ 26.500 por paciente (preço de tabela); donanemab em torno de US$ 32.000 anuais para o tratamento típico de 18 meses. No Brasil, o custo de aquisição via importação por receita médica fica entre R$ 150.000 e R$ 280.000 por ano segundo dados de centros privados em 2025-2026, sem cobertura ampla por planos de saúde. Custos indiretos (RNM seriadas, infusões em centro especializado, avaliação neuropsicológica longitudinal, genotipagem APOE, biomarcador p-tau217) somam outros R$ 15.000 a R$ 40.000 anuais. Custo-efetividade real-world no Brasil é objeto de discussão regulatória.'
+  },
+  {
+    q: 'Qual o papel do neuropsicólogo antes do tratamento?',
+    a: 'O neuropsicólogo participa da avaliação inicial em quatro frentes. Primeira: caracterização do perfil cognitivo com bateria neuropsicológica aprofundada para confirmar CCL ou Alzheimer leve (Petersen, 2024), classificar subtipo (amnéstico/não-amnéstico, single/multiple domain) e documentar a magnitude do déficit por domínio. Segunda: aplicação de instrumentos canônicos de ensaios — CDR e CDR-SB (Morris, 1993), ADAS-Cog (Alzheimer Disease Assessment Scale - Cognitive Subscale), MoCA — que servirão de baseline para acompanhamento de resposta terapêutica. Terceira: detecção de comorbidades cognitivas e psiquiátricas (depressão pseudo-demência, demência por corpos de Lewy, demência vascular, frontotemporal) que mudariam indicação. Quarta: psicoeducação ao paciente e à família sobre o que esperar do tratamento — desaceleração, não cura — e sobre o monitoramento longitudinal. Sem essa caracterização robusta, a indicação fica baseada apenas em biomarcador e exames de imagem, sem o contexto clínico-funcional que define resposta significativa.'
+  },
+  {
+    q: 'Qual a bateria neuropsicológica longitudinal recomendada?',
+    a: 'A bateria de acompanhamento durante o tratamento espelha os desfechos primários e secundários dos ensaios. CDR-SB (Clinical Dementia Rating - Sum of Boxes) é o desfecho primário de CLARITY-AD e instrumento global mais sensível à progressão. iADRS (integrated Alzheimer Disease Rating Scale) é o desfecho primário de TRAILBLAZER-ALZ 2, combinando ADAS-Cog13 e ADCS-iADL. ADAS-Cog (versão 13 ou 14) cobre memória, linguagem, praxias e orientação com sensibilidade boa em CCL e Alzheimer leve. MoCA serve para monitoramento mais breve em consultas intermediárias. Aplicação seriada em intervalos pré-definidos (em geral 6 e 12 meses para CDR-SB e ADAS-Cog; a cada 3 meses para MoCA em monitoramento de rotina) gera a curva longitudinal que documenta resposta. Acrescente medidas de funcionalidade (ADCS-iADL ou Functional Assessment Questionnaire) e qualidade de vida (QoL-AD). Documente z-scores e variação intra-sujeito — variação maior que 0,5 desvio-padrão entre avaliações é sinal clínico relevante.'
+  },
+  {
+    q: 'Donanemab com regime finito é melhor que lecanemab contínuo?',
+    a: 'A resposta direta: depende de objetivos clínicos e de perfil do paciente. Donanemab no TRAILBLAZER-ALZ 2 mostrou possibilidade de interrupção quando a carga de amiloide cerebral cai abaixo de limiar (centiloide PET < 24,1), com 47% dos pacientes elegíveis para interrupção na 24ª semana e 76% na 76ª. Vantagem: número de infusões reduzido (média 4-7 doses), menor exposição ao medicamento, menor custo cumulativo. Desvantagem: maior incidência relativa de ARIA-E (24% vs 12,6% lecanemab), embora ARIA grave seja comparável. Lecanemab no CLARITY-AD foi continuado por 18 meses no ensaio principal e estudos abertos vêm seguindo pacientes por períodos maiores. Vantagem: perfil de ARIA potencialmente mais favorável; mais maturidade de uso pós-aprovação plena (desde 2023). Desvantagem: tratamento ad eternum, custo cumulativo alto, infusões a cada 2 semanas. A decisão é caso a caso, considerando carga de tau pré-tratamento (donanemab mostra resposta superior em tau baixo a intermediário, com benefício mais modesto em tau alto), genótipo APOE, comorbidades, preferência logística do paciente e custo.'
+  },
+  {
+    q: 'Quem são os candidatos ideais ao tratamento?',
+    a: 'O candidato ideal é o paciente com CCL ou Alzheimer leve com biomarcador amiloide positivo (PET amiloide, líquor ou plasma p-tau217), sem demência moderada ou grave, com CDR 0,5 ou 1, MMSE entre 22 e 30, sem doença cerebrovascular significativa (mais de 4 microhemorragias em SWI ou hemorragia macroscópica recente exclui), sem uso de anticoagulantes em altas doses, sem comorbidades clínicas que aumentem risco de ARIA grave, com APOE genotipado e estratificação de risco discutida com paciente e família, com acesso à logística de infusão e RNM seriadas, com rede social que sustenta o programa de tratamento, com expectativa realista de desaceleração (não cura) do declínio. Pacientes em fase pré-clínica de Alzheimer (biomarcador positivo sem queixa cognitiva) estão em ensaios atuais (TRAILBLAZER-ALZ 3, AHEAD 3-45) mas fora de indicação clínica regular em 2026.'
+  },
+  {
+    q: 'Quais os riscos de hemorragia em pacientes em uso de anticoagulantes?',
+    a: 'Pacientes em uso de anticoagulantes orais (varfarina, DOACs como apixabana, rivaroxabana, dabigatrana) ou antiplaquetários em dose alta têm risco aumentado de ARIA-H grave e de hemorragia cerebral macroscópica. Casos de morte por hemorragia cerebral associada a lecanemab em pacientes anticoagulados foram descritos em fase pós-marketing e estão na bula. A literatura recomenda discussão multidisciplinar entre neurologia, cardiologia/hematologia e o paciente para avaliar risco-benefício: em FA com risco tromboembólico alto, a interrupção do anticoagulante pode não ser opção; nesse caso, contraindicação relativa ao modificador de doença pode ser indicada. Em pacientes com indicação clara de tratamento e anticoagulação, troca para AAS dose baixa ou avaliação muito individualizada pode ser considerada. Microhemorragias cerebrais pré-existentes em mais de 4 unidades em SWI são critério de exclusão na maioria dos protocolos.'
+  },
+  {
+    q: 'Como é o plano de monitoramento com RNM?',
+    a: 'O monitoramento por RNM tem três componentes. Primeiro, baseline: RNM pré-tratamento com FLAIR, SWI ou T2*, T1, DWI — documentação de microhemorragias, atrofia, doença cerebrovascular concomitante e exclusão de outras patologias. Segundo, RNM em pontos pré-definidos do protocolo conforme molécula: para lecanemab, antes da 5ª, 7ª, 14ª e 26ª infusões, conforme bula; para donanemab, antes da 2ª, 3ª, 4ª e 7ª infusões. Terceiro, RNM imediata diante de qualquer sintoma novo (cefaleia persistente, alteração visual, confusão, alteração de marcha, déficit focal). A leitura é especializada — radiologista familiar com critérios de gradação ARIA (leve, moderada, grave) e protocolo de manejo associado. ARIA-E grave ou sintomática implica interrupção temporária (lecanemab) ou definitiva (em alguns protocolos), com retorno condicionado à resolução em RNM de controle. O neuropsicólogo participa do monitoramento ao detectar mudança cognitiva ou comportamental discreta que possa preceder a confirmação radiológica.'
+  },
+  {
+    q: 'Qual a custo-efetividade real-world reportada?',
+    a: 'Em 2026, as análises de custo-efetividade ainda são preliminares e variam por país e perspectiva. ICER (Institute for Clinical and Economic Review, EUA) publicou avaliação inicial em 2023 considerando o preço de tabela de lecanemab acima do limiar de custo-efetividade convencional (US$ 50.000-100.000 por QALY), com sensibilidade alta a pressupostos de duração de tratamento e magnitude do benefício no longo prazo. Análises europeias e canadenses chegaram a conclusões semelhantes. No Brasil, [FALTA EVIDÊNCIA] de análise de custo-efetividade publicada pela CONITEC ou Anvisa até maio de 2026 — quando a aprovação regulatória for confirmada, espera-se avaliação formal. Real-world evidence inicial dos EUA e Japão sugere que adesão (manutenção do tratamento) é menor que a observada nos ensaios, com cerca de 30-40% dos pacientes interrompendo nos primeiros 12 meses por ARIA, comorbidades ou preferência. Esse achado modula a análise: efetividade real é menor que eficácia em ensaio.'
+  },
+  {
+    q: 'Como articular o cuidado em equipe interdisciplinar?',
+    a: 'O programa de modificadores de doença anti-amiloide exige equipe interdisciplinar estruturada. Neurologista ou geriatra é o médico de referência — coordena indicação, prescreve, acompanha. Radiologista neuro especializado lê as RNM seriadas com critérios ARIA. Equipe de enfermagem capacitada conduz as infusões e monitora reação. Laboratório de referência processa biomarcadores e genotipagem. Neuropsicólogo conduz baseline e acompanhamento longitudinal, comunica equipe sobre mudança cognitiva. Psicólogo clínico oferece suporte psicoterapêutico ao paciente e à família ao longo da trajetória. Assistente social orienta sobre acesso, logística e direitos. Farmacêutico clínico avalia interação medicamentosa. A figura do navegador de cuidados (case manager), comum em centros norte-americanos, ainda é incipiente no Brasil, mas modelos similares estão sendo discutidos em centros de referência. Equipes mal articuladas geram fragmentação que prejudica adesão e segurança.'
+  },
+  {
+    q: 'Quais cuidados em pacientes com comorbidades clínicas?',
+    a: 'Pacientes com Alzheimer leve são tipicamente idosos com comorbidades múltiplas. Hipertensão mal controlada aumenta risco de ARIA-H — controle pressórico antes e durante tratamento. Diabetes não controlada compromete trajetória cognitiva geral e adere risco de eventos cerebrovasculares. Doença renal crônica em estágio avançado pode contraindicar pelo perfil farmacocinético e pelo risco aumentado de eventos. Doença cerebrovascular significativa em RNM baseline (microinfartos múltiplos, leucoaraiose grave) modula expectativa de benefício. Comorbidade psiquiátrica não tratada (depressão grave, ansiedade severa) pode mascarar resposta e dificultar adesão. Polifarmácia exige revisão crítica — anticolinérgicos, sedativos, benzodiazepínicos em uso crônico interferem na cognição e devem ser revisados antes do baseline neuropsicológico. Manejo de comorbidades é parte do programa, não passo prévio isolado.'
+  },
+  {
+    q: 'Onde formação aplicada se conecta a esse contexto?',
+    a: 'Neuropsicólogas e neuropsicólogos que pretendem participar de equipes de avaliação e acompanhamento longitudinal de pacientes em modificadores de doença para Alzheimer precisam de fundamentação sólida em neuroanatomia funcional, biomarcadores, critérios A/T/N, bateria neuropsicológica para CCL e Alzheimer leve, instrumentos canônicos de ensaios (CDR-SB, ADAS-Cog), interpretação de RNM básica, articulação interdisciplinar e atualização contínua. Programas de pós-graduação em Psicologia que combinam Neuropsicologia, Neurociência aplicada e Reabilitação Neuropsicológica oferecem essa base. O IPOG mantém o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo e o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano em formato Ao Vivo síncrono com corpo docente nominal — fundamentação técnica direta para neuropsicólogas e neuropsicólogos em equipes que integrarão modificadores de doença ao cuidado em 2026-2027. Consulte ipog.edu.br para grade e turma vigentes.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Lecanemab, donanemab e modificadores de doença no Alzheimer 2026: FAQ para psicólogos brasileiros',
+  description: 'Dezessete perguntas frequentes sobre lecanemab (CLARITY-AD), donanemab (TRAILBLAZER-ALZ 2), ARIA, APOE ε4, status ANVISA 2025-2026, papel da neuropsicologia pré e pós-tratamento, bateria longitudinal (CDR-SB, ADAS-Cog, MoCA), custo, articulação interdisciplinar e formação aplicada.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Lecanemab e donanemab no Brasil', item: SITE.url + '/faq/lecanemab-donanemab-brasil-faq/' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const adjacent = AREAS.filter(a => ['neuropsicologia','reabilitacao-neuropsicologica','avaliacao-psicologica','psicologia-hospitalar'].includes(a.id)).slice(0, 4);
+---
+<Base
+  title="Lecanemab, donanemab e modificadores de doença no Alzheimer 2026 — FAQ para psicólogos brasileiros"
+  description="Dezessete perguntas frequentes sobre lecanemab (CLARITY-AD), donanemab (TRAILBLAZER-ALZ 2), ARIA, APOE ε4, status ANVISA 2025-2026, papel da neuropsicologia, bateria longitudinal (CDR-SB, ADAS-Cog, MoCA), custo SUS e privado, articulação interdisciplinar.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Lecanemab e donanemab no Brasil' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Modificadores de doença no Alzheimer</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Lecanemab, donanemab e modificadores de doença no Alzheimer 2026: FAQ para psicólogos brasileiros</h1>
+          <TLDR
+            resposta="Lecanemab (CLARITY-AD, 27% de desaceleração em CDR-SB) e donanemab (TRAILBLAZER-ALZ 2, 35% em iADRS) são os primeiros modificadores de doença aprovados para Alzheimer leve e CCL com amiloide positivo. APOE ε4 estratifica risco de ARIA — 32,6% de ARIA-E em homozigotos versus 5,4% em ε3/ε3 no CLARITY-AD. Status ANVISA até maio/2026 permanece em análise — uso brasileiro segue por importação por receita médica com custo R$ 150-280 mil/ano. O neuropsicólogo conduz baseline com CDR-SB, ADAS-Cog e MoCA, acompanha bateria longitudinal e participa de equipe interdisciplinar que integra neurologia, radiologia, infusão, laboratório e psicoterapia."
+            fontes={["van Dyck et al., 2023 (NEJM, CLARITY-AD)", "Mintun et al., 2024 (JAMA, TRAILBLAZER-ALZ 2)", "Ashton et al., 2024 (Nature Medicine, p-tau217)"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Dezessete perguntas frequentes para psicólogos e neuropsicólogos brasileiros que vão participar de equipes de avaliação e acompanhamento longitudinal em modificadores de doença anti-amiloide.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-8">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que este FAQ importa para psicólogos brasileiros em 2026</h2>
+        <p>
+          Modificadores de doença anti-amiloide reconfiguraram o cenário clínico em Alzheimer. CLARITY-AD (van Dyck et al., 2023, *NEJM*) com n=1.795 demonstrou desaceleração de 27% no declínio cognitivo medido por CDR-SB ao longo de 18 meses para lecanemab. TRAILBLAZER-ALZ 2 (Mintun et al., 2024, *JAMA*) com n=1.736 reportou desaceleração de 35% em iADRS em 76 semanas para donanemab, com efeito superior em pacientes com carga de tau baixa a intermediária. Em paralelo, Ashton et al. (2024, *Nature Medicine*) consolidaram p-tau217 plasmático como triagem altamente acurada (AUC 0,96 para amiloide cerebral). O efeito agregado: o diagnóstico biológico de Alzheimer, antes restrito a centros de pesquisa com PET amiloide ou líquor, torna-se acessível em escala — e o tratamento modificador, antes inexistente, torna-se realidade.
+        </p>
+        <p>
+          Para o psicólogo brasileiro, a janela de 2026-2027 traz mudança estrutural. Equipes interdisciplinares precisam de neuropsicólogos formados em bateria longitudinal para CCL e Alzheimer leve, em instrumentos canônicos de ensaios (CDR-SB, ADAS-Cog), em articulação com biomarcador plasmático e em monitoramento de eventos como ARIA. As perguntas a seguir cobrem o que neuropsicólogas e neuropsicólogos precisam dominar para participar dessa nova prática — desde indicação clínica até logística de monitoramento, passando por custos, formação e articulação interdisciplinar.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">As 17 perguntas</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Modificadores de doença anti-amiloide são o primeiro avanço terapêutico significativo em Alzheimer — o psicólogo neuropsicólogo é parte estrutural da equipe.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Lecanemab (CLARITY-AD, 27% desaceleração CDR-SB) e donanemab (TRAILBLAZER-ALZ 2, 35% iADRS) aprovados pela FDA; análise ANVISA em curso em maio/2026.</li>
+          <li>Indicação: CCL ou Alzheimer leve com biomarcador amiloide positivo, sem demência moderada, com estratificação APOE ε4 e plano de monitoramento RNM.</li>
+          <li>Neuropsicólogo conduz baseline e bateria longitudinal (CDR-SB, ADAS-Cog, MoCA), participa de equipe interdisciplinar e detecta sinais precoces de ARIA sintomática.</li>
+          <li>Custo na rede privada brasileira atualmente R$ 150-280 mil/ano via importação; custo-efetividade real-world em discussão regulatória.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para neuropsicólogas e neuropsicólogos brasileiros, o MBA em Reabilitação Neuropsicológica do IPOG consolida fundamento técnico para participar dessa nova prática. Próximo passo: confirme grade e turma vigentes no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-ccl-biomarcadores-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de CCL com biomarcadores em 2026</a></li>
+          <li><a href="/comparativos/ccl-amnestico-vs-nao-amnestico" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · CCL amnéstico vs não-amnéstico</a></li>
+          <li><a href="/comparativos/reabilitacao-neuropsi-vs-cst-estimulacao" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · Reabilitação Cicerone vs CST</a></li>
+          <li><a href="/areas/neuropsicologia" class="text-brand-700 hover:text-brand-800 font-medium">Área · Neuropsicologia</a></li>
+          <li><a href="/areas/reabilitacao-neuropsicologica" class="text-brand-700 hover:text-brand-800 font-medium">Área · Reabilitação Neuropsicológica</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li><a href={`/areas/${a.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{a.name}</strong></a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>van Dyck CH, et al. (2023). Lecanemab in early Alzheimer disease. NEJM, 388:9-21.</li>
+          <li>Mintun MA, et al. (2024). Donanemab in early symptomatic Alzheimer disease. JAMA, 330:2302-2313.</li>
+          <li>Ashton NJ, et al. (2024). Plasma p-tau217 for Alzheimer diagnosis. Nature Medicine, 30:1710-1718.</li>
+          <li>Jack CR Jr, et al. (2024). Revised criteria and A/T/N framework. Lancet Neurology, 23:116-127.</li>
+          <li>Petersen RC. (2024). Mild cognitive impairment: update. Neurology.</li>
+          <li>Livingston G, et al. (2024). Dementia prevention: 14 modifiable factors. The Lancet, 404:1339-1349.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>
+</content>
+</invoke>

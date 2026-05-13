@@ -1,0 +1,326 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O que é a Lei 15.100/2024 e quando entrou em vigor?',
+    a: 'A Lei 15.100/2024 foi sancionada em 13 de janeiro de 2025 pelo presidente da República e restringe o uso de aparelhos eletrônicos portáteis pessoais — em especial smartphones — nos estabelecimentos brasileiros de educação básica, abrangendo educação infantil, ensino fundamental e ensino médio nas redes pública e privada. A norma define o uso de aparelho pessoal por estudantes como vedado durante a aula, o recreio e os intervalos, com exceções previstas. A regulamentação operacional ficou a cargo dos sistemas de ensino estaduais e municipais, com diretrizes do Ministério da Educação. Para psicólogos escolares, a lei criou janela protetora de 4 a 6 horas diárias de presença em sala sem acesso direto a feed algorítmico — recorte com implicações clínicas e pedagógicas relevantes.'
+  },
+  {
+    q: 'Quais são as exceções legais ao uso de celular previstas pela Lei 15.100/2024?',
+    a: 'A norma estabelece três grupos de exceções centrais. Primeira, condições de saúde — estudantes com diabetes que dependem de aparelho para monitoramento contínuo de glicose, estudantes com epilepsia em uso de aplicativos de monitoramento e quadros análogos têm uso autorizado mediante laudo. Segunda, deficiência ou necessidade educacional específica — estudantes com deficiência auditiva, visual, neurodivergência (TEA, TDAH em manejo terapêutico) ou outras condições atendidas pelo plano educacional individualizado podem usar tecnologia assistiva. Terceira, emergência — situações de risco imediato (acidente, evacuação, contato com responsáveis em urgência) admitem uso pontual. As exceções são documentadas no projeto pedagógico, com autorização da equipe gestora, e são revisadas periodicamente.'
+  },
+  {
+    q: 'Qual é o papel do psicólogo escolar na implementação da Lei 15.100/2024?',
+    a: 'A Lei 13.935/2019 estabelece a presença de psicólogos e assistentes sociais nas redes públicas de educação básica, com implementação heterogênea entre municípios. No contexto da Lei 15.100/2024, o psicólogo escolar opera em cinco frentes. Primeira, participar do projeto pedagógico, contribuindo com leitura técnica sobre desenvolvimento adolescente e impacto da exposição digital. Segunda, mediar resistência inicial de alunos e famílias com psicoeducação sobre mecanismos de recompensa variável (Eyal, 2014/2019) e comparação social ascendente. Terceira, atender estudantes com sintomas de ansiedade ou abstinência diante da restrição — a literatura registra ansiedade de separação tecnológica em parte dos adolescentes. Quarta, articular com famílias o letramento digital crítico em casa, já que a janela escolar protege apenas parte do dia. Quinta, contribuir com a documentação e revisão periódica das exceções individuais.'
+  },
+  {
+    q: 'Como construir o protocolo institucional de implementação na escola?',
+    a: 'Um protocolo institucional eficaz combina cinco componentes. Primeiro, projeto pedagógico atualizado com a Lei 15.100/2024 e regulação local — texto curto, claro e visível em mural e site da escola. Segundo, plano operacional: onde os aparelhos ficam guardados durante a aula (armário, bolsa lacrada, mochila com regra), quem é responsável, como se lida com aluno que não entrega. Terceiro, plano de exceções — protocolo para uso autorizado por saúde, deficiência ou emergência, com documentação simples e revisão semestral. Quarto, plano de comunicação com família — carta de início de ano, reuniões temáticas, canal claro de dúvidas. Quinto, plano de avaliação — indicadores de implementação (taxa de adesão, ocorrências, percepção docente, percepção de estudante) com revisão pedagógica trimestral. Protocolos coletivos (toda a escola adota), explícitos e simples têm sinal de eficácia maior do que regras pontuais ou negociadas individualmente.'
+  },
+  {
+    q: 'Como lidar com resistência de pais e alunos à restrição?',
+    a: 'Resistência é esperada e parte do processo. A literatura clínica e parental (Haidt 2024, AAP 2023, Wait Until 8th) converge em três princípios. Primeiro, regras coletivas reduzem fricção — quando toda a escola e várias famílias da turma aderem, a percepção de exclusão social do adolescente cai. Segundo, comunicação baseada em mecanismo, não em moralismo — explicar para famílias e estudantes como algoritmos otimizam engajamento, como comparação social ascendente opera em feed visual, como sono e atenção são afetados, com dados (CETIC.br 2024, PeNSe/IBGE 2024). Terceiro, escalonar e oferecer alternativa concreta — recreio com espaços de jogo, biblioteca aberta, atividade artística, esporte intramuros substituem o feed. Conflito inicial é parte do processo de retirada de reforço; ceder ao primeiro pico reproduz o padrão problemático.'
+  },
+  {
+    q: 'A evidência de impacto de escolas sem celular é robusta?',
+    a: 'A evidência é preliminar e mista. Haidt (2024, The Anxious Generation) defende a norma "celular-free schools" com base em meta-análises observacionais e em padrões temporais. No Reino Unido, Department for Education (2024-2025) reporta sinal de redução de relatos de ansiedade e melhora de atenção em escolas com restrição plena, com magnitude variando por estudo. Crítica robusta de Odgers (2024, Nature) aponta que a maioria dos estudos disponíveis é observacional, confunde correlação com causalidade e mistura efeitos da restrição com efeitos de outras mudanças simultâneas (cultura escolar, atenção ao tema). Orben e Przybylski (2024, Nature Human Behaviour) qualificam magnitude de efeitos. RCTs rigorosos em larga escala ainda são raros. Para a clínica, a leitura responsável é cautelosa: efeito provavelmente existe e magnitude varia; a norma é defensável como política preventiva mesmo enquanto a evidência empírica madura.'
+  },
+  {
+    q: 'Como a Lei 15.100/2024 interage com o ECA Digital (Lei 14.811/2024 e PLs em curso)?',
+    a: 'A Lei 14.811/2024 (sancionada em 16 de janeiro de 2024) tipifica condutas em ambiente digital contra crianças e adolescentes — incluindo bullying e cyberbullying como crime, induzimento a autolesão ou suicídio em ambiente digital, e ampliação do dever de notificação. Discussões legislativas em curso (PL 2.628/2022 e correlatos, popularmente chamados de "ECA Digital") avançam responsabilização de plataformas. A Lei 15.100/2024 opera complementarmente: restringe acesso direto a feed em janela escolar, enquanto a Lei 14.811/2024 endereça condutas em ambiente digital fora da escola e o ECA Digital pretende regular a operação das plataformas. Para o psicólogo escolar, a leitura conjunta sustenta protocolo institucional mais robusto — escola é janela protetora, mas não substitui letramento crítico nem regulação de plataformas.'
+  },
+  {
+    q: 'Sala de aula sem distração digital melhora atenção e desempenho?',
+    a: 'A literatura é convergente, com magnitudes variadas. Estudos observacionais (DfE Reino Unido, 2024-2025; relatos de implementação norueguesa, francesa e holandesa, 2023-2025) apontam melhora autorrelatada de atenção em sala e redução de interrupções por notificação. Beland e Murphy (2016, LSE) — estudo pioneiro com mais de 90 escolas inglesas — encontraram melhora de desempenho em exames, com efeito maior para estudantes de menor desempenho prévio. Críticas metodológicas existem, mas o sinal é replicado em ambientes diferentes. A explicação cognitiva é compatível com a literatura geral sobre atenção: notificação intermitente fragmenta a atenção sustentada (Mark, 2023, *Attention Span*); ausência da fonte de interrupção libera recursos atencionais para tarefa acadêmica. O efeito não é mágico — escola sem celular não substitui boa pedagogia — mas remove fricção crônica.'
+  },
+  {
+    q: 'Bullying digital cai com escola sem celular?',
+    a: 'Há sinal preliminar de redução de bullying digital em ambiente escolar, com a ressalva de que o fenômeno pode ser parcialmente transferido para o tempo pós-escola. CETIC.br (2024, TIC Kids Online Brasil) reporta exposição alta de adolescentes brasileiros a bullying online — fenômeno multifatorial. A Lei 15.100/2024 endereça uma fração específica do problema: o uso de celular em sala e recreio como vetor de bullying coordenado em tempo real (criação de grupos paralelos, gravação não autorizada, exposição pública dentro do ambiente escolar). A redução desse vetor é mecanicamente esperada. O bullying digital fora da janela escolar persiste e exige outras intervenções — Lei 14.811/2024 (tipificação penal), letramento digital crítico, articulação família, regulação de plataformas. O psicólogo escolar atende casos individuais sem assumir que a restrição em sala resolveu o quadro.'
+  },
+  {
+    q: 'O risco do uso de celular se transfere para depois da escola?',
+    a: 'Sim, em parte. Adolescente sem acesso ao celular em janela escolar tende a aumentar uso fora da janela, em padrão de "binge". CETIC.br (2024) mostra que adolescentes brasileiros tinham, antes da Lei 15.100/2024, uso médio diário acima de 4 horas em redes sociais — janela escolar cobre fração desse tempo. A consequência clínica é que a Lei opera como medida necessária mas insuficiente. O letramento digital crítico, o pacto familiar (modelos AAP Family Media Plan), a restrição doméstica (sem tela em refeição, sem aparelho no quarto, sem rolagem antes de dormir), a oferta de alternativa concreta presencial (esporte, atividade artística, encontros) e a regulação de plataformas são camadas complementares. O psicólogo escolar tem papel ativo em articulação com famílias para que a janela protetora não se anule fora da escola.'
+  },
+  {
+    q: 'Como articular escola e família em protocolo coerente?',
+    a: 'A articulação família-escola sustenta o protocolo. Quatro estratégias têm sinal de eficácia. Primeira, reunião pedagógica de início de ano dedicada ao tema, com leitura técnica (não moralizante) sobre mecanismos digitais e impactos documentados. Segunda, materiais curtos e claros para famílias — AAP Family Media Plan adaptado, com sugestões concretas (sem celular em refeição, sem aparelho no quarto à noite, pacto coletivo entre famílias da turma). Terceira, canal de dúvidas estável — psicólogo escolar disponível, e-mail ou aplicativo institucional. Quarta, atendimento a famílias com casos individuais — adolescente que reage com explosão à restrição em casa, adolescente com uso compulsivo identificado pela escola, adolescente em ideação ativa. A escola é janela parcial; a família sustenta o restante.'
+  },
+  {
+    q: 'Estudante LGBTQ+ ou em comunidade isolada perde apoio com a restrição?',
+    a: 'O risco é real e merece protocolo cuidadoso. Twenge et al. (2024) e Odgers (2024) apontam que uso ativo de redes sociais pode ter função positiva para adolescentes LGBTQ+, especialmente em contextos isolados — acesso a comunidade, a informação validada, a referências. A restrição em janela escolar de 4 a 6 horas não anula esse acesso fora da janela, mas a leitura clínica é importante. O protocolo institucional precisa: distinguir uso recreativo passivo (foco de risco) de uso comunitário ativo (potencial protetivo); manter intervalos sem celular sem ser punitivo; oferecer espaços presenciais de inclusão (grupos de afinidade, alianças entre estudantes, política antibullying robusta). O psicólogo escolar atende caso a caso, com sensibilidade a vulnerabilidades específicas e sem reduzir a discussão ao tempo de tela.'
+  },
+  {
+    q: 'Como atender adolescente que apresenta ansiedade ou irritabilidade pela restrição?',
+    a: 'Parte dos adolescentes apresenta sintomas tipo abstinência diante da restrição — ansiedade de separação, irritabilidade, dificuldade de regulação emocional, queixas físicas. A literatura mostra que esses sintomas costumam atenuar em 2 a 4 semanas com ambiente coerente (escola e família alinhadas), atividade alternativa concreta e psicoeducação. No atendimento individual, três componentes funcionam. Primeiro, validar o desconforto sem ceder à demanda imediata de devolver o aparelho. Segundo, mapear função do uso (regulação emocional, escape de tédio, validação social, FOMO) e construir alternativa específica. Terceiro, em quadros mais agudos com componente de transtorno (depressão, ansiedade clínica, TDAH descompensado), conduzir avaliação clínica completa e plano terapêutico que vá além da gestão da tela. Sintomas severos persistentes em 4-8 semanas merecem articulação com CAPSi ou serviço especializado.'
+  },
+  {
+    q: 'Que sinais de uso problemático identificar mesmo com escola sem celular?',
+    a: 'Cinco sinais funcionais merecem atenção, independentemente da Lei 15.100/2024. Primeiro, prejuízo no sono — adolescente acessa redes na cama, dorme menos de oito horas, acorda esgotado. Segundo, queda no desempenho escolar associada a desatenção fora da janela protegida, esquecimento de tarefas, procrastinação massiva. Terceiro, isolamento social presencial — abandono de atividades antes valorizadas. Quarto, mudança afetiva consistente — irritabilidade, ansiedade, humor depressivo, autoestima corporal deteriorada (especialmente em meninas exposta a feeds visuais). Quinto, reatividade ao limite — explosão emocional desproporcional quando o aparelho é retirado em casa. Esses sinais costumam aparecer em conjunto. A avaliação clínica precisa investigar comorbidades (depressão, ansiedade, TDAH, TEA, trauma) — uso problemático frequentemente é manifestação ou agravante de quadro subjacente.'
+  },
+  {
+    q: 'Quando encaminhar adolescente identificado pela escola para CAPSi ou clínica privada?',
+    a: 'A escola identifica preocupações; o serviço especializado avalia e trata. Quatro critérios estruturam encaminhamento. Primeiro, sintomas depressivos ou ansiosos com prejuízo funcional sustentado por mais de duas semanas — PHQ-A elevado, GAD-7 elevado, queda escolar consistente. Segundo, qualquer sinal de ideação suicida — encaminhamento imediato, com pacto familiar e protocolo de emergência se necessário (SAMU 192, CVV 188, leito de pediatria psiquiátrica em risco iminente). Terceiro, uso compulsivo com prejuízo grave em sono, escola, vida social, ou companion de IA com diálogos de desesperança. Quarto, comorbidades evidentes (TEA, TDAH descompensado, transtorno alimentar, autolesão). O fluxo padrão é: UBS para porta de entrada, CAPSi para casos moderado-graves, clínica privada quando a família opta. CVV 188 cobre janelas de risco. O psicólogo escolar mantém vínculo institucional e articulação com o serviço especializado.'
+  },
+  {
+    q: 'Qual a interface entre Lei 15.100/2024 e atendimento psicológico privado a adolescentes?',
+    a: 'Psicólogos clínicos que atendem adolescentes em consultório precisam conhecer a Lei 15.100/2024 por três motivos. Primeiro, contexto: parte expressiva dos pacientes apresenta sintomas relacionados ao uso digital, e a escola opera como janela protetora — o cuidado clínico complementa, não substitui. Segundo, articulação: em casos moderado-graves, comunicação com a escola (com consentimento) sustenta plano coerente; o psicólogo escolar é parceiro técnico, não competidor. Terceiro, psicoeducação familiar: a Lei está em vigor, e a conversa com famílias precisa partir desse marco — não como discussão sobre se "vale a pena" restringir, mas como leitura de o que a restrição faz e o que ela não faz. Conhecer a regulamentação local (cada estado e município operacionaliza com nuances) é parte do repertório técnico.'
+  },
+  {
+    q: 'Como uma pós-graduação em Psicologia Escolar/Educacional ajuda o profissional a operar nesse contexto?',
+    a: 'Profissionais que atuam com adolescentes em escolas, no contexto da Lei 15.100/2024, precisam de repertório que combine bases sólidas em Psicologia do Desenvolvimento, Psicologia Escolar e Educacional, Saúde Mental e leitura crítica da literatura sobre adolescência digital (Haidt, Twenge, Orben, Odgers, AAP, CETIC.br, PeNSe/IBGE). A formação integra leitura cruzada com terapias com evidência — TCC para adolescentes, DBT-A em sofrimento severo, family-based therapy, mindfulness adaptado. Articulação com Psicopedagogia, prática supervisionada em contexto escolar real e domínio de protocolo institucional ampliam a capacidade de intervenção. O IPOG mantém MBAs em Neurociência e Psicologia Positiva no Desenvolvimento Humano, com módulos correlatos em desenvolvimento, regulação emocional e saúde mental, em formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Lei 15.100/2024 — escola sem celular no Brasil: FAQ para psicólogos escolares em 2026',
+  description: 'Dezessete perguntas frequentes sobre a Lei 15.100/2024 (escolas sem celular): cronograma, exceções legais, papel do psicólogo escolar, protocolo institucional, resistência de pais e alunos, evidência de impacto (Haidt + crítica Odgers), interface com ECA Digital e Lei 14.811/2024.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Escola sem celular (Lei 15.100/2024)', item: SITE.url + '/faq/escola-sem-celular-lei-15100-faq/' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const adjacent = AREAS.filter(a => ['psicologia-escolar-educacional', 'psicopedagogia', 'psicologia-clinica', 'aba-tea-neurodesenvolvimento'].includes(a.id)).slice(0, 4);
+---
+<Base
+  title="Lei 15.100/2024 — escola sem celular: FAQ para psicólogos escolares (2026)"
+  description="Dezessete perguntas sobre a Lei 15.100/2024 (escolas sem celular no Brasil): cronograma, exceções, papel do psicólogo escolar, protocolo, resistência, evidência (Haidt vs Odgers), interface com ECA Digital e Lei 14.811/2024.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Escola sem celular (Lei 15.100/2024)' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Lei 15.100/2024 · escola sem celular</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Lei 15.100/2024 — escola sem celular no Brasil: FAQ para psicólogos escolares em 2026</h1>
+          <TLDR
+            resposta="A Lei 15.100/2024 (sancionada em 13/01/2025) restringe uso de aparelhos pessoais em toda a educação básica brasileira, com exceções para saúde, deficiência e emergência. Para o psicólogo escolar, cria janela protetora de 4 a 6 horas sem feed algorítmico, com sinal preliminar de redução de bullying digital em rede e melhora autorrelatada de atenção — sem RCT brasileiro publicado. Articulação com Lei 14.811/2024 (cyberbullying) e família é o que sustenta efeito real fora da escola."
+            fontes={["Lei 15.100/2024 (Brasil)", "Haidt, 2024 (The Anxious Generation, Penguin Press)", "Odgers, 2024 (Nature)", "PeNSe/IBGE, 2024 (118 mil estudantes)", "CETIC.br, 2024 (TIC Kids Online Brasil)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Dezessete perguntas que psicólogos escolares, coordenadores pedagógicos, pais e gestores fazem sobre a Lei 15.100/2024 e sua implementação no Brasil.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">17 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A Lei 15.100/2024 cria janela escolar sem celular pessoal para alunos da educação básica. Exceções cobrem saúde, deficiência e emergência. O psicólogo escolar opera em cinco frentes: projeto pedagógico, mediação de resistência, atendimento de sintomas de adaptação, articulação com famílias e gestão de exceções. A evidência de impacto é preliminar (Haidt 2024 defende; Odgers 2024 qualifica). PeNSe/IBGE 2024 e CETIC.br 2024 sustentam a preocupação pública. A norma é janela parcial — letramento digital crítico em casa, Lei 14.811/2024 e regulação de plataformas completam o cuidado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Referências canônicas</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Referência</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Fonte / Ano</th>
+                <th class="text-left px-4 py-3">Etapa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Lei 15.100/2024</td>
+                <td class="px-4 py-3 text-ink-700">Norma federal — celular em educação básica</td>
+                <td class="px-4 py-3 text-ink-700">Brasil, sancionada 13/01/2025</td>
+                <td class="px-4 py-3 text-ink-700">Base legal</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Lei 14.811/2024</td>
+                <td class="px-4 py-3 text-ink-700">Proteção digital de crianças e adolescentes</td>
+                <td class="px-4 py-3 text-ink-700">Brasil, sancionada 16/01/2024</td>
+                <td class="px-4 py-3 text-ink-700">Base legal complementar</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">The Anxious Generation</td>
+                <td class="px-4 py-3 text-ink-700">Tese causal e quatro normas coletivas</td>
+                <td class="px-4 py-3 text-ink-700">Haidt, 2024 (Penguin Press)</td>
+                <td class="px-4 py-3 text-ink-700">Base conceitual</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Crítica em Nature</td>
+                <td class="px-4 py-3 text-ink-700">Qualificação da magnitude do efeito</td>
+                <td class="px-4 py-3 text-ink-700">Odgers, 2024 (Nature)</td>
+                <td class="px-4 py-3 text-ink-700">Contraponto</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">PeNSe 2024</td>
+                <td class="px-4 py-3 text-ink-700">Saúde mental adolescente — 118.099 estudantes</td>
+                <td class="px-4 py-3 text-ink-700">IBGE, 2024 (publicação 2026)</td>
+                <td class="px-4 py-3 text-ink-700">Epidemiologia BR</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">TIC Kids Online Brasil</td>
+                <td class="px-4 py-3 text-ink-700">Dados de uso digital 9-17 anos</td>
+                <td class="px-4 py-3 text-ink-700">CETIC.br, 2024</td>
+                <td class="px-4 py-3 text-ink-700">Epidemiologia BR</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Family Media Plan</td>
+                <td class="px-4 py-3 text-ink-700">Pacto familiar de uso de tela</td>
+                <td class="px-4 py-3 text-ink-700">AAP, 2023</td>
+                <td class="px-4 py-3 text-ink-700">Intervenção familiar</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Educação — diretrizes da Lei 15.100/2024</a></li>
+          <li><a href="https://agenciabrasil.ebc.com.br/saude/noticia/2026-03/ibge-alerta-para-quadro-preocupante-na-saude-mental-de-adolescentes" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">IBGE/PeNSe 2024 — saúde mental adolescente</a></li>
+          <li><a href="https://cetic.br/pt/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CETIC.br — TIC Kids Online Brasil</a></li>
+          <li><a href="https://www.anxiousgeneration.com" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Anxious Generation — Haidt</a></li>
+          <li><a href="https://www.healthychildren.org/English/family-life/Media/Pages/FamilyMediaPlan.aspx" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">AAP — Family Media Plan</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/intervencao-adolescente-ideacao-suicida-algoritmos" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Adolescente com ideação suicida e algoritmos</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo em 9 passos com CAPSi e Safety Planning.</p>
+          </a>
+          <a href="/faq/adolescencia-digital-saude-mental-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Adolescência digital e saúde mental</p>
+            <p class="text-xs text-ink-700 mt-2">Haidt 2024, CETIC.br, Family Media Plan.</p>
+          </a>
+          <a href="/comparativos/haidt-restricao-vs-uso-supervisionado" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">Haidt vs uso supervisionado</p>
+            <p class="text-xs text-ink-700 mt-2">Quatro normas vs Common Sense Media.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A Lei 15.100/2024 é janela protetora parcial — não é apólice completa.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A norma cria 4 a 6 horas diárias sem feed algorítmico em sala e recreio, com exceções para saúde, deficiência e emergência. Evidência de impacto é preliminar — Haidt sustenta, Odgers qualifica. O psicólogo escolar opera em cinco frentes (projeto pedagógico, resistência, sintomas de adaptação, articulação com famílias, gestão de exceções) e articula com clínica especializada em casos moderado-graves. Letramento digital crítico em casa e Lei 14.811/2024 sobre cyberbullying completam o cuidado. Para profissionais que querem aprofundar bases de desenvolvimento adolescente, regulação emocional e neurociência aplicada, o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano do IPOG é caminho aplicado em formato Ao Vivo síncrono.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em Neurociência + Positiva</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaNcpp ? mbaNcpp.description : 'O IPOG oferece MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC</a></li>
+          <li><a href="https://cetic.br/pt/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CETIC.br</a></li>
+          <li><a href="https://agenciabrasil.ebc.com.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Agência Brasil</a></li>
+          <li><a href="https://www.healthychildren.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">AAP HealthyChildren</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

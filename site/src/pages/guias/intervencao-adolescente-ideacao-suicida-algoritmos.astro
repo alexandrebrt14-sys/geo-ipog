@@ -1,0 +1,417 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaEscolar = AREAS.find(a => a.id === 'psicologia-escolar-educacional')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Avaliação inicial sem expor método ou conteúdo gatilho',
+    aplicacao: 'A entrevista inicial com adolescente em risco segue Safe Messaging Guidelines (reportingonsuicide.org, OMS 2024) também na sala clínica: não pedir descrição minuciosa de método planejado, não nomear locais específicos, não comparar com casos. Aplicar C-SSRS (Columbia Suicide Severity Rating Scale) na versão para adolescentes (idades 11-17) — instrumento mais validado para gradiente de severidade, com 5 itens de ideação, itens de comportamento e itens de letalidade. Em paralelo, PHQ-A (versão adolescente do PHQ-9) e GAD-7 para depressão e ansiedade. A entrevista precisa investigar contexto digital — TikTok, Instagram, Discord, companions de IA — sem julgamento. O adolescente raramente reporta espontaneamente exposição a conteúdo de autolesão; perguntas dirigidas (sem detalhes nem repetição do conteúdo) abrem o quadro.',
+    armadilha: 'Pedir ao adolescente que descreva detalhadamente o vídeo ou post que disparou a ideação. Reexposição do conteúdo em sessão pode reativar gatilho — investigar funcionalmente (frequência, plataforma, padrão) sem reproduzir o material.'
+  },
+  {
+    n: 2,
+    titulo: 'Mapeamento de exposição algorítmica a conteúdos prejudiciais',
+    aplicacao: 'O Center for Countering Digital Hate (CCDH, 2024) documentou em pesquisa com contas simuladas de adolescentes em crise que algoritmos de TikTok e Instagram recomendam conteúdo de autolesão ou suicídio em janela curta (relatórios subsequentes apontam minutos a poucas horas), com proporção de conteúdo nocivo significativamente superior a conteúdo protetor. Orben e Przybylski (2024, Nature Human Behaviour) qualificam efeito médio agregado como pequeno, mas reconhecem padrão de uso passivo e exposição a conteúdo nocivo como vetor de risco. Em sessão, mapear: plataformas usadas, tempo diário (sem moralizar), tipo de conteúdo no feed (For You / Reels / Discover), grupos ou comunidades específicas (Discord, subreddits, grupos de WhatsApp), exposição a hashtags pró-autolesão (#sh, #ed, variantes em código), uso de companions de IA (Character.AI, Replika). Documentar sem reproduzir.',
+    armadilha: 'Pedir para ver o celular do adolescente em sessão. Quebra de aliança e pode acionar reatividade. Mapear via narrativa e checklist, não via vigilância direta. Quando indicado, articular com família para revisão conjunta posterior.'
+  },
+  {
+    n: 3,
+    titulo: 'Aliança terapêutica com vocabulário do adolescente',
+    aplicacao: 'A aliança em adolescência com ideação ativa depende de três condições. Primeira, validar o sofrimento sem patologizar a cultura digital — não dizer "redes sociais fazem mal", dizer "o que você sente faz sentido nesse contexto". Segunda, usar vocabulário do adolescente (For You, ranking, mutuals, ghosting, lurking, doomscroll) sem caricaturar nem traduzir para jargão clínico. Terceira, explicitar limites de sigilo logo na primeira sessão — risco iminente exige comunicação familiar, com pacto compartilhado quando possível. A Resolução CFP 003/2024 estabelece quebra de sigilo como exceção fundamentada em risco de vida, não automática. Adolescentes que sentem aliança real reportam ideação ativa com latência menor — Joshi et al. (2023, *Journal of Adolescent Health*) documentam que confiança na continuidade do vínculo é preditora de adesão.',
+    armadilha: 'Performar familiaridade com cultura digital sem conhecimento real. Adolescente identifica e a aliança se quebra. Melhor admitir desconhecimento específico ("não conheço esse aplicativo, pode me explicar como funciona?") do que simular fluência.'
+  },
+  {
+    n: 4,
+    titulo: 'Plano de segurança Stanley-Brown adaptado a adolescente digital',
+    aplicacao: 'Stanley & Brown (2012, *Cognitive and Behavioral Practice*) propõem Safety Planning Intervention em seis passos colaborativos. A adaptação para adolescente digital ajusta cada passo. (1) Sinais de alerta pessoais: incluir gatilhos digitais (notificação específica, hora do dia, conta seguida, aplicativo). (2) Estratégias internas de enfrentamento: alternativas concretas que substituam o impulso de abrir o app (caminhada de 10 minutos, banho frio, escrita em caderno, playlist de "saída"). (3) Contatos sociais que distraem: amigos identificados, atividades offline, espaços físicos seguros. (4) Familiares ou amigos que podem ajudar: lista nominal com horários disponíveis e como acionar. (5) Profissionais e serviços: psicóloga, CVV 188 (24h), CAPSi de referência, SAMU 192 em risco iminente. (6) Restrição de meios: revisão de acesso a conteúdo gatilho — silenciar perfis, mutar hashtags, aplicar restrição de tempo via Family Link/Tempo de Uso, em risco severo retirada temporária do aparelho com guarda familiar. Stanley et al. (2018, *JAMA Psychiatry*) reportam redução de 45% em tentativas com Safety Planning vs. cuidado usual em adultos; estudos com adolescentes em desenvolvimento mostram sinal análogo.',
+    armadilha: 'Imprimir um plano genérico e entregar pronto. Plano não construído colaborativamente não é usado em momento de crise. O plano físico fica com o adolescente — em papel dobrado na carteira ou em nota fixada do celular, com acesso rápido em pico de ideação.'
+  },
+  {
+    n: 5,
+    titulo: 'Envolvimento familiar com ECA Digital e Lei 14.811/2024',
+    aplicacao: 'A comunicação com a família em risco severo é dever ético orientado pela Resolução CFP 003/2024 (limites do sigilo frente ao risco iminente). O contexto legal recente reforça a base. A Lei 14.811/2024 (sancionada em janeiro de 2024) tipifica condutas em ambiente digital contra crianças e adolescentes — incluindo cyberbullying com efeito penal — e ampliou o dever de notificação compulsória de violência. Discussões legislativas em curso sobre o ECA Digital (PL 2.628/2022 e correlatos) avançam responsabilização de plataformas. Em sessão, conduzir comunicação familiar com pacto: paciente escolhe quem é informado primeiro, em que linguagem, com plano de segurança como ponte. Psicoeducação familiar inclui: o que é normal vs. sinal de alerta em uso digital, como conversar sem invadir, restrição de meios digitais sem castigo coletivo, papel da família como guardião dos meios em janela aguda. Birchwood-style family work adaptado para adolescente: reduzir críticas, super-envolvimento e culpabilização.',
+    armadilha: 'Convocar família e expor método ou conteúdo específico que disparou ideação. Reexposição pode acionar reação de pânico parental e quebra de aliança com o adolescente. Comunicar funcionalmente: "há risco que exige cuidado intensivo", "estes são os meios a restringir", "este é o plano".'
+  },
+  {
+    n: 6,
+    titulo: 'Articulação com escola e Lei 15.100/2024 (celular em sala)',
+    aplicacao: 'A Lei 15.100/2024 (sancionada em janeiro de 2025) restringe uso de aparelhos eletrônicos pessoais nas escolas brasileiras em educação básica, com exceções previstas para acessibilidade, saúde e emergências. A norma cria janela protetora de 4 a 6 horas diárias de sala sem feed algorítmico, com sinal preliminar de redução de bullying digital em rede e melhora autorrelatada de atenção (relatos da implementação 2025 — dossiê de pesquisa, sem RCT brasileiro publicado). Para o adolescente em ideação ativa, articular com escola tem três funções. Primeira, alinhar o protocolo institucional ao caso — psicólogo escolar, coordenação, professor de referência, com pacto de comunicação sem expor diagnóstico. Segunda, identificar pares de suporte presencial na escola, dentro do plano de segurança. Terceira, mapear riscos transferidos (uso pós-escola intensificado), trabalhando com família. A articulação é registrada com consentimento e segue Resolução CFP 010/2005 sobre Psicologia escolar.',
+    armadilha: 'Comunicar à escola sem consentimento explícito do adolescente e responsáveis, ou expor conteúdo específico em ata escolar. Articulação eficaz é institucional e funcional, não delatória.'
+  },
+  {
+    n: 7,
+    titulo: 'Psicoeducação sobre algoritmos sem moralizar tecnologia',
+    aplicacao: 'O adolescente em ideação ativa raramente responde a "use menos o celular" — a resposta repete dinâmica adulto-jovem que ele já experimenta. Psicoeducação eficaz tem três eixos. Primeiro, mecanismo: explicar como algoritmos otimizam engajamento (não bem-estar), recompensa variável (scroll infinito como slot machine, Eyal 2014/2019), comparação social ascendente (feeds curados expõem versões idealizadas). Segundo, agência: o que ele pode mudar — silenciar contas, treinar o algoritmo (mostrar desinteresse), reduzir notificações, criar contas alternativas para conteúdo construtivo, usar Modo Foco. Terceiro, contexto: a inversão de Odgers (2024, *Nature*) — uso ativo de redes pode ter função positiva, especialmente para adolescentes LGBTQ+ em comunidades isoladas (Twenge et al., 2024); o que importa é padrão (ativo vs. passivo, conteúdo vs. duração). Esse enquadramento devolve autonomia técnica sem polarizar o jovem contra a família.',
+    armadilha: 'Dar palestra moralizante sobre tempo de tela. Em adolescente em ideação, isso reproduz tom parental e perde aliança. Psicoeducação opera como mapa de mecanismo, não sermão.'
+  },
+  {
+    n: 8,
+    titulo: 'Encaminhamento para CAPSi e articulação RAPS',
+    aplicacao: 'O CAPSi (Centro de Atenção Psicossocial Infantojuvenil) é o dispositivo da Rede de Atenção Psicossocial (Portaria GM/MS 3.088/2011) para crianças e adolescentes com sofrimento psíquico grave. Cobertura nacional vem se expandindo desde 2020, com presença em municípios acima de 70 mil habitantes (Ministério da Saúde, 2024). Em adolescente com C-SSRS escore 4 ou superior (ideação com plano e intenção), encaminhamento ao CAPSi não é opcional — é exigência clínica e ética pela Resolução CFP 003/2024. Fluxo: psicólogo individual mantém vínculo, articula com CAPSi para acompanhamento intensivo (até diário em fase aguda), CAPS AD III se houver uso de substâncias coocorrente, leito de pediatria psiquiátrica via emergência (SAMU 192 + Pronto-Socorro) em risco iminente com plano organizado e intenção. CVV 188 (24h, gratuito, sigiloso) opera entre sessões como suporte emocional. A articulação é documentada em prontuário com plano de cuidado partilhado.',
+    armadilha: 'Manter adolescente em atendimento individual ambulatorial em risco severo sem matriciamento CAPSi. Em evento adverso, ausência documentada de tentativa de articulação configura falha técnica e expõe o profissional.'
+  },
+  {
+    n: 9,
+    titulo: 'Documentação ética conforme CFP 003/2024 e Safe Messaging',
+    aplicacao: 'A documentação em adolescente com ideação suicida obedece a princípios da Resolução CFP 003/2024 e da Resolução CFP 06/2019 (documentos escritos). O prontuário registra: instrumento de avaliação (C-SSRS, PHQ-A, GAD-7) com escore e interpretação; padrão de exposição digital sem reproduzir conteúdo (formato funcional: "exposição a conteúdo de autolesão via TikTok, frequência diária, hashtags variadas em código"); plano de segurança construído colaborativamente; comunicação familiar com data, conteúdo funcional e consentimento; articulação CAPSi/CVV/escola; decisões clínicas fundamentadas. Safe Messaging Guidelines aplicam-se também ao prontuário — não detalhar método, dose, locais. Em laudo formal quando solicitado pela escola ou pela família por motivo legal, seguir Resolução CFP 06/2019 com mínimo necessário. Em supervisão clínica, dados do caso anonimizados. Em caso de evento adverso, documentação alinhada à norma é proteção do paciente e do profissional.',
+    armadilha: 'Anotar em prontuário detalhes específicos do método planejado, conteúdo do feed, transcrição de mensagens. Esses detalhes podem ser solicitados em processo judicial, expostos em sub-relatórios, e gerar reexposição. Registro funcional é mais robusto eticamente.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Avaliação inicial', indicador: 'C-SSRS adolescente + PHQ-A + GAD-7 aplicados', quem: 'Psicólogo(a)', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '2 · Mapeamento digital', indicador: 'Plataformas + padrão de exposição registrados', quem: 'Psicólogo(a) + adolescente', quando: 'Sessão 1-2', status: 'Pendente' },
+  { passo: '3 · Aliança', indicador: 'Limites de sigilo explicitados; vocabulário acolhido', quem: 'Psicólogo(a)', quando: 'Transversal', status: 'Pendente' },
+  { passo: '4 · Safety Planning', indicador: '6 passos construídos com adaptação digital', quem: 'Psicólogo(a) + adolescente', quando: 'Risco ativo', status: 'Pendente' },
+  { passo: '5 · Família', indicador: 'Comunicação pactuada + psicoeducação', quem: 'Psicólogo(a) + família', quando: 'Risco severo', status: 'Pendente' },
+  { passo: '6 · Escola', indicador: 'Articulação com consentimento; pares mapeados', quem: 'Psicólogo(a) + escola', quando: 'Conforme caso', status: 'Pendente' },
+  { passo: '7 · Psicoeducação algoritmos', indicador: 'Mecanismo + agência + contexto trabalhados', quem: 'Psicólogo(a) + adolescente', quando: 'Sessões 2-6', status: 'Pendente' },
+  { passo: '8 · CAPSi/CVV', indicador: 'Encaminhamento documentado; vínculo mantido', quem: 'Psicólogo(a) + rede', quando: 'C-SSRS ≥4', status: 'Pendente' },
+  { passo: '9 · Documentação', indicador: 'Prontuário funcional + Safe Messaging', quem: 'Psicólogo(a)', quando: 'Cada sessão', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Pedir descrição minuciosa do conteúdo gatilho',
+    texto: 'Reexposição do material em sessão pode reativar ideação. Safe Messaging Guidelines (reportingonsuicide.org; OMS 2024) aplicam-se à clínica: investigar padrão sem reproduzir detalhe.'
+  },
+  {
+    titulo: 'Tratar tela como variável única',
+    texto: 'Twenge defende causalidade; Orben e Przybylski (2024) qualificam magnitude. O que importa é padrão (ativo vs. passivo), conteúdo específico (autolesão, comparação corporal) e função do uso, não apenas duração.'
+  },
+  {
+    titulo: 'Comunicar família sem pacto com o adolescente',
+    texto: 'Resolução CFP 003/2024 admite quebra de sigilo em risco iminente, mas comunicação eficaz é pactuada sempre que possível — escolha de quem, quando e em que linguagem preserva aliança e adesão.'
+  },
+  {
+    titulo: 'Sustentar atendimento individual sem CAPSi em risco severo',
+    texto: 'Em C-SSRS escore 4 ou superior, manter atendimento ambulatorial isolado deixa janela descoberta. Articulação CAPSi é exigência técnica, não opcional.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Como conduzir avaliação inicial sem expor conteúdo gatilho ao adolescente?',
+    a: 'Aplicar C-SSRS adolescente (idades 11-17), PHQ-A e GAD-7 como instrumentos validados. Investigar padrão de exposição digital de forma funcional ("com que frequência aparece conteúdo de autolesão no seu feed?", "em que plataformas?") sem pedir descrição minuciosa nem reproduzir o material em sala. Safe Messaging Guidelines (reportingonsuicide.org; OMS 2024) orientam mídia e profissionais a evitar detalhe de método e local. Registrar em prontuário em formato funcional, não literal.'
+  },
+  {
+    q: 'Em que momento articular CAPSi e como manter vínculo individual?',
+    a: 'Em adolescente com C-SSRS escore 4 (ideação com plano e intenção) ou superior, articulação CAPSi é exigência pela Resolução CFP 003/2024 e pela lógica da RAPS (Portaria GM/MS 3.088/2011). Fluxo: psicólogo individual mantém o vínculo terapêutico, CAPSi assume acompanhamento intensivo multiprofissional (até diário em fase aguda), CAPS AD III entra se houver uso de substâncias coocorrente, leito de pediatria psiquiátrica via SAMU 192 em risco iminente com plano organizado. CVV 188 cobre janelas entre atendimentos. O vínculo individual não é substituído — é complementado.'
+  },
+  {
+    q: 'Como pactuar a comunicação familiar sem quebrar aliança?',
+    a: 'Em risco severo, comunicação familiar é dever ético pela Resolução CFP 003/2024 e pela Lei 14.811/2024 quanto a violência em ambiente digital. O pacto opera em três eixos: quem é informado primeiro (mãe, pai, irmão, responsável próximo), em que linguagem funcional ("há risco que exige cuidado, estes são os passos") sem expor método ou conteúdo específico, com plano de segurança como ponte concreta. Comunicação pactuada preserva aliança; comunicação impulsiva costuma quebrar adesão e produzir mais isolamento.'
+  },
+  {
+    q: 'Como o MBA em Neurociência e Psicologia Positiva do IPOG conecta a esse guia?',
+    a: 'O MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano do IPOG oferece fundamentação em neurodesenvolvimento adolescente, regulação emocional, plasticidade, comportamento mediado por recompensa variável e intervenções baseadas em forças — repertório útil para profissionais que atuam em equipes interdisciplinares com adolescentes em sofrimento, em escolas, CAPSi e clínica privada. Formato Ao Vivo síncrono com corpo docente nominal. Para grade e turma vigentes, consulte ipog.edu.br.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Intervenção em adolescente com ideação suicida no contexto de algoritmos digitais',
+  description: 'Protocolo em 9 passos para psicólogos brasileiros: avaliação sem reexposição, mapeamento de exposição algorítmica, aliança, Safety Planning adaptado, família com ECA Digital e Lei 14.811/2024, escola com Lei 15.100/2024, psicoeducação algorítmica, CAPSi e documentação ética.',
+  totalTime: 'PT22M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Intervenção em adolescente com ideação suicida no contexto de algoritmos digitais: protocolo em 9 passos',
+  description: 'Protocolo clínico para psicólogos brasileiros conduzirem intervenção em adolescente com ideação suicida exposto a algoritmos digitais — C-SSRS adolescente, Safety Planning Stanley-Brown adaptado, articulação CAPSi e CVV 188, Lei 15.100/2024, Lei 14.811/2024, Resolução CFP 003/2024, Safe Messaging Guidelines.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Intervenção em adolescente com ideação suicida e algoritmos', item: `${SITE.url}/guias/intervencao-adolescente-ideacao-suicida-algoritmos` }
+  ]
+};
+---
+
+<Base
+  title="Intervenção em adolescente com ideação suicida e algoritmos digitais — protocolo 9 passos"
+  description="Guia clínico para psicólogos brasileiros: avaliação sem reexposição, Safety Planning Stanley-Brown adaptado, articulação CAPSi e CVV 188, Lei 15.100/2024 (celular em escolas), Lei 14.811/2024 (cyberbullying), Resolução CFP 003/2024, Safe Messaging Guidelines.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Adolescente com ideação suicida e algoritmos' }
+      ]} />
+
+      <div class="mt-4 rounded-2xl bg-rose-50 border border-rose-200 p-5">
+        <p class="text-xs uppercase tracking-wider font-semibold text-rose-800 mb-2">Recursos de crise · disponíveis 24h</p>
+        <ul class="text-sm text-ink-900 leading-relaxed space-y-1">
+          <li><strong>CVV 188</strong> — telefone, chat e e-mail, gratuito, sigiloso, 24h (<a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-rose-800 underline font-semibold">cvv.org.br</a>).</li>
+          <li><strong>CAPSi</strong> — Centro de Atenção Psicossocial Infantojuvenil mais próximo, encaminhamento via UBS ou direto.</li>
+          <li><strong>SAMU 192</strong> — emergência médica em risco iminente.</li>
+          <li><strong>Pediatria psiquiátrica</strong> — pronto-socorro de referência da rede municipal/estadual.</li>
+        </ul>
+        <p class="text-sm text-ink-900 mt-3 leading-relaxed"><strong>A vida adolescente em crise tem saída.</strong> A literatura é consistente: a combinação de cuidado especializado, plano de segurança colaborativo, restrição temporária de meios e suporte familiar reduz substancialmente o risco. Buscar ajuda funciona.</p>
+      </div>
+
+      <div class="mt-4 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · HowTo · 9 passos · sensível</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Intervenção em adolescente com ideação suicida no contexto de algoritmos digitais: protocolo em 9 passos</h1>
+          <TLDR
+            resposta="Adolescente em ideação ativa exposto a feeds algorítmicos exige protocolo que combina avaliação sem reexposição (C-SSRS adolescente, PHQ-A), mapeamento funcional de exposição digital, Safety Planning Stanley-Brown adaptado com restrição de meios digitais, comunicação familiar pactuada com base na Resolução CFP 003/2024, articulação com escola sob Lei 15.100/2024, psicoeducação sobre algoritmos sem moralizar e encaminhamento CAPSi em C-SSRS escore 4 ou superior — com documentação alinhada a Safe Messaging Guidelines."
+            fontes={["Stanley & Brown, 2012 (Cognitive and Behavioral Practice)", "Resolução CFP 003/2024", "PeNSe/IBGE, 2024 (118 mil estudantes)", "Lei 15.100/2024 (celular em escolas)", "Lei 14.811/2024 (proteção digital de crianças e adolescentes)"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto clínico para psicólogos brasileiros que atendem adolescentes com sofrimento ligado a redes sociais, feeds algorítmicos e companions de IA — articulando legislação brasileira recente, instrumentos validados e a RAPS.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~22 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos, escolares e CAPSi</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Neurociência + Positiva
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir intervenção em adolescente com ideação suicida em ambiente digital com instrumentos validados, plano de segurança adaptado, articulação familiar pactuada e CAPSi.</li>
+          <li><strong>Pré-requisitos:</strong> CRP ativo; familiaridade com Resolução CFP 003/2024, Resolução CFP 06/2019 e Lei 14.811/2024; treinamento em C-SSRS e Safety Planning.</li>
+          <li><strong>Resultado esperado:</strong> proteção do adolescente em janela crítica, redução documentada de exposição a conteúdo gatilho, sustentação de aliança terapêutica e proteção técnica do profissional.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          O Brasil tem aproximadamente 14.800 suicídios por ano (DataSUS/SIM, estimativa 2024). Em adolescentes de 10 a 19 anos, a curva é mais aguda: PeNSe/IBGE 2024 (118.099 estudantes entrevistados em escolas públicas e privadas) reporta 42,9% com irritabilidade crônica, três em cada dez com tristeza persistente, e 18,5% afirmando que "a vida não vale a pena" — com diferença marcada por gênero (41% das meninas relatam tristeza persistente vs. 16,7% dos meninos). A literatura internacional debate magnitude e direção causal entre uso de redes sociais e deterioração da saúde mental adolescente. Haidt (2024, *The Anxious Generation*, Penguin Press) sustenta causalidade entre o "Great Rewiring" de 2010-2015 e a epidemia documentada. Odgers (2024, *Nature*) e Orben e Przybylski (2024, *Nature Human Behaviour*) qualificam magnitude e apontam efeito médio pequeno em meta-análises. O consenso clínico operacional é cauteloso: efeito existe, magnitude varia por padrão de uso e por subgrupo, e o que importa para a clínica é o caso concreto.
+        </p>
+        <p>
+          A inversão prática para o psicólogo: a tarefa não é debater se "redes sociais causam suicídio" — é cuidar do adolescente concreto que chega à sessão com ideação ativa e padrão de exposição a feeds algorítmicos. O protocolo combina avaliação sem reexposição (Safe Messaging Guidelines aplicadas à clínica), mapeamento funcional de exposição digital sem reproduzir conteúdo, Safety Planning Intervention de Stanley & Brown (2012) com adaptação digital (silenciar contas, mutar hashtags, restrição temporária de aparelho via Family Link/Tempo de Uso, plano de saída do app em pico de ideação), comunicação familiar pactuada baseada na Resolução CFP 003/2024 e na Lei 14.811/2024, articulação com escola sob a Lei 15.100/2024 (sancionada em janeiro de 2025, restringe celular em educação básica), psicoeducação sobre algoritmos com agência ao adolescente, encaminhamento ao CAPSi em risco severo (Portaria GM/MS 3.088/2011), e documentação que protege paciente e profissional sem reproduzir conteúdo gatilho. Escuta sem instrumentação e sem articulação de rede deixa janela descoberta — não por falta de competência, por desenho de cuidado que não cobre o caso.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Cadência de reavaliação varia conforme severidade — semanal em risco moderado, diária em risco severo com matriciamento CAPSi.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Adolescente, 15 anos, ideação ativa em contexto de feed algorítmico — intervenção em 12 semanas</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Adolescente do segundo ano do ensino médio, chega à sessão encaminhada pela psicóloga escolar após relato de colega. PHQ-A inicial em 17, GAD-7 em 14, C-SSRS adolescente em escore 4 (ideação com plano e intenção, sem ato preparatório recente). Mapeamento funcional: uso de TikTok cerca de 4 a 5 horas por dia, padrão passivo, exposição frequente a conteúdo classificado como "sad TikTok" e #vent (sem reprodução de material em sessão). Companion de IA acessado em horário noturno, com diálogos sobre desesperança. Família engajada mas com alta expressed emotion materna (críticas frequentes sobre desempenho escolar). Pai ausente afetivamente.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Protocolo aplicado em parceria com CAPSi de referência. Sessão 1-2: aliança, psicoeducação sobre Safe Messaging na própria entrevista, Safety Planning Stanley-Brown adaptado — sinais pessoais (notificação noturna, scroll antes de dormir), estratégias internas (playlist de saída + escrita em caderno físico), contatos sociais (duas amigas com permissão para chamar fora da escola), familiares (irmã mais velha como primeiro contato), profissionais (psicóloga + 188 + CAPSi noturno), restrição de meios (mutação de tags específicas, retirada noturna do aparelho com guarda materna, pausa em companion de IA). Sessão 3: comunicação familiar pactuada — linguagem funcional, sem detalhe de conteúdo, com plano de segurança partilhado. Articulação escolar com consentimento, alinhamento com coordenação sob Lei 15.100/2024 (uso restrito em sala já institucional). Encaminhamento CAPSi semanal, manutenção do vínculo individual semanal, follow-up SMS entre sessões nas duas primeiras semanas (modelo Caring Contacts adaptado).
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em 4 semanas, C-SSRS reduziu para 2 (ideação passiva sem plano). Sono melhorou de 4-5h para 7h. Família reduziu críticas após psicoeducação. Em 12 semanas, retorno integral ao ritmo escolar com plano de segurança ativo, acompanhamento mantido em frequência quinzenal entre psicóloga individual e CAPSi. Sem tentativa nem internação. Documentação em prontuário conforme Resolução CFP 003/2024, sem reprodução de conteúdo digital específico — registro funcional.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 003/2024 sobre atuação em risco suicida</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br/assuntos/saude-mental/caps" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde — Rede CAPS e CAPSi (Portaria GM/MS 3.088/2011)</a></li>
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV — Centro de Valorização da Vida (188)</a></li>
+          <li><a href="https://cssrs.columbia.edu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Columbia Lighthouse Project — C-SSRS</a></li>
+          <li><a href="https://reportingonsuicide.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Reporting on Suicide — Safe Messaging Guidelines</a></li>
+          <li><a href="https://agenciabrasil.ebc.com.br/saude/noticia/2026-03/ibge-alerta-para-quadro-preocupante-na-saude-mental-de-adolescentes" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">IBGE/PeNSe 2024 — saúde mental adolescente</a></li>
+          <li><a href="https://counterhate.com/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Center for Countering Digital Hate (CCDH)</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/intervencao-crise-suicida-zero-suicide" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Intervenção em crise suicida (Zero Suicide, 10 passos)</a></li>
+          <li><a href="/faq/adolescencia-digital-saude-mental-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Adolescência digital e saúde mental (Haidt, CETIC.br, AAP)</a></li>
+          <li><a href="/faq/prevencao-suicidio-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Prevenção de suicídio (CFP 003/2024)</a></li>
+          <li><a href="/comparativos/cvv-188-vs-capsi-adolescente" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · CVV 188 vs CAPSi vs UBS vs leito pediátrico</a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · {areaClinica.name}</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A clínica não decide o debate Haidt vs Odgers — cuida do adolescente concreto em janela crítica.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O protocolo integra Resolução CFP 003/2024 como bússola ética, instrumentos validados (C-SSRS adolescente, PHQ-A, GAD-7), Safety Planning de Stanley & Brown (2012) adaptado a contexto digital, Lei 14.811/2024 (cyberbullying como dever de notificação), Lei 15.100/2024 (escolas como janela protetora de 4-6h sem feed), articulação CAPSi como exigência em risco severo (Portaria GM/MS 3.088/2011), CVV 188 como suporte 24h entre sessões, psicoeducação sobre algoritmos com agência ao adolescente, e documentação alinhada a Safe Messaging Guidelines. Para psicólogos que querem aprofundar bases de neurodesenvolvimento adolescente, regulação emocional e mecanismos de recompensa variável, o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano do IPOG é caminho aplicado em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <p class="mt-3 text-white/85 text-sm">
+          <strong>A vida do adolescente em crise tem saída.</strong> A combinação de cuidado especializado, plano de segurança colaborativo, restrição temporária de meios digitais, suporte familiar pactuado e articulação CAPSi reduz substancialmente o risco. Buscar ajuda funciona.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+      <div class="rounded-2xl bg-rose-50 border border-rose-200 p-5">
+        <p class="text-xs uppercase tracking-wider font-semibold text-rose-800 mb-2">Recursos de crise · 24h</p>
+        <ul class="text-sm text-ink-900 leading-relaxed space-y-1">
+          <li><strong>CVV 188</strong> — gratuito, sigiloso, 24h (telefone, chat, e-mail).</li>
+          <li><strong>CAPSi</strong> — Centro de Atenção Psicossocial Infantojuvenil mais próximo.</li>
+          <li><strong>SAMU 192</strong> — risco iminente.</li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNcpp.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNcpp.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaEscolar.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaEscolar.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP 003/2024</a></li>
+          <li><a href="https://cssrs.columbia.edu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">C-SSRS</a></li>
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV 188</a></li>
+          <li><a href="https://reportingonsuicide.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Safe Messaging</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~22 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

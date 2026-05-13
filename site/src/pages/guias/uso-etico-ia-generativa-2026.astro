@@ -1,0 +1,387 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaAvaliacao = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Definir caso de uso clínico antes do software',
+    aplicacao: 'A pergunta correta não é "qual IA usar?", e sim "para que finalidade clínica?". O CFP (Posicionamento sobre Inteligência Artificial no Contexto da Prática Psicológica, 03/07/2025) afirma que a IA pode ser aliada na sistematização de informações e no apoio a decisões — não substituta do julgamento. Antes de assinar plano de qualquer ferramenta, defina por escrito a finalidade: escuta passiva e relatório de fidelidade, notas de sessão automatizadas, apoio a supervisão clínica, psicoeducação interpaciente, organização administrativa. Cada finalidade tem perfil de risco, marco regulatório e exigência ética distintos.',
+    armadilha: 'Adotar a mesma ferramenta para tudo. Plano genérico vira política genérica — e política genérica deixa rastro genérico no processo ético.'
+  },
+  {
+    n: 2,
+    titulo: 'Avaliar conformidade com Resolução CFP 11/2018 e atualizações 2024-2025',
+    aplicacao: 'A Resolução CFP 11/2018 disciplina serviços psicológicos prestados por meios de tecnologia da informação e comunicação. Em 03/07/2025, o CFP divulgou Posicionamento sobre IA na prática psicológica anunciando grupo de trabalho para diretrizes específicas, sem revogação da 11/2018. Em paralelo, o Código de Ética do Psicólogo (Resolução CFP 10/2005) e a Resolução CFP 06/2019 (documentos psicológicos) seguem aplicáveis. Quem usa IA precisa demonstrar que a ferramenta respeita sigilo, registro, ambiente e responsabilidade técnica — pilares da 11/2018 — independentemente do hype tecnológico.',
+    armadilha: 'Confundir o Posicionamento de 2025 com Resolução nova. Posicionamento é nota técnica que orienta; resolução é norma com poder sancionatório. Confundir os dois leva à falsa sensação de cobertura regulatória.'
+  },
+  {
+    n: 3,
+    titulo: 'Redigir consentimento informado específico para IA',
+    aplicacao: 'O termo de consentimento informado padrão não cobre uso de IA. Para escuta passiva (Eleos, Lyssn), notas automáticas (Bunny.tools, Mentalyc), chatbots adjuvantes (Woebot, Wysa) ou copilot textual (ChatGPT Enterprise, Claude for Business), o termo deve detalhar: qual ferramenta, qual finalidade, qual dado coletado, qual período de retenção, qual base legal sob LGPD, possibilidade de revogação, consequências da revogação. APA (Statement on AI in Mental Health Care, 2024) e CFP (2025) convergem nesse ponto. O paciente assina porque entende — não porque o termo é longo.',
+    armadilha: 'Anexar parágrafo sobre IA ao termo existente sem revisar a coerência do documento. Inconsistência interna no termo é argumento de defesa frágil em perícia.'
+  },
+  {
+    n: 4,
+    titulo: 'Aplicar LGPD ao prontuário com modelo de retenção escrito',
+    aplicacao: 'A LGPD (Lei 13.709/2018, Art. 11) trata dado psicológico como dado pessoal sensível. Tratamento exige base legal específica — tutela da saúde, consentimento explícito ou exercício regular de direitos em processo. Para prontuário com IA, defina por escrito: tempo de retenção (mínimo CFP 06/2019, que é 5 anos a partir do último registro), forma de criptografia em repouso e em trânsito, política de backup, processo de descarte seguro, log de acesso. Sem documento de retenção, a ANPD trata a clínica como controladora desprotegida.',
+    armadilha: 'Adotar ferramenta cloud sem clausular retenção e descarte. "Vamos resolver isso depois" é resposta padrão de quem nunca sofreu auditoria.'
+  },
+  {
+    n: 5,
+    titulo: 'Desidentificar dados antes de qualquer prompt',
+    aplicacao: 'Mesmo em ferramenta contratada com cláusula de não treinamento, a higiene de prompt é regra de prudência. Antes de submeter texto à IA, remova nome, CPF, RG, número de prontuário, datas exatas, profissão muito específica, endereço, marcadores familiares únicos. Estudos de re-identificação por triangulação (Sweeney, 2015; Rocher et al., 2019, Nature Communications) mostram que 87% de norte-americanos podem ser re-identificados a partir de CEP, data de nascimento e gênero — três campos aparentemente "anônimos". Em clínica, triangulação é trivial.',
+    armadilha: 'Tratar desidentificação como troca de nome. Detalhe contextual específico é identificador indireto — descreva sem singularizar.'
+  },
+  {
+    n: 6,
+    titulo: 'Escolher modelo conforme localização de processamento',
+    aplicacao: 'A LGPD (Art. 33) impõe condições para transferência internacional de dados sensíveis. Modelos hospedados nos EUA (OpenAI default, Anthropic default, Google) exigem base legal específica ou contrato com cláusulas-padrão da ANPD. Modelos com hospedagem no Brasil (Microsoft 365 Copilot com tenant Brazil South, AWS Bedrock região São Paulo) ou on-premise (Llama 3 local, GPT-4 via Azure dedicado) reduzem fricção regulatória. Para escuta passiva clínica, hospedagem brasileira ou europeia (sob GDPR/AI Act 2024) é caminho mais defensável.',
+    armadilha: 'Assumir que "a empresa é grande, deve estar tudo certo". Tamanho do fornecedor não substitui contrato adequado à LGPD.'
+  },
+  {
+    n: 7,
+    titulo: 'Auditar viés clínico de cada saída',
+    aplicacao: 'Modelos de linguagem reproduzem viés do corpus de treinamento, e literatura recente mostra impacto clínico real. Hua et al. (2024) revisaram aplicações de LLM em saúde mental e documentaram viés sistemático em raça, gênero e idioma. Stade et al. (2024, JMIR Mental Health) testaram ChatGPT em cenários de psicoterapia e relataram respostas que ignoravam pistas culturais e socioeconômicas. A regra técnica: trate a saída como rascunho de profissional em formação. Reveja com checklist explícito de viés antes de incorporar ao prontuário, ao laudo ou à comunicação com paciente.',
+    armadilha: 'Aceitar a primeira saída por economia de tempo. IA produz texto plausível, não verdade clínica — e plausibilidade sem revisão importa viés para dentro do consultório.'
+  },
+  {
+    n: 8,
+    titulo: 'Estabelecer protocolo para deepfakes e fraudes em teleterapia',
+    aplicacao: 'Deepfakes de pacientes e de terapeutas saíram do campo teórico em 2024-2025. Europol (Internet Organised Crime Threat Assessment, 2024) relata uso crescente de deepfakes em fraudes envolvendo telessaúde. Para mitigar, adote: verificação biométrica leve no início da sessão (mostrar documento ao vivo no primeiro encontro), código de palavra combinado para pedidos urgentes fora de sessão, canal oficial único para comunicação clínica, política escrita sobre o que faz quando suspeita de identidade. PL 2338/2023 (Marco Civil da IA, em tramitação) prevê tipificação específica de deepfakes em saúde.',
+    armadilha: 'Achar que deepfake é problema de banco. Em teleterapia, identidade visual e vocal é a base da relação clínica — comprometê-la é comprometer o atendimento.'
+  },
+  {
+    n: 9,
+    titulo: 'Documentar uso de IA para fins periciais e éticos',
+    aplicacao: 'Se a IA entrou no fluxo clínico, ela aparece no processo. Para qualquer ato profissional que tenha sido auxiliado por IA — nota de sessão, esboço de laudo, psicoeducação enviada, transcrição armazenada — documente: qual ferramenta, qual finalidade, qual revisão humana, qual decisão final. Em perícia ética ou cível, a documentação é a defesa. A APA (2024) recomenda log mínimo de uso de IA em saúde mental; o CFP (2025) sinaliza convergência. Documentação não é burocracia: é prova de juízo profissional ativo.',
+    armadilha: 'Usar IA e não registrar. Em processo ético, ausência de registro é tratada como ausência de cuidado.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Caso de uso', indicador: 'Documento de finalidade clínica', quem: 'Profissional', quando: 'Semana 1', status: 'Pendente' },
+  { passo: '2 · Conformidade CFP', indicador: 'Leitura 11/2018 + Posicionamento 07/2025', quem: 'Profissional', quando: 'Semana 1', status: 'Pendente' },
+  { passo: '3 · Consentimento IA', indicador: 'Termo específico revisado', quem: 'Profissional + jurídico', quando: 'Semana 2', status: 'Pendente' },
+  { passo: '4 · LGPD prontuário', indicador: 'Política de retenção escrita', quem: 'Profissional + DPO', quando: 'Semana 2', status: 'Pendente' },
+  { passo: '5 · Desidentificação', indicador: 'Checklist de prompt', quem: 'Profissional', quando: 'Por uso', status: 'Pendente' },
+  { passo: '6 · Localização de modelo', indicador: 'Contrato com cláusula de hospedagem', quem: 'Profissional', quando: 'Semana 3', status: 'Pendente' },
+  { passo: '7 · Auditoria de viés', indicador: 'Checklist de revisão de saída', quem: 'Profissional', quando: 'Por uso', status: 'Pendente' },
+  { passo: '8 · Protocolo deepfake', indicador: 'Política escrita + código de palavra', quem: 'Profissional', quando: 'Semana 3', status: 'Pendente' },
+  { passo: '9 · Documentação pericial', indicador: 'Log de uso de IA', quem: 'Profissional', quando: 'Por uso', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Tratar Posicionamento CFP 2025 como Resolução',
+    texto: 'O Posicionamento de 03/07/2025 anuncia grupo de trabalho — não é norma sancionatória. A norma vigente é Resolução 11/2018 sobre serviços psicológicos online + Código de Ética + Resolução 06/2019 sobre documentos. Quem confunde os textos cria falsa sensação de cobertura específica para IA.'
+  },
+  {
+    titulo: 'Inserir dado identificado em modelo gratuito',
+    texto: 'ChatGPT, Claude, Gemini em planos gratuitos podem usar conteúdo de usuário para treinamento, salvo opt-out específico. Em dado psicológico — sensível sob LGPD Art. 11 — isso configura compartilhamento sem base legal. A barreira é contrato empresarial com cláusula de não treinamento, não cuidado pessoal de prompt.'
+  },
+  {
+    titulo: 'Aceitar saída como segunda opinião clínica',
+    texto: 'Stade et al. (2024) e Hua et al. (2024) documentam que LLMs em saúde mental produzem respostas plausíveis com viés sistemático em apresentações culturais e socioeconômicas específicas. APA (2024) é firme: IA é apoio, não conselho. Quem delega decisão clínica à IA assume risco ético intransferível.'
+  },
+  {
+    titulo: 'Ignorar transferência internacional de dados',
+    texto: 'LGPD Art. 33 exige base legal específica para transferência internacional de dados sensíveis. Modelos hospedados nos EUA sem contrato ANPD-adequado expõem o psicólogo a sanção administrativa. Hospedagem em Brasil ou Europa, ou contrato com cláusulas-padrão, é caminho mais defensável.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Posso usar ChatGPT Enterprise para notas de sessão?',
+    a: 'Sim, com proteções. ChatGPT Enterprise (OpenAI) e Claude for Business (Anthropic) têm cláusula contratual de não uso para treinamento e zero retenção opcional. Ainda assim, três regras: desidentifique antes do prompt (sem nome, número de prontuário, identificadores indiretos), revise toda saída antes de incorporar ao prontuário, documente o uso em log próprio. A nota final precisa refletir o juízo do psicólogo — não a saída literal do modelo.'
+  },
+  {
+    q: 'Escuta passiva (Eleos, Lyssn) é permitida no Brasil?',
+    a: 'Tecnicamente possível, eticamente exigente. A escuta passiva grava sessão e produz relatório de fidelidade — útil em supervisão e treinamento. Para uso ético no Brasil: consentimento informado específico do paciente, contrato com fornecedor cobrindo LGPD e retenção, preferência por hospedagem em Brasil ou Europa, política escrita de descarte. CFP 11/2018 cobre gravação em telessaúde; o Posicionamento de 2025 reforça responsabilidade. Eleos Health (eleos.health) é referência internacional, mas exige adaptação contratual.'
+  },
+  {
+    q: 'IA pode substituir psicoterapia em casos leves?',
+    a: 'A APA (Statement on AI in Mental Health Care, 2024) é cuidadosa. Chatbots de saúde mental (Woebot, Wysa) têm evidência em sintomas depressivos leves a moderados com seguimento curto. A meta-análise mais citada — Boucher et al. (2021) — relatou efeito modesto em sintomas depressivos em populações específicas. Para casos clínicos formais, a literatura é uniforme: profissional habilitado permanece como interlocutor central. IA é complemento, não substituição.'
+  },
+  {
+    q: 'Como conectar isso à formação aplicada?',
+    a: 'Decisões sobre IA em clínica e RH exigem fundamento técnico em ética em dados, LGPD aplicada, regulação CFP, viés algorítmico e governança. O MBA em Psicologia Organizacional e do Trabalho do IPOG aborda IA, people analytics e ética em dados em contexto profissional, em formato Ao Vivo síncrono com corpo docente nominal. Para grade vigente, consulte ipog.edu.br.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Protocolo em 9 passos para uso ético de IA generativa na clínica em 2026',
+  description: 'Guia operacional para psicólogos brasileiros: caso de uso, CFP 11/2018, consentimento IA, LGPD, desidentificação, escolha de modelo, viés, deepfakes e documentação pericial.',
+  totalTime: 'PT21M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Uso ético de IA generativa na clínica em 2026: protocolo em 9 passos para psicólogos brasileiros',
+  description: 'Protocolo operacional em 9 passos para uso ético de IA generativa em prática clínica: CFP 11/2018, Posicionamento CFP 07/2025, LGPD, consentimento, desidentificação, viés, deepfakes e documentação.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-13',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Uso ético de IA generativa em 2026', item: `${SITE.url}/guias/uso-etico-ia-generativa-2026` }
+  ]
+};
+---
+
+<Base
+  title="Uso ético de IA generativa na clínica em 2026 — protocolo em 9 passos · CFP, LGPD, viés, deepfakes"
+  description="Protocolo operacional para psicólogos brasileiros: caso de uso, Resolução CFP 11/2018, Posicionamento CFP 07/2025, LGPD prontuário, desidentificação, escolha de modelo, viés, deepfakes e documentação pericial.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Uso ético de IA generativa em 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · HowTo · 9 passos · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Uso ético de IA generativa na clínica em 2026: protocolo em 9 passos para psicólogos brasileiros</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Protocolo operacional para escuta passiva, notas automáticas, chatbots adjuvantes e copilots textuais — com CFP, LGPD, viés, deepfakes e documentação pericial.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~21 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos, supervisores e RH</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em POT no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="Em 2026, uso ético de IA generativa na clínica começa pelo caso de uso clínico — não pelo software. O psicólogo brasileiro precisa ler a Resolução CFP 11/2018 e o Posicionamento CFP de 03/07/2025, redigir consentimento específico para IA, aplicar LGPD ao prontuário com modelo de retenção escrito, desidentificar dados antes de qualquer prompt, escolher modelo conforme localização de processamento, auditar viés a cada saída, estabelecer protocolo contra deepfakes em teleterapia e documentar todo uso para fins periciais. IA é apoio, não substituta — e responsabilidade técnica permanece intransferível."
+        fontes={['CFP (2025) Posicionamento sobre IA', 'CFP Resolução 11/2018', 'APA Statement on AI in Mental Health Care (2024)', 'Stade et al. (2024) JMIR Mental Health']}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura predominante sobre IA na clínica oscila entre dois polos pobres: proibição ampla ou adoção sem método. As duas falham por motivos opostos. A APA (Statement on AI in Mental Health Care, 2024) e o CFP (Posicionamento sobre IA, 03/07/2025) convergem em uma posição intermediária — e ela é mais exigente do que parece. A IA é aliada na sistematização de informações e no apoio a decisões, com casos de uso permitidos e proibidos, e a responsabilidade técnica permanece integralmente do psicólogo. A pergunta operacional não é "usar ou não usar IA". É "para qual caso clínico, com qual proteção, sob qual norma".
+        </p>
+        <p>
+          A inversão prática deste guia: comece pela finalidade clínica, não pelo plano. Avalie a regulação aplicável antes do prompt. Redija consentimento específico e modelo de retenção sob LGPD. Desidentifique antes de prompt. Escolha modelo conforme localização. Audite viés a cada saída. Trate deepfake como risco operacional em teleterapia, não como tema de ficção. Documente uso para a perícia que talvez nunca aconteça — e que, se acontecer, define o resultado. Quem segue esse trajeto integra a IA à rotina como o consultório integrou outras tecnologias: com método, e não com susto.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução em 90 dias</h2>
+        <p class="text-ink-700 mt-2">Adapte ao porte da prática. Profissional autônomo executa em ~45 dias; clínica multiprofissional precisa de 60 a 90.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Clínica com 8 profissionais adota escuta passiva e copilot textual em 90 dias</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Clínica em capital do Sul, com 8 psicólogos autônomos compartilhando estrutura, formalizou adoção de IA em 2026 após auditoria interna identificar três usos informais sem governança: dois profissionais usavam Whisper local para transcrever sessão sem consentimento documentado, um usava ChatGPT gratuito para esboçar laudo com dado identificado, um experimentava chatbot adjuvante com paciente jovem em fase de manutenção. Nenhum incidente formal, mas exposição clara.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em 90 dias, a coordenação clínica implementou: leitura coletiva da Resolução CFP 11/2018 e do Posicionamento CFP de 07/2025, contratação de ChatGPT Enterprise com tenant Brasil para 6 profissionais, contratação de plataforma de notas automáticas com hospedagem no Brasil para os 2 que faziam transcrição, redação de termo de consentimento específico com 4 modalidades de uso de IA, política escrita de retenção (5 anos mínimos CFP, criptografia AES-256, log de acesso), checklist de desidentificação por prompt, protocolo de deepfake com código de palavra. Em 6 meses, dois indicadores: zero incidentes reportados, 100% de adoção das ferramentas autorizadas, satisfação interna sobre clareza ética em IA em 9 de 10. Primeira revisão semestral em mês 6.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/uso-etico-ia-clinica" class="text-brand-700 hover:text-brand-800 font-medium">Guia anterior — uso ético de IA generativa na clínica (versão 2024-2025)</a></li>
+          <li><a href="/comparativos/ia-escuta-passiva-vs-notas-humanas" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — escuta passiva (Eleos, Lyssn) vs notas humanas</a></li>
+          <li><a href="/comparativos/chatbots-terapeuticos-vs-terapeuta-humano-2026" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — chatbots terapêuticos vs terapeuta humano em 2026</a></li>
+          <li><a href="/faq/lgpd-prontuario-ia-anvisa-samd-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — LGPD, ANVISA SaMD e prontuário com IA em 2026</a></li>
+          <li><a href="/faq/ia-em-psicologia-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — IA em Psicologia (visão geral)</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/cfp-divulga-posicionamento-sobre-inteligencia-artificial-no-contexto-da-pratica-psicologica/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Posicionamento sobre IA (03/07/2025)</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções 11/2018, 06/2019 e Código de Ética</a></li>
+          <li><a href="https://www.apa.org/practice/artificial-intelligence" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA — AI in Psychology Practice</a></li>
+          <li><a href="https://www.gov.br/anpd/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANPD — transferência internacional e dados sensíveis</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LGPD — Lei 13.709/2018, Art. 11 e Art. 33</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">IA na clínica em 2026 é apoio com responsabilidade preservada — e documentação completa.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O uso ético começa pelo caso de uso clínico, avalia conformidade com CFP 11/2018 e Posicionamento 07/2025, redige consentimento específico para IA, aplica LGPD ao prontuário, desidentifica antes de prompt, escolhe modelo conforme localização, audita viés, estabelece protocolo contra deepfakes e documenta para fins periciais. Para profissional que conduz adoção de IA em clínica, em supervisão ou em consultoria de RH, o MBA em POT do IPOG aborda IA, people analytics e ética em dados em contexto profissional, em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBA no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPot.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaAvaliacao.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAvaliacao.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes citadas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>CFP (2025). Posicionamento sobre IA na prática psicológica. 03/07/2025.</li>
+          <li>CFP. Resolução 11/2018 (telessaúde) e 06/2019 (documentos).</li>
+          <li>APA (2024). Statement on AI in Mental Health Care.</li>
+          <li>Stade et al. (2024). JMIR Mental Health.</li>
+          <li>Hua et al. (2024). LLMs in mental health — revisão.</li>
+          <li>Rocher et al. (2019). Nature Communications. Re-identificação.</li>
+          <li>Europol (2024). Internet Organised Crime Threat Assessment.</li>
+          <li>LGPD Lei 13.709/2018 Art. 11 e Art. 33.</li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~21 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

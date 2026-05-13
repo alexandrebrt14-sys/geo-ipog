@@ -1,0 +1,409 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O que muda do TEA adolescente para o TEA adulto na clínica brasileira?',
+    a: 'Muda quase tudo, em quatro frentes simultâneas. Primeiro, serviços de saúde — adolescente é atendido em CAPSi (até 18 anos), com lógica de cuidado infantojuvenil e articulação com escola; adulto é atendido em CAPS adulto, com lógica de autonomia e demanda voluntária. A transição entre os dois serviços é um dos pontos mais críticos do percurso. Segundo, educação — adolescente está sob LBI (Lei 13.146/2015) em educação básica com mediador escolar, plano educacional individualizado e adaptações; adulto enfrenta universidade ou trabalho com adaptações menos formalizadas. Terceiro, autonomia legal — aos 18 anos a pessoa passa a responder por si, com implicações em decisão médica e em manejo financeiro. Quarto, saúde mental comórbida — pico de ansiedade, depressão e tentativa de suicídio em jovens autistas é tipicamente entre 18 e 25 anos (Crane et al., 2023, DOI 10.1002/aur.2865), exigindo manejo intensificado nessa janela.'
+  },
+  {
+    q: 'Por que a transição CAPSi → CAPS adulto falha com tanta frequência?',
+    a: 'Três fatores estruturais. Primeiro, o CAPSi opera com lógica de cuidado infantojuvenil — alta proximidade familiar, agenda fixa, articulação com escola; o CAPS adulto opera com lógica de autonomia — demanda voluntária, agenda mais aberta, foco em sintoma psiquiátrico. A passagem brusca desativa rede de apoio sem instalar substituta. Segundo, transferência não é simultânea com transição educacional (saída da escola para universidade ou trabalho) — sobrecarrega a janela já vulnerável dos 18 anos. Terceiro, NICE 2023 (guideline NG253 sobre transição em adolescentes e jovens com TEA) recomenda planejamento estruturado dos 16-18 anos com gestor de caso, mas no Brasil esse fluxo ainda não está padronizado. CFP (2024-2025) reporta que apenas 8% dos serviços públicos brasileiros oferecem avaliação especializada de TEA em adulto — gargalo estrutural. Resultado: 40 a 60% dos jovens autistas têm interrupção de cuidado entre 17 e 21 anos.'
+  },
+  {
+    q: 'Como o BPC e o Auxílio-Inclusão se aplicam para jovem autista em transição?',
+    a: 'O BPC (Benefício de Prestação Continuada, Lei 8.742/1993 alterada pela LBI) é benefício assistencial de 1 salário-mínimo para pessoa com deficiência em situação de baixa renda (até 1/4 do salário-mínimo per capita familiar). A LBI (Lei 13.146/2015) incluiu pessoas com TEA. Em jovem em transição para vida adulta, o BPC pode ser requerido aos 18 anos com laudo médico ou psicológico documentando prejuízo funcional. O Auxílio-Inclusão (Lei 14.176/2021) permite que a pessoa beneficiária do BPC mantenha parte do benefício ao iniciar atividade remunerada — destrava a transição para o trabalho que antes era barreira (perda total do BPC ao primeiro vínculo formal). CIPTEA (Carteira de Identificação da Pessoa com TEA, Lei 13.977/2020) é direito independente e dá acesso a prioridades em serviços. Recomendação clínica: orientar família a ter laudo atualizado próximo ao 18º aniversário e a consultar CRAS para fluxo BPC.'
+  },
+  {
+    q: 'NICE 2023 e DSM-5-TR mudaram a clínica de transição em TEA?',
+    a: 'Sim, em três pontos. Primeiro, DSM-5-TR (2022) consolidou TEA como diagnóstico vitalício com níveis de suporte (1, 2, 3) que podem variar ao longo da vida — adolescente com nível 2 pode estabilizar em nível 1 na vida adulta com suporte adequado, ou vice-versa. A leitura categorial de "espectro estável" foi substituída por avaliação funcional dinâmica. Segundo, NICE 2023 (guideline NG253) propõe planejamento de transição dos 14-16 anos com gestor de caso, plano por escrito, envolvimento do jovem nas decisões e revisão anual — operacionalização que reduz interrupção de cuidado. Terceiro, ambos enfatizam saúde mental comórbida — Crane e colaboradores (2023, DOI 10.1002/aur.2865) documentam que 40% dos jovens autistas apresentam autistic burnout na transição, com elevação significativa de risco de tentativa de suicídio (RR 4,5 vs população geral). Clinicamente, transição passou de "questão administrativa" para "janela de intervenção crítica".'
+  }
+];
+
+const tabelaServicos = [
+  { dimensao: 'Serviço público SUS', adolescente: 'CAPSi (Centro de Atenção Psicossocial Infantojuvenil) até 18 anos · CER (Centro Especializado em Reabilitação)', adulto: 'CAPS adulto (I, II ou III conforme porte) · ambulatório de saúde mental · CER quando disponível' },
+  { dimensao: 'Lógica de cuidado', adolescente: 'Cuidado infantojuvenil · alta proximidade familiar · articulação com escola · agenda fixa', adulto: 'Lógica de autonomia · demanda voluntária · agenda mais aberta · foco em sintoma psiquiátrico' },
+  { dimensao: 'Família como ator', adolescente: 'Cuidador presente em todas as etapas · responsável legal por decisões', adulto: 'Cuidador pode ser presente mas a pessoa passa a responder por si · curatela apenas se documentada' },
+  { dimensao: 'Rede de saúde adicional', adolescente: 'Neuropediatria · fonoaudiologia escolar · TO · acompanhamento psicofarmacológico em CAPSi', adulto: 'Psiquiatria adulto · clínica geral · reumatologia se comorbidade autoimune · ginecologia em mulher autista' },
+  { dimensao: 'Acesso a planos de saúde', adolescente: 'Cobertura ampla pós-Lei 14.454/2022 · ABA, TO, fono, psicologia em rol exemplificativo', adulto: 'Cobertura para psiquiatria, psicologia e terapia ocupacional; ABA adulto menos consolidada na cobertura' },
+  { dimensao: 'Adesão a cuidado', adolescente: 'Cuidador sustenta agenda · taxa de adesão alta', adulto: 'Pessoa precisa sustentar agenda própria · taxa de interrupção 40 a 60% entre 17-21 anos sem suporte' },
+  { dimensao: 'Avaliação periódica', adolescente: 'Reavaliação anual em CAPSi com nível de suporte e plano terapêutico', adulto: 'Reavaliação menos frequente · responsabilidade da própria pessoa ou rede solicitar' }
+];
+
+const tabelaEducacaoTrabalho = [
+  { dimensao: 'Educação formal', adolescente: 'Ensino fundamental e médio sob LBI · mediador escolar · plano educacional individualizado · adaptações curriculares formalizadas', adulto: 'Universidade com adaptações pelos NAIs (Núcleos de Acessibilidade) · ensino técnico com adaptações variáveis · educação continuada' },
+  { dimensao: 'Direitos legais em educação', adolescente: 'Lei Berenice Piana (12.764/2012) · LBI (13.146/2015) · CIPTEA (13.977/2020) com prioridade em matrícula', adulto: 'Mesmos instrumentos legais · porém adaptação universitária menos sistematizada que adaptação escolar' },
+  { dimensao: 'Trabalho e benefícios', adolescente: 'Aprendizagem aos 14 anos com adaptações · não acessa BPC se sob cuidado parental com renda', adulto: 'Cotas de PCD em concursos e empresas (Lei 8.213/1991, 2-5% do quadro) · BPC e Auxílio-Inclusão a partir dos 18 anos · adaptações no trabalho conforme LBI' },
+  { dimensao: 'Documentação e identificação', adolescente: 'CIPTEA emitida via responsável legal · laudo médico/psicológico para escola e benefícios', adulto: 'CIPTEA por requerimento próprio · laudo atualizado para BPC e benefícios trabalhistas' },
+  { dimensao: 'Vida diária e moradia', adolescente: 'Convivência familiar · autonomia em desenvolvimento · cuidados conduzidos pela família', adulto: 'Decisão sobre moradia (com família, sozinho, em república de apoio) · autonomia legal aos 18 · curatela em casos específicos' },
+  { dimensao: 'Comunidade e suporte par', adolescente: 'Grupos de família · ONGs como AMA, Autismo & Realidade · CIPTEA-eventos', adulto: 'Comunidade autista adulta brasileira em crescimento · grupos específicos para adultos diagnosticados tarde · associações autistas-lideradas' }
+];
+
+const tabelaSaudeMental = [
+  { quadro: 'Autistic burnout', adolescente: 'Pico inicial em transição educacional (final do ensino médio) · frequentemente confundido com "preguiça" ou "dificuldade de adaptação"', adulto: 'Quadro consolidado · 40% dos jovens autistas apresentam burnout entre 18-25 (Crane et al., 2023) · pode evoluir para depressão crônica sem manejo' },
+  { quadro: 'Ansiedade generalizada', adolescente: 'Prevalência 60-70% em adolescentes autistas · frequentemente comórbida com TOC e fobia social', adulto: 'Persiste com intensificação em transição · GAD-7 e BAI são ferramentas de triagem' },
+  { quadro: 'Depressão recorrente', adolescente: 'Início frequente entre 14-17 anos · PHQ-A para triagem', adulto: 'Prevalência 50-60% em mulheres autistas adultas (Goldstein-Piekarski et al., 2023, DOI 10.1038/s41398-023-02458-9) · PHQ-9 padrão' },
+  { quadro: 'Risco de suicídio', adolescente: 'Risco elevado em adolescentes autistas (RR 2-3x população geral) · Zero Suicide pediátrico se disponível', adulto: 'Pico de tentativas entre 18-25 anos · RR 4,5x em jovens autistas (Crane et al., 2023) · risco 3x maior em mulheres autistas (Cassidy et al., 2023)' },
+  { quadro: 'Transtorno alimentar', adolescente: 'Início frequente em adolescência tardia · 20-30% das mulheres autistas adolescentes com restrição alimentar (Tchanturia et al., 2024)', adulto: 'Anorexia restritiva persiste · coocorrência 20-30% em adultas · EAT-26 sistemático' },
+  { quadro: 'TDAH coocorrente', adolescente: 'Sobreposição 15-40% (variando por critério) · manejo medicamentoso iniciado em adolescência se indicado', adulto: 'Persiste com novas demandas de função executiva (trabalho, vida autônoma) · ASRS + DIVA-5 com adaptações' },
+  { quadro: 'TPL diferencial', adolescente: 'Hipótese TPL não deve ser fechada antes dos 18 anos por critério DSM-5-TR · TEA pode mimetizar TPL', adulto: '30-40% das mulheres autistas adultas tiveram TPL como diagnóstico prévio (Mandy et al., 2023) · reavaliação ativa é regra' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Transição TEA adolescente para adulto: serviços, educação, autonomia e saúde mental no Brasil',
+  description: 'Comparativo do que muda do TEA adolescente para o TEA adulto: CAPSi vs CAPS adulto, educação (BPC, LBI, Lei Berenice Piana, CIPTEA), autonomia e saúde mental comórbida. NICE 2023 NG253 + DSM-5-TR.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Transição TEA adolescente vs adulto' }
+  ]
+};
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+---
+
+<Base
+  title="Transição TEA adolescente vs adulto: CAPSi vs CAPS, educação, BPC, LBI, autonomia"
+  description="Comparativo do que muda do TEA adolescente para o TEA adulto no Brasil: CAPSi vs CAPS adulto, educação (BPC, LBI, Lei Berenice Piana, CIPTEA), autonomia legal e saúde mental comórbida. NICE 2023 NG253 + DSM-5-TR.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Transição TEA adolescente vs adulto' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Transição em TEA</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Transição TEA adolescente para adulto: serviços, educação, autonomia e saúde mental</h1>
+          <TLDR
+            resposta="A transição entre 17 e 21 anos é a janela mais crítica do percurso em TEA — 40-60% dos jovens autistas interrompem cuidado no período (NICE 2023 NG253) e o risco de tentativa de suicídio multiplica-se por 4,5 (Crane et al., 2023, DOI 10.1002/aur.2865). Muda quase tudo simultaneamente: CAPSi para CAPS adulto, escola para universidade ou trabalho, responsabilidade legal, BPC e Auxílio-Inclusão. Planejamento estruturado dos 16-18 anos com gestor de caso reduz interrupção; CFP 2024-2025 reporta que apenas 8% dos serviços públicos brasileiros oferecem avaliação especializada de TEA em adulto."
+            fontes={["NICE 2023 (NG253)", "Crane et al., 2023 (DOI 10.1002/aur.2865)", "DSM-5-TR, 2022", "CFP 2024-2025"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Não é apenas mudança de idade. É reconfiguração simultânea de serviços de saúde, educação, vida laboral, autonomia legal e cuidado em saúde mental — janela em que cuidado integrado faz diferença mensurável no curso vital.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A transição TEA adolescente-adulto envolve reconfiguração simultânea de serviços de saúde (CAPSi para CAPS adulto), educação (escola sob LBI para universidade ou trabalho), responsabilidade legal (autonomia aos 18 anos) e cuidado em saúde mental (pico de ansiedade, depressão e tentativa de suicídio entre 18-25 anos, com RR 4,5 em jovens autistas conforme Crane et al., 2023). NICE 2023 (guideline NG253) recomenda planejamento estruturado dos 16-18 anos com gestor de caso e plano por escrito. No Brasil, BPC, Auxílio-Inclusão (Lei 14.176/2021) e CIPTEA (Lei 13.977/2020) sustentam direitos. CFP 2024-2025 reporta apenas 8% dos serviços públicos com avaliação especializada de TEA adulto — gargalo estrutural que torna o planejamento individual ainda mais relevante.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que a transição é janela crítica</h2>
+        <p>
+          O TEA é diagnóstico vitalício, conforme reafirmado em DSM-5-TR (2022). Mas a forma de cuidado e os recursos disponíveis mudam radicalmente aos 18 anos. No Brasil, o CAPSi (Centro de Atenção Psicossocial Infantojuvenil) atende até 18 anos completos, com lógica de cuidado infantojuvenil — alta proximidade familiar, articulação com escola, agenda fixa, reavaliação anual obrigatória. O CAPS adulto opera com lógica completamente diferente — demanda voluntária, agenda mais aberta, foco em sintoma psiquiátrico, e responsabilidade do próprio usuário em sustentar a frequência. A passagem brusca entre os dois serviços, sem ponte estruturada, é causa direta de interrupção de cuidado em proporção significativa.
+        </p>
+        <p>
+          Crane e colaboradores (2023, Autism Research, DOI 10.1002/aur.2865) documentam que 40% dos jovens autistas apresentam autistic burnout no período de transição (17-21 anos), com elevação do risco de tentativa de suicídio para RR 4,5 em comparação à população geral da mesma idade. Em mulheres autistas, o risco multiplica-se por 3 adicional (Cassidy et al., 2023). Os mecanismos são múltiplos — desativação da rede de apoio escolar, demanda autonômica recém-instalada que sobrecarrega função executiva já vulnerável, mudanças hormonais, exigências universitárias ou laborais, perda de previsibilidade da rotina, intensificação de comorbidades (ansiedade, depressão, TDPM, transtorno alimentar). Sem planejamento estruturado, o que era trajetória estável na adolescência pode desorganizar-se na entrada da vida adulta.
+        </p>
+        <p>
+          NICE 2023 (guideline NG253 sobre transição em adolescentes e jovens com TEA) propõe operacionalização concreta — planejamento estruturado iniciado aos 14-16 anos, com gestor de caso identificado, plano por escrito revisado anualmente, envolvimento ativo do jovem nas decisões, articulação entre CAPSi e CAPS adulto antes da transferência formal, mapeamento dos benefícios disponíveis (no contexto britânico). A operação no Brasil exige adaptação — articular CAPSi de origem com CAPS adulto de destino, garantir laudo atualizado para CIPTEA e BPC, mapear NAI (Núcleo de Acessibilidade) na universidade pretendida ou setor de pessoas com deficiência em empresa, e acompanhamento psicoterápico estruturado nos 6-12 meses pós-transição. CFP (2024-2025) reporta que apenas 8% dos serviços públicos brasileiros oferecem avaliação especializada de TEA em adulto — gargalo estrutural que torna o planejamento individual da família ainda mais relevante.
+        </p>
+        <p>
+          O DSM-5-TR (2022) introduziu mudança conceitual relevante para a clínica de transição. Os níveis de suporte em TEA (1, 2, 3) deixam de ser categorias estáticas e passam a ser avaliações funcionais dinâmicas — adolescente com nível 2 pode estabilizar em nível 1 na vida adulta com suporte adequado, ou agravar para nível 2 ou 3 sem suporte. A leitura categorial de "espectro estável" foi substituída por avaliação funcional anual ao longo da vida. Implicação clínica: a transição não é apenas mudança administrativa de serviço, mas janela de intervenção que define trajetória vital. Investimento clínico nessa fase tem retorno significativo em qualidade de vida, autonomia funcional e saúde mental nos anos seguintes.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Serviços de saúde (SUS, planos, rede)</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Adolescente (até 18)</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Adulto (18+)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaServicos.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.adolescente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.adulto}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Educação, trabalho e direitos (LBI, BPC, CIPTEA)</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Adolescente (até 18)</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Adulto (18+)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEducacaoTrabalho.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.adolescente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.adulto}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Saúde mental comórbida na transição</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Quadro</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Adolescente</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Adulto</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaSaudeMental.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.quadro}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.adolescente}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.adulto}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo da transição em detalhe</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A transição CAPSi → CAPS adulto é o eixo crítico do percurso brasileiro. O CAPSi opera com lógica de cuidado infantojuvenil — encontros semanais ou quinzenais, articulação ativa com escola, cuidador presente em todas as etapas, reavaliação anual obrigatória, agenda fixa que sustenta a rotina. Aos 18 anos, a pessoa passa formalmente ao CAPS adulto, que opera com lógica de autonomia e demanda voluntária — agenda mais aberta, foco em sintoma psiquiátrico, menor articulação com escola (que já foi deixada), responsabilidade da pessoa em sustentar a frequência. Para jovem autista com função executiva vulnerável, sustentar agenda própria sem suporte estruturado é desafio significativo. Sem ponte (visita conjunta CAPSi-CAPS, gestor de caso, retorno de feedback), a interrupção é frequente.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A transição educacional ocorre em paralelo e amplifica a sobrecarga. Na educação básica (até ensino médio), o jovem autista está sob LBI (Lei 13.146/2015) com mediador escolar, plano educacional individualizado, adaptações curriculares formalizadas — estrutura de apoio densa. Ao entrar na universidade ou em curso técnico, encontra o NAI (Núcleo de Acessibilidade da instituição), que oferece adaptações com menor sistematização e variabilidade significativa entre instituições. Cotas para pessoas com deficiência em universidades públicas (Lei 13.409/2016) são portas de entrada, mas o suporte continuado depende do NAI específico. Para trabalho, as cotas de PCD (Lei 8.213/1991, 2-5% do quadro em empresas com mais de 100 funcionários) abrem vagas, mas a adaptação no posto exige negociação caso a caso conforme LBI.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A autonomia legal aos 18 anos traz implicações operacionais. A pessoa passa a responder por si — decisões médicas, gestão financeira, contratos. Em jovens autistas com nível de suporte 1 (suporte requerido), a transição é frequentemente bem-sucedida com psicoeducação familiar e treinamento de habilidades de vida diária. Em nível 2 (suporte substancial), articulação de rede de apoio em moradia ou financeira pode ser necessária. Em nível 3 (suporte muito substancial), curatela pode ser indicada por decisão judicial conforme o caso. A LBI estabelece presunção de capacidade civil — curatela é exceção, decidida por avaliação biopsicossocial e por sentença judicial. Família e profissional precisam navegar essa estrutura com cuidado, preservando autonomia onde possível e garantindo proteção onde necessário.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A saúde mental comórbida na transição exige atenção intensificada. Crane e colaboradores (2023, DOI 10.1002/aur.2865) documentam que 40% dos jovens autistas apresentam autistic burnout no período (17-21 anos), com sobreposição frequente de ansiedade, depressão, transtorno alimentar restritivo e ideação suicida. Mulheres autistas têm risco adicional 3x para tentativa de suicídio (Cassidy et al., 2023). Manejo inclui acompanhamento psicoterápico estruturado (TCC adaptada para autismo adulto, DBT-skills em desregulação emocional, ACT em autocrítica), psiquiatra para manejo medicamentoso de comorbidades, e psicoeducação familiar continuada. Adoção de protocolos Zero Suicide adaptados para população autista, com triagem ativa de ideação a cada consulta, é prática emergente em centros especializados.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Riscos da transição mal estruturada</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Interrupção de cuidado psiquiátrico e psicoterápico</p>
+              <p class="text-sm text-ink-700 mt-1">40-60% dos jovens autistas interrompem cuidado entre 17-21 anos quando a transição CAPSi-CAPS adulto não é estruturada (NICE 2023).</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Autistic burnout consolidado e regressão funcional</p>
+              <p class="text-sm text-ink-700 mt-1">Sobrecarga simultânea de demanda autonômica, mudança de rotina e desativação de rede de apoio pode produzir perda de habilidades antes adquiridas (Cassidy et al., 2023).</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Tentativa de suicídio (RR 4,5x)</p>
+              <p class="text-sm text-ink-700 mt-1">Crane e colaboradores (2023) documentam risco multiplicado por 4,5 em jovens autistas no período, com risco adicional 3x em mulheres autistas (Cassidy et al., 2023).</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Boas práticas de transição estruturada</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Planejamento desde os 16 anos com gestor de caso</p>
+              <p class="text-sm text-ink-700 mt-1">NICE 2023 (NG253) recomenda plano por escrito, revisão anual e envolvimento ativo do jovem nas decisões — adaptação brasileira via CAPSi com articulação prévia ao CAPS adulto.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Documentação completa para CIPTEA, BPC e adaptações educacionais</p>
+              <p class="text-sm text-ink-700 mt-1">Laudo atualizado próximo aos 18 anos, requerimento de CIPTEA, consulta a CRAS para fluxo BPC, contato com NAI da universidade pretendida — checklist operacional reduz atrito administrativo.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Psicoeducação familiar e do próprio jovem sobre autonomia e direitos</p>
+              <p class="text-sm text-ink-700 mt-1">Sessões estruturadas sobre LBI, Auxílio-Inclusão, cotas de PCD, gestão financeira e moradia preparam família e jovem para reconfiguração de vida — competência percebida sobe e ansiedade diminui.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Lucas, 17 anos, TEA nível 1, planejamento de transição estruturado em 14 meses</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Lucas foi diagnosticado com TEA aos 8 anos. Acompanhamento em CAPSi de capital do Sudeste desde os 9, com sessões semanais de psicoterapia, terapia ocupacional sensorial, fonoaudiologia ambulatorial, neuropediatria semestral. Trajetória escolar com mediador escolar e plano educacional individualizado nas escolas pública municipal e estadual. Aos 16, com aproximação dos 18 anos, equipe do CAPSi iniciou planejamento estruturado de transição conforme adaptação do NICE 2023.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Aos 16 anos e 6 meses, reunião com a família e Lucas (incluindo participação ativa dele nas decisões). Mapeamento de objetivos — Lucas queria cursar Geografia em universidade pública, morar com a família por mais 2-3 anos antes de avaliar autonomia residencial, e manter acompanhamento em saúde mental. Plano por escrito definiu seis etapas. Primeiro, ENEM com adaptações (tempo adicional, sala separada, ledor por demanda). Segundo, requerimento de CIPTEA renovada antes dos 18. Terceiro, contato com NAI da universidade pretendida 4 meses antes do início do curso. Quarto, articulação CAPSi com CAPS adulto da mesma cidade, com 2 visitas conjuntas antes da transferência formal. Quinto, requerimento de BPC com laudo atualizado aos 18, com Auxílio-Inclusão preparado para o caso de Lucas iniciar atividade remunerada. Sexto, manutenção de psicoterapia com a mesma profissional do CAPSi via convênio universitário.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Aos 18 anos e 3 meses, Lucas entrou em Geografia em universidade federal por cota de PCD. NAI da universidade ofereceu monitor de adaptação acadêmica nas primeiras 8 semanas. CIPTEA renovada, BPC aprovado em 5 meses, Auxílio-Inclusão preparado para futura ativação. Transição para CAPS adulto ocorreu em 2 visitas conjuntas com a equipe do CAPSi, com manutenção da mesma psicóloga via convênio universitário. Em 14 meses pós-transição, Lucas reportou ansiedade moderada em fase de adaptação (GAD-7 12 no início, 8 aos 6 meses), sem episódios de autistic burnout severo, com aproveitamento acadêmico estável (média 7,5 no primeiro semestre) e manutenção de cuidado em saúde mental. A coordenadora documentou: "Planejamento estruturado desde os 16 anos foi central. O envolvimento ativo do Lucas nas decisões aumentou competência percebida dele e reduziu resistência. A articulação CAPSi-CAPS-NAI evitou interrupção de cuidado que costuma ser o principal risco da fase".
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de protocolos do NICE 2023 (NG253) e de relatos de famílias em programas de transição estruturada no SUS brasileiro. Resultados em transição planejada costumam mostrar manutenção de cuidado em 70-80% dos casos versus 40-60% sem planejamento (Crane et al., 2023).
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Quatro precauções importantes. Primeiro, a transição TEA adolescente-adulto é heterogênea — varia significativamente por nível de suporte (1, 2, 3), apresentação clínica, comorbidades, contexto familiar e disponibilidade de serviços locais. Generalização exige cautela. Segundo, dados brasileiros específicos sobre transição TEA são escassos — estimativas usadas aqui derivam de literatura internacional (NICE 2023, Crane 2023) com adaptações ao contexto brasileiro via CFP (2024-2025) e UFMA (2024). Terceiro, os direitos legais brasileiros (LBI, BPC, Auxílio-Inclusão, CIPTEA, cotas PCD) sofrem alterações regulamentares e operacionais — recomendação clínica é confirmar status vigente em consulta a CRAS, INSS e CFP no momento da operação. Quarto, em mulheres autistas a janela de transição coincide frequentemente com primeiro diagnóstico (não com transferência de cuidado), conforme guia específico de avaliação de TEA em mulher adulta. Em homens autistas com diagnóstico precoce, transferência de cuidado é o eixo principal.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No Brasil, a oferta de serviços especializados em TEA adulto é insuficiente — CFP (2024-2025) reporta apenas 8% dos serviços públicos com avaliação especializada. Em regiões fora das capitais, a transição é frequentemente para "saúde mental geral" sem cuidado específico para neurodivergência. Recomendação prática: famílias em regiões com restrição podem articular acompanhamento privado especializado com manejo medicamentoso em CAPS adulto público — modelo híbrido viável em parcela dos casos. Para psicoterapia, programas online com profissionais formados em TEA adulto têm ampliado acesso. Acesso é parte da equação clínica responsável.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Transição TEA adolescente-adulto é janela de intervenção que define trajetória vital — investimento estruturado tem retorno mensurável</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>40-60% dos jovens autistas interrompem cuidado entre 17-21 anos sem planejamento estruturado (NICE 2023, NG253).</li>
+          <li>Tentativa de suicídio em jovens autistas no período tem RR 4,5 vs população geral (Crane et al., 2023, DOI 10.1002/aur.2865).</li>
+          <li>NICE 2023 recomenda planejamento desde os 14-16 anos com gestor de caso, plano por escrito e revisão anual.</li>
+          <li>No Brasil, CIPTEA (13.977/2020), BPC, Auxílio-Inclusão (14.176/2021), LBI (13.146/2015) e cotas de PCD são instrumentos legais essenciais.</li>
+          <li>CFP 2024-2025 reporta apenas 8% dos serviços públicos com avaliação especializada de TEA adulto — gargalo estrutural relevante.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogos que pretendem se especializar em transição TEA, base técnica em Neuropsicologia, Avaliação Psicológica e psicoterapias com evidência empírica adaptadas a autismo adulto é fundamental. O IPOG mantém MBA em Neurociência e Reabilitação Neuropsicológica em formato Ao Vivo síncrono com corpo docente nominal. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/guias/avaliacao-tea-mulheres-adultas" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TEA em mulher adulta</a></li>
+          <li><a href="/faq/tea-mulheres-adultas-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · TEA em mulher adulta</a></li>
+          <li><a href="/comparativos/dir-floortime-vs-aba-tea-precoce" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · DIR/Floortime vs ABA em TEA precoce</a></li>
+          <li><a href="/comparativos/aba-vs-denver-tea-precoce" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · ABA tradicional vs Modelo Denver</a></li>
+          <li><a href="/faq/tea-adulto-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · TEA em adulto (geral)</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. Modalidade vigente de cada turma é informada no portal oficial.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Direitos e legislação</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CIPTEA — Lei 13.977/2020</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LBI — Lei 13.146/2015</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14176.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Auxílio-Inclusão — Lei 14.176/2021</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei Berenice Piana — 12.764/2012</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/dir-floortime-vs-aba-tea-precoce" class="mega-link"><strong class="text-ink-900 text-sm">DIR/Floortime vs ABA</strong></a></li>
+          <li><a href="/comparativos/aba-vs-denver-tea-precoce" class="mega-link"><strong class="text-ink-900 text-sm">ABA vs Modelo Denver</strong></a></li>
+          <li><a href="/comparativos/internacao-vs-caps-iii-crise-aguda" class="mega-link"><strong class="text-ink-900 text-sm">Internação vs CAPS III em crise aguda</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>NICE (2023). Autism: transition from children's to adults' services. Guideline NG253.</li>
+          <li>Crane, L. et al. (2023). Autistic burnout in young people transitioning to adulthood. Autism Research. DOI: 10.1002/aur.2865.</li>
+          <li>Cassidy, S. et al. (2023). Suicidality and camouflaging in autistic adults.</li>
+          <li>American Psychiatric Association (2022). DSM-5-TR.</li>
+          <li>Brasil. Lei 13.146/2015 (LBI), Lei 13.977/2020 (CIPTEA), Lei 14.176/2021 (Auxílio-Inclusão), Lei 12.764/2012 (Berenice Piana).</li>
+          <li>CFP (2024-2025). Relatório sobre serviços de avaliação de TEA em adultos no Brasil.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

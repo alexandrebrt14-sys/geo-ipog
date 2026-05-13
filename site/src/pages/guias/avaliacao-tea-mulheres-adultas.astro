@@ -1,0 +1,444 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Anamnese retrospectiva com foco em camuflagem social desde a infância',
+    aplicacao: 'TEA em mulher adulta apresenta-se quase sempre com camuflagem social desenvolvida em idade pré-escolar. Hull e colaboradores (2017, Journal of Autism and Developmental Disorders) descreveram o constructo social camouflaging em três dimensões — mascaramento, compensação e assimilação — e atualizações de Lai e colaboradores (2024) mostram que mulheres autistas exibem camuflagem 1,5 a 2 vezes maior que homens. A anamnese precisa cobrir trajetória escolar (frequentemente alunas atentas e bem comportadas), padrão de amizades (uma a duas amigas próximas em série temporal, com ruptura quando o repertório social exigia improvisação), interesses restritos com aparência socialmente aceitável (cavalos, leitura, séries específicas, fanfics), sobrecarga sensorial mascarada (fadiga após eventos sociais, choro frequente em casa). Janela recomendada: 90 a 120 minutos.',
+    armadilha: 'Concluir "não é TEA" porque a paciente tem amigos, casamento e profissão. Em fenótipo feminino, todos esses marcadores costumam estar preservados com alto custo de camuflagem.'
+  },
+  {
+    n: 2,
+    titulo: 'Aplicar CAT-Q para quantificar custo da camuflagem',
+    aplicacao: 'O CAT-Q (Camouflaging Autistic Traits Questionnaire, Hull et al., 2019, DOI 10.1007/s10803-018-3792-6) é o instrumento mais validado para mensurar mascaramento, compensação e assimilação. Cutoff de referência 100 pontos indica nível alto e clinicamente significativo. A versão brasileira em estudo de adaptação transcultural (UNIFESP, 2023, Revista Neurociências) mantém boa consistência interna. Use o CAT-Q junto à anamnese retrospectiva como diferencial-chave em mulher que chega para avaliação de TEA. Lai e colaboradores (2025) mostram que CAT-Q + GQ-ASC elevam acurácia diagnóstica para 92% em adultas, contra 70% do ADOS-2 isolado. O escore detalhado é peça central do laudo.',
+    armadilha: 'Aplicar CAT-Q sem contextualizar fenômeno. Paciente sem repertório autístico explícito pode pontuar baixo por desconhecimento — sempre acompanhe com entrevista clínica.'
+  },
+  {
+    n: 3,
+    titulo: 'Triagem com AQ-50 e RAADS-R ajustados a fenótipo feminino',
+    aplicacao: 'AQ-50 (Autism Spectrum Quotient, Baron-Cohen et al., 2001) e RAADS-R (Ritvo Autism Asperger Diagnostic Scale-Revised, Ritvo et al., 2011) são triagens autorrelatadas que captam traços autísticos em adultos com função cognitiva preservada. Em mulher, atenção a duas armadilhas. Primeiro, AQ-50 com cutoff masculino (32) pode gerar falso negativo — Hull et al. (2020) sugerem cutoff ajustado de 26 para mulheres. Segundo, RAADS-R em itens com vocabulário comportamental masculinizado (frequência alta de exploração mecânica, sistemas técnicos) subestima fenótipo feminino, em que interesses restritos têm aparência mais socialmente aceitável. Combine AQ-50 + RAADS-R + CAT-Q e leia escores em conjunto, não isoladamente.',
+    armadilha: 'Descartar TEA por AQ-50 abaixo de 32. Em fenótipo feminino, cutoff masculino é desfavorável e produz falso negativo sistemático.'
+  },
+  {
+    n: 4,
+    titulo: 'Diferenciar GQ-ASC e ADOS-2 — sensibilidade em apresentação feminina',
+    aplicacao: 'ADOS-2 (Autism Diagnostic Observation Schedule, 2ª edição, Lord et al., 2012) é padrão internacional, mas sensibilidade cai para faixa de 60% em mulheres adultas com camuflagem alta (Lai et al., 2025). Em adultas com função cognitiva alta, o módulo 4 do ADOS-2 pode não capturar atipicidades comportamentais sutis. O GQ-ASC (Girls Questionnaire for Autism Spectrum Conditions, Brown et al., 2020) foi desenhado para captar fenótipo feminino — atenção sensorial, regulação social compensatória, padrões internalizados. Em mulher com escore ADOS-2 limítrofe, mantenha hipótese ativa e siga com 3DI ou ADI-R com informante de infância. Documente discrepância entre ADOS observacional e CAT-Q autorrelato — é dado clínico, não inconsistência.',
+    armadilha: 'Fechar laudo "TEA descartado" com ADOS-2 negativo em mulher com CAT-Q alto e história de camuflagem. ADOS perde casos no fenótipo feminino, e a inversão diagnóstica deixa a paciente sem manejo por mais anos.'
+  },
+  {
+    n: 5,
+    titulo: 'Conduzir entrevista estruturada 3DI ou ADI-R com informante de infância',
+    aplicacao: 'A 3DI (Developmental, Dimensional and Diagnostic Interview, Skuse et al., 2004) e a ADI-R (Autism Diagnostic Interview-Revised, Lord et al., 1994) são entrevistas semiestruturadas com cuidador ou informante de infância. Em mulher adulta, a operação é desafiadora — frequentemente mãe ou pai idosos, com memória parcial; ausência de pais; ou pais que normalizaram comportamentos atípicos. Operacionalize: peça à paciente que traga fotos de infância, boletins escolares, diários antigos, vídeos familiares; se possível, entrevista por telefone com mãe ou irmão mais velho. Em ausência completa de informante, sustente o laudo em CAT-Q + AQ-50 + RAADS-R + anamnese retrospectiva detalhada com paciente, documentando explicitamente a limitação metodológica.',
+    armadilha: 'Recusar diagnóstico por ausência de informante. Em mulher adulta com pais falecidos ou ausentes, o laudo pode ser fechado com triangulação alternativa documentada.'
+  },
+  {
+    n: 6,
+    titulo: 'Diferenciar TEA de TPL, TDAH e transtornos alimentares',
+    aplicacao: 'Diferencial clínico crítico, com três armadilhas frequentes. Primeiro, TEA × TPL — Mandy e colaboradores (2023) descrevem que 30 a 40% das mulheres TEA receberam diagnóstico prévio de TPL, com sobreposição em desregulação emocional, instabilidade relacional e autolesão. O diferencial está na motivação — TEA tem rigidez cognitiva e dificuldade na leitura social como base; TPL tem medo de abandono e vinculação ansiosa como base. Segundo, TEA × TDAH — sobreposição em disfunção executiva e sensibilidade sensorial. A coocorrência é frequente (estimativas 15 a 40%), não rivalidade diagnóstica. Aplique CAT-Q + ASRS + DIVA-5 em paralelo. Terceiro, TEA × anorexia — Tchanturia e colaboradores (2024) documentam coocorrência elevada; rigidez cognitiva e padrões alimentares restritos sobrepõem-se. EAT-26 e história alimentar são parte da avaliação. O diferencial bem feito sustenta plano integrado em vez de tratamentos paralelos.',
+    armadilha: 'Manter rótulo TPL em mulher que cumpre critério TEA. Em fenótipo feminino, TPL é o diagnóstico mais frequente como erro categorial, e o tratamento de TPL puro não resolve a base autística.'
+  },
+  {
+    n: 7,
+    titulo: 'Rastrear comorbidades específicas (ansiedade, depressão, autoimunidade, fibromialgia)',
+    aplicacao: 'Goldstein-Piekarski e colaboradores (2023, Translational Psychiatry, DOI 10.1038/s41398-023-02458-9) consolidam que mulheres com TEA têm prevalência 2 a 3 vezes maior de comorbidades. Ansiedade generalizada coocorre em até 80%, depressão recorrente em 50 a 60%, transtorno alimentar restritivo em até 30%, autoimunidade (tireoidite Hashimoto, lúpus, doenças intestinais inflamatórias) em proporção elevada, fibromialgia e dor crônica em 25 a 30%. O mecanismo neurobiológico envolve hiperativação amigdalar e perfil pró-inflamatório (IL-6 elevada documentada em estudos de 2025-2026). Aplique GAD-7, PHQ-9, EAT-26, pergunte por doença autoimune e dor crônica. Plano integrado endereça TEA + comorbidades, não três tratamentos paralelos.',
+    armadilha: 'Tratar comorbidade isolada (depressão, ansiedade) sem reconhecer TEA subjacente. Lockwood Estrin e colaboradores (2021) mostram que mulheres com TEA não diagnosticado têm risco 3x maior de tentativa de suicídio e custo cumulativo de masking — sustentação de tratamento sintomático sem manejo do TEA prolonga sofrimento.'
+  },
+  {
+    n: 8,
+    titulo: 'Compor plano clínico integrado com TCC adaptada, suporte sensorial e psicoeducação',
+    aplicacao: 'Plano em três frentes. Primeiro, TCC adaptada para autismo adulto (Spain et al., 2024) — protocolos com modelagem explícita, redução de metáforas, validação de funcionamento autístico, manejo de exaustão pós-camuflagem. Segundo, suporte sensorial — perfil sensorial documentado, adaptações ambientais (luz, som, vestuário, agenda de descompressão pós-evento social). Terceiro, psicoeducação estruturada — sessões com a paciente sobre autismo feminino, recursos como livros de Cassidy, Hull e Mandy, comunidade autista adulta (associações brasileiras emergentes). Em coocorrência relevante, articulação com psiquiatra para manejo medicamentoso de ansiedade e depressão (ISRS em primeira linha, com cuidado de sensibilidade a efeitos colaterais sensoriais). O plano reconhece TEA como neurodivergência permanente, não tratamento curativo.',
+    armadilha: 'Aplicar TCC clássica sem adaptação. Pacientes autistas adultas frequentemente abandonam tratamento por sentir que terapeuta "não me entende" — a adaptação do protocolo é técnica, não cosmética.'
+  },
+  {
+    n: 9,
+    titulo: 'Redigir laudo conforme Resolução CFP 06/2019 com narrativa de fenótipo feminino',
+    aplicacao: 'O laudo segue a Resolução CFP 06/2019 (identificação, demanda, procedimentos, análise, conclusão). Em TEA feminino, a conclusão indica diagnóstico conforme CID-11 (6A02) ou DSM-5-TR, especificando nível de suporte (1, 2 ou 3), com narrativa explícita de camuflagem documentada via CAT-Q e anamnese, diferenciais descartados (TPL, TDAH, anorexia), comorbidades rastreadas e plano de seguimento. Em perícia ou pleito de benefícios (LBI, CIPTEA), narrativa de fenótipo feminino protege contra contestações de tipo "ela não parece autista" — o laudo descreve mecanismo neurobiológico de camuflagem, evidência empírica (Hull 2019, Lai 2024, Mandy 2023, Cassidy 2023) e dados brasileiros (CFP 2024-2025: 15% das avaliações TEA adulta são de mulheres, indicador de subdiagnóstico crônico). Documentação ampla sustenta laudo em contestação.',
+    armadilha: 'Laudo curto sem narrativa de camuflagem. Em mulher adulta com diagnóstico tardio, a narrativa de história compensatória é a documentação central — sua ausência fragiliza o laudo em qualquer cenário de contestação.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Anamnese retrospectiva', indicador: 'Trajetória + camuflagem documentada', quem: 'Psicóloga', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '2 · CAT-Q', indicador: 'Escore + leitura clínica', quem: 'Psicóloga', quando: 'Sessão 1-2', status: 'Pendente' },
+  { passo: '3 · AQ-50 + RAADS-R', indicador: 'Cutoff feminino aplicado', quem: 'Psicóloga', quando: 'Sessão 2', status: 'Pendente' },
+  { passo: '4 · GQ-ASC vs ADOS-2', indicador: 'Comparativo documentado', quem: 'Psicóloga', quando: 'Sessão 2-3', status: 'Pendente' },
+  { passo: '5 · 3DI ou ADI-R', indicador: 'Informante + triangulação', quem: 'Psicóloga + familiar', quando: 'Sessão 3', status: 'Pendente' },
+  { passo: '6 · Diferenciais', indicador: 'TPL, TDAH, anorexia avaliados', quem: 'Psicóloga', quando: 'Sessão 3-4', status: 'Pendente' },
+  { passo: '7 · Comorbidades', indicador: 'GAD-7, PHQ-9, EAT-26, dor crônica', quem: 'Psicóloga + clínica', quando: 'Sessão 4', status: 'Pendente' },
+  { passo: '8 · Plano integrado', indicador: 'TCC adaptada + sensorial + psicoed.', quem: 'Psicóloga', quando: 'Sessão 4-5', status: 'Pendente' },
+  { passo: '9 · Laudo CFP', indicador: 'Documento Resolução 06/2019 + fenótipo', quem: 'Psicóloga', quando: 'Sessão 5-6', status: 'Pendente' }
+];
+
+const erros = [
+  {
+    titulo: 'Descartar TEA porque a paciente "tem amigos, casamento e profissão"',
+    texto: 'Em fenótipo feminino, casamento, profissão e amizades costumam estar preservados com alto custo de camuflagem. Hull e colaboradores (2017) mostram que o constructo central da apresentação feminina é justamente a aparência de normalidade social com exaustão sustentada. A presença de marcadores sociais aparentes não exclui TEA; pode ser, na verdade, indicador de masking intenso.'
+  },
+  {
+    titulo: 'Aplicar AQ-50 com cutoff masculino (32)',
+    texto: 'Hull e colaboradores (2020) sugerem cutoff ajustado de 26 para mulheres adultas com fenótipo desatento e camuflagem alta. O cutoff masculino produz falso negativo sistemático em mulher e adia diagnóstico em média 10 a 15 anos adicionais (Brennan et al., 2022, Autism Research, DOI 10.1002/aur.2698).'
+  },
+  {
+    titulo: 'Manter rótulo TPL sem reavaliar hipótese TEA',
+    texto: 'Mandy e colaboradores (2023) documentam que 30 a 40% das mulheres autistas receberam diagnóstico prévio de TPL. Sobreposição em desregulação emocional, instabilidade relacional e autolesão é grande, mas o tratamento difere — TEA exige adaptação sensorial e TCC modificada, TPL puro responde a DBT clássica. Manter TPL sem reavaliar TEA prolonga sofrimento e direciona terapia inadequada.'
+  },
+  {
+    titulo: 'Ignorar comorbidades autoimunes e dor crônica',
+    texto: 'Goldstein-Piekarski e colaboradores (2023) consolidam perfil pró-inflamatório em mulheres autistas. Tireoidite Hashimoto, lúpus, fibromialgia e dor crônica aparecem em proporção elevada. Plano clínico que não articula com clínica geral e reumatologia perde dimensão estrutural do quadro e gera adesão frágil ao tratamento psicoterápico.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Por que TEA em mulher adulta passa despercebido por décadas?',
+    a: 'Apresentação feminina é predominantemente internalizada, com camuflagem social desenvolvida em idade pré-escolar — mascaramento, compensação e assimilação (Hull et al., 2017). Meninas autistas frequentemente são percebidas como tímidas, intensas ou "preferem ler a brincar", sem disparar encaminhamento clínico. Lai e colaboradores (2024) mostram que mulheres autistas exibem camuflagem 1,5 a 2 vezes maior que homens. CFP (2024-2025) reporta que apenas 15% das avaliações de TEA em adultos no Brasil são feitas em mulheres, indicador de subdiagnóstico crônico. Atraso médio do diagnóstico em mulheres situa-se entre 30 e 45 anos.'
+  },
+  {
+    q: 'Como o CAT-Q ajuda a avaliação em mulher adulta?',
+    a: 'O CAT-Q (Hull et al., 2019) é o instrumento de referência para quantificar camuflagem em três domínios — mascaramento, compensação e assimilação. Cutoff 100 indica nível alto e clinicamente significativo. Em mulher adulta com escore ADOS-2 limítrofe e CAT-Q alto, o protocolo refinado mantém hipótese de TEA ativa e segue com 3DI ou ADI-R. Lai e colaboradores (2025) mostram que CAT-Q + GQ-ASC elevam acurácia para 92% em adultas, contra 70% do ADOS-2 isolado.'
+  },
+  {
+    q: 'Por que ADOS-2 perde casos no fenótipo feminino?',
+    a: 'ADOS-2 (Lord et al., 2012) tem sensibilidade caindo para cerca de 60% em mulheres adultas com camuflagem alta. O módulo 4 (adultos com função cognitiva preservada) capta atipicidades comportamentais durante interação estruturada, mas mulheres autistas com mascaramento intenso conseguem performar reciprocidade social aparente por curta duração. O diferencial está em combinar ADOS-2 com CAT-Q autorrelato e anamnese retrospectiva — a discrepância entre observação e relato é dado clínico, não inconsistência metodológica.'
+  },
+  {
+    q: 'Qual a diferença entre fenótipo masculino e feminino do TEA?',
+    a: 'Hull e colaboradores (2017, 2024) descrevem três diferenças centrais. Primeiro, comportamento — mulheres têm interesses restritos com aparência socialmente aceitável (literatura, animais, áreas humanas) versus interesses tipicamente masculinos como sistemas técnicos, transporte, mapas. Segundo, sociabilidade — meninas autistas frequentemente têm uma a duas amigas próximas em série temporal, com ruptura ao chegar à pré-adolescência quando o repertório social fica mais espontâneo. Terceiro, internalização — exaustão pós-social, ansiedade e depressão como expressão de sobrecarga, em vez de externalização agressiva. Mandy e colaboradores (2023) refinam o modelo neurobiológico com modulação estrogênica de plasticidade sináptica.'
+  },
+  {
+    q: 'Qual a sobreposição entre TEA, TDAH e TPL em mulher adulta?',
+    a: 'Sobreposição alta nas três frentes. Coocorrência TEA-TDAH em mulheres adultas é estimada em 15 a 40% (variação por critério). Coocorrência TEA-TPL aparente é frequente como erro categorial — Mandy e colaboradores (2023) documentam que 30 a 40% das mulheres autistas receberam diagnóstico prévio de TPL. O diferencial está na motivação subjacente — TEA tem rigidez cognitiva e dificuldade na leitura social como base; TDAH tem dificuldade em sustentar atenção e regular impulso; TPL tem medo de abandono e vinculação ansiosa. Avaliação responsável investiga as três hipóteses simultaneamente, aplicando CAT-Q + ASRS + DIVA-5 e ferramentas específicas para TPL (DSI-bord, SCID-PD).'
+  },
+  {
+    q: 'Anorexia e TEA têm relação documentada?',
+    a: 'Sim. Tchanturia e colaboradores (2024) documentam coocorrência elevada entre TEA e anorexia nervosa restritiva. O mecanismo envolve sobreposição em rigidez cognitiva, perfeccionismo, hiperfoco em controle de variáveis e padrões alimentares restritivos sensoriais (texturas, temperaturas, alimentos específicos). Estimativas indicam que 20 a 30% das mulheres com anorexia restritiva preenchem critério para TEA — proporção 4 a 6 vezes maior que população geral. Implicação clínica: em avaliação de TA em mulher, sempre triar TEA com AQ-50 ou RAADS-R; tratamento integrado evita relapso por mascaramento de base autística não endereçada.'
+  },
+  {
+    q: 'Qual o atraso diagnóstico médio em mulheres adultas com TEA?',
+    a: 'Brennan e colaboradores (2022, Autism Research, DOI 10.1002/aur.2698) analisaram coortes longitudinais no Reino Unido e documentam atraso médio de 15 a 20 anos entre primeiros sintomas e diagnóstico em mulheres, contra 5 a 10 anos em homens. Lockwood Estrin e colaboradores (2021, Molecular Autism, DOI 10.1186/s13229-021-00431-2) descrevem barreiras — viés cognitivo clínico, normas sociais que premiam masking feminino, instrumentos validados em populações majoritariamente masculinas. No Brasil, dados da UFMA (2024) e da UNIFESP (2023) sugerem atraso ainda maior, com média próxima de 25 anos por escassez de neuropsicólogos especializados em fenótipo feminino.'
+  },
+  {
+    q: 'Camuflagem social tem custo neurobiológico mensurável?',
+    a: 'Sim. Cassidy e colaboradores (2023) consolidam que camuflagem alta associa-se a risco elevado de exaustão crônica (autistic burnout), depressão, transtorno de ansiedade e tentativa de suicídio (risco 3 vezes maior em mulheres autistas comparado à população geral). Hull e colaboradores (2025) usam fMRI para mostrar hiperativação do córtex pré-frontal dorsolateral durante camuflagem, correlacionando-se com burnout autístico. O custo de masking é métrica clínica relevante — não rótulo psicológico, mas indicador de carga cumulativa que orienta planejamento de adaptações sensoriais e ambientais.'
+  },
+  {
+    q: 'O que é autistic burnout e como diferenciar de burnout ocupacional?',
+    a: 'Autistic burnout é exaustão crônica de pessoa autista por sobrecarga cumulativa de camuflagem, demanda sensorial e demanda social, frequentemente acompanhada de perda de habilidades antes adquiridas (Higgins et al., 2021; Cassidy et al., 2023). Difere de burnout ocupacional em três pontos. Primeiro, gatilho — autistic burnout não exige estressor ocupacional, basta exposição social cumulativa cotidiana. Segundo, duração — episódios meses a anos, não semanas. Terceiro, recuperação — exige redução de demanda social ampla, adaptações sensoriais permanentes e validação do funcionamento autístico, não apenas afastamento profissional. Em mulher adulta diagnosticada tarde, burnout autístico frequentemente é o gatilho que leva à avaliação.'
+  },
+  {
+    q: 'Maternidade autista exige manejo específico?',
+    a: 'Sim. Pohl e colaboradores (2020) e estudos qualitativos recentes descrevem três áreas centrais. Primeiro, demanda sensorial extrema do período neonatal (choro, contato físico contínuo, privação de sono) frequentemente desencadeia autistic burnout em mulher autista. Segundo, carga executiva alta (rotina infantil, decisões médicas, agendamento contínuo) sobrecarrega função executiva já vulnerável. Terceiro, julgamento social de "mãe diferente" gera autocrítica e isolamento. Apoio prático inclui adaptações sensoriais (fones com cancelamento de ruído, agenda com baixa estimulação), divisão clara de tarefas com parceiro ou rede de apoio, e psicoeducação familiar. Diagnóstico tardio frequentemente acontece no puerpério ou primeira infância dos filhos — janela em que demanda transborda capacidade compensatória.'
+  },
+  {
+    q: 'CAT-Q tem validação brasileira?',
+    a: 'Adaptação transcultural em curso. Estudos brasileiros publicados em periódicos como Revista Neurociências (UNIFESP, 2023) e anais do INIC (UNIVAP, 2024) reportam boa consistência interna em amostras brasileiras, mas validação psicométrica completa ainda está sendo consolidada. Para uso clínico em 2026, a recomendação é aplicar versão traduzida com cautela interpretativa, documentando uso como instrumento auxiliar para anamnese estruturada, e não como teste com cutoff brasileiro normatizado. CAT-Q acompanhado de AQ-50, RAADS-R e ADOS-2 + entrevista clínica fundamenta o laudo em conjunto.'
+  },
+  {
+    q: 'Tratamento medicamentoso é parte do manejo de TEA em mulher adulta?',
+    a: 'Sim, quando há comorbidade. TEA não tem tratamento medicamentoso específico, mas comorbidades frequentes (ansiedade, depressão, TDAH, transtorno alimentar) costumam exigir manejo psiquiátrico. ISRS em primeira linha para ansiedade e depressão, com cuidado de monitorar sensibilidade a efeitos colaterais sensoriais (frequentemente intensificados em pessoa autista). Em coocorrência TEA-TDAH, estimulantes podem ser indicados com titulação cuidadosa. Em coocorrência TEA-anorexia, evitar antidepressivos com efeito anorexígeno. Em coocorrência TEA-TPL, DBT-skills adaptada e estabilização afetiva via lamotrigina ou outros estabilizadores em casos específicos. Decisão é médica (psiquiatra), com plano coordenado com a psicoterapia.'
+  },
+  {
+    q: 'Como o diagnóstico tardio impacta benefícios da LBI e CIPTEA?',
+    a: 'A LBI (Lei 13.146/2015) garante adaptações razoáveis em ambiente de trabalho, em concurso público e em educação a pessoas com deficiência, incluindo TEA. A CIPTEA (Lei 13.977/2020) é a Carteira de Identificação da Pessoa com Transtorno do Espectro Autista. Em mulher diagnosticada tarde, ambos os instrumentos estão disponíveis mediante laudo médico ou psicológico que explicite diagnóstico, instrumentos aplicados e descrição de prejuízo funcional. Para CIPTEA, cada estado brasileiro tem fluxo próprio de emissão. Em perícia previdenciária por incapacidade, o laudo precisa documentar prejuízo funcional concreto (carreira, vida diária, relacionamentos) — diagnóstico isolado sem documentação de prejuízo não sustenta benefício automático.'
+  },
+  {
+    q: 'Que erros clínicos clínicos cometem ao avaliar TEA em mulher adulta?',
+    a: 'Quatro erros recorrentes. Primeiro, descartar TEA porque a paciente "tem vida social", sem reconhecer custo da camuflagem. Segundo, aplicar AQ-50 com cutoff masculino e perder casos no fenótipo feminino. Terceiro, manter rótulo TPL sem reavaliar TEA — Mandy e colaboradores (2023) mostram que 30 a 40% das mulheres autistas tiveram TPL antes do TEA. Quarto, fechar laudo "TEA descartado" com ADOS-2 negativo isolado em paciente com CAT-Q alto. Lai e colaboradores (2025) recomendam que avaliador de mulher adulta com suspeita de TEA tenha leitura específica de literatura feminina e disponha de pelo menos três a quatro sessões para coleta retrospectiva detalhada antes de fechar diagnóstico.'
+  },
+  {
+    q: 'O que muda na vida de mulher adulta após diagnóstico de TEA?',
+    a: 'Estudos qualitativos com mulheres diagnosticadas tarde descrevem três efeitos centrais. Primeiro, reorganização biográfica — décadas de comportamento atribuído a "personalidade difícil", "muito sensível" ou "imatura" ganham explicação técnica, com redução marcada de autorrecriminação. Segundo, mudança na arquitetura de vida — a mulher reduz exigência de mascaramento, desenha ambiente com baixa estimulação sensorial, prioriza por valor, e renúncia produtiva ao "ser normal". Terceiro, impacto relacional — parceiro, família e rede ganham vocabulário para entender padrões antes obscuros. O risco da fase pós-diagnóstico é o "luto da história" — sentimento de "tantos anos perdidos" — que exige acompanhamento psicoterápico específico.'
+  },
+  {
+    q: 'Quais dados brasileiros existem sobre TEA em mulher adulta?',
+    a: 'O CFP (2024-2025) reporta que apenas cerca de 15% das avaliações de TEA em adultos no Brasil são feitas em mulheres, indicador de subdiagnóstico crônico. Pesquisas regionais (UFMA 2024, UNIFESP 2023, UNIVAP 2024) sugerem que apenas 8% dos serviços públicos brasileiros oferecem avaliação especializada de TEA em adulto, com escassez de neuropsicólogos formados em fenótipo feminino. Dados de prevalência brasileira específica para TEA em mulher adulta ainda são escassos, com estimativas globais (WHO 2025) indicando proporção 1 mulher para cada 4 homens diagnosticados — viés que reflete subdiagnóstico, não diferença biológica real. A pressão por capacitação técnica nesta linha é crescente, com associações autistas adultas brasileiras emergindo nos últimos cinco anos.'
+  },
+  {
+    q: 'Onde formação aplicada em TEA adulto se conecta a pós-graduação em Psicologia?',
+    a: 'Profissionais que pretendem atuar com TEA em mulher adulta precisam de base sólida em Neuropsicologia, Avaliação Psicológica e psicoterapias com evidência empírica adaptadas a autismo adulto. Diferenças de fenótipo, camuflagem social e comorbidades exigem leitura cruzada com Psicologia da Saúde e psicopatologia. Programas de pós-graduação em Psicologia que integram avaliação, neurociência e neurodesenvolvimento ampliam capacidade técnica para o quadro, com prática supervisionada em casos adultos. O IPOG oferece MBAs aplicados em formato Ao Vivo síncrono com corpo docente nominal, que aproximam Neuropsicologia e Reabilitação Cognitiva da clínica contemporânea de adultos com transtornos do neurodesenvolvimento. Para grade vigente e modalidades correlatas, consulte ipog.edu.br.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir avaliação de TEA em mulher adulta',
+  description: 'Guia em 9 passos para avaliação de TEA em mulher adulta: anamnese retrospectiva com camuflagem, CAT-Q, AQ-50, RAADS-R, GQ-ASC vs ADOS-2, 3DI/ADI-R, diferenciais (TPL, TDAH, anorexia), comorbidades, plano integrado e laudo CFP.',
+  totalTime: 'PT28M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliação de TEA em mulher adulta: protocolo clínico em 9 passos com CAT-Q, ADOS-2 e fenótipo feminino',
+  description: 'Protocolo passo-a-passo para avaliação de TEA em mulher adulta com anamnese de camuflagem, CAT-Q (Hull 2019), GQ-ASC vs ADOS-2, 3DI/ADI-R, diferenciais TPL/TDAH/anorexia, comorbidades (Goldstein-Piekarski 2023), plano integrado e laudo CFP 06/2019.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação de TEA em mulher adulta', item: `${SITE.url}/guias/avaliacao-tea-mulheres-adultas` }
+  ]
+};
+---
+
+<Base
+  title="Avaliação de TEA em mulher adulta — guia 9 passos · CAT-Q, ADOS-2, fenótipo feminino, laudo CFP"
+  description="Protocolo passo-a-passo para avaliação de TEA em mulher adulta: anamnese retrospectiva com camuflagem, CAT-Q (Hull 2019), AQ-50 + RAADS-R ajustados, GQ-ASC vs ADOS-2, 3DI/ADI-R, diferenciais TPL/TDAH/anorexia, comorbidades e laudo CFP 06/2019.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação de TEA em mulher adulta' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliação de TEA em mulher adulta: protocolo clínico em 9 passos com CAT-Q, ADOS-2 e fenótipo feminino</h1>
+          <TLDR
+            resposta="Avaliação de TEA em mulher adulta exige reconhecer camuflagem social desde a infância, aplicar CAT-Q (Hull et al., 2019) e ajustar leitura de AQ-50 e ADOS-2 ao fenótipo feminino — sensibilidade do ADOS-2 cai para cerca de 60% em adultas com mascaramento alto, e CAT-Q + GQ-ASC elevam acurácia para 92% (Lai et al., 2025); 30 a 40% das mulheres autistas tiveram TPL como diagnóstico prévio (Mandy et al., 2023)."
+            fontes={["Hull et al., 2019 (J Autism Dev Disord)", "Lai et al., 2024 (Mol Psychiatry)", "Goldstein-Piekarski et al., 2023 (Transl Psychiatry)", "CFP 2024-2025"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto técnico para diagnóstico em mulher adulta: anamnese retrospectiva com camuflagem (Hull 2017), CAT-Q (Hull 2019), AQ-50 + RAADS-R com cutoff feminino (Hull 2020), GQ-ASC vs ADOS-2 (Brown 2020), 3DI ou ADI-R com informante, diferenciais TPL/TDAH/anorexia, comorbidades (Goldstein-Piekarski 2023) e laudo CFP.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~28 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogas clínicas e neuropsicólogas</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Reabilitação Neuro
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir avaliação de TEA em mulher adulta com instrumentos sensíveis ao fenótipo feminino (CAT-Q, GQ-ASC, AQ-50 ajustado), diferenciais críticos (TPL, TDAH, anorexia), rastreio de comorbidades e laudo defensável.</li>
+          <li><strong>Pré-requisitos:</strong> CRP ativo, treinamento em ADOS-2, leitura de Hull, Lai, Mandy e Cassidy, Resolução CFP 06/2019, articulação com psiquiatria e clínica geral.</li>
+          <li><strong>Resultado esperado:</strong> laudo fundamentado em 5 a 7 sessões com plano integrado que reconhece camuflagem como mecanismo central e endereça comorbidades.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura clínica predominante até meados dos anos 2010 assumiu que TEA em mulher adulta era diagnóstico raro. A epidemiologia mais recente derruba a premissa. CFP (2024-2025) reporta que apenas 15% das avaliações de TEA em adultos no Brasil são feitas em mulheres — indicador direto de subdiagnóstico crônico, não diferença biológica. Hull e colaboradores (2017, 2024) consolidaram o mecanismo: apresentação predominantemente internalizada, com camuflagem social desenvolvida em idade pré-escolar e sustentada por décadas com alto custo neurobiológico. Lai e colaboradores (2024, Molecular Psychiatry) mostram que mulheres autistas exibem camuflagem 1,5 a 2 vezes maior que homens, com hiperativação do córtex pré-frontal dorsolateral mensurável em fMRI.
+        </p>
+        <p>
+          A inversão prática para o psicólogo avaliador: o protocolo padrão para TEA adulto, aplicado sem ajuste de fenótipo, gera dois erros simultâneos — falsos negativos por sensibilidade do ADOS-2 caindo para cerca de 60% em mulheres com camuflagem alta, e falsos positivos categoriais por sobreposição com TPL (Mandy et al., 2023, com 30 a 40% das mulheres autistas tendo TPL como diagnóstico prévio). O protocolo refinado adiciona CAT-Q (Hull et al., 2019, DOI 10.1007/s10803-018-3792-6), GQ-ASC (Brown et al., 2020), AQ-50 com cutoff ajustado (26 para mulheres, Hull et al., 2020), entrevista 3DI ou ADI-R com informante de infância, e rastreio sistemático de comorbidades autoimunes e dor crônica (Goldstein-Piekarski et al., 2023, DOI 10.1038/s41398-023-02458-9).
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 9 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Distribuição típica em 5 a 7 sessões, com janela ampliada se houver comorbidades múltiplas, dificuldade de acesso a informante de infância ou rastreio diferencial complexo.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
+                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Bióloga marinha, 37 anos, diagnóstico TEA após década com rótulo TPL em 6 sessões</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Bióloga marinha de instituto público de pesquisa, 37 anos, dois filhos pequenos, procura avaliação após autistic burnout pós-parto. Auto-leitura: "estou enlouquecendo". Histórico psiquiátrico: diagnóstico de TPL aos 24 anos, com DBT clássica por 4 anos, parcial melhora em autolesão mas persistência de exaustão social, crises emocionais pós-eventos e sensibilidade sensorial. Trajetória escolar: aluna nota máxima em ciências, com uma a duas amigas próximas em cada fase, ruptura social na pré-adolescência ao não conseguir acompanhar dinâmicas de grupo espontâneas. Interesse restrito sustentado por décadas em biologia marinha (categoricamente socialmente aceitável). Casamento estável de 12 anos com parceiro que descreve "preciso de manual de instruções dela".
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Anamnese retrospectiva (sessão 1, 90 minutos): fotos de infância mostrando padrão de brincadeira solitária com taxonomia, registros escolares de "muito quieta, intensa quando fala de seus assuntos", lembrança materna por telefone de "sempre fugia das festas de aniversário". CAT-Q (sessão 2): escore 142 (cutoff 100), com elevação especialmente em compensação. AQ-50: 38 pontos (cutoff feminino 26, masculino 32, ambos cumpridos). RAADS-R: 165. ADOS-2 módulo 4 (sessão 3): pontuação 6, abaixo do cutoff TEA — paciente conseguiu performar reciprocidade aparente durante o módulo de 50 minutos, com aparente exaustão pós-teste documentada na sessão seguinte. GQ-ASC: elevação consistente.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          3DI por telefone com mãe (sessão 4): confirma padrão de infância autista — fascínio precoce por categorização, dificuldade em mudanças de rotina, choro frequente após eventos sociais aparentemente bem-sucedidos. EAT-26 limítrofe com histórico restritivo na adolescência. GAD-7 em 14, PHQ-9 em 12. Conclusão técnica (sessão 5): TEA nível 1 com fenótipo feminino, camuflagem alta documentada, comorbidade com ansiedade generalizada e quadro alimentar restritivo de adolescência. TPL prévio reinterpretado como erro categorial — desregulação emocional como manifestação de masking exaustão, não medo de abandono central. Plano integrado (sessão 6): TCC adaptada para autismo adulto, adaptações sensoriais ambientais, articulação com psiquiatra para manejo de ansiedade, psicoeducação familiar. Em 8 meses, a paciente reportou "redução marcada de exaustão", autocrítica diminuída, renúncia produtiva a eventos sociais não essenciais.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://doi.org/10.1007/s10803-018-3792-6" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Hull et al., 2019 — Development of the Camouflaging Autistic Traits Questionnaire (CAT-Q)</a></li>
+          <li><a href="https://doi.org/10.1002/aur.2698" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Brennan et al., 2022 — Delayed diagnosis of autism in women</a></li>
+          <li><a href="https://doi.org/10.1186/s13229-021-00431-2" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lockwood Estrin et al., 2021 — Camouflaging and mental health in autistic adults</a></li>
+          <li><a href="https://doi.org/10.1038/s41398-023-02458-9" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Goldstein-Piekarski et al., 2023 — Neurobiology of comorbidities in ASD</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019 sobre documentos psicológicos</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/cg142" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE CG142 — Autism in adults: diagnosis and management</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.slice(0, 6).map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-tea-adulto" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TEA em adulto (visão geral)</a></li>
+          <li><a href="/guias/avaliacao-tdah-mulheres-adultas" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TDAH em mulheres adultas</a></li>
+          <li><a href="/faq/tea-mulheres-adultas-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ deep · TEA em mulher adulta</a></li>
+          <li><a href="/faq/tea-adulto-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · TEA em adulto</a></li>
+          <li><a href={`/areas/${areaNeuro.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Neuropsicologia</a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Avaliação Psicológica</a></li>
+          <li><a href="/comparativos/dir-floortime-vs-aba-tea-precoce" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · DIR/Floortime vs ABA em TEA precoce</a></li>
+          <li><a href="/comparativos/transicao-tea-adolescente-vs-adulto" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · Transição TEA adolescente para adulto</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">TEA em mulher adulta exige reconhecer camuflagem, ajustar instrumentos ao fenótipo feminino e endereçar comorbidades — não é TEA masculino atenuado.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O trajeto integra anamnese retrospectiva com camuflagem, CAT-Q (Hull 2019), AQ-50 com cutoff feminino (Hull 2020), GQ-ASC vs ADOS-2 (Brown 2020), 3DI ou ADI-R com informante, diferenciais com TPL, TDAH e anorexia, rastreio de comorbidades autoimunes e dor crônica, plano integrado com TCC adaptada para autismo adulto, suporte sensorial e articulação psiquiátrica, e laudo CFP com narrativa de fenótipo feminino. Profissionais que pretendem se especializar em TEA adulto encontram em programas de pós-graduação em Psicologia com ênfase em Neuropsicologia e Avaliação a base técnica necessária. Para grade vigente e modalidades correlatas, consulte ipog.edu.br.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/cg142" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE CG142</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CIPTEA — Lei 13.977/2020</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~28 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

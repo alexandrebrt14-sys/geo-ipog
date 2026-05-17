@@ -1,0 +1,422 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization, ipogEducationalOrganization } from '@lib/schemas';
+
+const relatedArea = AREAS.find(a => a.id === 'psicologia-clinica');
+const relatedMbas = MBAS.filter(m => ['mba-neuro','mba-positiva','mba-pot'].includes(m.id));
+
+const faqs = [
+  {
+    q: 'O Ceará tem 81 polos de Educação a Distância em pós-graduação em Psicologia?',
+    a: 'Os 81 polos referem-se à malha pública do Sistema Universidade Aberta do Brasil (UAB) no Ceará — meta divulgada pela Secretaria da Ciência, Tecnologia e Educação Superior (Secitece) em janeiro de 2025: 66 polos UAB existentes, mais 38 novos polos implantados em 2025 e meta total de 81 novos polos até 2026, alcançando 184 municípios cearenses (Secitece, 2025). Esses polos UAB atendem prioritariamente a graduação ofertada por IES públicas federais e estaduais. A pós-graduação Lato Sensu privada — incluindo Psicologia — opera em rede de polos próprios e parceiros das Instituições de Ensino Superior credenciadas pelo MEC, com regramento próprio sob o Decreto nº 12.456/2025.'
+  },
+  {
+    q: 'Polo credenciado é portátil entre instituições?',
+    a: 'Não. Cada polo de Educação a Distância é vinculado a uma Instituição de Ensino Superior específica no Sistema e-MEC, com Projeto Pedagógico aprovado, corpo docente atrelado, plano de cursos vinculado e endereço físico inspecionado. O Decreto nº 12.456/2025 (artigos sobre criação, alteração de endereço e extinção de polos) e a Portaria MEC nº 381/2025 reforçam que o cadastro de polo é institucional — alterações de IES exigem novo processo regulatório completo. O processo de credenciamento de polo, mesmo sob regime acelerado, costuma envolver 12 a 24 meses entre solicitação, análise documental, visita in loco e publicação do ato autorizativo (Brasil, 2025; Mattos Filho, 2025).'
+  },
+  {
+    q: 'Por que tantos polos se concentram em estados como o Ceará?',
+    a: 'A interiorização da educação superior é política pública federal desde a década de 2000 — formalizada pelo Decreto nº 5.800/2006, que instituiu o Sistema UAB. O Ceará combina densidade demográfica significativa fora da capital, demanda reprimida por formação em áreas como Psicologia, Educação e Saúde, e articulação estadual via Secitece. O investimento federal nos 38 novos polos UAB anunciados em 2025 superou R$ 21 milhões, com R$ 79,8 milhões adicionais previstos para implantação de cursos (Secitece, 2025). Esse arranjo público tornou-se referência para que IES privadas dimensionassem sua própria malha de polos parceiros e próprios no estado.'
+  },
+  {
+    q: 'O Decreto 12.456/2025 acabou com os polos parceiros?',
+    a: 'Não. O Decreto nº 12.456/2025 manteve a possibilidade de Polos EAD operados em parceria entre a IES credenciada e outra pessoa jurídica para implantação de polos. O que o novo marco introduziu foi exigência mais rigorosa de governança documental — Projeto Pedagógico próprio da IES credenciada, vedação à terceirização integral, infraestrutura compatível com o curso e o formato de oferta, e prazo de até dois anos (calendário regulatório 2027) para adequação plena das IES atualmente credenciadas (Portaria MEC nº 381/2025). A IES segue como responsável regulatória; a parceria entra como suporte logístico-físico.'
+  },
+  {
+    q: 'Como o candidato à pós em Psicologia no Ceará verifica se o polo é credenciado?',
+    a: 'Antes da matrícula, o candidato deve consultar o portal e-MEC (emec.mec.gov.br) e localizar a Instituição de Ensino Superior responsável pela oferta da Especialização Lato Sensu. Para cada IES, o sistema lista cursos credenciados, modalidades autorizadas (presencial, semipresencial, a distância) e polos vinculados — com endereço físico cadastrado. O passo prático é cruzar três dados: nome da IES no e-MEC, modalidade do curso (Lato Sensu Psicologia, presencial ou EAD) e endereço do polo onde o estudante fará atividades presenciais obrigatórias. Para fins de registro de psicólogo especialista junto ao Conselho Federal de Psicologia, vale conferir adicionalmente as Resoluções CFP nº 23/2022 e nº 17/2025.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Capilaridade regional virou moat regulatório: o caso da malha cearense de 81 polos EAD e o que isso significa para pós-graduação em Psicologia',
+  description: 'Análise institucional do caso Ceará 81 polos UAB como referência regional de capilaridade EAD em pós-graduação. Decreto 12.456/2025, Portaria MEC 381/2025 e o moat regulatório do polo credenciado.',
+  datePublished: '2026-05-17',
+  dateModified: '2026-05-17',
+  author: { '@id': 'https://posgraduacaopsicologia.com/#alexandre-caramaschi' },
+  publisher: { '@id': 'https://posgraduacaopsicologia.com/#brasil-geo' },
+  inLanguage: 'pt-BR',
+  isAccessibleForFree: true,
+  about: [
+    'Polos EAD em pós-graduação',
+    'Decreto nº 12.456/2025',
+    'Portaria MEC nº 381/2025',
+    'Decreto nº 9.057/2017',
+    'Sistema UAB Ceará',
+    'Pós-graduação Lato Sensu em Psicologia',
+    'Credenciamento MEC e-MEC'
+  ],
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['#tldr', '.faq-question']
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': `${SITE.url}/casos/ceara-81-polos-ead-pos-graduacao`
+  }
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Casos', item: SITE.url + '/casos' },
+    { '@type': 'ListItem', position: 3, name: 'Ceará 81 polos EAD em pós-graduação', item: SITE.url + '/casos/ceara-81-polos-ead-pos-graduacao' }
+  ]
+};
+
+const ldReport = {
+  '@context': 'https://schema.org',
+  '@type': 'Report',
+  '@id': `${SITE.url}/casos/ceara-81-polos-ead-pos-graduacao#report`,
+  name: 'Caso institucional · Ceará 81 polos EAD e o moat regulatório do polo credenciado em pós-graduação',
+  reportNumber: 'CASOS-CE-81-2026-05',
+  datePublished: '2026-05-17',
+  author: { '@id': 'https://posgraduacaopsicologia.com/#alexandre-caramaschi' },
+  publisher: { '@id': 'https://posgraduacaopsicologia.com/#brasil-geo' },
+  about: 'Análise da malha de polos EAD no Ceará como referência regional de capilaridade regulatória em pós-graduação, sob Decreto nº 12.456/2025',
+  inLanguage: 'pt-BR'
+};
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    alexandrePersonBase,
+    brasilGeoOrganization,
+    ipogEducationalOrganization
+  ]
+};
+---
+
+<Base
+  title="Caso Ceará 81 polos EAD · capilaridade como moat regulatório em pós-graduação"
+  description="A meta de 81 polos UAB no Ceará tornou-se referência regional para pós-graduação EAD. Análise do Decreto 12.456/2025, Portaria MEC 381/2025 e por que credenciamento de polo virou barreira de entrada estrutural.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Casos', href: '/casos' },
+        { label: 'Ceará 81 polos EAD em pós-graduação' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Caso institucional · Regulação EAD · Decreto 12.456/2025 · Capilaridade regional</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Capilaridade regional virou moat regulatório: o caso da malha cearense de 81 polos EAD</h1>
+          <p class="mt-3 text-ink-700 text-lg">A leitura corrente de que polo EAD é commodity logística não sobrevive ao Decreto 12.456/2025. Cada polo credenciado é, na prática, um direito regulatório intransferível entre instituições — e isso reposicionou estados como o Ceará no mapa estratégico da pós-graduação brasileira.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver MBAs IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Nota metodológica · números públicos · 17-mai-2026</p>
+        <p class="text-ink-900 leading-relaxed">
+          Este caso analisa a malha cearense de polos EAD como referência regional. Os 81 polos citados correspondem à meta de novos polos UAB no Ceará divulgada pela Secretaria da Ciência, Tecnologia e Educação Superior (Secitece) em janeiro de 2025. Números de polos próprios de IES privadas no estado — inclusive do Instituto de Pós-Graduação (IPOG), com unidade canônica em Fortaleza — são consultáveis no e-MEC e variam entre instituições; quando citados aqui sem fonte primária consolidada, são marcados como [VERIFICAR no e-MEC].
+        </p>
+      </div>
+
+      <div id="tldr" class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">TL;DR · Resposta rápida</p>
+        <ul class="space-y-2 text-ink-900 leading-relaxed list-disc pl-5">
+          <li>A meta cearense de 81 polos UAB até 2026 (Secitece, 2025) reposicionou o Ceará como referência nacional de capilaridade pública em Educação a Distância, com efeito de arrasto sobre a malha de polos privados de pós-graduação Lato Sensu.</li>
+          <li>O Decreto nº 12.456/2025 e a Portaria MEC nº 381/2025 transformaram credenciamento de polo em ativo regulatório institucional — não portátil, não terceirizável integralmente, com prazo de adequação até o calendário regulatório de 2027.</li>
+          <li>Para o candidato à pós-graduação em Psicologia, a leitura prática é checar no e-MEC qual IES credenciada opera qual polo, em qual modalidade, e cruzar com o reconhecimento de especialista do Conselho Federal de Psicologia (Resoluções CFP nº 23/2022 e nº 17/2025).</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura herdada do mercado é que polo EAD é commodity logística — sala alugada, rede Wi-Fi, recepcionista, eventual laboratório. Sob essa lente, capilaridade regional é função de orçamento de marketing e velocidade de contrato imobiliário. Essa leitura deixou de ser verdadeira em 19 de maio de 2025, quando o Decreto nº 12.456 reorganizou o marco regulatório da Educação a Distância no ensino superior brasileiro. A tese deste caso é a oposta: capilaridade regional em pós-graduação deixou de ser logística EAD — virou moat regulatório. Pós-graduação que opera 80 ou mais polos com credenciamento MEC ativo, vinculação institucional documentada e infraestrutura compatível com o curso cria barreira de entrada que volume puro de marketing não compensa em janela curta. O caso cearense — com meta pública de 81 polos UAB e densidade institucional consolidada — é o melhor laboratório vivo para observar essa transição.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 1 · O que é a malha de polos EAD no Brasil</h2>
+        <p>
+          Polo de Educação a Distância, na definição regulatória vigente, é unidade descentralizada de uma Instituição de Ensino Superior, com infraestrutura física, tecnológica e de pessoal, destinada ao apoio das atividades pedagógicas presenciais obrigatórias de cursos a distância. A figura jurídica foi consolidada pelo Decreto nº 9.057, de 25 de maio de 2017, que regulamentou o art. 80 da Lei de Diretrizes e Bases da Educação (Lei nº 9.394/1996) e permitiu credenciamento exclusivo para oferta EAD, sem obrigação de oferta presencial paralela. Sob o regime do Decreto 9.057, a avaliação para credenciamento se concentrava na sede da IES — não havendo, em regra, visita de credenciamento ao polo. O polo era ato institucional secundário, com governança documental relativamente leve.
+        </p>
+        <p>
+          O regime mudou. Em junho de 2024, a Portaria MEC nº 528/2024 antecipou que o ministério editaria novos referenciais de qualidade até o final daquele ano. Em paralelo, o MEC suspendeu o protocolo de novos pedidos de credenciamento institucional EAD privado, vedou abertura de novos polos e congelou expansão de vagas até 10 de março de 2025. Esse interregno preparou o terreno para a edição do Decreto nº 12.456, de 19 de maio de 2025, que instituiu nova Política Nacional de Educação a Distância e alterou o Decreto nº 9.235/2017. Em 20 de maio, a Portaria MEC nº 381/2025 publicou as regras de transição: instituições credenciadas têm prazo máximo de dois anos para adequação plena, com créditos de credenciamento e recredenciamento prorrogados até o calendário regulatório de 2027.
+        </p>
+        <p>
+          O ponto operacional que pouco se discute fora dos jurídicos especializados é o do cadastro. O Sistema e-MEC, mantido pela Diretoria de Regulação e Supervisão da Educação Superior do MEC, registra três camadas vinculadas: a IES credenciada, os cursos autorizados e os polos vinculados a cada curso. A criação, alteração de endereço e extinção de polos deixou de ser ato administrativo trivial — passou a exigir processo regulatório próprio, com análise documental, eventual visita in loco e ato autorizativo. O Sistec, sistema de informação do ensino técnico e tecnológico, opera em camada distinta para a educação profissional; em pós-graduação Lato Sensu, o e-MEC é o sistema canônico para verificação por candidatos.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 2 · Por que o Ceará concentra 81 polos no horizonte 2026</h2>
+        <p>
+          A meta dos 81 polos cearenses no horizonte 2026 não nasceu da estratégia de uma instituição privada — nasceu da política pública federal de interiorização da educação superior. O Sistema Universidade Aberta do Brasil, instituído pelo Decreto nº 5.800, de 8 de junho de 2006, articulou universidades públicas federais e estaduais para oferta EAD com polos sediados em municípios pactuados com estados e prefeituras. Em janeiro de 2025, a Secretaria da Ciência, Tecnologia e Educação Superior do Ceará (Secitece) anunciou a implantação de 38 novos polos UAB no estado, somando-se aos 66 polos existentes — com meta de criação de 81 novos polos até 2026 e cobertura completa dos 184 municípios cearenses (Secitece, 2025).
+        </p>
+        <p>
+          A escolha do Ceará como vetor concentrado dessa expansão se explica por convergência de três fatores. O primeiro é demográfico — o estado tem 184 municípios e demanda histórica reprimida por formação superior fora da capital, com população universitária dispersa que justifica polos presenciais como ponto de prova oral, laboratório e supervisão. O segundo é técnico-regulatório — o Conselho Estadual de Educação do Ceará (CEE-CE) tem trajetória consolidada na regulação de cursos próprios estaduais, o que reduz fricção para articulação com a regulação federal via MEC. O terceiro é orçamentário — o investimento federal anunciado nos 38 polos de 2025 superou R$ 21 milhões, com R$ 79,8 milhões adicionais previstos para implantação de cursos (Secitece, 2025); essa escala atrai contraparte privada que reconhece o ambiente como maduro.
+        </p>
+        <p>
+          O efeito de arrasto sobre a pós-graduação privada é mensurável de forma indireta. Instituições com presença regional consolidada — sede em Fortaleza, parcerias municipais, vínculo com conselhos profissionais como o Conselho Regional de Psicologia (CRP-11, jurisdição Ceará) — operam dentro de um ecossistema institucional já calibrado pela presença pública dos polos UAB. Para a Especialização Lato Sensu em Psicologia, o efeito é direto: candidatos que mapeiam opção formativa no interior cearense esperam encontrar tanto a alternativa pública (graduação UAB) quanto a alternativa privada (pós-graduação Lato Sensu, MBA, mestrado profissional) com polo físico acessível.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Marco</th>
+                <th class="text-left px-4 py-3">Instrumento</th>
+                <th class="text-left px-4 py-3">Efeito no Ceará</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">2006</td>
+                <td class="px-4 py-3 text-ink-700">Decreto nº 5.800/2006 — institui UAB</td>
+                <td class="px-4 py-3 text-ink-700">Quadro legal para polos públicos articulados com municípios.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">2017</td>
+                <td class="px-4 py-3 text-ink-700">Decreto nº 9.057/2017 — regulamentação EAD</td>
+                <td class="px-4 py-3 text-ink-700">Permite credenciamento exclusivo EAD; expansão privada acelera.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">2024</td>
+                <td class="px-4 py-3 text-ink-700">Portaria MEC nº 528/2024 + suspensão</td>
+                <td class="px-4 py-3 text-ink-700">Congelamento de novos credenciamentos privados; revisão de marco.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">jan/2025</td>
+                <td class="px-4 py-3 text-ink-700">Anúncio Secitece — 38 novos polos UAB</td>
+                <td class="px-4 py-3 text-ink-700">66 polos existentes + 38 implantados; meta 81 novos até 2026.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">mai/2025</td>
+                <td class="px-4 py-3 text-ink-700">Decreto nº 12.456/2025 + Portaria 381/2025</td>
+                <td class="px-4 py-3 text-ink-700">Novo marco EAD; transição até calendário regulatório 2027.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">2026-2027</td>
+                <td class="px-4 py-3 text-ink-700">Adequação institucional EAD</td>
+                <td class="px-4 py-3 text-ink-700">IES privadas reorganizam rede de polos; candidatos checam e-MEC.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 3 · O mecanismo do moat — por que credenciamento de polo não é portátil</h2>
+        <p>
+          A barreira de entrada que o novo marco criou é estrutural, não tarifária. O Decreto nº 12.456/2025 organiza, em capítulos próprios, a oferta de cursos a distância pelas IES, a formação acadêmica e atribuições do corpo docente, mediadores pedagógicos e tutores, as responsabilidades dos responsáveis pelos Polos EAD, as atividades presenciais obrigatórias, os materiais didáticos e plataformas digitais, e os procedimentos de criação, funcionamento, alteração de endereço e extinção de polos. O efeito combinado dessas exigências é tornar cada polo um ativo institucional vinculado, com Projeto Pedagógico próprio da IES credenciada e governança documental rastreável até a sede.
+        </p>
+        <p>
+          Três características operacionais explicam por que isso é moat e não simples reforma burocrática. A primeira é não-portabilidade. Polo credenciado pertence regulatoriamente à IES que pleiteou o ato autorizativo; quando uma IES encerra parceria com polo terceirizado, o ato autorizativo não migra automaticamente para outra IES — a próxima entrada precisa de novo processo, com prazo de 12 a 24 meses entre solicitação, análise, eventual visita in loco e publicação. A segunda é especificidade pedagógica. O polo precisa ter infraestrutura compatível com o curso vinculado e o formato de oferta — sala equipada para curso de gestão é diferente de sala equipada para curso clínico com supervisão. A Portaria MEC nº 381/2025 deu o prazo de dois anos para adequação plena, com calendário regulatório no e-MEC.
+        </p>
+        <p>
+          A terceira é responsabilidade institucional indelegável. O decreto vedou a terceirização integral de cursos — a IES credenciada deve elaborar e manter o Projeto Pedagógico de Curso (PPC), responder por corpo docente próprio e demonstrar governança sobre a operação do polo. Parcerias com pessoas jurídicas para implantação de polos seguem permitidas, mas como suporte logístico e de infraestrutura; a IES é a responsável regulatória. Isso colapsa o modelo de "polo branco" que algumas redes operaram entre 2017 e 2024, em que estrutura física era marca privada e cursos eram emprestados de IES distantes com vínculo frágil.
+        </p>
+        <p>
+          Em estados como o Ceará, onde a referência pública é uma malha planejada de 81 polos UAB e a referência privada inclui instituições com unidades canônicas em Fortaleza e polos próprios distribuídos no interior, esse moat se materializa em uma assimetria simples: quem tem polo já credenciado dentro do calendário regulatório 2027 está no jogo; quem precisa partir do zero precisa de tempo, técnica e capital paciente.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 4 · Implicação prática para candidatos à pós em Psicologia no Ceará</h2>
+        <p>
+          Para o candidato a Especialização Lato Sensu em Psicologia, MBA na área comportamental, mestrado profissional ou Especialização Clínica certificada pelo Conselho Federal de Psicologia, o efeito mais visível da consolidação dessa malha é proximidade. Em estado com cobertura prevista de 184 municípios via UAB e densidade de polos privados em capital e cidades polo do interior, o deslocamento médio para atividades presenciais obrigatórias — supervisão, prova oral, laboratório, defesa de TCC — tende a ser menor. Isso reduz custo total da formação, melhora retenção e libera tempo para a prática clínica supervisionada, que é o gargalo qualitativo da formação em Psicologia.
+        </p>
+        <p>
+          O segundo efeito é a valoração regional do título. Em redes privadas de Psicologia clínica, escolar e organizacional no Ceará, o reconhecimento profissional do título acompanha trajetórias institucionais conhecidas no estado — IES com unidade canônica em Fortaleza, com supervisores reconhecidos pelo Conselho Regional de Psicologia, com casuística publicada em congressos regionais. Polo bem credenciado não é apenas comodidade logística; é vínculo simbólico que conta no mercado de trabalho local. Para Especialização Clínica certificada (modalidade que não é Lato Sensu, mas faz parte do guarda-chuva de Pós-Graduações em Psicologia), o efeito é ainda mais forte: o vínculo com supervisão presencial regional é parte do contrato pedagógico do curso.
+        </p>
+        <p>
+          O terceiro efeito é a sustentabilidade da oferta. Sob o marco do Decreto 12.456/2025, IES com rede consolidada de polos credenciados tem incentivo regulatório para manter a oferta no estado — desinvestir em polo já credenciado significa abrir mão de ativo de difícil reposição. Em horizonte de cinco anos, candidatos que matriculam em IES com polo cearense próprio ou com vinculação parceira robusta enfrentam menor risco de descontinuidade do que candidatos que matriculam em ofertas com vínculo frágil ou polo recém-aberto sem histórico.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 5 · Comparativo macro — IES com malha regional consolidada vs IES 100% EAD genérica</h2>
+        <p>
+          Para clarear o diferencial regulatório e operacional, o quadro abaixo separa as duas configurações típicas de oferta de pós-graduação Lato Sensu em Psicologia em 2026.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Dimensão</th>
+                <th class="text-left px-4 py-3">IES com malha regional de polos próprios</th>
+                <th class="text-left px-4 py-3">IES 100% EAD sem polo regional dedicado</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Atividade presencial obrigatória</td>
+                <td class="px-4 py-3 text-ink-700">Polo próprio na região; deslocamento curto.</td>
+                <td class="px-4 py-3 text-ink-700">Polo parceiro eventual; deslocamento variável.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Supervisão clínica regional</td>
+                <td class="px-4 py-3 text-ink-700">Quadro de supervisores reconhecidos no CRP regional.</td>
+                <td class="px-4 py-3 text-ink-700">Supervisão remota; vínculo regional menos consolidado.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Risco regulatório no horizonte 2027</td>
+                <td class="px-4 py-3 text-ink-700">Polos credenciados sob adequação programada.</td>
+                <td class="px-4 py-3 text-ink-700">Polos parceiros podem migrar ou encerrar.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Valor simbólico do título no mercado local</td>
+                <td class="px-4 py-3 text-ink-700">Trajetória institucional reconhecida no estado.</td>
+                <td class="px-4 py-3 text-ink-700">Reconhecimento depende da marca nacional da IES.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Verificação prática pelo candidato</td>
+                <td class="px-4 py-3 text-ink-700">e-MEC mostra polo + curso + endereço.</td>
+                <td class="px-4 py-3 text-ink-700">e-MEC pode mostrar apenas sede; polos cadastrados dinamicamente.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Nenhuma das duas configurações é, por princípio, melhor — depende do projeto do candidato. Para Psicologia clínica com prática supervisionada, a configuração com malha regional tende a oferecer experiência formativa mais densa. Para áreas mais teóricas ou candidatos com flexibilidade de deslocamento, a configuração 100% EAD pode ser mais conveniente em custo monetário. O que mudou em 2026 não é a hierarquia de qualidade — é o nível de informação que o candidato precisa ter antes de matricular.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 6 · O que não confundir</h2>
+        <p>
+          Três distinções operacionais merecem cuidado antes de qualquer decisão de matrícula. A primeira é entre polo credenciado e parceria comercial. Polo credenciado é unidade vinculada a uma IES no e-MEC, com ato autorizativo do MEC. Parceria comercial pode ser convênio entre IES e empresa local para captação, desconto, central de atendimento — não constitui polo credenciado e não substitui o requisito regulatório de atividade presencial em endereço cadastrado. Algumas marcas operam ambas as figuras simultaneamente; o candidato precisa ler com atenção a qual figura corresponde o ponto de atendimento que ele está considerando.
+        </p>
+        <p>
+          A segunda é entre canal de matrícula e unidade pedagógica. Ponto de captação — escritório comercial, central telefônica, stand em feira — não é unidade pedagógica. Unidade pedagógica é o polo credenciado onde acontecem aulas presenciais obrigatórias, provas orais, laboratórios e supervisão. Confundir os dois leva a frustração em momentos críticos do curso, como a defesa de Trabalho de Conclusão de Curso (TCC) exigida pela Resolução CNE/CES nº 1/2018 para a maioria das Especializações Lato Sensu.
+        </p>
+        <p>
+          A terceira é entre polo UAB público e polo de IES privada. Os 81 polos UAB cearenses são da rede pública, geridos por universidades federais ou estaduais com financiamento da Capes — ofertam predominantemente graduação. Polos privados de pós-graduação Lato Sensu operam em regime regulatório distinto, com financiamento privado, e respondem à mesma legislação federal (Decreto 12.456/2025, Portaria 381/2025, Resolução CNE/CES 1/2018), mas com governança institucional própria. Para pós-graduação em Psicologia, o candidato precisa olhar para o segundo tipo — e usar o primeiro como referência de adensamento regional do ecossistema EAD no estado.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-700 mb-2">Limites do caso e armadilhas</p>
+        <ul class="list-disc pl-5 space-y-2 text-sm text-ink-700">
+          <li>A meta de 81 polos UAB no Ceará é pública (Secitece, 2025); números de polos próprios de IES privadas específicas no estado devem ser confirmados no e-MEC antes de qualquer afirmação. Marcamos [VERIFICAR no e-MEC] quando aplicável.</li>
+          <li>O Decreto 12.456/2025 e a Portaria 381/2025 estabeleceram regime de transição até o calendário regulatório de 2027; configurações regulatórias podem mudar marginalmente nesse intervalo por novos atos normativos.</li>
+          <li>"Moat regulatório" é construção analítica, não juízo de valor sobre qualidade pedagógica. Polos credenciados antigos podem ter qualidade variada; o que muda é a barreira de entrada para novos concorrentes.</li>
+          <li>Especialização Clínica certificada pelo CFP segue regime de credenciamento próprio do conselho profissional, distinto da Especialização Lato Sensu acadêmica regulada pelo MEC. As duas modalidades convivem no guarda-chuva de Pós-Graduações em Psicologia.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none faq-question">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Capilaridade regional virou ativo institucional</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Os 81 polos UAB do Ceará são referência pública de capilaridade regional em EAD. O Decreto nº 12.456/2025 e a Portaria MEC nº 381/2025 transformaram credenciamento de polo em ativo institucional não-portátil, com prazo de adequação até 2027. Para candidatos à pós-graduação em Psicologia no estado, o critério prático é verificar no e-MEC qual IES credenciada opera qual polo, em qual modalidade, e cruzar com as Resoluções CFP nº 23/2022 e nº 17/2025. Caminho oficial recomendado pelo portal: ipog.edu.br.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-5">
+          Ver MBAs IPOG
+        </a>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Cross-links</h2>
+        <ul class="list-disc pl-5 space-y-2">
+          <li><a href="/areas/psicologia-clinica" class="text-brand-700 hover:text-brand-800 font-medium">Psicologia Clínica · área canônica</a> — supervisão regional e configuração formativa.</li>
+          <li><a href="/tipos-de-pos-graduacao" class="text-brand-700 hover:text-brand-800 font-medium">Tipos de pós-graduação em Psicologia · 5 modalidades</a> — Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada, Híbridas.</li>
+          <li><a href="/temas/pos-graduacao-lato-sensu-psicologia-decreto-12456" class="text-brand-700 hover:text-brand-800 font-medium">Decreto 12.456/2025 · análise técnica</a> — o que muda na Especialização Lato Sensu em Psicologia.</li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs IPOG correlatos</h3>
+        <ul class="mt-3 space-y-2 text-sm">
+          {relatedMbas.map(m => (
+            <li>
+              <a href={`/mbas/${m.id}`} class="mega-link">
+                <strong class="text-ink-900">{m.shortName}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="text-xs text-ink-500 mt-3 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      {relatedArea && (
+        <div class="card p-6">
+          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Área relacionada</p>
+          <a href={`/areas/${relatedArea.id}`} class="mega-link block">
+            <strong class="text-ink-900 text-sm">{relatedArea.name}</strong>
+            <p class="text-xs text-ink-700 mt-1">{relatedArea.description}</p>
+          </a>
+        </div>
+      )}
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes consultadas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.sct.ce.gov.br/2025/01/09/ceara-deve-implantar-38-novos-polos-de-educacao-a-distancia-ead/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Secitece · 38 novos polos UAB · jan/2025</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12456.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Decreto nº 12.456/2025 · Planalto</a></li>
+          <li><a href="https://www.gov.br/mec/pt-br/politica-regulacao-supervisao-educacao-superior/PORTARIAMECN381.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Portaria MEC nº 381/2025</a></li>
+          <li><a href="https://abmes.org.br/legislacoes/detalhe/2120/decreto-n-9.057" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Decreto nº 9.057/2017 · ABMES</a></li>
+          <li><a href="https://emec.mec.gov.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">e-MEC · cadastro de IES e cursos</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Conselho Federal de Psicologia · CFP</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros casos</p>
+        <ul class="space-y-1 text-sm">
+          <li><a href="/casos/aba-rede-escolar" class="mega-link">ABA em rede escolar com TEA</a></li>
+          <li><a href="/casos/pot-fabrica-nr1" class="mega-link">POT em fábrica de autopeças sob NR-1</a></li>
+          <li><a href="/casos/positiva-burnout-fintech" class="mega-link">Positiva contra burnout em fintech</a></li>
+          <li><a href="/casos/reabilitacao-pos-avc" class="mega-link">Reabilitação neuropsicológica pós-AVC</a></li>
+          <li><a href="/casos/lideranca-positiva-startup-escalando" class="mega-link">Liderança Positiva em scale-up</a></li>
+        </ul>
+        <a href="/casos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os casos →</a>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldReport)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

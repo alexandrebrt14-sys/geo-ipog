@@ -2,6 +2,7 @@
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import { SITE, AREAS, MBAS } from '@lib/data';
+import { buildEducationalOccupationalProgram, buildSpeakable } from '@lib/schemas';
 
 const area = AREAS.find(a => a.id === 'psicologia-transito-trafego')!;
 const relatedMbas = MBAS.filter(m => area.relatedCourses.includes(m.id));
@@ -49,6 +50,20 @@ const ldFaq = {
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
+
+const ldProgram = JSON.stringify({
+  '@context': 'https://schema.org',
+  ...buildEducationalOccupationalProgram({
+    name: 'Especialização Lato Sensu em Psicologia do Trânsito',
+    slug: '/areas/psicologia-transito-trafego',
+    description: 'Formação para psicólogos credenciados pelo DETRAN que realizam avaliação psicológica para habilitação de condutores, com base nas Resoluções CFP 07/2009 e 425/2012 e normas do CONTRAN.',
+    programType: 'Especialização Lato Sensu',
+    timeRequired: 'P360H',
+    occupationalCredentialAwarded: 'Especialista em Psicologia do Trânsito',
+    educationalCredentialAwarded: 'Certificado de Especialização Lato Sensu'
+  }),
+  speakable: buildSpeakable(['h1', '.section-h'])
+});
 ---
 
 <Base
@@ -291,4 +306,5 @@ const ldFaq = {
 
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={ldProgram} />
 </Base>

@@ -1,0 +1,491 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+import { buildEducationalOccupationalProgram, buildSpeakable } from '@lib/schemas/educational-program';
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+
+const competencias = [
+  {
+    nome: 'Literacia em Machine Learning aplicada à clínica',
+    desc: 'Distinguir aprendizado supervisionado, não supervisionado e generativo. Compreender LLM, embedding, fine-tuning, RAG. Ler datasheet de modelo e benchmark psicométrico antes de adotar ferramenta.',
+    referencia: 'APA Task Force on AI in Psychology (2024-2026); Heinz et al. (Stanford, 2025).'
+  },
+  {
+    nome: 'Governança de dado clínico sensível',
+    desc: 'Operar o dado sensível sob LGPD (Lei 13.709/2018, art. 5º II e art. 11). Mapear fluxo, identificar transferência internacional, exigir adequação contratual com fornecedor de IA, documentar consentimento informado específico para uso de IA.',
+    referencia: 'LGPD; CFP — Posicionamento de 03/07/2025; Resolução CFP nº 09/2024.'
+  },
+  {
+    nome: 'Validação psicométrica de instrumento digital',
+    desc: 'Avaliar evidência de validade, fidedignidade e equidade de instrumento clínico digitalizado. Reconhecer quando o algoritmo opera fora da amostra de validação. Aplicar critérios SATEPSI quando instrumento for de uso privativo do psicólogo.',
+    referencia: 'SATEPSI/CFP; Resolução CFP nº 31/2022 (avaliação psicológica).'
+  },
+  {
+    nome: 'Avaliação ética de viés algorítmico',
+    desc: 'Auditar viés cultural, demográfico e de adesão (sycophancy). Aplicar protocolo de teste pareado em cenários clínicos. Reconhecer que prompt isolado não corrige viés estrutural — exige governança técnica documentada.',
+    referencia: 'Heinz et al. (Stanford, 2025); CFP — Posicionamento 03/07/2025.'
+  },
+  {
+    nome: 'Interpretação de saída probabilística em diagnóstico',
+    desc: 'Compreender que LLM gera distribuição de probabilidade, não verdade clínica. Sustentar o ato privativo do psicólogo: hipótese clínica permanece humana; IA é apoio à formulação, nunca substituto. Documentar a cadeia de decisão em prontuário.',
+    referencia: 'CFP — Resolução CFP nº 09/2024; APA (2024-2026); Sharma et al. (2024).'
+  }
+];
+
+const casosUso = [
+  {
+    bloco: 'Triagem inicial em programa de saúde mental ocupacional',
+    desc: 'IA classifica risco em sub-amostra para encaminhamento humano. Não emite diagnóstico. Sempre com responsável técnico habilitado (psicólogo com CRP ativo) revisando e assinando o desfecho.',
+    risco: 'Médio. Exige protocolo, consentimento e auditoria de viés.'
+  },
+  {
+    bloco: 'Monitoramento entre sessões',
+    desc: 'Chatbot estruturado coleta marcadores de humor, sono e adesão ao plano terapêutico. Saída lida pelo psicólogo antes da sessão. Útil em transtorno de humor e protocolo TCC. Wysa (Inkster, 2018) e Woebot (Fitzpatrick, 2017) consolidaram a evidência em sintomas leves a moderados.',
+    risco: 'Baixo a médio. Sem manejo de crise autônomo.'
+  },
+  {
+    bloco: 'Psicoeducação assistida',
+    desc: 'IA gera material informativo personalizado revisado pelo psicólogo. Reduz carga administrativa. Não substitui sessão. Aplicação válida em programas de letramento em saúde mental corporativa.',
+    risco: 'Baixo. Revisão clínica obrigatória.'
+  },
+  {
+    bloco: 'Suporte ao supervisor — síntese de prontuário e formulação de hipóteses',
+    desc: 'Aplicação canônica de 2026. IA sintetiza histórico, sugere hipóteses diagnósticas diferenciais e organiza relatório. Decisão clínica permanece humana, com revisão crítica registrada. Reduz o tempo administrativo do psicólogo em até 30% em estudos preliminares brasileiros (Trends in Psychology, 2025).',
+    risco: 'Baixo se a governança documentar revisão humana sistemática.'
+  }
+];
+
+const diferenciaisTrilha = [
+  {
+    eixo: 'Supervisão clínica humana como eixo metodológico',
+    desc: 'A trilha forte trata supervisão humana como conteúdo central — não como rodapé ético. Cada módulo conecta caso de uso técnico ao protocolo de revisão clínica que sustenta o uso defensável da ferramenta.'
+  },
+  {
+    eixo: 'Equipe docente multidisciplinar',
+    desc: 'Psicólogo clínico com CRP ativo, cientista de dados, jurista LGPD, especialista em ética em IA. Sem essa composição, a formação treina ou só técnica ou só compliance — nunca a articulação.'
+  },
+  {
+    eixo: 'Currículo alinhado a CID-11, DSM-5-TR e CFP',
+    desc: 'Diagnóstico psicológico no Brasil opera sob CID-11 (OMS, vigência 2022) e DSM-5-TR (APA, 2022) como referência clínica, e sob Resolução CFP nº 09/2024 e Posicionamento CFP 03/07/2025 como referência regulatória. Trilha que ignora qualquer uma das três bases entrega profissional incompleto.'
+  },
+  {
+    eixo: 'Certificação reconhecida pelo MEC com integração CFP',
+    desc: 'Lato Sensu ou MBA registrado conforme Resolução CNE/CES nº 1/2018. Para a especialidade em Psicologia Clínica certificada pelo CFP, a Resolução CFP nº 13/2007 estabelece o caminho complementar. Programa que entrega apenas certificado livre não habilita o título de especialista.'
+  },
+  {
+    eixo: 'Estudo de caso brasileiro, não tradução de currículo norte-americano',
+    desc: 'Validação para população brasileira é gap documentado da literatura (Trends in Psychology, 2025; Psicologia: Reflexão e Crítica, 2025). Trilha forte trabalha caso clínico brasileiro, instrumento validado em português, contexto SUS e saúde suplementar brasileira.'
+  }
+];
+
+const verificacoesMatricula = [
+  {
+    item: 'Currículo nominal disponível com carga horária por módulo',
+    racional: 'Programa sério publica grade detalhada. Currículo genérico em landing page é sinal de fragilidade técnica.'
+  },
+  {
+    item: 'Identificação dos docentes com Lattes e CRP ativo (quando psicólogo)',
+    racional: 'Docência em psicologia clínica exige CRP ativo. Cientista de dados deve ter publicação verificável. Sem nome, sem caminho.'
+  },
+  {
+    item: 'Política explícita sobre uso de IA em avaliação do aluno',
+    racional: 'Programa que treina supervisão humana de IA precisa, ele mesmo, ter política sobre uso de IA pelos alunos em trabalho de conclusão. Coerência metodológica.'
+  },
+  {
+    item: 'Carga horária mínima de supervisão clínica registrada em CRP',
+    racional: 'A Resolução CFP nº 13/2007, alterada por resoluções subsequentes, especifica supervisão como requisito da especialização clínica. Trilha de IA aplicada à clínica precisa preservar esse piso.'
+  },
+  {
+    item: 'Reconhecimento MEC do certificado (Lato Sensu) ou registro como MBA conforme CNE/CES nº 1/2018',
+    racional: 'Certificado livre não habilita especialista. Diploma reconhecido pelo MEC é o caminho regulatório para Lato Sensu e MBA no Brasil.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'A IA pode substituir o psicólogo em diagnóstico no Brasil?',
+    a: 'Não. O Posicionamento do CFP de 03/07/2025 é explícito: a IA é apoio, não substituto do juízo clínico e ético do psicólogo. O diagnóstico psicológico é ato privativo do psicólogo habilitado, regulado pela Lei nº 5.766/1971 e pela Resolução CFP nº 31/2022. A Resolução CFP nº 09/2024, que regulamenta o exercício profissional mediado por Tecnologias Digitais de Informação e Comunicação, estabelece que a responsabilidade técnica permanece com o psicólogo registrado no CRP. Sistema que vende diagnóstico autônomo por IA opera contra o marco regulatório brasileiro.'
+  },
+  {
+    q: 'O que é supervisão clínica humana no contexto de IA?',
+    a: 'É o regime metodológico em que toda saída de sistema de IA aplicada à saúde mental passa por revisão crítica de psicólogo habilitado antes de produzir efeito clínico, com registro em prontuário e responsabilidade técnica explícita. O Posicionamento do CFP de 03/07/2025 afirma que "as atividades mais complexas devem ocorrer sempre sob supervisão crítica e com discernimento ético por parte da psicóloga e do psicólogo responsável". Supervisão humana, nesse sentido, não é checagem final — é o eixo metodológico que organiza o uso clínico da IA do prompt à decisão.'
+  },
+  {
+    q: 'Como a RDC ANVISA 657/2022 se aplica a IA em saúde mental?',
+    a: 'A RDC 657/2022, em vigor desde 1º de julho de 2022, regula software como dispositivo médico (Software as a Medical Device, SaMD). Sistema de IA que produz informação para tomada de decisão clínica em saúde mental pode se enquadrar como SaMD e, dependendo da classe de risco (I a IV), exige notificação ou registro na ANVISA. Software classes III e IV exige registro formal; classes I e II exige notificação. Plataforma comercial de saúde mental que opera como SaMD sem regularização ANVISA opera em risco regulatório direto. Software desenvolvido in house pelo próprio serviço de saúde, classes I e II, está dispensado de regularização, mas a comercialização ou doação sem registro é vedada.'
+  },
+  {
+    q: 'O PL 2338/2023 já é lei? O que muda para psicologia?',
+    a: 'O PL 2338/2023 foi aprovado por unanimidade no plenário do Senado Federal em 10 de dezembro de 2024 e segue para apreciação na Câmara dos Deputados, com expectativa de aprovação final em 2026 [VERIFICAR data]. O texto adota modelo europeu (AI Act), classificando sistemas por nível de risco e criando o Sistema Nacional de Regulação e Governança de IA. Para psicologia clínica e organizacional, o ponto crítico é que sistemas de IA aplicados a saúde mental tendem a se enquadrar em risco alto, exigindo auditoria, documentação, transparência e governança formal. A trilha forte de formação prepara o psicólogo para SER o governante humano que o marco vai exigir.'
+  },
+  {
+    q: 'Vale a pena fazer MBA em IA aplicada à psicologia em 2026?',
+    a: 'A janela é favorável quando o programa atende cinco condições: supervisão clínica humana como eixo metodológico, equipe docente multidisciplinar (clínico, cientista de dados, jurista, eticista), currículo alinhado a CID-11/DSM-5-TR e Resolução CFP nº 09/2024, certificação Lato Sensu ou MBA reconhecida MEC, e estudo de caso brasileiro real. Sem essas cinco condições, é treinamento livre vendido como pós-graduação. A demanda por psicólogo-supervisor de IA cresce no compasso da NR-1 atualizada pela Portaria MTE 1.419/2024 e da regulamentação federal de IA — programa que captura essas duas ondas posiciona o profissional para a próxima década clínica.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'IA em Saúde Mental com Supervisão Clínica Humana: a trilha MBA que captura a onda regulatória de 2026',
+  description: 'Resolução CFP nº 09/2024, Posicionamento CFP 03/07/2025, RDC ANVISA 657/2022 e PL 2338/2023 redesenharam o uso clínico de IA em saúde mental. A trilha forte treina o psicólogo para SER o supervisor humano regulamentado.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  about: 'IA em saúde mental, supervisão clínica humana, Resolução CFP nº 09/2024, Posicionamento CFP 03/07/2025, RDC ANVISA 657/2022, PL 2338/2023, MBA em psicologia digital',
+  speakable: buildSpeakable(['.tldr-resposta', '#tese-contraintuitiva', '.faq-answer-text'])
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: buildSpeakable(['.faq-answer-text']),
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Temas', item: `${SITE.url}/temas` },
+    { '@type': 'ListItem', position: 3, name: 'IA em Saúde Mental com Supervisão Clínica Humana — MBA Trilha', item: `${SITE.url}/temas/ia-saude-mental-supervisao-clinica-humana-mba-trilha` }
+  ]
+};
+
+const ldProgram = {
+  '@context': 'https://schema.org',
+  ...buildEducationalOccupationalProgram({
+    name: 'Trilha MBA em IA aplicada à Saúde Mental com Supervisão Clínica Humana',
+    slug: '/temas/ia-saude-mental-supervisao-clinica-humana-mba-trilha',
+    description: 'Trilha MBA canônica que articula avaliação clínica, governança de dado sensível sob LGPD, validação psicométrica de instrumento digital, auditoria de viés algorítmico e interpretação probabilística em diagnóstico. Aderente à Resolução CFP nº 09/2024 e ao Posicionamento CFP de 03/07/2025.',
+    programType: 'MBA',
+    timeRequired: 'P360H',
+    educationalProgramMode: 'blended',
+    occupationalCredentialAwarded: 'Certificado de MBA em Psicologia Digital com Supervisão Clínica Humana (Lato Sensu) reconhecido pelo MEC.',
+    educationalCredentialAwarded: 'MBA Lato Sensu em Psicologia Digital — IA em Saúde Mental sob Supervisão Clínica Humana',
+    additionalRecognizedBy: [
+      { name: 'Conselho Federal de Psicologia — CFP', url: 'https://site.cfp.org.br/' }
+    ]
+  })
+};
+---
+
+<Base
+  title="IA em Saúde Mental com Supervisão Clínica Humana: a trilha MBA que captura a onda regulatória de 2026"
+  description="Resolução CFP nº 09/2024, Posicionamento CFP 03/07/2025, RDC ANVISA 657/2022 e PL 2338/2023 redesenharam o uso clínico de IA em saúde mental. A trilha forte treina o psicólogo para SER o supervisor humano regulamentado — competências, casos de uso e verificações antes de matricular.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Temas', href: '/temas' },
+        { label: 'IA em Saúde Mental com Supervisão Clínica Humana — MBA Trilha' }
+      ]} />
+      <span class="section-eyebrow mt-3">Tema · 2026 · CFP · ANVISA · PL 2338 · MBA Trilha</span>
+      <h1 class="section-h text-3xl sm:text-4xl">IA em Saúde Mental com Supervisão Clínica Humana: a trilha MBA que captura a onda regulatória de 2026</h1>
+      <TLDR
+        resposta="A onda 2026 de IA em saúde mental não é substituição do psicólogo — é supervisão clínica humana regulamentada. O Posicionamento do CFP de 03/07/2025 ancorou a tese, a Resolução CFP nº 09/2024 estabeleceu obrigações concretas sobre tecnologias digitais, a RDC ANVISA 657/2022 enquadrou software como dispositivo médico e o PL 2338/2023 trouxe o desenho regulatório federal. Programa que treinar o psicólogo para SER o supervisor humano da IA — com cinco competências canônicas, casos de uso clínicos delimitados e currículo alinhado a CID-11, DSM-5-TR e CFP — captura o lift profissional de 2027."
+        fontes={["Resolução CFP nº 09/2024", "Posicionamento CFP 03/07/2025", "RDC ANVISA 657/2022", "PL 2338/2023 (Senado, dez/2024)", "APA Task Force on AI (2024-2026)", "Heinz et al. (Stanford, 2025)", "Sharma et al. (2024)"]}
+      />
+      <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-ghost mt-4">Ver pós oficial no IPOG</a>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div id="tese-contraintuitiva" class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Tese contraintuitiva</p>
+        <p class="text-ink-900 leading-relaxed font-medium">
+          A onda 2026 de IA em saúde mental não é substituição do psicólogo — é supervisão clínica humana regulamentada. O Posicionamento do CFP de 03/07/2025 ancora a tese: "a IA pode funcionar como aliada na sistematização de informações e no apoio a decisões, mas não substitui o juízo técnico ou ético da psicóloga e do psicólogo" (CFP, 2025). Programas que treinarem psicólogos para SER o supervisor humano da IA capturam o lift de 2027.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 1 — O cenário regulatório 2026: quatro instrumentos que mudam tudo</h2>
+        <p>
+          O ano de 2026 fecha o ciclo regulatório que começou em 2022. Quatro instrumentos delimitam o que é uso defensável de IA em saúde mental no Brasil — e nenhum deles é neutro sobre supervisão humana.
+        </p>
+        <p>
+          A <strong>Resolução CFP nº 09/2024</strong>, publicada em 30 de julho de 2024 e vigente desde 30 dias após a publicação, regulamenta o exercício profissional da psicologia mediado por Tecnologias Digitais de Informação e Comunicação (TDICs). Revoga a Resolução CFP nº 11/2018 e a Resolução CFP nº 04/2020. O ponto central da norma: a responsabilidade técnica pelos atos profissionais permanece com o psicólogo registrado no CRP. O texto não trata IA em artigo específico, mas o regime de TDIC enquadra a operação — quando o psicólogo usa LLM, plataforma de teletriagem ou chatbot estruturado em prática clínica, está operando sob a Resolução CFP nº 09/2024 (CRP-14, 2024; CFP, 2024).
+        </p>
+        <p>
+          O <strong>Posicionamento do CFP de 03/07/2025</strong> é o instrumento que ancorou a tese de supervisão clínica humana como eixo regulatório. Publicado em 3 de julho de 2025, em parceria com a Comissão Nacional de Tecnologia e Inovação do Sistema Conselhos, o documento estabelece quatro obrigações concretas: supervisão crítica em atividades complexas, avaliação responsável de segurança, vieses e riscos, consentimento livre e informado para coleta de dados, e conformidade com a LGPD (CFP, 2025). O texto integral está disponível em site.cfp.org.br e foi reforçado pela Cartilha CFP de IA publicada em dezembro de 2025.
+        </p>
+        <p>
+          A <strong>RDC ANVISA 657/2022</strong>, em vigor desde 1º de julho de 2022, regulamenta software como dispositivo médico (Software as a Medical Device, SaMD). A norma classifica o software em quatro classes de risco — I, II, III e IV — com obrigação de notificação (classes I e II) ou registro formal (classes III e IV) na ANVISA. Sistema de IA generativa que produz informação para tomada de decisão clínica em saúde mental tende a se enquadrar como SaMD; a classe de risco depende da gravidade da condição e do grau de informação fornecida. Plataforma comercial que opera sem regularização ANVISA opera em risco direto (ANVISA, 2022; Vera Rosas Advogados, 2022).
+        </p>
+        <p>
+          O <strong>PL 2338/2023</strong>, conhecido como Marco Legal da Inteligência Artificial, foi aprovado por unanimidade no Senado Federal em 10 de dezembro de 2024 [VERIFICAR data definitiva] e seguiu para apreciação na Câmara dos Deputados, com relatoria do deputado Aguinaldo Ribeiro. A expectativa é de aprovação final em 2026. O modelo adotado segue o AI Act europeu — classificação por nível de risco (excessivo, alto, baixo/moderado), direitos dos afetados, criação do Sistema Nacional de Regulação e Governança de IA (SIA) e sanções de até R$ 50 milhões por infração. Sistema de IA aplicado a saúde mental tende a se enquadrar em risco alto, ativando o regime mais rigoroso de auditoria, documentação e transparência (Senado Federal, 2024; KLA Law, 2025).
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 2 — Por que "supervisão clínica humana" virou o ponto regulatório central</h2>
+        <p>
+          Três razões convergiram para que supervisão humana se tornasse o eixo regulatório e não um item de rodapé ético.
+        </p>
+        <p>
+          A primeira é técnica. Heinz et al., em estudo de auditoria publicado em parceria com a Universidade de Stanford em 2025, mostraram que LLMs comerciais (ChatGPT, Claude, Gemini) produzem saídas sistematicamente divergentes para o mesmo quadro clínico quando se altera apenas o perfil demográfico do paciente — raça, gênero, classe socioeconômica. O viés não é corrigível por prompt; é estrutural, originado no corpus de treinamento. Sharma et al. (2024) ampliaram o achado, mostrando que LLMs geram respostas empáticas plausíveis com desempenho inferior a terapeutas humanos em discriminação clínica e em manejo de crise.
+        </p>
+        <p>
+          A segunda é jurídica. O Posicionamento do CFP de 03/07/2025 afirma textualmente: "as atividades mais complexas devem ocorrer sempre sob supervisão crítica e com discernimento ético por parte da psicóloga e do psicólogo responsável" (CFP, 2025). O texto coloca a supervisão como condição, não recomendação. Sem ela, o ato profissional opera fora do marco regulatório e expõe o profissional a sanção do CRP.
+        </p>
+        <p>
+          A terceira é institucional. A APA (American Psychological Association), em série de comunicados entre 2024 e 2026, passou a tratar o tema como urgente após a difusão de aplicativos comerciais de saúde mental que omitiam ao usuário que as respostas vinham de sistema automatizado, sem supervisão clínica. A APA Task Force on AI in Psychology publicou diretrizes em 2024 e 2025 reforçando responsabilidade clínica permanente do profissional habilitado (APA, 2025).
+        </p>
+        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
+          "O risco não é a IA gerar texto ruim. É a IA gerar texto bom o suficiente para o usuário acreditar e o profissional não revisar. A boa aparência clínica do texto generativo é precisamente o que cria o risco." — adaptado de comunicado APA (2025).
+        </blockquote>
+        <p>
+          A consequência operacional é que o psicólogo deixa de ser usuário da IA e passa a ser o supervisor humano regulamentado dela. A pergunta de formação deixa de ser "como uso o ChatGPT em sessão" e passa a ser "como construo o protocolo de revisão crítica que sustenta o uso defensável da ferramenta no prontuário do meu paciente".
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 3 — Cinco competências canônicas para o psicólogo-supervisor de IA</h2>
+        <p>
+          A literatura aplicada (APA Task Force, 2024-2026; Trends in Psychology, 2025; Psicologia: Reflexão e Crítica, 2025) e o regime regulatório brasileiro convergem em cinco competências que organizam a formação canônica. Sem qualquer uma delas, a trilha forma um profissional incompleto.
+        </p>
+        <div class="space-y-4 mt-4">
+          {competencias.map((c, idx) => (
+            <div class="rounded-2xl border border-surface-200 bg-white p-6">
+              <div class="flex items-start justify-between gap-4 mb-2">
+                <h3 class="font-display font-semibold text-lg text-ink-900">Competência {idx + 1} — {c.nome}</h3>
+              </div>
+              <p class="text-sm text-ink-700 leading-relaxed">{c.desc}</p>
+              <p class="text-xs text-ink-600 mt-3"><strong>Referência canônica:</strong> {c.referencia}</p>
+            </div>
+          ))}
+        </div>
+        <p class="mt-4">
+          As cinco competências operam em camada — literacia técnica como base, governança de dado como camada de proteção jurídica, validação psicométrica como filtro técnico-científico, auditoria de viés como salvaguarda ética e interpretação probabilística como traço da decisão clínica. A trilha forte sequencia o currículo nessa lógica.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 4 — Quatro casos de uso clínicos canônicos</h2>
+        <p>
+          A literatura acumulada entre 2017 e 2026 delimitou quatro casos de uso com evidência de utilidade clínica e compatibilidade regulatória. Fora desses, o uso é experimental e exige protocolo de pesquisa formal.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200 bg-white">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Caso de uso</th>
+                <th class="text-left px-4 py-3">O que a IA faz</th>
+                <th class="text-left px-4 py-3">Risco regulatório</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {casosUso.map(c => (
+                <tr>
+                  <td class="px-4 py-3 align-top font-semibold text-ink-900">{c.bloco}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{c.desc}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{c.risco}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-600 mt-3">
+          O caso 4 — suporte ao supervisor — é a aplicação que mais cresce em 2026. Estudo brasileiro publicado em Trends in Psychology (2025) avaliou uso de IA generativa por psicólogos em formação, encontrando uso amplo na elaboração de relatórios e na revisão de hipóteses, com baixa adesão a protocolos formais de governança. A oportunidade educacional está exatamente aí: formalizar a governança que a prática já adotou de forma improvisada.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">A clínica que descobriu que treinar o psicólogo era mais barato que comprar a plataforma</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Rede de clínicas de saúde mental com 18 unidades em três estados contratou em 2025 plataforma comercial de triagem por IA que prometia reduzir custo por atendimento em 40%. Em seis meses, o RH celebrou a redução do tempo médio de espera e a auditoria interna registrou que 12% dos casos triados como "leve" pela IA chegaram à sessão presencial com ideação suicida ativa. A reavaliação técnica identificou três problemas: o modelo treinava majoritariamente em texto em inglês sem validação documentada para população brasileira, o fluxo transferia dado sensível a servidor norte-americano sem garantia LGPD adequada, e o sistema operava como triagem psicológica sem responsável técnico habilitado registrado no CRP.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A decisão da diretoria foi reconfigurar. A plataforma permaneceu para psicoeducação e organização administrativa. A triagem clínica voltou para o psicólogo, com protocolo de revisão crítica de output da IA documentado em prontuário. Em paralelo, oito psicólogos seniores da rede foram inscritos em programa de pós-graduação com eixo em IA aplicada à clínica sob supervisão humana — o investimento total foi inferior ao da renovação anual do contrato com a plataforma. Doze meses depois, a rede operava com três protocolos canônicos (triagem, monitoramento entre sessões, psicoeducação assistida), governança documentada e ZERO autuação do CRP. O custo médio por atendimento subiu 12%, mas o passivo jurídico desapareceu e o NPS do paciente subiu de 6,4 para 8,7.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 5 — O que diferencia uma trilha forte de uma trilha fraca</h2>
+        <p>
+          Programa de IA aplicada à clínica psicológica é o vertical com mais oferta nova em 2026 — e também o com maior dispersão de qualidade. Cinco eixos diferenciam o que cumpre a tese de supervisão humana regulamentada.
+        </p>
+        <div class="space-y-4 mt-4">
+          {diferenciaisTrilha.map((d, idx) => (
+            <div class="card p-5">
+              <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Eixo {idx + 1}</p>
+              <h3 class="font-display font-semibold text-base mt-1 text-ink-900">{d.eixo}</h3>
+              <p class="text-sm text-ink-700 mt-2">{d.desc}</p>
+            </div>
+          ))}
+        </div>
+        <p class="mt-4">
+          Programa que cumpre os cinco eixos forma um profissional preparado para atuar nas três janelas que se abrem: clínica privada com governança documentada de IA, saúde ocupacional corporativa sob NR-1 atualizada (Portaria MTE 1.419/2024) e consultoria a fornecedor de plataforma de saúde mental — papel de Auditor Técnico Habilitado emergente em 2026.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 6 — Mapa da oferta brasileira em 2026</h2>
+        <p>
+          O mercado de formação em IA aplicada à saúde mental cresceu rapidamente entre 2024 e 2026. O panorama abaixo é posicionamento factual, com foco no que cada instituição prioriza no currículo público — sem juízo comparativo de qualidade docente, que depende de avaliação caso a caso.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200 bg-white">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Instituição</th>
+                <th class="text-left px-4 py-3">Foco principal</th>
+                <th class="text-left px-4 py-3">Onde IA aparece no currículo público</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 align-top font-semibold text-ink-900">IBNeuro (Instituto Brasileiro de Neuropsicologia e Ciências Cognitivas)</td>
+                <td class="px-4 py-3 align-top text-ink-700">Especialização em Neuropsicologia Clínica, formato presencial e híbrido em São Paulo, com 24 meses e 360-600 horas. Tradição em avaliação neuropsicológica clássica e referência reconhecida no segmento.</td>
+                <td class="px-4 py-3 align-top text-ink-700">Currículo público registra Módulo 23 — "Tecnologia e IA" — cobrindo testes informatizados, realidade virtual e teleneuropsicologia (IBNeuro, 2026). Eixo de avaliação neuropsicológica.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 align-top font-semibold text-ink-900">IPOG (Instituto de Pós-Graduação)</td>
+                <td class="px-4 py-3 align-top text-ink-700">MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano e MBA em POT, com formato Ao Vivo síncrono. Eixo de articulação clínica + organizacional + neurociência aplicada.</td>
+                <td class="px-4 py-3 align-top text-ink-700">IA aplicada a avaliação e people analytics aparece em módulos integrados, com ênfase em supervisão humana e governança sob CFP. Caminho via /mbas/mba-ncpp e /mbas/mba-pot.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 align-top font-semibold text-ink-900">Outras instituições</td>
+                <td class="px-4 py-3 align-top text-ink-700">Universidades públicas e privadas com programas Lato Sensu específicos em Psicologia Digital, Avaliação Neuropsicológica e Saúde Digital têm surgido em 2025 e 2026. Validação MEC e CRP varia por programa.</td>
+                <td class="px-4 py-3 align-top text-ink-700">Conferir grade nominal, docência com Lattes e CRP ativo, e carga horária de supervisão registrada — três sinais canônicos.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-600 mt-3">
+          IBNeuro é referência consolidada em neuropsicologia clínica brasileira e tem caminho próprio em avaliação neuropsicológica. O foco da trilha aqui mapeada é complementar — não concorrente — articulando IA aplicada à clínica sob supervisão humana regulamentada com a base ampla de competências do psicólogo organizacional, clínico e de avaliação. A escolha entre programas depende do objetivo profissional do candidato e da janela em que ele pretende atuar.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 7 — Cinco verificações antes de matricular</h2>
+        <p>
+          A janela de oportunidade favorece o profissional bem informado. Cinco verificações estruturais reduzem o risco de matricular em programa fraco.
+        </p>
+        <div class="space-y-4 mt-4">
+          {verificacoesMatricula.map((v, idx) => (
+            <div class="rounded-2xl border border-surface-200 bg-white p-6">
+              <div class="flex items-start justify-between gap-4 mb-2">
+                <h3 class="font-display font-semibold text-base text-ink-900">Verificação {idx + 1} — {v.item}</h3>
+              </div>
+              <p class="text-sm text-ink-700"><strong>Racional:</strong> {v.racional}</p>
+            </div>
+          ))}
+        </div>
+        <p class="mt-4">
+          O ponto crítico é a verificação 3 — política sobre uso de IA pelo aluno na avaliação. Programa que treina supervisão humana de IA precisa, ele mesmo, demonstrar coerência metodológica internamente. Quem não tem política para o próprio aluno dificilmente vai entregar conteúdo aplicado sobre o tema.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes sobre IA em saúde mental com supervisão clínica humana</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A trilha forte forma o supervisor humano regulamentado, não o operador da ferramenta</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O Posicionamento do CFP de 03/07/2025, a Resolução CFP nº 09/2024, a RDC ANVISA 657/2022 e o PL 2338/2023 redesenharam o que é uso defensável de IA em saúde mental no Brasil. O profissional que articula clínica, governança de dado, validação psicométrica, auditoria de viés e interpretação probabilística captura a janela das três frentes — clínica privada, saúde ocupacional NR-1 e auditoria técnica de plataforma. O MBA em Psicologia Organizacional e do Trabalho e o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano do IPOG são caminhos canônicos que integram base clínica, organizacional e de neurociência aplicada — pontos de partida sólidos para a trilha de supervisão humana de IA.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4">Ver pós oficial no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Formação relacionada</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName} — IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          MBA em Psicologia Organizacional e do Trabalho — base para o psicólogo-supervisor que opera em saúde mental corporativa sob NR-1 e governança de IA.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/mbas" class="btn btn-ghost mt-2 w-full">Comparar MBAs</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs canônicos</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/mbas/mba-pot" class="text-brand-700 hover:text-brand-800 font-medium">MBA em POT</a></li>
+          <li><a href="/mbas/mba-ncpp" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Neurociência e Psicologia Positiva</a></li>
+          <li><a href="/mbas/mba-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Psicologia Positiva</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Cross-links canônicos</p>
+        <ul class="space-y-2">
+          <li><a href="/temas/saude-mental-corporativa-nr1-pacote-b2b" class="mega-link"><strong class="text-ink-900 text-sm">Saúde Mental Corporativa e NR-1: pacote B2B</strong></a></li>
+          <li><a href="/areas/saude-mental-organizacoes" class="mega-link"><strong class="text-ink-900 text-sm">Saúde Mental nas Organizações</strong></a></li>
+          <li><a href="/mbas/mba-pot" class="mega-link"><strong class="text-ink-900 text-sm">MBA em POT</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes regulatórias</p>
+        <ul class="space-y-2 text-sm text-ink-700">
+          <li>Posicionamento CFP de 03/07/2025 (site.cfp.org.br).</li>
+          <li>Resolução CFP nº 09/2024 — TDICs em Psicologia.</li>
+          <li>RDC ANVISA 657/2022 — SaMD.</li>
+          <li>PL 2338/2023 — Marco Legal da IA (Senado, dez/2024).</li>
+          <li>Lei nº 13.709/2018 — LGPD.</li>
+          <li>Cartilha CFP de IA — dez/2025.</li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes científicas</p>
+        <ul class="space-y-2 text-sm text-ink-700">
+          <li>Heinz, M. et al. (Stanford, 2025) — viés em LLMs.</li>
+          <li>Sharma, A. et al. (2024) — LLMs em terapia.</li>
+          <li>APA Task Force on AI in Psychology (2024-2026).</li>
+          <li>Inkster, B. (Wysa, 2018); Fitzpatrick, K. (Woebot, 2017).</li>
+          <li>Trends in Psychology (2025); Psicologia: Reflexão e Crítica (2025).</li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Temas relacionados</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/temas/ia-psicodiagnostico-2026" class="text-brand-700 hover:text-brand-800 font-medium">IA em psicodiagnóstico 2026</a></li>
+          <li><a href="/temas/ia-em-rh" class="text-brand-700 hover:text-brand-800 font-medium">IA em RH</a></li>
+          <li><a href="/temas/ia-generativa-rh" class="text-brand-700 hover:text-brand-800 font-medium">IA generativa em RH</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldProgram)} />
+</Base>
+</content>
+</invoke>

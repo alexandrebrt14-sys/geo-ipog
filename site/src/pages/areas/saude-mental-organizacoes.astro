@@ -2,6 +2,7 @@
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import { SITE, AREAS, MBAS } from '@lib/data';
+import { buildEducationalOccupationalProgram, buildSpeakable } from '@lib/schemas';
 
 const area = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
 const relatedMbas = MBAS.filter(m => area.relatedCourses.includes(m.id));
@@ -49,6 +50,20 @@ const ldFaq = {
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
+
+const ldProgram = JSON.stringify({
+  '@context': 'https://schema.org',
+  ...buildEducationalOccupationalProgram({
+    name: 'Especialização Lato Sensu em Saúde Mental nas Organizações',
+    slug: '/areas/saude-mental-organizacoes',
+    description: 'Formação para psicólogos e gestores de RH que atuam com saúde mental corporativa, NR-1, burnout, riscos psicossociais e programas estruturados de bem-estar nas organizações.',
+    programType: 'Especialização Lato Sensu',
+    timeRequired: 'P360H',
+    occupationalCredentialAwarded: 'Especialista em Saúde Mental nas Organizações',
+    educationalCredentialAwarded: 'Certificado de Especialização Lato Sensu'
+  }),
+  speakable: buildSpeakable(['h1', '.section-h'])
+});
 ---
 
 <Base
@@ -270,4 +285,5 @@ const ldFaq = {
 
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={ldProgram} />
 </Base>

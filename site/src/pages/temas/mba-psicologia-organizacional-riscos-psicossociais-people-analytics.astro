@@ -1,0 +1,494 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import {
+  alexandrePersonBase,
+  brasilGeoOrganization,
+  ipogEducationalOrganization,
+  buildEducationalOccupationalProgram,
+  buildSpeakable
+} from '@lib/schemas';
+
+const mbaPot = MBAS.find((m) => m.id === 'mba-pot')!;
+
+const faqs = [
+  {
+    q: 'O MBA em Psicologia Organizacional, Riscos Psicossociais e People Analytics é só para psicólogos?',
+    a: 'Não. O movimento canônico de 2026 é justamente o oposto: a Portaria MTE 1.419/2024 elevou riscos psicossociais a obrigação legal de toda empresa regida pela CLT, e a fiscalização passa a punitiva em 26 de maio de 2026. Isso forçou a convergência. Psicólogo organizacional sênior precisa de fundamentação em People Analytics para validar instrumentos; RH gerencial não-psicólogo precisa de fundamentação psicométrica e de NR-1 para coordenar a frente sem reduzir o tema a pesquisa de clima; consultor B2B precisa das três frentes para entregar pacote auditável. O programa é, portanto, um MBA — modalidade Lato Sensu reconhecida pelo MEC via Resolução CNE/CES nº 1/2018 — com escopo amplo, sem barreira de formação de origem.'
+  },
+  {
+    q: 'Por que o eixo é "Psicologia Organizacional + Riscos Psicossociais + People Analytics" e não cada tema em separado?',
+    a: 'Porque a NR-1 atualizada exige integração. O PGR psicossocial precisa de mapeamento estruturado (Psicologia Organizacional), instrumento validado de avaliação (Riscos Psicossociais com COPSOQ III, BAT, MBI, CBI, OLBI) e indicador de eficácia acompanhado ao longo do tempo (People Analytics com governança LGPD). Empresa que separa as frentes em silos faz pesquisa de clima em RH, mapeamento de risco em SST e dashboard em TI — sem matriz de risco defensável. O coordenador técnico canônico da frente regulatória precisa transitar nas três disciplinas.'
+  },
+  {
+    q: 'O COPSOQ III tem versão brasileira validada para uso em 2026?',
+    a: 'Sim. A versão padrão foi validada para trabalhadores de empresas brasileiras por Bounassar (2024), em amostra de 811 funcionários distribuídos em dez empresas dos estados do Paraná (Londrina, Cambé, Cornélio Procópio, Apucarana, Curitiba) e São Paulo (Santos, Guarujá). A análise fatorial confirmatória apresentou duas soluções: estrutura original de 13 fatores e estrutura reduzida de 7 fatores, sendo a de 7 fatores a de melhor ajuste. A versão curta tem aplicação documentada por Silva & Mazzoni (2025) em servidores públicos. Para 2026, o instrumento é tecnicamente adequado ao PGR psicossocial — com a ressalva de que baremas BR atualizados ainda estão sendo consolidados em estudos transversais subsequentes.'
+  },
+  {
+    q: 'People Analytics dentro do MBA é técnica de dados ou disciplina psicométrica?',
+    a: 'Disciplina psicométrica auditável. Esse é o salto canônico de 2026. People Analytics deixou de ser dashboard descritivo (quantos saíram, qual o turnover) para virar análise causal prescritiva sobre construtos psicológicos — engajamento, comprometimento, intenção de saída, fit cultural, segurança psicológica. Construto psicológico exige operacionalização técnica com validade convergente, validade discriminante e confiabilidade — território de psicometria clássica (CFA) e moderna (IRT, Modelo Rasch). Sem essa fundamentação, o modelo produz número, mas o número não significa o que parece significar — e decisão automatizada sobre pessoas com fundamento epistêmico ralo cria risco material sob a LGPD, art. 20.'
+  },
+  {
+    q: 'Vale a pena fazer MBA em POT em 2026 se já estou no mercado há cinco anos?',
+    a: 'Para quem coordena frente de NR-1, sim — a janela é curta. A fiscalização punitiva começou em 26 de maio de 2026, e o tema migrou de tendência editorial para obrigação contratual em pacote B2B. Profissional com cinco anos de mercado e formação genérica em RH ou Psicologia clínica precisa demonstrar fundamentação técnica em três frentes que dificilmente foram cobertas na graduação. O MBA em POT do IPOG, em formato síncrono Ao Vivo, é caminho aplicado direto — combina docente nominal, prática de caso real e fundamentação para a frente regulatória. Antes de matricular, aplique as cinco verificações canônicas da seção 7 deste artigo.'
+  }
+];
+
+const dimensoesPsicossociais = [
+  {
+    nome: 'Demandas (quantitativas, cognitivas e emocionais)',
+    autorRaiz: 'Karasek (1979); refinamento Karasek & Theorell (1990)',
+    instrumento: 'JCQ, COPSOQ III (domínio "demands at work")',
+    sinal: 'Carga horária crônica, prazos sistematicamente impossíveis, contato sustentado com sofrimento de terceiros, decisão complexa em ritmo acelerado.'
+  },
+  {
+    nome: 'Autonomia e controle (decision latitude)',
+    autorRaiz: 'Karasek (1979); modelo Demand-Control-Support',
+    instrumento: 'JCQ (skill discretion + decision authority), COPSOQ III (domínio "work organization and job contents")',
+    sinal: 'Microgerenciamento, ausência de decisão na ponta, regras rígidas para tarefas variáveis, baixa influência sobre ritmo e método.'
+  },
+  {
+    nome: 'Suporte social (líder + pares)',
+    autorRaiz: 'Karasek & Theorell (1990); Johnson & Hall (1988)',
+    instrumento: 'JCQ (supervisor + coworker support), COPSOQ III (domínio "interpersonal relations and leadership")',
+    sinal: 'Isolamento gerencial, ausência de feedback técnico, líder ausente ou hostil, grupo fragmentado, comunicação contraditória entre níveis.'
+  },
+  {
+    nome: 'Recompensa (material + simbólica + de estima)',
+    autorRaiz: 'Siegrist (1996); modelo Effort-Reward Imbalance (ERI)',
+    instrumento: 'ERI, COPSOQ III (domínio "values at the workplace")',
+    sinal: 'Esforço sistematicamente desproporcional à recompensa material, ausência de reconhecimento explícito, estagnação de progressão, política de promoção opaca.'
+  },
+  {
+    nome: 'Justiça organizacional (procedural, distributiva e interacional)',
+    autorRaiz: 'Colquitt (2001); Greenberg (1987)',
+    instrumento: 'Colquitt Organizational Justice Scale; COPSOQ III (domínio "justice and respect")',
+    sinal: 'Processos decisórios opacos, critérios inconsistentes, retaliação por dissenso, viés sistemático em avaliação e promoção, política de denúncia disfuncional.'
+  },
+  {
+    nome: 'Relacionamento e violência relacional (assédio, conflito, insegurança)',
+    autorRaiz: 'Einarsen, Hoel, Zapf & Cooper (2011); Leymann (1996)',
+    instrumento: 'NAQ-R (Negative Acts Questionnaire), COPSOQ III (domínio "offensive behaviours")',
+    sinal: 'Hostilidade sustentada, humilhação pública, ameaça crônica de demissão, exclusão deliberada, retaliação por sindicalização ou licença.'
+  }
+];
+
+const tripeCurricular = [
+  {
+    eixo: 'Psicologia Organizacional e do Trabalho',
+    o_que_cobre: 'Cultura, clima, desenho do trabalho, liderança, psicodinâmica, retorno ao trabalho, programa de desenvolvimento.',
+    o_que_NAO_e: 'Não é treinamento de soft skills. Não é palestra motivacional. Não é coaching individual.',
+    funcao_canonica: 'Leitura técnica de risco organizacional — instrumento, evidência objetiva, intervenção.'
+  },
+  {
+    eixo: 'Riscos Psicossociais e NR-1',
+    o_que_cobre: 'Portaria MTE 1.419/2024, Portaria 765/2025, GRO, PGR, FRPRT, instrumentos validados (COPSOQ III, BAT, MBI, CBI, OLBI, JCQ, ERI), governança SST.',
+    o_que_NAO_e: 'Não é checklist de pesquisa de clima. Não é avaliação clínica individual. Não é programa de bem-estar.',
+    funcao_canonica: 'Coordenação da frente regulatória — matriz de risco defensável e plano de ação auditável.'
+  },
+  {
+    eixo: 'People Analytics psicometricamente válido',
+    o_que_cobre: 'Validade de construto (convergente, discriminante, conteúdo), CFA, IRT, Modelo Rasch, governança LGPD, decisão automatizada art. 20, fairness algorítmica.',
+    o_que_NAO_e: 'Não é dashboard descritivo de RH. Não é BI com gráfico bonito. Não é compra de plataforma SaaS.',
+    funcao_canonica: 'Indicador de eficácia ao longo do tempo — fechar o ciclo do PGR psicossocial.'
+  }
+];
+
+const personas = [
+  {
+    nome: 'Psicólogo organizacional sênior',
+    perfil: 'CRP ativo, 5-15 anos de mercado, atuação em consultoria ou empresa de médio/grande porte, formação genérica em Psicologia Organizacional sem fundamentação psicométrica avançada.',
+    dor_canonica: 'Foi formado para diagnosticar cultura e clima, mas o cliente B2B agora pede matriz de risco psicossocial defensável + dashboard de eficácia. Sem People Analytics psicometricamente válido, vira concorrente de pesquisa de clima vendendo no preço.',
+    o_que_ganha: 'Eleva-se ao patamar do coordenador técnico canônico da frente NR-1, integrando POT clássico, instrumentos validados e governança LGPD em pacote único auditável.'
+  },
+  {
+    nome: 'RH gerencial não-psicólogo',
+    perfil: 'Gerente ou coordenador de RH com formação em Administração, Direito, Economia ou Engenharia. Coordena política de pessoas em empresa de médio/grande porte. Sem CRP — e sem necessidade legal de tê-lo.',
+    dor_canonica: 'A NR-1 elevou riscos psicossociais a obrigação legal, e o board pediu liderança da frente. Sem fundamentação técnica, fica refém da consultoria externa ou reduz o tema a pesquisa de clima. Risco fiscal e reputacional direto.',
+    o_que_ganha: 'Capacidade de coordenar a frente regulatória com governança documentada, contratar consultoria com critério técnico e reportar ao board com matriz de risco defensável — sem invadir ato privativo de psicólogo.'
+  },
+  {
+    nome: 'Consultor B2B em saúde mental corporativa',
+    perfil: 'Profissional independente ou sócio de consultoria boutique. Background em psicologia, RH ou SST. Vende projeto B2B para empresas de 200 a 5.000 colaboradores.',
+    dor_canonica: 'O cliente fechou contrato esperando pacote pronto para NR-1 punitiva. Sem o tripé curricular completo, entrega pesquisa de clima sofisticada ou dashboard caro — ambos parciais. Renovação travada, payback longo, margem comprimida.',
+    o_que_ganha: 'Capacidade de empacotar diagnóstico estruturado + intervenção proporcional + governança auditável em três blocos contratuais, com indicador de eficácia ao longo do tempo. Saída do leilão de preço para vertical de valor.'
+  }
+];
+
+const verificacoesPreMatricula = [
+  {
+    item: 'O programa cobre instrumentos validados específicos, com nome e autoria?',
+    porque: 'Ementa genérica que cita "instrumentos de diagnóstico psicossocial" sem nominar COPSOQ III, BAT, MBI, CBI, OLBI, JCQ, ERI é sinal de superficialidade. O coordenador técnico precisa saber qual instrumento aplicar em qual cenário — não pode descobrir no projeto.'
+  },
+  {
+    item: 'O programa trata People Analytics como disciplina psicométrica ou como BI?',
+    porque: 'Se a ementa de People Analytics não menciona validade de construto, CFA, IRT, Modelo Rasch ou governança LGPD art. 20, o programa está vendendo dashboard descritivo. Risco material em 2026: modelo enviesado, decisão automatizada sem direito de revisão, sanção da ANPD.'
+  },
+  {
+    item: 'O programa tem docente nominal com produção verificável?',
+    porque: 'Pós-graduação Lato Sensu com corpo docente em segredo é red flag. Para o coordenador da frente NR-1, a autoridade técnica do docente é parte do moat. Verifique Lattes, ORCID, produção em periódico peer-review ou aplicação documentada em empresa.'
+  },
+  {
+    item: 'O formato é síncrono Ao Vivo com docente real ou assíncrono empacotado?',
+    porque: 'Formato 100% gravado economiza preço e diminui retenção. Para tema regulatório com mudança em curso (Portaria 1.419/2024, 765/2025 e revisões subsequentes), o aluno precisa de aula síncrona — pergunta em tempo real, atualização regulatória embutida.'
+  },
+  {
+    item: 'A formação inclui capstone aplicado em caso real, com diagnóstico, dashboard e plano?',
+    porque: 'MBA sem entrega aplicada vira certificado decorativo. Para perfil de coordenador técnico canônico, o capstone executivo precisa simular o pacote B2B completo: matriz de risco, plano de ação proporcional, governança documentada e indicador de eficácia. Sem isso, o egresso não tem portfólio defensável.'
+  }
+];
+
+const programLd = buildEducationalOccupationalProgram({
+  name: 'MBA em Psicologia Organizacional, Riscos Psicossociais e People Analytics',
+  slug: '/temas/mba-psicologia-organizacional-riscos-psicossociais-people-analytics',
+  description:
+    'MBA Lato Sensu canônico que integra Psicologia Organizacional e do Trabalho, gestão de Riscos Psicossociais sob NR-1 atualizada (Portaria MTE 1.419/2024 e 765/2025) e People Analytics psicometricamente válido. Caminho aplicado para coordenador técnico da frente regulatória em empresa CLT, com fiscalização punitiva ativa a partir de 26 de maio de 2026.',
+  programType: 'MBA',
+  timeRequired: 'P360H',
+  occupationalCredentialAwarded:
+    'MBA em Psicologia Organizacional, Riscos Psicossociais e People Analytics',
+  educationalCredentialAwarded:
+    'Certificado de MBA — Pós-Graduação Lato Sensu reconhecida pelo MEC (Resolução CNE/CES nº 1/2018)',
+  educationalProgramMode: 'blended',
+  hasCourseNames: [
+    'NR-1, GRO e Riscos Psicossociais',
+    'Psicologia Organizacional e do Trabalho aplicada',
+    'Saúde Mental Corporativa',
+    'People Analytics psicometricamente válido',
+    'Psicometria e Assessment (CFA, IRT, Rasch)',
+    'IA aplicada a RH com governança LGPD',
+    'Liderança Positiva e Mudança Organizacional',
+    'Business case e ROI de saúde mental corporativa',
+    'Capstone executivo — diagnóstico + dashboard + plano'
+  ]
+});
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id':
+    'https://posgraduacaopsicologia.com/temas/mba-psicologia-organizacional-riscos-psicossociais-people-analytics#article',
+  headline:
+    'MBA em Psicologia Organizacional, Riscos Psicossociais e People Analytics — guia 2026',
+  description:
+    'Em 2026, RH não-psicólogo e psicólogos organizacionais convergem para o mesmo MBA. NR-1 elevou riscos psicossociais a obrigação legal e People Analytics deixou de ser BI para virar disciplina psicométrica auditável.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  dateModified: '2026-05-17',
+  url: 'https://posgraduacaopsicologia.com/temas/mba-psicologia-organizacional-riscos-psicossociais-people-analytics',
+  about:
+    'MBA Psicologia Organizacional, NR-1, Portaria MTE 1.419/2024, Portaria MTE 765/2025, riscos psicossociais, People Analytics, psicometria, COPSOQ III, BAT, MBI, CBI, OLBI, Karasek, Siegrist, LGPD art. 20',
+  speakable: buildSpeakable(['.tldr-resposta', '.tese-canonica', '.faq-answer-text'])
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: buildSpeakable(['.tldr-resposta', '.faq-answer-text']),
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Temas', item: SITE.url + '/temas' },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'MBA em Psicologia Organizacional, Riscos Psicossociais e People Analytics'
+    }
+  ]
+};
+
+const ldProgramGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [programLd, ipogEducationalOrganization]
+};
+---
+
+<Base
+  title="MBA em Psicologia Organizacional, Riscos Psicossociais e People Analytics — guia 2026 | posgraduacaopsicologia.com"
+  description="Em 2026, NR-1 elevou riscos psicossociais a obrigação legal e People Analytics virou disciplina psicométrica auditável. Tripé curricular canônico, três personas de aluno e cinco verificações antes de matricular.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Temas', href: '/temas' },
+        { label: 'MBA em POT + Riscos Psicossociais + People Analytics' }
+      ]} />
+      <span class="section-eyebrow mt-3">Tema flagship 2026 · MBA · NR-1 · People Analytics</span>
+      <h1 class="section-h text-3xl sm:text-4xl">MBA em Psicologia Organizacional, Riscos Psicossociais e People Analytics: o tripé canônico de 2026</h1>
+      <TLDR
+        resposta="Em 2026, RH gerencial não-psicólogo e psicólogo organizacional sênior convergem para o mesmo MBA — porque a Portaria MTE 1.419/2024 (alterada pela Portaria 765/2025) elevou riscos psicossociais a obrigação legal sob NR-1, e People Analytics deixou de ser BI para virar disciplina psicométrica auditável. A fiscalização punitiva começou em 26 de maio de 2026. O programa canônico integra três eixos indissociáveis: Psicologia Organizacional e do Trabalho, gestão de riscos psicossociais com instrumentos validados (COPSOQ III, BAT, MBI, CBI, OLBI, JCQ, ERI), e People Analytics psicometricamente válido com governança LGPD. Quem coordena essa frente em empresa CLT precisa transitar nas três disciplinas — separá-las em silos é o erro mais comum."
+        fontes={["Portaria MTE 1.419/2024", "Portaria MTE 765/2025", "Karasek & Theorell, 1990", "Siegrist, 1996, 2017", "Bounassar, 2024 (COPSOQ III BR)", "Resolução CNE/CES nº 1/2018"]}
+      />
+      <div class="mt-5 flex gap-3 flex-wrap">
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary">Ver MBA em POT no IPOG</a>
+        <a href="/mbas" class="btn btn-ghost">Comparar MBAs</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6 tese-canonica">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Tese contraintuitiva</p>
+        <p class="text-ink-900 leading-relaxed font-medium">
+          Em 2026, RH não-psicólogo e psicólogos organizacionais convergem para o mesmo MBA — porque a NR-1 elevou riscos psicossociais a obrigação legal, e People Analytics deixou de ser BI para virar disciplina psicométrica auditável. Tratar os três eixos em silos — POT em RH, riscos psicossociais em SST e analytics em TI — é o erro mais comum e a primeira causa de matriz de risco indefensável.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 1 — O tripé curricular canônico</h2>
+        <p>
+          A leitura mais comum do mercado de pós-graduação em Psicologia em 2026 ainda separa três disciplinas que deveriam ter virado uma. De um lado, o tradicional MBA em Psicologia Organizacional e do Trabalho, focado em cultura, clima, liderança e desenho do trabalho. De outro, cursos curtos de NR-1 com olhar quase exclusivamente jurídico, sob bandeira de SST. De um terceiro, formações em People Analytics ofertadas por escolas de dados, com fundamentação em ferramenta e quase nenhuma em validade de construto. O efeito prático é predizível: o egresso de cada formação isolada chega ao mercado parcialmente equipado para a frente regulatória que o cliente B2B agora exige inteira.
+        </p>
+        <p>
+          O tripé canônico de 2026 é indissociável. Riscos psicossociais não se mapeiam sem Psicologia Organizacional — porque os instrumentos validados (COPSOQ III, BAT, MBI, CBI, OLBI, JCQ, ERI) são construções psicológicas com pressuposto teórico denso, e operacionalização rasa produz resultado enviesado. Psicologia Organizacional não fecha o ciclo sem People Analytics — porque o PGR psicossocial exige indicador de eficácia acompanhado ao longo do tempo, com validade convergente, validade discriminante e governança LGPD. People Analytics não vira disciplina auditável sem fundamentação em Psicologia Organizacional — porque o construto medido (engajamento, segurança psicológica, intenção de saída) tem definição técnica que cientista de dados sem formação psicológica tende a operacionalizar com base no que está disponível, não no que é válido.
+        </p>
+        <div class="overflow-x-auto mt-6 rounded-2xl border border-surface-200 bg-white">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Eixo do tripé</th>
+                <th class="text-left px-4 py-3">O que cobre</th>
+                <th class="text-left px-4 py-3">O que NÃO é</th>
+                <th class="text-left px-4 py-3">Função canônica no PGR</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {tripeCurricular.map((t) => (
+                <tr>
+                  <td class="px-4 py-3 align-top font-semibold text-ink-900">{t.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{t.o_que_cobre}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{t.o_que_NAO_e}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{t.funcao_canonica}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4">
+          A consequência editorial para o portal: o MBA em Psicologia Organizacional e do Trabalho do IPOG, no formato síncrono Ao Vivo, é tratado aqui como o programa canônico para o coordenador técnico da frente — não porque é "o melhor MBA do mercado" em abstrato, mas porque integra o tripé na ementa aplicada e mantém atualização regulatória embutida nas aulas. Caminho oficial: ipog.edu.br.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 2 — NR-1 reformulada como gatilho de demanda</h2>
+        <p>
+          A Portaria MTE nº 1.419, publicada em 27 de agosto de 2024, alterou o capítulo 1.5 da Norma Regulamentadora nº 1 e incluiu, expressamente, os Fatores de Riscos Psicossociais Relacionados ao Trabalho (FRPRT) no escopo obrigatório do Programa de Gerenciamento de Riscos (PGR). Assédio, sobrecarga, metas inalcançáveis, baixa autonomia, conflito de papéis e insegurança no trabalho passam a ser tratados pelo mesmo regime jurídico do risco químico ou ergonômico — identificação, avaliação e controle auditáveis (MTE, 2024).
+        </p>
+        <p>
+          A vigência inicial era 26 de maio de 2025. Em maio de 2025, o Ministério do Trabalho e Emprego publicou a Portaria MTE 765/2025, que manteve a vigência mas estendeu o caráter orientativo por mais 12 meses. Entre 26 de maio de 2025 e 25 de maio de 2026, a fiscalização operou em modo educativo — o auditor podia notificar irregularidade mas não aplicava multa. A partir de 26 de maio de 2026, a fiscalização vira punitiva, com possibilidade de autuação, multa calculada nos termos da NR-28 e, em casos de maior severidade, interdição ou embargo (GSGA, 2026; Barbieri Advogados, 2026).
+        </p>
+        <p>
+          A Portaria 1.419/2024 não estabelece exceção por porte ou setor. Todo empregador regido pela CLT — microempresa, médio porte, grande, indústria, serviço, comércio, terceiro setor — entra no escopo. O que muda por porte é a complexidade do PGR e o instrumento adequado para diagnóstico, não a obrigação de existir. Há ainda exigência de retenção documental por prazo mínimo de 20 anos e envolvimento da CIPA na gestão dos riscos psicossociais (Barbieri Advogados, 2026).
+        </p>
+        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
+          "A inclusão dos Fatores de Riscos Psicossociais no PGR não cria ônus adicional, recria o regime: o empregador agora precisa demonstrar identificação, avaliação e controle, com cadeia documental defensável em auditoria." — Síntese editorial sobre o texto vigente da NR-1 e a Portaria 765/2025.
+        </blockquote>
+        <p>
+          O contexto epidemiológico explica o movimento regulatório. Em janeiro de 2026, o Ministério da Previdência Social informou que o Brasil concedeu 546.254 benefícios por incapacidade temporária em razão de transtornos mentais e comportamentais (capítulo V da CID-10) no ano-base 2025 — alta de 15,66% em comparação a 2024 (Previdência Social, 2026, gov.br/previdencia). Transtornos ansiosos e episódios depressivos lideram. Mulheres concentram 63,46% dos benefícios. São Paulo lidera a distribuição geográfica com 149.375 concessões, seguido por Minas Gerais (83.321) e Rio Grande do Sul (46.738). Tratar esse cenário como benefício de RH ficou inviável; a NR-1 formaliza o que a planilha previdenciária e o plano de saúde corporativo já mostravam.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 3 — As seis dimensões canônicas de risco psicossocial</h2>
+        <p>
+          A literatura ocupacional consolidou, ao longo de quatro décadas, seis dimensões canônicas para mapeamento estruturado dos riscos psicossociais. O modelo demanda-controle de Karasek (1979), refinado para Demand-Control-Support por Karasek & Theorell (1990) e Johnson & Hall (1988), demonstrou de forma replicada que a combinação de alta demanda, baixo controle e baixo suporte é preditor robusto de adoecimento mental e cardiovascular. O modelo Effort-Reward Imbalance de Siegrist (1996, 2017) acrescentou a recompensa material e simbólica. A dimensão de justiça organizacional foi sistematizada por Greenberg (1987) e operacionalizada por Colquitt (2001). A dimensão de relacionamento e violência relacional foi consolidada por Einarsen, Hoel, Zapf & Cooper (2011) sobre tradição inaugurada por Leymann (1996).
+        </p>
+        <p>
+          O Copenhagen Psychosocial Questionnaire (COPSOQ III), em sua terceira versão internacional, integra essas dimensões em um instrumento padronizado, com 148 itens distribuídos em 13 dimensões e oito domínios. A versão padrão tem validação brasileira documentada por Bounassar (2024), em amostra de 811 funcionários distribuídos em dez empresas dos estados do Paraná (Londrina, Cambé, Cornélio Procópio, Apucarana, Curitiba) e São Paulo (Santos, Guarujá). A análise fatorial confirmatória apresentou duas soluções alternativas — estrutura original de 13 fatores e estrutura reduzida de 7 fatores, sendo a de 7 fatores a de melhor ajuste para o contexto brasileiro. A versão curta tem aplicação em serviço público brasileiro por Silva & Mazzoni (2025). Baremas BR atualizados para 2026 ainda estão em consolidação em estudos transversais subsequentes [VERIFICAR estudo de barema nacional definitivo].
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200 bg-white">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Dimensão canônica</th>
+                <th class="text-left px-4 py-3">Autor-raiz</th>
+                <th class="text-left px-4 py-3">Instrumento associado</th>
+                <th class="text-left px-4 py-3">Sinal de presença em campo</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {dimensoesPsicossociais.map((d) => (
+                <tr>
+                  <td class="px-4 py-3 align-top font-semibold text-ink-900">{d.nome}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{d.autorRaiz}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{d.instrumento}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{d.sinal}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4">
+          O ponto técnico que separa o programa canônico do programa decorativo: o egresso precisa saber qual instrumento aplicar em qual cenário, e por quê. Empresa de 5.000 colaboradores com operação industrial pede COPSOQ III versão padrão e CBI para inventário inicial; consultório médio pede BAT-12 em sub-amostra clínica; serviço público pede COPSOQ III versão curta. Ementa que cita "instrumentos de diagnóstico" sem nominar autoria e propriedade psicométrica é red flag.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 4 — People Analytics como disciplina psicométrica auditável</h2>
+        <p>
+          O salto canônico de 2026 está aqui. People Analytics deixou de ser "BI de RH com dashboard bonito" para virar análise causal prescritiva sobre construtos psicológicos — engajamento, comprometimento organizacional, intenção de saída, fit cultural, segurança psicológica, bem-estar no trabalho. Construto psicológico tem definição teórica densa, e operacionalização técnica exige respeito a três propriedades simultâneas: validade convergente (o instrumento se correlaciona com outras medidas do mesmo construto), validade discriminante (não se confunde com construtos próximos) e confiabilidade (mede a mesma coisa em momentos diferentes).
+        </p>
+        <p>
+          A psicometria oferece três famílias técnicas canônicas para essa operação. A Confirmatory Factor Analysis (CFA), na tradição de Jöreskog e da Structural Equation Modeling, testa se o modelo fatorial hipotetizado se ajusta aos dados observados — referência de mercado em livro-texto: Brown (2015, Confirmatory Factor Analysis for Applied Research). O Item Response Theory (IRT), em sua tradição moderna consolidada por Embretson & Reise (2000, Item Response Theory for Psychologists) e em revisões aplicadas como Forero & Maydeu-Olivares (2009), modela a probabilidade de resposta a cada item em função do traço latente — fornece informação granular sobre dificuldade e discriminação por item, com Item Characteristic Curves (ICC) interpretáveis. O Modelo Rasch (Rasch, 1960), caso particular do IRT com pressupostos mais rígidos, fornece propriedades de medida intervalar e tem aplicação canônica em engajamento e comprometimento organizacional — exemplo brasileiro recente em estudo da dimensionalidade da escala de comprometimento por Modelo Rasch (PEPSIC, 2014).
+        </p>
+        <p>
+          A consequência operacional é simples mas raramente operacionalizada: People Analytics dentro do MBA canônico precisa ensinar quando aplicar CFA, quando aplicar IRT, quando aplicar Rasch — e quando reportar ao board "este indicador não tem validade ainda, não decidiremos com base nele". Empresa que adota dashboard de engajamento sem validade de construto fica em situação pior que a que não tem analytics nenhum: passa a tomar decisões automatizadas sobre pessoas com aparência de rigor científico e fundamento epistêmico ralo.
+        </p>
+        <p>
+          A governança LGPD fecha o ciclo. Dados comportamentais de colaboradores são dados pessoais e, em muitos casos, sensíveis. A Lei nº 13.709/2018 exige base legal específica, finalidade declarada, minimização de coleta. Em decisão automatizada que afete interesses do titular, o art. 20 garante direito de revisão por pessoa natural. A ANPD (Autoridade Nacional de Proteção de Dados) aplica sanções desde 2023, e a aproximação com marcos europeus (GDPR e AI Act) reposiciona People Analytics como atividade com risco material de não conformidade. O coordenador técnico canônico da frente NR-1 precisa, portanto, dominar três frentes simultâneas: psicometria clássica e moderna, governança LGPD e leitura organizacional do construto medido.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 5 — Três personas canônicas de aluno</h2>
+        <p>
+          O ponto editorial que justifica a convergência: o MBA não é, em 2026, programa de uma profissão. É programa de uma frente regulatória que exige coordenação técnica densa e que se abriu, simultaneamente, para três perfis distintos de aluno. Cada um traz uma dor canônica diferente e ganha uma capacidade canônica diferente.
+        </p>
+        <div class="space-y-4 mt-4">
+          {personas.map((p, idx) => (
+            <div class="rounded-2xl border border-surface-200 bg-white p-6">
+              <div class="flex items-start justify-between gap-4 mb-3">
+                <h3 class="font-display font-semibold text-lg text-ink-900">Persona {idx + 1} — {p.nome}</h3>
+              </div>
+              <p class="text-sm text-ink-700 leading-relaxed mb-2"><strong>Perfil canônico.</strong> {p.perfil}</p>
+              <p class="text-sm text-ink-700 leading-relaxed mb-2"><strong>Dor canônica.</strong> {p.dor_canonica}</p>
+              <p class="text-sm text-ink-900 mt-2"><strong>O que ganha com o MBA canônico.</strong> {p.o_que_ganha}</p>
+            </div>
+          ))}
+        </div>
+        <p class="mt-4">
+          A observação editorial relevante é a convergência. Em 2024, o psicólogo organizacional sênior tinha pouca razão para conviver na mesma sala de aula com o gerente de RH não-psicólogo — frentes distintas, vocabulários distintos, comunidades distintas. Em 2026, ambos compartilham o mesmo problema operacional: o board pediu pacote NR-1 defensável até maio, e nenhum dos dois foi formado, na origem, para entregar o tripé inteiro. O MBA canônico vira ponto de encontro técnico — não de identidade profissional.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 6 — Empregabilidade e demanda 2026-2027</h2>
+        <p>
+          A demanda é dual e simultânea. De um lado, o estoque epidemiológico: 546.254 benefícios concedidos pela Previdência Social em 2025 por transtornos mentais e comportamentais — alta de 15,66% sobre 2024, com mulheres concentrando 63,46% das licenças e São Paulo respondendo por 27,4% das concessões (Previdência Social, gov.br/previdencia, janeiro de 2026). Esse estoque transforma saúde mental corporativa de programa de bem-estar em linha-de-base orçamentária de plano de saúde e de passivo previdenciário.
+        </p>
+        <p>
+          De outro lado, o fluxo regulatório: a fiscalização punitiva da NR-1 ativa em 26 de maio de 2026 cria pressão contratual sobre toda empresa CLT, independente de porte. O resultado, do lado da oferta de profissionais, é demanda concentrada em janela curta — 12 a 24 meses — por coordenadores técnicos com o tripé curricular completo. Consultorias boutique de saúde mental corporativa, healthtechs de bem-estar com pacote B2B e operações internas de empresa de médio/grande porte competem pelo mesmo perfil escasso.
+        </p>
+        <p>
+          A consequência prática para a decisão de matrícula: profissional que entra no MBA canônico em 2026 começa a operar em mercado com pico de demanda projetado para 2026.2 e 2027.1, antes que a oferta de programas concorrentes amadureça e dilua a janela. Quem entrou cedo está capturando contrato B2B em vertical de valor; quem entrar tarde encontra leilão de preço em pesquisa de clima sofisticada [VERIFICAR projeção de saturação de mercado conforme novos players].
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 7 — Cinco verificações antes de matricular</h2>
+        <p>
+          A maioria das decepções com pós-graduação Lato Sensu nasce de matrícula feita sem verificação técnica. Para esse MBA específico, em 2026, cinco verificações canônicas separam programa aplicado de programa decorativo.
+        </p>
+        <ol class="mt-4 space-y-4 list-decimal pl-5 text-ink-700">
+          {verificacoesPreMatricula.map((v) => (
+            <li>
+              <strong class="text-ink-900">{v.item}</strong>
+              <p class="mt-1 text-sm">{v.porque}</p>
+            </li>
+          ))}
+        </ol>
+        <p class="mt-4">
+          Pré-requisito legal complementar: para profissional que pretende registrar especialidade em Psicologia Organizacional e do Trabalho junto ao CFP (Resolução CFP nº 23/2022, alterada pela Resolução CFP nº 17/2025), é necessária graduação em Psicologia e CRP ativo há pelo menos dois anos. Para RH não-psicólogo, o MBA agrega capacidade técnica sem outorga de especialidade — caminho legítimo para coordenação da frente sem invasão de ato privativo.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f) => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">O MBA canônico de 2026 é um produto de convergência</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Em 2024, Psicologia Organizacional, NR-1 e People Analytics eram três conversas paralelas. Em 2026, são uma única frente regulatória que o board precisa ver coordenada. Empresa CLT que entra junho sem PGR psicossocial documentado fica em risco fiscal direto; consultoria que vende pacote B2B sem tripé curricular completo perde renovação; profissional que enxergou o movimento estrutural já está ocupando vaga em janela curta de 12 a 24 meses. O MBA em Psicologia Organizacional e do Trabalho do IPOG, em formato síncrono Ao Vivo, é o caminho aplicado canônico para esse coordenador — combina docente nominal, prática de caso real e atualização regulatória embutida.
+        </p>
+        <div class="mt-4 flex gap-3 flex-wrap">
+          <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn bg-sun-500 text-ink-900 hover:bg-sun-400">Ver no IPOG</a>
+          <a href="/mbas/mba-pot" class="btn btn-ghost text-white border-white/30 hover:bg-white/10">Ver ficha do MBA em POT</a>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Continue aprofundando</h2>
+        <ul class="mt-4 space-y-2 text-ink-700">
+          <li>
+            <a href="/areas/psicologia-organizacional-trabalho" class="text-brand-700 hover:text-brand-800 font-medium">Psicologia Organizacional e do Trabalho — área canônica</a>
+            <span class="text-sm text-ink-500"> · cultura, clima, liderança, NR-1, people analytics em página de área.</span>
+          </li>
+          <li>
+            <a href="/mbas/mba-pot" class="text-brand-700 hover:text-brand-800 font-medium">MBA em POT — IPOG</a>
+            <span class="text-sm text-ink-500"> · ficha do programa canônico no portal.</span>
+          </li>
+          <li>
+            <a href="/temas/saude-mental-corporativa-nr1-pacote-b2b" class="text-brand-700 hover:text-brand-800 font-medium">Saúde Mental Corporativa: pacote B2B mínimo viável para NR-1 2026</a>
+            <span class="text-sm text-ink-500"> · três blocos contratuais e governança documentada.</span>
+          </li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Programa canônico</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName} — IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          MBA em Psicologia Organizacional e do Trabalho, formato síncrono Ao Vivo, com tripé curricular canônico de 2026: POT clássico, riscos psicossociais sob NR-1 atualizada e People Analytics psicometricamente válido.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/mbas" class="btn btn-ghost mt-2 w-full">Comparar MBAs</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas conectadas</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/psicologia-organizacional-trabalho" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Organizacional e do Trabalho</strong></a></li>
+          <li><a href="/areas/saude-mental-organizacoes" class="mega-link"><strong class="text-ink-900 text-sm">Saúde Mental nas Organizações</strong></a></li>
+          <li><a href="/areas/ia-people-analytics-psicologia-digital" class="mega-link"><strong class="text-ink-900 text-sm">IA, People Analytics e Psicologia Digital</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes regulatórias e oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NR-1 vigente e Portarias 1.419/2024 e 765/2025</a></li>
+          <li><a href="https://www.gov.br/previdencia/pt-br/noticias/2026/janeiro/previdencia-social-concede-546-254-beneficios-por-incapacidade-temporaria-por-transtornos-mentais-e-comportamentais" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Previdência Social — 546.254 benefícios CID-10 F, 2025</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções 23/2022 e 17/2025</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldProgramGraph)} />
+</Base>

@@ -10,15 +10,26 @@ Repositório do projeto **GEO IPOG**, executado pela **Brasil GEO** para o IPOG.
 
 ## Documento canônico de contexto enriquecido
 
-**Antes de iniciar qualquer onda de trabalho neste repo, LER:**
+**Antes de iniciar qualquer onda de trabalho neste repo, LER nesta ordem:**
 
-- `docs/governance/geo-context-enriquecido-2026.md` — premissas operacionais GEO 2026, KPIs canônicos, fluxo de pesquisa, anti-padrões.
+1. `docs/governance/seo-geo-knowledge-base-2026-05-17.md` — **KB canônica SEO+GEO 2026 (porta de entrada).** Taxonomia em 7 ramos, glossário, checklist de implementação e 12 mudanças canônicas de 2026 que afetam decisão neste portal (FAQ rich result morto em 07/05, GPT-5.3 vs 5.4 dramatic delta, pt-BR YouTube 65% vs Reddit 7%, llms.txt sem evidência estatística, MCP padrão de fato, Schema @graph triplo, etc.). Sintetiza 5 dossiês de wave (A-E) com 203 sources catalogadas, 70+ spot-checked individualmente.
+2. `docs/governance/geo-context-enriquecido-2026.md` — premissas operacionais GEO de 13/05 (Aggarwal SIGIR/KDD 2024, frameworks ELCA/Profound, padrões llms.txt/Schema.org/IndexNow, KPIs Mention Rate/SoV/AIGVR).
 
-Este documento destila o estado-da-arte 2025-2026 em Generative Engine Optimization (Aggarwal SIGIR 2023, frameworks ELCA/Profound, padrões llms.txt/Schema.org/IndexNow, KPIs Mention Rate/Share-of-Voice/AIGVR) em premissas executáveis para este portal.
+A KB de 17/05 (item 1) é mais recente, mais ampla e tem prioridade quando houver conflito.
 
 ## Dossiês de pesquisa
 
-- `docs/research/geo-state-of-art-2026-05-13.md` — 5 chamadas Perplexity Sonar Pro, 44 citações reais sobre frameworks GEO, embeddings, industry takes (Profound/Ahrefs/SEMrush), llms.txt/Schema, KPIs.
+### Salva canônica 17/05/2026 — knowledge base completa
+
+- `docs/research/wave-A-papers-academicos-20260517.md` — 20 papers acadêmicos 2025-2026 (Khosravi/Yoganarasimhan -15% Wikipedia, Zhang/He/Yao Citation Selection vs Absorption, Zhao 146.932 alucinações, Aggarwal continuações), 17 spot-checked arxiv.
+- `docs/research/wave-B-frameworks-vendors-20260517.md` — landscape industrial: Profound (Série C US$ 96M @ US$ 1B em 24/02/2026), Peec, Otterly, AthenaHQ, Brandlight, Trakkr, Ahrefs Brand Radar, SEMrush AI Toolkit, Conductor (ISO 42001), 10 analistas canônicos, gap BR identificado.
+- `docs/research/wave-C-engines-2026-20260517.md` — comportamento dos 8 engines (ChatGPT 5.3 Instant default, Claude Opus 4.7 GA, Gemini AI Mode pt-BR desde 08/09/2025, Perplexity Sonar Deep Research em Opus 4.5, Bing AI Performance Report 10/02/2026, Meta Muse Spark 08/04/2026).
+- `docs/research/wave-D-standards-tecnicos-20260517.md` — standards (FAQ rich result morto 07/05/2026, Schema @graph triplo canônico, lista de 15+ bots, MCP 2025-11-25, IndexNow, AP2/x402/Web Bot Auth, llms.txt sem evidência).
+- `docs/research/wave-E-kpis-measurement-20260517.md` — 24 KPIs canônicos, frameworks ELCA/iPullRank/Aleyda/Profound/Aggarwal, regex GA4 "AI Traffic", server log canônico, benchmark setorial (CTR -59%, AIO 6,49%→13,14%, AI Mode 93% zero-click, 26% marcas com zero menção), controvérsias (Mention ≠ Citation, AECR ambíguo, ChatGPT só 34,5% web-search).
+
+### Salvas anteriores (13/05/2026)
+
+- `docs/research/geo-state-of-art-2026-05-13.md` — 44 citações reais sobre frameworks GEO, embeddings, industry takes.
 - `docs/research/perplexity-dossie-9temas-20260513.md` — 19 citações reais sobre TEA, TDAH, burnout, IA clínica, psicose, perinatal, neurodiversidade, IAPT, supervisão.
 
 ## Premissas editoriais (toda peça nova)

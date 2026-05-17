@@ -275,3 +275,94 @@ Detalhes pratos completos em `feedback_perplexity_research_mandatory` e `project
 **Última atualização deste documento:** 2026-05-13 (W20 terça)
 **Próxima revisão programada:** 2026-06-01 (após captura espelho pós-Schema)
 **Owner:** Alexandre Caramaschi (Brasil GEO)
+
+---
+
+## 11. Deltas canônicas de 17/05/2026 — superseding partial contents acima
+
+> **Importante:** este documento de 13/05 segue válido como base. As mudanças abaixo, capturadas nas waves A-E de 17/05 (5 sub-agents Opus paralelos, 203 sources, 70+ spot-checked), atualizam pontos específicos. Quando houver conflito, prevalece o que está aqui ou em `seo-geo-knowledge-base-2026-05-17.md`.
+
+### 11.1 Atualizações na base acadêmica (substitui §1.2 quando aplicável)
+
+- **Aggarwal et al. KDD 2024** — confirmação canônica: `https://arxiv.org/abs/2311.09735`. Veículo correto é KDD 2024 (não SIGIR 2023). Resultado headline +40% via 9 técnicas mantido.
+- **Khosravi & Yoganarasimhan 2026** (`arXiv 2602.18455`) — efeito causal -15% no tráfego diário de artigos Wikipedia EN expostos a AIO; Cultura cai mais que STEM; PT-BR foi controle não-exposto.
+- **Zhang, He, Yao 2026** (`arXiv 2604.25707`) — distinção fundadora **Citation Selection vs Citation Absorption** (21k citações, 18k páginas, 72 features). Aplicar como KPI canônico no dashboard.
+- **Wallat et al. ICTIR 2025** — distinção formal **Correctness ≠ Faithfulness** em RAG attribution.
+- **Zhao et al. 2026** (`arXiv 2605.07723`) — auditoria de 111M referências em 2,5M papers; **146.932 citações alucinadas em 2025**. Reforça regra interna de spot-check obrigatório.
+- **Chen, Wang, Chen, Koudas 2025** (`arXiv 2509.08919`) — **earned media bias**: AI search favorece terceiros autoritativos sobre owned media; ChatGPT favorece marcas populares; Perplexity menciona mais marcas; AIO mais diverso; Copilot maior desigualdade.
+- **Volpini et al. 2026** (`arXiv 2603.10700`) — markup JSON-LD sozinho dá ganho **modesto**; combinado com **entity page architecture enhanced** (instruções para agentes, breadcrumbs, neural search) gera **+29,6% acurácia RAG e +29,8% agentic**. Esta combinação é mais forte que o JSON-LD isolado que §3 listou.
+
+### 11.2 Atualizações em standards técnicos (substitui §3 e §6)
+
+- **FAQ Rich Result morreu em 07/05/2026** no Google Search. **`FAQPage` JSON-LD permanece válido e altamente recomendado para citação em AI Overviews (+3,2× citação).** Não remover do markup; o destino mudou de SERP para AI.
+- **7 schemas perderam rich result em janeiro 2026:** Course Info, ClaimReview, EstimatedSalary, LearningVideo, SpecialAnnouncement, VehicleListing, PracticeProblem. Schema segue válido como sinal semântico.
+- **`HowTo` rich result morto** mas schema segue válido para AI.
+- **`Speakable` mantido como BETA; sem rich result; sinal canônico para AI Overviews hover preview.**
+- **`@graph` triplo (Organization + Person + Article) cross-referenciado via `@id` ancorado em URL fragment** é o padrão canônico 2026 — já alinhado com `src/lib/schemas/`.
+- **llms.txt: sem evidência estatística.** Estudo SE Ranking em ~300 mil domínios não encontrou correlação entre llms.txt e citação. Cloudflare/Vercel/Anthropic publicam por hygiene. **Manter como hygiene de baixo custo; nunca como linha principal.**
+- **MCP (Model Context Protocol)** — padrão de fato 2026 com spec **2025-11-25** (Streamable HTTP substitui SSE). Doado em dez/2025 para **Agentic AI Foundation no Linux Foundation**. ChatGPT Plugins e `ai-plugin.json` mortos desde 09/04/2024.
+- **`ai-context.json` e `ai-agents.json` NÃO são padrões.** Zero adoção em fontes canônicas. Não emitir como se fossem.
+- **Web Bot Auth** — draft IETF `draft-meunier-web-bot-auth-architecture-05` publicado **02/03/2026** (Cloudflare + Google). Diretório `/.well-known/http-message-signatures-directory` retornando JWKS Ed25519.
+- **PerplexityBot delistado dos Verified Bots Cloudflare em ago/2025** por crawler stealth com UA Chrome. Bloquear UA declarado não basta — combinar com Bot Management ou rate-limit por ASN.
+- **Cloudflare Pay Per Crawl** — HTTP 402 + JWT + Web Bot Auth; **1+ bilhão de respostas 402/dia em mai/2026.** Beta privada.
+- **Agent commerce:** Google **AP2** (set/2025, Intent/Cart/Payment mandates) + Coinbase **x402** (mai/2025, doado a Linux Foundation em 02/04/2026, 165M transações até fim de abril/2026).
+
+### 11.3 Atualizações em comportamento dos engines (substitui §4)
+
+- **ChatGPT:** GPT-5.3 Instant é default desde 04/03/2026. **Cita marcas em apenas 8% das respostas** vs **56% no GPT-5.4 Thinking** (delta dramatic). Domínios únicos por resposta caíram **20%** com a mudança. Atlas Browser macOS desde 21/10/2025; superapp ChatGPT+Codex+Atlas anunciado em mar/2026.
+- **Claude Opus 4.7 GA em 16/04/2026.** Web search tool versão `web_search_20260209` com filtragem dinâmica. Citations API com campos `cited_text`/`title`/`url` que **não contam para tokens** — incentivo direto. Atenção: source attribution accuracy CAIU vs 4.6 em benchmarks (MindStudio). Skills + Connectors unificados em `claude.ai/directory` desde 31/03/2026.
+- **Gemini / AI Overviews / AI Mode:** AI Mode em **pt-BR no Brasil desde 08/09/2025** rodando em Gemini 2.5 custom para Search. Em **06/05/2026** chegaram 5 atualizações: inline links próximos ao texto citado, hover preview no desktop, subscription highlight. Deep Research Max em Gemini 3.1 Pro lançou em 21/04/2026 com **MCP support nativo**.
+- **Perplexity:** Sonar/Sonar Pro/Sonar Deep Research. **Deep Research roda em Claude Opus 4.5**; Comet Agent default Sonnet 4.6 Pro / Opus 4.6 Max. **Comet Browser global em mar/2026** (iOS/Android/Mac/Windows). **100% das respostas têm pelo menos uma citação** — diferente de ChatGPT que sintetiza.
+- **Microsoft Copilot/Bing:** **AI Performance Report no Bing Webmaster Tools desde 10/02/2026** (public preview) — primeira fonte oficial gratuita de citation tracking Copilot por URL. **Habilitar no portal.**
+- **Meta lançou Muse Spark em 08/04/2026** (closed-source, sai do open-source Llama). Meta AI **raramente cita fontes externas** — baixa prioridade.
+
+### 11.4 Atualizações em fontes preferidas — DIFERENÇA pt-BR vs EN-US (novo)
+
+Padrão pt-BR é radicalmente diferente do EN-US (Profound 2026):
+
+| Canal | EN-US AIO | pt-BR AIO |
+|---|---|---|
+| YouTube | ~16% | **65%** |
+| Reddit | ~30% | **7%** |
+| Instagram | ~5% | **17%** |
+| Wikipedia | alto | alto |
+| LinkedIn | 14,3% (ChatGPT) | médio |
+
+**Implicação para `posgraduacaopsicologia.com`:**
+
+1. **YouTube precisa entrar no playbook como canal #1** — canal com transcripts limpos, chapter markers, descriptions ricas. Não copiar playbook americano de Reddit dominante.
+2. **Reddit é residual em pt-BR** — não vale investimento exclusivo, mas marginal para queries EN globais.
+3. **Instagram com alt-text e legenda densa** pode ser citado em AIO BR.
+4. **LinkedIn Pulse 500-2000 palavras** segue alavanca para Claude e ChatGPT (sinergia com Person canônico do autor).
+
+### 11.5 Atualizações em KPIs (substitui §5)
+
+- **6 KPIs canônicos** consolidados em 2026: Mention Rate, Citation Rate, SoV-AI, AECR (desambiguar), NSS (Net Sentiment Score), AI-Referred Traffic & Conversion.
+- **Atenção semântica: AECR usado com 2 sentidos.** ELCA = "AI Engagement & Conversion Rate" (resultado de negócio). Averi/Discovered/GenOptima = "AI Engine Citation Rate" (frequência de citação com link). **Recomendação canônica:** Brasil GEO adota "AECR-Conversion" e "Citation Rate" como nomes canônicos no portal.
+- **Discovered Labs benchmarks setoriais:**
+  - Citation Rate baseline 8-15%, otimizado 20-30%, **líder de categoria 30%+**.
+  - **26% das marcas têm zero menções em AI Overviews** — não basta estar no Google.
+  - Conversão AI-referred é **2,3× a 4,4× maior** que orgânico tradicional.
+- **CTR posição 1 com AI Overview caiu de 27% para 11%** (SISTRIX mar/2026, -59%).
+- **AI Overviews subiram de 6,49% (jan/25) para 13,14% (jan/26)** das queries Google.
+- **AI Mode entrega 93% queries zero-click** vs 60% do Google clássico.
+- **ChatGPT ativa web search em apenas 34,5% das queries** — 65% das respostas vêm de training data, fora de tracking real-time. Estratégia de **data presence pré-training cutoff** é tão importante quanto tracking semanal.
+- **Vertical Educação está em 83% de presença AIO** (ALM Corp 2026). Canal dominante para pós-graduação.
+
+### 11.6 Atualizações em fluxo de pesquisa (acrescenta a §9)
+
+- **Calibração canônica de prompts:** **3-5 runs por prompt** (LLMs têm temperatura > 0 mesmo em search mode). Reportar **média + mediana + p90** com intervalo de confiança 95% antes de declarar tendência. Decompor por engine sempre.
+- **Mix recomendado de prompts:** 40% comercial ("X vs Y", "qual o melhor") + 30% informacional aprofundado + 20% branded + 10% pain.
+- **Cadência:** semanal é o sweet spot; diário só vale para mercados de alta volatilidade.
+- **Spot-check de URL real obrigatório** — 146.932 citações alucinadas em 2025; nunca aceitar DOI gerado por Opus/Sonnet/GPT-4o sem dossiê Perplexity prévio.
+
+### 11.7 Gaps estruturais identificados (para próximas waves)
+
+1. **Sem benchmark canônico pt-BR de mention/citation rate para educação superior.** Brasil GEO deve publicar o primeiro — rodar baseline próprio de 50-100 prompts canônicos × 5 engines × 3-5 runs.
+2. **Sem analista BR canônico em GEO** — espaço de posicionamento para Alexandre Caramaschi via newsletter semanal + dossiês públicos.
+3. **Sem evento BR 2026 dedicado a GEO** — RD Summit, iMasters, Casa dos Criadores não têm tracks formais.
+
+---
+
+**Versão deste delta:** 2026-05-17 (síntese das waves A-E)
+**Arquivo canônico de referência:** `docs/governance/seo-geo-knowledge-base-2026-05-17.md`

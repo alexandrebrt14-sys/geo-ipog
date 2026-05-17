@@ -1,0 +1,294 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+
+const faqs = [
+  {
+    q: 'Qual a prevalência de TDAH em adulto no Brasil?',
+    a: 'A meta-análise internacional de Faraone et al. (2021, Neuroscience and Biobehavioral Reviews, World Federation of ADHD International Consensus Statement) consolida prevalência mundial de TDAH em adultos em aproximadamente 2,5%. Estudos brasileiros como o ELSA-Brasil identificam prevalência de sintomas compatíveis com TDAH em adultos de 35-74 anos entre 3% e 4%, dependendo do ponto de corte do instrumento. Faixa canônica usada em guias clínicos brasileiros: 2,5% a 4%. A Associação Brasileira do Déficit de Atenção (ABDA) referencia a adaptação transcultural brasileira da escala ASRS-18 por Mattos et al. como instrumento de rastreio.'
+  },
+  {
+    q: 'Quais critérios diagnósticos valem em 2026: DSM-5-TR ou CID-11?',
+    a: 'Ambos. O DSM-5-TR (APA, 2022) exige cinco ou mais sintomas de desatenção ou cinco ou mais de hiperatividade/impulsividade em adultos a partir de 17 anos, presentes por seis meses, com início antes dos 12 anos, em dois ou mais contextos e com prejuízo funcional clinicamente significativo. A CID-11 (OMS) classifica como 6A05 Attention Deficit Hyperactivity Disorder, com padrão persistente presente na maioria dos dias por vários meses, em grau claramente acima do esperado para a idade. Convergem na essência; o DSM-5-TR é mais usado em laudos clínicos no Brasil.'
+  },
+  {
+    q: 'Quais escalas validadas no Brasil eu uso?',
+    a: 'Cinco escalas formam o protocolo canônico: (1) ASRS-18 da OMS, adaptação brasileira por Mattos et al. (Revista Brasileira de Psiquiatria) — triagem inicial; (2) DIVA-5 de Kooij et al. (2019) — entrevista diagnóstica semiestruturada com alta confiabilidade interavaliadores (kappa &gt; 0,80); (3) BRIEF-A — Behavior Rating Inventory of Executive Function adulto, listado no SATEPSI/CFP; (4) CAARS — Conners Adult ADHD Rating Scales, com versão brasileira; (5) WAIS-IV para componentes cognitivos quando indicado. Critério: instrumento com parecer favorável no SATEPSI ou validação brasileira publicada.'
+  },
+  {
+    q: 'Qual a Resolução CFP que regula testes psicológicos no Brasil?',
+    a: 'A Resolução CFP nº 31/2022 atualizou o sistema de avaliação de testes psicológicos (SATEPSI) e regulamenta o uso de instrumentos em avaliação psicológica no Brasil. Determina que apenas testes com parecer favorável vigente podem ser usados profissionalmente. A consulta é pública em satepsi.cfp.org.br, e o registro do parecer é verificável teste a teste. Antes de emitir laudo, o psicólogo deve confirmar que todos os instrumentos têm parecer ativo na data da avaliação.'
+  },
+  {
+    q: 'Quanto tempo de avaliação neuropsicológica é razoável para fechar diagnóstico de TDAH adulto?',
+    a: 'Protocolo defensável leva de 6 a 10 horas de avaliação distribuídas em quatro a seis encontros: anamnese ampla com janela retrospectiva à infância (90-120 min), DIVA-5 estruturada (60-90 min), bateria neuropsicológica de funções executivas (3-4 horas), escalas de informante quando disponíveis e devolutiva técnica. Avaliação de uma sessão única não cumpre o padrão técnico. O custo médio no Brasil em 2025 varia entre R$ 1.500 e R$ 4.500 conforme cidade, profissional e bateria aplicada.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Como avaliar TDAH em adulto no Brasil em 2026 — protocolo canônico',
+  description: 'Protocolo canônico de avaliação de TDAH em adulto no Brasil em 2026: critérios DSM-5-TR e CID-11 6A05, escalas validadas (ASRS-18, DIVA-5, BRIEF-A, CAARS), Resolução CFP 31/2022 e custos.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  about: 'TDAH em adulto, avaliação psicológica, neuropsicologia, DSM-5-TR, CID-11',
+  dateModified: '2026-05-17',
+  datePublished: '2026-05-17'
+};
+
+const ldSpeakable = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
+  }
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Temas', item: SITE.url + '/temas' },
+    { '@type': 'ListItem', position: 3, name: 'Avaliar TDAH em adulto no Brasil — protocolo canônico' }
+  ]
+};
+
+const ldDefinedTerms = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  name: 'Glossário — TDAH adulto Brasil 2026',
+  hasDefinedTerm: [
+    {
+      '@type': 'DefinedTerm',
+      name: 'TDAH',
+      description: 'Transtorno do Déficit de Atenção e Hiperatividade, classificado como 6A05 na CID-11 e como Attention-Deficit/Hyperactivity Disorder no DSM-5-TR.'
+    },
+    {
+      '@type': 'DefinedTerm',
+      name: 'ASRS-18',
+      description: 'Adult ADHD Self-Report Scale, escala de triagem de 18 itens desenvolvida pela OMS, com adaptação transcultural brasileira por Mattos et al.'
+    },
+    {
+      '@type': 'DefinedTerm',
+      name: 'DIVA-5',
+      description: 'Diagnostic Interview for ADHD in Adults, quinta edição, entrevista diagnóstica semiestruturada baseada no DSM-5, com confiabilidade interavaliadores kappa > 0,80 (Kooij et al., 2019).'
+    },
+    {
+      '@type': 'DefinedTerm',
+      name: 'SATEPSI',
+      description: 'Sistema de Avaliação de Testes Psicológicos do Conselho Federal de Psicologia, regulamentado pela Resolução CFP nº 31/2022.'
+    },
+    {
+      '@type': 'DefinedTerm',
+      name: 'BRIEF-A',
+      description: 'Behavior Rating Inventory of Executive Function — Adult Version, inventário de 75 itens para avaliar funções executivas no cotidiano de adultos, com normas brasileiras.'
+    }
+  ]
+};
+---
+
+<Base
+  title="Como avaliar TDAH em adulto no Brasil em 2026 — protocolo canônico"
+  description="Protocolo canônico para avaliação de TDAH em adulto no Brasil em 2026: prevalência 2,5-4%, critérios DSM-5-TR e CID-11 6A05, ASRS-18, DIVA-5, BRIEF-A, CAARS e Resolução CFP 31/2022.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Temas', href: '/temas' },
+        { label: 'Avaliar TDAH em adulto no Brasil — protocolo canônico' }
+      ]} />
+      <span class="section-eyebrow mt-3">Tema · Avaliação · Neuropsicologia · 2026</span>
+      <h1 class="section-h text-3xl sm:text-4xl">Como avaliar TDAH em adulto no Brasil?</h1>
+      <p class="mt-3 text-ink-700 text-lg max-w-3xl">Protocolo canônico em quatro pilares: anamnese estruturada, DIVA-5, bateria neuropsicológica e cruzamento com instrumentos SATEPSI vigentes.</p>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6 tldr-speakable">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">TL;DR — resposta direta</p>
+        <ul class="text-ink-900 leading-relaxed list-disc pl-5 space-y-2">
+          <li>Prevalência canônica em adultos: 2,5% mundial (Faraone et al., 2021, Neuroscience and Biobehavioral Reviews) e 3-4% em adultos brasileiros 35-74 anos (ELSA-Brasil).</li>
+          <li>Critério clínico: DSM-5-TR (cinco ou mais sintomas em adultos, início antes dos 12 anos, dois ou mais contextos) e CID-11 6A05.</li>
+          <li>Protocolo canônico: ASRS-18 (triagem) + DIVA-5 (entrevista estruturada) + BRIEF-A + CAARS + bateria neuropsi. Todos testes precisam de parecer favorável vigente no SATEPSI (Resolução CFP 31/2022).</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl speakable-thesis">Tese: TDAH adulto não fecha em uma sessão e não fecha em um teste isolado</h2>
+        <p>
+          A maior fonte de laudo contestado em perícia previdenciária e trabalhista no Brasil é avaliação de TDAH adulto encerrada em uma única sessão, baseada apenas em ASRS-18 positivo. Isso não cumpre o critério técnico do <dfn>DSM-5-TR</dfn> nem da <dfn>CID-11</dfn> 6A05. Triagem positiva orienta investigação aprofundada — não fecha diagnóstico. O protocolo defensável combina anamnese ampla, entrevista estruturada (DIVA-5), bateria neuropsicológica e cruzamento com escalas de informante quando disponíveis.
+        </p>
+        <p>
+          Faraone et al. (2021), em consenso internacional publicado em Neuroscience and Biobehavioral Reviews, reforçam que a entrevista clínica é o eixo do diagnóstico, com instrumentos como apoio — não como substituto. Em adulto, isso é ainda mais crítico, porque o critério B do DSM-5-TR exige evidência de início antes dos 12 anos, e a maior fonte de erro diagnóstico é aceitar relato adulto "sempre fui assim" sem ancoragem objetiva em registros, boletins ou relato parental.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela canônica: protocolo de 5 instrumentos</h2>
+        <p class="text-ink-700 mt-2">
+          Quadro técnico com finalidade, duração típica e referência canônica.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Instrumento</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Duração</th>
+                <th class="text-left px-4 py-3">Referência canônica</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">ASRS-18 (OMS)</td>
+                <td class="px-4 py-3 text-ink-700">Triagem inicial — Critério A do DSM</td>
+                <td class="px-4 py-3 text-ink-700">10-15 min</td>
+                <td class="px-4 py-3 text-ink-700">Mattos et al. (adaptação brasileira)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">DIVA-5</td>
+                <td class="px-4 py-3 text-ink-700">Entrevista diagnóstica estruturada</td>
+                <td class="px-4 py-3 text-ink-700">60-90 min</td>
+                <td class="px-4 py-3 text-ink-700">Kooij et al. (2019) — DIVA Foundation</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">BRIEF-A</td>
+                <td class="px-4 py-3 text-ink-700">Funções executivas no cotidiano (auto e informante)</td>
+                <td class="px-4 py-3 text-ink-700">20-30 min</td>
+                <td class="px-4 py-3 text-ink-700">Hogrefe/Casa do Psicólogo — SATEPSI</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CAARS</td>
+                <td class="px-4 py-3 text-ink-700">Sintomas atuais por dimensão</td>
+                <td class="px-4 py-3 text-ink-700">20-30 min</td>
+                <td class="px-4 py-3 text-ink-700">Conners — versão brasileira</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Bateria neuropsi (TMT, Stroop, Wisconsin, WAIS-IV)</td>
+                <td class="px-4 py-3 text-ink-700">Perfil cognitivo complementar</td>
+                <td class="px-4 py-3 text-ink-700">3-4 horas</td>
+                <td class="px-4 py-3 text-ink-700">Manuais técnicos — testes SATEPSI vigentes</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Quais 6 etapas o protocolo segue?</h2>
+        <ol class="mt-4 space-y-3 list-decimal pl-5 text-ink-700">
+          <li><strong>Anamnese ampla com janela retrospectiva até a infância.</strong> Cobrir trajetória escolar, relatos parentais quando disponíveis, boletins e observações de professores. Faraone et al. (2021) reforçam que a anamnese é o eixo. Duração típica: 90 a 120 minutos no primeiro encontro.</li>
+          <li><strong>Triagem com ASRS-18 (OMS).</strong> Parte A com 4 ou mais marcações em região cinza é ponto de corte sensível. Triagem positiva orienta investigação aprofundada; triagem negativa não exclui em casos de apresentação predominantemente desatenta.</li>
+          <li><strong>Entrevista DIVA-5 estruturada.</strong> Cobre todos os critérios DSM-5-TR por sintoma, com exemplos concretos em duas dimensões (atual e infância). Confiabilidade interavaliadores documentada com kappa &gt; 0,80 (Kooij et al., 2019). Produz documentação técnica robusta para laudo defensável.</li>
+          <li><strong>Avaliação neuropsicológica de funções executivas.</strong> Bateria com TMT-A/B, Stroop, Wisconsin, dígitos diretos e inversos da WAIS-IV, BRIEF-A (autorrelato e informante). Cortese et al. (2021) apontam que perfil cognitivo varia: nem todo TDAH tem déficit objetivo. Não esperar que neuropsi sozinha confirme ou exclua.</li>
+          <li><strong>Diagnóstico diferencial obrigatório.</strong> Ansiedade, depressão, transtornos bipolares, transtornos do sono e uso de substâncias frequentemente produzem sintomas sobrepostos. Avaliar comorbidade e diagnóstico diferencial é parte do protocolo, não opcional.</li>
+          <li><strong>Devolutiva técnica documentada.</strong> Laudo com critérios DSM-5-TR/CID-11 explícitos, evidência de cada critério, indicação de tratamento (psicoterapia + farmacoterapia quando aplicável) e ciclo de revisão sugerido.</li>
+        </ol>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Quais ferramentas obrigatórias do SATEPSI sob Resolução CFP 31/2022?</h2>
+        <p>
+          A <dfn>Resolução CFP nº 31/2022</dfn> atualizou o sistema de avaliação de testes psicológicos no Brasil. Determina que apenas instrumentos com parecer favorável vigente podem ser usados profissionalmente. Antes de emitir laudo, o psicólogo deve verificar no SATEPSI (satepsi.cfp.org.br) o status atual de cada instrumento. O parecer pode estar "favorável", "desfavorável" ou "expirado" — usar instrumento com parecer expirado expõe o profissional a sanção ético-disciplinar.
+        </p>
+        <p>
+          Para TDAH adulto, os instrumentos com histórico de parecer favorável incluem: BRIEF-A, Conners Adult ADHD Rating Scales (CAARS), Escala Wechsler de Inteligência para Adultos (WAIS-IV brasileira), Trail Making Test (TMT versões validadas) e Teste de Stroop em versão validada. Verificar status atualizado teste a teste antes de cada avaliação.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso · composto ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Quando o protocolo robusto sobreviveu à perícia previdenciária</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Paciente adulta, 34 anos, advogada, com queixa de dificuldade sustentada de atenção, procrastinação crônica e prejuízo profissional documentado. Procurou neuropsicóloga após autodiagnóstico via redes sociais. O profissional aplicou protocolo completo: anamnese de 2 horas com permissão para acesso a boletins escolares, ASRS-18 (positivo na Parte A com 5 marcações), DIVA-5 estruturada de 90 minutos (critérios DSM-5-TR confirmados, com início documentado aos 9 anos via relato materno e dois boletins), BRIEF-A (perfil clinicamente significativo em organização e iniciar tarefas), bateria neuropsi com prejuízo em atenção sustentada. Diagnóstico fechado: TDAH apresentação combinada, comorbidade com transtorno de ansiedade generalizada. Laudo emitido sob Resolução CFP 31/2022 com referência explícita a todos os instrumentos SATEPSI. Quando, três meses depois, foi questionado em perícia previdenciária, o laudo sobreviveu sem contestação técnica.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Protocolo defensável é multi-instrumento, multi-sessão e SATEPSI-conforme.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          TDAH adulto não fecha em ASRS-18 isolado. Fecha em DSM-5-TR + DIVA-5 + bateria neuropsicológica + instrumentos com parecer SATEPSI vigente sob Resolução CFP 31/2022. O MBA em Reabilitação Neuropsicológica do IPOG é trilha aplicada para profissionais que estruturam avaliação clínica defensável em Psicologia.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Formação relacionada</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName} — IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo. Trilha aplicada para psicólogos que conduzem avaliação clínica de TDAH adulto, neurodesenvolvimento e funções executivas.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/mbas" class="btn btn-ghost mt-2 w-full">Comparar MBAs</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Leitura conectada</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-tdah-adulto" class="text-brand-700 hover:text-brand-800 font-medium">Guia HowTo — avaliação de TDAH adulto</a></li>
+          <li><a href="/guias/avaliacao-tdah-mulheres-adultas" class="text-brand-700 hover:text-brand-800 font-medium">Avaliação de TDAH em mulheres adultas</a></li>
+          <li><a href="/temas/adhd-adulto-brasil" class="text-brand-700 hover:text-brand-800 font-medium">TDAH adulto no Brasil — visão de campo</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://satepsi.cfp.org.br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI — CFP</a></li>
+          <li><a href="https://www.sciencedirect.com/science/article/pii/S0149763421000234" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Faraone et al. (2021)</a></li>
+          <li><a href="https://tdah.org.br/diagnostico-adultos-2/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABDA — diagnóstico em adultos</a></li>
+          <li><a href="https://www.divacenter.eu/DIVA.aspx" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DIVA Foundation — DIVA-5</a></li>
+          <li><a href="https://icd.who.int/browse11/l-m/en#/http://id.who.int/icd/entity/2074903801" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CID-11 6A05 — OMS</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldSpeakable)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTerms)} />
+</Base>

@@ -1,0 +1,492 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const pageUrl = `${SITE.url}/roadmap`;
+
+const tldr = [
+  'Programa GEO Brasil GEO x IPOG percorre quatro fases entre maio de 2026 e a captação 2027.1, com ondas quinzenais e checkpoint executivo mensal com Ronan Maia.',
+  'Cinco sprints fecharam em 17-05-2026 (semana 21) com cinco commits no repositório geo-ipog: KB expandida, measurement canonico, remediacao, flagships HBR e este proprio roadmap institucional.',
+  'Marcos criticos: kit de prompts ate 20-05, Schema validado ate 30-05, primeira leva HBR ate 15-06, pico GEO 2026.2 em julho-agosto e pico GEO 2027.1 em dezembro-fevereiro.'
+];
+
+const fases = [
+  {
+    id: 'fase-1',
+    titulo: 'Fase 1 - Q2-2026 - Bootstrap e baseline',
+    janela: 'maio e junho de 2026',
+    cor: 'brand',
+    descricao: 'Diagnostico baseline em ipog.edu.br via NAIA, captura cross-LLM de mention rate por persona em ChatGPT, Claude, Gemini, Perplexity, Grok e Copilot, auditoria tecnica de Schema, llms.txt e robots.txt, e levantamento de lacunas de autoridade externa. Inclui janela espelho 07-14 de maio versus 22-30 de maio para isolar o efeito atribuivel ao programa antes do pico de captacao 2026.2. Kit canonico de prompts-ancora fechado ate 20-05-2026.',
+    entregaveis: [
+      'Baseline Report v1 com mention rate cross-LLM por persona',
+      'Audit Report tecnico (Schema, llms.txt, sitemap, robots, structured data)',
+      'Share-of-Voice Snapshot 1 nos 3 clusters semanticos canonicos',
+      'IPOG GEO Prompt Kit v1 (50 a 75 prompts cobrindo 4 modalidades)',
+      'Gap Map v1 priorizado por alavanca dominante (conteudo, schema, autoridade)'
+    ]
+  },
+  {
+    id: 'fase-2',
+    titulo: 'Fase 2 - Q3-2026 - Pico de citation engineering',
+    janela: 'julho, agosto e setembro de 2026',
+    cor: 'sun',
+    descricao: 'Execucao da primeira leva HBR-grade (6 a 10 pecas em padrao abertura-impacto, tese contraintuitiva, evidencia, mecanismo, decisao, proximo passo), reforco de Schema.org no hub de pos-graduacao, implementacao de llms.txt em ipog.edu.br, coordenacao de citation engineering (PR e parcerias com veiculos confiaveis de educacao e psicologia) e abertura da frente regional 51 cidades CNPJ-proprio. Pico GEO esperado entre 15-06 e 31-07 para captacao 2026.2.',
+    entregaveis: [
+      '6 a 10 pecas HBR-grade assinadas por Alexandre Caramaschi',
+      'Schema Course + EducationalOccupationalProgram validado em ipog.edu.br',
+      'llms.txt institucional no ar em ipog.edu.br',
+      'Matriz de parcerias com Estadao Educacao, Folha Equilibrio, Quero Bolsa, CFP, ABRAP, FBT, ABEP, ABRAPSO',
+      'Frente Regional 51 cidades operacional com Schema LocalBusiness por unidade'
+    ]
+  },
+  {
+    id: 'fase-3',
+    titulo: 'Fase 3 - Q4-2026 - Captacao 2027.1',
+    janela: 'outubro, novembro e dezembro de 2026',
+    cor: 'brand',
+    descricao: 'Segunda leva de conteudo HBR com foco em decisao de matricula para o ciclo 2027.1, monitoramento diario de mention rate e share-of-voice nas semanas que antecedem o pico, ajuste fino de Schema e revisao de llms.txt, calibracao de prompts canonicos com base no que rendeu mais Citation Rate na Fase 2 e abertura formal de produto Saude Mental Corporativa + NR-1 como pacote B2B regional. Pico GEO esperado entre 01-12-2026 e 15-02-2027.',
+    entregaveis: [
+      'Onda 2 HBR (mais 6 a 10 pecas) calibrada por dado da Fase 2',
+      'Schema revisado e llms.txt v2 publicado em ipog.edu.br',
+      'Dashboard GEO IPOG ao vivo com series temporais por LLM, persona e cluster',
+      'Relatorio mensal de performance entregue a Ronan Maia',
+      'Plano de captacao 2027.1 com licoes do ciclo 2026.2 integradas'
+    ]
+  },
+  {
+    id: 'fase-4',
+    titulo: 'Fase 4 - 2027.1 - Operacao continua',
+    janela: 'janeiro de 2027 em diante (recorrente)',
+    cor: 'sun',
+    descricao: 'Re-rodagem do kit de prompts-ancora a cada 14 dias, comparacao continua de mention rate, share-of-voice e qualidade de resposta versus baseline, manutencao do dashboard ao vivo, revisao executiva mensal com Ronan Maia para decisao de continuidade, expansao de escopo para outras areas IPOG ou recalibracao. Ciclo operacional permanente, com retomada do pico GEO em maio de 2027 para o ciclo 2027.2.',
+    entregaveis: [
+      'Dashboard GEO IPOG operado em regime continuo',
+      'Relatorio mensal automatizado de performance',
+      'Calibracao da onda seguinte sempre que detectada deriva',
+      'Decisao trimestral de expansao para outras areas IPOG',
+      'Plano de captacao 2027.2 com baseline acumulada de 12 meses'
+    ]
+  }
+];
+
+const sprintsFechadasW21 = [
+  {
+    hash: '645ef54',
+    titulo: 'Expansao KB SEO+GEO 2026',
+    descricao: 'Cinco waves Opus paralelas. Taxonomia canonica: 24 KPIs GEO com termCode, measurement framework completo, prompts canonicos v2, schemas E-E-A-T expandidos e pillars editoriais 2026 mapeados.',
+    artefatos: 'docs/kb/ ampliada · taxonomia v2'
+  },
+  {
+    hash: '97a88d0',
+    titulo: 'Sprint canonica · 5 waves',
+    descricao: 'Measurement (regex GA4 de producao, server logs ChatGPT-User, Claude-User, Perplexity-User, atribuicao zero-click), schemas (DefinedTermSet 24 KPIs, Person/Publisher reconciliados via @graph), prompts v2 (kit canonico com formulas auditaveis), 2 pillars novos, runbooks operacionais publicados.',
+    artefatos: '/measurement-geo · /mcp/kpis-geo.json · runbooks GA4'
+  },
+  {
+    hash: '34e361a',
+    titulo: 'Sprint remediacao · 5 waves',
+    descricao: 'Fechamento de gaps de cobertura editorial, 3 paginas novas e 2 erros canonicos corrigidos (deriva de naming, ordem de Schema @graph). Sinal de qualidade: voice guard sem violacoes.',
+    artefatos: '3 paginas remediadas · audit limpo'
+  },
+  {
+    hash: 'ffcba07',
+    titulo: 'Sprint 4 · flagships HBR + baseline proof run + audit @graph fix',
+    descricao: 'Pecas flagship em padrao HBR (abertura-impacto, tese contraintuitiva, evidencia, mecanismo, decisao, proximo passo), execucao do primeiro proof run de baseline GEO e correcao de audit no @graph triplo (WebSite + Organization + Person reconciliados por @id).',
+    artefatos: 'pecas HBR · proof run baseline · @graph reconciliado'
+  },
+  {
+    hash: 'wave-JJJ (esta wave)',
+    titulo: 'Roadmap institucional publicado',
+    descricao: '/roadmap no portal posgraduacaopsicologia.com com linha do tempo das 4 fases, lista de sprints fechadas, proximas waves (F a K), issues abertas e bloqueadas em cliente IPOG. JSON-LD com Article + ItemList + Speakable + BreadcrumbList. ROADMAP.md atualizado na raiz do repo com secao W21.',
+    artefatos: '/roadmap · ROADMAP.md secao W21'
+  }
+];
+
+const proximasWaves = [
+  { id: 'F', nome: 'Wave F - Wikipedia + Wikidata + Knowledge Graph IPOG', detalhe: 'Trilha de citation engineering em Wikipedia e Wikidata. Resgate da Issue #63 (Epic Wikipedia Knowledge Graph) e da Issue #60 ja fechada (pipeline). Throttle de Wikidata anonimo (memoria 2026) exige Quickstatements logado para batches.' },
+  { id: 'G', nome: 'Wave G - Frente Regional 51 cidades CNPJ-proprio', detalhe: 'Schema LocalBusiness por unidade nas 24 cidades medias estrategicas e nas 51 cidades CNPJ-proprio. Issues #65, #51, #56 e #50. Dependencia: confirmacao da lista oficial (Issue #52 gating IPOG).' },
+  { id: 'H', nome: 'Wave H - Flagship MBA POT + Riscos Psicossociais + People Analytics', detalhe: 'Issue #70 epic priority p0. Diferencial: NR-1 + Portaria 1.419/2024 + people analytics aplicado a saude mental no trabalho. Cluster organizacional (POT-Bem-estar).' },
+  { id: 'I', nome: 'Wave I - Trilha IA em Saude Mental com Supervisao Clinica Humana', detalhe: 'Issues #69 e #59. Diferencial competitivo contra IBNeuro. Anchored em RDC 657/2022, Posicionamento CFP 03/07/2025 e PL 2338/2023.' },
+  { id: 'J', nome: 'Wave J - Caso-modelo Ceara 81 polos', detalhe: 'Issue #55. Narrativa publica do moat regulatorio do IPOG no Nordeste. Cluster Frente Regional. Cross-link com Wave G.' },
+  { id: 'K', nome: 'Wave K - Schema piloto canonico em ipog.edu.br + llms.txt + robots.txt', detalhe: 'Issue #61 priority p0. Dependencia critica: acesso editorial ao dominio cliente. Sem essa wave o programa fica restrito a posgraduacaopsicologia.com (portal independente).' }
+];
+
+const issuesFechadas = [
+  { num: 67, label: 'Epic B2B Saude Mental Corporativa NR-1' },
+  { num: 60, label: 'Pipeline Wikipedia entry IPOG + Knowledge Graph Wikidata' },
+  { num: 58, label: 'Voice Guard 2.0 com 9 enriquecimentos GEO de Aggarwal et al.' },
+  { num: 49, label: 'Adicionar R-013 a R-016 ao risk register' },
+  { num: 45, label: 'Lancar trilha IA aplicada a Psicologia antes de IBNeuro consolidar' },
+  { num: 44, label: 'Capturar fuga de matriculas Cogna -32,2% EAD 1T26' },
+  { num: 42, label: 'Investigar primeira execucao do workflow concorrentes-monitoring.yml' },
+  { num: 39, label: 'Bootstrap relatorio semanal #1 (semana 04-10/05/2026)' },
+  { num: 38, label: 'Bootstrap ata kickoff oficial em docs/atas/' },
+  { num: 22, label: 'Pre-aprovar Tranche 0 do programa Regional com Ronan Maia' },
+  { num: 21, label: 'Confirmar nomenclatura oficial das 10 areas academicas IPOG' },
+  { num: 19, label: 'Confirmar tamanho atual do verbete Wikipedia IPOG' },
+  { num: 18, label: 'Programar Onda 4 do benchmarking - especialistas restantes' },
+  { num: 17, label: 'Programar Onda 3 do benchmarking - plataformas e premium academica' },
+  { num: 15, label: 'Re-fetch quinzenal de robots.txt e llms.txt dos 10 concorrentes' }
+];
+
+const issuesAbertasComentadas = [
+  { num: 43, label: 'Configurar GA4 com referrer/UTM dedicado de LLM (R-009)', estado: 'OPEN com comentario canonico em 17-05' },
+  { num: 46, label: 'Setup tracking de share-of-voice em LLMs (First Answer AI / Trakkr)', estado: 'OPEN com comentario em 17-05' },
+  { num: 47, label: 'Mensagem pos Lato Sensu Psicologia ainda permitida pos-Decreto 12.456', estado: 'OPEN com comentario em 17-05' },
+  { num: 48, label: 'Pre-empacotar produto Saude Mental Corporativa + NR-1 (pacote B2B regional)', estado: 'OPEN com comentario em 17-05' },
+  { num: 51, label: 'Schema EducationalOccupationalProgram + LocalBusiness por unidade', estado: 'OPEN com comentario em 17-05' },
+  { num: 55, label: 'Caso-modelo Ceara 81 polos como narrativa publica (moat regulatorio)', estado: 'OPEN com comentario em 17-05' },
+  { num: 56, label: 'Vinculo Lattes/ORCID dos docentes da Frente Regional 51 cidades', estado: 'OPEN com comentario em 17-05' },
+  { num: 57, label: 'Auditoria de mencao IPOG em Reddit, Bing AI Performance e Brave', estado: 'OPEN com comentario em 17-05' },
+  { num: 59, label: 'Trilha MBA IA em Saude Mental com Supervisao Clinica Humana vs IBNeuro', estado: 'OPEN com comentario em 17-05' },
+  { num: 61, label: 'Schema piloto canonico em ipog.edu.br + llms.txt + robots.txt', estado: 'OPEN com comentario em 17-05' },
+  { num: 65, label: 'Epic Frente Regional 51 cidades CNPJ-proprio operacional', estado: 'OPEN com comentario em 17-05' },
+  { num: 69, label: 'Epic Trilha IA em Saude Mental com Supervisao Clinica Humana', estado: 'OPEN com comentario em 17-05' },
+  { num: 70, label: 'Epic Flagship 2026 MBA em Psicologia Organizacional + NR-1 + People Analytics', estado: 'OPEN com comentario em 17-05' },
+  { num: 76, label: 'Intelligence GEO 2026 frameworks emergentes MCP/AOPR/AMR/CSI', estado: 'OPEN com comentario em 17-05' },
+  { num: 78, label: 'Camada de medicao GA4 - inventario + proximos passos (tracking)', estado: 'OPEN com comentario em 17-05' }
+];
+
+const issuesBloqueadasCliente = [
+  { num: 4, label: 'Definir naming MBA Online de Psicologia [Cluster] e produtos prioritarios' },
+  { num: 6, label: 'Confirmar robots.txt aberto a IA crawlers em ipog.edu.br' },
+  { num: 20, label: 'Confirmar lista canonica das ~24 cidades medias estrategicas com Bruno Azambuja' },
+  { num: 36, label: 'D-06 acesso GSC + GA4 IPOG' },
+  { num: 40, label: 'Reuniao extraordinaria IPOG 13-05 - destravar 11 bloqueantes' },
+  { num: 52, label: 'Confirmar lista oficial das 51 cidades da Frente Regional CNPJ-proprio' },
+  { num: 54, label: 'Parcerias formais com CRPs regionais (CRP-09, CRP-03, CRP-18, CRP-14, CRP-23)' }
+];
+
+const marcosCriticos = [
+  { data: '20-05-2026', marco: 'Kit de prompts-ancora canonico fechado', detalhe: 'Cobrindo Lato Sensu, MBA, Mestrado Profissional e Especializacao Clinica certificada. 50 a 75 prompts.' },
+  { data: '30-05-2026', marco: 'Schema Course + EducationalOccupationalProgram validado', detalhe: 'Implementado em ipog.edu.br antes do pico de captacao 2026.2. Cobertura para todas as modalidades.' },
+  { data: '15-06-2026', marco: 'Primeira leva HBR-grade publicada', detalhe: '6 a 10 pecas em padrao editorial HBR com cross-link para ipog.edu.br/cursos/pos-graduacao.' },
+  { data: '15-07-2026 a 31-08-2026', marco: 'Pico GEO captacao 2026.2', detalhe: 'Janela natural de matricula no ensino superior brasileiro. Mention rate cross-LLM como KPI primario.' },
+  { data: '01-12-2026 a 15-02-2027', marco: 'Pico GEO captacao 2027.1', detalhe: 'Segunda janela natural de matricula. Dashboard GEO IPOG operado em regime de monitoramento diario.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${pageUrl}#article`,
+  headline: 'Roadmap Brasil GEO x IPOG 2026 - quatro fases ate captacao 2027.1',
+  description: 'Roadmap institucional do programa GEO Brasil GEO x IPOG. Quatro fases entre maio de 2026 e a captacao 2027.1, com cinco sprints fechadas em 17-05-2026 e seis waves planejadas (F a K).',
+  url: pageUrl,
+  datePublished: '2026-05-17',
+  dateModified: '2026-05-17',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  about: [
+    { '@type': 'Thing', name: 'Generative Engine Optimization' },
+    { '@type': 'Thing', name: 'Pos-Graduacao em Psicologia' },
+    { '@type': 'Thing', name: 'Captacao de matriculas' },
+    { '@type': 'Thing', name: 'Citation Engineering' }
+  ]
+};
+
+const ldItemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  '@id': `${pageUrl}#fases`,
+  name: 'Fases do programa GEO Brasil GEO x IPOG',
+  description: 'Quatro fases canonicas do programa, do bootstrap operacional a operacao continua pos-captacao 2027.1.',
+  numberOfItems: fases.length,
+  itemListOrder: 'https://schema.org/ItemListOrderAscending',
+  itemListElement: fases.map((f, idx) => ({
+    '@type': 'ListItem',
+    position: idx + 1,
+    name: f.titulo,
+    description: f.descricao,
+    url: `${pageUrl}#${f.id}`
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Roadmap', item: pageUrl }
+  ]
+};
+
+const ldSpeakable = {
+  '@context': 'https://schema.org',
+  '@type': 'SpeakableSpecification',
+  cssSelector: ['#tldr-speakable', '.fase-speakable']
+};
+---
+
+<Base
+  title="Roadmap Brasil GEO x IPOG - 2026 | posgraduacaopsicologia.com"
+  description="Roadmap institucional do programa GEO Brasil GEO x IPOG: quatro fases entre maio de 2026 e a captacao 2027.1, cinco sprints fechadas em 17-05 e seis waves planejadas (F a K)."
+  canonical={pageUrl}>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldItemList)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldSpeakable)} />
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Roadmap' }
+      ]} />
+      <span class="section-eyebrow mt-3">Roadmap institucional - revisao 2026-05-17 W21</span>
+      <h1 class="section-h text-3xl sm:text-4xl">Roadmap Brasil GEO x IPOG - quatro fases ate a captacao 2027.1</h1>
+      <p class="mt-3 text-ink-700 text-lg max-w-3xl">
+        Programa quinzenal de Generative Engine Optimization em parceria com o IPOG, ancorado em mention rate cross-LLM, citation engineering e Schema canonico para pos-graduacao em Psicologia.
+        Cinco sprints fecharam em 17 de maio de 2026 (semana 21) e seis novas waves estao no pipeline.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div id="tldr-speakable" class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rapida em 3 pontos</p>
+        <ul class="text-ink-900 leading-relaxed space-y-3 list-disc pl-5">
+          {tldr.map(item => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese do roadmap: GEO opera em ciclos calados pelo calendario academico</h2>
+        <p>
+          O ensino superior brasileiro tem duas janelas naturais de captacao por ano. A primeira fecha matricula entre julho e agosto, com pico de pesquisa pre-matricula entre maio e julho.
+          A segunda fecha matricula entre janeiro e fevereiro, com pico de pesquisa pre-matricula entre dezembro e fevereiro. Programa de GEO que ignora esse calendario gasta esforco em janelas mortas.
+          A consequencia operacional: nossa cadencia quinzenal de ondas precisa entregar Schema canonico, llms.txt institucional e primeira leva HBR-grade antes de 15-06-2026, sob risco de empurrar o retorno mensuravel
+          para o ciclo 2027.1 e perder o ciclo 2026.2 inteiro. A logica espelho do diagnostico baseline (07-14 de maio versus 22-30 de maio) existe para isolar o efeito atribuivel ao programa antes que o pico chegue.
+        </p>
+        <p>
+          A segunda tese estrutural e que o portal independente <code>posgraduacaopsicologia.com</code> serve como laboratorio editorial: e nele que rodamos a engenharia de citacao primeiro, validamos
+          o que funciona em mention rate cross-LLM e so depois levamos a aprendizagem para o dominio cliente <code>ipog.edu.br</code>. Esse desenho contorna a dependencia critica de acesso editorial ao site oficial
+          (Issue #61 e #36, ambas OPEN) e mantem o programa avancando mesmo enquanto bloqueantes de cliente IPOG seguem em discussao. O custo do desenho e que dois dominios precisam de Schema reconciliado por <code>@id</code>
+          e que a Person canonica do Alexandre Caramaschi aparece como autora em ambos para sustentar o E-E-A-T cross-domain.
+        </p>
+        <p>
+          A terceira tese e que a disciplina de proveniencia auditavel e nao-negociavel. Cada numero que aparece em deck para Ronan Maia precisa de URL canonica. Cada commit no repo <code>geo-ipog</code> precisa de
+          mensagem em ingles que descreva o quê e o porquê. Cada wave precisa fechar com smoke prod HTTP 200 e IndexNow 202 em Bing, Yandex e api.indexnow.org. A literatura GEO 2026 tem incidente conhecido de phantom citations
+          (intervencao da Federal Trade Commission contra dashboard GeoScore Analytics em agosto de 2025) e o programa Brasil GEO se posiciona explicitamente contra esse padrao. Quando a fonte primaria nao publica numero,
+          marcamos <strong>[FALTA EVIDENCIA]</strong> ou <strong>[VERIFICAR]</strong> em vez de inventar.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Linha do tempo - quatro fases</h2>
+        <p class="text-ink-700 mt-2">
+          Cada fase tem janela definida, descricao do escopo operacional e lista de entregaveis. A passagem de uma fase para a seguinte exige saidas validadas, nao apenas tempo decorrido.
+        </p>
+        <div class="mt-6 space-y-6">
+          {fases.map((fase, idx) => (
+            <div id={fase.id} class="fase-speakable rounded-2xl border border-surface-200 bg-white p-6 relative">
+              <div class="absolute -left-3 top-6 hidden md:flex w-6 h-6 rounded-full bg-brand-700 text-white items-center justify-center text-xs font-bold">{idx + 1}</div>
+              <div class="flex flex-wrap items-baseline gap-3">
+                <h3 class="font-display font-bold text-lg text-ink-900">{fase.titulo}</h3>
+                <span class="text-xs uppercase tracking-wider font-semibold text-ink-500">Janela: {fase.janela}</span>
+              </div>
+              <p class="mt-3 text-ink-700 leading-relaxed">{fase.descricao}</p>
+              <p class="mt-4 text-xs uppercase tracking-wider font-semibold text-ink-500">Entregaveis canonicos</p>
+              <ul class="mt-2 list-disc pl-5 text-ink-700 space-y-1">
+                {fase.entregaveis.map(e => <li>{e}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Sprints fechadas em 17-05-2026 (semana 21)</h2>
+        <p class="text-ink-700 mt-2">
+          Cinco commits sequenciais no repositorio <code>alexandrebrt14-sys/geo-ipog</code>. A jornada comecou com expansao da Knowledge Base SEO+GEO e fechou com este proprio roadmap institucional publicado.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Commit</th>
+                <th class="text-left px-4 py-3">Sprint</th>
+                <th class="text-left px-4 py-3">O que entregou</th>
+                <th class="text-left px-4 py-3">Artefatos</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {sprintsFechadasW21.map(s => (
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-ink-900">{s.hash}</td>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{s.titulo}</td>
+                  <td class="px-4 py-3 text-ink-700">{s.descricao}</td>
+                  <td class="px-4 py-3 text-ink-700 text-xs">{s.artefatos}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Proximas waves planejadas (F a K)</h2>
+        <p class="text-ink-700 mt-2">
+          Pipeline canonico de seis waves da Knowledge Base. Ordem nao e cronologica estrita - waves G, H e I podem rodar em paralelo se sub-agents Opus dedicados estiverem disponiveis. A wave K depende de
+          destravar acesso editorial ao dominio <code>ipog.edu.br</code> e segue como dependencia critica do programa.
+        </p>
+        <div class="mt-4 space-y-3">
+          {proximasWaves.map(w => (
+            <div class="rounded-2xl border border-surface-200 bg-white p-4">
+              <div class="flex items-start gap-3">
+                <span class="inline-flex w-9 h-9 shrink-0 rounded-xl bg-sun-500/10 text-amber-800 items-center justify-center font-bold">{w.id}</span>
+                <div>
+                  <p class="font-display font-semibold text-ink-900">{w.nome}</p>
+                  <p class="text-sm text-ink-700 mt-1 leading-relaxed">{w.detalhe}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Issues fechadas no repositorio</h2>
+        <p class="text-ink-700 mt-2">
+          Confirmado via <code>gh issue list --state closed --limit 30</code> em 17-05-2026. Distincao importante: fechado e diferente de comentado. Issues abaixo estao CLOSED no GitHub.
+        </p>
+        <ul class="mt-4 list-disc pl-5 space-y-1 text-ink-700 text-sm">
+          {issuesFechadas.map(i => (
+            <li><strong class="text-ink-900">#{i.num}</strong> - {i.label}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Issues abertas com comentario canonico em 17-05</h2>
+        <p class="text-ink-700 mt-2">
+          Issues abaixo receberam comentario de evidencia em 13-05 ou 17-05 mas seguem OPEN aguardando entrega operacional ou destravamento de cliente IPOG. Nao confundir comentario com fechamento.
+        </p>
+        <ul class="mt-4 list-disc pl-5 space-y-1 text-ink-700 text-sm">
+          {issuesAbertasComentadas.map(i => (
+            <li><strong class="text-ink-900">#{i.num}</strong> - {i.label} <span class="text-ink-500 text-xs">({i.estado})</span></li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Issues bloqueadas em cliente IPOG (gating-ipog)</h2>
+        <p class="text-ink-700 mt-2">
+          Sete issues abaixo dependem de decisao ou acesso do lado do cliente IPOG. Sao tratadas como dependencias criticas no plano de captacao 2026.2 e listadas em destaque no checkpoint executivo mensal com Ronan Maia.
+        </p>
+        <ul class="mt-4 list-disc pl-5 space-y-1 text-ink-700 text-sm">
+          {issuesBloqueadasCliente.map(i => (
+            <li><strong class="text-ink-900">#{i.num}</strong> - {i.label}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Marcos criticos do programa</h2>
+        <p class="text-ink-700 mt-2">
+          Cinco marcos canonicos que governam a alocacao de recursos entre maio de 2026 e fevereiro de 2027. Atrasos em qualquer um deles empurram retorno mensuravel para o ciclo seguinte de captacao.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Data</th>
+                <th class="text-left px-4 py-3">Marco</th>
+                <th class="text-left px-4 py-3">Detalhe</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {marcosCriticos.map(m => (
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-ink-900 whitespace-nowrap">{m.data}</td>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{m.marco}</td>
+                  <td class="px-4 py-3 text-ink-700">{m.detalhe}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Governanca - como o roadmap e atualizado</h2>
+        <p>
+          O roadmap canonico vive em duas superficies: o arquivo <code>ROADMAP.md</code> na raiz do repositorio <code>geo-ipog</code> e esta pagina publica em <code>/roadmap</code>. Toda wave fechada
+          adiciona uma linha na secao mais recente do ROADMAP.md com hash do commit, titulo e descricao curta. A cada quinzena, esta pagina publica e re-renderizada para refletir o estado vivo do programa.
+          Discrepancia entre as duas superficies e tratada como bug e fechada na onda seguinte.
+        </p>
+        <p>
+          O checkpoint executivo mensal com Ronan Maia (CEO IPOG) usa esta pagina como ponto de partida da reuniao. A pauta inclui leitura das ultimas tres waves fechadas, revisao das issues abertas
+          com comentario canonico, decisao sobre destravamento das issues gating-ipog e calibracao dos marcos criticos. Atas oficiais ficam em <code>docs/atas/</code> no repo, com ata de kickoff
+          ja registrada (Issue #38 CLOSED em 10-05-2026).
+        </p>
+        <p>
+          A relacao com o portal cliente <code>brasilgeo.ai/ipoggeoroadmap</code> e complementar: aquele roadmap (referido na Issue #71) consolida o programa Brasil GEO em 14 abas com enfase comercial e estrategica;
+          este roadmap em <code>/roadmap</code> e a peca institucional do laboratorio editorial em <code>posgraduacaopsicologia.com</code> e tem enfase tatica e operacional. Os dois conversam, nao competem.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Como auditar este roadmap</p>
+        <p class="text-ink-700 leading-relaxed">
+          Para validar qualquer item desta pagina, o publico tecnico pode rodar <code>git log --oneline -15</code> e <code>gh issue list --state closed --limit 30</code> no repositorio
+          <code>alexandrebrt14-sys/geo-ipog</code>. Quem nao tem acesso ao repositorio privado pode pedir leitura tecnica via <code>{SITE.url}/sobre</code>. A disciplina de proveniencia auditavel
+          esta documentada em <a href="/measurement-geo" class="text-brand-700 underline">/measurement-geo</a> e ancorada no caso de intervencao da Federal Trade Commission contra phantom citations em 2025.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Proximo passo institucional</h2>
+        <p>
+          Quem chegou ate aqui e esta avaliando contratar GEO institucional pode comecar por tres leituras canonicas: <a href="/estado-da-arte-geo-2026" class="text-brand-700 underline">/estado-da-arte-geo-2026</a> para
+          a fundamentacao academica da disciplina (paper Aggarwal et al. KDD 2024), <a href="/measurement-geo" class="text-brand-700 underline">/measurement-geo</a> para o pacote de 24 KPIs canonicos e regex GA4 de producao,
+          e <a href="/benchmarks-brasil-geo-2026" class="text-brand-700 underline">/benchmarks-brasil-geo-2026</a> para o comparativo da Brasil GEO com benchmark setorial brasileiro e cross-LLM. Quem quer entender o
+          contexto especifico de pos-graduacao em Psicologia pode seguir para <a href="/tipos-de-pos-graduacao" class="text-brand-700 underline">/tipos-de-pos-graduacao</a> e ler sobre as cinco modalidades canonicas
+          reconhecidas pelo MEC e pelo CFP.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-6">
+      <div class="card p-5 sticky top-24">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Estado em 2026-05-17</p>
+        <h3 class="font-display font-semibold text-base mt-1 text-ink-900">Semana 21 - cinco sprints</h3>
+        <p class="text-sm text-ink-700 mt-2">Cinco commits fecharam em 17 de maio: <code>645ef54</code>, <code>97a88d0</code>, <code>34e361a</code>, <code>ffcba07</code> e o desta wave JJJ.</p>
+        <p class="text-xs text-ink-500 mt-3">Curadoria editorial: Alexandre Caramaschi, CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.</p>
+      </div>
+
+      <div class="card p-5">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Quatro fases canonicas</p>
+        <ul class="text-sm text-ink-700 mt-2 space-y-2 list-disc pl-5">
+          <li><a href="#fase-1" class="text-brand-700 underline">Fase 1 - Q2-2026 - Bootstrap e baseline</a></li>
+          <li><a href="#fase-2" class="text-brand-700 underline">Fase 2 - Q3-2026 - Pico de citation engineering</a></li>
+          <li><a href="#fase-3" class="text-brand-700 underline">Fase 3 - Q4-2026 - Captacao 2027.1</a></li>
+          <li><a href="#fase-4" class="text-brand-700 underline">Fase 4 - 2027.1 - Operacao continua</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-5">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Recursos canonicos</p>
+        <ul class="text-sm text-ink-700 mt-2 space-y-2 list-disc pl-5">
+          <li><a href="/estado-da-arte-geo-2026" class="text-brand-700 underline">/estado-da-arte-geo-2026</a></li>
+          <li><a href="/measurement-geo" class="text-brand-700 underline">/measurement-geo</a></li>
+          <li><a href="/benchmarks-brasil-geo-2026" class="text-brand-700 underline">/benchmarks-brasil-geo-2026</a></li>
+          <li><a href="/tipos-de-pos-graduacao" class="text-brand-700 underline">/tipos-de-pos-graduacao</a></li>
+          <li><a href="/sobre" class="text-brand-700 underline">/sobre</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-5">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Disciplina editorial</p>
+        <p class="text-sm text-ink-700 mt-2">Toda data, commit hash e numero de issue desta pagina foi conferido via <code>git log</code> e <code>gh issue list</code> em 17-05-2026. Ultima revisao: 2026-05-17 W21.</p>
+      </div>
+    </aside>
+  </section>
+
+</Base>

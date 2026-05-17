@@ -41,7 +41,10 @@ export const ipogEducationalOrganization = {
   inLanguage: 'pt-BR',
   // sameAs — referências públicas verificáveis. Confirmadas em 2026-05-17.
   // e-MEC código IES 12916 — confirmado via emec.mec.gov.br (MTI5MTY= = base64 de "12916").
-  // Wikidata Q54864393 — confirmado via Wikidata Special:Search em 2026-05-17.
+  // Wikidata Q54864393 — auditado em 2026-05-17 (Wave III #63):
+  //   estado atual = 8 declarações, sem label PT-BR, sem descrição, sem sitelinks.
+  //   Plano de enriquecimento (Quickstatements ~18 statements) em
+  //   docs/governance/wikidata-wikipedia-strategy-20260517.md (Bloco A).
   sameAs: [
     'https://ipog.edu.br/',
     'https://www.linkedin.com/school/ipog/',
@@ -50,6 +53,24 @@ export const ipogEducationalOrganization = {
     'https://www.youtube.com/@ipogoficial',
     'https://www.wikidata.org/wiki/Q54864393',
     'https://emec.mec.gov.br/emec/consulta-cadastro/detalhes-ies/d96957f455f6405d14c6542552b0f6eb/MTI5MTY='
+  ],
+  // PropertyValue para e-MEC IES (Wikidata P5148 equivalente em schema.org).
+  // Adicionado em 2026-05-17 (Wave III #63) para fechar grafo LLM/Wikidata.
+  identifier: [
+    {
+      '@type': 'PropertyValue',
+      propertyID: 'e-MEC',
+      name: 'Código IES e-MEC',
+      value: '12916',
+      url: 'https://emec.mec.gov.br/emec/consulta-cadastro/detalhes-ies/d96957f455f6405d14c6542552b0f6eb/MTI5MTY='
+    },
+    {
+      '@type': 'PropertyValue',
+      propertyID: 'wikidata',
+      name: 'Wikidata QID',
+      value: 'Q54864393',
+      url: 'https://www.wikidata.org/wiki/Q54864393'
+    }
   ],
   accreditedBy: {
     '@type': 'GovernmentOrganization',

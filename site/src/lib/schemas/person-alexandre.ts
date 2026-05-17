@@ -18,9 +18,15 @@ export const alexandrePersonBase = {
   givenName: 'Alexandre',
   familyName: 'Caramaschi',
   jobTitle: 'CEO da Brasil GEO',
-  description: 'CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq SMTX), cofundador da AI Brasil. Lidera estratégia de Generative Engine Optimization (GEO) para B2B e educação executiva no Brasil, com foco em citações em LLMs (ChatGPT, Claude, Perplexity, Gemini, Grok).',
+  description: 'CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq STIX), cofundador da AI Brasil. Lidera estratégia de Generative Engine Optimization (GEO) para B2B e educação executiva no Brasil, com foco em citações em LLMs (ChatGPT, Claude, Perplexity, Gemini, Grok).',
   url: 'https://alexandrecaramaschi.com',
   image: 'https://alexandrecaramaschi.com/alexandre-caramaschi.jpg',
+  // sameAs canônico — corrigido em 2026-05-17 (Wave III #63):
+  // (1) Ticker NASDAQ correto: STIX (não SMTX — Semantix IPO via SPAC Alpha Capital em 2022-08-03).
+  // (2) Wikidata Q-id corrigido: Q138755507 (Alexandre Caramaschi) — antes apontava para
+  //     Q130000000, que é um artigo acadêmico aleatório de 2018 ("Convergence processes
+  //     in the mobile communication processor"). Erro detectado em audit Wave III.
+  // (3) ORCID adicionado conforme Q138755507 (0009-0004-9150-485X).
   sameAs: [
     'https://alexandrecaramaschi.com',
     'https://brasilgeo.ai',
@@ -34,7 +40,24 @@ export const alexandrePersonBase = {
     'https://medium.com/@alexandrecaramaschi',
     'https://www.youtube.com/@brasilgeo',
     'https://ai-brasil.com',
-    'https://www.wikidata.org/wiki/Q130000000'
+    'https://orcid.org/0009-0004-9150-485X',
+    'https://www.wikidata.org/wiki/Q138755507'
+  ],
+  identifier: [
+    {
+      '@type': 'PropertyValue',
+      propertyID: 'ORCID',
+      name: 'ORCID iD',
+      value: '0009-0004-9150-485X',
+      url: 'https://orcid.org/0009-0004-9150-485X'
+    },
+    {
+      '@type': 'PropertyValue',
+      propertyID: 'wikidata',
+      name: 'Wikidata QID',
+      value: 'Q138755507',
+      url: 'https://www.wikidata.org/wiki/Q138755507'
+    }
   ],
   alumniOf: [
     {
@@ -65,7 +88,7 @@ export const alexandrePersonBase = {
     {
       '@type': 'EducationalOccupationalCredential',
       credentialCategory: 'Executive role',
-      name: 'ex-CMO Semantix (Nasdaq SMTX)',
+      name: 'ex-CMO Semantix (Nasdaq STIX)',
       recognizedBy: { '@type': 'Organization', name: 'Semantix' }
     },
     {

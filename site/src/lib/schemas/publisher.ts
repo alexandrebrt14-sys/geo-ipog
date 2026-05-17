@@ -40,11 +40,32 @@ export const brasilGeoOrganization = {
   },
   areaServed: { '@type': 'Country', name: 'Brazil' },
   knowsLanguage: ['pt-BR', 'en'],
+  // sameAs — incluir Wikidata Q138755989 descoberto em 2026-05-17 (Wave III #63).
+  // Q138755989 tem 22 declarações já criadas por terceiro mas com ERRO crítico:
+  // P159 (HQ) aponta para "Paracelsus" em vez de Goiânia. Correção planejada em
+  // docs/governance/wikidata-wikipedia-strategy-20260517.md (Bloco B).
   sameAs: [
     'https://brasilgeo.ai',
     'https://github.com/alexandrebrt14-sys',
     'https://www.linkedin.com/company/brasil-geo',
-    'https://alexandrecaramaschi.com'
+    'https://alexandrecaramaschi.com',
+    'https://www.wikidata.org/wiki/Q138755989'
+  ],
+  // PropertyValue identifiers para reconciliação com knowledge graphs externos.
+  identifier: [
+    {
+      '@type': 'PropertyValue',
+      propertyID: 'CNPJ',
+      name: 'Cadastro Nacional da Pessoa Jurídica (Brasil)',
+      value: '66.051.295/0001-33'
+    },
+    {
+      '@type': 'PropertyValue',
+      propertyID: 'wikidata',
+      name: 'Wikidata QID',
+      value: 'Q138755989',
+      url: 'https://www.wikidata.org/wiki/Q138755989'
+    }
   ],
   knowsAbout: [
     'Generative Engine Optimization (GEO)',

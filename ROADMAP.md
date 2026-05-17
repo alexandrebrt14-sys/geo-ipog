@@ -1,8 +1,11 @@
 # Roadmap GEO IPOG
 
+Última revisão: 2026-05-17 W21.
 Início: 30 de abril de 2026.
 Cadência: ondas quinzenais com checkpoint executivo mensal de calibração com Ronan Maia (CEO IPOG).
 Escopo canônico: **Pós-Graduações em Psicologia** em todas as modalidades regulamentadas (Especialização Lato Sensu, MBA em áreas correlatas — um subconjunto —, Mestrado Profissional, Especialização Clínica certificada por Conselhos profissionais como CFP, ABRAP e FBT, Residências e formações híbridas regulamentadas). MBA Online de Psicologia é uma das modalidades-âncora dentro desse escopo amplo, não o escopo total.
+
+Roadmap institucional público também disponível em `/roadmap` no portal `posgraduacaopsicologia.com`.
 
 ---
 
@@ -189,3 +192,76 @@ Os próximos passos formais — Key Event, custom dimensions, Bing Webmaster, Lo
 - **Saturação competitiva no termo "pós-graduação online em Psicologia":** instituições EAD massivas (Estácio, Anhanguera, Unip, UNINTER, UniCesumar) também disputam a narrativa em Lato Sensu. Em Especialização Clínica certificada, institutos especialistas (IBNeuro, CETCC, InEPP) dominam termos. Diferenciação semântica do IPOG precisa ser construída em torno de atributos defensáveis: corpo docente nominal, formato Ao Vivo síncrono, presença multicampus, certificação MEC e histórico de 25 anos de pós-graduação executiva — combinando MBA, Lato Sensu e demais modalidades em catálogo amplo.
 - **Dependência de produto por modalidade:** se determinada modalidade-âncora (MBA Online em POT, Lato Sensu em Avaliação Psicológica, Especialização Clínica certificada em TCC, Mestrado Profissional) ainda não estiver no catálogo público no momento do pico GEO, share-of-voice naquela modalidade tende a ficar capturado por concorrentes. Mitigação: cronograma do programa GEO sincroniza com plano de lançamento de cada produto IPOG por modalidade.
 - **Calendário de captação:** atrasos em Schema ou em conteúdo editorial além de 30-05-2026 reduzem janela de impacto sobre o ciclo 2026.2 e empurram retorno mensurável para o ciclo 2027.1.
+
+---
+
+## Sprints 2026-05-17 (W21) — KB + 4 sprints fechadas em 1 dia
+
+Cinco sprints canônicas executadas em 17 de maio de 2026 (semana 21), com cinco commits sequenciais no repositório `geo-ipog`. A jornada começou com expansão da Knowledge Base SEO+GEO 2026 em cinco waves Opus paralelas e fechou com o roadmap institucional publicado no portal.
+
+**Commits fechados em 17-05-2026 W21:**
+
+- `645ef54` — **Expansão KB SEO+GEO 2026.** Cinco waves Opus paralelas com taxonomia canônica: KPIs GEO consolidados (24 termos com termCode), measurement framework completo, prompts canônicos versão 2, schemas E-E-A-T expandidos e pillars editoriais 2026 mapeados. Base de conhecimento que alimentou as quatro sprints subsequentes.
+- `97a88d0` — **Sprint canônica · 5 waves.** Measurement (regex GA4 de produção, server logs ChatGPT-User/Claude-User/Perplexity-User, atribuição zero-click), schemas (DefinedTermSet com 24 KPIs, Person/Publisher reconciliados via @graph), prompts v2 (kit canônico com fórmulas auditáveis), 2 pillars novos. Runbooks operacionais publicados.
+- `34e361a` — **Sprint remediação · 5 waves.** Fechamento de gaps de cobertura editorial, três páginas novas e dois erros canônicos corrigidos (deriva de naming, ordem de Schema @graph). Sinal de qualidade: voice guard sem violações.
+- `ffcba07` — **Sprint 4 · flagships HBR + baseline proof run + audit @graph fix.** Peças flagship em padrão HBR (abertura-impacto → tese contraintuitiva → evidência → mecanismo → decisão → próximo passo), execução do primeiro proof run de baseline GEO e correção de audit no @graph triplo (WebSite + Organization + Person reconciliados por `@id`).
+- `<wave-JJJ-pendente>` — **Roadmap institucional publicado.** `/roadmap` no portal `posgraduacaopsicologia.com` com linha do tempo das 4 fases, lista de sprints fechadas e próximas, issues abertas e bloqueadas em cliente IPOG. JSON-LD com Article + ItemList + Speakable + BreadcrumbList. Esta wave (JJJ) substitui a referência `<wave-JJJ-pendente>` pelo hash real no commit subsequente.
+
+**Páginas canônicas que receberam destaque:**
+
+- `/estado-da-arte-geo-2026` — síntese da disciplina, paper Aggarwal et al. (KDD 2024, DOI 10.1145/3637528.3671900, arXiv:2311.09735) como fonte fundadora.
+- `/measurement-geo` — 24 KPIs canônicos, regex GA4 de produção, server logs, benchmarks com URL por número.
+- `/benchmarks-brasil-geo-2026` — comparativo da Brasil GEO com benchmark setorial brasileiro e cross-LLM.
+- `/roadmap` — roadmap institucional público (publicado nesta wave JJJ).
+
+**Próximas waves planejadas (F-K da KB §6.3):**
+
+- **Wave F** — Trilha de citação engineering em Wikipedia + Wikidata para IPOG (resgate da Issue #63 e Issue #60 fechada).
+- **Wave G** — Frente Regional 51 cidades CNPJ-próprio — 24 cidades médias estratégicas com Schema `LocalBusiness` por unidade (Issue #65, Issue #51).
+- **Wave H** — Flagship MBA POT + Riscos Psicossociais + People Analytics (Issue #70, retorno do epic priority p0).
+- **Wave I** — Trilha IA em Saúde Mental com Supervisão Clínica Humana, diferencial vs IBNeuro (Issue #69 + #59).
+- **Wave J** — Caso-modelo Ceará 81 polos como narrativa pública (moat regulatório, Issue #55).
+- **Wave K** — Schema piloto canônico em `ipog.edu.br` + `llms.txt` + `robots.txt` (Issue #61, dependência cliente IPOG).
+
+**Issues fechadas em 17-05-2026 (state CLOSED no GitHub repo `alexandrebrt14-sys/geo-ipog`):**
+
+Conferido via `gh issue list --state closed --limit 30`. Não confundir comentário com fechamento — issues abaixo estão CLOSED:
+
+- #67 — [Epic] B2B Saúde Mental Corporativa NR-1 (closed 10-05-2026, recuperado no contexto W21).
+- #60 — [Acad] Pipeline Wikipedia entry IPOG + Knowledge Graph Wikidata.
+- #58 — [Acad] Voice Guard 2.0 com 9 enriquecimentos GEO de Aggarwal et al.
+- #49 — Adicionar R-013 a R-016 ao risk register.
+- #45 — Lançar trilha 'IA aplicada à Psicologia' antes de IBNeuro consolidar.
+- #44 — Capturar fuga de matrículas Cogna -32,2% EAD 1T26.
+- #42 — Investigar primeira execução do workflow concorrentes-monitoring.yml.
+- #39 — Bootstrap relatório semanal #1 (semana 04-10/05/2026).
+- #38 — Bootstrap ata kickoff oficial.
+- #22 — Pré-aprovar Tranche 0 do programa Regional com Ronan Maia.
+- #21 — Confirmar nomenclatura oficial das 10 áreas acadêmicas IPOG.
+- #19 — Confirmar tamanho atual do verbete Wikipedia IPOG.
+- #18 — Programar Onda 4 do benchmarking — especialistas restantes.
+- #17 — Programar Onda 3 do benchmarking — plataformas e premium acadêmica.
+- #15 — Re-fetch quinzenal de robots.txt e llms.txt dos 10 concorrentes.
+
+**Issues abertas com comentário canônico em 17-05-2026 mas ainda OPEN (não confundir com fechadas):**
+
+- #43, #46, #47, #48, #51, #55, #56, #57, #59, #61, #65, #69, #70, #76, #78 — receberam comentário de evidência em 13-05 ou 17-05, mas seguem OPEN aguardando entrega operacional ou destravamento de cliente IPOG.
+
+**Issues bloqueadas em cliente IPOG (gating-ipog):**
+
+- #4 — Definir naming 'MBA Online de Psicologia [Cluster]' e produtos prioritários.
+- #6 — Confirmar `robots.txt` aberto a IA crawlers em `ipog.edu.br`.
+- #20 — Confirmar lista canônica das ~24 cidades médias estratégicas com Bruno Azambuja.
+- #36 — D-06 acesso GSC + GA4 IPOG.
+- #40 — Reunião extraordinária IPOG 13-05 — destravar 11 bloqueantes.
+- #43 — Configurar GA4 com referrer/UTM dedicado de LLM (R-009).
+- #52 — Confirmar lista oficial das 51 cidades da Frente Regional CNPJ-próprio.
+- #54 — Parcerias formais com CRPs regionais (CRP-09, CRP-03, CRP-18, CRP-14, CRP-23).
+
+**Marcos críticos do programa GEO IPOG (recapitulação):**
+
+1. **20-05-2026** — Kit de prompts-âncora canônico fechado cobrindo Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada.
+2. **30-05-2026** — Schema `Course` e `EducationalOccupationalProgram` implementado e validado em `ipog.edu.br` antes do pico de captação 2026.2.
+3. **15-06-2026** — Primeira leva HBR-grade (6 a 10 peças) publicada com cross-link para `ipog.edu.br/cursos/pos-graduacao`.
+4. **15-07-2026 → 31-08-2026** — Pico de presença em LLMs para captação 2026.2.
+5. **01-12-2026 → 15-02-2027** — Pico de presença em LLMs para captação 2027.1.

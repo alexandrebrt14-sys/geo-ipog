@@ -12,10 +12,20 @@ Repositório do projeto **GEO IPOG**, executado pela **Brasil GEO** para o IPOG.
 
 **Antes de iniciar qualquer onda de trabalho neste repo, LER nesta ordem:**
 
-1. `docs/governance/seo-geo-knowledge-base-2026-05-17.md` — **KB canônica SEO+GEO 2026 (porta de entrada).** Taxonomia em 7 ramos, glossário, checklist de implementação e 12 mudanças canônicas de 2026 que afetam decisão neste portal (FAQ rich result morto em 07/05, GPT-5.3 vs 5.4 dramatic delta, pt-BR YouTube 65% vs Reddit 7%, llms.txt sem evidência estatística, MCP padrão de fato, Schema @graph triplo, etc.). Sintetiza 5 dossiês de wave (A-E) com 203 sources catalogadas, 70+ spot-checked individualmente.
-2. `docs/governance/geo-context-enriquecido-2026.md` — premissas operacionais GEO de 13/05 (Aggarwal SIGIR/KDD 2024, frameworks ELCA/Profound, padrões llms.txt/Schema.org/IndexNow, KPIs Mention Rate/SoV/AIGVR).
+1. `docs/governance/GEO_50_CONCEITOS_CANONICAL.md` — **TAXONOMIA EDITORIAL CANÔNICA (50 conceitos GEO/SEO 2026).** Referência obrigatória para toda página criada no site (HowTo, FAQ, comparativo, guia clínico, vertical de modalidade). Sub-agents Opus que produzem conteúdo neste repo recebem este arquivo como contexto OBRIGATÓRIO. Inclui mapa de aplicação por vertical do geo-ipog e anti-padrão 26 (veto absoluto a "garante CFP", "aprovado garantido", "carreira em 30 dias", "ChatGPT já cita", etc.).
+2. `docs/governance/seo-geo-knowledge-base-2026-05-17.md` — **KB canônica SEO+GEO 2026 (porta de entrada).** Taxonomia em 7 ramos, glossário, checklist de implementação e 12 mudanças canônicas de 2026 que afetam decisão neste portal (FAQ rich result morto em 07/05, GPT-5.3 vs 5.4 dramatic delta, pt-BR YouTube 65% vs Reddit 7%, llms.txt sem evidência estatística, MCP padrão de fato, Schema @graph triplo, etc.). Sintetiza 5 dossiês de wave (A-E) com 203 sources catalogadas, 70+ spot-checked individualmente.
+3. `docs/governance/geo-context-enriquecido-2026.md` — premissas operacionais GEO de 13/05 (Aggarwal SIGIR/KDD 2024, frameworks ELCA/Profound, padrões llms.txt/Schema.org/IndexNow, KPIs Mention Rate/SoV/AIGVR).
 
-A KB de 17/05 (item 1) é mais recente, mais ampla e tem prioridade quando houver conflito.
+A KB de 17/05 (item 2) é mais recente e tem prioridade quando houver conflito factual com o item 3. O item 1 (50 conceitos) é a TAXONOMIA editorial e tem precedência em decisões de estrutura/checklist.
+
+### Mapa rápido — 50 conceitos por vertical existente do site
+
+- **Páginas HowTo (Wave AA)** → conceitos 7, 8, 11, 13, 25
+- **FAQs (Waves BB, FF, KK)** → conceitos 11, 12, 13, 14
+- **Comparativos (Wave CC)** → conceitos 9, 10, 49
+- **Páginas clínicas (Waves HH, JJ, MM — saúde mental, neuropsi, IA clínica)** → conceitos 21, 22, 23 (E-E-A-T CRÍTICO em saúde mental)
+- **Páginas de modalidade (5 verticais canônicas)** → conceitos 9, 10, 15. Conceito 9 considera quatro intenções distintas: aluno em decisão, profissional CFP, gestor de instituição, familiar de paciente.
+- **Anti-padrão 26 (veto absoluto)** → banido em qualquer copy: "garante CFP", "aprovado garantido", "carreira em 30 dias", "ChatGPT já cita", "AI Overview garantido", "especialista #1", "100% de aprovação".
 
 ## Dossiês de pesquisa
 
@@ -65,7 +75,7 @@ A KB de 17/05 (item 1) é mais recente, mais ampla e tem prioridade quando houve
 
 1. **Research:** 3-5 chamadas Perplexity Sonar Pro paralelas → dossiê em `docs/research/<tema>-YYYY-MM-DD.md`.
 2. **Spot-check** de 3-5 citações (URL real, autor plausível).
-3. **Sub-agents Opus paralelos** (3-5) com dossiê + template canônico + instrução PT-BR acentuado + slugs ASCII.
+3. **Sub-agents Opus paralelos** (3-5) com dossiê + template canônico + instrução PT-BR acentuado + slugs ASCII + `docs/governance/GEO_50_CONCEITOS_CANONICAL.md` (taxonomia editorial obrigatória) + prioridades específicas do tipo de página (HowTo: 7/8/11/13/25; FAQ: 11/12/13/14; comparativo: 9/10/49; clínica: 21/22/23) + anti-padrão 26 literal.
 4. **Pós-build:** sanity check de slugs/hrefs/schemas via Python cirúrgico.
 5. **Build + push + IndexNow (3 engines) + GSC sitemap resubmit (manual).**
 

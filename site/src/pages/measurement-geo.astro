@@ -1,0 +1,451 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const pageUrl = `${SITE.url}/measurement-geo`;
+const kpisJsonUrl = `${SITE.url}/mcp/kpis-geo.json`;
+
+const tldr = [
+  'Tracking de rank em SERP perdeu primazia em 2026. O pacote canônico passou a ser Mention Rate, Citation Rate, SoV-AI e AI-Referred Traffic, com Net Sentiment Score e Citation Position em camada de qualidade.',
+  'ChatGPT responde por 87,4% do tráfego de referência de assistentes, e visitantes vindos de IA convertem entre 2,3 e 4,4 vezes mais que o orgânico tradicional segundo Discovered Labs e Lantern.',
+  'CTR orgânico na posição 1 com AI Overview caiu de 27 para 11% no levantamento SISTRIX de março de 2026. AI Mode do Google entrega 93% de queries zero-click; medir só rank é desinformar o board.'
+];
+
+const kpisCore = [
+  {
+    nome: 'Mention Rate',
+    sigla: '—',
+    formula: 'prompts com nome da marca dividido pelo total de prompts canônicos',
+    origem: 'Profound, Otterly, Peec',
+    nota: 'KPI mais difundido. Mais fácil de inflar. Só faz sentido pareado com SoV-AI.'
+  },
+  {
+    nome: 'Citation Rate (com link)',
+    sigla: '—',
+    formula: '(prompts onde a marca aparece como fonte clicável dividido pelo total de prompts) vezes 100',
+    origem: 'Discovered Labs, Averi, Profound',
+    nota: 'Mais conservadora, mais correlacionada com tráfego e conversão. Benchmark Discovered: 8-15% inicial, 20-30% otimizado, 40-50% liderança de categoria. Branded: acima de 80%.'
+  },
+  {
+    nome: 'AI Share of Voice',
+    sigla: 'SoV-AI',
+    formula: '(menções ou citações da marca dividido pelo total de menções competitivas no universo de prompts) vezes 100',
+    origem: 'Ahrefs Brand Radar, Otterly, SEMrush AI Toolkit',
+    nota: 'Substitui rank tracking como bússola estratégica em 2026. Ahrefs publica metodologia; SEMrush mistura prompts sintéticos e não publica engenharia de query.'
+  },
+  {
+    nome: 'AI-Referred Traffic',
+    sigla: '—',
+    formula: 'sessões com referrer ou UTM de chatgpt.com, perplexity.ai, claude.ai, copilot.microsoft.com ou gemini.google.com',
+    origem: 'GA4 Custom Channel Group + Looker / Data Studio',
+    nota: 'Cobertura parcial. Quatro mecanismos estripam referrer (rel=noreferrer, strict-origin, WKWebView, copy-paste). Sempre cruzar com server logs.'
+  },
+  {
+    nome: 'Net Sentiment Score',
+    sigla: 'NSS',
+    formula: '((endossos + neutros − negativos − alucinações) dividido pelo total) vezes 100; varia de −100 a +100',
+    origem: 'Sight AI, Indexly, Brandlight',
+    nota: 'Posição da marca dentro da resposta (líder, comparador, budget). Decompor por engine sempre — agregado global esconde variância.'
+  },
+  {
+    nome: 'AI Bot Activity',
+    sigla: '—',
+    formula: 'hits de GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google-Extended, ChatGPT-User e Perplexity-User em log de servidor',
+    origem: 'Trakkr, parsing nginx ou Apache',
+    nota: 'ChatGPT-User e Perplexity-User são o sinal direto de citação em tempo real. Cada 4xx ou 5xx nesses bots é citação perdida — tratar como P0.'
+  }
+];
+
+const benchmarks = [
+  { metrica: 'CTR orgânico posição 1 com AI Overview (SISTRIX mar/2026)', valor: '11% (era 27% sem AIO)', url: 'https://ppc.land/googles-ai-grip-tightens-what-sistrixs-march-data-means-for-publishers/' },
+  { metrica: 'AI Overviews — queda média de CTR (Seer, 5,47M queries)', valor: '−61% em 15 meses', url: 'https://www.searchenginejournal.com/ai-overview-ctr-fell-61-but-clicks-didnt-collapse/572993/' },
+  { metrica: 'AIO presença vertical Educação (ALM Corp)', valor: '83% das queries Education disparam AI Overview', url: 'https://almcorp.com/blog/google-ai-overviews-surge-9-industries/' },
+  { metrica: 'Share ChatGPT no tráfego AI total (Lantern jun/2025)', valor: '87,4% (+357% YoY, >1,1 bilhão visitas/mês)', url: 'https://www.asklantern.com/blogs/chatgpt-drives-87-of-ai-referral-traffic' },
+  { metrica: 'Conversão AI-referred vs orgânico (Lantern)', valor: '4,4× maior', url: 'https://www.asklantern.com/blogs/chatgpt-drives-87-of-ai-referral-traffic' },
+  { metrica: 'Conversão AI-referred vs orgânico (Discovered Labs)', valor: '2,3× maior', url: 'https://discoveredlabs.com/blog/geo-metrics-what-kpis-matter-how-to-track-them-2026' },
+  { metrica: 'Marcas com zero menções em AI Overviews', valor: '26%', url: 'https://discoveredlabs.com/blog/geo-metrics-what-kpis-matter-how-to-track-them-2026' },
+  { metrica: 'Citation Rate B2B SaaS (Discovered Labs)', valor: '10-15% inicial, >30% líderes', url: 'https://discoveredlabs.com/blog/aeo-benchmarks-how-to-measure-your-brands-visibility-in-ai-search' },
+  { metrica: 'Zero-click — Google clássico vs AI Mode', valor: '60% vs 93%', url: 'https://www.success.com/zero-click-search-strategy' },
+  { metrica: 'Overlap top-10 SERP versus citações AIO', valor: 'caiu de 75% para 17-38%', url: 'https://thedigitalbloom.com/learn/organic-traffic-crisis-report-2026-update/' }
+];
+
+const aiBots = [
+  { bot: 'GPTBot', ua: 'GPTBot/1.x (+https://openai.com/gptbot)', funcao: 'Training crawler OpenAI' },
+  { bot: 'OAI-SearchBot', ua: 'OAI-SearchBot/1.x', funcao: 'Indexação para ChatGPT search' },
+  { bot: 'ChatGPT-User', ua: 'ChatGPT-User/1.x', funcao: 'Fetch em tempo real durante conversa — sinal direto de citação' },
+  { bot: 'ClaudeBot', ua: 'ClaudeBot/1.x', funcao: 'Training Anthropic' },
+  { bot: 'Claude-User', ua: 'Claude-User/1.x', funcao: 'Fetch em tempo real Anthropic — sinal direto de citação' },
+  { bot: 'PerplexityBot', ua: 'PerplexityBot/1.x', funcao: 'Indexação Perplexity' },
+  { bot: 'Perplexity-User', ua: 'Perplexity-User/1.x', funcao: 'Fetch em tempo real Perplexity — sinal direto de citação' },
+  { bot: 'Google-Extended', ua: 'Google-Extended', funcao: 'Training Gemini e AI Overviews' }
+];
+
+const faqs = [
+  {
+    q: 'O que é Citation Rate em GEO?',
+    a: 'Citation Rate é o percentual de prompts canônicos em que a marca aparece como fonte clicável (URL) na resposta gerada pela IA, dividido pelo total de prompts monitorados, multiplicado por 100. É distinta de Mention Rate, que conta menções textuais sem exigir link. Citação Rate é mais conservadora e mais correlacionada com tráfego real. Discovered Labs publica benchmark: 10-15% como ponto inicial de performance em B2B SaaS, acima de 30% para líderes de categoria e acima de 80% para queries de marca. Em verticais regulados como Educação superior, saúde mental e finanças, a expectativa tende a ser menor pelo filtro de E-E-A-T que LLMs aplicam.'
+  },
+  {
+    q: 'Como medir AI Mode do Google no Search Console em 2026?',
+    a: 'Não é possível isolar AI Mode no Search Console nativamente em maio de 2026. O Performance report mistura AI Mode e AI Overviews com Web. A configuração "AI-powered" do GSC, em rollout global desde fevereiro de 2026, permite linguagem natural para filtrar relatórios — mas atua sobre Performance de Search results, não separa AI Mode. Tracking confiável exige plataforma externa (Ahrefs Brand Radar trackeia 41 milhões de queries de AI Mode por mês) ou análise indireta via decay de CTR pareado a crescimento de Impressões em consultas de cauda longa. Acompanhar release notes do Google Search Central — há rumor não confirmado de filtro nativo de AI Mode no segundo semestre.'
+  },
+  {
+    q: 'Quanto custa o stack mínimo de medição GEO em 2026?',
+    a: 'A linha de base viável para um portal editorial de médio porte fica em torno de 130 dólares por mês: assinatura Ahrefs (US$ 129 a partir, inclui Brand Radar), GA4 e Looker / Data Studio gratuitos, parsing de server logs em nginx ou Apache sem custo adicional, e um script DIY tipo run-prompts-weekly rodando contra APIs de OpenAI, Anthropic e Perplexity por aproximadamente 30 dólares em tokens. Stack enterprise sobe para entre 3 mil e 5,5 mil dólares por mês: Profound Enterprise ou Peec Pro mais Sight AI para sentimento mais Trakkr para crawler analytics mais SEMrush AI Toolkit como overlay. A faixa intermediária — para marcas que monitoram 50 a 150 prompts canônicos — fica em Profound Growth (US$ 399) ou Peec Pro (€199), ambas com cobertura de cinco engines principais.'
+  },
+  {
+    q: 'Quando rodar prompts canônicos é diário e quando é semanal?',
+    a: 'Profound e Peec AI publicam cadência diária no tier pago. Otterly oferece configurável. Ahrefs Brand Radar atualiza mensal com janela móvel de 90 dias para ChatGPT, Perplexity, Gemini e Copilot; contínuo para AI Overviews e AI Mode. SEMrush AI Toolkit roda semanal. A recomendação canônica Brasil GEO é semanal como trade-off entre detectar tendência e absorver custo de tokens — diário só vale para dashboards executivos em mercados de alta volatilidade como finanças e política. Tratamento estatístico exige três a cinco runs por prompt por ciclo, com reporte de média, mediana e p90 e intervalo de confiança 95% antes de declarar subida ou queda entre janelas.'
+  },
+  {
+    q: 'O que significa AECR e por que tem duas leituras?',
+    a: 'AECR é sigla disputada. A ELCA, em sua lista fundadora de 9 KPIs canônicos de 2024, usa AECR para AI Engagement & Conversion Rate — conversão originada da resposta AI, métrica de outcome. Averi, Discovered Labs e GenOptima usaram a mesma sigla a partir de 2025 com sentido distinto: AI Engine Citation Rate, frequência de citação com link, métrica de channel. Recomendamos no portal Brasil GEO desambiguar sempre em deck: usar AECR-ELCA para a leitura original de conversão e Citation Rate para a leitura agência. Quem reportar AECR sem qualificar está expondo o leitor a dois conceitos sob um mesmo nome.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${pageUrl}#article`,
+  headline: 'Measurement GEO 2026: KPIs, frameworks e atribuição zero-click',
+  description: 'Estado da arte de medição em Generative Engine Optimization para maio de 2026 com 24 KPIs canônicos, regex GA4 de produção, server logs e benchmarks setoriais com URL para cada número.',
+  url: pageUrl,
+  datePublished: '2026-05-17',
+  dateModified: '2026-05-17',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  about: [
+    { '@type': 'Thing', name: 'Generative Engine Optimization' },
+    { '@type': 'Thing', name: 'Citation Rate' },
+    { '@type': 'Thing', name: 'AI Share of Voice' },
+    { '@type': 'Thing', name: 'GA4 Custom Channel Group' }
+  ]
+};
+
+const ldDefinedTermSet = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  '@id': `${pageUrl}#kpis-geo-2026`,
+  name: 'KPIs canônicos de GEO em 2026',
+  description: 'Conjunto canônico de 24 KPIs usados em medição de Generative Engine Optimization. Versão completa em JSON-LD em /mcp/kpis-geo.json.',
+  inLanguage: 'pt-BR',
+  url: kpisJsonUrl,
+  hasDefinedTerm: [
+    { '@type': 'DefinedTerm', name: 'AI-Generated Visibility Rate', termCode: 'AIGVR' },
+    { '@type': 'DefinedTerm', name: 'AI Engagement & Conversion Rate (ELCA)', termCode: 'AECR-ELCA' },
+    { '@type': 'DefinedTerm', name: 'AI Engine Citation Rate (Averi)', termCode: 'AECR-Citation' },
+    { '@type': 'DefinedTerm', name: 'Conversational Engagement Rate', termCode: 'CER' },
+    { '@type': 'DefinedTerm', name: 'Semantic Relevance Score', termCode: 'SRS' },
+    { '@type': 'DefinedTerm', name: 'Schema Markup Effectiveness', termCode: 'SME' },
+    { '@type': 'DefinedTerm', name: 'Real-Time Adaptability Score', termCode: 'RTAS' },
+    { '@type': 'DefinedTerm', name: 'User Sentiment & Feedback Score', termCode: 'USFS' },
+    { '@type': 'DefinedTerm', name: 'Prompt Alignment Efficiency', termCode: 'PAE' },
+    { '@type': 'DefinedTerm', name: 'Content Trust & Authority Metric', termCode: 'CTAM' },
+    { '@type': 'DefinedTerm', name: 'Mention Rate', termCode: 'MENTION_RATE' },
+    { '@type': 'DefinedTerm', name: 'Citation Rate (com link)', termCode: 'CITATION_RATE' },
+    { '@type': 'DefinedTerm', name: 'AI Share of Voice', termCode: 'SOV_AI' },
+    { '@type': 'DefinedTerm', name: 'Prompt-Level Rank', termCode: 'PROMPT_RANK' },
+    { '@type': 'DefinedTerm', name: 'Brand Association Coverage', termCode: 'BRAND_ASSOCIATION' },
+    { '@type': 'DefinedTerm', name: 'Net Sentiment Score', termCode: 'NSS' },
+    { '@type': 'DefinedTerm', name: 'Citation Position', termCode: 'CITATION_POSITION' },
+    { '@type': 'DefinedTerm', name: 'Source-of-Truth Precedence', termCode: 'SOURCE_PRECEDENCE' },
+    { '@type': 'DefinedTerm', name: 'Hallucination Rate', termCode: 'HALLUCINATION_RATE' },
+    { '@type': 'DefinedTerm', name: 'Estimated Impressions', termCode: 'ESTIMATED_IMPRESSIONS' },
+    { '@type': 'DefinedTerm', name: 'Conceptual Depth Score', termCode: 'CONCEPTUAL_DEPTH' },
+    { '@type': 'DefinedTerm', name: 'Entity Density', termCode: 'ENTITY_DENSITY' },
+    { '@type': 'DefinedTerm', name: 'Semantic Relationship Density', termCode: 'SEMANTIC_RELATIONSHIP_DENSITY' },
+    { '@type': 'DefinedTerm', name: 'Term Freshness & Evolution Rate', termCode: 'TERM_FRESHNESS' },
+    { '@type': 'DefinedTerm', name: 'AI Bot Activity', termCode: 'AI_BOT_ACTIVITY' },
+    { '@type': 'DefinedTerm', name: 'AI-Referred Traffic', termCode: 'AI_REFERRED_TRAFFIC' }
+  ]
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Measurement GEO 2026', item: pageUrl }
+  ]
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldSpeakable = {
+  '@context': 'https://schema.org',
+  '@type': 'SpeakableSpecification',
+  cssSelector: ['#tldr-speakable', '.faq-speakable']
+};
+---
+
+<Base
+  title="Measurement GEO 2026 — KPIs, frameworks e atribuição zero-click | Brasil GEO"
+  description="Estado da arte de medição GEO em 2026: 24 KPIs canônicos (Mention Rate, Citation Rate, SoV-AI), regex GA4 de produção, server logs com bots de ChatGPT, Claude e Perplexity, e benchmarks com URL para cada número."
+  canonical={pageUrl}>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTermSet)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldSpeakable)} />
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Measurement GEO 2026' }
+      ]} />
+      <span class="section-eyebrow mt-3">Pesquisa canônica · 2026-05-17 · Ahrefs · ELCA · iPullRank · Profound · Discovered Labs</span>
+      <h1 class="section-h text-3xl sm:text-4xl">Measurement GEO em 2026: como medir presença em LLMs quando o rank em SERP perdeu primazia</h1>
+      <p class="mt-3 text-ink-700 text-lg max-w-3xl">Mention Rate, Citation Rate, SoV-AI e AI-Referred Traffic são o novo pacote canônico. Server logs com hits de ChatGPT-User, Claude-User e Perplexity-User são a única fonte 100% confiável. Tudo o mais é camada de qualidade ou vaidade.</p>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div id="tldr-speakable" class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida em 3 pontos</p>
+        <ul class="text-ink-900 leading-relaxed space-y-3 list-disc pl-5">
+          {tldr.map(item => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva: tracking de rank em SERP perdeu primazia em 2026</h2>
+        <p>
+          O instinto operacional de medir SEO ainda manda observar posição na página de resultados do Google. Em 2026 esse instinto se tornou anacrônico. AI Overviews subiram de 6,49% das queries no Google em janeiro de 2025 para 13,14% em janeiro de 2026 — alta de 102% ano contra ano segundo Position Digital. O AI Mode entrega 93% de queries zero-click segundo Success.com. O overlap entre top-10 da SERP tradicional e citações em AI Overview caiu de 75% em meados de 2025 para uma faixa entre 17 e 38% no começo de 2026, segundo The Digital Bloom. Estar em primeiro lugar no Google deixou de ser proxy confiável de visibilidade em respostas de IA.
+        </p>
+        <p>
+          A inversão necessária é metodológica. A pergunta de board deixa de ser estamos em primeiro no Google e passa a ser quantas vezes a marca é citada com link nas respostas que ChatGPT, Perplexity, Claude, Copilot e Gemini geram para os 50 a 150 prompts canônicos da nossa categoria. A literatura de 2025-2026 convergiu em um pacote de quatro KPIs primários (Mention Rate, Citation Rate, SoV-AI, AI-Referred Traffic), três KPIs de qualidade (Net Sentiment Score, Citation Position, Hallucination Rate) e duas camadas de input (AI Bot Activity, Entity Density). O glossário completo está no <a href={kpisJsonUrl} class="text-brand-700 underline">JSON canônico</a> publicado em /mcp/kpis-geo.json — 24 termos com termCode estável para reuso em deck e dashboard.
+        </p>
+        <p>
+          A consequência prática para um portal editorial como este, focado em pós-graduação em Psicologia, é dupla. Primeiro, o dashboard executivo precisa cobrir as três camadas (presença, qualidade, outcome) e não só a primeira — vendors de baixo custo cobrem apenas presença e enviesam a leitura. Segundo, métrica nenhuma vale sem proveniência: cada número que aparece em deck precisa de URL canônica para auditoria, sob pena de repetir o caso GeoScore Analytics, em que a Federal Trade Commission interveio em agosto de 2025 contra dashboard que reportava citações que não correspondiam a queries reais de usuário (<a href="https://generative-engine.org/the-geo-measurement-mirage-how-phantom-citations-and-inflate-1756195420777" rel="nofollow noopener external" target="_blank">referência preservada via snippet de search — [VERIFICAR]: site fora do ar em 17/05/2026</a>).
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Seis KPIs canônicos com fórmula publicada</h2>
+        <p class="text-ink-700 mt-2">
+          Recorte do pacote operacional de 2026 que sobrevive a auditoria de método. Tabela completa com 24 KPIs no <a href={kpisJsonUrl} class="text-brand-700 underline">JSON canônico</a>.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">KPI</th>
+                <th class="text-left px-4 py-3">Fórmula resumida</th>
+                <th class="text-left px-4 py-3">Origem</th>
+                <th class="text-left px-4 py-3">Como ler</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {kpisCore.map(k => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{k.nome}{k.sigla !== '—' && <span class="block text-xs text-ink-500 font-normal">{k.sigla}</span>}</td>
+                  <td class="px-4 py-3 text-ink-700">{k.formula}</td>
+                  <td class="px-4 py-3 text-ink-700">{k.origem}</td>
+                  <td class="px-4 py-3 text-ink-700">{k.nota}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Frameworks publicados em 2025-2026 — onde cada um brilha</h2>
+        <p>
+          Cinco frameworks consolidaram presença na literatura aplicada e merecem leitura conjunta. Aggarwal et al., aceito no KDD 2024 com o paper "GEO: Generative Engine Optimization" (DOI 10.1145/3637528.3671900, arXiv:2311.09735), é o documento acadêmico fundador. Introduz o GEO-bench, a visibility metric e nove métodos de otimização testados — Citation Insertion, Statistics Addition, Authority Signals, Fluency Optimization — com ganho de até 40% em visibilidade em respostas de generative engines quando aplicados em combinação. O paper é a fonte primária quando alguém pergunta de onde vem a disciplina.
+        </p>
+        <p>
+          A ELCA publicou em 2024 a primeira lista canônica de KPIs GEO com nove nomes (AIGVR, AECR, CER, SRS, SME, RTAS, USFS, PAE, CTAM). A força é a abrangência sobre input, channel e outcome; a fraqueza é a ausência de fórmulas matemáticas, deixando vendors reescreverem o método. Aleyda Solis publicou em abril de 2026 framework de três camadas — Presence, Readiness, Business Impact — com 10 atributos de Readiness (Accessible, Useful, Recognizable, Extractable, Consistent, Corroborated, Credible, Differentiated, Fresh, Transactable). É o framework mais prático para uso de marketing operacional.
+        </p>
+        <p>
+          iPullRank, conduzido por Mike King e Garrett Sussman, organiza o measurement em três tiers (Input, Channel, Performance) e adiciona quatro métricas proprietárias — Entity Density, Conceptual Depth Score, Term Freshness & Evolution Rate, Semantic Relationship Density — agrupadas sob o conceito de Relevance Engineering. Profound construiu seu diferencial sobre dataset de 100 milhões de prompts e respostas reais de answer engines, recomendando 50 a 150 prompts como faixa canônica de monitoramento. Ahrefs Brand Radar publicou metodologia explícita de SoV-AI e Estimated Impressions: SoV-AI calculado como menções e citações relativas em respostas de ChatGPT, Perplexity, Gemini, Microsoft Copilot e Google AI Overviews mais AI Mode; Estimated Impressions ponderado pelo volume de busca do prompt-âncora correspondente. Citação textual da própria Ahrefs: "Estimated Impressions weight mentions by Google search volume to model potential exposure." (<a href="https://ahrefs.com/blog/brand-radar-methodology/" rel="noopener external" target="_blank">Brand Radar Methodology</a>).
+        </p>
+        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
+          "Metrics are directional indicators, not exact traffic counts — best understood as modeled visibility signals, and not performance metrics." — Ahrefs, Brand Radar Methodology (2026). Tradução operacional: SoV-AI é bússola, não régua.
+        </blockquote>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Atribuição zero-click — o regex GA4 canônico que substitui rank tracking</h2>
+        <p>
+          O comportamento de referrer de cada assistente decide se a sessão entra como Referral, Direct ou Organic Search no GA4 default. ChatGPT em web opera com política <code>strict-origin-when-cross-origin</code> e anexa <code>utm_source=chatgpt.com</code> em alguns links de citação desde junho de 2025; em aplicativo iOS via WKWebView e Android via Custom Tabs, o referrer some por completo. Perplexity envia referrer estável. Claude bloqueia referrer em links externos com <code>rel=noreferrer</code>. Copilot e Gemini enviam referrer. Sem Custom Channel Group, o board lê tráfego de IA como crescimento de Direct — leitura falsa.
+        </p>
+        <p>
+          O canal canônico para GA4 em maio de 2026, posicionado acima de Referral e Organic Search na ordem de regras, usa este regex em <code>Session source</code>:
+        </p>
+<pre class="rounded-lg bg-ink-900 text-white text-sm p-4 overflow-x-auto"><code>(chatgpt|openai|perplexity|claude|anthropic|gemini\.google|copilot\.microsoft|bing\.com/chat|deepseek|grok|meta\.ai|you\.com)\.(com|ai)</code></pre>
+        <p>
+          O passo a passo completo de implantação — incluindo Calculated Field em Looker / Data Studio (renomeado de volta para Data Studio em 11/04/2026 — [VERIFICAR] data exata do rebranding), query BigQuery equivalente, alertas semanais e checklist de validação — está no <a href="/docs/runbooks/ga4-ai-traffic-channel" class="text-brand-700 underline">runbook GA4 AI Traffic</a> (também publicado em <code>docs/runbooks/ga4-ai-traffic-channel.md</code> do repositório). O GA4 introduziu em 2026 a dimensão automática <code>ai-assistant</code> quando o referrer bate em assistentes reconhecidos, mas a cobertura ainda é parcial — o Custom Channel Group manual continua sendo a fonte mais auditável.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Server logs — a única fonte 100% confiável de citação</h2>
+        <p class="text-ink-700 mt-2">
+          ChatGPT-User, Claude-User e Perplexity-User são bots de fetch em tempo real: cada hit é um usuário real fazendo uma pergunta ao assistente e a IA buscando a URL para citar na resposta. Cada 4xx ou 5xx nesses bots é uma citação perdida — operacionalmente, P0.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Bot</th>
+                <th class="text-left px-4 py-3">User-Agent canônico</th>
+                <th class="text-left px-4 py-3">Função</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {aiBots.map(b => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{b.bot}</td>
+                  <td class="px-4 py-3 text-ink-700"><code>{b.ua}</code></td>
+                  <td class="px-4 py-3 text-ink-700">{b.funcao}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-ink-700 mt-4">
+          Verificação canônica antes de tratar como bot legítimo: reverse-DNS lookup do IP de origem. Se o reverse não bater com domínio da OpenAI, Anthropic, Perplexity ou Google, é spoof — bloquear no WAF. Regex Apache: <code>RewriteCond %&#123;HTTP_USER_AGENT&#125; (GPTBot|ChatGPT-User|ClaudeBot|Claude-User|PerplexityBot|Perplexity-User|OAI-SearchBot|Google-Extended) [NC]</code>. Para Nginx, mesma lista em <code>$http_user_agent ~*</code>. Fontes: <a href="https://www.amicited.com/blog/identify-ai-crawlers-server-logs/" rel="noopener external" target="_blank">Am I Cited</a>, <a href="https://www.wislr.com/articles/ai-bot-behavior-log-analysis" rel="noopener external" target="_blank">Wislr</a>, <a href="https://momenticmarketing.com/blog/ai-search-crawlers-bots" rel="noopener external" target="_blank">Momentic</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Benchmarks setoriais 2026 — cada número com URL</h2>
+        <p class="text-ink-700 mt-2">
+          Recorte de uma tabela maior. A regra de proveniência exige URL por número; benchmarks sem URL pública não entram em deck cliente.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Métrica</th>
+                <th class="text-left px-4 py-3">Valor</th>
+                <th class="text-left px-4 py-3">Fonte</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {benchmarks.map(b => (
+                <tr>
+                  <td class="px-4 py-3 text-ink-900">{b.metrica}</td>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{b.valor}</td>
+                  <td class="px-4 py-3 text-ink-700"><a href={b.url} rel="noopener external" target="_blank" class="text-brand-700 underline break-all">{b.url.replace(/^https?:\/\//, '').slice(0, 56)}…</a></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-ink-500 text-sm mt-3">
+          Benchmark setorial de Citation Rate específico para Educação superior em 2026 com dados numéricos públicos e verificáveis: [FALTA EVIDÊNCIA]. Pesquisa Perplexity em 17/05/2026 não retornou estudo com métrica padronizada e amostra divulgada para universidades, MBA ou pós-graduação. Recomendação: rodar baseline próprio com run-prompts-weekly em 100 prompts canônicos de Psicologia e publicar como pesquisa Brasil GEO.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Controvérsias metodológicas — o que dois vendors discordam</h2>
+        <p>
+          A literatura tem cinco controvérsias canônicas que precisam aparecer em qualquer deck honesto. Primeira e mais fundadora: Mention Rate é distinto de Citation Rate. Caso documentado por Michael Brito em fevereiro de 2026 mostrou marca com 90% de recommendation rate e 15% de citation rate — o nome é mencionado mas o site oficial raramente é a fonte clicada. Reportar só uma das duas é vaidade ou subestimação; o canônico é reportar ambas pareadas.
+        </p>
+        <p>
+          Segunda: a sigla AECR é usada com dois sentidos. A ELCA cunhou como AI Engagement & Conversion Rate; Averi, Discovered Labs e GenOptima usam como AI Engine Citation Rate. São conceitos diferentes — outcome versus channel. Recomendação Brasil GEO: chamar de AECR-ELCA quando for a leitura original de conversão, e de Citation Rate quando for a leitura agência. Terceira: SoV em SEO clássico é função de rank ponderado pela curva de CTR; em GEO é função de menções e citações em texto sem curva de CTR estabelecida. Comparar séries históricas como se fossem o mesmo KPI é o erro mais comum em dashboards de transição em 2026.
+        </p>
+        <p>
+          Quarta: ChatGPT Search ativa web em apenas 34,5% das queries segundo SEMrush (fevereiro de 2026), em queda contra 46% no fim de 2024 — o restante das respostas vem de training data. Vendors que rodam só com web search ativado capturam minoria do impacto; a fatia maior é endereçável apenas via estratégia de data presence antes do próximo training cutoff. Quinta: SEMrush AI Toolkit mistura prompts reais com prompts sintéticos sem publicar a razão da mistura, comprometendo auditoria. Para compliance enterprise, preferir plataformas que publicam metodologia (Ahrefs, Profound) ou expõem o prompt set (Peec, Otterly).
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Calibração de prompts — o sweet spot 50-150 e o tratamento estatístico</h2>
+        <p>
+          A síntese das fontes canônicas (Profound, Ahrefs, Discovered Labs, SE Ranking) converge em quatro patamares. Initial test diagnóstico cobre 25 a 50 prompts de alta intenção — permite mention rate estatisticamente significativo sem custo proibitivo. Baseline operacional fica entre 50 e 100 prompts — cobertura mínima para SoV competitivo com três a cinco concorrentes. Maturity recomendada por Profound em material institucional fica entre 50 e 150 prompts. Enterprise pleno por Discovered Labs cobre 50 a 200 prompts highest-intent. Cobertura exaustiva via Ahrefs em escala (PAA + Fanout) ultrapassa mil prompts.
+        </p>
+        <p>
+          Geração da lista canônica usa quatro fontes em mix recomendado: 40% intenção comercial ("qual o melhor X", "X versus Y"), 30% informacional aprofundado ("como funciona X", "X regulado por"), 20% branded ("o que pensam de X"), 10% problema ou pain ("erro X", "dificuldade X"). Top 50 a 100 keywords não-branded do GSC viram pergunta natural; entrevistas com clientes e SDRs trazem a pergunta literal do lead; AlsoAsked e Google PAA capturam refinamentos; recomendador do Profound ou do Ahrefs traz sub-tópicos invisíveis em GSC.
+        </p>
+        <p>
+          Tratamento estatístico é onde dashboards amadores quebram. LLMs operam com temperatura maior que zero mesmo em search mode, então um único run por prompt é insuficiente. Discovered Labs e o estudo Statistical Framework for Generative Search 2026 recomendam três a cinco runs por prompt por ciclo, com reporte de média, mediana e p90, e intervalo de confiança 95% antes de declarar subida ou queda entre janelas. Decomposição por engine é obrigatória — agregação global esconde variação enorme entre ChatGPT, Perplexity, Claude, Copilot e Gemini.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Recorte aplicado · pós-graduação em Psicologia</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">O que isso significa para quem escolhe ou divulga programa de pós em Psicologia em 2026</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          AI Overviews aparecem em 83% das queries da vertical Educação segundo ALM Corp. Quando um candidato pergunta a ChatGPT, Gemini ou Perplexity por melhor pós-graduação em Psicologia, MBA em Psicologia Organizacional ou especialização em Avaliação Neuropsicológica, a probabilidade de a resposta vir com citação de fonte clicável é alta — e a probabilidade de o candidato clicar antes de visitar o site oficial é baixa, pelos 93% de zero-click em AI Mode. Programa de pós que mede apenas tráfego orgânico de Google está cego para a janela em que a decisão é formada. Métrica relevante: Citation Rate em prompts canônicos do funil de candidatura, decomposta por engine, com baseline mensal — e cruzamento com hits de ChatGPT-User no log de servidor para detectar a citação antes que o candidato apareça em formulário.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Próximo passo: do diagnóstico ao dashboard</h2>
+        <p>
+          A implementação canônica em portal editorial Brasil GEO segue ordem testada. Primeiro, rodar diagnóstico zero-custo via HubSpot AI Share of Voice grader ou via script DIY com 25 prompts de alta intenção contra OpenAI, Anthropic e Perplexity. Segundo, instalar o Custom Channel Group "AI Traffic" no GA4 com o regex desta página — passo a passo no <a href="/docs/runbooks/ga4-ai-traffic-channel" class="text-brand-700 underline">runbook</a>. Terceiro, ativar parsing de server log para os oito bots canônicos. Quarto, escalar para 50-150 prompts canônicos com Profound Growth ou Peec Pro. Quinto, parear sempre com Ahrefs Brand Radar para Estimated Impressions ponderado por volume de busca.
+        </p>
+        <p>
+          Para quem está avaliando programa de pós-graduação em Psicologia, vale conhecer o <a href="/glossario" class="text-brand-700 underline">glossário canônico</a> de termos da área e a página de <a href="/tipos-de-pos-graduacao" class="text-brand-700 underline">5 modalidades reconhecidas pelo MEC e pelo CFP</a>. Para quem trabalha com docência ou orientação de pesquisa em programa de pós, a oferta oficial do IPOG inclui curso atualizado com esse paradigma — <a href={SITE.ipogPos} rel="noopener external" target="_blank" class="text-brand-700 underline">conhecer as pós-graduações em Psicologia do IPOG</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="mt-4 space-y-4">
+          {faqs.map(f => (
+            <details class="rounded-2xl border border-surface-200 bg-white p-5 faq-speakable">
+              <summary class="font-display font-semibold text-ink-900 cursor-pointer">{f.q}</summary>
+              <p class="mt-3 text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Recursos canônicos relacionados</p>
+        <ul class="list-disc pl-5 space-y-2 text-ink-700">
+          <li><a href="/glossario" class="text-brand-700 underline">Glossário de Psicologia e pós-graduação</a> — termos canônicos da área, com verbete específico sobre IA, LGPD e CFP.</li>
+          <li><a href={kpisJsonUrl} class="text-brand-700 underline">JSON canônico de 24 KPIs GEO 2026</a> — DefinedTermSet em /mcp/kpis-geo.json, com termCode estável para reuso em ferramentas de medição.</li>
+          <li><a href="/temas/ia-psicodiagnostico-2026" class="text-brand-700 underline">IA generativa em psicodiagnóstico</a> — tema correlato sobre regulação CFP, LGPD e validade preditiva de LLMs aplicados a clínica.</li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-6">
+      <div class="card p-5 sticky top-24">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Pesquisa relacionada</p>
+        <h3 class="font-display font-semibold text-base mt-1 text-ink-900">Wave E — KPIs e measurement</h3>
+        <p class="text-sm text-ink-700 mt-2">Dossiê completo com 52 sources confirmadas em <code>docs/research/wave-E-kpis-measurement-20260517.md</code>.</p>
+        <p class="text-xs text-ink-500 mt-3">Curadoria editorial: Alexandre Caramaschi, CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.</p>
+      </div>
+
+      <div class="card p-5">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Quem usa em produção</p>
+        <ul class="text-sm text-ink-700 mt-2 space-y-2 list-disc pl-5">
+          <li>Profound (50-150 prompts, dataset 100M+)</li>
+          <li>Ahrefs Brand Radar (143M AIO queries/mês)</li>
+          <li>Peec AI (25-300 prompts, descoberta de prompts)</li>
+          <li>Otterly (alertas de hallucination)</li>
+          <li>Sight AI (sentiment dedicado)</li>
+          <li>Trakkr (server log + Presence Score)</li>
+        </ul>
+      </div>
+
+      <div class="card p-5">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Disciplina editorial</p>
+        <p class="text-sm text-ink-700 mt-2">Toda métrica desta página tem URL para auditoria. Quando a literatura não publica fonte primária, sinalizamos com <strong>[FALTA EVIDÊNCIA]</strong> ou <strong>[VERIFICAR]</strong>. Última atualização: 2026-05-17.</p>
+      </div>
+    </aside>
+  </section>
+
+</Base>

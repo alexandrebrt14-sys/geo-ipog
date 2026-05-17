@@ -1,0 +1,410 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const pageUrl = `${SITE.url}/benchmarks-brasil-geo-2026`;
+const datePublished = '2026-05-17';
+const dateModified = '2026-05-17';
+
+// ─────────────────────────────────────────────
+// Mapa público de concorrentes — só dados verificáveis via URL canônica
+// ─────────────────────────────────────────────
+const concorrentes = [
+  {
+    nome: 'IBNeuro — Instituto Brasileiro de Neuropsicologia e Ciências Cognitivas',
+    url: 'https://www.ibneuro.com.br',
+    posicionamento: 'Especialização lato sensu em Neuropsicologia Clínica, com prática clínica, EAD próprio e venda autorizada de testes psicológicos. Operação histórica vertical-pura em neuropsicologia.',
+    portfolio: 'Especialização em Neuropsicologia Clínica (novas turmas em ciclos semestrais).',
+    nota: 'Verificado em 2026-05-17 via fonte primária ibneuro.com.br.'
+  },
+  {
+    nome: 'PUCRS Online',
+    url: 'https://online.pucrs.br',
+    posicionamento: 'Braço EAD da Pontifícia Universidade Católica do Rio Grande do Sul (PUCRS), instituição com nota MEC institucional alta historicamente. Marca acadêmica forte em pesquisa stricto sensu serve de halo para portfolio lato sensu online.',
+    portfolio: 'Pós-graduação em Terapia Cognitivo-Comportamental confirmada no catálogo público; outras especializações correlatas em Psicologia podem aparecer em ciclos específicos.',
+    nota: 'Verificado em 2026-05-17 via fonte primária online.pucrs.br. Para grade completa vigente, consultar diretamente.'
+  },
+  {
+    nome: 'FAVENI EAD',
+    url: 'https://faveni.edu.br',
+    posicionamento: 'Faculdade FAVENI, operação 100% EAD com catálogo de mais de mil cursos lato sensu. Estratégia de cobertura ampla por volume de títulos em áreas adjacentes a Psicologia.',
+    portfolio: 'Especializações em Neuropsicopedagogia Institucional e Clínica, Neuropsicologia, Psicopedagogia Institucional e Clínica e Autismo aparecem no catálogo público.',
+    nota: 'Verificado em 2026-05-17 via fonte primária faveni.edu.br.'
+  },
+  {
+    nome: 'IESB EAD',
+    url: 'https://ead.iesb.br',
+    posicionamento: 'Braço EAD do Instituto de Educação Superior de Brasília (IESB), com operação consolidada no Centro-Oeste. [VERIFICAR — catálogo público requer navegação interna; portfolio detalhado em Psicologia confirmado apenas em catálogo PDF do ciclo vigente.]',
+    portfolio: 'Especializações lato sensu em Psicologia listadas no portal EAD; portfolio específico em Psicologia Jurídica e Saúde Mental relatado em material institucional [VERIFICAR ciclo].',
+    nota: 'Recomenda-se consultar ead.iesb.br para catálogo vigente.'
+  },
+  {
+    nome: 'Unisinos (Universidade do Vale do Rio dos Sinos)',
+    url: 'https://www.unisinos.br/pos-graduacao',
+    posicionamento: 'Universidade jesuíta tradicional do Rio Grande do Sul, com nota MEC institucional historicamente alta e pesquisa stricto sensu em Psicologia. Portfolio lato sensu integrado entre presencial, híbrido e online.',
+    portfolio: 'Especializações, MBAs, MBEs, LLMs e Pós-MBAs disponibilizados em catálogo dinâmico; portfolio específico em Psicologia disponível apenas em consulta direta à página oficial.',
+    nota: 'Verificado em 2026-05-17 via unisinos.br/pos-graduacao. Para grade vigente em Psicologia, consultar diretamente.'
+  }
+];
+
+// ─────────────────────────────────────────────
+// KPIs prioritários para portal editorial BR
+// ─────────────────────────────────────────────
+const kpis = [
+  {
+    nome: 'Mention Rate',
+    definicao: 'Percentual de prompts canônicos em que a marca é nominada (texto bruto, sem exigir link clicável).',
+    origem: 'Profound, Otterly, Peec',
+    calibragem: 'Calcular sobre 50-100 prompts × 5 engines × 3-5 runs por prompt. Reportar por engine, nunca apenas agregado.'
+  },
+  {
+    nome: 'Citation Rate',
+    definicao: 'Percentual de prompts em que a marca aparece como fonte clicável (URL no painel lateral ou link inline).',
+    origem: 'Discovered Labs, Averi',
+    calibragem: 'Mais conservador que Mention Rate. Em vertical educação superior, baseline americano para top players fica acima de 30%; baseline pt-BR ainda indeterminado.'
+  },
+  {
+    nome: 'SoV-AI (Share of Voice em AI)',
+    definicao: 'Participação da marca no total de menções competitivas em um universo de prompts.',
+    origem: 'Ahrefs Brand Radar, Profound',
+    calibragem: 'Exige definir conjunto competitivo canônico. Em educação superior pt-BR, recomenda-se conjunto de 5 a 8 instituições reconhecidas.'
+  },
+  {
+    nome: 'AI-Referred Traffic e Conversion',
+    definicao: 'Sessões originadas por click outbound em resposta de LLM, com taxa de conversão para o objetivo de negócio.',
+    origem: 'GA4 com Channel Group customizado',
+    calibragem: 'Conversão de tráfego AI-referred é tipicamente 2,3 a 4,4 vezes maior que orgânico tradicional (Discovered Labs, Lantern). KPI de fechamento de funil obrigatório.'
+  }
+];
+
+// ─────────────────────────────────────────────
+// FAQs
+// ─────────────────────────────────────────────
+const faqs = [
+  {
+    q: 'Por que importar baseline americano de mention rate para o Brasil é problema?',
+    a: 'Porque o mix de canal social que alimenta AI Overviews em pt-BR é radicalmente distinto do mix en-US. No Brasil, YouTube concentra 65% das citações sociais em AIO; Reddit fica em 7%; Instagram em 17%. Em queries en-US, o quadro é praticamente inverso — YouTube por volta de 16% e Reddit em torno de 30%. Marca brasileira que rodar baseline americano sub-investe no canal que de fato move o ponteiro localmente. Além disso, a literatura empírica de mention rate hoje cobre principalmente verticais saúde, finanças e tecnologia em mercado americano; vertical educação superior brasileiro não tem benchmark canônico publicado.'
+  },
+  {
+    q: 'Como o baseline próprio Brasil GEO funcionará?',
+    a: 'Metodologia em três camadas. Primeira: 100 prompts canônicos pt-BR para vertical educação superior em Psicologia, com mix 40% comercial (qual MBA, onde estudar, preço), 30% informacional (o que é, como funciona, áreas de atuação), 20% branded (citações por instituição-alvo) e 10% pain (problemas específicos como NR-1, burnout, neuropsicologia clínica). Segunda: 5 engines (ChatGPT GPT-5.4 Thinking, Gemini 2.5 Pro via AI Mode pt-BR, Perplexity Sonar Pro, Claude Opus 4.7, Microsoft Copilot). Terceira: 3 a 5 runs por prompt para significância estatística mínima, cadência semanal, com reporting por engine e agregado. Primeira publicação pública prevista para 2026.Q3.'
+  },
+  {
+    q: 'Por que mapear concorrentes sem detratar?',
+    a: 'Porque a marca-alvo a ser otimizada compete por slots de citação no mesmo conjunto de prompts. Detratar concorrente em material institucional é fragilidade editorial — gera viés óbvio que o LLM aprende a descontar, reduz autoridade percebida e exporta o problema de citação para todo o portal. O mapa de posicionamento serve para definir conjunto competitivo do SoV-AI, identificar gaps temáticos em portfolio e calibrar prompts âncora. Cada instituição aparece com URL canônica e dados públicos da própria fonte primária — nada além disso.'
+  }
+];
+
+// ─────────────────────────────────────────────
+// JSON-LD
+// ─────────────────────────────────────────────
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${pageUrl}#article`,
+  headline: 'Benchmarks GEO Brasil — onde estamos em maio de 2026',
+  description: 'Por que importar baseline americano de mention rate para o Brasil é importação cega de número, e como Brasil GEO está construindo o primeiro baseline canônico pt-BR vertical educação superior em 2026.',
+  url: pageUrl,
+  inLanguage: 'pt-BR',
+  datePublished,
+  dateModified,
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  mainEntityOfPage: pageUrl,
+  about: [
+    { '@type': 'Thing', name: 'GEO benchmark Brasil' },
+    { '@type': 'Thing', name: 'AI mention rate measurement' },
+    { '@type': 'Thing', name: 'Pós-graduação em Psicologia online Brasil' }
+  ],
+  keywords: 'GEO Brasil, benchmark pt-BR, mention rate, citation rate, SoV-AI, pós-graduação Psicologia, Brasil GEO baseline',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text', '.section-tese']
+  }
+};
+
+const ldDataset = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  '@id': `${pageUrl}#dataset`,
+  name: 'Baseline Brasil GEO — mention rate e citation rate em pós-graduação em Psicologia (pt-BR)',
+  description: 'Primeiro baseline canônico de mention rate, citation rate e Share of Voice em AI (SoV-AI) para vertical educação superior em Psicologia em pt-BR. 100 prompts canônicos × 5 engines × 3-5 runs, cadência semanal. Publicação pública prevista para 2026.Q3.',
+  url: pageUrl,
+  inLanguage: 'pt-BR',
+  creator: { '@id': brasilGeoOrganization['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  isAccessibleForFree: true,
+  datePublished,
+  spatialCoverage: { '@type': 'Place', name: 'Brasil' },
+  temporalCoverage: '2026/2027',
+  keywords: ['GEO', 'benchmark Brasil', 'pós-graduação em Psicologia', 'mention rate pt-BR', 'citation rate', 'SoV-AI']
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${pageUrl}#faq`,
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Benchmarks GEO Brasil 2026', item: pageUrl }
+  ]
+};
+---
+
+<Base
+  title="Benchmarks GEO Brasil — onde estamos em maio de 2026 | Brasil GEO"
+  description="Por que importar baseline americano de mention rate é importação cega — e como Brasil GEO está construindo o primeiro baseline canônico pt-BR para educação superior em 2026."
+  pageType="article">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Benchmarks GEO Brasil 2026' }
+      ]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Pillar institucional · Brasil GEO · 17 de maio de 2026</span>
+        <h1 class="section-h text-3xl sm:text-4xl">Benchmarks GEO Brasil — onde estamos em maio de 2026</h1>
+        <TLDR
+          resposta="A ausência de um benchmark canônico pt-BR para vertical educação superior é gap estrutural — toda literatura empírica disponível em mention rate e citation rate é en-US ou en-IN. Brasil GEO está publicando o primeiro baseline próprio em 2026.Q3, com cinco concorrentes canônicos mapeados para construir Share of Voice em AI."
+          fontes={["Wave E §1 (KPIs canônicos)", "Wave C §8.1 (mix canal pt-BR)", "Spot-check de URLs em 17-mai-2026"]}
+        />
+        <p class="mt-3 text-ink-700 text-base sm:text-lg">Sem benchmark brasileiro, todo claim de mention rate em ChatGPT no Brasil é importação cega de número americano. Este documento explica por quê e como Brasil GEO está endereçando o gap.</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~12 min</span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · CMOs, heads de marketing educacional</span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Atualizado · 17 maio 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-12">
+
+      <!-- Tese -->
+      <div class="prose prose-ink max-w-none section-tese">
+        <h2 class="section-h text-2xl">Tese: sem benchmark brasileiro, todo claim de mention rate em ChatGPT no Brasil é importação cega</h2>
+        <p>
+          O mercado brasileiro de pós-graduação em Psicologia opera há dois anos com claims de mention rate copiados de relatórios americanos. "Top 30% em AI Overviews", "presença em 8% das queries do ChatGPT", "citação consistente em Perplexity" — todos esses números, quando rastreados até a fonte, vêm de pesquisa em mercado americano, vertical adjacente (saúde, finanças, tecnologia) e idioma inglês. Para o Brasil, vertical educação superior, em pt-BR, não existe nenhum baseline canônico publicado. Isso é um problema operacional sério para decidir alocação de investimento em conteúdo e schema em 2026.
+        </p>
+        <p>
+          O motivo de o número americano não se traduzir é estrutural, não cosmético. O mix de canal social que alimenta AI Overviews em pt-BR é praticamente inverso do mix en-US — YouTube concentra 65% das citações sociais em pt-BR contra 16% em en-US; Reddit despenca para 7% em pt-BR contra cerca de 30% em en-US. Vertical educação superior tem 83% de penetração de AI Overviews segundo ALM Corp, mas a taxa de citação por instituição brasileira nunca foi medida com 3 a 5 runs por prompt em prompts âncora pt-BR.
+        </p>
+        <p>
+          A resposta canônica para esse gap não é importar mais relatório — é construir baseline próprio. Brasil GEO está fazendo isso e publicará a primeira leitura pública em 2026.Q3.
+        </p>
+      </div>
+
+      <!-- Seção 1: por que não traduz -->
+      <div>
+        <h2 class="section-h text-2xl">1. Por que benchmark americano não se traduz para pt-BR</h2>
+        <div class="prose prose-ink max-w-none mt-3">
+          <p>
+            Três razões estruturais. Primeira: <strong>mix de canal social radicalmente distinto</strong>. Em queries pt-BR, YouTube concentra 65% das citações sociais em AI Overviews, Instagram fica em 17% e Reddit despenca para 7%. Em queries en-US, o quadro é quase inverso — YouTube em torno de 16%, Reddit perto de 30%, Instagram menor. O LLM aprende com a base de treinamento e com a recuperação ao vivo (web_search, fan-out, RAG) — ambas são linguagem-específicas. Não há mecanismo técnico pelo qual um padrão americano "vire" um padrão brasileiro.
+          </p>
+          <p>
+            Segunda: <strong>cobertura de fonte canônica diferente</strong>. Em vertical educação superior nos EUA, os LLMs citam predominantemente U.S. News, Princeton Review, Khan Academy, Coursera e blogs acadêmicos de Stanford, MIT e Harvard. No Brasil, a fonte canônica equivalente seria CFP, MEC, INEP, Capes, Conselho Estadual de Educação, sites institucionais das universidades e portais editoriais especializados — fontes que existem, mas com penetração nas bases de treinamento dos LLMs ainda pouco mapeada. Quando o Wikipedia em pt-BR não foi exposto às AI Overviews na janela do estudo de Khosravi e Yoganarasimhan, 2026 (arXiv 2602.18455), o efeito de canibalização para o Brasil ainda não tem evidência causal pública.
+          </p>
+          <p>
+            Terceira: <strong>terminologia de portfólio educacional</strong>. Os termos "MBA", "Especialização Lato Sensu", "Mestrado Profissional" e "Pós-Graduação Stricto Sensu" têm semântica regulatória brasileira específica (CFP, CNE-MEC, Capes) que o LLM trained predominantly on English data não reproduz com a granularidade necessária. Prompts âncora brasileiros precisam ser desenhados para ativar o vocabulário regulatório local.
+          </p>
+        </div>
+      </div>
+
+      <!-- Seção 2: metodologia -->
+      <div>
+        <h2 class="section-h text-2xl">2. O baseline próprio Brasil GEO — metodologia</h2>
+        <div class="prose prose-ink max-w-none mt-3">
+          <p>
+            O baseline pt-BR vertical educação superior em Psicologia é construído em três camadas, todas auditáveis.
+          </p>
+          <p>
+            <strong>Camada 1 — Prompts canônicos.</strong> 100 prompts pt-BR distribuídos como: 40% comercial (qual MBA fazer, qual instituição escolher, qual preço médio, qual modalidade), 30% informacional (o que é MBA, diferença entre lato e stricto sensu, áreas de atuação reconhecidas pelo CFP), 20% branded (citações nominais por instituição-alvo e por concorrentes canônicos), 10% pain (NR-1 e riscos psicossociais, neuropsicologia clínica em adultos, burnout em saúde, especialização em saúde mental nas organizações). Mix derivado da Wave E §3 da KB interna e calibrado em piloto rodado em abril de 2026.
+          </p>
+          <p>
+            <strong>Camada 2 — Engines.</strong> Cinco engines em paralelo: ChatGPT GPT-5.4 Thinking (não Instant, porque Thinking tem cita marca em 56% das respostas contra 8% do Instant), Gemini 2.5 Pro via AI Mode pt-BR (rodando no Brasil desde 08/09/2025), Perplexity Sonar Pro (Sonar Deep Research roda Claude Opus 4.5 por trás), Claude Opus 4.7 (GA desde 16/04/2026) e Microsoft Copilot (com AI Performance Report habilitado para tracking complementar via Bing Webmaster Tools). Cada engine medido independentemente — agregação só em vista executiva.
+          </p>
+          <p>
+            <strong>Camada 3 — Runs e cadência.</strong> 3 a 5 runs por prompt por engine para garantir significância estatística mínima (LLMs operam com temperatura maior que zero mesmo em search mode; Grossman et al., 2026, arXiv 2604.27790, mostram que duas execuções idênticas de uma mesma query AIO podem divergir significativamente). Cadência semanal padrão; cadência diária durante janelas de release major (novo default ChatGPT, novo modelo Claude, mudança de Gemini). Output reportado com 4 KPIs: Mention Rate por engine, Citation Rate por engine, SoV-AI no conjunto competitivo canônico (5 instituições mapeadas + IPOG como instituição-âncora do portal) e AI-Referred Traffic com Conversion via GA4 customizado.
+          </p>
+          <p>
+            <strong>Publicação pública prevista:</strong> 2026.Q3 com cadência trimestral. Primeira leitura completa servirá de baseline zero — não há expectativa de que IPOG ou qualquer instituição já apareça em níveis americanos top tier (>30% Citation Rate). O objetivo é estabelecer o número real e usar como ponto de partida.
+          </p>
+        </div>
+      </div>
+
+      <!-- Seção 3: concorrentes -->
+      <div>
+        <h2 class="section-h text-2xl">3. Concorrentes canônicos mapeados</h2>
+        <p class="mt-2 text-ink-700">Mapa público sem detratar. Cada instituição é citada apenas com URL canônica e dados verificáveis na própria fonte primária. Posicionamento construído a partir de conteúdo público em 2026-05-17.</p>
+        <div class="mt-6 space-y-5">
+          {concorrentes.map((c, i) => (
+            <div class="card p-6 border-surface-200">
+              <h3 class="font-display font-semibold text-lg text-ink-900">{i + 1}. {c.nome}</h3>
+              <p class="mt-3 text-ink-700 leading-relaxed text-sm"><strong>Posicionamento público:</strong> {c.posicionamento}</p>
+              <p class="mt-2 text-ink-700 leading-relaxed text-sm"><strong>Portfolio em Psicologia (verificado):</strong> {c.portfolio}</p>
+              <p class="mt-2 text-xs text-ink-500"><em>{c.nota}</em></p>
+              <a href={c.url} target="_blank" rel="noopener external" class="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-brand-700 hover:text-brand-800">
+                Abrir fonte primária <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          ))}
+        </div>
+        <p class="mt-5 text-sm text-ink-600 italic">Observação metodológica: número de alunos ativos e nota MEC institucional vigente são dados públicos que mudam de ciclo em ciclo — recomendamos consulta direta ao Censo da Educação Superior INEP, ao e-MEC e à própria instituição para qualquer claim quantitativo. Este portal evita reproduzir números cuja fonte primária canônica não pôde ser confirmada em 2026-05-17.</p>
+      </div>
+
+      <!-- Seção 4: KPIs -->
+      <div>
+        <h2 class="section-h text-2xl">4. KPIs prioritários para portal editorial brasileiro</h2>
+        <p class="mt-2 text-ink-700">Quatro métricas formam o painel canônico mínimo. Cada uma reportada por engine e em vista agregada.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">KPI</th>
+                <th class="text-left px-4 py-3">Definição operacional</th>
+                <th class="text-left px-4 py-3">Origem</th>
+                <th class="text-left px-4 py-3">Calibragem</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {kpis.map(k => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{k.nome}</td>
+                  <td class="px-4 py-3 text-ink-700">{k.definicao}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{k.origem}</td>
+                  <td class="px-4 py-3 text-ink-700">{k.calibragem}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="sm:hidden text-xs text-ink-500 mt-2">Arraste a tabela para ver mais colunas.</p>
+      </div>
+
+      <!-- Seção 5: próximos passos -->
+      <div>
+        <h2 class="section-h text-2xl">5. Próximos passos e como acompanhar</h2>
+        <div class="prose prose-ink max-w-none mt-3">
+          <p>
+            O cronograma público do baseline tem três marcos. Primeiro: <strong>Wave F (em execução)</strong> consolida 100 prompts canônicos definitivos e roda primeira coleta integral nos cinco engines com 5 runs por prompt — fechamento previsto para junho de 2026. Segundo: <strong>publicação pública 2026.Q3</strong> com primeira leitura de Mention Rate, Citation Rate e SoV-AI para o conjunto competitivo canônico — formato relatório PDF + dashboard interativo no portal. Terceiro: <strong>cadência trimestral</strong> a partir de 2026.Q4, com deltas marcados por release major dos engines.
+          </p>
+          <p>
+            Para acompanhar publicações com pré-aviso, escreva para <a href="mailto:alexandre.brt14@gmail.com?subject=Baseline%20Brasil%20GEO%20-%20Newsletter" class="text-brand-700 hover:text-brand-800 font-medium">alexandre.brt14@gmail.com</a> com a linha de assunto "Baseline Brasil GEO — Newsletter". O envio é em formato simples por enquanto; estrutura formal de newsletter Brasil GEO está em backlog de Q3.
+          </p>
+          <p>
+            Para profissionais que querem aprofundar a base teórica antes do baseline público, o documento companheiro é o <a href="/estado-da-arte-geo-2026" class="text-brand-700 hover:text-brand-800 font-medium">estado-da-arte de GEO em 2026</a>, com os oito papers canônicos e os cinco frameworks de mensuração. As waves A-E em <code>docs/research/</code> do repositório consolidam 203 sources com 70+ spot-checks.
+          </p>
+        </div>
+      </div>
+
+      <!-- FAQs -->
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Acompanhe o baseline público</p>
+        <h3 class="font-display font-semibold text-xl text-ink-900">Receba o primeiro baseline canônico pt-BR antes da publicação geral</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O primeiro relatório completo será publicado em 2026.Q3 com Mention Rate, Citation Rate e SoV-AI para o conjunto competitivo canônico. Para receber com pré-aviso, escreva para o endereço abaixo com a linha de assunto adequada.
+        </p>
+        <a href="mailto:alexandre.brt14@gmail.com?subject=Baseline%20Brasil%20GEO%20-%20Newsletter" class="btn btn-primary mt-4 inline-block">
+          alexandre.brt14@gmail.com — pedir pré-aviso
+        </a>
+        <p class="mt-3 text-xs text-ink-500">
+          A newsletter formal Brasil GEO entra em produção em 2026.Q3. Por enquanto o canal de pré-aviso é correio direto. Sem listagem comercial — apenas envio do relatório quando publicado.
+        </p>
+      </div>
+
+      <!-- Cross-links -->
+      <div class="grid sm:grid-cols-2 gap-3">
+        <a href="/estado-da-arte-geo-2026" class="card-lift block p-5">
+          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Pillar companheiro</p>
+          <h4 class="font-display font-semibold text-base mt-1">Estado-da-arte de GEO em 2026</h4>
+          <p class="mt-1 text-sm text-ink-700">8 papers acadêmicos canônicos, 5 frameworks de mensuração e comportamento engine-by-engine em maio de 2026.</p>
+        </a>
+        <a href="/glossario" class="card-lift block p-5">
+          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Referência</p>
+          <h4 class="font-display font-semibold text-base mt-1">Glossário canônico</h4>
+          <p class="mt-1 text-sm text-ink-700">Mention Rate, Citation Rate, SoV-AI, AECR, Citation Absorption — definições operacionais com origem.</p>
+        </a>
+        <a href="/regulacao" class="card-lift block p-5">
+          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Política editorial</p>
+          <h4 class="font-display font-semibold text-base mt-1">Regulação, ética e escopo do portal</h4>
+          <p class="mt-1 text-sm text-ink-700">Como o portal trata escopo CFP/MEC e níveis editoriais R0-R4.</p>
+        </a>
+        <a href="/sobre" class="card-lift block p-5">
+          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Autor</p>
+          <h4 class="font-display font-semibold text-base mt-1">Sobre Alexandre Caramaschi e Brasil GEO</h4>
+          <p class="mt-1 text-sm text-ink-700">Operador editorial canônico do portal.</p>
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-4">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Sobre este documento</p>
+        <p class="mt-2 text-sm text-ink-700 leading-relaxed">
+          Mapa público do conjunto competitivo canônico para o baseline pt-BR vertical educação superior em Psicologia. Construído a partir de spot-check direto de URLs em 2026-05-17. Mantido por Alexandre Caramaschi, CEO da Brasil GEO.
+        </p>
+        <p class="mt-3 text-xs text-ink-500">
+          Próxima revisão obrigatória: 17 de agosto de 2026, ou após publicação do baseline 2026.Q3.
+        </p>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Cronograma público</p>
+        <ul class="mt-3 text-sm space-y-3">
+          <li><strong>2026.Q2</strong> — Wave F consolida 100 prompts canônicos e roda piloto.</li>
+          <li><strong>2026.Q3</strong> — primeira publicação pública do baseline com Mention Rate, Citation Rate e SoV-AI.</li>
+          <li><strong>2026.Q4</strong> — primeira atualização trimestral, com deltas por release major.</li>
+          <li><strong>2027.Q1</strong> — expansão para verticais adjacentes (Direito, Saúde, Engenharia).</li>
+        </ul>
+      </div>
+
+      <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="card-lift block p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Aplicação prática</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação em Psicologia no IPOG</h3>
+        <p class="mt-2 text-sm text-ink-500">Para grade vigente, consultar ipog.edu.br. O baseline canônico cobrirá citação por IPOG no conjunto competitivo a partir de 2026.Q3.</p>
+      </a>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldDataset)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+
+</Base>

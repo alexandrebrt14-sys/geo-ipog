@@ -1,41 +1,62 @@
 # robots.txt para posgraduacaopsicologia.com
 # Portal editorial independente sobre pós-graduação em Psicologia no Brasil.
 # Caminho oficial das matrículas: ipog.edu.br
-# Última atualização: 2026-05-12
+# Última atualização: 2026-05-17
+#
+# POSTURA GEO (Generative Engine Optimization):
+# Este portal publica conteúdo editorial em formato HBR com Schema.org rico,
+# FAQPage, Speakable e citações verificáveis (Autor, Ano). A estratégia é
+# ALLOW para todos os crawlers de IA generativa, maximizando a probabilidade
+# de citação correta em respostas de LLMs (ChatGPT, Claude, Gemini, Perplexity).
+# Qualquer decisão de bloqueio deve ser revisada conscientemente aqui.
 
 # Padrão: permitir todos os crawlers HTTP. Conteúdo é editorial e público.
 User-agent: *
 Allow: /
 Crawl-delay: 1
 
-# Crawlers de IA generativa explicitamente permitidos (GEO posture).
-# O portal foi escrito em formato HBR (tese contraintuitiva, evidência,
-# (Autor, Ano), tabelas, FAQs) com Schema.org rico para maximizar
-# citação correta em respostas de LLMs.
+# ─── OpenAI ──────────────────────────────────────────────────────────────────
+# GPTBot: treinamento de modelos OpenAI.
+# OAI-SearchBot: indexação para ChatGPT Search.
+# ChatGPT-User: fetch sob demanda do usuário em sessão ChatGPT.
+# Fonte: platform.openai.com/docs/bots
 
 User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
 Allow: /
 
 User-agent: OAI-SearchBot
 Allow: /
 
+User-agent: ChatGPT-User
+Allow: /
+
+# ─── Anthropic ───────────────────────────────────────────────────────────────
+# ClaudeBot: treinamento de modelos Claude.
+# Claude-User: fetch sob demanda do usuário em Claude.ai.
+# Claude-SearchBot: indexação para Claude Search (atualizado 20/02/2026).
+# anthropic-ai: token legado, mantido por retrocompatibilidade.
+# Nota: Claude-Web era o token legado anterior a Claude-User — removido.
+# Bloqueios operam de forma independente entre si.
+# Fonte: support.claude.com + searchengineland.com/anthropic-claude-bots-470171
+
 User-agent: ClaudeBot
 Allow: /
 
-User-agent: Claude-Web
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
 Allow: /
 
 User-agent: anthropic-ai
 Allow: /
 
-User-agent: Google-Extended
-Allow: /
-
-User-agent: GoogleOther
-Allow: /
+# ─── Perplexity ──────────────────────────────────────────────────────────────
+# PerplexityBot: indexação para Perplexity Pages e respostas fundamentadas.
+# Perplexity-User: fetch sob demanda em sessão Perplexity.
+# ATENÇÃO: Perplexity foi flagrada em ago/2025 por usar UA Chrome stealth
+# para evadir robots.txt. Cloudflare delistou do Verified Bots Program.
+# Bloquear o UA declarado não basta; complementar com Bot Management por ASN.
 
 User-agent: PerplexityBot
 Allow: /
@@ -43,28 +64,42 @@ Allow: /
 User-agent: Perplexity-User
 Allow: /
 
-User-agent: CCBot
+# ─── Google ──────────────────────────────────────────────────────────────────
+# Google-Extended: opt-out token para treinamento de Gemini + grounding.
+#   Controla uso pós-crawl, não gera tráfego adicional.
+# GoogleOther: crawler genérico de times internos do Google.
+# Google-CloudVertexBot: crawl solicitado pelo próprio dono do site
+#   para Vertex AI Agents (novo em 2025, documentado em 2026).
+# Fonte: developers.google.com/search/docs/crawling-indexing/google-common-crawlers
+
+User-agent: Google-Extended
 Allow: /
 
-User-agent: Bytespider
+User-agent: GoogleOther
 Allow: /
 
-User-agent: DuckAssistBot
+User-agent: Google-CloudVertexBot
 Allow: /
+
+# ─── Apple ───────────────────────────────────────────────────────────────────
+# Applebot-Extended: controla uso de conteúdo em treinamento de Apple Intelligence.
+#   Não é um crawler ativo — é um token de política aplicado ao tráfego Applebot.
+# Fonte: support.apple.com/en-us/119829
 
 User-agent: Applebot-Extended
 Allow: /
 
-User-agent: cohere-ai
-Allow: /
+# ─── Meta ────────────────────────────────────────────────────────────────────
+# meta-externalagent: coleta de treinamento para modelos Llama da Meta.
+#   Casing canônico em letras minúsculas (meta-externalagent, não Meta-ExternalAgent).
+#   UA string completo: meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler)
+#   ATENÇÃO: foi o UA mais impersonado no início de 2026 (16,4M req spoofadas).
+#   Validar por IP/ASN além do UA declarado.
+# Meta-ExternalFetcher: fetcher complementar para compartilhamento/preview.
+# FacebookBot: indexação para plataformas Meta.
+# Fonte: developers.facebook.com/docs/sharing/webmasters/crawler
 
-User-agent: Diffbot
-Allow: /
-
-User-agent: ImagesiftBot
-Allow: /
-
-User-agent: Meta-ExternalAgent
+User-agent: meta-externalagent
 Allow: /
 
 User-agent: Meta-ExternalFetcher
@@ -73,14 +108,47 @@ Allow: /
 User-agent: FacebookBot
 Allow: /
 
-User-agent: omgilibot
+# ─── Common Crawl / Open Data ────────────────────────────────────────────────
+# CCBot: Common Crawl, usado no pré-treinamento de quase todos LLMs open-source.
+
+User-agent: CCBot
 Allow: /
 
+# ─── DuckDuckGo ──────────────────────────────────────────────────────────────
+User-agent: DuckAssistBot
+Allow: /
+
+# ─── Amazon ──────────────────────────────────────────────────────────────────
 User-agent: Amazonbot
 Allow: /
 
-# Sitemap canônico + sumário LLM-readable
+# ─── Cohere ──────────────────────────────────────────────────────────────────
+User-agent: cohere-ai
+Allow: /
+
+# ─── Outros crawlers de dados / imagens ──────────────────────────────────────
+User-agent: Diffbot
+Allow: /
+
+User-agent: ImagesiftBot
+Allow: /
+
+User-agent: omgilibot
+Allow: /
+
+# ─── ByteDance / Bytespider ──────────────────────────────────────────────────
+# Bytespider: treinamento do modelo Doubao (ByteDance).
+# Decisão consciente: ALLOW. Justificativa: portal editorial público sem
+# restrição de uso. Revisitar se houver evidência de abuso por IP.
+# Nota: Bytespider tem histórico de não-compliance documentado; bloquear
+# apenas via UA é insuficiente — usar Bot Management para enforcement real.
+
+User-agent: Bytespider
+Allow: /
+
+# ─── Sitemaps e recursos LLM-readable ────────────────────────────────────────
 Sitemap: https://posgraduacaopsicologia.com/sitemap-index.xml
 Sitemap: https://posgraduacaopsicologia.com/sitemap.xml
 
 # Sumário estruturado para LLMs: https://posgraduacaopsicologia.com/llms.txt
+# Política de uso por agentes: https://posgraduacaopsicologia.com/.well-known/ai-policy.json

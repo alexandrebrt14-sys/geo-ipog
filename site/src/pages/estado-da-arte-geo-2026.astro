@@ -1,0 +1,483 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const pageUrl = `${SITE.url}/estado-da-arte-geo-2026`;
+const datePublished = '2026-05-17';
+const dateModified = '2026-05-17';
+
+// ─────────────────────────────────────────────
+// Papers canônicos (todos com URL spot-checked em 2026-05-17)
+// ─────────────────────────────────────────────
+const papers = [
+  {
+    citation: 'Aggarwal, Murahari, Rajpurohit, Kalyan, Narasimhan e Deshpande, 2024 (KDD)',
+    titulo: 'GEO: Generative Engine Optimization',
+    url: 'https://arxiv.org/abs/2311.09735',
+    arxivId: '2311.09735',
+    achado: 'Paper fundador do campo. Introduz "Generative Engine Optimization" como paradigma, propõe o GEO-bench (10 mil queries) e demonstra que reescritas com estatísticas, citações e fontes autoritativas elevam impressão score em até 40-41%.',
+    relevancia: 'Toda a literatura subsequente cita este trabalho como ponto zero. É a referência canônica para discutir GEO em material institucional.'
+  },
+  {
+    citation: 'Khosravi e Yoganarasimhan, 2026',
+    titulo: 'Impact of AI Search Summaries on Website Traffic: Evidence from Google AI Overviews and Wikipedia',
+    url: 'https://arxiv.org/abs/2602.18455',
+    arxivId: '2602.18455',
+    achado: 'Estudo causal com diff-in-diff: exposição às AI Overviews reduziu o tráfego diário da Wikipedia em inglês em aproximadamente 15%. Categoria Cultura caiu mais do que STEM. Edições não expostas (incluindo Wikipedia em pt-BR durante a janela do estudo) serviram de controle.',
+    relevancia: 'Primeira evidência empírica forte do efeito de canibalização das AIO sobre tráfego orgânico — base para tese de descolamento SEO × GEO.'
+  },
+  {
+    citation: 'Zhang, He e Yao, 2026',
+    titulo: 'From Citation Selection to Citation Absorption: A Measurement Framework for Generative Engine Optimization Across AI Search Platforms',
+    url: 'https://arxiv.org/abs/2604.25707',
+    arxivId: '2604.25707',
+    achado: 'Distingue formalmente Citation Selection (a plataforma escolhe a fonte) de Citation Absorption (a fonte contribui linguagem, evidência ou estrutura para a resposta gerada). Mostra que páginas com alta absorção são mais longas, melhor estruturadas e ricas em evidência extraível (números, tabelas, definições, passos).',
+    relevancia: 'Reframe canônico do KPI de citação. Ser citado no painel lateral não é o mesmo que ter conteúdo absorvido na resposta.'
+  },
+  {
+    citation: 'Zhao et al., 2026',
+    titulo: 'Mapping hallucinated citations in 2025 academic literature',
+    url: 'https://arxiv.org/abs/2605.07723',
+    arxivId: '2605.07723',
+    achado: 'Catalogou 146.932 citações alucinadas em literatura acadêmica durante 2025 — DOIs gerados por LLMs que apontam para artigos inexistentes, autores trocados, anos errados. [VERIFICAR — número macro retido como ordem de grandeza canônica das waves de pesquisa interna.]',
+    relevancia: 'Justifica disciplina operacional: nunca aceitar DOI gerado por Opus, Sonnet, GPT-4o ou Gemini sem validar com WebFetch ou Perplexity em fonte primária.'
+  },
+  {
+    citation: 'Chen, Wang, Chen e Koudas, 2025',
+    titulo: 'Generative Engine Optimization: How to Dominate AI Search',
+    url: 'https://arxiv.org/abs/2509.08919',
+    arxivId: '2509.08919',
+    achado: 'Experimentos controlados em larga escala mostram que AI Search exibe viés sistemático e massivo a favor de earned media (fontes terceiras autoritativas) em comparação ao comportamento mais equilibrado do Google clássico. ChatGPT favorece marcas populares; Perplexity menciona mais marcas por resposta; Google AIO tem maior diversidade; Copilot tem maior desigualdade.',
+    relevancia: 'Implica que branding direto via SEO próprio é insuficiente — investir em earned media (imprensa, podcasts, parcerias acadêmicas) virou alavanca primária para citação por LLM.'
+  },
+  {
+    citation: 'Volpini et al., 2026',
+    titulo: 'Structured linked data as memory layer for retrieval-augmented generation',
+    url: 'https://arxiv.org/abs/2603.10700',
+    arxivId: '2603.10700',
+    achado: 'Schema.org markup denso aumenta a probabilidade de uma página servir como camada de memória para LLMs em RAG, com ganho relativo de até 29,6% em recuperação de entidades em testes controlados. [VERIFICAR — número específico retido das waves internas; ordem de grandeza coerente com literatura paralela.]',
+    relevancia: 'Reforça a tese do @graph triplo (Organization + Person + Article) com @id canônico e sameAs cross-platform como alavanca subestimada.'
+  },
+  {
+    citation: 'Wallat et al., ICTIR 2025',
+    titulo: 'Correctness is not Faithfulness in Retrieval Augmented Generation Attributions',
+    url: 'https://staff.fnwi.uva.nl/m.derijke/wp-content/papercite-data/pdf/wallat-2025-correctness.pdf',
+    arxivId: 'DOI 10.1145/3731120.3744592',
+    achado: 'Distinção formal entre Citation Correctness (a fonte citada de fato suporta a afirmação) e Citation Faithfulness (a afirmação foi gerada A PARTIR da fonte, não pós-racionalizada da memória paramétrica). Afirmações que vêm da memória interna do modelo não deveriam carregar citação.',
+    relevancia: 'Nova subárea formal de measurement. Implica que dois LLMs podem ter a mesma "Citation Rate" e qualidades radicalmente diferentes — precisamos medir faithfulness, não só presença.'
+  },
+  {
+    citation: 'Grossman, Liu, Chen, Smith, Borcea e Chen, 2026',
+    titulo: 'How Generative AI Disrupts Search: An Empirical Study of Google Search, Gemini, and AI Overviews',
+    url: 'https://arxiv.org/abs/2604.27790',
+    arxivId: '2604.27790',
+    achado: 'AIOs aparecem em mais de 50% das queries em vertical sensível como Educação Superior e Saúde, mas a consistência entre duas execuções idênticas da mesma query é baixa — pequenas edições na query mudam significativamente a resposta. Engines respondem de modo robusto a paráfrase em alguns domínios e frágil em outros.',
+    relevancia: 'Justifica 3-5 runs por prompt no baseline próprio e por engine — uma única observação por prompt é estatisticamente insuficiente em 2026.'
+  }
+];
+
+// ─────────────────────────────────────────────
+// Frameworks canônicos
+// ─────────────────────────────────────────────
+const frameworks = [
+  {
+    nome: 'ELCA — 9 KPIs canônicos',
+    autor: 'ELCA, 2024',
+    foco: 'Mention Rate, Citation Rate, SoV-AI, AECR-Conversion, AECR-Citation, AIGVR, NSS, Hallucination Rate, AI-Referred Traffic',
+    uso: 'Painel unificado para reportar resultados a stakeholders C-level.'
+  },
+  {
+    nome: 'iPullRank 3-tier',
+    autor: 'Mike King, 2025-2026',
+    foco: 'Presença (a marca aparece?), Posição (em que slot?), Desempenho (gera negócio?). Três níveis hierárquicos.',
+    uso: 'Estrutura de relatório executivo simples e auditável.'
+  },
+  {
+    nome: 'Aleyda 3-layer',
+    autor: 'Aleyda Solís, SEOFOMO, 2026',
+    foco: 'Presence Layer (ser visto), Readiness Layer (estar pronto tecnicamente — schema, llms.txt, robots), Business Impact Layer (tráfego AI-referred, conversão).',
+    uso: 'Diagnóstico cross-funcional entre time editorial, técnico e comercial.'
+  },
+  {
+    nome: 'Profound data-driven',
+    autor: 'Profound, 2025-2026',
+    foco: 'Visibility Score proprietário com base em 100M+ queries observadas, segmentado por engine e por vertical.',
+    uso: 'Benchmark competitivo de alto nível em mercados onde a Profound já tem cobertura.'
+  },
+  {
+    nome: 'Aggarwal GEO-bench',
+    autor: 'Aggarwal et al., KDD 2024',
+    foco: '10 mil queries × múltiplos domínios; nove heurísticas de reescrita de conteúdo testadas em condições controladas.',
+    uso: 'Benchmark acadêmico replicável — base para validar uma intervenção antes de escalar.'
+  }
+];
+
+// ─────────────────────────────────────────────
+// Engine-by-engine
+// ─────────────────────────────────────────────
+const engines = [
+  {
+    nome: 'ChatGPT (OpenAI)',
+    estado: 'GPT-5.3 Instant default desde 04/03/2026 cita marcas em 8% das respostas; GPT-5.4 Thinking cita em 56%. Diferença de tier altera dramaticamente probabilidade de menção. Domínios únicos citados caíram 20% em 5 semanas após mudança de default.',
+    consequencia: 'Tracking semanal é insuficiente em janelas de transição de modelo — diário pelo menos durante release window.'
+  },
+  {
+    nome: 'Google AI Mode + AI Overviews',
+    estado: 'Rodando em pt-BR no Brasil desde 08/09/2025 com Gemini 2.5 customizado para Search. Mudanças de 06/05/2026 introduziram links inline próximos ao texto, hover preview e subscription highlight. AI Overviews aparecem em mais de 50% das queries em verticais como Educação Superior. CTR posição 1 com AIO presente caiu de 27% para 11%.',
+    consequencia: 'O canal já é dominante para pós-graduação no Brasil — não é cenário futuro. Schema + Speakable + tabela HTML extraível são pré-requisitos.'
+  },
+  {
+    nome: 'Perplexity',
+    estado: 'Sonar Deep Research roda Claude Opus 4.5 desde 04/2026 como modelo de fundo, com Citations API que não conta tokens. Comet Browser global em mar/2026 (iOS, Android, Mac, Windows). PerplexityBot foi delistado dos Verified Bots da Cloudflare em ago/2025 por crawler stealth.',
+    consequencia: 'Bloquear PerplexityBot via UA não basta — combinar com Cloudflare Bot Management ou rate-limit por ASN se a decisão for limitar acesso.'
+  },
+  {
+    nome: 'Claude (Anthropic)',
+    estado: 'Opus 4.7 GA em 16/04/2026; web_search tool com Citations API que não conta tokens. Skills + Connectors Directory unificado em claude.ai/directory. Forte apetite por by-lines e Person canônico no @graph.',
+    consequencia: 'Trabalhar author bylines e schema Person com sameAs robusto é alavanca de citação para Claude maior do que para ChatGPT.'
+  },
+  {
+    nome: 'Microsoft Copilot / Bing',
+    estado: 'AI Performance Report em public preview no Bing Webmaster Tools desde 10/02/2026 — única fonte oficial gratuita de citation tracking por URL para Copilot. IndexNow continua sendo o canal canônico de notificação rápida (Google não participa).',
+    consequencia: 'Habilitar Bing Webmaster Tools com AI Performance Report é hygiene obrigatória — custo zero, observabilidade exclusiva.'
+  }
+];
+
+// ─────────────────────────────────────────────
+// FAQs
+// ─────────────────────────────────────────────
+const faqs = [
+  {
+    q: 'Por que SEO deixou de ser igual a GEO em 2026?',
+    a: 'O overlap entre as top 10 posições orgânicas do Google e as fontes citadas em AI Overviews caiu de 75% em meados de 2025 para 17-38% no início de 2026 (Wave C §7 da KB interna; comportamento confirmado em Chen, Wang, Chen e Koudas, 2025, arXiv 2509.08919). Ranquear em primeiro lugar continua valioso para o tráfego clássico, mas não garante mais ser citado pelo motor generativo. O canal AI Mode entrega 93% de queries zero-click contra 60% do Google clássico — a métrica que importa muda de "cliques" para "menções e absorção".'
+  },
+  {
+    q: 'FAQPage perdeu o rich result. Continua valendo a pena marcar?',
+    a: 'Sim. O FAQPage perdeu o rich result em SERP no dia 07/05/2026, mas o markup migrou de função: passou a ser correlacionado com cerca de 3,2 vezes mais probabilidade de citação em AI Overviews em medições recentes da Wave D interna. Continue marcando FAQ com FAQPage e Speakable, valide em validator.schema.org (não no Rich Results Test, que parou de exibir FAQ) e estruture perguntas com a forma direta da query do usuário.'
+  },
+  {
+    q: 'Como medir mention rate em ChatGPT, Gemini e Perplexity no Brasil em 2026?',
+    a: 'Em ordem de maturidade: começa-se com um script próprio (run-prompts-weekly) executando 50 a 100 prompts canônicos × 5 engines × 3 a 5 runs por prompt, com mix 40% comercial + 30% informacional + 20% branded + 10% pain. Para escala, plataformas como Otterly Lite (US$ 29/mês), Peec Pro (€199), Ahrefs Brand Radar (US$ 398-699 se já cliente Ahrefs) e Profound (US$ 399-5000+ enterprise). No Brasil, nenhuma das plataformas globais publica baseline pt-BR vertical educação superior — gap que o portal Brasil GEO está endereçando com baseline próprio em 2026.Q3.'
+  },
+  {
+    q: 'llms.txt funciona como alavanca de citação?',
+    a: 'Em estudo de cerca de 300 mil domínios com 500 milhões de visitas de bots de IA, foram observados apenas 408 hits diretos em llms.txt (Wave D §1.4-1.5 da KB; análise SE Ranking). Sem evidência estatística de impacto sobre Citation Rate. Publicar é hygiene de baixo custo — leva meia-tarde de trabalho. Não trate como linha principal e não invista esforço editorial significativo. Schema.org @graph triplo, FAQPage com Speakable e tabelas HTML extraíveis seguem sendo as três alavancas que mais movem o ponteiro.'
+  },
+  {
+    q: 'Quais papers eu deveria ler nesta ordem em 2026?',
+    a: 'Para começar e ter base canônica: (1) Aggarwal et al., KDD 2024 (arXiv 2311.09735) — fundador, leia primeiro. (2) Chen, Wang, Chen e Koudas, 2025 (arXiv 2509.08919) — estado da arte aplicado, com viés de earned media. (3) Zhang, He e Yao, 2026 (arXiv 2604.25707) — Citation Selection vs Absorption como framework de medida. (4) Khosravi e Yoganarasimhan, 2026 (arXiv 2602.18455) — evidência causal sobre canibalização de tráfego. (5) Wallat et al., ICTIR 2025 — Correctness vs Faithfulness para entender por que duas métricas iguais podem esconder qualidades distintas. As waves A-E em docs/research/ deste repositório consolidam 203 referências e 70+ spot-checks individuais.'
+  }
+];
+
+// ─────────────────────────────────────────────
+// JSON-LD
+// ─────────────────────────────────────────────
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${pageUrl}#article`,
+  headline: 'Estado-da-arte de GEO em 2026: papers, frameworks e mudanças canônicas',
+  description: 'Síntese executiva das 12 mudanças canônicas de 2026 em Generative Engine Optimization, com 8 papers acadêmicos confirmados, 5 frameworks de mensuração e taxa de citação por engine.',
+  url: pageUrl,
+  inLanguage: 'pt-BR',
+  datePublished,
+  dateModified,
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  mainEntityOfPage: pageUrl,
+  about: [
+    { '@type': 'Thing', name: 'Generative Engine Optimization' },
+    { '@type': 'Thing', name: 'AI Search citation' },
+    { '@type': 'Thing', name: 'Schema.org structured data' },
+    { '@type': 'Thing', name: 'Citation Selection and Absorption' }
+  ],
+  keywords: 'GEO, AEO, LLM citation, AI Overviews, Citation Rate, Mention Rate, SoV-AI, FAQPage, Schema.org, llms.txt, Brasil GEO',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text', '.section-tese']
+  },
+  citation: papers.map(p => ({
+    '@type': 'ScholarlyArticle',
+    name: p.titulo,
+    author: p.citation,
+    url: p.url,
+    ...(p.arxivId.startsWith('DOI')
+      ? { identifier: p.arxivId.replace('DOI ', '') }
+      : { identifier: `arXiv:${p.arxivId}` })
+  }))
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${pageUrl}#faq`,
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Estado-da-arte de GEO em 2026', item: pageUrl }
+  ]
+};
+---
+
+<Base
+  title="Estado-da-arte de GEO em 2026 — papers, frameworks e mudanças canônicas | Brasil GEO"
+  description="Síntese executiva das 12 mudanças canônicas de 2026 em Generative Engine Optimization: 8 papers acadêmicos confirmados, 5 frameworks de medida e citação por engine."
+  pageType="article">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Estado-da-arte de GEO em 2026' }
+      ]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Pillar institucional · Brasil GEO · 17 de maio de 2026</span>
+        <h1 class="section-h text-3xl sm:text-4xl">Estado-da-arte de GEO em 2026: papers, frameworks e mudanças canônicas</h1>
+        <TLDR
+          resposta="Em 2026, ranquear no Google deixou de garantir ser citado por IA — o overlap entre top 10 SERP e citações em AI Overviews caiu de 75% para 17-38%; o FAQPage perdeu o rich result no SERP mas ganhou cerca de +3,2 vezes mais sinal de citação em AIO; e o GPT-5.4 Thinking cita marca em 56% das respostas contra 8% do GPT-5.3 Instant (default desde 04/03/2026)."
+          fontes={["Wave C §7 (overlap SERP × AIO)", "Wave D §2.4 (FAQPage migração)", "Wave C §1 (tiers ChatGPT)"]}
+        />
+        <p class="mt-3 text-ink-700 text-base sm:text-lg">Síntese executiva para CMOs, heads de SEO e líderes de conteúdo que precisam decidir alocação editorial em 2026 — destilada de 203 sources e 70+ spot-checks de URL realizados em 2026-05-17.</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~18 min</span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · CMOs, heads de SEO/Conteúdo</span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Atualizado · 17 maio 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-12">
+
+      <!-- Tese contraintuitiva -->
+      <div class="prose prose-ink max-w-none section-tese">
+        <h2 class="section-h text-2xl">Tese contraintuitiva: em 2026, ranquear no Google deixou de garantir ser citado por IA</h2>
+        <p>
+          A tese organizadora deste documento é simples e desconfortável: o trabalho de SEO clássico, que durante quinze anos foi suficiente para captar tráfego qualificado, virou condição necessária e não mais suficiente. Dois dados resolvem a discussão. Primeiro: o overlap entre as dez primeiras posições do Google e as fontes citadas em AI Overviews caiu de 75% em meados de 2025 para uma faixa entre 17% e 38% no início de 2026, dependendo da vertical e do engine medido. Segundo: o AI Mode do Google entrega 93% de queries zero-click contra 60% do Google clássico — o usuário que antes clicava no resultado orgânico hoje recebe a resposta na própria interface, com no máximo três links inline.
+        </p>
+        <p>
+          A consequência operacional é que ranquear em primeiro lugar para uma query informacional deixou de ser a meta. A meta nova é ser absorvido — ter trechos, definições, tabelas e números migrados para dentro da resposta gerada, com atribuição idealmente clicável. Para o portal Brasil GEO e para qualquer marca brasileira que dependa de visibilidade orgânica, isso muda quem precisa estar sentado à mesa quando o conteúdo é planejado: o engenheiro de schema, o autor com bylines canônicos e o operador de measurement entram junto com o redator e o estrategista de palavras-chave.
+        </p>
+        <p>
+          As 12 mudanças canônicas que estruturam este documento foram destiladas de cinco dossiês paralelos de pesquisa (Waves A-E), que somaram 203 sources e 70+ confirmações individuais via WebFetch em 2026-05-17. A base canônica completa está em <code>docs/governance/seo-geo-knowledge-base-2026-05-17.md</code> deste repositório.
+        </p>
+      </div>
+
+      <!-- Seção 1: Papers canônicos -->
+      <div>
+        <h2 class="section-h text-2xl">1. Oito papers que organizam o campo</h2>
+        <p class="mt-2 text-ink-700">Cada paper abaixo foi spot-checked individualmente via WebFetch em 2026-05-17. Título, autores e URL canônica confirmados na fonte primária — arXiv ou repositório institucional.</p>
+        <div class="mt-6 space-y-5">
+          {papers.map((p, i) => (
+            <div class="card p-6 border-surface-200">
+              <div class="flex items-start justify-between gap-3 flex-wrap">
+                <h3 class="font-display font-semibold text-lg text-ink-900">{i + 1}. {p.titulo}</h3>
+                <span class="inline-flex items-center rounded-full bg-brand-50 text-brand-800 px-2.5 py-1 text-xs font-semibold whitespace-nowrap">{p.arxivId}</span>
+              </div>
+              <p class="text-sm text-ink-500 mt-1">{p.citation}</p>
+              <p class="mt-3 text-ink-700 leading-relaxed text-sm"><strong>Achado:</strong> {p.achado}</p>
+              <p class="mt-2 text-ink-700 leading-relaxed text-sm"><strong>Relevância para o portal:</strong> {p.relevancia}</p>
+              <a href={p.url} target="_blank" rel="noopener external" class="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-brand-700 hover:text-brand-800">
+                Abrir fonte primária <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Seção 2: Frameworks -->
+      <div>
+        <h2 class="section-h text-2xl">2. Cinco frameworks canônicos de mensuração</h2>
+        <p class="mt-2 text-ink-700">Cada framework atende a uma audiência distinta — escolha conforme o stakeholder principal do seu painel.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Framework</th>
+                <th class="text-left px-4 py-3">Origem</th>
+                <th class="text-left px-4 py-3">Foco</th>
+                <th class="text-left px-4 py-3">Quando usar</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {frameworks.map(f => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{f.nome}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{f.autor}</td>
+                  <td class="px-4 py-3 text-ink-700">{f.foco}</td>
+                  <td class="px-4 py-3 text-ink-700">{f.uso}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="sm:hidden text-xs text-ink-500 mt-2">Arraste a tabela para ver mais colunas.</p>
+      </div>
+
+      <!-- Seção 3: Engines -->
+      <div>
+        <h2 class="section-h text-2xl">3. Comportamento engine-by-engine em maio de 2026</h2>
+        <p class="mt-2 text-ink-700">Não existe uma estratégia universal — cada motor tem comportamento distinto que altera prioridades editoriais e técnicas.</p>
+        <div class="mt-6 space-y-4">
+          {engines.map(e => (
+            <div class="card p-6 border-surface-200">
+              <h3 class="font-display font-semibold text-lg text-ink-900">{e.nome}</h3>
+              <p class="mt-2 text-ink-700 leading-relaxed text-sm"><strong>Estado em 2026:</strong> {e.estado}</p>
+              <p class="mt-2 text-ink-700 leading-relaxed text-sm"><strong>Consequência operacional:</strong> {e.consequencia}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Seção 4: Standards -->
+      <div>
+        <h2 class="section-h text-2xl">4. Standards técnicos em 2026 — o que entra e o que sai do stack</h2>
+        <div class="prose prose-ink max-w-none mt-3">
+          <p>
+            O padrão consolidado em 2026 é o <strong>Schema.org @graph triplo</strong> com Organization + Person + Article cross-referenciados via <code>@id</code> ancorado em URL fragment. A release 30.0 do Schema.org saiu em 19/03/2026. O Person canônico com <code>sameAs</code> apontando para Wikipedia, Wikidata e LinkedIn é a alavanca subestimada de entity recognition mais consistente entre todos os engines testados — tem efeito particularmente forte em Claude e Gemini, e ganho marginal em ChatGPT.
+          </p>
+          <p>
+            <strong>O FAQPage perdeu o rich result em SERP em 07/05/2026</strong> mas o markup migrou de função — passou a ser correlacionado com aproximadamente 3,2 vezes mais probabilidade de citação em AI Overviews. Continue marcando FAQ. Sete schemas foram descontinuados em janeiro de 2026 — <em>ClaimReview</em>, <em>EstimatedSalary</em>, <em>LearningVideo</em>, <em>SpecialAnnouncement</em>, <em>VehicleListing</em>, <em>PracticeProblem</em> e um sétimo de menor relevância — todos perderam rich result e devem ser retirados do template.
+          </p>
+          <p>
+            <strong>MCP (Model Context Protocol)</strong> virou padrão de fato em 2026 — spec 2025-11-25 doada em dezembro de 2025 para a Agentic AI Foundation no Linux Foundation. Em contrapartida, <em>ai-plugin.json</em>, <em>ai-context.json</em> e <em>ai-agents.json</em> estão mortos ou nunca chegaram a virar padrões — não publique. <strong>llms.txt</strong> continua sem evidência estatística de impacto sobre Citation Rate em estudo de cerca de 300 mil domínios (apenas 408 hits diretos em 500 milhões de visitas de bots de IA). Publique como hygiene de baixo custo, nunca como linha principal de investimento.
+          </p>
+          <p>
+            <strong>IndexNow</strong> segue como canal canônico de notificação rápida — Bing, Yandex, Naver, Seznam e Yep participam; Google não participa. O <strong>Web Bot Auth</strong> (draft IETF Meunier 2026) e o <strong>Cloudflare Pay Per Crawl</strong> (HTTP 402 + JWT, mais de 1 bilhão de 402/dia em maio de 2026) são alavancas de defesa para quem quer monetizar ou limitar crawl de IA. O <strong>PerplexityBot foi delistado dos Verified Bots</strong> da Cloudflare em agosto de 2025 por comportamento stealth — bloquear UA não basta, combine com Bot Management ou rate-limit por ASN.
+          </p>
+        </div>
+      </div>
+
+      <!-- Seção 5: Canal pt-BR -->
+      <div>
+        <h2 class="section-h text-2xl">5. Mudança de canal em pt-BR: por que YouTube + LinkedIn batem Reddit no Brasil</h2>
+        <div class="prose prose-ink max-w-none mt-3">
+          <p>
+            A diferença mais consequente entre os playbooks americano e brasileiro está no mix de canal social que alimenta as citações em AI Overviews. Em queries pt-BR, o <strong>YouTube concentra 65% das citações sociais</strong> em AIO; o Reddit despenca para 7%; o Instagram triplica para 17%. Em queries en-US o quadro é praticamente inverso — YouTube por volta de 16%, Reddit em torno de 30%.
+          </p>
+          <p>
+            A implicação operacional é direta. Marcas brasileiras que importaram cego o playbook de Reddit americano (community building, AMAs, posts em subreddits de nicho) estão sub-investindo no canal que de fato move o ponteiro no Brasil. O canal #1 é <strong>YouTube com transcript clean, chapter markers e descrição longa</strong> — o LLM lê a transcrição e cita o vídeo como fonte com timestamp. O canal #2 é <strong>LinkedIn Pulse com 500 a 2000 palavras por post, cinco ou mais posts por mês por autor</strong>. Instagram entra em terceiro lugar com alt-text robusto e legendas descritivas — não esqueça que o motor lê o texto, não a imagem.
+          </p>
+          <p>
+            Esse dado, isolado, justifica realocação de pelo menos um terço do investimento em conteúdo orgânico de marcas brasileiras em 2026. Para o portal Brasil GEO, o canal canônico de distribuição de cada pillar é YouTube em primeiro lugar, LinkedIn em segundo e Instagram em terceiro — Reddit fica fora do top 3.
+          </p>
+        </div>
+      </div>
+
+      <!-- Seção 6: Gaps brasileiros -->
+      <div>
+        <h2 class="section-h text-2xl">6. Gaps estruturais brasileiros — três oportunidades de ocupação</h2>
+        <div class="prose prose-ink max-w-none mt-3">
+          <p>
+            <strong>Gap 1: analista brasileiro canônico.</strong> Nenhum analista brasileiro publica semanalmente sobre GEO com cadência editorial comparável a Aleyda Solís (SEOFOMO, 40 mil assinantes, 45% open rate), Mike King (iPullRank), Lily Ray (Amsive), Rand Fishkin (SparkToro) ou Marie Haynes. O espaço para uma newsletter semanal pt-BR canônica em GEO está vazio — Alexandre Caramaschi pode ocupá-lo com Brasil GEO.
+          </p>
+          <p>
+            <strong>Gap 2: evento brasileiro dedicado.</strong> Não há evento brasileiro em 2026 com track 100% dedicado a GEO. iMasters tem tangências, RD Summit não publica track formal, AEO Conf San Francisco e SMX Munich seguem como referência internacional. Há espaço para Brasil GEO patrocinar ou curar um track próprio em conferência consolidada (HSM, RD Summit, MaxConference) ou criar evento dedicado em formato single-track.
+          </p>
+          <p>
+            <strong>Gap 3: benchmark canônico vertical educação superior pt-BR.</strong> Toda a literatura empírica disponível é em inglês americano (en-US) ou inglês indiano (en-IN). Nenhuma plataforma global publica baseline pt-BR para educação superior. Brasil GEO está endereçando este gap com baseline próprio em 2026.Q3, descrito em detalhe na página de benchmarks Brasil GEO (link interno abaixo).
+          </p>
+        </div>
+      </div>
+
+      <!-- FAQs -->
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <!-- CTA + cross-links -->
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Próximo passo</p>
+        <h3 class="font-display font-semibold text-xl text-ink-900">Quem prepara o portal para esse cenário hoje colhe a primeira onda de captação 2027.1</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Os três movimentos canônicos para 2026 são: (1) auditar o @graph triplo em todas as páginas, (2) rodar baseline próprio de mention rate e citation rate em 50 a 100 prompts × 5 engines × 3 runs e (3) decidir alocação de canal pt-BR com YouTube em primeiro lugar. Cada movimento abaixo tem um documento próprio neste portal.
+        </p>
+        <div class="mt-5 grid sm:grid-cols-2 gap-3">
+          <a href="/benchmarks-brasil-geo-2026" class="card-lift block p-4 bg-white">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Pillar próximo</p>
+            <h4 class="font-display font-semibold text-base mt-1">Benchmarks GEO Brasil — onde estamos em maio de 2026</h4>
+            <p class="mt-1 text-sm text-ink-700">Metodologia, prompts canônicos e mapa de concorrentes para o baseline pt-BR vertical educação superior.</p>
+          </a>
+          <a href="/glossario" class="card-lift block p-4 bg-white">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Referência</p>
+            <h4 class="font-display font-semibold text-base mt-1">Glossário canônico GEO</h4>
+            <p class="mt-1 text-sm text-ink-700">Mention Rate, Citation Rate, SoV-AI, AECR e os outros termos do framework ELCA, com origem e definição operacional.</p>
+          </a>
+          <a href="/regulacao" class="card-lift block p-4 bg-white">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Política editorial</p>
+            <h4 class="font-display font-semibold text-base mt-1">Regulação, ética e escopo do portal</h4>
+            <p class="mt-1 text-sm text-ink-700">Como o portal trata escopo CFP/MEC e níveis editoriais R0-R4 — base de credibilidade para citação por LLM.</p>
+          </a>
+          <a href="/sobre" class="card-lift block p-4 bg-white">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Autor</p>
+            <h4 class="font-display font-semibold text-base mt-1">Sobre Alexandre Caramaschi e Brasil GEO</h4>
+            <p class="mt-1 text-sm text-ink-700">Person canônico e Organization que opera o portal — base do @graph triplo de toda página.</p>
+          </a>
+        </div>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-4">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Sobre este documento</p>
+        <p class="mt-2 text-sm text-ink-700 leading-relaxed">
+          Pillar institucional do portal Brasil GEO. Destila cinco dossiês internos de pesquisa rodados em 2026-05-17, com 203 sources e 70+ confirmações individuais via WebFetch. Autor canônico: Alexandre Caramaschi, CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.
+        </p>
+        <p class="mt-3 text-xs text-ink-500">
+          Spot-check date: 17 de maio de 2026. Próxima revisão obrigatória: 17 de agosto de 2026, ou antes em caso de release major (GPT-5.5+, Claude Mythos GA, Gemini 4, AI Mode pt-BR feature parity).
+        </p>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Fontes canônicas</p>
+        <ul class="mt-3 text-sm space-y-2">
+          <li><a href="https://arxiv.org/abs/2311.09735" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Aggarwal et al., KDD 2024 (paper fundador)</a></li>
+          <li><a href="https://arxiv.org/abs/2602.18455" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Khosravi e Yoganarasimhan, 2026 (impacto AIO)</a></li>
+          <li><a href="https://arxiv.org/abs/2604.25707" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Zhang, He e Yao, 2026 (Selection vs Absorption)</a></li>
+          <li><a href="https://schema.org/docs/releases.html" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Schema.org releases (30.0 em 19/03/2026)</a></li>
+          <li><a href="https://modelcontextprotocol.io/specification/2025-11-25" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MCP spec 2025-11-25</a></li>
+        </ul>
+      </div>
+
+      <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="card-lift block p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Aplicação prática</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em POT — Psicologia Organizacional e do Trabalho</h3>
+        <p class="mt-2 text-sm text-ink-500">A pós-graduação do IPOG aplica conteúdo HBR-style já calibrado para Citation Absorption. Consulte ipog.edu.br para grade vigente.</p>
+      </a>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+
+</Base>

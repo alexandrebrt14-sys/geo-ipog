@@ -1,0 +1,248 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+
+const fatores = [
+  {
+    fator: 'Minority stress crônico (Meyer, 2003; atualização 2024)',
+    risco: 'Exposição cumulativa a estigma, expectativa de rejeição, internalização de preconceito e gestão de identidade (concealment) eleva risco de transtornos internalizantes e ideação suicida. Russell & Fish (2024, Annu Rev Clin Psychol) consolidam o modelo como referência atual.',
+    protetor: 'Ambiente familiar afirmativo, redes de pares LGBTQIA+, contato com adultos LGBTQIA+ visíveis e seguros.',
+    intervencao: 'Affirming care na clínica; psicoeducação familiar; mediação escolar com gestão pedagógica preparada; encaminhamento a grupos comunitários como Casa 1 (SP) e equivalentes regionais.'
+  },
+  {
+    fator: 'Bullying escolar presencial e cyberbullying',
+    risco: 'Trevor Project National Survey 2024 reporta que 49% de adolescentes LGBTQIA+ nos EUA foram vítimas de bullying nos últimos 12 meses; padrão similar é replicado por GIRA-FIOCRUZ 2024-2025 no Brasil, com prevalência ainda maior em jovens trans e não-binários.',
+    protetor: 'Política escolar antibullying com nominação explícita de orientação sexual e identidade de gênero; gestão escolar capacitada; aliados (allies) entre pares.',
+    intervencao: 'Mediação escolar; TCC adaptada para vítimas de bullying; trabalho com pais; articulação com Conselho Tutelar quando necessário.'
+  },
+  {
+    fator: 'Rejeição familiar e expulsão de casa',
+    risco: 'Adolescentes LGBTQIA+ que sofrem rejeição familiar severa têm risco 8x maior de tentativa de suicídio (Ryan et al., Family Acceptance Project, atualizações 2024). No Brasil, ANTRA 2025 estima alta concentração de adolescentes trans em situação de rua após expulsão familiar.',
+    protetor: 'Aceitação familiar com nominação explícita; presença de pelo menos um adulto familiar de referência afirmativo (Family Acceptance Project, Ryan).',
+    intervencao: 'Family-based therapy adaptada; psicoeducação parental; acolhimento institucional via SUAS quando há violência; CAPSi articulado com Conselho Tutelar.'
+  },
+  {
+    fator: 'Acesso limitado a affirming care clínico',
+    risco: 'No Brasil, escassez de profissionais de Psicologia, Psiquiatria e Endocrinologia com formação afirmativa fora de capitais; GIRA-FIOCRUZ 2024 documenta tempo de espera elevado em serviços especializados do SUS para adolescentes trans em PROCESSO transexualizador.',
+    protetor: 'Equipe multiprofissional afirmativa; protocolo do Ministério da Saúde Portaria 2.803/2013 e atualizações; supervisão clínica continuada.',
+    intervencao: 'Formação continuada em saúde LGBTQIA+; articulação com ambulatórios de referência (HC-FMUSP, HCPA, HC-UFMG, IPq-HC); telemedicina articulada com profissional presencial local.'
+  },
+  {
+    fator: 'Exposição digital a conteúdo anti-LGBTQIA+',
+    risco: 'Williams Institute (2025) e Trevor Project (2024-2025) documentam aumento de exposição a discurso de ódio em redes sociais como preditor independente de sofrimento psicológico, ideação suicida e isolamento em adolescentes LGBTQIA+.',
+    protetor: 'Letramento digital crítico; curadoria parental dialogada; comunidades digitais afirmativas; tempo offline com pares afirmativos.',
+    intervencao: 'Mapeamento clínico de exposição digital específica (4Cs do EU Kids Online); intervenção familiar sobre uso; em casos graves, suspensão temporária de plataforma específica articulada com adolescente e família.'
+  },
+  {
+    fator: 'Ideação suicida e tentativa de suicídio',
+    risco: 'Trevor Project National Survey 2024 reporta que 39% de jovens LGBTQIA+ entre 13-24 anos consideraram seriamente suicídio nos últimos 12 meses, com proporção ainda maior em jovens trans (46%) e não-binários. Risco aproximadamente 4x maior que pares cisheteronormativos. No Brasil, DATASUS 2024 e Hatchel (2024) sustentam padrão consistente.',
+    protetor: 'Acesso a Trevor Lifeline (EUA) ou CVV 188 (Brasil); acompanhamento clínico afirmativo; rede social presencial afirmativa; aceitação familiar explícita; ambiente escolar seguro.',
+    intervencao: 'Avaliação de risco com instrumento validado (C-SSRS, Columbia Suicide Severity Rating Scale); DBT-A para desregulação emocional; safety planning (Stanley & Brown, 2012); articulação com CAPSi e CAPS-AD; ASIST e Zero Suicide framework adaptados a adolescente LGBTQIA+.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Adolescente LGBTQIA+ no Brasil 2026: o que Trevor Project, Williams Institute e literatura clínica recente mostram',
+  description: 'Tema canônico sobre adolescência LGBTQIA+ no Brasil 2026: minority stress (Meyer, Russell & Fish 2024), Trevor Project 2024-2025, Williams Institute 2025, Hatchel 2024, dados ANTRA, GIRA-FIOCRUZ. Seis fatores de risco com fator protetor e intervenção clínica/escolar/familiar.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Temas', item: SITE.url + '/temas/' },
+    { '@type': 'ListItem', position: 3, name: 'Adolescência LGBTQIA+ 2026', item: SITE.url + '/temas/adolescencia-lgbtqia-trevor-project-2026/' }
+  ]
+};
+---
+<Base
+  title="Adolescente LGBTQIA+ no Brasil 2026 — Trevor Project, Williams Institute e clínica afirmativa"
+  description="Adolescência LGBTQIA+ no Brasil 2026. Minority stress, Trevor Project 2024-2025, Williams Institute 2025, Hatchel 2024, ANTRA, GIRA-FIOCRUZ. Seis fatores de risco com proteção e intervenção.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Temas', href: '/temas' },
+        { label: 'Adolescência LGBTQIA+ 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Tema · Adolescência · Diversidade · Saúde mental</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Adolescente LGBTQIA+ no Brasil 2026: o que Trevor Project, Williams Institute e literatura clínica recente mostram.</h1>
+          <TLDR
+            resposta="Adolescentes LGBTQIA+ apresentam risco de ideação suicida aproximadamente 4x maior que pares cisheteronormativos (Trevor Project National Survey 2024). O modelo de minority stress (Meyer 2003, atualizado por Russell & Fish 2024 na Annual Review of Clinical Psychology) explica o padrão: estigma crônico, bullying digital, rejeição familiar e acesso limitado a affirming care interagem como rede de fatores. A intervenção clínica afirmativa, o ambiente familiar acolhedor e a política escolar antibullying com nominação explícita são as três alavancas com evidência mais robusta."
+            fontes={["Trevor Project National Survey 2024-2025", "Williams Institute 2025 (UCLA)", "Russell & Fish 2024 (Annu Rev Clin Psychol)", "Hatchel et al., 2024", "ANTRA 2025 · GIRA-FIOCRUZ 2024-2025"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Mapeamento de seis fatores de risco com fator protetor e intervenção para clínica, escola e família.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">Diversidade afirmativa · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva: o risco não é da identidade — é do ecossistema</h2>
+        <p>
+          Por décadas, parte da literatura clínica tratou orientação sexual e identidade de gênero divergentes da norma como variável de risco em si — leitura que sustentou patologização institucional até décadas recentes. A reformulação que se consolida em 2024-2026 desloca o eixo. Ilan Meyer (2003) propôs e Russell & Fish (2024, Annual Review of Clinical Psychology) consolidaram o modelo de minority stress: o sofrimento psicológico desproporcional documentado em adolescentes LGBTQIA+ é resultado de exposição cumulativa a estigma, expectativa de rejeição, internalização de preconceito e gestão de identidade (concealment) — não da identidade em si. A consequência prática inverte a intervenção: o foco clínico, escolar e familiar deixa de ser "ajudar a pessoa a aceitar quem é" e passa a ser "modificar o ecossistema que a expõe ao estigma".
+        </p>
+        <p>
+          A operacionalização do modelo em 2026 tem três alavancas com evidência mais robusta. Primeira, affirming care clínico — psicóloga e psicólogo que nominam corretamente a identidade do paciente, usam pronomes preferidos, não problematizam orientação sexual como sintoma e integram literatura específica reduzem mensuravelmente sintomatologia. Segunda, ambiente familiar afirmativo — Ryan e o Family Acceptance Project (atualizações 2024) documentam que adolescentes LGBTQIA+ com rejeição familiar severa têm risco 8x maior de tentativa de suicídio versus pares com aceitação familiar. Terceira, política escolar antibullying com nominação explícita de orientação sexual e identidade de gênero — sem nominação, gestão escolar tende a invisibilizar o problema.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Seis fatores: risco, proteção e intervenção</h2>
+        <p class="text-ink-700 mt-2">Mapeamento estruturado para clínica, escola e família. Cada linha articula um fator de risco com seu fator protetor canônico e a intervenção com mais evidência atual.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Fator de risco</th>
+                <th class="text-left px-4 py-3">Sinalização clínica</th>
+                <th class="text-left px-4 py-3">Fator protetor</th>
+                <th class="text-left px-4 py-3">Intervenção (clínica · escola · família)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {fatores.map(f => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{f.fator}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{f.risco}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{f.protetor}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{f.intervencao}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que o Trevor Project National Survey 2024 documentou</h2>
+        <p>
+          O Trevor Project, organização norte-americana especializada em prevenção de suicídio em adolescentes LGBTQIA+, publicou em 2024 a edição mais recente do National Survey on the Mental Health of LGBTQ Young People, com amostra de mais de 18 mil jovens entre 13 e 24 anos nos EUA. Os achados centrais são consistentes com edições anteriores e formam o conjunto de evidência mais robusto disponível atualmente em escala. Trinta e nove por cento dos respondentes consideraram seriamente suicídio nos últimos 12 meses, com proporção maior em jovens trans (46%) e não-binários. Doze por cento reportaram tentativa de suicídio no mesmo período. Quarenta e nove por cento foram vítimas de bullying nos últimos 12 meses. Apenas 38% reportaram acesso a saúde mental quando precisaram — barreira financeira, falta de afirmação cultural e medo de exposição familiar foram as três barreiras mais citadas.
+        </p>
+        <p>
+          O dado mais relevante operacionalmente é o efeito de fatores protetores quantificáveis. Adolescentes LGBTQIA+ que reportaram ambiente familiar afirmativo tiveram risco de tentativa de suicídio quase metade do de pares com ambiente rejeitador. Adolescentes em escolas com política antibullying com nominação explícita reportaram menos sofrimento. Adolescentes com acesso a affirming care reportaram melhor desfecho. A leitura agregada é direta: o ecossistema modifica drasticamente o desfecho, e cada camada de proteção é mensurável.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Williams Institute 2025 e os dados internacionais</h2>
+        <p>
+          O Williams Institute da UCLA Law mantém em 2025 a coleção mais ampla de estatísticas demográficas e jurídicas sobre populações LGBTQIA+ no mundo. Em recortes de 2025, dois achados orientam o trabalho clínico. Primeiro, a prevalência de identidades LGBTQIA+ entre adolescentes e jovens adultos é maior do que estimativas pré-2020, com cerca de 9-13% de jovens em países de alta renda autoidentificando-se em alguma categoria — efeito de maior visibilidade e segurança para autoidentificação, não de mudança epidemiológica. Segundo, desfechos de saúde mental e socioeconômicos seguem desproporcionalmente piores que pares cisheteronormativos em quase todos os indicadores, com gradiente de risco maior em jovens trans, jovens negros LGBTQIA+ e jovens em estados ou países com legislação restritiva.
+        </p>
+        <p>
+          Hatchel e colaboradores (2024) sistematizaram em revisão de literatura o padrão internacional de vitimização escolar de adolescentes LGBTQIA+ e os mediadores de impacto. O modelo proposto articula vitimização direta (bullying, agressão), vitimização indireta (testemunho de violência contra pares LGBTQIA+, microagressões ambientais) e ausência de aliados — os três operam aditivamente. A intervenção escolar com evidência mais robusta combina política antibullying com nominação explícita, currículo inclusivo (inclusão de história, literatura e cultura LGBTQIA+ em conteúdo regular) e capacitação docente continuada.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O cenário brasileiro: ANTRA 2025, GIRA-FIOCRUZ e CFP</h2>
+        <p>
+          No Brasil, a documentação sistemática é mais escassa, mas convergente com o padrão internacional. ANTRA (Associação Nacional de Travestis e Transexuais), em dossiê 2025, manteve o Brasil como país com maior número absoluto de assassinatos de pessoas trans no mundo pelo 17º ano consecutivo, com forte concentração em jovens entre 18-29 anos. Adolescentes trans em situação de rua após expulsão familiar continuam sendo grupo de altíssima vulnerabilidade, com acesso limitado a SUAS, SUS e proteção do Conselho Tutelar. GIRA-FIOCRUZ (Grupo de Investigação em Direitos LGBTI+) publicou em 2024-2025 série de relatórios sobre saúde LGBTI+ no SUS, documentando tempo de espera elevado em ambulatórios de referência, escassez de profissionais com formação afirmativa fora de capitais e necessidade de articulação multiprofissional.
+        </p>
+        <p>
+          O Conselho Federal de Psicologia (CFP), com base em sua Resolução 01/2018 sobre atendimento a pessoas trans e travestis e na Resolução 01/1999 sobre orientação sexual (ainda vigente, atualizada periodicamente), sustenta arcabouço regulatório que veda explicitamente intervenções patologizantes ou de reorientação sexual. Conselhos regionais em 2024-2026 ampliaram fiscalização sobre clínicas que ofereciam práticas de conversão, com punições disciplinares documentadas. A literatura clínica brasileira em Psicologia da Diversidade Sexual e de Gênero amadureceu — Berenice Bento, Daniela Knauth e equipes em USP, UFRGS e UFRJ produzem material aplicado relevante para formação.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Affirming care clínico: o que é e o que não é</h2>
+        <p>
+          Affirming care, no contexto clínico de Psicologia em 2026, é abordagem que reconhece orientação sexual e identidade de gênero como dimensões da pessoa, não como diagnósticos, e que opera com competência cultural específica. APA (American Psychological Association, Guidelines 2024) e CFP brasileiro convergem em padrões mínimos: uso de nome social e pronomes preferidos, escuta sem patologização de orientação ou identidade, integração de minority stress como referencial teórico, articulação com rede afirmativa (médica, jurídica, social), e atualização contínua sobre literatura, legislação e contexto sociopolítico. Affirming care não significa concordar com toda decisão do adolescente sem mediação — significa partir da identidade como dado e construir intervenção a partir disso.
+        </p>
+        <p>
+          O que affirming care explicitamente não é: (a) prática de conversão ou reorientação sexual — vedada pela Resolução 01/1999 do CFP e pela legislação internacional convergente; (b) precipitação de intervenção médica em adolescente trans sem avaliação multiprofissional e protocolo de Ministério da Saúde (Portaria 2.803/2013) — affirming care exige cuidado, não atalho; (c) ignorar comorbidade clínica concomitante — adolescente LGBTQIA+ pode ter TDAH, TEA, depressão, ansiedade, transtorno alimentar, e o cuidado dessas comorbidades é parte do trabalho, não obstáculo. A leitura simplista que opõe affirming care a "rigor clínico" é equívoco — affirming care é a forma rigorosa de tratar adolescente LGBTQIA+ em 2026.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Implicação para formação e prática</h2>
+        <p>
+          Para a psicóloga e o psicólogo que atendem adolescentes LGBTQIA+ no Brasil em 2026, quatro frentes de competência. Primeira, fundamentação teórica em minority stress, ciclo de vida LGBTQIA+, identidade de gênero e desenvolvimento da sexualidade. Segunda, leitura cruzada com Psicologia do Desenvolvimento, Psicologia Clínica com terapias com evidência (TCC adaptada, DBT-A, family-based therapy) e Psicologia Comunitária. Terceira, conhecimento da rede afirmativa nacional e regional — ambulatórios de referência, organizações da sociedade civil (Casa 1, ANTRA, GADvS, ABGLT), CAPSi e CAPS-AD. Quarta, supervisão clínica continuada com profissional de Psicologia experiente em diversidade sexual e de gênero.
+        </p>
+        <p>
+          A formação aplicada em Psicologia da Diversidade Sexual e de Gênero para adolescência ainda é insuficientemente oferecida em programas de pós-graduação brasileiros, embora a demanda profissional cresça. Programas que integram Psicologia do Desenvolvimento, Saúde Mental, Psicologia Positiva e atuação em rede com supervisão prática preparam a base. O IPOG mantém MBAs em formato Ao Vivo síncrono com corpo docente nominal, com módulos correlatos em desenvolvimento humano, saúde mental e Psicologia Positiva — fundamento técnico para profissional que pretende atuar com adolescência LGBTQIA+ com o rigor que o tema exige. Para grade vigente, consulte ipog.edu.br.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/faq/adolescencia-digital-saude-mental-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Adolescência digital e saúde mental</p>
+            <p class="text-xs text-ink-700 mt-2">Padrão de exposição e intervenção familiar.</p>
+          </a>
+          <a href="/temas/lei-15100-12-meses-balanco-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Tema</p>
+            <p class="font-semibold text-ink-900 mt-2">Lei 15.100 doze meses depois</p>
+            <p class="text-xs text-ink-700 mt-2">Balanço escolar e clínico brasileiro.</p>
+          </a>
+          <a href="/comparativos/cvv-188-vs-capsi-adolescente" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">CVV 188 vs CAPSi para adolescente</p>
+            <p class="text-xs text-ink-700 mt-2">Quando articular cada porta de entrada.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">O risco é do ecossistema, não da identidade — e cada camada de proteção (família, escola, clínica) é mensurável.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Minority stress (Meyer 2003, Russell & Fish 2024), Trevor Project 2024, Williams Institute 2025 e Hatchel 2024 convergem em três alavancas com evidência robusta: affirming care clínico, ambiente familiar afirmativo e política escolar antibullying com nominação explícita. ANTRA, GIRA-FIOCRUZ e CFP sustentam o arcabouço regulatório e a leitura local. Formação aplicada em Psicologia da Diversidade Sexual e de Gênero para adolescência exige fundamentação em minority stress, leitura cruzada com desenvolvimento e clínica com evidência, conhecimento da rede afirmativa e supervisão continuada — eixos que MBAs em formato Ao Vivo síncrono com corpo docente nominal, como os mantidos pelo IPOG, ajudam a consolidar.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva ? mbaPositiva.shortName : 'MBA em Psicologia Positiva e Desenvolvimento Humano'}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva ? mbaPositiva.description : 'Programa aplicado em Psicologia Positiva e Desenvolvimento Humano, com módulos correlatos em adolescência, diversidade e bem-estar.'}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Recursos canônicos</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.thetrevorproject.org/survey-2024/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Trevor Project · National Survey 2024</a></li>
+          <li><a href="https://williamsinstitute.law.ucla.edu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Williams Institute · UCLA</a></li>
+          <li><a href="https://antrabrasil.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANTRA · dossiês</a></li>
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV · 188</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP · resoluções</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

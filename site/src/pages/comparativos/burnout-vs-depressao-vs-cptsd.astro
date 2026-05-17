@@ -1,0 +1,328 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+
+const dimensoes = [
+  {
+    dimensao: 'Gatilho típico',
+    burnout: 'Estressor ocupacional crônico (sobrecarga, perda de autonomia, conflito de valores)',
+    depressao: 'Heterogêneo — luto, perda, estressor agudo, perfil endógeno; pode aparecer sem fator precipitante claro',
+    cptsd: 'Trauma cumulativo prolongado (violência interpessoal, negligência, abuso, situações de captura)',
+    pergunta: 'O sofrimento começou em contexto de trabalho específico ou em domínio amplo da vida?'
+  },
+  {
+    dimensao: 'Especificidade ao contexto',
+    burnout: 'Contexto-dependente — sintomas remitem na folga prolongada (férias) e retornam com o gatilho',
+    depressao: 'Contexto-independente — sintomas persistem em férias, fim de semana e mudança de cenário',
+    cptsd: 'Misturado — alguns sintomas se atenuam em ambientes seguros mas hipervigilância e dissociação persistem',
+    pergunta: 'O quadro melhora consistentemente em ambiente diferente do gatilho?'
+  },
+  {
+    dimensao: 'Anedonia',
+    burnout: 'Restrita — perda de prazer no trabalho específico; pode manter prazer em outras esferas',
+    depressao: 'Generalizada — perda de prazer em atividades antes valorizadas, hobbies, sexualidade, relações',
+    cptsd: 'Variável — anedonia coocorrente quando há comorbidade depressiva, sem ser sintoma central',
+    pergunta: 'A pessoa ainda obtém prazer em atividades fora do contexto do trabalho?'
+  },
+  {
+    dimensao: 'Autoimagem',
+    burnout: 'Frequente perda de eficácia profissional ("não consigo mais entregar") sem distorção de self global',
+    depressao: 'Autoimagem global negativa — culpa, autodepreciação, sensação de fracasso como pessoa',
+    cptsd: 'Distúrbio profundo de self e identidade — sentir-se irreparavelmente danificado, fundamentalmente diferente',
+    pergunta: 'A percepção negativa se restringe ao trabalho ou alcança o senso de quem a pessoa é?'
+  },
+  {
+    dimensao: 'Sono',
+    burnout: 'Dificuldade em desligar do trabalho, latência alta, sono não-restaurador; melhora em férias',
+    depressao: 'Insônia terminal típica (acordar 3-5 da manhã sem voltar a dormir) ou hipersonia em quadros atípicos',
+    cptsd: 'Pesadelos recorrentes com conteúdo do trauma, despertares por hipervigilância, sono fragmentado crônico',
+    pergunta: 'Há pesadelos repetitivos com conteúdo específico ou padrão de despertar precoce sem motivo aparente?'
+  },
+  {
+    dimensao: 'Regulação emocional',
+    burnout: 'Irritabilidade contextual, embotamento afetivo no trabalho, regulação preservada em outros domínios',
+    depressao: 'Embotamento ou tristeza pervasivos, sem oscilações marcadas; lentificação afetiva',
+    cptsd: 'Desregulação profunda — explosões desproporcionais, intolerância a frustração, dificuldade de calma após ativação',
+    pergunta: 'A pessoa volta à linha de base após gatilho menor ou fica desregulada por horas?'
+  },
+  {
+    dimensao: 'Sintomas físicos',
+    burnout: 'Cefaleia tensional, dor musculoesquelética, queixa gastrointestinal funcional, fadiga crônica',
+    depressao: 'Fadiga generalizada, lentificação psicomotora, perda ou ganho de peso, queixas somáticas inespecíficas',
+    cptsd: 'Hiperreatividade fisiológica — taquicardia em gatilho, sobressalto exagerado, queixas somáticas múltiplas',
+    pergunta: 'O corpo reage como se estivesse em ameaça constante mesmo em situações neutras?'
+  },
+  {
+    dimensao: 'Dissociação',
+    burnout: 'Ausente ou rara — sensação de "estar no automático" no trabalho, sem dissociação clínica relevante',
+    depressao: 'Geralmente ausente — pode haver sensação de irrealidade em quadros graves, sem ser sintoma central',
+    cptsd: 'Sintoma diagnóstico — despersonalização, desrealização, amnésia dissociativa, alterações de identidade',
+    pergunta: 'Há lapsos de tempo sem memória ou sensação frequente de "não estar no próprio corpo"?'
+  },
+  {
+    dimensao: 'Vergonha',
+    burnout: 'Vergonha situacional ("não dou conta do trabalho") sem alcançar identidade global',
+    depressao: 'Culpa frequente, especialmente irrealística e desproporcional; vergonha presente mas variável',
+    cptsd: 'Vergonha tóxica nuclear — "sou fundamentalmente defeituoso", senso de contaminação interna',
+    pergunta: 'A vergonha é sobre algo específico que aconteceu ou sobre quem a pessoa é em essência?'
+  },
+  {
+    dimensao: 'Hiperreatividade interpessoal',
+    burnout: 'Distanciamento e cinismo no trabalho; relações fora do trabalho podem ser preservadas',
+    depressao: 'Retraimento social generalizado, perda de iniciativa para contato, sem desconfiança nuclear',
+    cptsd: 'Desconfiança crônica, dificuldade em formar vínculos seguros, alternância entre evitação e dependência',
+    pergunta: 'A pessoa consegue confiar em outras pessoas ou sente medo persistente de ser ferida novamente?'
+  },
+  {
+    dimensao: 'Resposta a folga prolongada',
+    burnout: 'Melhora marcada em férias de 2-4 semanas; recaída rápida no retorno ao gatilho',
+    depressao: 'Pouca ou nenhuma melhora — sintomas persistem em férias e mudança de cenário',
+    cptsd: 'Melhora parcial em ambientes seguros; sintomas nucleares (hipervigilância, dissociação) permanecem',
+    pergunta: 'Duas a quatro semanas longe do contexto produziram melhora substantiva e sustentada?'
+  },
+  {
+    dimensao: 'Instrumento de avaliação primário',
+    burnout: 'MBI (Maslach et al., 1996), BAT (Schaufeli et al., 2020), CBI (Kristensen et al., 2005), OLBI (Demerouti et al., 2003)',
+    depressao: 'PHQ-9 (Kroenke et al., 2001), BDI-II (Beck), HAM-D (Hamilton); diagnóstico DSM-5-TR / CID-11',
+    cptsd: 'ITQ (International Trauma Questionnaire, Cloitre, 2024) para CID-11; ITI para inventário ampliado',
+    pergunta: 'Qual instrumento é defensável em laudo conforme Resolução CFP 6/2019 para o quadro descrito?'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Burnout, depressão e CPTSD lado a lado: diferencial clínico em 12 dimensões para 2026',
+  description: 'Comparativo técnico em 12 dimensões para diferenciar burnout (CID-11 QD85), depressão (CID-11 6A70-6A7Z) e CPTSD (CID-11 6B41) em adulto em 2026 — gatilho, especificidade, anedonia, autoimagem, sono, regulação, dissociação, vergonha, instrumentos.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Burnout, depressão e CPTSD podem coocorrer no mesmo paciente?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sim, e a coocorrência é regra clínica relevante. Bianchi e Schonfeld (2024, Journal of Affective Disorders) documentaram sobreposição substancial entre burnout e depressão — em torno de 60% dos pacientes com escore alto no MBI também preenchem critério para depressão maior. CPTSD pode coexistir com ambos quando há histórico de trauma cumulativo prévio que entra em interação com sobrecarga ocupacional. O diferencial não é "qual dos três é o verdadeiro" — é mapeamento dos três para plano clínico integrado. Cloitre (2024, World Psychiatry) é referência para diagnóstico diferencial de CPTSD em adulto.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'Por que separar CPTSD do TEPT no diferencial?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A CID-11 (vigência desde 2022) reconheceu CPTSD (6B41) como diagnóstico distinto do TEPT (6B40), com três grupos de sintomas adicionais — desregulação afetiva, conceito negativo de self e dificuldade interpessoal —, em referência ao trabalho de Judith Herman desde 1992 e à validação por Cloitre e equipe ao longo de duas décadas. O DSM-5-TR ainda não reconhece CPTSD como entidade separada, mas literatura empírica sustenta a distinção. Em prática clínica brasileira, usar a CID-11 6B41 quando há histórico de trauma cumulativo é defensável e empiricamente sustentado.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'O burnout é diagnóstico clínico ou ocupacional na CID-11?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A CID-11 (QD85) classifica burnout como fenômeno ocupacional, no capítulo "Factors influencing health status or contact with health services" — não como transtorno mental. A implicação operacional: em laudo clínico, o diagnóstico de transtorno mental coocorrente (F32, F41, F43) é o que sustenta condutas terapêuticas e direitos previdenciários; burnout entra como contexto ocupacional. Em PGR sob NR-1, burnout é categoria operacional relevante. Em judicialização trabalhista, decisões recentes (TRT-2, 2026) reconheceram nexo causal com base em conjunto probatório que inclui escalas validadas e laudo clínico.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'Como o MBA em POT do IPOG conecta esse comparativo?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'O MBA em Psicologia Organizacional e do Trabalho do IPOG cobre saúde mental no trabalho, riscos psicossociais sob NR-1, instrumentos validados e articulação com a frente clínica — base técnica para psicóloga ou psicólogo que precisa diferenciar burnout ocupacional de quadros clínicos coocorrentes em contexto de PGR ou de laudo. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+      }
+    }
+  ]
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Burnout, depressão e CPTSD' }
+  ]
+};
+
+const faqs = ldFaq.mainEntity.map((q: any) => ({ q: q.name, a: q.acceptedAnswer.text }));
+---
+
+<Base
+  title="Burnout vs depressão vs CPTSD em 2026: diferencial clínico em 12 dimensões"
+  description="Comparativo técnico em 12 dimensões para diferenciar burnout (CID-11 QD85), depressão (CID-11 6A70-6A7Z) e CPTSD (CID-11 6B41) em adulto em 2026, com instrumentos, perguntas-chave e referências canônicas.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Burnout vs depressão vs CPTSD' }
+      ]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Comparativo · Burnout · Depressão · CPTSD</span>
+        <h1 class="section-h text-3xl sm:text-4xl">Burnout, depressão e CPTSD lado a lado: diferencial clínico em 12 dimensões para 2026.</h1>
+        <TLDR
+          resposta="Os três quadros se sobrepõem e coocorrem em proporção relevante. Burnout (CID-11 QD85, fenômeno ocupacional) é contexto-dependente e responde à folga prolongada; depressão (CID-11 6A70-6A7Z) é contexto-independente com anedonia global; CPTSD (CID-11 6B41, Cloitre 2024) acrescenta desregulação afetiva, conceito negativo de self e dificuldade interpessoal a partir de trauma cumulativo. O diferencial sustenta plano clínico defensável e nexo causal em laudo CFP 6/2019."
+          fontes={["Bianchi & Schonfeld, 2024 (J Affect Disord)", "Cloitre, 2024 (World Psychiatry)", "CID-11 (OMS 2022)", "DSM-5-TR (APA 2022)"]}
+        />
+        <p class="mt-3 text-ink-700 text-base sm:text-lg">Tabela aplicada com instrumentos canônicos, pergunta-chave para cada dimensão e referências defensáveis em laudo psicológico ou parecer clínico.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese: a sobreposição é alta, o diferencial é técnico</h2>
+        <p>
+          Bianchi e Schonfeld (2024, Journal of Affective Disorders) consolidaram em revisão narrativa que cerca de 60% dos pacientes com escore alto no MBI também preenchem critério para depressão maior, com correlação convergente entre escalas de burnout e depressão em torno de r = 0,65 a 0,75. A sobreposição não é defeito psicométrico — reflete realidade clínica em que exaustão ocupacional crônica e episódio depressivo coocorrem com frequência. O risco do clínico não é "errar entre os dois", é tratar como se fossem o mesmo e perder componentes específicos do plano.
+        </p>
+        <p>
+          A CID-11 (vigência desde 2022) acrescentou complexidade técnica ao quadro com duas mudanças relevantes. Primeiro, manteve burnout no QD85 como fenômeno ocupacional — não transtorno mental —, posição que tem implicação direta em laudo previdenciário e em judicialização trabalhista. Segundo, reconheceu CPTSD (6B41) como diagnóstico distinto do TEPT (6B40), em referência ao trabalho de Judith Herman desde 1992 e à validação empírica por Cloitre e equipe ao longo de duas décadas. O DSM-5-TR (APA, 2022) ainda não reconhece CPTSD como entidade separada, mas literatura empírica sustenta a distinção e o uso da CID-11 é defensável no Brasil.
+        </p>
+        <p>
+          Em contexto de PGR sob NR-1 (Portaria MTE 1.419/2024, vigência fiscalizatória plena desde 26/05/2026 pela Portaria MTE 765/2025) e em laudo psicológico conforme Resolução CFP 6/2019, o diferencial entre os três quadros sustenta plano clínico integrado, nexo causal documentado e proteção do paciente em contraditório jurídico.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela: 12 dimensões para o diferencial clínico</h2>
+        <p class="text-ink-700 mt-2">Síntese aplicada para uso em entrevista clínica estruturada, supervisão e laudo. Cada dimensão acompanha pergunta-chave para guiar avaliação.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Dimensão</th>
+                <th class="text-left px-4 py-3">Burnout (QD85)</th>
+                <th class="text-left px-4 py-3">Depressão (6A70-6A7Z)</th>
+                <th class="text-left px-4 py-3">CPTSD (6B41)</th>
+                <th class="text-left px-4 py-3">Pergunta-chave</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {dimensoes.map(d => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{d.dimensao}</td>
+                  <td class="px-4 py-3 text-ink-700">{d.burnout}</td>
+                  <td class="px-4 py-3 text-ink-700">{d.depressao}</td>
+                  <td class="px-4 py-3 text-ink-700">{d.cptsd}</td>
+                  <td class="px-4 py-3 text-ink-700 italic">{d.pergunta}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="sm:hidden text-xs text-ink-500 mt-2">Arraste a tabela para ver mais colunas.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Como usar a tabela em três cenários típicos</h2>
+        <p>
+          Cenário 1 — paciente com queixa de "burnout" há 18 meses. A tabela orienta a investigar especificidade ao contexto (Dimensão 2), resposta a folga prolongada (Dimensão 11) e autoimagem (Dimensão 4). Se sintomas persistem em férias de 4 semanas e há autoimagem global negativa, considerar episódio depressivo coocorrente; aplicar PHQ-9 paralelo ao MBI ou BAT. Plano clínico passa a integrar psicoterapia com evidência para depressão (TCC, ACT, IPT) e, conforme gravidade, encaminhamento psiquiátrico — não apenas redesenho ocupacional.
+        </p>
+        <p>
+          Cenário 2 — paciente com queixa de "exaustão" mas histórico de violência interpessoal sustentada na infância. A tabela orienta atenção a dissociação (Dimensão 8), vergonha (Dimensão 9), hiperreatividade interpessoal (Dimensão 10) e sono com pesadelos (Dimensão 5). Se três ou mais dimensões CPTSD estão presentes, aplicar ITQ (Cloitre, 2024) e considerar diagnóstico de CPTSD coocorrente. Plano clínico integra terapias com evidência específica — EMDR, TF-CBT, terapias baseadas em fases (Cloitre, Cohen, Koenen) — não apenas TCC adaptada para burnout.
+        </p>
+        <p>
+          Cenário 3 — paciente com escore alto em MBI, BAT e PHQ-9 em primeira avaliação. A tabela orienta caracterizar com precisão a coocorrência burnout-depressão, documentar histórico ocupacional para nexo causal, aplicar ITQ se houver suspeita clínica de componente traumático, e desenhar plano que articule frente clínica (psicoterapia, medicação quando indicada) e frente ocupacional (afastamento previdenciário se houver indicação, redesenho de trabalho no retorno).
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f: any) => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://icd.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CID-11 (OMS) — QD85, 6A70-6A7Z, 6B41</a></li>
+          <li><a href="https://www.psychiatry.org/psychiatrists/practice/dsm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DSM-5-TR (APA)</a></li>
+          <li><a href="https://www.istss.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISTSS — referência em trauma e PTSD/CPTSD</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 6/2019</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/escalas-burnout-bat-mbi-olbi-cbi" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Escalas de burnout BAT, MBI, OLBI e CBI</a></li>
+          <li><a href="/guias/protocolo-burnout-academico-pos-graduacao" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Protocolo de burnout em pós-graduação</a></li>
+          <li><a href="/temas/nr1-explicada-para-psicologos-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema · NR-1 explicada para psicólogos em 2026</a></li>
+          <li><a href={`/areas/${areaSmo.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Saúde Mental nas Organizações</a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia Clínica e Psicoterapia</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">O diferencial entre burnout, depressão e CPTSD sustenta plano clínico defensável e nexo causal em laudo.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A sobreposição é alta, a coocorrência é regra clínica relevante, e o tratamento de uma condição como se fosse a outra perde componentes específicos. A leitura responsável combina entrevista clínica estruturada por dimensão, instrumentos validados (MBI/BAT para burnout, PHQ-9 para depressão, ITQ para CPTSD) e documentação conforme Resolução CFP 6/2019. Para psicóloga ou psicólogo que opera essa frente, base sólida em Psicologia Organizacional, Clínica e Avaliação Psicológica é o caminho — coberto pelos MBAs em POT e em Psicologia Positiva do IPOG em formato Ao Vivo síncrono.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPot.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://icd.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CID-11 (OMS)</a></li>
+          <li><a href="https://www.psychiatry.org/psychiatrists/practice/dsm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DSM-5-TR (APA)</a></li>
+          <li><a href="https://www.istss.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ISTSS</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP 6/2019</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

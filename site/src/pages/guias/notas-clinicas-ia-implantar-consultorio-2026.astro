@@ -1,0 +1,316 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Definir finalidade clínica e tipo de nota antes de avaliar ferramenta',
+    aplicacao: 'A pergunta correta não é "qual scribe usar?", é "que tipo de nota precisa ser produzida e para qual finalidade clínica?". Nota de sessão psicoterápica, nota de avaliação psicológica, nota de supervisão e nota de telessaúde têm conteúdos, sigilos e regulações distintas. A Resolução CFP 11/2018 disciplina serviços online; a Resolução CFP 06/2019 trata documentos psicológicos e exige registro estruturado, sigilo e retenção mínima. Heyen (2025), em JAMA Internal Medicine sobre clinical AI scribes, mostra que adoção sem definição de tipo de nota leva a documentação genérica e perda de utilidade clínica e periciária.',
+    armadilha: 'Comprar scribe genérico de medicina (Abridge, DAX, Suki) sem confirmar adequação a contexto psicológico — psicoterapia tem estrutura narrativa, não SOAP médico.'
+  },
+  {
+    n: 2,
+    titulo: 'Estabelecer base legal escrita sob LGPD antes do primeiro uso',
+    aplicacao: 'A LGPD (Lei 13.709/2018, Art. 11) trata dado psicológico como sensível. Para uso de IA em prontuário, três bases legais são plausíveis: consentimento explícito do paciente (Art. 11, I), tutela da saúde por profissional (Art. 11, II, f), ou execução de contrato em que o paciente é parte (com observância adicional). A escolha precisa ser documentada por escrito, com justificativa. A ANPD, em sua orientação técnica sobre tratamento de dados sensíveis em saúde (2023-2025), reforça que base legal sem documento de fundamentação é vulnerabilidade direta em fiscalização.',
+    armadilha: 'Assumir que "tutela da saúde" cobre tudo — não cobre marketing, não cobre treinamento de modelo, não cobre compartilhamento administrativo. Base legal é específica por finalidade.'
+  },
+  {
+    n: 3,
+    titulo: 'Redigir termo de consentimento informado específico para IA',
+    aplicacao: 'O termo padrão de psicoterapia não cobre uso de IA. O termo específico para nota clínica por IA deve detalhar: qual ferramenta exata (nome, fornecedor, URL), qual finalidade (transcrição, sumarização, redação supervisionada), qual dado coletado (áudio, texto, metadados), qual período de retenção (alinhado com CFP 06/2019, mínimo 5 anos a partir do último registro), qual base legal LGPD, possibilidade de revogação a qualquer tempo, consequências da revogação, política de incidente. O termo é assinado em separado do contrato terapêutico, antes da primeira sessão com IA ativa.',
+    armadilha: 'Anexar parágrafo sobre IA ao termo de psicoterapia existente sem revisão integral — incoerência entre cláusulas é argumento de defesa frágil em perícia.'
+  },
+  {
+    n: 4,
+    titulo: 'Proibir retenção de áudio bruto como política padrão',
+    aplicacao: 'Áudio bruto de sessão é o material mais sensível do prontuário e o mais vulnerável a vazamento e re-identificação. A política técnica em 2026 é: transcrição imediata em texto, exclusão automática do áudio em até 24 horas, criptografia AES-256 em repouso e TLS 1.3 em trânsito, retenção do texto sob CFP 06/2019. Plataformas profissionais como Suki, Abridge, DAX Copilot, Nuance DAX e Doxy.me Notes oferecem configuração de retenção zero do áudio — exija no contrato. Heyen (2025) documenta que clínicas que mantêm áudio bruto além de 30 dias apresentam taxa de incidente de vazamento 3 a 5 vezes maior.',
+    armadilha: 'Manter áudio "por segurança jurídica" — manter o áudio cria mais risco que cobertura. A transcrição revisada é o registro defensável; o áudio é passivo.'
+  },
+  {
+    n: 5,
+    titulo: 'Configurar pipeline de redação supervisionada — IA escreve rascunho, psicólogo finaliza',
+    aplicacao: 'A nota clínica por IA não é nota da IA. O fluxo canônico tem três etapas. Primeiro, gravação e transcrição (Whisper local ou serviço Enterprise com hospedagem regulada). Segundo, sumarização e rascunho de nota pela IA com template clínico predefinido. Terceiro, revisão humana com edição, validação, complemento de observações que a IA não captura (transferência, contratransferência, leitura silenciosa do espaço terapêutico). A revisão precisa ser substantiva, não cosmética — Heyen (2025) descreve "rubber-stamping" como anti-padrão dominante e fator de queda de qualidade clínica.',
+    armadilha: 'Aceitar nota da IA sem edição clinicamente substantiva. A nota final é responsabilidade técnica do psicólogo — não da ferramenta.'
+  },
+  {
+    n: 6,
+    titulo: 'Escolher hospedagem compatível com transferência internacional LGPD',
+    aplicacao: 'A LGPD (Art. 33) impõe condições para transferência internacional de dados sensíveis. Ferramentas com hospedagem nos EUA (OpenAI default, Anthropic default, Google) exigem base legal específica ou contrato com cláusulas-padrão aprovadas pela ANPD. Hospedagem no Brasil (Microsoft 365 Copilot com tenant Brazil South, AWS Bedrock região São Paulo, Azure region Brazil South) ou solução on-premise (Whisper local, modelo open-source autocontido) reduz fricção regulatória. Em 2026, plataformas como Abridge e Suki oferecem configuração de região, mas a verificação contratual é obrigação do contratante — não pressuponha.',
+    armadilha: 'Assumir que fornecedor grande está em conformidade automática — tamanho não substitui contrato específico, e padrão default frequentemente não é o regional adequado.'
+  },
+  {
+    n: 7,
+    titulo: 'Implementar log de acesso e trilha de auditoria',
+    aplicacao: 'Toda visualização, edição e exportação da nota clínica precisa ser logada — quem, quando, de qual dispositivo, qual ação. O log é parte do prontuário sob CFP 06/2019 e exigência implícita da LGPD em caso de incidente. Em consultório individual, log mínimo é planilha datada com nome do acessante. Em clínica multiprofissional, o log precisa ser automático e imutável — soluções com integração nativa (Doxy.me Notes, Suki Enterprise) oferecem trilha de auditoria padrão. Em caso de fiscalização da ANPD ou de procedimento ético do CRP, a ausência de log é tratada como ausência de cuidado.',
+    armadilha: 'Tratar log como "burocracia" e deixar para depois — depois costuma ser o dia em que a fiscalização chega.'
+  },
+  {
+    n: 8,
+    titulo: 'Estabelecer auditoria trimestral de qualidade e viés',
+    aplicacao: 'A qualidade da nota gerada por IA degrada com mudança de modelo, atualização de versão e drift do uso. Em 2026, fornecedores atualizam modelos com frequência mensal. A auditoria trimestral mínima é: amostragem de 10% das notas produzidas no período, revisão por psicólogo sênior contra critério clínico (estrutura, sigilo, viés de gênero/raça/idade, alucinação factual), relatório escrito com plano de ajuste. Hua e colaboradores (2024) e Stade e colaboradores (2024 em JMIR Mental Health) documentam viés sistemático em LLMs aplicados a saúde mental — viés que aparece em produção, não em demo.',
+    armadilha: 'Acreditar que "o modelo já foi auditado pelo fornecedor" — fornecedor audita performance agregada, não qualidade clínica em contexto brasileiro de psicologia.'
+  },
+  {
+    n: 9,
+    titulo: 'Definir política de incidente e notificação ANPD em 24 horas',
+    aplicacao: 'A LGPD (Art. 48) exige comunicação à ANPD em prazo razoável (interpretado em 2024-2025 como 24 a 72 horas dependendo da gravidade) em caso de incidente envolvendo dado pessoal sensível. Para nota clínica por IA, o cenário mais provável é exfiltração via conta comprometida ou misconfiguration de acesso. A política escrita precisa cobrir: detecção (alarme técnico, comunicação do paciente, descoberta interna), contenção (revogação de acesso, troca de credencial, isolamento de instância), notificação (paciente afetado, ANPD, CRP em caso de violação ética), remediação documentada. Sem política escrita, o profissional improvisa sob pressão — e improvisação em incidente é fator de agravamento.',
+    armadilha: 'Não ter política até precisar dela — incidente sem playbook é o ambiente de maior risco para erro de manejo.'
+  },
+  {
+    n: 10,
+    titulo: 'Documentar uso de IA para fins periciais e éticos',
+    aplicacao: 'Se a IA entrou no fluxo, ela aparece no processo. Para cada nota produzida com apoio de IA, documentar: ferramenta usada, versão (quando rastreável), template aplicado, tempo de revisão humana, eventual edição substantiva, decisão final. Em processo ético no CRP ou em perícia cível, a documentação é a defesa do juízo profissional ativo. A APA (Statement on AI in Mental Health Care, 2024) recomenda log mínimo de uso de IA em saúde mental; o CFP (Posicionamento 03/07/2025) sinaliza convergência. Documentação não é burocracia anexa — é prova técnica de cuidado.',
+    armadilha: 'Usar IA e não registrar. Em processo ético, ausência de registro é tratada como ausência de cuidado.'
+  }
+];
+
+const ferramentas = [
+  { nome: 'Abridge', escopo: 'Medicina geral; adaptação parcial para psicologia', hosting: 'EUA (HIPAA); contrato LGPD sob negociação', forca: 'Transcrição alta acurácia', limite: 'Template médico, não terapêutico nativo' },
+  { nome: 'Suki Assistant', escopo: 'Medicina e mental health; templates específicos', hosting: 'EUA + opções regionais; contratos Enterprise', forca: 'Templates customizáveis, integração EHR', limite: 'Custo alto para autônomo individual' },
+  { nome: 'Nuance DAX Copilot', escopo: 'Medicina geral; experimentação em mental health', hosting: 'Microsoft Azure (Brasil disponível)', forca: 'Hospedagem regional, integração 365', limite: 'Foco médico, requer customização' },
+  { nome: 'Doxy.me Notes', escopo: 'Telessaúde mental; nativo para psicologia', hosting: 'EUA com BAA; opções europeias', forca: 'Integração com plataforma de telessaúde', limite: 'Apenas com plano Doxy.me Plus' },
+  { nome: 'Whisper local (OpenAI)', escopo: 'Transcrição on-premise; sem nota automática', hosting: 'Local (zero transferência)', forca: 'Sem transferência internacional', limite: 'Exige stack técnica; sem sumarização nativa' }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Implantar notas clínicas por IA no consultório em 2026: HowTo em 10 passos',
+  description: 'Protocolo operacional para psicólogos brasileiros: finalidade, base legal LGPD, consentimento, retenção, redação supervisionada, hospedagem, log, auditoria, incidente e documentação pericial.',
+  totalTime: 'PT25M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Implantar notas clínicas por IA no consultório em 2026: HowTo passo-a-passo com LGPD, sigilo e auditoria',
+  description: 'Protocolo em 10 passos para implantação de notas clínicas geradas por IA com governança LGPD, CFP 11/2018, CFP 06/2019, RDC 657/2022, CFM 2.323/2022 e Heyen 2025.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: SITE.url + '/guias/' },
+    { '@type': 'ListItem', position: 3, name: 'Notas clínicas por IA no consultório em 2026', item: SITE.url + '/guias/notas-clinicas-ia-implantar-consultorio-2026/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+---
+<Base
+  title="Implantar notas clínicas por IA no consultório em 2026 — HowTo 10 passos | LGPD, CFP, auditoria"
+  description="Protocolo operacional em 10 passos para psicólogos brasileiros: LGPD Art. 11 e 33, CFP 11/2018, CFP 06/2019, RDC 657/2022, redação supervisionada, hospedagem, auditoria trimestral e política de incidente.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Notas clínicas por IA no consultório em 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · HowTo · 10 passos · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Implantar notas clínicas por IA no consultório em 2026: HowTo passo-a-passo com LGPD, sigilo e auditoria.</h1>
+          <TLDR
+            resposta="Implantação responsável de notas clínicas por IA em 2026 não é compra de software — é projeto de governança. Em 10 passos: definir finalidade, estabelecer base legal LGPD, redigir consentimento específico, proibir retenção de áudio, supervisionar redação, escolher hospedagem regulada, implementar log de acesso, auditar trimestralmente, definir política de incidente e documentar uso pericial. Sem governança, a ferramenta vira passivo regulatório. Com ela, vira ganho real de tempo clínico."
+            fontes={['CFP Resolução 11/2018', 'CFP Resolução 06/2019', 'LGPD Lei 13.709/2018 Art. 11 e 33', 'RDC ANVISA 657/2022', 'CFM Resolução 2.323/2022', 'Heyen et al. (2025) JAMA Internal Medicine']}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Para psicólogos autônomos, clínicas multiprofissionais e supervisores que adotam IA generativa em prontuário.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em POT no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura dominante sobre notas clínicas por IA enfatiza ganho de tempo — sumarização imediata, transcrição automatizada, redução de carga administrativa. O ganho é real e, em estudos como o de Heyen e colaboradores publicado em 2025 no JAMA Internal Medicine sobre clinical AI scribes, varia de 30 a 60 minutos por turno de atendimento. A inversão prática: o ganho só sobrevive sob governança. Sem governança, o tempo "economizado" reaparece como contestação ética, autuação da ANPD ou retrabalho de remediação. Quem implanta IA em prontuário trata o projeto como auditoria preventiva — o software é a parte fácil; a política é a parte que define o resultado.
+        </p>
+        <p>
+          A Resolução CFP 11/2018 disciplina serviços psicológicos prestados por meios de tecnologia, a Resolução CFP 06/2019 estabelece padrão de documentos psicológicos e a LGPD trata dado psicológico como sensível com base legal específica. A RDC ANVISA 657/2022 regulamenta software como dispositivo médico (SaMD) — relevante quando a IA produz inferência diagnóstica. A Resolução CFM 2.323/2022 sobre telemedicina e prontuário oferece referência indireta útil. O profissional que costura essas normas em política escrita constrói defesa. O profissional que ignora constrói passivo.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 10 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Ferramentas em 2026 — leitura técnica</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Ferramenta</th>
+                <th class="text-left px-4 py-3">Escopo</th>
+                <th class="text-left px-4 py-3">Hospedagem</th>
+                <th class="text-left px-4 py-3">Força</th>
+                <th class="text-left px-4 py-3">Limite</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {ferramentas.map(f => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{f.nome}</td>
+                  <td class="px-4 py-3 text-ink-700">{f.escopo}</td>
+                  <td class="px-4 py-3 text-ink-700">{f.hosting}</td>
+                  <td class="px-4 py-3 text-ink-700">{f.forca}</td>
+                  <td class="px-4 py-3 text-ink-700">{f.limite}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Leitura indicativa em 2026; configurações de região, planos e contratos mudam mensalmente. Confirme com fornecedor antes de contratar.</p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Psicóloga autônoma adota Doxy.me Notes em 90 dias</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Psicóloga em consultório individual em Goiânia, com cerca de 22 atendimentos semanais em modalidade híbrida (presencial e online via Doxy.me), decidiu testar notas clínicas por IA após perceber que perdia em média 8 horas semanais redigindo nota retroativa nos finais de semana. Em 90 dias, fluxo implantado: assinatura Doxy.me Plus com módulo Notes ativado, contratação de DPO terceirizado para revisão do termo de consentimento específico para IA, política escrita de retenção (texto da nota por 10 anos, áudio com exclusão automática em 24 horas, log de acesso ativado), redação do termo em duas páginas com 4 modalidades de uso da IA (transcrição, sumarização, esboço de nota, organização administrativa), revisão substantiva de cada nota antes de salvar, auditoria amostral mensal de 10% das notas.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em 6 meses, dois indicadores. Tempo médio de redação de nota caiu de 12 minutos para 4 minutos com revisão substantiva; satisfação clínica subjetiva na qualidade da nota se manteve estável (relato em supervisão). Zero incidente reportado. A psicóloga registrou em diário operacional que o ganho real veio da revisão estruturada da IA, não da automação cega — o template forçou a estruturação narrativa que ela mantinha de forma inconsistente em redação manual.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução em 90 dias</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Etapa</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quando</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Finalidade e tipo de nota</td><td class="px-4 py-3 text-ink-700">Documento de finalidade clínica escrito</td><td class="px-4 py-3 text-ink-700">Semana 1</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Base legal LGPD</td><td class="px-4 py-3 text-ink-700">Memorando jurídico com base e justificativa</td><td class="px-4 py-3 text-ink-700">Semana 2</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Termo de consentimento IA</td><td class="px-4 py-3 text-ink-700">Termo específico revisado e ativo</td><td class="px-4 py-3 text-ink-700">Semana 3</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Política de retenção</td><td class="px-4 py-3 text-ink-700">Documento com áudio 24h e texto 5+ anos</td><td class="px-4 py-3 text-ink-700">Semana 3</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Pipeline supervisionado</td><td class="px-4 py-3 text-ink-700">Template e revisão substantiva por nota</td><td class="px-4 py-3 text-ink-700">Semana 4</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Hospedagem LGPD</td><td class="px-4 py-3 text-ink-700">Contrato com cláusula de região</td><td class="px-4 py-3 text-ink-700">Semana 5</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Log de acesso</td><td class="px-4 py-3 text-ink-700">Trilha de auditoria ativada</td><td class="px-4 py-3 text-ink-700">Semana 6</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Auditoria trimestral</td><td class="px-4 py-3 text-ink-700">Relatório amostral 10% das notas</td><td class="px-4 py-3 text-ink-700">Trimestral</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Política de incidente</td><td class="px-4 py-3 text-ink-700">Playbook escrito com 24-72h ANPD</td><td class="px-4 py-3 text-ink-700">Semana 8</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Documentação pericial</td><td class="px-4 py-3 text-ink-700">Log de uso por nota</td><td class="px-4 py-3 text-ink-700">Contínuo</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/temas/gpt5-claude47-em-psicoterapia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema — GPT-5.4 e Claude 4.7 em psicoterapia em 2026</a></li>
+          <li><a href="/guias/uso-etico-ia-generativa-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — protocolo em 9 passos para uso ético de IA generativa</a></li>
+          <li><a href="/temas/supervisao-clinica-async-ia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema — supervisão clínica assíncrona com IA em 2026</a></li>
+          <li><a href="/faq/lgpd-prontuario-ia-pratica-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — LGPD, prontuário e IA na prática clínica</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções 11/2018 e 06/2019</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LGPD — Lei 13.709/2018, Art. 11 e Art. 33</a></li>
+          <li><a href="https://www.gov.br/anvisa/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANVISA — RDC 657/2022 (SaMD)</a></li>
+          <li><a href="https://www.gov.br/anpd/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANPD — orientações de tratamento de dados sensíveis</a></li>
+          <li><a href="https://portal.cfm.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFM — Resolução 2.323/2022 (telemedicina prontuário)</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A nota clínica por IA só sobrevive sob governança escrita.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Finalidade, base legal LGPD, consentimento específico, proibição de áudio retido, redação supervisionada, hospedagem regulada, log de acesso, auditoria trimestral, política de incidente e documentação pericial. O ganho de tempo só permanece se a governança permanecer. O MBA em Psicologia Organizacional e do Trabalho do IPOG aborda IA aplicada em RH e clínica em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBA no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes citadas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>CFP Resoluções 11/2018 e 06/2019.</li>
+          <li>LGPD Lei 13.709/2018 Art. 11 e Art. 33.</li>
+          <li>ANVISA RDC 657/2022 (SaMD).</li>
+          <li>CFM Resolução 2.323/2022 (telemedicina).</li>
+          <li>Heyen et al. (2025). Clinical AI scribes. JAMA Internal Medicine.</li>
+          <li>APA (2024). Statement on AI in Mental Health Care.</li>
+          <li>CFP (2025). Posicionamento sobre IA. 03/07/2025.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

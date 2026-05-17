@@ -1,0 +1,290 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const chatbots = [
+  {
+    nome: 'Wysa',
+    fdaSamd: 'FDA Breakthrough Device Designation (PTSD, depressão) — em trajetória; não aprovado como SaMD ainda',
+    mhra: 'MHRA AI Airlock — participação reportada em 2024-2025',
+    anvisa: 'Não registrado como SaMD na ANVISA (RDC 657/2022) — uso clínico no Brasil exige cautela',
+    classeRisco: 'Classe II (moderado) projetado nos EUA, ainda em trajetória regulatória',
+    evidenciaRct: 'Inkster et al. (2018 e revisão 2024-2026) — RCTs em ansiedade e depressão leve a moderada',
+    integracaoCid: 'Não integra CID diretamente; usa PHQ-9, GAD-7 e escalas validadas',
+    custo: 'Freemium; planos pagos US$ 7-10/mês; planos empresariais sob consulta',
+    idiomaPt: 'Limitado em pt-BR; primária em inglês',
+    integracaoSus: 'Sem integração SUS ou CAPS no Brasil',
+    baseModelo: 'NLU proprietário + protocolo TCC e DBT estruturado'
+  },
+  {
+    nome: 'Woebot Health',
+    fdaSamd: 'Não aprovado como SaMD; ensaios em fase de comunicação contínua com FDA',
+    mhra: 'Sem registro MHRA aprovado conhecido',
+    anvisa: 'Não registrado na ANVISA',
+    classeRisco: 'Não classificado formalmente; uso como wellness device em jurisdições onde permitido',
+    evidenciaRct: 'Fitzpatrick, Darcy, Vierhile (2017, JMIR Mental Health) — RCT inicial; estudos subsequentes 2020-2025',
+    integracaoCid: 'Sem integração CID; uso de escalas validadas internas',
+    custo: 'Histórico freemium B2C; transição para B2B em 2024-2025; consultar fornecedor para preço atual',
+    idiomaPt: 'Sem suporte oficial em pt-BR',
+    integracaoSus: 'Sem integração SUS ou CAPS',
+    baseModelo: 'TCC estruturada com diálogo proprietário'
+  },
+  {
+    nome: 'Limbic',
+    fdaSamd: 'Sem registro FDA SaMD reportado',
+    mhra: 'MHRA Class IIa registrado (Limbic Access) para triagem em saúde mental — referência canônica em 2023-2024',
+    anvisa: 'Não registrado na ANVISA',
+    classeRisco: 'Class IIa MHRA — risco moderado para triagem clínica',
+    evidenciaRct: 'Estudos de implementação no NHS (Reino Unido) — desfecho de acesso e triagem',
+    integracaoCid: 'Triagem alinhada a CID-10 e DSM-5; relatório estruturado para clínico',
+    custo: 'Modelo B2B com NHS e serviços de saúde; sem preço público',
+    idiomaPt: 'Sem suporte oficial em pt-BR',
+    integracaoSus: 'Sem integração SUS; modelo análogo poderia ser adaptado',
+    baseModelo: 'NLU clínico orientado a triagem com supervisão humana no fechamento'
+  },
+  {
+    nome: 'Replika',
+    fdaSamd: 'Não é dispositivo médico — produto de wellness e companhia',
+    mhra: 'Não classificado como medical device',
+    anvisa: 'Não classificado como dispositivo médico no Brasil',
+    classeRisco: 'Wellness; sem classificação clínica',
+    evidenciaRct: 'Estudos observacionais; Stanford harm study 2024-2026 documenta riscos (dependência, reforço de delírio)',
+    integracaoCid: 'Sem integração CID; sem framework clínico',
+    custo: 'Freemium; assinatura Pro cerca de US$ 7,99/mês ou US$ 70/ano',
+    idiomaPt: 'Suporta pt-BR; qualidade variável',
+    integracaoSus: 'Sem integração',
+    baseModelo: 'LLM proprietário com camada de personalidade; não desenhado para uso clínico'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Chatbots de saúde mental certificados como dispositivo médico em 2026: comparativo Brasil vs EUA vs Reino Unido',
+  description: 'Análise comparativa Wysa, Woebot Health, Limbic e Replika em 10 atributos — FDA SaMD, MHRA, ANVISA RDC 657/2022, evidência RCT, integração CID, suporte pt-BR, integração SUS.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos/' },
+    { '@type': 'ListItem', position: 3, name: 'Chatbots de saúde mental certificados em 2026', item: SITE.url + '/comparativos/chatbots-saude-mental-certificados-2026/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
+---
+<Base
+  title="Chatbots de saúde mental certificados em 2026 — Brasil vs EUA vs Reino Unido | Wysa, Woebot, Limbic, Replika"
+  description="Comparativo independente em 10 atributos: certificação FDA SaMD, MHRA, ANVISA RDC 657/2022, classe de risco, evidência RCT, integração CID, suporte pt-BR, integração SUS e base do modelo.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Chatbots de saúde mental certificados em 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Saúde mental digital · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Chatbots de saúde mental certificados como dispositivo médico em 2026: comparativo Brasil vs EUA vs Reino Unido.</h1>
+          <TLDR
+            resposta="Em 2026, o ecossistema de chatbots de saúde mental está bifurcado por jurisdição. Limbic é referência canônica como dispositivo médico Class IIa registrado no MHRA britânico para triagem. Wysa caminha em direção a SaMD FDA com Breakthrough Designation. Woebot tem evidência de RCT publicada, mas sem aprovação SaMD vigente. Replika não é dispositivo médico — é wellness com riscos clínicos documentados pelo Stanford Replika harm study. Na ANVISA (RDC 657/2022), nenhum dos quatro tem registro como SaMD; uso clínico no Brasil exige cautela contratual e ética."
+            fontes={['FDA Software as a Medical Device (2024-2026)', 'MHRA AI Airlock', 'ANVISA RDC 657/2022', 'Inkster et al. (2024-2026)', 'Fitzpatrick et al. (2017 e 2025)', 'Stanford Replika harm study (2024-2026)']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Análise comparativa em 10 atributos. Para psicólogos, gestores de saúde mental digital e pesquisadores de tecnologia clínica.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que esse comparativo importa em 2026</h2>
+        <p>
+          A pergunta clínica não é "qual chatbot funciona melhor?". É "qual chatbot é dispositivo médico registrado em qual jurisdição, com qual evidência publicada e qual integração ao sistema de saúde". Em 2026, a fronteira regulatória está em movimento — FDA expandiu o programa de Software as a Medical Device em 2024-2026, MHRA britânica adotou o AI Airlock como programa de sandbox para dispositivos com IA, e a ANVISA brasileira aplica a RDC 657/2022 sobre software como dispositivo médico, com classificação por risco. A diferença entre wellness chatbot e dispositivo médico classificado define o que é defensável recomendar a paciente.
+        </p>
+        <p>
+          A leitura canônica em 2026: Limbic é o único dos quatro com classificação clara como medical device (Class IIa MHRA) e uso clínico estabelecido em sistema de saúde nacional (NHS no Reino Unido). Wysa e Woebot têm evidência de eficácia em RCT em sintomas leves a moderados — eficácia clínica não equivale a status de dispositivo médico. Replika é categoricamente diferente — produto de wellness com riscos documentados, não recomendado para uso clínico. No Brasil, nenhum dos quatro tem registro como SaMD na ANVISA — uso em ambiente clínico brasileiro exige diligência contratual e ética por parte do psicólogo.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela comparativa — 4 ferramentas, 10 atributos</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Atributo</th>
+                {chatbots.map(c => (
+                  <th class="text-left px-4 py-3">{c.nome}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Certificação FDA (SaMD)</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.fdaSamd}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">MHRA (Reino Unido)</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.mhra}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">ANVISA RDC 657/2022</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.anvisa}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Classe de risco</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.classeRisco}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Evidência RCT</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.evidenciaRct}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Integração CID</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.integracaoCid}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Custo</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.custo}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Idioma pt-BR</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.idiomaPt}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Integração CAPS/SUS</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.integracaoSus}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Base do modelo</td>
+                {chatbots.map(c => (<td class="px-4 py-3 text-ink-700">{c.baseModelo}</td>))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Leitura indicativa em 2026; status regulatório, planos e suporte de idioma mudam. Confirme antes de recomendar a paciente ou contratar para uso institucional.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">FDA SaMD em 2024-2026 — o que mudou</h2>
+        <p>
+          A FDA americana atualizou a estrutura de Software as a Medical Device em 2024-2026 com foco em IA adaptativa — modelos que mudam após o release inicial. O programa Predetermined Change Control Plan permite ao fabricante atualizar o modelo sob protocolo aprovado, sem reabrir cada submissão. Para chatbots de saúde mental, o caminho regulatório é tipicamente De Novo ou 510(k) com classificação Class II (risco moderado). Em 2026, ainda não há aprovação SaMD vigente para chatbot de saúde mental autônomo que faça tratamento — Wysa tem Breakthrough Device Designation para PTSD e depressão, marca importante mas não equivale a aprovação final. Woebot mantém comunicação contínua com FDA, sem aprovação registrada em 2026. A distinção entre evidência clínica (RCT publicado) e status regulatório (registro vigente) é central.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">MHRA AI Airlock — referência britânica</h2>
+        <p>
+          A MHRA (Medicines and Healthcare products Regulatory Agency) do Reino Unido criou em 2024 o programa AI Airlock como sandbox regulatório para dispositivos médicos com IA. O programa permite que fabricantes testem produtos em ambiente controlado com supervisão regulatória antes da aprovação final. Limbic foi referência canônica em 2023-2024 como Class IIa medical device para triagem em saúde mental, integrado a serviços do NHS para acesso a IAPT (Improving Access to Psychological Therapies — programa nacional britânico de psicoterapia). A leitura clínica: Limbic não substitui psicoterapeuta; encurta caminho de paciente ao serviço apropriado via triagem estruturada. O modelo é instrutivo para Brasil — triagem é caso de uso defensável com governança clara.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">ANVISA RDC 657/2022 — caminho brasileiro</h2>
+        <p>
+          A RDC ANVISA 657/2022 estabelece marco regulatório para software como dispositivo médico (SaMD) no Brasil, com classificação por risco (Classe I a IV). Software que faz diagnóstico ou tratamento de condição clínica é tipicamente Classe II ou III. Em 2026, nenhum dos quatro chatbots analisados tem registro ANVISA como SaMD reportado publicamente — Wysa, Woebot, Limbic e Replika operam no Brasil sem essa categorização. Implicação prática: o psicólogo que recomenda chatbot a paciente o faz como recomendação técnica não-amparada por registro de dispositivo médico no país. A documentação do uso (consentimento, justificativa clínica, registro em prontuário) é a defesa em eventual procedimento ético. A ABDA, o CFP e a APA convergem na recomendação geral — chatbots como complemento, não substituto, e com escopo definido.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Quando recomendar (e quando não) em consultório brasileiro</h2>
+        <p>
+          Quatro cenários defensáveis em 2026. Primeiro, paciente em fase exploratória com sintomas leves a moderados, sem comorbidade aguda — Wysa ou Woebot como ponto de entrada para psicoeducação, com pacto explícito sobre limites. Segundo, paciente em manutenção pós-tratamento ativo, querendo prática de habilidades aprendidas — Wysa como complemento sob supervisão clínica. Terceiro, programas de prevenção em ambiente corporativo, escolar ou universitário — chatbots especializados como triagem com encaminhamento. Quarto, contexto de pesquisa clínica formal — com aprovação de Comitê de Ética em Pesquisa.
+        </p>
+        <p>
+          Três contraindicações claras. Primeira, paciente com ideação suicida, comportamento autolesivo, transtorno psicótico em fase aguda ou trauma complexo — exige avaliação humana imediata. Segunda, paciente com tendência a dependência emocional ou isolamento — Stanford Replika harm study documenta riscos específicos. Terceira, uso de Replika ou chatbot wellness genérico como suporte clínico — não é dispositivo médico, não tem framework clínico, e tem riscos documentados que tornam a recomendação eticamente frágil.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximo passo</h2>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          O psicólogo que pretende navegar esse cenário com método precisa de três peças. Primeira, conhecimento técnico das jurisdições — FDA SaMD, MHRA AI Airlock, ANVISA RDC 657/2022 e como cada uma classifica chatbots. Segunda, leitura crítica da evidência — distinguir RCT publicado em revista indexada de marketing de fornecedor. Terceira, documentação clínica robusta de recomendação — termo de consentimento específico, justificativa em prontuário, acompanhamento periódico. Formação aplicada em IA em Psicologia, ética profissional e governança digital encurta a curva. Para profissional que pretende construir esse repertório, o MBA em POT do IPOG aborda IA, people analytics e ética em dados em contexto profissional.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/comparativos/ia-vs-terapeuta-humano" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — IA generativa vs terapeuta humano</a></li>
+          <li><a href="/comparativos/chatbots-terapeuticos-vs-terapeuta-humano-2026" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — chatbots terapêuticos vs terapeuta humano em 2026</a></li>
+          <li><a href="/temas/gpt5-claude47-em-psicoterapia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema — GPT-5.4 e Claude 4.7 em psicoterapia em 2026</a></li>
+          <li><a href="/guias/uso-etico-ia-generativa-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — uso ético de IA generativa em 9 passos</a></li>
+          <li><a href="/faq/lgpd-prontuario-ia-pratica-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — LGPD, prontuário e IA na prática clínica</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Status regulatório é diferente de evidência clínica — e os dois são diferentes de marketing.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Limbic é referência britânica como Class IIa MHRA para triagem; Wysa caminha em direção a FDA SaMD com Breakthrough Designation; Woebot tem evidência de RCT mas sem aprovação SaMD vigente; Replika não é dispositivo médico. No Brasil, RDC ANVISA 657/2022 ainda não tem registro reportado para esses produtos. O MBA em POT do IPOG aborda IA aplicada e ética em dados em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>FDA (2024-2026). Software as a Medical Device program.</li>
+          <li>MHRA. AI Airlock sandbox regulatório.</li>
+          <li>ANVISA. RDC 657/2022 (SaMD).</li>
+          <li>Inkster, B. et al. (2018 e revisão 2024-2026). Wysa.</li>
+          <li>Fitzpatrick, K., Darcy, A., Vierhile, M. (2017). Woebot. JMIR Mental Health.</li>
+          <li>Stanford Replika harm study (2024-2026).</li>
+          <li>CFP (2025). Posicionamento sobre IA. 03/07/2025.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

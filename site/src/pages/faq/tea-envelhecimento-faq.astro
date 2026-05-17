@@ -1,0 +1,304 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Por que tantos adultos estão sendo diagnosticados com TEA depois dos 60 anos?',
+    a: 'A explicação é convergente entre três causas. Primeiro, o sistema diagnóstico foi historicamente desenhado em coortes pediátricas e em fenótipo masculino infantil — adultos mais velhos não tinham vocabulário clínico para descrever a própria experiência (Geurts et al., 2024-2026, Autistic Aging Cohort Amsterdam). Segundo, mulheres, pessoas negras e adultos com inteligência típica ou alta foram subdiagnosticados ao longo de décadas (Pellicano & Heyes, 2025, Annual Review of Psychology). Terceiro, conteúdo divulgado por adultos autistas em mídia digital e ampliação dos serviços de neurodesenvolvimento adulto a partir de 2018-2020 levaram pessoas até a clínica que antes não tinham caminho. O resultado é uma onda de diagnóstico tardio em 60+ que reflete correção de defasagem de décadas, não epidemia. Wise e colaboradores (2024, The Lancet Healthy Longevity) projetam que essa curva permanecerá ascendente nos próximos dez anos enquanto o sistema clínico recupera a defasagem acumulada.'
+  },
+  {
+    q: 'Qual o custo cumulativo de uma vida inteira de camuflagem autística?',
+    a: 'Hull e colaboradores (2017, com atualizações 2024-2026 no King\'s College London) descrevem três dimensões de camuflagem — compensação, masking e assimilação. O custo cumulativo é cognitivo, afetivo, social e biológico. Cognitivo: monitoramento permanente de expressão facial, tom de voz, postura corporal e roteiro social demanda atenção sustentada por décadas, com sobrecarga executiva crônica. Afetivo: dissonância entre self público e self privado correlaciona com depressão recorrente, ansiedade crônica, transtornos alimentares e ideação suicida (Lai et al., 2024, Lancet Psychiatry). Social: rede de vínculos profundos costuma ser restrita, com sensação de "passar pela vida sem ser visto". Biológico: doença cardiovascular precoce, síndrome metabólica e marcadores inflamatórios elevados aparecem em prevalência aumentada em adultos autistas, possivelmente associados a estresse crônico do masking. Em 60+, o custo acumulado se manifesta em quadros de exaustão crônica, depressão refratária e burnout autístico tardio que a clínica geriátrica tradicional não reconhece.'
+  },
+  {
+    q: 'O que muda na vida do adulto autista quando a aposentadoria chega?',
+    a: 'A aposentadoria é momento crítico para adultos autistas, com impacto particular descrito por Tinelli (2025, Neuropsychology Review). O ambiente de trabalho oferece três estruturas protetoras frequentemente subestimadas: rotina previsível, papel social bem definido e contato regular com rede de pares profissionais. A aposentadoria remove as três simultaneamente. Adultos autistas costumam reportar perda de senso de propósito, aumento de isolamento social, declínio cognitivo precoce associado à desativação cognitiva e agravamento de comorbidades psiquiátricas. O risco de depressão tardia, ansiedade generalizada e ideação suicida cresce nos primeiros dois a três anos pós-aposentadoria em adultos autistas sem rede de suporte estruturada. A clínica responsável trabalha com antecedência o planejamento de transição — manutenção de rotina, engajamento em atividades de interesse específico, ampliação seletiva de rede social e, quando indicado, retorno parcial ao trabalho com ajuste de carga horária e ambiente.'
+  },
+  {
+    q: 'Adulto autista 60+ pode desenvolver demência? Como diferenciar?',
+    a: 'Sim, e a coocorrência é mais comum do que a clínica tradicional reconhece. Adultos autistas envelhecem como qualquer pessoa e podem desenvolver doença de Alzheimer, demência por corpos de Lewy, demência frontotemporal, demência vascular ou afasia progressiva primária. A diferenciação clínica exige duas operações. Primeiro, ancorar a história longitudinal — TEA é desenvolvimental, presente desde a infância (mesmo que não reconhecido como tal); demência é declínio progressivo com início demarcável em janela mais tardia. Segundo, mapear o perfil neuropsicológico — TEA adulto preservado tem perfil cognitivo distinto (déficits específicos em flexibilidade, teoria da mente, velocidade de processamento social, com preservação relativa de memória episódica e visuoespacial) frente a Alzheimer (déficit amnéstico predominante) ou DCL (declínio visuoespacial e executivo desproporcional à memória). Jack e colaboradores (2024, Lancet Neurology) consolidaram critérios A/T/N revisados com biomarcador plasmático p-tau217 para fechar diagnóstico de Alzheimer biologicamente. Articulação com neurologia e geriatria é o padrão.'
+  },
+  {
+    q: 'Qual o risco de suicídio em idoso autista, e como prevenir?',
+    a: 'Hirvikoski e colaboradores (2016, com atualizações 2023-2024 no British Journal of Psychiatry e em coortes escandinavas) documentaram mortalidade prematura aumentada em adultos autistas, com excesso de mortes por suicídio em proporção significativa. Em 60+, o risco se mantém elevado e tem fatores adicionais: perda de rede social pós-aposentadoria, isolamento crescente, comorbidades clínicas com dor crônica, dependência funcional incipiente e luto cumulativo por pares falecidos. Cassidy e colaboradores (2018, com atualizações 2024) descrevem prevalência de ideação suicida ao longo da vida em até 40% de adultos autistas. A prevenção em 60+ exige rastreamento ativo com instrumentos validados (C-SSRS, Columbia Suicide Severity Rating Scale, em entrevista clínica regular), plano de segurança escrito (Safety Plan de Stanley & Brown, 2012, adaptado ao perfil autista), articulação com psiquiatria geriátrica para manejo medicamentoso quando indicado, e mapeamento de rede de suporte. Acesso ao CVV (188) e à Rede de Atenção Psicossocial (RAPS) é parte do plano, com adaptações para comunicação autística — instrução escrita em paralelo ao verbal, previsibilidade do encaminhamento, ambiente sensorial controlado em CAPS ou serviço de emergência.'
+  },
+  {
+    q: 'Quais tratamentos têm evidência específica para adulto autista 60+?',
+    a: 'A evidência específica para 60+ ainda é menor que para coortes jovens, mas crescente. Para o quadro autístico em si, sem intercorrências, ACT (Terapia de Aceitação e Compromisso) adaptada por terapeuta familiarizado com TEA adulto tem evidência crescente em reconstrução biográfica, redução de autocrítica e ajuste ambiental. Mindfulness adaptado (sem demanda de meditação sentada prolongada em paciente com hipersensibilidade sensorial) também tem registro. Para comorbidades psiquiátricas (depressão, ansiedade, insônia), a abordagem segue protocolos canônicos da idade adulta com ajuste medicamentoso para 60+ (atenção a anticolinérgicos, polifarmácia, função renal). Para quadros mistos com TEPT-C (frequente em adultos autistas com história de violência institucional ou interpessoal), STAIR de Cloitre, EMDR adaptado e abordagem trauma-informada são caminhos. A reabilitação neuropsicológica e a estimulação cognitiva preventiva têm valor em manutenção da reserva cognitiva. Grupos de pares de adultos autistas em formato presencial ou remoto têm valor terapêutico não inteiramente capturado em RCT — reduzem isolamento e normalizam padrão.'
+  },
+  {
+    q: 'Cuidador de idoso autista precisa de formação específica?',
+    a: 'Sim. Cuidador formal ou informal de idoso autista precisa de conhecimento técnico mínimo em quatro frentes. Primeiro, comunicação — adultos autistas frequentemente respondem melhor a instrução literal, escrita em paralelo ao verbal, com previsibilidade da rotina. Eufemismo, ironia e linguagem indireta podem produzir desencontro. Segundo, ambiente sensorial — luz, ruído, textura e temperatura têm impacto direto sobre regulação emocional. Espaço com hipersensibilidade controlada reduz risco de meltdown. Terceiro, manejo de crise — diferencial entre meltdown autístico, crise dissociativa, crise de pânico e descompensação clínica orienta intervenção. Treinar primeiros socorros psicológicos com base em literatura específica é essencial. Quarto, articulação com rede de saúde — cuidador precisa saber identificar sinais de declínio cognitivo incipiente, mudança de comportamento que sugere comorbidade nova ou efeito adverso medicamentoso, e quando acionar geriatria, neurologia ou psiquiatria. Universidade Aberta da Terceira Idade e cursos especializados em cuidador de idoso com neurodivergência têm aparecido no Brasil a partir de 2023, ainda em rede pequena.'
+  },
+  {
+    q: 'Residência terapêutica para idoso autista existe no Brasil?',
+    a: 'A oferta ainda é restrita, mas em crescimento. A Rede de Atenção Psicossocial (RAPS, Portaria MS 3.088/2011) prevê Serviços Residenciais Terapêuticos (SRT) para pessoas com transtornos mentais em desinstitucionalização — o desenho original visava pacientes egressos de internações de longa permanência, mas o dispositivo é elegível para adultos autistas em situação de vulnerabilidade social, ausência de rede familiar ou necessidade de moradia assistida. Em paralelo, instituições privadas de longa permanência (ILPI) para idosos têm começado a oferecer ambiente adaptado para neurodivergência em capitais brasileiras, com ajuste sensorial, rotina previsível e equipe treinada em comunicação autística. A escolha de residência exige avaliação técnica do perfil do residente (autonomia funcional, comorbidades, preferências sensoriais, rede social), e a Lei Brasileira de Inclusão (Lei 13.146/2015) garante direito a ambiente acessível e plano de cuidado individualizado. Tomada de decisão apoiada, prevista na LBI, é dispositivo legal preferível à curatela para adultos autistas que mantêm capacidade decisória parcial.'
+  },
+  {
+    q: 'Como funciona herança e planejamento patrimonial quando o adulto autista é o testador?',
+    a: 'Adulto autista, como qualquer pessoa com capacidade civil plena, pode lavrar testamento e organizar planejamento patrimonial em vida. A capacidade civil é regra (Código Civil arts. 1º a 5º), com presunção de capacidade — a Lei Brasileira de Inclusão (Lei 13.146/2015) reforçou esse princípio. Em casos com capacidade decisória parcial, a tomada de decisão apoiada (LBI art. 1.783-A do Código Civil) é dispositivo preferível à curatela, permitindo que o adulto mantenha autonomia com suporte. Recomenda-se que o planejamento patrimonial seja feito enquanto a capacidade está preservada — testamento, doação em vida com reserva de usufruto, planejamento sucessório com previdência privada, holding familiar quando aplicável. Para adultos autistas sem rede familiar ou com vínculo familiar tenso, articulação com Defensoria Pública, OAB e serviço social orienta o desenho. O Conselho Federal de Psicologia regula a atuação do psicólogo em laudo de capacidade civil pela Resolução CFP 06/2019 e em Resolução CFP 008/2020 sobre tomada de decisão apoiada.'
+  },
+  {
+    q: 'A CIPTEA (Carteira de Identificação da Pessoa com Transtorno do Espectro Autista) vale para idoso autista?',
+    a: 'Sim. A CIPTEA foi criada pela Lei 13.977/2020 (Lei Romeo Mion) e é garantida a qualquer pessoa com diagnóstico de TEA, independentemente da idade. Em 60+, a CIPTEA tem utilidade prática relevante: prioridade em atendimento em serviços públicos e privados, acesso a vagas reservadas para pessoas com deficiência, identificação rápida em sala de urgência e em situações de mobilidade reduzida, suporte para isenção de impostos em compra de veículo adaptado quando aplicável. A emissão depende de laudo médico ou psicológico que ateste o diagnóstico. Em conjunto com a CIPTEA, idoso autista pode acessar dispositivos da Lei Berenice Piana (Lei 12.764/2012), da LBI (Lei 13.146/2015) e da Política Nacional do Idoso (Lei 8.842/1994 e Estatuto do Idoso, Lei 10.741/2003) — sobreposição de proteções que ampliam acesso a benefícios assistenciais quando há prejuízo funcional documentado.'
+  },
+  {
+    q: 'Pode-se reverter o quadro autístico com tratamento depois dos 60?',
+    a: 'TEA não é quadro reversível — é condição do neurodesenvolvimento estável ao longo da vida, mesmo quando não reconhecido. O que muda com tratamento e reconhecimento clínico tardio é o sofrimento funcional, não o substrato neurobiológico. Adultos 60+ diagnosticados tardiamente relatam três efeitos centrais após reorganização clínica adequada. Primeiro, redução de autorrecriminação — décadas de comportamento atribuído a "falha pessoal" ganham explicação técnica, e o paciente reorganiza a biografia à luz do diagnóstico. Segundo, ajuste ambiental que reduz custo de masking — agenda mais previsível, ambiente sensorial controlado, transparência seletiva sobre funcionamento. Terceiro, manejo eficaz de comorbidades antes refratárias — quadros depressivos, ansiosos e de insônia que foram tratados por décadas sem remissão completa frequentemente respondem quando o substrato autístico é considerado no plano. O ganho clínico não é cura, é alívio sustentado com base em reconhecimento técnico.'
+  },
+  {
+    q: 'Qualidade de vida em idoso autista — o que a literatura diz?',
+    a: 'A literatura recente reverte a expectativa pessimista. Geurts e colaboradores (2024-2026), no Autistic Aging Cohort Amsterdam, descrevem que adultos autistas 60+ com diagnóstico reconhecido, rede de suporte mínima e ambiente adaptado relatam qualidade de vida em níveis comparáveis a pares neurotípicos. Os fatores protetores identificados são quatro. Primeiro, autoconsciência do funcionamento autístico, com vocabulário próprio e desativação progressiva de masking. Segundo, ambiente compatível — rotina previsível, ambiente sensorial controlado, autonomia preservada em domínio de interesse específico. Terceiro, rede de pares — outros adultos autistas, em grupo presencial ou remoto, ou pessoas neurotípicas com aceitação real do funcionamento. Quarto, manejo clínico das comorbidades, especialmente depressão, ansiedade, insônia e dor crônica. A pior trajetória é vista em adultos autistas 60+ sem reconhecimento diagnóstico, com isolamento social pós-aposentadoria e comorbidades não tratadas — perfil que mistura risco cognitivo, afetivo e funcional cumulativo.'
+  },
+  {
+    q: 'A clínica geriátrica brasileira está preparada para receber adulto autista?',
+    a: 'Em larga medida, ainda não. A clínica geriátrica brasileira é tradicionalmente orientada para Alzheimer, demência por corpos de Lewy, frontotemporal, depressão tardia e síndrome de fragilidade. TEA adulto, particularmente 60+, está fora do vocabulário clínico de boa parte dos serviços. Revisão publicada em 2025 na Revista Brasileira de Psiquiatria registra que adultos autistas no SUS frequentemente são manejados em ambulatórios infantis até a idade adulta ou direcionados para serviços inadequados na maturidade. Em capitais com programas estruturados de neurodesenvolvimento adulto (HC-FMUSP, IPq, IFF-Fiocruz e iniciativas universitárias em outras capitais), a oferta é melhor mas com fila de espera longa. Sociedades médicas e o Conselho Federal de Psicologia têm sinalizado a necessidade de protocolos específicos para 60+. Empresas, planos de saúde e instituições de longa permanência ainda têm gap formativo significativo. A formação especializada de profissionais é o caminho — sem ela, idoso autista continua invisível ao sistema.'
+  },
+  {
+    q: 'Onde formação aplicada em TEA em idoso conecta a uma pós-graduação em Psicologia?',
+    a: 'Profissionais que pretendem atuar com adulto autista 60+ precisam de base sólida em Neuropsicologia, Reabilitação Neuropsicológica, Avaliação Psicológica e neurodesenvolvimento adulto, com leitura cruzada de geriatria, psiquiatria e medicina paliativa quando aplicável. Diferencial com quadros neurodegenerativos exige domínio dos critérios A/T/N revisados (Jack et al., 2024), das baterias clássicas e dos biomarcadores plasmáticos contemporâneos. Programas de pós-graduação em Psicologia que integram avaliação, neurociência, neurodesenvolvimento ao longo da vida e reabilitação cognitiva ampliam capacidade técnica para o quadro. O IPOG oferece MBAs aplicados em formato Ao Vivo síncrono com corpo docente nominal, aproximando Neuropsicologia e Reabilitação Cognitiva da clínica contemporânea de adultos. Para grade vigente e modalidades correlatas (especialização lato sensu em Neuropsicologia Clínica, MBA em Reabilitação Neuropsicológica, MBA em Neurociência e Psicologia Positiva), consulte ipog.edu.br. A escolha do programa precisa equilibrar carga teórica, prática supervisionada em casos adultos e disponibilidade do candidato.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'TEA e envelhecimento: perguntas frequentes sobre diagnóstico tardio em 60+, comorbidades e qualidade de vida',
+  description: 'Quatorze perguntas frequentes sobre adulto autista 60+: diagnóstico tardio, camuflagem cumulativa, aposentadoria, demência, suicídio, tratamento, cuidador, residência terapêutica, herança, CIPTEA, qualidade de vida e clínica geriátrica brasileira.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'TEA e envelhecimento', item: SITE.url + '/faq/tea-envelhecimento-faq/' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const adjacent = AREAS.filter(a => a.cluster === 'neuro-avaliacao').slice(0, 4);
+---
+<Base
+  title="TEA e envelhecimento — FAQ | diagnóstico em 60+, comorbidades, demência, qualidade de vida"
+  description="Quatorze perguntas frequentes sobre adulto autista 60+: diagnóstico tardio, custo cumulativo de camuflagem, aposentadoria, demência, suicídio, cuidador, residência terapêutica, herança, CIPTEA e qualidade de vida.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'TEA e envelhecimento' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · TEA em 60+ · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">TEA e envelhecimento: perguntas frequentes sobre diagnóstico tardio em 60+, comorbidades e qualidade de vida.</h1>
+          <TLDR
+            resposta="Adulto autista 60+ é categoria clínica em expansão acelerada no Brasil e no mundo — reflete correção de defasagem diagnóstica de décadas, não epidemia. Custo cumulativo de camuflagem produz depressão refratária, doença cardiovascular precoce e burnout autístico tardio. Risco aumentado de suicídio e demência exige rastreamento ativo. Reconhecimento clínico tardio reorganiza biografia, ambiente e rede de suporte com ganho real em qualidade de vida."
+            fontes={["Geurts et al., 2024-2026 (Autistic Aging Cohort)", "Wise et al., 2024 (Lancet Healthy Longevity)", "Tinelli, 2025 (Neuropsychology Review)", "Hirvikoski et al., 2016 e 2024 (Br J Psychiatry)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Quatorze perguntas para profissionais de saúde, cuidadores e familiares que acompanham adulto autista na velhice no Brasil.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">14 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          TEA em adulto 60+ é categoria clínica em expansão no Brasil — reflete correção de defasagem diagnóstica de décadas, não epidemia. O custo cumulativo de camuflagem sustentada produz comorbidades psiquiátricas refratárias, doença cardiovascular precoce e burnout autístico tardio. Risco aumentado de suicídio (Hirvikoski et al., 2016-2024) e de demência associada à idade exige rastreamento ativo. A clínica responsável articula diagnóstico tardio, diferencial neurodegenerativo, plano de cuidado longitudinal e dispositivos legais brasileiros (LBI, Lei Berenice Piana, CIPTEA, Estatuto do Idoso, tomada de decisão apoiada).
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Dispositivos legais brasileiros aplicáveis a idoso autista</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Dispositivo</th>
+                <th class="text-left px-4 py-3">Lei</th>
+                <th class="text-left px-4 py-3">Aplicação no idoso autista</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Lei Berenice Piana</td>
+                <td class="px-4 py-3 text-ink-700">Lei 12.764/2012</td>
+                <td class="px-4 py-3 text-ink-700">Reconhece a pessoa autista como pessoa com deficiência para todos os efeitos legais, incluindo acesso a cota e benefícios.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CIPTEA</td>
+                <td class="px-4 py-3 text-ink-700">Lei 13.977/2020 (Lei Romeo Mion)</td>
+                <td class="px-4 py-3 text-ink-700">Carteira de Identificação válida em todo o território, com prioridade em atendimento e acesso a vagas reservadas.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Lei Brasileira de Inclusão (LBI)</td>
+                <td class="px-4 py-3 text-ink-700">Lei 13.146/2015</td>
+                <td class="px-4 py-3 text-ink-700">Garante adaptação razoável, acessibilidade e tomada de decisão apoiada (art. 1.783-A do Código Civil).</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Estatuto do Idoso</td>
+                <td class="px-4 py-3 text-ink-700">Lei 10.741/2003</td>
+                <td class="px-4 py-3 text-ink-700">Prioridade absoluta em saúde, prevenção de violência, proteção integral, com sobreposição às proteções da LBI.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Política Nacional do Idoso</td>
+                <td class="px-4 py-3 text-ink-700">Lei 8.842/1994</td>
+                <td class="px-4 py-3 text-ink-700">Define princípios da política pública para a pessoa idosa, incluindo atenção integral em saúde.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">RAPS / SRT</td>
+                <td class="px-4 py-3 text-ink-700">Portaria MS 3.088/2011</td>
+                <td class="px-4 py-3 text-ink-700">Serviços Residenciais Terapêuticos elegíveis para adulto autista em vulnerabilidade social.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV — Centro de Valorização da Vida (188 ou cvv.org.br)</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LBI — Lei 13.146/2015</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei Berenice Piana — Lei 12.764/2012</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CIPTEA — Lei 13.977/2020</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/2003/l10.741.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Estatuto do Idoso — Lei 10.741/2003</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos no portal</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/avaliacao-tea-idosos-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Avaliar TEA em adulto idoso 2026</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo em 8 passos com diferencial neurodegenerativo.</p>
+          </a>
+          <a href="/comparativos/crise-autistica-vs-crise-dissociativa" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">Crise autística vs crise dissociativa</p>
+            <p class="text-xs text-ink-700 mt-2">Diferencial em 10 dimensões para sala de urgência.</p>
+          </a>
+          <a href="/temas/tea-mulheres-lgbtqia-camuflagem-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Tema</p>
+            <p class="font-semibold text-ink-900 mt-2">Camuflagem TEA em mulheres LGBTQIA+</p>
+            <p class="text-xs text-ink-700 mt-2">Dupla camuflagem, burnout e ideação suicida.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Idoso autista é categoria clínica que exige rigor longitudinal e articulação com geriatria, neurologia e psiquiatria</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Reconhecimento tardio em 60+ reorganiza décadas de história e abre caminho para qualidade de vida sustentada. Formação aplicada em Neuropsicologia e Reabilitação Neuropsicológica, em formato Ao Vivo síncrono com corpo docente nominal como a praticada pelo IPOG, é a trilha técnica para psicólogos e profissionais de saúde que pretendem operar nessa interseção.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em Reabilitação Neuro</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaNeuro ? mbaNeuro.description : 'O IPOG oferece MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV 188</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CIPTEA Lei 13.977/2020</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/2003/l10.741.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Estatuto do Idoso</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>
+</content>
+</invoke>

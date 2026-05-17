@@ -1,0 +1,314 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Qual a base legal LGPD específica para uso de IA em prontuário psicológico?',
+    a: 'A LGPD (Lei 13.709/2018, Art. 11) trata dado psicológico como dado pessoal sensível e exige base legal específica para tratamento. Para uso de IA em prontuário, três bases são plausíveis: consentimento explícito do paciente (Art. 11, I), tutela da saúde por profissional ou serviço de saúde (Art. 11, II, f), ou execução de contrato em que o paciente é parte com observância das salvaguardas. A escolha precisa ser documentada por escrito, com justificativa, e adequada à finalidade exata do tratamento. A ANPD, em orientações técnicas de 2023 a 2025, reforça que base legal sem documento de fundamentação é vulnerabilidade direta em fiscalização. Para uso de IA generativa em redação de nota clínica, a combinação canônica é tutela da saúde como base primária para tratamento clínico e consentimento explícito como base secundária para a etapa de IA — ambos documentados.'
+  },
+  {
+    q: 'Transferência internacional de dados para servidores OpenAI ou Anthropic é permitida?',
+    a: 'A LGPD (Art. 33) impõe condições para transferência internacional de dados sensíveis. Permitida apenas em situações específicas: país com nível adequado de proteção reconhecido pela ANPD (lista não emitida em definitivo em 2026), garantias específicas via cláusulas-padrão contratuais aprovadas pela ANPD, normas corporativas globais aprovadas, ou consentimento específico e em destaque do titular para essa transferência. Servidores OpenAI e Anthropic ficam predominantemente nos Estados Unidos, sem acordo de adequação ANPD vigente. Implicação prática: uso de ChatGPT ou Claude com dado psicológico identificado exige contrato Enterprise ou Business com cláusulas-padrão, ou opção de hospedagem regional (Azure OpenAI tenant Brasil, AWS Bedrock região São Paulo). Sem essa diligência, o profissional opera em zona cinzenta com risco de autuação administrativa.'
+  },
+  {
+    q: 'Qual a diferença entre anonimização e pseudonimização sob LGPD?',
+    a: 'A LGPD distingue os dois conceitos com efeitos jurídicos diferentes. Anonimização (Art. 5, XI) é processo técnico irreversível pelo qual o dado perde a possibilidade de associação ao titular — dado anonimizado deixa de ser dado pessoal e sai do escopo da Lei. Pseudonimização (Art. 13, parágrafo 4) é processo reversível pelo qual o dado pode ser reassociado ao titular mediante chave separada — dado pseudonimizado continua sendo dado pessoal sob a Lei, com proteção atenuada por reduzir risco direto. Em prontuário psicológico, anonimização real é difícil porque conteúdo clínico tem alta granularidade narrativa — pseudonimização (substituição de nome por código, separação de identificadores) é o padrão técnico viável. Estudo de Rocher e colaboradores (2019, Nature Communications) mostrou que 87% de norte-americanos podem ser re-identificados com três campos aparentemente neutros — implica que pseudonimização não substitui demais salvaguardas.'
+  },
+  {
+    q: 'Qual o prazo de retenção mínimo do prontuário psicológico com notas geradas por IA?',
+    a: 'A Resolução CFP 06/2019 estabelece padrão de documentos psicológicos no Brasil, com retenção mínima de 5 anos a partir do último registro para prontuário, sendo prudente prolongar em casos com potencial pericial. A retenção do conteúdo da nota clínica (independente de ter sido gerada com apoio de IA) segue essa regra. O áudio bruto da sessão, quando gravado para fins de transcrição automática, deve ter retenção curta — política técnica recomendada em 2026 é exclusão automática em até 24 horas após produção da transcrição, com criptografia AES-256 em repouso enquanto existe e TLS 1.3 em trânsito. Heyen e colaboradores (2025) documentam que clínicas que mantêm áudio bruto além de 30 dias apresentam taxa de incidente de vazamento 3 a 5 vezes maior. Política escrita de retenção é exigência implícita da LGPD e do CFP.'
+  },
+  {
+    q: 'É preciso consentimento específico do paciente para uso de IA em supervisão clínica?',
+    a: 'Sim. O termo de consentimento padrão de psicoterapia não cobre processamento do material clínico por terceiro (IA) para fins de supervisão. O termo específico para uso de IA em supervisão deve detalhar: qual ferramenta exata, qual finalidade (sumarização para o supervisor, busca temática, alerta de viés), qual dado processado (transcrição da sessão, anotação do supervisionando, transcrição da supervisão), qual período de retenção, qual base legal LGPD, possibilidade de revogação a qualquer tempo. O sigilo do supervisionando também é peça — o profissional em formação expõe material próprio e merece proteção contratual. Em programa de pós-graduação ou residência, o consentimento idealmente é assinado pelo paciente e pelo supervisionando em separado, antes do início da supervisão com IA.'
+  },
+  {
+    q: 'O paciente tem direito a acessar o prontuário com notas geradas por IA?',
+    a: 'Sim. A LGPD (Art. 9 e Art. 18) garante ao titular dos dados acesso ao próprio conteúdo, com facilidade e clareza. Em conjunto com a Resolução CFP 06/2019, o paciente psicológico tem direito a acessar o próprio prontuário, com mediação técnica do psicólogo quando necessário para garantir compreensão adequada. Para nota gerada com apoio de IA, o paciente tem direito a saber: qual ferramenta foi usada, qual o conteúdo final da nota, qual o processo de revisão humana, qual a base legal. O direito a acesso não é direito a cópia integral irrestrita — em alguns casos, o psicólogo entrega resumo profissional com mediação. A ANPD orienta que recusa de acesso só é justificada em hipóteses específicas, com fundamentação escrita.'
+  },
+  {
+    q: 'Qual o protocolo de resposta a incidente em até 24 horas para a ANPD?',
+    a: 'A LGPD (Art. 48) exige comunicação à ANPD em prazo razoável em caso de incidente envolvendo dado pessoal, com agravamento para dado sensível. A interpretação técnica em 2024-2025 estabeleceu prazo de 24 a 72 horas dependendo da gravidade, com formulário específico no Portal da ANPD. O protocolo canônico tem cinco etapas. Primeiro, detecção (alarme técnico, comunicação do paciente, descoberta interna). Segundo, contenção imediata (revogação de acesso, troca de credencial, isolamento de instância afetada). Terceiro, avaliação do escopo (quais dados afetados, quantos titulares, gravidade). Quarto, notificação à ANPD via Portal, aos titulares afetados, ao CRP em caso de violação ética. Quinto, remediação documentada com plano de prevenção de recorrência. Em consultório individual sem DPO, contrato com DPO terceirizado é caminho prático para garantir capacidade de resposta.'
+  },
+  {
+    q: 'Que cláusulas o termo de consentimento informado para IA precisa conter?',
+    a: 'O termo específico para IA em prontuário deve cobrir oito itens. Primeiro, identificação da ferramenta (nome, fornecedor, URL, versão quando rastreável). Segundo, finalidade exata (transcrição, sumarização, esboço de nota, organização administrativa) — cada modalidade discriminada. Terceiro, dado coletado (áudio, texto, metadados, identificadores). Quarto, período de retenção de cada tipo de dado (áudio 24h, texto 5+ anos sob CFP, log de acesso conforme política). Quinto, base legal LGPD aplicada (Art. 11, I, II ou outras). Sexto, transferência internacional eventual com país de processamento. Sétimo, possibilidade de revogação a qualquer tempo e consequências da revogação para o tratamento. Oitavo, política de incidente e direito de notificação. O termo é assinado em separado do termo de psicoterapia, em duas vias, antes da primeira sessão com IA ativa.'
+  },
+  {
+    q: 'É permitido usar dados clínicos para treinar modelo próprio ou de terceiro?',
+    a: 'Não, como regra. Treinamento de modelo a partir de dado psicológico identificado configura tratamento adicional sem base legal específica de tutela da saúde — exige base legal própria, tipicamente consentimento explícito e em destaque do titular para essa finalidade, com possibilidade de revogação a qualquer tempo. Em prática clínica, essa via é eticamente frágil — o paciente busca atendimento, não pesquisa, e a relação de assimetria torna o consentimento livre questionável. A regra técnica em 2026: contratar plano Enterprise ou Business com cláusula explícita de não treinamento (zero data retention for training), nunca usar plano gratuito ou consumer com dado identificado, e usar dado para fins de pesquisa formal apenas com aprovação de Comitê de Ética em Pesquisa em projeto específico. Mineração administrativa em massa não é permitida.'
+  },
+  {
+    q: 'Como articular Resolução CFP 11/2018, 06/2019 e 01/2022 com LGPD?',
+    a: 'A Resolução CFP 11/2018 disciplina serviços psicológicos prestados por meios de tecnologia da informação e comunicação — incluindo telessaúde, supervisão, avaliação psicológica online. A Resolução CFP 06/2019 estabelece padrão de elaboração de documentos psicológicos (relatório, parecer, declaração, prontuário) com critérios de estrutura, sigilo e retenção. A Resolução CFP 01/2022 (sobre comunicação social, ou outras versões vigentes — verifique a redação atual no site CFP) trata da divulgação profissional e conduta. A LGPD opera em paralelo, com base legal específica para dado sensível, direitos do titular, transferência internacional, retenção e incidente. As normas se complementam — nenhuma substitui a outra. Para uso de IA em prontuário, a leitura cruzada é obrigatória: CFP define a estrutura clínica e ética; LGPD define a proteção do dado. Profissional que cumpre apenas uma das duas opera em risco residual relevante.'
+  },
+  {
+    q: 'O Posicionamento CFP de 03/07/2025 sobre IA tem força sancionatória?',
+    a: 'Posicionamento é nota técnica do CFP que orienta a categoria sobre tema específico, sinaliza convergência institucional e anuncia grupo de trabalho para futuras diretrizes. Não é Resolução — não tem o mesmo poder sancionatório direto da norma. O Posicionamento de 03/07/2025 do CFP sobre IA na prática psicológica afirma que IA pode ser aliada na sistematização de informações e no apoio a decisões, sem substituir o juízo profissional. Em paralelo, anuncia grupo de trabalho para diretrizes específicas — sinal de que Resolução nova pode aparecer nos próximos ciclos. Implicação prática: o profissional que ignora o Posicionamento opera contra orientação expressa do Conselho, o que é relevante em processo ético mesmo sem sanção direta. O profissional que se antecipa às diretrizes futuras com governança escrita constrói cobertura preventiva.'
+  },
+  {
+    q: 'Qual a interface entre LGPD, RDC ANVISA 657/2022 e o PL 2338/2023?',
+    a: 'Três normas distintas, com escopos diferentes. A LGPD (Lei 13.709/2018) regula tratamento de dados pessoais com foco em direitos do titular e responsabilidades do controlador. A RDC ANVISA 657/2022 estabelece marco regulatório para software como dispositivo médico (SaMD) com classificação por risco — relevante quando a IA produz inferência diagnóstica ou tratamento. O PL 2338/2023 (Marco Civil da Inteligência Artificial, em tramitação no Congresso) propõe regulação geral de IA com obrigações específicas para sistemas de risco alto, incluindo aplicações em saúde. Em 2026, LGPD está em pleno vigor com ANPD ativa; RDC 657/2022 está em vigor com classificação ANVISA aplicável; PL 2338 ainda tramita, com possibilidade de aprovação em ciclos próximos. Profissional que adota IA em prontuário hoje precisa cumprir LGPD, considerar RDC 657 se a ferramenta faz inferência diagnóstica, e monitorar o PL 2338 para ajustar política futura.'
+  },
+  {
+    q: 'Que dado é considerado identificador indireto em conteúdo clínico?',
+    a: 'Identificador indireto é dado que, isoladamente, não permite identificação, mas em combinação permite triangulação até o titular. Em prontuário psicológico, identificadores indiretos típicos incluem: data exata de evento (nascimento, casamento, perda), profissão muito específica em cidade pequena, descrição de doença rara, endereço aproximado, marcadores familiares únicos (gêmeos, parente público), CEP, idade exata. Rocher e colaboradores (2019, Nature Communications) demonstraram que três campos de identificador indireto em base populacional permitem reidentificação de cerca de 87% de norte-americanos. Em clínica, o problema é amplificado pela alta granularidade da narrativa. A regra técnica de desidentificação antes de prompt: substituir nome por iniciais ou código, remover datas exatas, abstrair profissão para categoria geral, remover endereço, e descrever marcadores familiares sem singularizar. A política escrita de desidentificação é parte da governança LGPD.'
+  },
+  {
+    q: 'Compartilhamento de prontuário com supervisor exige cláusula específica?',
+    a: 'Sim. Mesmo quando o compartilhamento com supervisor é prática clínica padrão, o paciente precisa ser informado e consentir, em conformidade com a Resolução CFP 11/2018 e a LGPD. O termo de psicoterapia tipicamente já cobre compartilhamento com supervisor em discussão técnica anônima ou pseudonimizada. Quando o compartilhamento envolve ferramenta digital (plataforma de telessupervisão, IA de sumarização, repositório compartilhado), uma cláusula específica é adicionada, detalhando: qual ferramenta, qual dado compartilhado, qual proteção técnica, qual período de retenção, qual base legal LGPD. O sigilo da supervisão segue sendo regra; a tecnologia altera a forma, não a obrigação ética.'
+  },
+  {
+    q: 'O que muda para psicólogo autônomo versus clínica multiprofissional?',
+    a: 'A LGPD aplica-se a ambos, mas com escopos operacionais distintos. Para psicólogo autônomo, o profissional é simultaneamente operador e controlador dos dados, com responsabilidade direta integral. A nomeação de DPO é facultativa em muitos casos (ANPD orienta análise caso a caso), mas DPO terceirizado é caminho prático para garantir compliance. Para clínica multiprofissional, a clínica é controladora, cada profissional é operador no fluxo, e a nomeação formal de DPO é frequentemente necessária. A clínica precisa de política unificada de tratamento, contrato com cada profissional discriminando responsabilidades, plano de resposta a incidente compartilhado, treinamento técnico da equipe. A escala muda a complexidade administrativa, não a substância das obrigações.'
+  },
+  {
+    q: 'Onde formação aplicada conecta IA, LGPD e prática clínica psicológica?',
+    a: 'Decisões responsáveis sobre IA em prontuário em 2026 exigem base técnica em ética profissional, regulação CFP, LGPD aplicada, governança digital, viés algorítmico e prática supervisionada. Programa de pós-graduação em Psicologia que integra esses temas em grade aplicada encurta a curva. O IPOG opera MBAs em Psicologia em formato Ao Vivo síncrono com corpo docente nominal, com módulos sobre tecnologia aplicada, ética profissional e prática supervisionada. O MBA em POT aborda especificamente IA, people analytics e ética em dados em contexto profissional. Para grade vigente e modalidades correlatas, consulte ipog.edu.br. A escolha precisa equilibrar carga teórica, prática supervisionada e disponibilidade do candidato — IA é tema técnico, ética é tema técnico, e ambos exigem formação dedicada.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'LGPD, prontuário e IA na prática clínica: FAQ 2026 para psicólogo brasileiro',
+  description: 'Dezesseis perguntas frequentes sobre LGPD aplicada a prontuário com IA: base legal específica, transferência internacional, anonimização, retenção, compartilhamento com supervisor, incidente em 24h ANPD, treinamento de modelo, CFP 11/2018, CFP 06/2019 e PL 2338/2023.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'LGPD, prontuário e IA na prática clínica', item: SITE.url + '/faq/lgpd-prontuario-ia-pratica-faq/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+---
+<Base
+  title="LGPD, prontuário e IA na prática clínica em 2026 — FAQ para psicólogo brasileiro"
+  description="Dezesseis perguntas frequentes sobre LGPD aplicada a IA em prontuário psicológico: base legal, transferência internacional, anonimização, retenção, supervisão, incidente ANPD, treinamento de modelo e articulação com CFP 11/2018, 06/2019 e PL 2338/2023.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'LGPD, prontuário e IA na prática clínica' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · LGPD aplicada a IA em prontuário · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">LGPD, prontuário e IA na prática clínica: FAQ 2026 para psicólogo brasileiro.</h1>
+          <TLDR
+            resposta="Em 2026, uso de IA em prontuário psicológico no Brasil exige cumprimento simultâneo de LGPD, CFP 11/2018, CFP 06/2019, RDC ANVISA 657/2022 e atenção ao Posicionamento CFP de 03/07/2025. Base legal específica para dado sensível, contrato com cláusulas-padrão para transferência internacional, política escrita de retenção, termo de consentimento específico para IA, log de acesso e plano de incidente ANPD em 24 a 72 horas são pilares operacionais. Sem governança, a ferramenta vira passivo regulatório."
+            fontes={['LGPD Lei 13.709/2018 Art. 11, 33 e 48', 'CFP Resoluções 11/2018 e 06/2019', 'CFP Posicionamento 03/07/2025', 'ANVISA RDC 657/2022', 'PL 2338/2023 (em tramitação)', 'ANPD Orientações Técnicas']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Dezesseis perguntas profundas que psicólogos, supervisores e DPOs fazem sobre LGPD aplicada a IA em prontuário psicológico no Brasil.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">16 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          LGPD trata dado psicológico como sensível com base legal específica obrigatória. Transferência internacional para servidores estrangeiros exige cláusulas-padrão ANPD ou hospedagem regional. Anonimização real é difícil em conteúdo clínico — pseudonimização é o padrão viável. Retenção mínima do prontuário é 5 anos sob CFP 06/2019; áudio bruto exige descarte em 24 horas. Termo de consentimento específico para IA é peça obrigatória. Incidente exige notificação ANPD em 24 a 72 horas. Treinamento de modelo com dado clínico identificado é vedado salvo consentimento específico em destaque.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mapa rápido de normas aplicáveis</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Norma</th>
+                <th class="text-left px-4 py-3">Escopo</th>
+                <th class="text-left px-4 py-3">Aplicação a IA em prontuário</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">LGPD (Lei 13.709/2018)</td>
+                <td class="px-4 py-3 text-ink-700">Tratamento de dado pessoal e sensível</td>
+                <td class="px-4 py-3 text-ink-700">Base legal, transferência internacional, retenção, incidente</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CFP Resolução 11/2018</td>
+                <td class="px-4 py-3 text-ink-700">Serviços psicológicos por meios de tecnologia</td>
+                <td class="px-4 py-3 text-ink-700">Telessaúde, supervisão online, avaliação online</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CFP Resolução 06/2019</td>
+                <td class="px-4 py-3 text-ink-700">Documentos psicológicos</td>
+                <td class="px-4 py-3 text-ink-700">Estrutura da nota, sigilo, retenção mínima</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CFP Posicionamento 03/07/2025</td>
+                <td class="px-4 py-3 text-ink-700">IA na prática psicológica</td>
+                <td class="px-4 py-3 text-ink-700">Orientação institucional; sem força sancionatória direta</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">ANVISA RDC 657/2022</td>
+                <td class="px-4 py-3 text-ink-700">Software como dispositivo médico (SaMD)</td>
+                <td class="px-4 py-3 text-ink-700">Relevante se a IA faz inferência diagnóstica</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">PL 2338/2023</td>
+                <td class="px-4 py-3 text-ink-700">Marco Civil da Inteligência Artificial</td>
+                <td class="px-4 py-3 text-ink-700">Em tramitação; monitorar para ajuste futuro</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LGPD — Lei 13.709/2018 (texto integral)</a></li>
+          <li><a href="https://www.gov.br/anpd/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANPD — Autoridade Nacional de Proteção de Dados</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia (Resoluções e Posicionamento)</a></li>
+          <li><a href="https://www.gov.br/anvisa/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANVISA — RDC 657/2022 (SaMD)</a></li>
+          <li><a href="https://www25.senado.leg.br/web/atividade/materias/-/materia/157233" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">PL 2338/2023 — Marco Civil da IA (tramitação)</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/notas-clinicas-ia-implantar-consultorio-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Implantar notas clínicas por IA em 10 passos</p>
+            <p class="text-xs text-ink-700 mt-2">LGPD, CFP, hospedagem, log e auditoria.</p>
+          </a>
+          <a href="/guias/uso-etico-ia-generativa-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Uso ético de IA generativa em 9 passos</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo operacional canônico 2026.</p>
+          </a>
+          <a href="/temas/supervisao-clinica-async-ia-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Tema</p>
+            <p class="font-semibold text-ink-900 mt-2">Supervisão clínica assíncrona com IA</p>
+            <p class="text-xs text-ink-700 mt-2">O que CFP e evidência permitem em 2026.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">LGPD aplicada a IA em prontuário é projeto de governança escrita — não é configuração de software.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Base legal específica, transferência internacional com cláusulas-padrão, retenção sob CFP, termo de consentimento específico, log de acesso, plano de incidente ANPD em 24 a 72 horas. Em 2026, os pilares são conhecidos — falta governança. Para psicólogos que pretendem operar nesse cenário com método, o MBA em Psicologia Organizacional e do Trabalho do IPOG aborda IA, ética profissional e people analytics em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBA no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes citadas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>LGPD Lei 13.709/2018 — Art. 5, 11, 13, 18, 33 e 48.</li>
+          <li>CFP Resoluções 11/2018 e 06/2019.</li>
+          <li>CFP (2025). Posicionamento sobre IA. 03/07/2025.</li>
+          <li>ANVISA RDC 657/2022.</li>
+          <li>PL 2338/2023 (em tramitação).</li>
+          <li>ANPD Orientações Técnicas 2023-2025.</li>
+          <li>Rocher et al. (2019). Nature Communications. Re-identificação.</li>
+          <li>Heyen et al. (2025). Clinical AI scribes. JAMA Internal Medicine.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

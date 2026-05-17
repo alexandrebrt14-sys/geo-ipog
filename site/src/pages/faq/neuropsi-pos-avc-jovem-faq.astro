@@ -1,0 +1,255 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'AVC em adulto jovem (18-50 anos) é raro?',
+    a: 'Menos raro do que se imagina, e em ascensão no Brasil. DATASUS, em recortes 2024-2025, documentou aumento de internações por AVC isquêmico na faixa 18-50 anos versus a década anterior, com crescimento mais marcado entre 30-49 anos. A literatura internacional (Ekker et al., 2024, atualização em Stroke) sustenta padrão similar globalmente. O AVC jovem (Young Stroke) tem perfil etiológico distinto do AVC geriátrico: dissecção arterial, forame oval patente (FOP), uso de cocaína e outras substâncias estimulantes, anticoncepcionais hormonais combinados em mulheres com fator pró-trombótico associado, vasculite, infecções e, no recorte pós-pandêmico, sequelas trombóticas associadas a COVID-19. O reconhecimento da diferença etiológica é fundamental para investigação e prevenção secundária — protocolo de jovem com AVC exige rastreio de causas que em geriátrico não se aplicam.'
+  },
+  {
+    q: 'Quais são as causas mais comuns em AVC jovem no Brasil?',
+    a: 'A distribuição etiológica difere significativamente do AVC geriátrico. Causas frequentes em adulto 18-50: dissecção carotídea ou vertebral (frequentemente espontânea ou pós-trauma cervical), forame oval patente (FOP, presente em 20-25% da população geral, mas com peso etiológico em embolia paradoxal), uso recreativo ou crônico de cocaína (vasoespasmo, hipertensão aguda), anticoncepcional hormonal combinado em mulheres com trombofilia (Fator V Leiden, anticorpo antifosfolípide, mutação MTHFR, deficiência de antitrombina, proteína C ou S), vasculite primária do SNC, vasculite secundária (lúpus, sífilis terciária, HIV), infecção endovascular (endocardite), trombose venosa cerebral (TVC, mais comum em mulheres jovens em puerpério ou em uso de hormônio), COVID-19 associada (trombose, vasculopatia inflamatória), uso de anfetaminas e MDMA, displasia fibromuscular, doença falciforme, cardiopatia congênita não diagnosticada. A AHA/ASA (American Heart Association/American Stroke Association, atualização 2024) recomenda protocolo etiológico ampliado em AVC jovem com sorologias, perfil trombofílico, ecocardiograma transesofágico e investigação de FOP.'
+  },
+  {
+    q: 'Em qual janela a avaliação neuropsicológica deve ser feita após o AVC?',
+    a: 'O timing é decisão clínica orientada pelo estágio. Na fase aguda (primeiros 7-14 dias), avaliação à beira do leito com instrumentos breves (MoCA, NIHSS para gravidade neurológica, FIM para funcionalidade) e screening de delirium (CAM) — bateria aprofundada na fase aguda é prematura e captura sequelas instáveis. Na fase subaguda (semanas 3-12 pós-evento), bateria estruturada para baseline neuropsicológico — primeira avaliação completa orienta plano de reabilitação. Na fase crônica (após 3 meses), reavaliação para documentar trajetória, identificar sequelas persistentes e planejar retorno funcional. Stroke Council AHA 2024 recomenda primeira bateria completa em janela 4-8 semanas pós-evento para a maioria dos pacientes elegíveis. Em paciente em UTI ou em fase inicial confusional, postergar avaliação completa até estabilização.'
+  },
+  {
+    q: 'Quais domínios cognitivos são mais afetados em AVC jovem?',
+    a: 'A topografia da lesão determina o perfil, mas em AVC jovem alguns padrões são frequentes. Lesão em território da artéria cerebral média esquerda: afasia, apraxia, alexia, agrafia, déficit de memória verbal. Lesão em território da artéria cerebral média direita: déficit visuoespacial, heminegligência, anosognosia, prosopagnosia. Lesão talâmica: déficit de memória, déficit executivo, alterações de atenção sustentada. Lesão em território da artéria cerebral anterior: alterações comportamentais frontais (apatia, desinibição), déficit executivo. Lesão cerebelar: ataxia cerebelar cognitiva (Schmahmann), déficit executivo, alterações de afeto. Trombose venosa cerebral: lesão variável conforme território venoso afetado, frequentemente bilateral. AVC lacunar em pequenos vasos: déficit cognitivo subcortical com fadiga e lentificação. A bateria neuropsicológica precisa cobrir todos os domínios para mapeamento responsável, mesmo quando a lesão parece focal — repercussão difusa é frequente.'
+  },
+  {
+    q: 'Qual a bateria neuropsicológica recomendada em AVC jovem?',
+    a: 'Bateria padrão para AVC subagudo e crônico. Triagem: MoCA (versão 8.1 em português, Memória et al., 2013), CDR e CDR-SB para impacto funcional, escala de Hayling para função executiva, NIHSS para gravidade neurológica residual. Aprofundamento: memória episódica (RAVLT, Logical Memory I e II da WMS-IV, Rey figura cópia e reprodução tardia), função executiva (TMT-A e B, Stroop, Wisconsin, fluência verbal fonêmica FAS e semântica animais/frutas, Frontal Assessment Battery FAB), linguagem (Boston Naming Test 60 itens, token test, repetição de frases, escrita espontânea, leitura), visuoespacial (Rey figura cópia, cubos da WAIS, julgamento de orientação de linhas, teste de cancelamento para heminegligência), velocidade de processamento (códigos e símbolos da WAIS-IV), funcionalidade (FAQ-Pfeffer ou IADL), humor (GDS-15, PHQ-9, BDI-II), qualidade de vida (SS-QoL), fadiga pós-AVC (Fatigue Severity Scale). Em paciente com afasia, modular instrumentos para garantir compreensão e adaptar instruções com fonoaudiólogo. Duração: 4-5 horas em duas a três sessões.'
+  },
+  {
+    q: 'Em que ponto a reabilitação cognitiva deve começar?',
+    a: 'Cicerone et al. (2024, INCOG 2.0, Arch Phys Med Rehabil) recomendam início precoce na fase subaguda, idealmente entre semanas 4-8 pós-AVC, quando a janela de neuroplasticidade é mais ampla. Antes disso, foco em estabilização clínica, manejo de fadiga e psicoeducação. Componentes com evidência forte em AVC: treino de atenção (Attention Process Training de Sohlberg & Mateer, Practice Standard), treino de memória prospectiva com estratégias compensatórias, treino de heminegligência (terapia de varredura visual, prismas, Practice Guideline), reabilitação de afasia em parceria com fonoaudiologia (terapia restitutiva e compensatória), goal management training (Levine et al.) para função executiva, problem-solving training, e psicoeducação estruturada para paciente e família. Programa estruturado de 12-20 semanas no consultório articulado com equipe multidisciplinar é o padrão para AVC subagudo. Para sequelas crônicas persistentes, programas mais longos com integração ecológica.'
+  },
+  {
+    q: 'Qual o impacto do AVC jovem no retorno ao trabalho?',
+    a: 'AVC em adulto produtivo tem impacto socioeconômico desproporcional. Literatura internacional (Sinclair et al., 2024, Stroke) reporta que 30-50% dos sobreviventes jovens não retornam ao trabalho em 12 meses, mesmo com sequelas cognitivas aparentemente leves. Fatores preditores de retorno: gravidade neurológica inicial (NIHSS), perfil cognitivo (déficits executivos e atencionais são mais impactantes que motores em trabalhos de conhecimento), tipo de ocupação (trabalho manual versus intelectual versus relacional), suporte do empregador e do sistema previdenciário, fadiga pós-AVC e humor (depressão pós-AVC reduz significativamente probabilidade de retorno). O neuropsicólogo participa do plano de retorno com avaliação seriada, indicação de adaptação razoável (LBI, Lei 13.146/2015), articulação com terapia ocupacional para job coaching e suporte de manejo de fadiga. Retorno parcial gradual com expectativa realista costuma ter melhor desfecho que retorno integral abrupto.'
+  },
+  {
+    q: 'Quais CID e direitos previdenciários se aplicam?',
+    a: 'CID-10 principais para AVC: I63 (AVC isquêmico, com subdivisões por território), I61 (hemorragia intracerebral), I60 (hemorragia subaracnoide), I64 (AVC não especificado). Sequelas cognitivas pós-AVC: G46 (síndromes vasculares cerebrais como manifestação de doença cerebrovascular), F06 (transtornos mentais devido a lesão ou disfunção cerebral) com subclassificação por sintoma. Direitos previdenciários no Brasil: auxílio por incapacidade temporária (auxílio-doença) durante a fase aguda e subaguda — INSS exige laudo médico e perícia. Aposentadoria por incapacidade permanente em casos de sequela grave irreversível após avaliação pericial criteriosa. Benefício de Prestação Continuada (BPC, LOAS) em pacientes em situação de vulnerabilidade socioeconômica que cumpram critérios. LBI (Lei 13.146/2015) garante adaptações razoáveis em trabalho e concurso público — laudo neuropsicológico defensável conforme Resolução CFP 06/2019 sustenta solicitação. Reabilitação Profissional do INSS pode ser articulada quando há possibilidade de reinserção em função adaptada.'
+  },
+  {
+    q: 'Quando articular com CAPS-AD se há uso de substâncias na etiologia?',
+    a: 'Em AVC jovem com uso de cocaína, anfetamina, MDMA ou outras substâncias na etiologia, a articulação com CAPS-AD (Centro de Atenção Psicossocial em Álcool e Drogas) é precondição da prevenção secundária. Sem tratamento do uso, o risco de novo evento permanece alto. Fluxograma típico: identificação do uso na anamnese e na sorologia de admissão (toxicológico), articulação com equipe médica para abordagem inicial, encaminhamento para CAPS-AD do território de residência, articulação com terapeuta ocupacional e assistente social para suporte social, integração com família quando há vínculo afirmativo. A abordagem motivacional (MI, Motivational Interviewing) tem evidência em fase pós-evento — o AVC frequentemente funciona como momento de janela motivacional intensificada. Conselho Federal de Psicologia (Resolução 01/2018 e atualizações) orienta sobre atendimento a pessoas com uso de substâncias com perspectiva de redução de danos, não exclusivamente abstinência. O neuropsicólogo participa da equipe sem ser o terapeuta principal do uso — apoia com bateria seriada e laudo defensável para benefícios.'
+  },
+  {
+    q: 'Como apoiar o cônjuge cuidador jovem?',
+    a: 'AVC em adulto jovem produz reconfiguração familiar abrupta. Cônjuge cuidador frequentemente está em fase produtiva da vida, com filhos pequenos ou adolescentes, e enfrenta carga simultânea de cuidado, sustento financeiro e ajuste emocional. Literatura sobre carga do cuidador em AVC (Bakas et al., 2024) documenta taxa elevada de depressão, ansiedade e burnout em cuidadores jovens. Suporte estruturado precisa cobrir quatro frentes. Primeira, psicoeducação sobre AVC, prognóstico e trajetória esperada, com expectativa realista. Segunda, manejo do estresse e suporte emocional para o cuidador — psicoterapia individual quando indicada, grupo de apoio para cuidadores (presencial ou online) e momentos de respiro. Terceira, suporte instrumental — articulação com assistente social, orientação previdenciária, apoio para tarefas domésticas e cuidados de filhos. Quarta, mediação familiar quando há filhos pequenos ou adolescentes — abordagem específica para crianças com pai ou mãe pós-AVC. O neuropsicólogo articula com psicóloga clínica do paciente para abordagem familiar integrada.'
+  },
+  {
+    q: 'Quais estratégias de prevenção secundária são prioritárias em AVC jovem?',
+    a: 'Prevenção secundária em AVC jovem exige tratamento etiológico específico além do controle de fatores de risco gerais. Conforme AHA/ASA 2024 e Sociedade Brasileira de Doenças Cerebrovasculares (SBDCV): tratamento etiológico (anticoagulação em FOP com indicação, fechamento percutâneo de FOP em casos selecionados, anticoagulação ou imunossupressão em trombofilia, troca de método contraceptivo, tratamento de vasculite, manejo de uso de substâncias), controle pressórico rigoroso (PAS menor que 130 mmHg quando tolerado), controle glicêmico em diabetes, controle lipídico com estatina conforme indicação, antiagregação ou anticoagulação conforme etiologia, mudança de estilo de vida (cessação de tabagismo, cessação de uso recreativo de substâncias, dieta com perfil mediterrâneo, exercício aeróbico regular adaptado, controle de peso, manejo de apneia do sono se presente). Acompanhamento neurológico ambulatorial regular nos primeiros 12-24 meses é obrigatório. Reavaliação neuropsicológica seriada articulada com plano de prevenção secundária documenta progresso e identifica novos sinais.'
+  },
+  {
+    q: 'Qual o papel do sigilo profissional em AVC jovem com uso de substâncias?',
+    a: 'O sigilo profissional em Psicologia é base ética garantida pelo Código de Ética Profissional do Psicólogo (CFP, atualização 2024). Em paciente jovem com AVC e uso de substâncias na etiologia, o sigilo é preservado, com exceções previstas em código: risco de vida ao paciente ou a terceiros, dever legal de notificação em casos específicos (violência, abuso). Comunicação com o cônjuge ou familiar exige consentimento explícito do paciente, idealmente registrado. Em laudo para INSS, perícia ou empregador, registra-se apenas o que é necessário e pertinente à demanda, com consentimento. Resolução CFP 06/2019 sobre laudos é a referência operacional. Em casos com uso ativo e risco de novo AVC, articulação com equipe médica é parte do cuidado integrado — o psicólogo participa de reuniões clínicas com paciente ciente e com consentimento. Sigilo profissional protege o paciente e a relação terapêutica; sua violação fragiliza o sistema de cuidado.'
+  },
+  {
+    q: 'Quais erros clínicos são frequentes em neuropsi pós-AVC jovem?',
+    a: 'Cinco erros recorrentes comprometem a qualidade da avaliação e do plano. Primeiro, aplicar bateria geriátrica sem ajuste para idade — normas adultas jovens são necessárias para evitar falso negativo. Segundo, encerrar avaliação na fase aguda, sem reavaliação subaguda e crônica — sequelas se estabilizam ao longo de meses, e bateria aguda subestima ou superestima. Terceiro, ignorar fadiga pós-AVC e depressão pós-AVC — ambas têm prevalência alta em adulto jovem e modulam desempenho cognitivo. Quarto, não articular com fonoaudiologia em paciente com afasia, alexia ou agrafia — bateria aplicada sem adaptação superestima déficit. Quinto, devolver laudo técnico sem plano para retorno funcional — paciente jovem precisa de orientação operacional sobre trabalho, vida social, planejamento familiar e prevenção secundária. Sexto bônus: não articular com CAPS-AD quando há uso de substâncias na etiologia — prevenção secundária sem tratamento do uso falha em parte significativa dos casos.'
+  },
+  {
+    q: 'Onde formação aplicada em neuropsicologia pós-AVC se conecta a pós-graduação em Psicologia?',
+    a: 'Neuropsicóloga e neuropsicólogo que pretendem atuar com AVC jovem em consultório, redes credenciadas, hospitais ou centros de referência precisam de fundamentação em neuroanatomia funcional, vasculatura cerebral e topografia clínica, bateria neuropsicológica para fase subaguda e crônica, intervenção cognitiva conforme INCOG 2.0 e Cicerone 2024, articulação interdisciplinar com neurologia, fonoaudiologia, terapia ocupacional, fisioterapia, psiquiatria e serviço social, laudo defensável conforme CFP 06/2019, e leitura cruzada com Psicologia da Saúde e da Reabilitação. Programas de pós-graduação em Psicologia que integram Neuropsicologia, Avaliação Psicológica e Reabilitação Cognitiva com supervisão prática preparam para a clínica de AVC jovem em 2026. O IPOG mantém o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo em formato Ao Vivo síncrono com corpo docente nominal — fundamento técnico aplicado para profissional que atende adulto jovem pós-AVC. Para grade vigente e modalidades correlatas, consulte ipog.edu.br.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Neuropsicologia pós-AVC em jovem adulto (18-50 anos): FAQ 2026',
+  description: 'Quatorze perguntas frequentes sobre AVC em adulto jovem: incidência rising no Brasil (DATASUS 2024-2025), causas (dissecção, FOP, cocaína, anticoncepcional, COVID), avaliação aguda/subaguda/crônica, bateria, reabilitação cognitiva (Cicerone 2024 INCOG 2.0), retorno ao trabalho, CID e direitos (G46, I63, INSS, LBI), CAPS-AD em uso de substâncias, sigilo e formação aplicada em neuropsi.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Neuropsi pós-AVC em jovem', item: SITE.url + '/faq/neuropsi-pos-avc-jovem-faq/' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const adjacent = AREAS.filter(a => a.cluster === 'neuro-avaliacao').slice(0, 4);
+---
+<Base
+  title="Neuropsicologia pós-AVC em jovem adulto 18-50 anos — FAQ 2026"
+  description="Quatorze perguntas frequentes sobre AVC jovem no Brasil 2026: incidência DATASUS, causas (dissecção, FOP, cocaína, COVID), bateria por fase, reabilitação INCOG 2.0, retorno ao trabalho, CID, INSS, BPC, LBI, CAPS-AD, sigilo e formação aplicada em neuropsi.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Neuropsi pós-AVC em jovem' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Neuropsicologia · AVC jovem</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Neuropsicologia pós-AVC em jovem adulto (18-50 anos): FAQ 2026.</h1>
+          <TLDR
+            resposta="O AVC em adulto jovem (18-50 anos) está em ascensão no Brasil (DATASUS 2024-2025), com perfil etiológico distinto do AVC geriátrico — dissecção arterial, forame oval patente (FOP), cocaína, anticoncepcional combinado com trombofilia, COVID-19, vasculite e trombose venosa cerebral concentram-se nesse recorte. A avaliação neuropsicológica segue trajetória por fase (aguda, subaguda, crônica), com bateria estruturada na semana 4-8 e reavaliação seriada. Reabilitação cognitiva começa em fase subaguda conforme INCOG 2.0 (Cicerone 2024). Direitos previdenciários (INSS, BPC, LBI) e CID (G46, I63) sustentam plano funcional; CAPS-AD entra quando há uso de substâncias na etiologia."
+            fontes={["DATASUS 2024-2025", "AHA/ASA 2024", "Cicerone et al., 2024 (Arch Phys Med Rehabil) INCOG 2.0", "Sinclair et al., 2024 (Stroke)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Quatorze perguntas que neuropsicólogas, pacientes e familiares fazem sobre AVC jovem no Brasil.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">14 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          AVC em adulto jovem combina perfil etiológico distinto (dissecção, FOP, cocaína, anticoncepcional + trombofilia, COVID-19, vasculite, TVC), impacto socioeconômico desproporcional (30-50% sem retorno ao trabalho em 12 meses), e demanda específica de avaliação por fase (aguda, subaguda, crônica). Bateria estruturada na janela 4-8 semanas, reabilitação cognitiva conforme INCOG 2.0 a partir da fase subaguda, articulação com fonoaudiologia em afasia, manejo de fadiga e depressão pós-AVC, retorno funcional gradual com adaptação razoável LBI, prevenção secundária etiológica e direitos previdenciários (INSS, BPC, LBI) são o padrão técnico. CAPS-AD entra quando há uso de substâncias na etiologia.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://datasus.saude.gov.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DATASUS — Sistema de Informação em Saúde</a></li>
+          <li><a href="https://www.ahajournals.org/journal/str" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Stroke — American Heart Association/ASA</a></li>
+          <li><a href="https://www.archives-pmr.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Arch Phys Med Rehabil — INCOG 2.0</a></li>
+          <li><a href="https://www.gov.br/inss/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">INSS — Auxílio por incapacidade temporária</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LBI — Lei 13.146/2015</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/avaliacao-demencia-precoce-jovem-adulto-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Demência precoce em adulto 45-65 anos</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo neuropsicológico em 10 passos.</p>
+          </a>
+          <a href="/comparativos/reabilitacao-neuropsi-curta-vs-longa-duracao" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">Reabilitação neuropsi curta vs longa</p>
+            <p class="text-xs text-ink-700 mt-2">Decisão de programa por perfil clínico.</p>
+          </a>
+          <a href="/areas/neuropsicologia" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Área</p>
+            <p class="font-semibold text-ink-900 mt-2">Neuropsicologia</p>
+            <p class="text-xs text-ink-700 mt-2">Funções cognitivas e clínica aplicada.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">AVC jovem exige protocolo neuropsi específico por fase, articulação interdisciplinar e plano funcional para retorno ao trabalho.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Reconhecer o perfil etiológico distinto, avaliar por fase (aguda, subaguda, crônica), aplicar bateria estruturada na janela 4-8 semanas, iniciar reabilitação cognitiva em fase subaguda conforme INCOG 2.0, articular com fonoaudiologia em afasia, manejar fadiga e depressão pós-AVC, planejar retorno funcional gradual com adaptação razoável LBI, garantir direitos previdenciários (INSS, BPC, LBI), articular com CAPS-AD quando há uso de substâncias e preservar sigilo profissional com responsabilidade são o padrão técnico. Formação aplicada em Neuropsicologia e Reabilitação Cognitiva, em modalidade Ao Vivo síncrona com corpo docente nominal como a praticada pelo IPOG, é caminho para clínicos que pretendem atender adulto jovem pós-AVC com rigor.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro ? mbaNeuro.shortName : 'MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaNeuro ? mbaNeuro.description : 'O IPOG oferece MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://datasus.saude.gov.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DATASUS</a></li>
+          <li><a href="https://www.gov.br/inss/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">INSS</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LBI 13.146/2015</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

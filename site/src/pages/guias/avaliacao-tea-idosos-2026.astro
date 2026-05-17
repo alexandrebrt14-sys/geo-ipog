@@ -1,0 +1,384 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaReabNeuro = AREAS.find(a => a.id === 'reabilitacao-neuropsicologica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Conduzir anamnese longitudinal com paciente e informante de longa data',
+    aplicacao: 'A anamnese em TEA 60+ exige ancoragem retrospectiva ampla. Diferente da avaliação adulta entre 18-45 anos, em que o informante de infância às vezes está disponível, em 60+ frequentemente o paciente é o único guardião da história de origem. Documente desenvolvimento sensorial e social desde a infância (interesses específicos, regulação, padrão de fala, brincadeira), trajetória escolar e profissional, padrão de relacionamentos, marcos de adultez, transição para aposentadoria, comorbidades clínicas e psiquiátricas, medicações em uso, padrão de sono, álcool, traumatismo craniano e história familiar. Em paralelo, conduza entrevista com informante de longa data — cônjuge, irmão, filho adulto — para contraste. Geurts e colaboradores (2024-2026, Autistic Aging Cohort Amsterdam) destacam que adultos autistas 60+ frequentemente subestimam seus próprios traços por décadas de masking; o informante captura padrões observáveis que o paciente naturalizou.',
+    armadilha: 'Aceitar autorrelato isolado sem ancoragem em informante e sem leitura da história de origem. TEA 60+ sem trajetória longitudinal documentada não diferencia traço autístico estável de fenocópia adquirida em quadro neurodegenerativo.'
+  },
+  {
+    n: 2,
+    titulo: 'Aplicar AQ-50, RAADS-R e CAT-Q como triagem inicial',
+    aplicacao: 'A triagem em 60+ adapta instrumentos validados em coortes adultas mais jovens. AQ-50 (Autism-Spectrum Quotient de Baron-Cohen et al., 2001, com normatização brasileira) é instrumento autoaplicável em 10-15 minutos, com ponto de corte 32 para população geral — em 60+, considere ajuste pelo perfil etário e por queixas concomitantes. RAADS-R (Ritvo Autism Asperger Diagnostic Scale-Revised, Ritvo et al., 2011) é mais sensível para adulto com camuflagem alta, com 80 itens e ancoragem retrospectiva explícita; ponto de corte 65 sugere investigação. CAT-Q (Camouflaging Autistic Traits Questionnaire, Hull et al., 2019) mensura intensidade de camuflagem em três processos — compensação, masking, assimilação — e é particularmente relevante em mulheres e adultos com diagnóstico tardio. A combinação dos três instrumentos oferece triagem mais robusta que qualquer um isolado.',
+    armadilha: 'Aplicar AQ-50 ou RAADS-R com ponto de corte direto sem ajuste para 60+ e sem leitura cruzada. Idoso com depressão grave ou quadro neurodegenerativo incipiente pode pontuar alto por queixas adquiridas, não por traço autístico estável.'
+  },
+  {
+    n: 3,
+    titulo: 'Aplicar ADOS-G adaptado e ADI-R com informante',
+    aplicacao: 'O ADOS-2 (Lord et al., 2012, 5º módulo adulto) e o ADI-R (Lord, Rutter & Le Couteur, 1994) são instrumentos de referência. Bishop & Lord (2024-2025) descreveram que o protocolo padrão tem limitações em adultos com alta camuflagem e propuseram adaptação do módulo 4 para adulto. Em 60+, a adaptação é maior: tarefas com demanda motora precisam considerar limitação física eventual, instruções verbais devem ser claras e literais, ambiente sensorial controlado, sessão fracionada em duas a três etapas. O ADI-R conduzido com informante de longa data fornece ancoragem retrospectiva para a infância e adolescência. A combinação ADOS-G adaptado + ADI-R com informante é o padrão técnico para fechar hipótese; sem informante, o ADI-R perde valor e o diagnóstico se sustenta no ADOS-G adaptado e na entrevista clínica retrospectiva. Duração: 2-3 horas, fracionadas.',
+    armadilha: 'Aplicar ADOS-2 módulo 4 sem adaptação para 60+ ou tentar fechar diagnóstico só pelo ADOS-G sem informante. Idoso com hipoacusia, lentificação motora ou fadiga rápida confunde a leitura — exige ambiente controlado e ritmo adequado.'
+  },
+  {
+    n: 4,
+    titulo: 'Conduzir bateria neuropsicológica para diferencial com Alzheimer, DCL e PPA primária',
+    aplicacao: 'O diferencial neurodegenerativo é precondição em 60+. Aplique bateria estruturada por domínio. Memória episódica: RAVLT, Logical Memory I e II da WMS-IV, Rey figura complexa (cópia + reprodução imediata + tardia) — déficit amnéstico desproporcional sugere Alzheimer prodrômico, não traço autístico. Função executiva: TMT-A e TMT-B, Wisconsin Card Sorting Test, fluência verbal fonêmica e semântica, Stroop — em TEA preservado, rigidez cognitiva é estável longitudinalmente; em demência frontotemporal, há declínio progressivo. Linguagem: Boston Naming Test (60 itens) e token test — em PPA (afasia progressiva primária), há perda progressiva de nomeação e compreensão; em TEA, padrão linguístico é atípico desde a infância mas estável. Visuoespacial: Rey cópia, cubos da WAIS — DCL apresenta déficit visuoespacial desproporcional à memória. Velocidade: códigos e símbolos da WAIS-IV. Funcionalidade: FAQ-Pfeffer e IADL. Triagem cognitiva: MoCA com ajuste por escolaridade (Memória et al., 2013).',
+    armadilha: 'Aplicar bateria infantil ou adolescente. Adulto 60+ exige norma brasileira pareada por idade e escolaridade; aplicar bateria sem norma adequada produz falso-positivo ou falso-negativo em ambos os eixos (TEA e demência).'
+  },
+  {
+    n: 5,
+    titulo: 'Articular biomarcadores plasmáticos quando há suspeita de Alzheimer concomitante',
+    aplicacao: 'Em paciente com queixa cognitiva nova, declínio funcional progressivo ou perfil amnéstico desproporcional, articule com neurologista ou geriatra para solicitação de p-tau217 plasmático. Ashton e colaboradores (2024, Nature Medicine) validaram p-tau217 com AUC 0,96 para detectar patologia amiloide cerebral, superando p-tau181. Em adultos autistas 60+ com declínio cognitivo novo, p-tau217 positivo orienta hipótese de Alzheimer concomitante; negativo praticamente exclui. Jack e colaboradores (2024, Lancet Neurology) consolidaram critérios A/T/N revisados, incluindo p-tau217 plasmático como indicador de tau. A solicitação é atribuição médica — o neuropsicólogo não solicita, mas integra a leitura ao laudo neuropsicológico. Custo em laboratórios brasileiros privados: R$ 1.500-3.500 em 2026. A indicação é clínica, não populacional.',
+    armadilha: 'Tratar TEA e Alzheimer como mutuamente excludentes. Adulto autista 60+ envelhece como qualquer pessoa e pode desenvolver doença neurodegenerativa em paralelo. A leitura clínica responsável investiga ambas hipóteses simultaneamente quando há queixa cognitiva nova.'
+  },
+  {
+    n: 6,
+    titulo: 'Avaliar comorbidades psiquiátricas, sono e padrão sensorial',
+    aplicacao: 'Comorbidades psiquiátricas em adulto autista 60+ aparecem em prevalência muito superior à população geral. Depressão (PHQ-9 ou GDS-15 para geriátrico), ansiedade (GAD-7), TEPT-C frequente em adultos com história de violência institucional ou interpessoal acumulada (PCL-5 ou ITQ), insônia (Índice de Qualidade do Sono de Pittsburgh — PSQI), dor crônica (Brief Pain Inventory). Em paralelo, avalie perfil sensorial — questionário Adult Sensory Profile (Brown & Dunn, 2002) mensura hiper e hiporresponsividade em quatro padrões. Padrão sensorial estável desde a infância é critério para TEA; mudança recente sugere quadro adquirido. Cassidy e colaboradores (2018, 2024) destacam que rastreamento ativo de ideação suicida com C-SSRS é parte do padrão técnico em adulto autista — em 60+, a prevalência se mantém elevada e a perda de rede pós-aposentadoria é fator de risco adicional.',
+    armadilha: 'Atribuir todo o sofrimento ao "TEA descoberto tarde" sem rastrear comorbidades tratáveis. Depressão tardia, insônia crônica e dor não tratada produzem sofrimento independente; manejar uma camada por vez orienta a clínica.'
+  },
+  {
+    n: 7,
+    titulo: 'Aplicar critérios DSM-5-TR e CID-11 com leitura adaptada a 60+',
+    aplicacao: 'O DSM-5-TR (APA, 2022) mantém critérios A e B para TEA — déficit persistente em comunicação social e padrões restritos e repetitivos — com exigência de presença desde o desenvolvimento inicial e prejuízo clinicamente significativo. CID-11 (OMS, 2022, vigente desde 2025) mantém estrutura semelhante. Em 60+, a leitura exige duas adaptações. Primeiro, ancoragem retrospectiva — a presença desde a infância pode ser inferida por padrão consistente ao longo da vida, mesmo sem registro formal de infância. Segundo, prejuízo funcional — em 60+, o prejuízo pode ser cumulativo (vida inteira marcada por padrão social atípico) ou contextual (descompensação pós-aposentadoria, conflito familiar tardio, isolamento). Documente claramente a presença dos critérios com exemplos da vida do paciente, ajuste do funcionamento ao longo das décadas e impacto atual. Especificadores de nível de suporte (1, 2, 3) e comorbidades também são parte do laudo.',
+    armadilha: 'Aplicar critério "início precoce" exigindo registro pediátrico formal. Em 60+, o registro pediátrico raramente existe — o critério se sustenta na anamnese retrospectiva consistente com informante e na lógica do padrão estável.'
+  },
+  {
+    n: 8,
+    titulo: 'Elaborar laudo conforme Resolução CFP 06/2019 com plano de cuidado longitudinal',
+    aplicacao: 'A devolutiva e o laudo seguem a Resolução CFP 06/2019. Identificação, demanda, procedimentos (instrumentos aplicados com descrição metodológica), análise por domínio com z-scores, hipótese diagnóstica com especificadores DSM-5-TR ou CID-11, diferencial trabalhado (Alzheimer prodrômico, DCL, demência frontotemporal, depressão tardia, PPA primária), plano de cuidado e recomendações. Em TEA 60+, o plano de cuidado articula psicoterapia adaptada (ACT, mindfulness com ajuste sensorial, grupos de pares), revisão medicamentosa em coordenação com psiquiatria geriátrica, ajuste ambiental (rotina, sensorialidade, comunicação), planejamento social pós-aposentadoria, mapeamento de rede de suporte, articulação com geriatria e neurologia para monitoramento de risco neurodegenerativo. Intervalo de reavaliação anual ou bianual conforme estabilidade. Em caso de capacidade decisória parcial, articule tomada de decisão apoiada (LBI art. 1.783-A do Código Civil) em vez de curatela.',
+    armadilha: 'Entregar laudo técnico sem plano operacional. Adulto autista 60+ e família que saem do consultório sem orientação prática perdem a janela de reorganização biográfica e ambiental — momento em que o reconhecimento clínico tem ganho real em qualidade de vida.'
+  }
+];
+
+const encaminhamentos = [
+  {
+    quando: 'Queixa cognitiva nova com declínio funcional progressivo',
+    para: 'Neuropsicologia + Neurologia ou Geriatria',
+    porque: 'Diferencial com Alzheimer prodrômico, DCL, demência frontotemporal ou PPA exige bateria aprofundada e neuroimagem.'
+  },
+  {
+    quando: 'p-tau217 plasmático considerado clinicamente',
+    para: 'Neurologista ou Geriatra (solicitação médica)',
+    porque: 'Biomarcador plasmático é atribuição médica; neuropsicólogo integra ao laudo.'
+  },
+  {
+    quando: 'Ideação suicida ativa ou plano de suicídio',
+    para: 'Psiquiatria + CAPS de referência + plano de segurança escrito',
+    porque: 'Hirvikoski et al. (2016, 2024) documentaram excesso de mortalidade por suicídio em adultos autistas; rastreamento ativo com C-SSRS é padrão.'
+  },
+  {
+    quando: 'Capacidade decisória parcial documentada',
+    para: 'Defensoria Pública + serviço social + cartório para tomada de decisão apoiada',
+    porque: 'A LBI (Lei 13.146/2015, art. 1.783-A do Código Civil) preconiza tomada de decisão apoiada como dispositivo preferível à curatela.'
+  },
+  {
+    quando: 'Comorbidade clínica grave (cardiovascular, dor crônica refratária)',
+    para: 'Clínica médica + medicina paliativa quando aplicável',
+    porque: 'Adultos autistas têm prevalência aumentada de comorbidades clínicas; manejo articulado é parte do plano longitudinal.'
+  }
+];
+
+const erros = [
+  {
+    titulo: 'Aplicar bateria infantil ou adolescente sem norma para 60+',
+    texto: 'A norma brasileira pareada por idade e escolaridade é precondição. ADOS-2 módulo 4 sem adaptação, AQ-50 sem leitura cruzada e RAADS-R em sessão única raramente fecham diagnóstico em 60+ com a robustez exigida pela Resolução CFP 06/2019.'
+  },
+  {
+    titulo: 'Atribuir tudo ao "TEA descoberto tarde"',
+    texto: 'Adultos autistas 60+ têm comorbidades psiquiátricas, neurológicas, cardiovasculares e dolorosas em prevalência muito superior à população geral. Manejar uma camada por vez orienta a clínica; atribuir tudo ao TEA tardio fecha investigação e perde quadros tratáveis.'
+  },
+  {
+    titulo: 'Tratar TEA e Alzheimer como excludentes',
+    texto: 'Adulto autista envelhece como qualquer pessoa e pode desenvolver doença neurodegenerativa em paralelo. p-tau217 positivo com perfil amnéstico desproporcional fecha hipótese de Alzheimer concomitante; não é eu ou ou outro.'
+  },
+  {
+    titulo: 'Entregar laudo sem plano de cuidado',
+    texto: 'A janela terapêutica do reconhecimento tardio em 60+ é estreita. Família e paciente que saem do consultório com laudo técnico mas sem plano de ajuste ambiental, psicoterapia adaptada, revisão medicamentosa e articulação com geriatria perdem a oportunidade.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'ADOS-2 módulo 4 funciona bem em adulto 60+?',
+    a: 'Em parte. Bishop & Lord (2024-2025) descrevem que o módulo 4 tem limitações em adultos com alta camuflagem, e em 60+ a aplicação exige adaptações adicionais — tempo fracionado, instrução literal, ambiente sensorial controlado, ajuste para hipoacusia ou lentificação motora. A combinação com ADI-R conduzido com informante de longa data é o padrão técnico para fechar hipótese. Aplicação isolada do ADOS-2 sem informante é insuficiente.'
+  },
+  {
+    q: 'p-tau217 plasmático é solicitado pelo neuropsicólogo?',
+    a: 'Não. A solicitação é atribuição médica (neurologista, geriatra ou psiquiatra). O neuropsicólogo integra o resultado ao laudo, correlacionando perfil neuropsicológico com perfil biológico. Em adulto autista 60+ com queixa cognitiva nova, p-tau217 positivo orienta hipótese de Alzheimer concomitante; negativo praticamente exclui (Ashton et al., 2024, Nature Medicine).'
+  },
+  {
+    q: 'Qual instrumento mede camuflagem autística em 60+?',
+    a: 'O CAT-Q (Camouflaging Autistic Traits Questionnaire, Hull et al., 2019) é o instrumento canônico, com 25 itens em três dimensões — compensação, masking, assimilação. A normatização foi feita em coortes adultas; em 60+, a leitura é qualitativa e cruzada com a entrevista retrospectiva. Em mulheres autistas e em pessoas LGBTQIA+, a camuflagem é mais alta e o CAT-Q tende a refletir o padrão.'
+  },
+  {
+    q: 'Onde a especialização em Neuropsicologia conecta a este protocolo?',
+    a: 'O protocolo exige domínio combinado de avaliação neuropsicológica adulta e geriátrica, conhecimento dos critérios A/T/N revisados, leitura clínica de TEA adulto com instrumentos canônicos (ADOS-2, ADI-R, AQ-50, RAADS-R, CAT-Q) e articulação com neurologia, geriatria e psiquiatria. A pós oficial no IPOG inclui MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo em formato Ao Vivo síncrono com corpo docente nominal — caminho aplicado para profissionais que pretendem atuar em TEA 60+ com rigor. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como avaliar TEA em adulto idoso 60+: protocolo 2026 com diferencial neurodegenerativo',
+  description: 'Protocolo em 8 passos para avaliação de TEA em adulto 60+: anamnese longitudinal com informante, triagem AQ-50/RAADS-R/CAT-Q, ADOS-G adaptado e ADI-R, bateria neuropsicológica com diferencial Alzheimer/DCL/PPA, biomarcadores plasmáticos p-tau217 articulados com médico, comorbidades psiquiátricas, critérios DSM-5-TR/CID-11 adaptados, laudo conforme Resolução CFP 06/2019 com plano longitudinal.',
+  totalTime: 'PT26M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliar TEA em adulto idoso: protocolo 2026 para diferencial com demência, depressão tardia e camuflagem prolongada',
+  description: 'Protocolo passo-a-passo para avaliação de TEA em adulto 60+ com diferencial neurodegenerativo (Alzheimer, DCL, PPA), uso de ADOS-G adaptado, AQ-50 retroativo, RAADS-R, CAT-Q e biomarcadores plasmáticos p-tau217 (Ashton 2024) articulados com critérios A/T/N (Jack 2024).',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação de TEA em idosos 2026', item: `${SITE.url}/guias/avaliacao-tea-idosos-2026` }
+  ]
+};
+---
+<Base
+  title="Avaliar TEA em adulto idoso: protocolo 2026 para diferencial com demência e camuflagem prolongada"
+  description="Guia clínico em 8 passos para TEA em adulto 60+: anamnese longitudinal com informante, AQ-50/RAADS-R/CAT-Q, ADOS-G adaptado e ADI-R, bateria com diferencial Alzheimer/DCL/PPA, p-tau217 articulado com médico, critérios DSM-5-TR/CID-11 e laudo conforme Resolução CFP 06/2019.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação de TEA em idosos 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 8 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliar TEA em adulto idoso: protocolo 2026 para diferencial com demência, depressão tardia e camuflagem prolongada.</h1>
+          <TLDR
+            resposta="Avaliar TEA em adulto 60+ exige anamnese longitudinal com informante de longa data, triagem com AQ-50, RAADS-R e CAT-Q ajustada à idade, ADOS-G adaptado (Bishop & Lord, 2024-2025) e ADI-R com informante, bateria neuropsicológica com diferencial Alzheimer/DCL/PPA, biomarcador plasmático p-tau217 (Ashton et al., 2024, Nature Medicine) articulado com critérios A/T/N revisados (Jack et al., 2024, Lancet Neurology), avaliação ativa de comorbidades psiquiátricas e laudo conforme Resolução CFP 06/2019 com plano longitudinal."
+            fontes={["Geurts et al., 2024-2026 (Autistic Aging Cohort Amsterdam)", "Bishop & Lord, 2024-2025", "Ashton et al., 2024 (Nature Medicine)", "Jack et al., 2024 (Lancet Neurology)", "Tinelli, 2025 (Neuropsychology Review)"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Protocolo passo-a-passo para neuropsicologia adulta-geriátrica em adulto autista 60+, com diferencial neurodegenerativo rigoroso e plano de cuidado longitudinal articulado com geriatria, neurologia e psiquiatria.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~26 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Neuropsicólogos adultos e geriátricos</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Reabilitação Neuro
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir avaliação de TEA em adulto 60+ integrando anamnese longitudinal com informante, triagem ajustada, ADOS-G adaptado e ADI-R, bateria neuropsicológica com diferencial neurodegenerativo, biomarcador plasmático p-tau217 e plano de cuidado longitudinal.</li>
+          <li><strong>Pré-requisitos:</strong> CRP ativo, especialização em Neuropsicologia, conhecimento da Resolução CFP 06/2019, articulação com neurologia, geriatria e psiquiatria, manejo dos critérios DSM-5-TR e CID-11 e familiaridade com ADOS-2, ADI-R, AQ-50, RAADS-R e CAT-Q.</li>
+          <li><strong>Resultado esperado:</strong> laudo com diagnóstico fechado (TEA, com ou sem comorbidade neurodegenerativa), perfil neuropsicológico documentado, hipótese etiológica integrada com biomarcadores quando disponível, plano de cuidado longitudinal articulado em rede e intervalo de reavaliação definido.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura clínica padrão trata TEA adulto e demência como categorias excludentes — paciente 60+ com queixa cognitiva é direcionado para investigação de Alzheimer ou demência por corpos de Lewy, sem hipótese autística. A literatura recente reverte. Geurts e colaboradores (2024-2026) descrevem que adultos autistas envelhecem com prevalência aumentada de comorbidade neurodegenerativa, e que parte significativa dos diagnósticos tardios de TEA em 60+ ocorre justamente quando o paciente é encaminhado para avaliação de queixa cognitiva nova. A pergunta clinicamente útil em 60+ não é TEA ou demência, é qual o substrato de neurodesenvolvimento do paciente e o que mudou agora.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Protocolo em 8 passos</h2>
+        <div class="space-y-6 mt-4">
+          {passos.map(p => (
+            <div class="card p-6">
+              <div class="flex items-start gap-4">
+                <div class="rounded-full bg-brand-700 text-white w-10 h-10 flex items-center justify-center font-bold shrink-0">{p.n}</div>
+                <div class="space-y-3 flex-1">
+                  <h3 class="font-display font-semibold text-lg text-ink-900">{p.titulo}</h3>
+                  <p class="text-sm sm:text-base text-ink-700 leading-relaxed">{p.aplicacao}</p>
+                  <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm">
+                    <strong class="text-amber-900">Armadilha clínica:</strong> <span class="text-ink-700">{p.armadilha}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Quando encaminhar para neuropsicologia ou geriatria</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Quando</th>
+                <th class="text-left px-4 py-3">Para quem</th>
+                <th class="text-left px-4 py-3">Por que</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {encaminhamentos.map(e => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{e.quando}</td>
+                  <td class="px-4 py-3 text-ink-700">{e.para}</td>
+                  <td class="px-4 py-3 text-ink-700">{e.porque}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Quatro erros que aparecem com frequência</h2>
+        <div class="space-y-3 mt-4">
+          {erros.map(e => (
+            <div class="rounded-xl border border-surface-200 bg-white p-5">
+              <p class="font-semibold text-ink-900">{e.titulo}</p>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes sobre o protocolo</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos no portal</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/faq/tea-envelhecimento-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">TEA e envelhecimento</p>
+            <p class="text-xs text-ink-700 mt-2">Quatorze perguntas sobre 60+, demência, qualidade de vida.</p>
+          </a>
+          <a href="/comparativos/crise-autistica-vs-crise-dissociativa" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">Crise autística vs dissociativa</p>
+            <p class="text-xs text-ink-700 mt-2">Diferencial em 10 dimensões para sala de urgência.</p>
+          </a>
+          <a href="/guias/avaliacao-ccl-biomarcadores-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">CCL com biomarcadores 2026</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo em 9 passos para CCL com p-tau217.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">TEA 60+ é categoria clínica que exige protocolo próprio e articulação em rede</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A avaliação em adulto autista 60+ não é versão expandida do protocolo adulto jovem. Exige diferencial neurodegenerativo rigoroso, biomarcador plasmático articulado com médico, comorbidades psiquiátricas e clínicas mapeadas e plano de cuidado longitudinal. Formação aplicada em Neuropsicologia e Reabilitação Neuropsicológica em formato Ao Vivo síncrono com corpo docente nominal, como a praticada pelo IPOG, é a trilha para psicólogos que pretendem operar nessa interseção com rigor.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Formação relacionada</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName} — IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Neuropsicologia adulta-geriátrica com leitura de TEA tardio e diferencial neurodegenerativo exige base sólida. Formato Ao Vivo síncrono, docente nominal.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/mbas" class="btn btn-ghost mt-2 w-full">Comparar MBAs</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas conectadas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaReabNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaReabNeuro.name}</strong></a></li>
+          <li><a href="/areas/avaliacao-psicologica" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação Psicológica</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes principais</p>
+        <ul class="space-y-2 text-sm text-ink-700">
+          <li>Geurts, H. M. et al. (2024-2026). Autistic Aging Cohort Amsterdam.</li>
+          <li>Bishop, S. & Lord, C. (2024-2025).</li>
+          <li>Tinelli, M. (2025). Neuropsychology Review.</li>
+          <li>Wise, J. et al. (2024). The Lancet Healthy Longevity.</li>
+          <li>Ashton, N. J. et al. (2024). Nature Medicine.</li>
+          <li>Jack, C. R. Jr. et al. (2024). The Lancet Neurology.</li>
+          <li>Hull, L. et al. (2017, 2019, 2024). J Autism Dev Disord.</li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Recursos canônicos</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV — 188</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/2003/l10.741.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Estatuto do Idoso</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>
+</content>
+</invoke>

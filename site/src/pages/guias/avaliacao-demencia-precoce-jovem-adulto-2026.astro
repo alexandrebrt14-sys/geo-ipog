@@ -1,0 +1,268 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaReabNeuro = AREAS.find(a => a.id === 'reabilitacao-neuropsicologica')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Reconhecer a janela de início precoce (45-65 anos) e tratar como hipótese específica',
+    aplicacao: 'A demência de início precoce (Early-Onset Dementia, EOD) é definida na literatura como início antes dos 65 anos, com pico de incidência entre 45-65 anos. Rossor e colaboradores (2010, atualização 2024 em Lancet Neurology) consolidam EOD como categoria com perfil etiológico distinto da demência tardia: demência frontotemporal, Alzheimer precoce, demência por corpos de Lewy precoce, demência alcoólica, demência por HIV, demência vascular jovem e formas semânticas/PPA aparecem em proporção significativamente maior do que em pacientes acima de 65 anos. O reconhecimento da janela importa porque adulto de 50 anos com queixa cognitiva costuma ser categorizado como burnout, depressão ou estresse — e o atraso médio do diagnóstico em EOD é de 4-6 anos segundo FRONTIER-NL 2024.',
+    armadilha: 'Tratar queixa cognitiva em adulto 45-65 anos como necessariamente psicogênica. A literatura é explícita: EOD existe, tem perfil etiológico distinto e exige protocolo específico — atribuir tudo à exaustão profissional fecha a investigação cedo demais.'
+  },
+  {
+    n: 2,
+    titulo: 'Conduzir anamnese específica para EOD com informante íntimo e história ocupacional detalhada',
+    aplicacao: 'A anamnese em EOD precisa de três camadas que extrapolam a anamnese geriátrica padrão. Primeiro, perfil cognitivo prévio com referência ocupacional concreta — engenheiro que codava complexidade alta e agora não consegue, advogada que perdeu capacidade redacional, professor que repete conteúdo. Segundo, mudança de personalidade ou conduta — alterações desinibitórias, perda de empatia, comportamentos estereotipados sugerem demência frontotemporal variante comportamental (Rascovsky et al., critérios 2011, atualização 2024). Terceiro, fatores etiológicos jovens — uso crônico de álcool e cocaína, exposição a HIV, traumatismo craniano repetido, história familiar de demência precoce (mutações PSEN1, PSEN2, APP, MAPT, C9orf72), comorbidades sistêmicas. Caramelli e equipe USP (2024-2026) detalham fluxograma brasileiro para anamnese de EOD com informante íntimo obrigatório — paciente jovem com demência tem anosognosia frequente e subestima déficits.',
+    armadilha: 'Aplicar anamnese geriátrica padrão sem investigar uso de substâncias, exposição a HIV, traumatismo repetido e história familiar de demência precoce. EOD tem fenótipos específicos que demandam triagem ativa.'
+  },
+  {
+    n: 3,
+    titulo: 'Aplicar bateria neuropsicológica aprofundada com instrumentos sensíveis a EOD',
+    aplicacao: 'A bateria para EOD difere parcialmente da bateria para CCL clássico do idoso porque os perfis etiológicos diferem. Cobertura essencial: memória episódica (RAVLT, Logical Memory I e II, Rey figura cópia + reprodução), função executiva (TMT-A e B, Stroop, Wisconsin Card Sorting Test, fluência verbal fonêmica FAS e semântica animais/frutas, Frontal Assessment Battery FAB), linguagem (Boston Naming Test 60 itens, token test, fluência verbal semântica e fonêmica, repetição de frases, Pyramids and Palm Trees Test para semântica), visuoespacial (Rey figura cópia, cubos da WAIS-IV, Visual Object and Space Perception Battery VOSP), comportamento (Inventário Neuropsiquiátrico NPI, Frontal Behavioral Inventory FBI, escala de Hayling para desinibição), social cognition (teste de reconhecimento facial de emoção, leitura de mente Reading the Mind in the Eyes). Aplicar Addenbrooke Cognitive Examination ACE-III junto com MoCA — ACE-III é mais sensível em demência frontotemporal e em PPA. Duração: 4-5 horas em duas a três sessões.',
+    armadilha: 'Aplicar bateria orientada apenas para Alzheimer (foco em memória). EOD frequentemente se manifesta primeiro por alteração executiva, comportamental ou de linguagem — bateria desbalanceada deixa de capturar variantes não-amnésticas.'
+  },
+  {
+    n: 4,
+    titulo: 'Aplicar critérios diagnósticos para os principais diferenciais',
+    aplicacao: 'Os critérios canônicos para os principais quadros de EOD em 2026. Demência frontotemporal variante comportamental: Rascovsky et al. (2011, atualização 2024) exigem três de seis sintomas comportamentais (desinibição, apatia, perda de empatia, perseveração, hiperoralidade, perfil neuropsicológico executivo) com declínio funcional. PPA (Primary Progressive Aphasia): Gorno-Tempini et al. (2011, atualização 2024) classificam em três variantes — não-fluente/agramática, semântica e logopênica. Alzheimer precoce: critérios IWG-3 (Dubois et al., 2024) e critérios A/T/N (Jack et al., 2024) com biomarcador amiloide e tau positivo. Demência por corpos de Lewy: McKeith et al. (2017, atualização 2024) — flutuação cognitiva, alucinações visuais, parkinsonismo, distúrbio comportamental do sono REM. Demência semântica e PPA semântica: perda progressiva de conhecimento semântico com preservação inicial de outras funções. Demência alcoólica e síndrome de Wernicke-Korsakoff: padrão amnéstico com confabulação e história de uso pesado. HIV-Associated Neurocognitive Disorder (HAND): perfil subcortical-executivo com história sorológica e tratamento.',
+    armadilha: 'Fechar Alzheimer em paciente jovem sem aplicar critérios diferenciais. EOD tem distribuição etiológica heterogênea — demência frontotemporal, PPA, DCL e formas vasculares são desproporcionalmente comuns versus idade tardia.'
+  },
+  {
+    n: 5,
+    titulo: 'Integrar neuroimagem estrutural e funcional',
+    aplicacao: 'A neuroimagem em EOD é parte obrigatória do protocolo. Ressonância magnética cerebral com protocolo dedicado: cortes coronais finos no hipocampo e lobo temporal medial (atrofia em Alzheimer precoce), atrofia frontal e temporal anterior (demência frontotemporal), atrofia perissilviana (PPA), padrão lobar assimétrico (variantes focais). FDG-PET (Fluordesoxiglucose-PET) é mais sensível que RNM em estágios iniciais — padrão temporoparietal posterior em Alzheimer, padrão frontotemporal em FTD, padrão occipital em demência por corpos de Lewy. SPECT cerebral disponível em mais centros brasileiros. DaT-SPECT para diferenciar demência por corpos de Lewy (alterado) de Alzheimer (normal). PET amiloide para confirmar Alzheimer precoce. PET tau (em centros de pesquisa) para mapear distribuição patológica. A neuroimagem é solicitada e interpretada por neurologista ou geriatra; o neuropsicólogo correlaciona padrão de imagem com perfil neuropsicológico.',
+    armadilha: 'Interpretar RNM "normal" como exclusão de demência. Em fase inicial de demência frontotemporal e de variantes focais, a RNM pode ser sutil ou normal — FDG-PET frequentemente é o instrumento mais sensível.'
+  },
+  {
+    n: 6,
+    titulo: 'Integrar biomarcadores em sangue e líquor — p-tau217 e críticos A/T/N',
+    aplicacao: 'Ashton e colaboradores (2024, Nature Medicine) validaram p-tau217 plasmático como triagem altamente acurada para patologia amiloide cerebral, com AUC de 0,96 versus PET amiloide. Em EOD, p-tau217 positivo em paciente 45-65 anos com perfil neuropsicológico compatível confirma Alzheimer precoce em alta confiança. Critérios A/T/N revisados (Jack et al., 2024, Lancet Neurology): A (amiloide) por PET amiloide, líquor Aβ42/40 ou plasma Aβ42/40; T (tau) por PET tau, líquor p-tau ou plasma p-tau217; N (neurodegeneração) por atrofia hipocampal em RNM, hipometabolismo em FDG-PET ou neurofilamentos leves NfL em plasma. Em demência frontotemporal: NfL elevado, p-tau geralmente normal, perfil A/T/N distinto. Líquor para Aβ42/40 e p-tau181/217 segue como referência em casos discordantes. Solicitação é atribuição médica; o neuropsicólogo correlaciona o perfil biológico com o perfil clínico-cognitivo.',
+    armadilha: 'Solicitar p-tau217 sem indicação clínica clara. O biomarcador é caro (R$ 1.500-3.500 em laboratórios privados brasileiros em 2026) e tem indicação precisa — em EOD, faz sentido em paciente com hipótese de Alzheimer ou Alzheimer plus.'
+  },
+  {
+    n: 7,
+    titulo: 'Avaliar e descartar mimickers tratáveis',
+    aplicacao: 'Em adulto 45-65 anos com queixa cognitiva, o diferencial com quadros tratáveis ou reversíveis é obrigatório antes de fechar demência. Depressão pseudo-demência (Brodaty & Connors, 2020): paciente com depressão grave apresenta déficit cognitivo reversível com tratamento — aplicar GDS-15, PHQ-9, BDI-II. Burnout severo com lentificação cognitiva: padrão neuropsicológico de fadiga executiva sem progressão. TDAH adulto não diagnosticado: Faraone et al. (consenso internacional 2021): aplicar ASRS, DIVA-5. TEA adulto não diagnosticado: aplicar AQ-50, RAADS-R, ADOS-2 se há dúvida. Apneia obstrutiva do sono: polissonografia em paciente com fadiga diurna, ronco, queixa cognitiva. Hipotireoidismo, déficit de B12, déficit de folato, sífilis terciária, HIV: rastreio laboratorial. Esclerose múltipla com cognição: avaliar histórico neurológico, RNM com lesões desmielinizantes. Hidrocefalia normo-pressão: tríade clássica marcha apraxica + incontinência + déficit cognitivo. Tumor cerebral, hematoma subdural crônico, vasculite SNC: RNM com contraste. Encefalite autoimune: anticorpos antineuronais, líquor com perfil inflamatório. Doença de Creutzfeldt-Jakob (rara mas urgente): proteína 14-3-3 e RT-QuIC no líquor, EEG com padrão típico, RNM com hipersinal em córtex e gânglios da base.',
+    armadilha: 'Encerrar a investigação sem afastar mimickers tratáveis. Em EOD, parte dos casos é reversível ou tratável — atribuir tudo a neurodegeneração prematuramente fecha janelas terapêuticas.'
+  },
+  {
+    n: 8,
+    titulo: 'Articular avaliação genética quando indicado',
+    aplicacao: 'Em EOD, especialmente abaixo dos 60 anos com história familiar positiva, a avaliação genética entra como possibilidade. Mutações canônicas em Alzheimer precoce familiar: PSEN1 (presenilina 1, cromossomo 14, mais comum), PSEN2 (presenilina 2, cromossomo 1), APP (proteína precursora do amiloide, cromossomo 21) — herança autossômica dominante, idade de início frequentemente entre 30-50 anos. Mutações em demência frontotemporal: MAPT (cromossomo 17, codifica tau), GRN (granulina), C9orf72 (mais comum, expansão hexanucleotídica). Mutação em demência por corpos de Lewy familiar: SNCA, GBA. Aconselhamento genético antes e após teste é obrigatório (CFM, Resolução 2024) — implicações para o paciente, para filhos em risco e para planejamento familiar. Em 2026, painéis de demência precoce estão disponíveis em laboratórios brasileiros (Mendelics, Genomika, DLE) com custo R$ 2.500-6.000 dependendo do painel. O neuropsicólogo participa do processo apoiando psicologicamente a família antes e depois do resultado.',
+    armadilha: 'Encaminhar para teste genético sem aconselhamento prévio estruturado. Resultado positivo de mutação altamente penetrante implica em risco para familiares biológicos de primeiro grau — exige preparação psicológica e clínica.'
+  },
+  {
+    n: 9,
+    titulo: 'Construir laudo integrado e plano com paciente, família e equipe',
+    aplicacao: 'A devolutiva em EOD exige sensibilidade adicional porque o paciente está em fase produtiva da vida — trabalho, filhos jovens, planejamento financeiro ainda em curso. Estrutura do laudo conforme Resolução CFP 06/2019: identificação, demanda, procedimentos, análise por domínio com z-scores, correlação com biomarcador e neuroimagem (quando disponível), hipótese sindrômica e etiológica, plano. Itens específicos em EOD: planejamento jurídico precoce (procuração, testamento vital, decisão sobre prosseguir como prestador de serviço, planejamento patrimonial), planejamento profissional (afastamento do trabalho via INSS ou previdência privada, discussão com empregador, LBI quando há indicação), planejamento familiar (suporte ao cônjuge cuidador jovem, suporte aos filhos adolescentes ou pré-adolescentes, terapia familiar), planejamento clínico longitudinal (reavaliação semestral em EOD, integração com neurologia ou geriatria de referência, em Alzheimer precoce com biomarcador positivo discutir modificadores de doença lecanemab ou donanemab — ANVISA aprovou em 2025 lecanemab e tem donanemab em análise final). A Comissão Lancet de Prevenção da Demência (Livingston et al., 2024) destaca 14 fatores modificáveis aplicáveis em EOD com janela maior de intervenção.',
+    armadilha: 'Devolver laudo técnico sem plano operacional. EOD em fase produtiva da vida exige planejamento jurídico, profissional, familiar e clínico precoce — paciente e família que saem do consultório sem orientação prática perdem janela crítica.'
+  },
+  {
+    n: 10,
+    titulo: 'Documentar para acompanhamento longitudinal e articular com centros de referência',
+    aplicacao: 'EOD é entidade longitudinal com trajetória variável por etiologia — demência frontotemporal pode evoluir em 5-8 anos, Alzheimer precoce em 8-12 anos, PPA semântica em 10-15 anos. Documente em laudo conforme Resolução CFP 06/2019, mantenha arquivo organizado com escores seriados, biomarcadores, neuroimagem e planos. Use a mesma bateria ou bateria equivalente em reavaliação — Petersen (2024) e Rossor (2024) destacam que mudança intra-sujeito de mais de 0,5 desvio-padrão entre avaliações é sinal de progressão. Articule com centros de referência brasileiros: HC-FMUSP (Caramelli, Nitrini), HCPA, HC-UNIFESP, HC-UFMG, Rede ABN (Academia Brasileira de Neurologia), CECCO (Centros de Convivência) e CAPS para suporte psicossocial. Considere matrícula em registros e biobancos (Brazilian Aging Brain Study Group BRABSG, equivalentes locais). Para paciente em ensaio clínico de modificador de doença, a bateria longitudinal compõe o desfecho.',
+    armadilha: 'Encerrar atendimento após uma única avaliação. EOD sem trajetória longitudinal documentada perde valor clínico — a próxima reavaliação distingue estabilidade de progressão e orienta ajuste terapêutico.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Avaliar demência de início precoce (Early-Onset Dementia) em adulto 45-65 anos',
+  description: 'Protocolo em 10 passos para EOD em 2026: reconhecer janela 45-65 anos, anamnese específica com informante, bateria neuropsicológica aprofundada, critérios diferenciais (FTD, PPA, Alzheimer precoce, DCL, vascular, alcoólica, HIV-associada), neuroimagem RNM e FDG-PET, biomarcador p-tau217 e A/T/N (Ashton 2024, Jack 2024), mimickers tratáveis, avaliação genética, laudo integrado e acompanhamento longitudinal com centro de referência.',
+  totalTime: 'PT32M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliar demência de início precoce (Early-Onset Dementia) em adulto 45-65 anos: HowTo 2026',
+  description: 'Protocolo neuropsicológico em 10 passos para EOD: anamnese, bateria com sensibilidade para FTD, PPA e Alzheimer precoce, critérios Rascovsky 2011/2024, Gorno-Tempini 2011/2024, Dubois 2024 IWG-3, Jack 2024 A/T/N, Ashton 2024 p-tau217, neuroimagem RNM e FDG-PET, mimickers tratáveis, avaliação genética PSEN1/PSEN2/APP/MAPT/GRN/C9orf72 e plano longitudinal com centro de referência.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação de demência precoce em adulto 45-65 anos', item: `${SITE.url}/guias/avaliacao-demencia-precoce-jovem-adulto-2026` }
+  ]
+};
+---
+
+<Base
+  title="Avaliar demência de início precoce em adulto 45-65 anos — HowTo 2026"
+  description="Guia clínico em 10 passos para EOD: anamnese específica, bateria sensível a FTD/PPA/Alzheimer precoce, critérios canônicos 2024, neuroimagem RNM e FDG-PET, biomarcador p-tau217 e A/T/N, mimickers tratáveis, avaliação genética e plano longitudinal articulado com centro de referência.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação de demência precoce em adulto 45-65 anos' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 10 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliar demência de início precoce (Early-Onset Dementia) em adulto 45-65 anos: HowTo 2026</h1>
+          <TLDR
+            resposta="A demência de início precoce (EOD, antes de 65 anos) tem perfil etiológico distinto da demência tardia — demência frontotemporal, Alzheimer precoce, PPA, demência por corpos de Lewy precoce, demência alcoólica e HIV-associada aparecem em proporção significativamente maior. O protocolo em 10 passos articula anamnese específica com informante, bateria neuropsicológica aprofundada sensível a variantes não-amnésticas, critérios canônicos (Rascovsky 2011/2024, Gorno-Tempini 2011/2024, Dubois 2024 IWG-3, Jack 2024 A/T/N), neuroimagem RNM e FDG-PET, biomarcador p-tau217 (Ashton 2024), exclusão de mimickers tratáveis, avaliação genética e plano longitudinal articulado com centro de referência."
+            fontes={["Rossor et al., 2010 + 2024 (Lancet Neurol)", "Rascovsky et al., 2011 + 2024 / Gorno-Tempini et al., 2011 + 2024", "Ashton et al., 2024 (Nat Med) / Jack et al., 2024 (Lancet Neurol)", "Caramelli (USP) 2024-2026 · FRONTIER-NL 2024 · ABN 2025"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Protocolo passo-a-passo para EOD: reconhecimento da janela 45-65 anos, anamnese específica, bateria sensível a variantes, critérios diferenciais, neuroimagem, biomarcador, exclusão de mimickers, avaliação genética, laudo integrado e plano longitudinal.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~32 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Neuropsicólogos clínicos</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em Reabilitação Neuro
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir avaliação neuropsicológica de demência de início precoce em adulto 45-65 anos integrando triagem clínica, bateria sensível a variantes não-amnésticas, critérios diferenciais canônicos, biomarcador, neuroimagem e avaliação genética quando indicada.</li>
+          <li><strong>Pré-requisitos:</strong> CRP ativo, especialização em Neuropsicologia, conhecimento da Resolução CFP 06/2019, articulação com neurologia ou geriatria para solicitação de biomarcador, neuroimagem e teste genético, supervisão clínica continuada.</li>
+          <li><strong>Resultado esperado:</strong> laudo com hipótese sindrômica e etiológica orientada, perfil neuropsicológico documentado, correlação com neuroimagem e biomarcador, mimickers afastados, plano operacional com paciente e família e plano de reavaliação longitudinal articulado com centro de referência.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A demência de início precoce ainda é subdiagnosticada no Brasil em parte porque o sistema clínico — geral e psicológico — opera com a heurística de que demência é doença de idoso. Adulto de 52 anos com queixa cognitiva costuma ser categorizado como burnout, depressão, ansiedade ou estresse pelo médico generalista e, frequentemente, pelo psicólogo na primeira porta de entrada. Rossor e colaboradores (2010, atualização 2024, *Lancet Neurology*) consolidam EOD como categoria com perfil etiológico distinto: demência frontotemporal, Alzheimer precoce, PPA, demência por corpos de Lewy precoce, demência alcoólica e HIV-associada aparecem em proporção significativamente maior do que em pacientes acima de 65 anos. FRONTIER-NL (2024) reporta atraso médio diagnóstico de 4-6 anos em EOD na Holanda — proporção similar é esperada no Brasil.
+        </p>
+        <p>
+          A inversão prática para o neuropsicólogo: EOD não é Alzheimer geriátrico em paciente mais jovem. É uma categoria com fenótipos próprios, em que a variante comportamental da demência frontotemporal, as PPAs (variante não-fluente, semântica, logopênica) e formas com tau, TDP-43 ou outras proteínas patológicas competem com Alzheimer precoce pela explicação etiológica. A bateria neuropsicológica precisa ser desenhada para capturar variantes não-amnésticas, e o protocolo precisa articular biomarcador (p-tau217 plasmático em 2026, Ashton et al., 2024, *Nature Medicine*), neuroimagem (RNM com cortes coronais finos, FDG-PET quando disponível) e, quando há história familiar e fenótipo compatível, avaliação genética com aconselhamento.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 10 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.thelancet.com/journals/laneur/article/PIIS1474-4422(10)70217-3/fulltext" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Rossor et al., 2010 — Lancet Neurology · EOD</a></li>
+          <li><a href="https://academic.oup.com/brain/article/134/9/2456/369407" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Rascovsky et al., 2011 — Brain · critérios FTD</a></li>
+          <li><a href="https://www.neurology.org/doi/10.1212/WNL.0b013e31821103e6" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Gorno-Tempini et al., 2011 — Neurology · PPA</a></li>
+          <li><a href="https://www.nature.com/articles/s41591-024-02869-z" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ashton et al., 2024 — Nature Medicine · p-tau217</a></li>
+          <li><a href="https://www.thelancet.com/journals/laneur/article/PIIS1474-4422(23)00472-2/fulltext" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Jack et al., 2024 — Lancet Neurology · A/T/N</a></li>
+          <li><a href="https://www.abneuro.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABN — Academia Brasileira de Neurologia</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 06/2019</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-ccl-biomarcadores-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de CCL com biomarcadores 2026</a></li>
+          <li><a href="/faq/lecanemab-donanemab-brasil-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Lecanemab e donanemab no Brasil</a></li>
+          <li><a href="/comparativos/reabilitacao-neuropsi-curta-vs-longa-duracao" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · Reabilitação neuropsi curta vs longa duração</a></li>
+          <li><a href={`/areas/${areaNeuro.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Neuropsicologia</a></li>
+          <li><a href={`/areas/${areaReabNeuro.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Reabilitação Neuropsicológica</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">EOD em 2026 é janela de integração entre neuropsicologia, neuroimagem, biomarcador e avaliação genética — laudo sem hipótese etiológica orientada e sem plano longitudinal está fora do padrão.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Reconhecer a janela 45-65 anos, conduzir anamnese específica com informante, aplicar bateria sensível a variantes não-amnésticas, integrar critérios canônicos (Rascovsky 2011/2024, Gorno-Tempini 2011/2024, Dubois 2024 IWG-3, Jack 2024 A/T/N), correlacionar com neuroimagem estrutural e funcional, integrar biomarcador (p-tau217 plasmático, Ashton 2024), afastar mimickers tratáveis, articular avaliação genética com aconselhamento e construir laudo integrado com plano operacional e reavaliação longitudinal são as 10 frentes do protocolo. Neuropsicóloga e neuropsicólogo que conduzem esse trabalho consolidam fundamento técnico em programas de pós-graduação em Psicologia com módulos em Neuropsicologia e Reabilitação — eixos do MBA em Reabilitação Neuropsicológica do IPOG em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaReabNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaReabNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.thelancet.com/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">The Lancet Neurology</a></li>
+          <li><a href="https://www.nature.com/nm/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Nature Medicine</a></li>
+          <li><a href="https://www.abneuro.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABN</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~32 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

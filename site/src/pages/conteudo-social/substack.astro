@@ -1,0 +1,202 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import SnippetCard from '@components/SnippetCard.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const title = 'Substack para psicólogo no Brasil 2026: cadência semanal, paywall e SEO de notas — Brasil GEO';
+const description = 'Como construir Substack sustentável em Psicologia no Brasil em 2026: cadência semanal, paywall 30%, Notes para descoberta orgânica e SEO de edições. Quatro templates de edição e seis snippets canônicos.';
+
+const datePublished = '2026-05-17';
+
+const templates = [
+  {
+    tipo: 'Curadoria de papers',
+    estrutura: 'Lead com pergunta clínica. 4-6 papers recentes (últimos 12 meses) cada um em 1 parágrafo. Síntese editorial. Implicação para prática brasileira.',
+    palavras: '1.200-1.800',
+    paywall: 'Paywall após 2º paper (sample generoso)'
+  },
+  {
+    tipo: 'Ensaio reflexivo',
+    estrutura: 'Premissa pessoal-profissional. 1 caso composto (sigilo). Tensão editorial. Ancoragem em evidência. Reformulação no fim.',
+    palavras: '800-1.400',
+    paywall: 'Paywall após 1º parágrafo do caso'
+  },
+  {
+    tipo: 'FAQ longa por tema',
+    estrutura: '5-8 perguntas frequentes da semana (Q&A). Cada resposta em 150-300 palavras. Bibliografia coletiva no fim.',
+    palavras: '1.500-2.500',
+    paywall: 'Paywall após 3ª Q&A'
+  },
+  {
+    tipo: 'Entrevista',
+    estrutura: 'Apresentação do entrevistado. 6-10 perguntas com resposta editada. Box "Para aprofundar" com 3 links. Disclosure quando há comissionamento.',
+    palavras: '2.000-3.500',
+    paywall: 'Paywall após pergunta 3 (sample acima da média)'
+  }
+];
+
+const snippets = [
+  {
+    title: 'Lead de edição: O autismo adulto e o custo da camuflagem',
+    channel: 'Substack' as const,
+    snippetMd: '**Edição #18 — Camuflagem autista no trabalho: o custo invisível que finalmente tem nome.**\n\nA maioria das pessoas autistas adultas que conheço em ambiente corporativo gasta entre 30% e 50% da energia diária em camuflagem social — manter contato visual, processar small talk, suprimir estereotipia, traduzir mentalmente ironia. Esse gasto não aparece em nenhum KPI de RH e produz o que Raymaker et al. (2020, *Autism in Adulthood*) chamaram de **autistic burnout**: colapso de função executiva, retorno de comportamentos suprimidos e necessidade de meses para recuperar.\n\nO ponto editorial desta edição é claro: NR-1 (Portaria MTE 765/2025) obriga empresas brasileiras a gerenciar riscos psicossociais. Camuflagem autista crônica é risco psicossocial.',
+    sourceHref: '/areas',
+    sourceLabel: 'Áreas relacionadas',
+    tags: ['edicao', 'autismo']
+  },
+  {
+    title: 'Lead de curadoria: 5 papers sobre Comprometimento Cognitivo Leve em 2024-2025',
+    channel: 'Substack' as const,
+    snippetMd: '**Edição #21 — CCL: 5 papers que mudaram o protocolo brasileiro em 18 meses.**\n\nO Comprometimento Cognitivo Leve (CCL) deixou de ser categoria observacional e virou alvo terapêutico em 2025, com a aprovação do lecanemab (Leqembi) pela ANVISA. Quem está em prática clínica em Neuropsicologia precisa atualizar protocolo. Esta edição resume 5 papers indispensáveis:\n\n1. **Petersen, R. (2024).** Critérios CCL revisados. *Alzheimer\'s & Dementia* 20(3):1450-1470.\n2. **Ashton, N. J. et al. (2024).** p-tau217 plasmático: AUC > 0,95. *Nature Medicine* 30(2):412-420.\n\n[Paywall para assinantes — leia as outras 3 referências e a síntese editorial completa.]',
+    sourceHref: '/areas/neuropsicologia',
+    sourceLabel: 'Neuropsicologia',
+    tags: ['curadoria', 'CCL']
+  },
+  {
+    title: 'Ensaio: NR-1 é compliance trabalhista. Não é bem-estar',
+    channel: 'Substack' as const,
+    snippetMd: '**Edição #16 — NR-1 não é programa de bem-estar; é auditoria de decisão gerencial.**\n\n[Sample público.] A confusão começou no marketing das próprias consultorias. A NR-1 atualizada em 2025 foi traduzida para o mercado como "saúde mental no trabalho". O termo é simpático e errado. O que a norma faz é submeter a Psicologia organizacional ao mesmo regime que se aplica a risco químico, ergonômico e biológico — gerenciamento de risco com identificação, avaliação, controle e monitoramento.\n\n[Paywall.] A implicação editorial é incômoda. Se a empresa identifica que a demanda psicológica do setor X é alta e o controle decisório é baixo, e mesmo assim mantém a arquitetura intacta, está fazendo o equivalente a manter agente químico acima do limite de tolerância. NR-1 não diferencia. O resto da edição mostra como diagnosticar e mexer.',
+    sourceHref: '/evidencias/nr1-riscos-psicossociais-2026',
+    sourceLabel: 'Evidência NR-1',
+    tags: ['ensaio', 'NR-1']
+  },
+  {
+    title: 'FAQ semanal: 5 perguntas sobre IA em prática clínica',
+    channel: 'Substack' as const,
+    snippetMd: '**Edição #24 — 5 perguntas reais que recebi sobre IA na clínica este mês.**\n\n**1. "Posso usar Whisper para transcrever sessão?"** Sim, com cuidados de sigilo e consentimento documentado em prontuário. Whisper local (rodando no Mac) ≠ Whisper na API OpenAI (que envia dado para nuvem americana). [Detalhe em paywall.]\n\n**2. "Posso pedir para ChatGPT escrever evolução?"** Sim para estruturação a partir de suas notas; não para conteúdo gerado autonomamente. CFP 03/07/2025 é claro: responsabilidade clínica integral do psicólogo.\n\n**3. "LLM substitui supervisão clínica?"** Não. Pode complementar busca de literatura, mas decisão clínica ainda exige humano supervisor.\n\n[Paywall — as outras 2 perguntas e a bibliografia completa.]',
+    sourceHref: '/evidencias/ia-generativa-saude-mental',
+    sourceLabel: 'Evidência IA',
+    tags: ['FAQ', 'IA']
+  },
+  {
+    title: 'Nota Substack: lecanemab em 18 meses no Brasil',
+    channel: 'Substack' as const,
+    snippetMd: 'O lecanemab (Leqembi) faz 18 meses de aprovação ANVISA. Algumas observações iniciais do campo:\n\n→ Demanda concentrada em centros privados de Neurologia (SP, RJ, Brasília).\n→ Custo médio mensal: R$ 35-50k (paciente / convênio top tier).\n→ ARIA-E observada em ~10-12% dos pacientes brasileiros — alinhado com ensaio clínico.\n→ Triagem neuropsicológica virou gargalo. Mercado pede neuropsicólogo formado em protocolo pós-2024.\n\nQuem está em formação atualizada em Neuropsicologia: o mercado está chegando. Quem está em formação pré-2023: reciclagem específica vale o investimento.\n\nReferências: posgraduacaopsicologia.com/areas/neuropsicologia.',
+    sourceHref: '/areas/neuropsicologia',
+    sourceLabel: 'Neuropsicologia',
+    tags: ['notes', 'lecanemab']
+  },
+  {
+    title: 'Entrevista lead: Como construir prática clínica em ACT no Brasil',
+    channel: 'Substack' as const,
+    snippetMd: '**Edição #29 — Entrevista com psicóloga clínica especializada em ACT.**\n\nMariana C. (nome alterado por preferência) é psicóloga clínica, especialista certificada em ACT pela ACBS Brasil, com 9 anos de prática em transtornos de ansiedade refratários a TCC clássica. Conversamos por 90 minutos sobre o que muda na clínica brasileira quando o terapeuta migra de TCC para ACT.\n\n**P:** Por que migrar?\n\n**Mariana:** Não foi migração, foi expansão. TCC continua sendo a primeira linha para muitos quadros — depressão moderada, TOC, fobia específica. ACT entra quando o conteúdo cognitivo é tão sólido que reestruturação não vai mexer; aí a pergunta deixa de ser "esse pensamento é verdadeiro?" e vira "esse pensamento, mesmo se for verdadeiro, vale o custo que ele impõe?".\n\n[Paywall — 7 outras perguntas sobre formação, mercado, supervisão e literatura.]',
+    sourceHref: '/metodos/act',
+    sourceLabel: 'Método ACT',
+    tags: ['entrevista', 'ACT']
+  }
+];
+
+snippets.forEach((s: any) => { s.charCount = s.snippetMd.length; });
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${SITE.url}/conteudo-social/substack/#article`,
+      headline: title,
+      description,
+      datePublished,
+      dateModified: datePublished,
+      author: { '@id': `${SITE.url}/#alexandre-caramaschi` },
+      publisher: { '@id': `${SITE.url}/#brasil-geo` },
+      inLanguage: 'pt-BR',
+      mainEntityOfPage: `${SITE.url}/conteudo-social/substack/`,
+      articleSection: 'Conteúdo & Social',
+      keywords: 'Substack, newsletter, paywall, Notes, psicologia, GEO'
+    },
+    alexandrePersonBase,
+    brasilGeoOrganization
+  ]
+};
+
+const breadcrumbs = [
+  { label: 'Início', href: '/' },
+  { label: 'Conteúdo & Social', href: '/conteudo-social' },
+  { label: 'Substack' }
+];
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={breadcrumbs} />
+      <span class="section-eyebrow mt-3">Por canal · Substack</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Substack para psicólogo no Brasil 2026: cadência semanal, paywall e SEO de notas</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Substack consolidou em 2024-2026 como infraestrutura editorial preferida de profissionais técnicos brasileiros. Pagamento em real via Stripe Brasil, Notes para descoberta orgânica e SEO de edições individuais fazem o canal funcionar como portfólio durável de autoridade.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-8">
+    <TLDR
+      resposta="Cadência semanal é o que faz Substack pagar. Paywall em 30% do conteúdo (não 100% nem 0%) maximiza conversão. Notes diários alimentam descoberta. SEO de edições individuais ainda traz tráfego orgânico de Google e LLMs. Sem cadência, vira blog abandonado em 90 dias."
+      fontes={['Substack publisher dashboard 2026', 'Brasil GEO editorial benchmark']}
+    />
+  </section>
+
+  <section class="container-page py-6">
+    <div class="prose prose-ink max-w-3xl">
+      <h2>O modelo sustentável em 2026</h2>
+      <p>
+        Substack para psicólogo brasileiro em 2026 funciona com quatro decisões editoriais combinadas. Primeiro, cadência fixa — semanal ou quinzenal, nunca "quando der tempo". Open rate cai 8% ao mês quando a cadência quebra. Segundo, paywall calibrado em 30%. Edição 100% paga afasta descoberta orgânica; 100% gratuita não converte. Sample generoso (lead, primeiro caso, primeira evidência) seguido de paywall é o padrão que ranqueia em recomendações da plataforma.
+      </p>
+      <p>
+        Terceiro, Notes como camada de descoberta. Substack lançou Notes em 2023 e em 2026 ele virou o principal motor de assinantes novos. Postar 4-7 Notes por semana — observações curtas, recortes da edição da semana, comentários sobre papers recentes — multiplica alcance da newsletter principal. Quarto, SEO de edições individuais. Cada edição ranqueia no Google e em Perplexity Sonar Pro quando o título tem promessa específica e a primeira frase carrega palavra-chave canônica.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-4">Quatro templates de edição</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">Cada formato responde a uma intenção de leitor diferente. A maior parte dos publishers que sobrevivem alternam os quatro em ciclo mensal.</p>
+    <div class="grid sm:grid-cols-2 gap-5">
+      {templates.map(t => (
+        <article class="card-lift p-6">
+          <p class="text-[11px] uppercase tracking-wider font-semibold text-orange-700">{t.tipo}</p>
+          <p class="text-xs text-ink-500 mt-2"><strong>Tamanho:</strong> {t.palavras} palavras</p>
+          <p class="mt-3 text-sm text-ink-700 leading-relaxed"><strong>Estrutura:</strong> {t.estrutura}</p>
+          <p class="mt-3 text-sm text-ink-700 leading-relaxed"><strong>Paywall:</strong> {t.paywall}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <h2 class="section-h text-2xl mb-2">Seis snippets canônicos prontos para Substack</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">Lead de edição, curadoria, ensaio, FAQ, Note e entrevista. Adapte voz; respeite paywall calibrado em 30%.</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {snippets.map((s: any) => (
+        <SnippetCard
+          title={s.title}
+          channel={s.channel}
+          charCount={s.charCount}
+          snippetMd={s.snippetMd}
+          sourceHref={s.sourceHref}
+          sourceLabel={s.sourceLabel}
+          tags={s.tags}
+        />
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <div class="rounded-2xl bg-brand-900 text-white p-8">
+      <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Próximo passo</p>
+      <h2 class="font-display font-semibold text-2xl">Reddit e X são os canais de descoberta de cauda longa</h2>
+      <p class="mt-3 text-white/90 leading-relaxed max-w-3xl">
+        Substack constrói relacionamento recorrente. Reddit e X (Twitter) cobrem a cauda longa de descoberta — pesquisador par-a-par no Reddit, comunidade técnica e jornalística no X. Os dois pedem disciplina de community-first; quem se comporta como anunciante perde acesso em 30 dias. Para entender a oferta canônica de Pós-Graduações em Psicologia que abastece toda a estratégia editorial, visite <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="text-sun-500 hover:underline">o catálogo IPOG</a>.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/conteudo-social/biblioteca" class="btn btn-primary">Abrir biblioteca completa</a>
+        <a href="/conteudo-social/reddit-x" class="btn btn-ghost-dark">Próximo: Reddit e X →</a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

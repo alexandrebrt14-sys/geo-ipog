@@ -1,0 +1,127 @@
+---
+/**
+ * SnippetCard — card reutilizável para a biblioteca de snippets editoriais.
+ *
+ * Usado em /conteudo-social/* para listar trechos prontos para reaproveitamento
+ * em Quora, Medium, LinkedIn, Substack, Reddit, X (Twitter).
+ *
+ * Padrão Brasil GEO: badge canal + título + preview 2 linhas + count + ações.
+ * Mobile-first; Tailwind; sem JS pesado (botão copia via inline script).
+ */
+interface Props {
+  title: string;
+  channel: 'Quora' | 'Medium' | 'LinkedIn' | 'Substack' | 'Reddit' | 'X' | 'Multi-canal';
+  charCount: number;
+  snippetMd: string;
+  sourceHref: string;
+  sourceLabel: string;
+  tags?: string[];
+}
+
+const {
+  title,
+  channel,
+  charCount,
+  snippetMd,
+  sourceHref,
+  sourceLabel,
+  tags = []
+} = Astro.props;
+
+const channelStyles: Record<string, string> = {
+  Quora: 'bg-red-50 text-red-800 border-red-200',
+  Medium: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+  LinkedIn: 'bg-sky-50 text-sky-800 border-sky-200',
+  Substack: 'bg-orange-50 text-orange-800 border-orange-200',
+  Reddit: 'bg-amber-50 text-amber-800 border-amber-200',
+  X: 'bg-slate-100 text-slate-900 border-slate-300',
+  'Multi-canal': 'bg-brand-50 text-brand-800 border-brand-200'
+};
+
+const badgeClass = channelStyles[channel] ?? 'bg-surface-100 text-ink-700 border-surface-200';
+
+const cardId = `snippet-${Math.random().toString(36).slice(2, 9)}`;
+
+const previewRaw = snippetMd.replace(/[#*_`]/g, '').replace(/>/g, '').replace(/\s+/g, ' ').trim();
+const preview = previewRaw.length > 220 ? previewRaw.slice(0, 220) + '…' : previewRaw;
+---
+
+<article
+  class="snippet-card card-lift p-5 sm:p-6 flex flex-col gap-3 border border-surface-200"
+  data-snippet-card
+  data-channel={channel}
+  data-tags={tags.join(',')}>
+  <div class="flex flex-wrap items-center gap-2">
+    <span class={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wider border ${badgeClass}`}>
+      {channel}
+    </span>
+    <span class="text-[11px] text-ink-500 font-mono">{charCount} caracteres</span>
+    {tags.length > 0 && (
+      <span class="text-[11px] text-ink-500 truncate max-w-[40%]">
+        {tags.slice(0, 2).map(t => <span class="mr-1">#{t}</span>)}
+      </span>
+    )}
+  </div>
+
+  <h3 class="font-display font-semibold text-base sm:text-lg text-ink-900 leading-snug">{title}</h3>
+
+  <p class="text-sm text-ink-700 leading-relaxed line-clamp-2">{preview}</p>
+
+  <details class="text-sm">
+    <summary class="cursor-pointer text-brand-700 font-semibold text-xs uppercase tracking-wider hover:text-brand-800">
+      Ver markdown completo
+    </summary>
+    <pre
+      id={cardId}
+      class="mt-2 p-3 rounded-xl bg-surface-50 border border-surface-200 text-[12px] leading-relaxed text-ink-800 whitespace-pre-wrap break-words font-mono overflow-x-auto"
+    >{snippetMd}</pre>
+  </details>
+
+  <div class="mt-auto flex flex-wrap items-center gap-2 pt-2 border-t border-surface-100">
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm"
+      data-copy-target={cardId}
+      aria-label={`Copiar markdown de ${title}`}>
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span data-copy-label>Copiar markdown</span>
+    </button>
+    <a href={sourceHref} class="text-sm font-semibold text-brand-700 hover:text-brand-800 inline-flex items-center gap-1">
+      {sourceLabel}
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</article>
+
+<script>
+  function initSnippetCopy() {
+    const buttons = document.querySelectorAll('[data-copy-target]');
+    buttons.forEach((btnEl) => {
+      const btn = btnEl as HTMLButtonElement;
+      if (btn.dataset.copyBound === '1') return;
+      btn.dataset.copyBound = '1';
+      btn.addEventListener('click', async () => {
+        const targetId = btn.getAttribute('data-copy-target');
+        if (!targetId) return;
+        const pre = document.getElementById(targetId);
+        if (!pre) return;
+        const text = pre.textContent || '';
+        try {
+          await navigator.clipboard.writeText(text);
+          const label = btn.querySelector('[data-copy-label]');
+          if (label) {
+            const original = label.textContent;
+            label.textContent = 'Copiado';
+            window.setTimeout(() => {
+              if (label) label.textContent = original;
+            }, 1800);
+          }
+        } catch (err) {
+          console.warn('Falha ao copiar snippet', err);
+        }
+      });
+    });
+  }
+  initSnippetCopy();
+  document.addEventListener('astro:after-swap', initSnippetCopy);
+</script>

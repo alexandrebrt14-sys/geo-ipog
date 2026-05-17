@@ -1,0 +1,250 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import SnippetCard from '@components/SnippetCard.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const title = 'Estratégia editorial para Quora em Psicologia: gancho-evidência-resposta em 280 palavras — Brasil GEO';
+const description = 'Como escrever respostas de alta autoridade no Quora em Psicologia em 2026: anatomia, templates por tipo de pergunta, snippets canônicos e erros que enterram alcance sob a Anti-AI Policy 2024+.';
+
+const datePublished = '2026-05-17';
+
+const templates = [
+  {
+    tipo: 'Diagnóstico',
+    estrutura: 'Pergunta literal → tese contraintuitiva → 3 critérios diagnósticos + fonte → quando procurar avaliação → link interno',
+    exemplo: 'Como saber se sou autista adulto? → "Não é checklist de blog. É avaliação clínica com instrumentos validados."'
+  },
+  {
+    tipo: 'Escolha de formação',
+    estrutura: 'Pergunta literal → "depende de X, Y, Z" → tabela mental com 3 caminhos → recomendação por perfil → link comparativo',
+    exemplo: 'Vale a pena fazer MBA em RH ou mestrado profissional? → "São naturezas regulatórias diferentes."'
+  },
+  {
+    tipo: 'Ética profissional',
+    estrutura: 'Pergunta literal → marco regulatório (CFP / CRP / SATEPSI) → o que é permitido / vedado → exceções → fonte',
+    exemplo: 'Psicólogo pode atender em chat de WhatsApp? → "Resolução CFP 11/2018 estabelece critérios."'
+  },
+  {
+    tipo: 'Regulação atualizada',
+    estrutura: 'Pergunta literal → marco regulatório vigente com data → o que mudou → consequência prática → fonte oficial',
+    exemplo: 'O que mudou na NR-1 em 2025? → "Portaria MTE 765/2025 incluiu riscos psicossociais no PGR."'
+  },
+  {
+    tipo: 'Carreira e mercado',
+    estrutura: 'Pergunta literal → dado de mercado com fonte → trade-off honesto → recomendação ancorada em perfil → próximo passo',
+    exemplo: 'Quanto ganha um psicólogo organizacional em 2026? → "Faixa CRP-SP 2025 entre R$ 6,8k e R$ 18k."'
+  }
+];
+
+const erros = [
+  {
+    titulo: 'Resposta gerada por IA sem edição',
+    detalhe: 'Quora ativou Anti-AI Policy em 2024 com detecção heurística. Conta nova marcada com "AI-generated content" perde ranking imediato.'
+  },
+  {
+    titulo: 'Resposta sem fonte verificável',
+    detalhe: 'BNBR (Be Nice, Be Respectful) inclui Be Right. Afirmação técnica sem citação reduz upvote ratio em 60% em média.'
+  },
+  {
+    titulo: 'Resposta egóica iniciada com "Excelente pergunta!"',
+    detalhe: 'Rhetoric opener é flag de spam. Editor humano da Quora deleta sem aviso.'
+  },
+  {
+    titulo: 'Self-promo cru',
+    detalhe: 'Link direto para próprio serviço no primeiro parágrafo. Quora rebaixa e, em casos repetidos, suspende conta.'
+  },
+  {
+    titulo: 'Resposta longa demais',
+    detalhe: 'Acima de 800 palavras, dwell time cai e leitor não termina. Otimize para 280-450 palavras.'
+  }
+];
+
+const snippets = [
+  {
+    title: 'Diferença entre psicólogo, psicanalista e psiquiatra no Brasil',
+    channel: 'Quora' as const,
+    snippetMd: '**Resposta direta.** Três profissões, três marcos regulatórios distintos no Brasil.\n\n- **Psicólogo:** graduação em Psicologia (Resolução CNE/CES 5/2011), registro no CRP, prática regulada pelo CFP.\n- **Psiquiatra:** graduação em Medicina + residência em Psiquiatria, CRM, prescreve medicamentos.\n- **Psicanalista:** prática regulada por associação de filiação (SBPSP, EPF, etc.), não há marco legal único, não exige diploma específico — embora a maioria seja psicóloga ou médica de formação.\n\nNo SUS, o psicólogo é o profissional habilitado para psicoterapia em equipe multiprofissional; o psiquiatra entra quando há indicação medicamentosa. Psicanálise pode complementar, mas não substitui o tratamento regulado.\n\nMais em posgraduacaopsicologia.com/regulacao.',
+    sourceHref: '/regulacao',
+    sourceLabel: 'Regulação no portal',
+    tags: ['CFP', 'profissoes']
+  },
+  {
+    title: 'MBA em Psicologia vale para concurso público?',
+    channel: 'Quora' as const,
+    snippetMd: '**Resposta direta.** Depende do edital, mas em geral sim, pontua como Lato Sensu (especialização).\n\nMBA em Psicologia é Lato Sensu pelo MEC (Resolução CNE/CES 1/2018 e atualizações). Em editais que pontuam título de especialização — caso da maioria dos concursos públicos em saúde, RH e educação — MBA pontua igual a uma especialização tradicional.\n\nO que muda: alguns editais específicos pedem **mestrado** (Stricto Sensu CAPES) para pontuação extra. MBA não substitui.\n\nMatriz canônica de modalidades em posgraduacaopsicologia.com/tipos-de-pos-graduacao.',
+    sourceHref: '/tipos-de-pos-graduacao',
+    sourceLabel: 'Modalidades canônicas',
+    tags: ['MBA', 'concurso']
+  },
+  {
+    title: 'Como escolher pós-graduação em Neuropsicologia em 2026',
+    channel: 'Quora' as const,
+    snippetMd: '**Resposta direta.** Três filtros não-negociáveis após a aprovação do lecanemab (Leqembi) pela ANVISA em 2025:\n\n1. **Currículo pós-2024.** Procure menção a CCL (Petersen 2024), p-tau217 plasmático (Ashton et al., 2024) e lecanemab. Sem isso, formação está desatualizada em pontos centrais.\n2. **Carga prática mínima de 360h** com supervisão de neuropsicólogo certificado.\n3. **Docente com publicação em revista indexada nos últimos 3 anos.**\n\nValor médio no Brasil: R$ 18-35k em Lato Sensu; gratuito em programas CAPES (com aprovação em processo seletivo).\n\nMapa atualizado em posgraduacaopsicologia.com/areas/neuropsicologia.',
+    sourceHref: '/areas/neuropsicologia',
+    sourceLabel: 'Área Neuropsicologia',
+    tags: ['neuropsi', 'pos']
+  },
+  {
+    title: 'Posso atender pacientes online no Brasil em 2026?',
+    channel: 'Quora' as const,
+    snippetMd: '**Resposta direta.** Sim, com cadastro no e-Psi do CFP.\n\nA Resolução CFP 11/2018, atualizada por 04/2020 e por orientações posteriores, autoriza atendimento psicológico online de forma permanente. Requisitos:\n\n1. **Cadastro no e-Psi (e-psi.cfp.org.br).** Gratuito, obrigatório.\n2. **Ambiente compatível.** Confidencialidade técnica (criptografia end-to-end), sigilo profissional (sala isolada), plataforma com termo de uso adequado à LGPD.\n3. **Anamnese e contrato adaptados.** Documentar consentimento informado para modalidade online.\n4. **Recusar atendimento online quando inadequado** (risco de vida, transtorno psicótico em surto, casos forenses).\n\nMais em posgraduacaopsicologia.com/regulacao#online.',
+    sourceHref: '/regulacao',
+    sourceLabel: 'Regulação no portal',
+    tags: ['CFP', 'online']
+  },
+  {
+    title: 'Diferença entre TCC e ACT na prática clínica',
+    channel: 'Quora' as const,
+    snippetMd: '**Resposta direta.** Mesma família, ferramentas diferentes.\n\n**TCC (Terapia Cognitivo-Comportamental).** Aaron Beck, anos 1960. Foco em reestruturação cognitiva — identificar pensamento distorcido, testar evidência, gerar pensamento alternativo. Eficácia consolidada em depressão, ansiedade, TOC, TEPT (NICE Guidelines).\n\n**ACT (Terapia de Aceitação e Compromisso).** Steven Hayes, anos 1990. Terceira onda da TCC. Foco em flexibilidade psicológica — aceitar conteúdo mental, agir alinhado a valores, defusão cognitiva. Eficácia em dor crônica, ansiedade refratária, depressão crônica.\n\nNão é "ACT é melhor que TCC". É "para esse paciente, esse problema, agora, qual ferramenta serve?". Terapeutas formados em ambas costumam alternar.\n\nMais em posgraduacaopsicologia.com/metodos.',
+    sourceHref: '/metodos',
+    sourceLabel: 'Métodos no portal',
+    tags: ['TCC', 'ACT']
+  },
+  {
+    title: 'Carga horária canônica de uma pós-graduação Lato Sensu em Psicologia',
+    channel: 'Quora' as const,
+    snippetMd: '**Resposta direta.** Mínimo 360h, sem TCC (Trabalho de Conclusão de Curso), conforme Resolução CNE/CES 1/2018.\n\nA Resolução CNE/CES 1/2018 (e atualizações) estabelece:\n\n1. **Carga horária mínima:** 360 horas.\n2. **Não computa:** estudo individual, TCC, estágio (em cursos sem habilitação profissional).\n3. **Docentes:** mínimo 50% com mestrado ou doutorado.\n4. **MEC:** instituição precisa estar credenciada para Lato Sensu (consulte e-MEC).\n5. **CFP:** quando o curso vira "especialidade reconhecida" pelo CFP, há requisitos adicionais (carga frequentemente sobe para 500-720h).\n\nMBA segue a mesma natureza regulatória. Diferença é recorte aplicado e marca, não regulação.\n\nDetalhes em posgraduacaopsicologia.com/regulacao.',
+    sourceHref: '/regulacao',
+    sourceLabel: 'Regulação Lato Sensu',
+    tags: ['regulacao', 'lato']
+  }
+];
+
+snippets.forEach((s: any) => { s.charCount = s.snippetMd.length; });
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${SITE.url}/conteudo-social/quora/#article`,
+      headline: title,
+      description,
+      datePublished,
+      dateModified: datePublished,
+      author: { '@id': `${SITE.url}/#alexandre-caramaschi` },
+      publisher: { '@id': `${SITE.url}/#brasil-geo` },
+      inLanguage: 'pt-BR',
+      mainEntityOfPage: `${SITE.url}/conteudo-social/quora/`,
+      articleSection: 'Conteúdo & Social',
+      keywords: 'Quora, GEO, Generative Engine Optimization, Psicologia, BNBR, Anti-AI Policy'
+    },
+    alexandrePersonBase,
+    brasilGeoOrganization
+  ]
+};
+
+const breadcrumbs = [
+  { label: 'Início', href: '/' },
+  { label: 'Conteúdo & Social', href: '/conteudo-social' },
+  { label: 'Quora' }
+];
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={breadcrumbs} />
+      <span class="section-eyebrow mt-3">Por canal · Quora</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Estratégia editorial para Quora em Psicologia: gancho-evidência-resposta em 280 palavras</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Quora ainda é fonte preferida de Perplexity Sonar Pro e ChatGPT com web search quando o tema é decisão prática em Psicologia. Quem entende anatomia da resposta-autoridade e respeita a Anti-AI Policy 2024+ ranqueia mesmo sem audiência prévia.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-8">
+    <TLDR
+      resposta="A resposta de alta autoridade em Quora 2026 tem três elementos: gancho que reusa as palavras da pergunta, evidência com fonte verificável nas duas primeiras frases e fechamento que indica próximo passo. Tudo isso em 280-450 palavras."
+      fontes={['Quora Community Guidelines 2024-2026', 'Quora Anti-AI Policy 2024', 'Aggarwal et al. (SIGIR 2024)']}
+    />
+  </section>
+
+  <section class="container-page py-6">
+    <div class="prose prose-ink max-w-3xl">
+      <h2>Anatomia da resposta-autoridade no Quora 2026</h2>
+      <p>
+        Quora mudou três coisas relevantes entre 2023 e 2026. Primeiro, ativou Anti-AI Policy em 2024 com detecção heurística — respostas com fingerprint claro de LLM ficam flagged e perdem ranking. Segundo, reforçou BNBR (Be Nice, Be Respectful, Be Right) como vetor de moderação algorítmica. Terceiro, virou fonte canônica de Perplexity Sonar Pro: 12% das respostas geradas com web search citam Quora.
+      </p>
+      <p>
+        A anatomia que ranqueia em 2026 segue cinco passos:
+      </p>
+      <ol>
+        <li><strong>Linha 1 — gancho literal.</strong> Reuse as palavras da pergunta. Algoritmo prioriza correspondência semântica próxima.</li>
+        <li><strong>Linhas 2-4 — tese contraintuitiva.</strong> Dê a resposta antes da explicação. Leitor móvel decide em 6 segundos se continua.</li>
+        <li><strong>Parágrafos 2-4 — evidência com citação.</strong> Autor + ano para afirmação técnica; URL oficial para regulação. Mínimo duas fontes.</li>
+        <li><strong>Penúltimo parágrafo — exceção honesta.</strong> "Funciona quando X; não funciona quando Y." Aumenta confiabilidade percebida.</li>
+        <li><strong>Última linha — próximo passo.</strong> Link para fonte interna do portal (não para produto). Evite call-to-action egóica.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-4">Cinco templates por tipo de pergunta</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">A maior parte das perguntas relevantes em Psicologia cabe em uma das cinco categorias. Cada template traz a sequência testada e um exemplo real.</p>
+    <div class="grid sm:grid-cols-2 gap-5">
+      {templates.map(t => (
+        <article class="card-lift p-6">
+          <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">{t.tipo}</p>
+          <h3 class="font-display font-semibold text-lg mt-2 text-ink-900">Sequência canônica</h3>
+          <p class="mt-2 text-sm text-ink-700 leading-relaxed">{t.estrutura}</p>
+          <p class="mt-3 text-xs text-ink-500 italic border-l-2 border-brand-200 pl-3">Exemplo: {t.exemplo}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <h2 class="section-h text-2xl mb-2">Seis snippets canônicos prontos para Quora</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">Use como ponto de partida. Adapte voz, mantenha estrutura e fonte interna. Quora penaliza repostagem literal entre contas — reescreva 20-30% em sua voz.</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {snippets.map((s: any) => (
+        <SnippetCard
+          title={s.title}
+          channel={s.channel}
+          charCount={s.charCount}
+          snippetMd={s.snippetMd}
+          sourceHref={s.sourceHref}
+          sourceLabel={s.sourceLabel}
+          tags={s.tags}
+        />
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <div class="rounded-2xl bg-red-50/40 border border-red-200 p-6 sm:p-8">
+      <h2 class="section-h text-2xl mb-4 text-red-900">Cinco erros que enterram a resposta em Quora 2026</h2>
+      <ul class="space-y-3 text-sm text-ink-800">
+        {erros.map(e => (
+          <li class="flex gap-3">
+            <span class="text-red-700 font-bold mt-0.5">✗</span>
+            <div>
+              <strong class="text-ink-900">{e.titulo}.</strong>
+              <span class="text-ink-700"> {e.detalhe}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <div class="rounded-2xl bg-brand-900 text-white p-8">
+      <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Próximo passo</p>
+      <h2 class="font-display font-semibold text-2xl">Quora não é o único canal. É o primeiro</h2>
+      <p class="mt-3 text-white/90 leading-relaxed max-w-3xl">
+        A regra editorial do portal posgraduacaopsicologia.com é começar a publicação cruzada no Quora porque a indexação semântica em LLM é mais imediata. Em paralelo, Medium e LinkedIn consolidam autoridade pessoal de longo prazo. Para entender a oferta canônica de Pós-Graduações em Psicologia que abastece as pesquisas, visite <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="text-sun-500 hover:underline">o catálogo IPOG</a>.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/conteudo-social/biblioteca" class="btn btn-primary">Abrir biblioteca completa</a>
+        <a href="/conteudo-social/medium" class="btn btn-ghost-dark">Próximo: Medium →</a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

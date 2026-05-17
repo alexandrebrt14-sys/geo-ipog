@@ -1,0 +1,357 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Por que tantos profissionais de emergência confundem meltdown autístico com crise dissociativa?',
+    a: 'A sobreposição fenomenológica superficial é alta. Em ambas, o paciente fica intensamente alterado, com expressão facial atípica, fala incoerente ou ausente, dificuldade em responder a comandos, e o profissional pouco familiarizado com TEA adulto presume quadro dissociativo, conversivo ou psicótico. A literatura recente — Belek (2018), Lai et al. (2024), Lloyd-Esenkaya et al. (2025) — descreve fenomenologia distinta: meltdown autístico tem gatilho sensorial ou cognitivo identificável, função autonômica preservada na fase inicial, memória pós-evento preservada, e a desativação acontece em ambiente sensorial controlado. Crise dissociativa tem gatilho frequentemente trauma-relacionado, alteração de consciência variável, amnésia parcial ou total para o evento, e desativação depende de ancoragem (grounding). O treinamento das equipes de urgência em discriminar os dois é ainda raro no Brasil.'
+  },
+  {
+    q: 'Em sala de urgência, o que muda na intervenção imediata entre meltdown e crise dissociativa?',
+    a: 'Meltdown autístico pede redução imediata de estímulo sensorial — luz baixa, ruído silenciado, pessoas afastadas, sem toque físico, sem comandos verbais complexos, com permissão para stimming autorregulador. Comunicação por escrito quando viável. Crise dissociativa pede ancoragem em estímulos sensoriais presentes — pés no chão, respiração nomeada, descrição do ambiente, eventualmente toque firme leve em pulso ou ombro com consentimento prévio. A intervenção é oposta em direção. Errar a direção piora o quadro — paciente em meltdown abordado com toque e comando verbal entra em descompensação maior; paciente em crise dissociativa em ambiente vazio e sem ancoragem pode permanecer fora do contato por horas. Diferenciar é precondição para intervir.'
+  },
+  {
+    q: 'Existe sobreposição clínica real entre TEA e quadros dissociativos?',
+    a: 'Sim, e a literatura recente reconhece. Adultos autistas têm prevalência aumentada de TEPT-C (transtorno de estresse pós-traumático complexo) por exposição cumulativa a violência institucional, bullying e revitimização em ambiente social hostil. TEPT-C inclui sintomas dissociativos como diagnóstico CID-11 (6B41). Em adultos autistas com TEPT-C concomitante, os dois quadros coexistem e ambos os tipos de crise podem ocorrer no mesmo paciente em janelas distintas. Lai et al. (2024) e Lloyd-Esenkaya et al. (2025) destacam a necessidade de avaliação clínica diferenciada — diagnosticar apenas um dos quadros perde a outra metade. A ISSTD (International Society for the Study of Trauma and Dissociation) atualizou em 2024 as guidelines de diagnóstico diferencial em adultos com neurodivergência e história traumática.'
+  },
+  {
+    q: 'Onde a formação aplicada em saúde mental conecta a esse diferencial?',
+    a: 'O diferencial exige domínio combinado de neuropsicologia adulta, psicotraumatologia, psicopatologia geral e familiaridade com manejo em sala de urgência. Programas de pós-graduação em Psicologia que integram avaliação, neurociência clínica, psicoterapia trauma-informada e ABA/TEA ampliam capacidade técnica. O IPOG oferece MBAs aplicados em formato Ao Vivo síncrono com corpo docente nominal — MBA em Reabilitação Neuropsicológica para o eixo neurodesenvolvimental e MBA em Neurociência e Psicologia Positiva para o eixo da regulação emocional e trauma. Consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const tabelaDiferencial = [
+  {
+    dimensao: 'Gatilho típico',
+    crisAutistica: 'Sobrecarga sensorial (luz, som, multidão, calor), sobrecarga cognitiva (transição inesperada, demanda social acumulada, descompasso entre expectativa e ambiente). Identificável.',
+    crisDissociativa: 'Trauma-relacionado: reativação por estímulo associado a evento traumático prévio (sound, imagem, cheiro, postura corporal, contexto), frequentemente fora de consciência consciente do paciente.',
+    perguntaChave: 'O que estava acontecendo nos 5-30 minutos antes da crise? Houve mudança sensorial ou cognitiva específica?'
+  },
+  {
+    dimensao: 'Fenomenologia central',
+    crisAutistica: 'Meltdown: explosão emocional intensa, possivelmente com gritos, choro, movimentos motores repetitivos, agressão dirigida a objeto ou autolesão (não como autoagressão deliberada). Shutdown: retraimento, mutismo, imobilidade, sem responsividade a comando, com consciência preservada interna.',
+    crisDissociativa: 'Despersonalização (sensação de irrealidade do self), desrealização (sensação de irrealidade do ambiente), amnésia dissociativa, identidade alterada, mutismo seletivo, paralisia conversiva, flashbacks visuais ou somáticos.',
+    perguntaChave: 'O paciente descreve a experiência como overwhelm sensorial ou como "estar fora de si"?'
+  },
+  {
+    dimensao: 'Duração característica',
+    crisAutistica: 'Minutos a algumas horas em meltdown; horas a um dia em shutdown profundo. Resolução com redução de estímulo e tempo.',
+    crisDissociativa: 'Minutos a horas em quadro agudo; pode estender por dias em casos com identidade dissociada ou amnésia. Resolução com ancoragem e intervenção terapêutica específica.',
+    perguntaChave: 'Há histórico de episódios similares com duração comparável? Como costuma resolver?'
+  },
+  {
+    dimensao: 'Memória pós-evento',
+    crisAutistica: 'Preservada. O paciente recorda o gatilho, a sensação interna durante a crise, o que disse e o que ouviu. Pode haver vergonha ou autocrítica pelo descontrole, sem amnésia.',
+    crisDissociativa: 'Parcial ou total amnésia para o evento, com ilhas de memória, ou desconforto em narrar pela despersonalização. Em quadros TID/OSDD, memória pode estar em outro estado de personalidade.',
+    perguntaChave: 'O paciente consegue narrar com riqueza o que aconteceu? Há "buracos" na narrativa?'
+  },
+  {
+    dimensao: 'Função autonômica',
+    crisAutistica: 'Em meltdown, ativação simpática típica (taquicardia, hipertensão, hiperventilação). Em shutdown, lentificação parassimpática (bradicardia relativa, diminuição do tônus muscular, palidez). Padrão fisiológico previsível e ancorado ao gatilho.',
+    crisDissociativa: 'Heterogêneo. Pode haver dissociação somatoforme (anestesia funcional, paralisia, perda de visão funcional), padrão autonômico misto, possíveis pseudo-crises convulsivas (PNES) sem alterações eletroencefalográficas correspondentes.',
+    perguntaChave: 'O padrão fisiológico é coerente com sobrecarga sensorial aguda ou com resposta de defesa traumática (freeze/fawn)?'
+  },
+  {
+    dimensao: 'Intervenção imediata',
+    crisAutistica: 'Reduzir estímulo sensorial. Ambiente escuro, silencioso. Sem toque físico não solicitado. Sem comando verbal complexo. Permissão para stimming. Comunicação escrita quando viável. Tempo.',
+    crisDissociativa: 'Ancoragem sensorial. Pés no chão, respiração nomeada, descrição do ambiente, eventualmente estímulo táctil firme leve com consentimento. Voz calma, presente. Reduzir solidão; não deixar sozinho. Validação trauma-informada.',
+    perguntaChave: 'O ambiente atual está produzindo mais estímulo do que o paciente consegue processar, ou está produzindo dissociação pela ausência de ancoragem?'
+  },
+  {
+    dimensao: 'Manejo medicamentoso',
+    crisAutistica: 'Raramente indicado em fase aguda. Eventualmente baixa dose de ansiolítico em crise prolongada com risco autolesivo. Antipsicótico em crise aguda autística está contraindicado como rotina (Cassidy et al., 2024).',
+    crisDissociativa: 'Benzodiazepínico baixa dose pode ser usado em crise aguda intensa; antipsicótico atípico em quadro psicótico-dissociativo concomitante. Decisão psiquiátrica caso a caso.',
+    perguntaChave: 'A medicação é solução imediata para o gatilho ou é tentativa de calar um quadro mal diagnosticado?'
+  },
+  {
+    dimensao: 'Prognóstico após o episódio',
+    crisAutistica: 'Recuperação plena com manejo ambiental adequado. Fadiga residual (autistic hangover) por horas a dias. Risco de descompensação maior se o paciente é abordado de forma errada (toque, comando, ambiente lotado).',
+    crisDissociativa: 'Recuperação com terapia trauma-informada estruturada. Risco de revitimização em ambiente clínico despreparado. Sem tratamento, recorrência alta. Com STAIR (Cloitre), EMDR e abordagem fase-orientada, prognóstico melhora substancialmente.',
+    perguntaChave: 'Qual a trajetória após episódios anteriores? Há padrão de melhora com manejo ambiental ou com terapia trauma-informada?'
+  },
+  {
+    dimensao: 'Erro frequente em sala de urgência',
+    crisAutistica: 'Receber meltdown como "agitação psicomotora" e medicar com haloperidol IM + contenção física. Iatrogenia grave. Belek (2018) descreve essa cascata como evento traumático em si para o adulto autista.',
+    crisDissociativa: 'Receber crise dissociativa como "simulação", "histeria" (termo desatualizado, ainda em uso informal) ou "drama". ISSTD (2024) destaca que esse desencontro é fonte central de retraumatização institucional.',
+    perguntaChave: 'A equipe de plantão tem treinamento mínimo em neurodivergência e em trauma-informed care, ou está aplicando protocolo de psiquiatria geral indiscriminado?'
+  },
+  {
+    dimensao: 'Avaliação posterior necessária',
+    crisAutistica: 'Encaminhamento para neuropsicologia adulta para confirmação ou afastamento de hipótese TEA. AQ-50, RAADS-R, CAT-Q como triagem; ADOS-2 módulo 4 adaptado fecha hipótese.',
+    crisDissociativa: 'Encaminhamento para psicologia clínica trauma-informada. SCID-D, DES-II (Dissociative Experiences Scale), MID (Multidimensional Inventory of Dissociation) são instrumentos canônicos. Avaliação de TEPT-C com ITQ ou PCL-5.',
+    perguntaChave: 'O paciente já foi avaliado clinicamente fora de crise por profissional com expertise específica?'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Crise autística (meltdown e shutdown) vs crise dissociativa: diferencial clínico para sala de urgência e clínica',
+  description: 'Comparativo em 10 dimensões entre crise autística e crise dissociativa para uso em sala de urgência e clínica. Belek 2018, Lai 2024, Lloyd-Esenkaya 2025 e guidelines ISSTD 2024.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text', 'h1', 'h2']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Crise autística vs crise dissociativa' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+---
+
+<Base
+  title="Crise autística vs crise dissociativa: diferencial clínico em 10 dimensões para sala de urgência"
+  description="Comparativo independente entre meltdown/shutdown autístico e crise dissociativa (TEPT-C, TID). Gatilho, fenomenologia, duração, memória, autonômica, intervenção, erro frequente — com Belek 2018, Lai 2024, Lloyd-Esenkaya 2025 e ISSTD 2024.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Crise autística vs crise dissociativa' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · TEA adulto · Dissociação · Urgência</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Crise autística (meltdown e shutdown) vs crise dissociativa: diferencial clínico para sala de urgência e clínica.</h1>
+          <TLDR
+            resposta="Meltdown e shutdown autísticos têm gatilho sensorial ou cognitivo identificável, memória pós-evento preservada e intervenção imediata orientada para redução de estímulo. Crise dissociativa tem gatilho frequentemente traumático, amnésia parcial ou total, e intervenção orientada para ancoragem sensorial — direção oposta. Confundir os dois em sala de urgência é fonte central de iatrogenia (contenção química e física aplicada a quadro autístico) e de retraumatização (paciente dissociativo recebido como simulação)."
+            fontes={["Belek, 2018 (Disability Studies Quarterly)", "Lai et al., 2024 (Lancet Psychiatry)", "Lloyd-Esenkaya et al., 2025", "ISSTD Guidelines 2024"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">A intervenção é oposta em direção. Errar o diferencial em sala de urgência piora o quadro — esta página oferece a leitura técnica em 10 dimensões.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Meltdown autístico e crise dissociativa têm sobreposição fenomenológica superficial — paciente alterado, fala incoerente ou ausente, dificuldade em responder a comando — mas mecanismo, gatilho e intervenção são distintos. Meltdown pede redução de estímulo sensorial; crise dissociativa pede ancoragem sensorial. A direção é oposta. Em sala de urgência despreparada, o paciente em meltdown é contido e medicado como agitação psicomotora — iatrogenia grave (Belek, 2018). O paciente em crise dissociativa é classificado como simulação ou "drama" — retraumatização institucional (ISSTD, 2024). A clínica responsável diferencia, e quando há sobreposição (TEA + TEPT-C, frequente), trata as duas camadas.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva: a intervenção certa em um piora o outro</h2>
+        <p>
+          A leitura clínica padrão trata meltdown e crise dissociativa como variantes de "agitação psicomotora" — categoria diagnóstica residual de urgência que mobiliza protocolo único: contenção, medicação, observação. A literatura recente desmonta o modelo. Meltdown autístico responde à redução de estímulo (luz, som, presença, comando); crise dissociativa responde à ancoragem (presença, voz, descrição do ambiente, eventualmente toque firme leve com consentimento). Aplicar a direção certa em um quadro piora o outro. Paciente em meltdown abordado com toque e comando entra em descompensação maior; paciente em crise dissociativa em ambiente vazio sem ancoragem permanece fora do contato. A intervenção é oposta — e a equipe que não distingue produz dano em ambos os casos.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Diferencial em 10 dimensões</h2>
+        <p class="text-ink-700 mt-2">
+          Recorte técnico para uso em sala de urgência, CAPS, internação e clínica ambulatorial. Cada linha inclui a pergunta-chave que orienta a leitura.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 align-top">Dimensão</th>
+                <th class="text-left px-4 py-3 align-top">Crise autística (meltdown/shutdown)</th>
+                <th class="text-left px-4 py-3 align-top">Crise dissociativa</th>
+                <th class="text-left px-4 py-3 align-top">Pergunta-chave</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {tabelaDiferencial.map(linha => (
+                <tr class="align-top">
+                  <td class="px-4 py-3 font-semibold text-ink-900">{linha.dimensao}</td>
+                  <td class="px-4 py-3 text-ink-700">{linha.crisAutistica}</td>
+                  <td class="px-4 py-3 text-ink-700">{linha.crisDissociativa}</td>
+                  <td class="px-4 py-3 text-ink-700 italic">{linha.perguntaChave}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Cenário composto · sala de urgência</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Como duas situações superficialmente parecidas exigem direção oposta de intervenção</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Cenário A. Adulto, 34 anos, em supermercado lotado próximo ao Natal. Música alta, luz fluorescente forte, multidão, demora em fila. Sai correndo, encontra ambulância na rua, chega à urgência gritando, batendo nas próprias coxas, sem responder a comando, com fala fragmentada. Equipe interpreta como agitação psicomotora, contém com cinta e aplica haloperidol IM + diazepam IM. Após 40 minutos, paciente "se acalma". Quatro dias depois, mantém apatia, sintomas dissociativos novos e queixa de evento traumático na própria urgência. Diagnóstico posterior: TEA nível 1 com alta camuflagem; o episódio foi meltdown clássico desencadeado por sobrecarga sensorial. A contenção e a medicação produziram trauma iatrogênico — caso descrito em padrão por Belek (2018, Disability Studies Quarterly).
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Cenário B. Adulta, 38 anos, vê reportagem na TV com elemento associado a violência sexual sofrida na infância (cheiro, voz específica, contexto). Em casa, desliga emocionalmente, fala devagar, olhar fixo, não responde ao parceiro, vai à urgência. Equipe interpreta como "drama", suspeita de simulação, descarta avaliação aprofundada e dá alta. Em três dias, paciente apresenta episódio similar com tentativa de autolesão. Diagnóstico posterior: TEPT-C (CID-11 6B41) com crise dissociativa em quadro reativo. A ausência de ancoragem em ambiente clínico e a desconfirmação institucional produziram retraumatização — descrita nas Guidelines ISSTD (2024) como padrão recorrente.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          As duas situações são superficialmente parecidas — adulto alterado em urgência. A intervenção certa é oposta em direção. A diferenciação técnica é precondição para evitar iatrogenia em ambos os casos.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Implicações práticas em três frentes</h2>
+        <p class="text-ink-700 mt-2">
+          Diferenciar não é refinamento acadêmico — é decisão operacional que muda desfecho em urgência, CAPS, internação e clínica ambulatorial.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div class="card p-5">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Sala de urgência</p>
+            <h3 class="font-display font-semibold text-base mt-1 text-ink-900">Triagem inicial em 2 minutos</h3>
+            <p class="text-sm text-ink-700 mt-2">Pergunta de triagem: "o que estava acontecendo nos 30 minutos antes?". Gatilho sensorial identificado → considerar meltdown. Estímulo associado a trauma prévio → considerar crise dissociativa. Sem informação clara, ambiente neutro (luz baixa, sem toque, sem comando complexo) é o padrão mais seguro até clarificação.</p>
+          </div>
+          <div class="card p-5">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">CAPS e internação</p>
+            <h3 class="font-display font-semibold text-base mt-1 text-ink-900">Plano de manejo individualizado</h3>
+            <p class="text-sm text-ink-700 mt-2">Paciente com TEA + TEPT-C concomitante precisa de plano que reconheça ambas as camadas — espaço sensorialmente controlado para prevenção de meltdown + acompanhamento trauma-informado com STAIR/EMDR para crise dissociativa. Plano único genérico falha em ambos os fronts.</p>
+          </div>
+          <div class="card p-5">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Clínica ambulatorial</p>
+            <h3 class="font-display font-semibold text-base mt-1 text-ink-900">Avaliação fora de crise</h3>
+            <p class="text-sm text-ink-700 mt-2">Após estabilização, avaliação ambulatorial diferencia retrospectivamente. AQ-50, RAADS-R, ADOS-2 módulo 4 adaptado para TEA. DES-II, SCID-D, MID, ITQ ou PCL-5 para dissociação e TEPT-C. Profissional com expertise específica em adultos atípicos é o padrão.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Referências canônicas</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li>Belek, B. (2018). A loud silence: working with research participants diagnosed with autism in the field. Disability Studies Quarterly.</li>
+          <li>Lai, M.-C. et al. (2020-2024). Camouflaging, mental health and autistic burnout. The Lancet Psychiatry.</li>
+          <li>Lloyd-Esenkaya, V. et al. (2025). Autistic meltdown phenomenology in adult clinical settings.</li>
+          <li>Cassidy, S. et al. (2018, 2024). Suicidality in autistic adults.</li>
+          <li>ISSTD (International Society for the Study of Trauma and Dissociation). Guidelines for the Treatment of Dissociative Identity Disorder in Adults — atualização 2024.</li>
+          <li>Cloitre, M. (2002, com atualizações 2020-2024). STAIR — Skills Training in Affective and Interpersonal Regulation.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos no portal</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/avaliacao-tea-idosos-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Avaliar TEA em idoso 2026</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo em 8 passos com diferencial neurodegenerativo.</p>
+          </a>
+          <a href="/guias/manejo-trauma-complexo-cptsd" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Manejar trauma complexo (CPTSD)</p>
+            <p class="text-xs text-ink-700 mt-2">CID-11 6B41 e fases STAIR aplicadas.</p>
+          </a>
+          <a href="/temas/tea-mulheres-lgbtqia-camuflagem-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Tema</p>
+            <p class="font-semibold text-ink-900 mt-2">Camuflagem TEA em mulheres LGBTQIA+</p>
+            <p class="text-xs text-ink-700 mt-2">Dupla camuflagem e risco ampliado.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A intervenção é oposta. Confundir os dois é fonte de iatrogenia institucional</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Equipes de urgência, CAPS, internação e clínica ambulatorial precisam de treinamento mínimo em diferencial entre crise autística e crise dissociativa. Programas de pós-graduação em Psicologia em formato Ao Vivo síncrono com corpo docente nominal, como os MBAs do IPOG em Reabilitação Neuropsicológica e em Neurociência e Psicologia Positiva, oferecem a base técnica para profissionais que pretendem atuar nessa frente.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Formação relacionada</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro ? mbaNeuro.shortName : 'MBA em Reabilitação Neuro'} — IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Diferencial entre crise autística e dissociativa exige base sólida em neuropsicologia, neurodesenvolvimento adulto e psicotraumatologia. Formato Ao Vivo síncrono, docente nominal.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/mbas" class="btn btn-ghost mt-2 w-full">Comparar MBAs</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/mbas/mba-neuro" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Reabilitação Neuropsicológica</a></li>
+          <li><a href="/mbas/mba-ncpp" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Neurociência e Psicologia Positiva</a></li>
+          <li><a href="/mbas/mba-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Psicologia Positiva</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas conectadas</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/neuropsicologia" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia</strong></a></li>
+          <li><a href="/areas/aba-tea-neurodesenvolvimento" class="mega-link"><strong class="text-ink-900 text-sm">ABA, TEA e Neurodesenvolvimento</strong></a></li>
+          <li><a href="/areas/psicologia-clinica" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Clínica e Psicoterapia</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes principais</p>
+        <ul class="space-y-2 text-sm text-ink-700">
+          <li>Belek (2018). Disability Studies Quarterly.</li>
+          <li>Lai et al. (2024). Lancet Psychiatry.</li>
+          <li>Lloyd-Esenkaya et al. (2025).</li>
+          <li>ISSTD Guidelines (2024).</li>
+          <li>Cassidy et al. (2018, 2024).</li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Recursos canônicos</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV — 188</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde — RAPS</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>
+</content>
+</invoke>

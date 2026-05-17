@@ -1,0 +1,292 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const areaReabNeuro = AREAS.find(a => a.id === 'reabilitacao-neuropsicologica') || AREAS[0];
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia') || AREAS[0];
+
+const linhas = [
+  {
+    dimensao: 'Público-alvo típico',
+    curta: 'TCE leve a moderado em fase pós-aguda, AVC com sequelas focais bem demarcadas, pós-operatório com déficit cognitivo discreto, pós-COVID com brain fog moderado.',
+    longa: 'TCE moderado a grave em fase crônica, AVC com sequelas múltiplas, esclerose múltipla, demência leve a moderada, lesão axonal difusa, neuroinfecções com sequela cognitiva persistente.',
+    pergunta: 'Qual a complexidade da lesão e o tempo desde o evento?'
+  },
+  {
+    dimensao: 'Ganho cognitivo médio em desfechos primários',
+    curta: 'Cicerone et al. (2024) INCOG 2.0 documentam ganho moderado em atenção, memória prospectiva e funções executivas em 8-12 semanas para TCE leve a moderado. Wilson (2024-2025) reforça ganho em paciente com lesão circunscrita.',
+    longa: 'Cicerone et al. (2024) e Wilson (2024-2025) documentam ganho cumulativo maior em programas de 6-24 meses para TCE moderado a grave, com generalização progressiva para ADL e retorno ocupacional.',
+    pergunta: 'Quanto ganho cognitivo bruto é realista para esse perfil?'
+  },
+  {
+    dimensao: 'Manutenção do ganho em 12 meses pós-alta',
+    curta: 'Manutenção moderada quando há reforço domiciliar estruturado e seguimento ambulatorial. Sem suporte pós-alta, decaimento de até 30-40% do ganho em 12 meses (Wilson 2025).',
+    longa: 'Manutenção mais robusta pelo treino prolongado de generalização e integração ecológica. Reforço pós-alta ainda é fator preditor — programa longo sem fade-out estruturado também perde ganho.',
+    pergunta: 'Há plano de seguimento pós-alta?'
+  },
+  {
+    dimensao: 'Generalização para atividades de vida diária (ADL)',
+    curta: 'Generalização limitada quando o treino é compensatório isolado (estratégias internas, aids externos). Generalização funcional exige integração ecológica desde o início.',
+    longa: 'Generalização superior por inclusão de treino in vivo, integração ocupacional, suporte familiar prolongado e revisão sistemática de barreiras ambientais — Brain Injury Association of America 2025 recomenda programa multidomínio.',
+    pergunta: 'O treino integra estratégias em contexto ecológico real?'
+  },
+  {
+    dimensao: 'Custo total estimado (Brasil 2026)',
+    curta: 'R$ 6.000 a R$ 15.000 em consultório privado para 8-12 semanas; gratuito via SUS em centros de reabilitação especializada (CER, IBNR Brasil 2025 mapeou 87 centros públicos com programa). Planos de saúde cobrem parcialmente via ANS Rol 2024.',
+    longa: 'R$ 30.000 a R$ 120.000 em consultório privado para 6-24 meses; SUS via CER mantém continuidade em programas crônicos quando há vínculo. Planos de saúde com cobertura limitada e necessidade de articulação caso a caso.',
+    pergunta: 'Qual a fonte de financiamento sustentável?'
+  },
+  {
+    dimensao: 'Fadiga do paciente e adesão',
+    curta: 'Sessões frequentes em janela curta podem ser intensas, mas o término próximo aumenta motivação. Adesão típica: 75-85% das sessões previstas.',
+    longa: 'Risco de fadiga e desengajamento crônico, especialmente entre 6-12 meses. Exige variedade metodológica, marcos visíveis e ajuste de intensidade. Adesão típica: 60-70% no longo prazo.',
+    pergunta: 'O paciente tolera intensidade alta concentrada ou intensidade média prolongada?'
+  },
+  {
+    dimensao: 'Integração com a família',
+    curta: 'Família engajada em psicoeducação intensiva e treino curto. Risco de transferência de carga após alta sem preparação adequada.',
+    longa: 'Família integrada como agente terapêutico ao longo do tempo. Espaço para revisão de papéis, suporte ao cuidador, terapia familiar quando indicada.',
+    pergunta: 'Família tem disponibilidade para integração prolongada?'
+  },
+  {
+    dimensao: 'Cobertura no SUS e na ANS (Brasil 2026)',
+    curta: 'SUS via CER cobre programa com plano terapêutico singular. ANS Rol 2024 inclui Reabilitação Neuropsicológica em sessões com cobertura por número limitado de sessões por ano.',
+    longa: 'SUS via CER e CAPS articulados sustentam continuidade. ANS Rol 2024 oferece cobertura ampliada quando há laudo de reavaliação periódica justificando manutenção.',
+    pergunta: 'Há suporte financeiro institucional ou comercial?'
+  },
+  {
+    dimensao: 'Evidência em ensaios clínicos randomizados (RCT)',
+    curta: 'INCOG 2.0 (Cicerone et al., 2024, Arch Phys Med Rehabil) sintetiza recomendações Practice Standard, Practice Guideline e Practice Option em programas curtos para TCE pós-agudo com evidência forte para atenção, memória e funções executivas.',
+    longa: 'INCOG 2.0 e Wilson (2024-2025) sintetizam evidência menos densa em RCTs longos (dificuldade metodológica), mas séries de casos, estudos quasi-experimentais e estudos longitudinais convergem em ganho funcional sustentado.',
+    pergunta: 'Qual o tipo de evidência disponível para a condição em questão?'
+  },
+  {
+    dimensao: 'Dropout e descontinuidade',
+    curta: 'Dropout menor (10-15%) pela janela definida. Foco na conclusão.',
+    longa: 'Dropout maior no médio-longo prazo (20-35%). Mitigado por engajamento familiar, marcos visíveis, revisão regular de objetivos e variação metodológica.',
+    pergunta: 'Há estrutura para prevenir descontinuidade?'
+  },
+  {
+    dimensao: 'Recomendação da Brain Injury Association 2025 e literatura brasileira',
+    curta: 'Indicada para lesão circunscrita pós-aguda, TCE leve, AVC com sequela focal, brain fog moderado. INCOG 2.0 nomeia como Practice Standard em vários componentes.',
+    longa: 'Indicada para lesão complexa, TCE moderado a grave, AVC com sequelas múltiplas, doenças neurodegenerativas em fase leve a moderada. IBNR Brasil (Instituto Brasileiro de Neurorreabilitação, 2025) sustenta recomendação por equipe multiprofissional.',
+    pergunta: 'A literatura recomenda explicitamente uma das duas opções para o caso?'
+  }
+];
+
+const perfilEscolha = [
+  { perfil: 'TCE leve, 3 meses pós-evento, queixa de atenção e memória de trabalho', recomendacao: 'Programa curto (8-12 semanas) com estratégias compensatórias e treino ecológico', racional: 'INCOG 2.0 Practice Standard; ganho rápido com manutenção esperada quando há reforço domiciliar.' },
+  { perfil: 'TCE moderado-grave, 12 meses pós-evento, sequelas múltiplas', recomendacao: 'Programa longo (6-24 meses) com equipe multiprofissional', racional: 'Wilson 2025 + IBNR 2025; ganho cumulativo, generalização para ADL e suporte familiar prolongado.' },
+  { perfil: 'AVC isquêmico com afasia leve, 6 meses pós-evento, paciente jovem em retorno ao trabalho', recomendacao: 'Programa curto-médio (12-16 semanas) integrado com fonoaudiologia', racional: 'Janela funcional clara, foco em retorno ao trabalho, integração com fonoterapia em paralelo.' },
+  { perfil: 'Demência leve em CCL amnéstico com p-tau217 positivo', recomendacao: 'Programa longo de estimulação cognitiva compensatória articulado com modificadores de doença', racional: 'Plano de cuidado longitudinal articulado com neurologia/geriatria; objetivo é preservação funcional, não recuperação.' },
+  { perfil: 'Long COVID com brain fog persistente, 18 meses pós-infecção, adulto jovem', recomendacao: 'Programa médio (16-24 semanas) com manejo de fadiga e estratégias compensatórias', racional: 'Literatura específica de long COVID neuropsi (2024-2025) sugere programa modulado pela fadiga, com pacing terapêutico.' },
+  { perfil: 'Esclerose múltipla com cognição declinante, fase remitente-recidivante', recomendacao: 'Programa longo intermitente articulado com neurologia', racional: 'Trajetória da doença justifica intervenção contínua adaptada a surto e remissão.' },
+  { perfil: 'Pós-operatório de tumor cerebral com sequela executiva, 4 meses pós-cirurgia', recomendacao: 'Programa médio (12-20 semanas) com bateria seriada', racional: 'Janela de neuroplasticidade pós-cirúrgica favorece ganho, bateria seriada documenta trajetória.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Reabilitação neuropsicológica curta vs longa duração: comparativo de evidência 2026',
+  description: 'Comparativo independente entre programas de reabilitação neuropsicológica de 8-12 semanas e de 6-24 meses. Onze dimensões de decisão clínica com base em Cicerone et al. INCOG 2.0 (2024, Arch Phys Med Rehabil), Wilson 2024-2025, IBNR Brasil 2025 e Brain Injury Association 2025.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos/' },
+    { '@type': 'ListItem', position: 3, name: 'Reabilitação neuropsi curta vs longa', item: SITE.url + '/comparativos/reabilitacao-neuropsi-curta-vs-longa-duracao/' }
+  ]
+};
+---
+<Base
+  title="Reabilitação neuropsicológica curta vs longa duração — comparativo 2026"
+  description="Comparativo entre programas de reabilitação neuropsicológica de 8-12 semanas e de 6-24 meses. Onze dimensões com Cicerone INCOG 2.0, Wilson 2024-2025, IBNR Brasil 2025 e Brain Injury Association 2025.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Reabilitação neuropsi curta vs longa' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Neuropsicologia · Decisão clínica</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Reabilitação neuropsicológica curta vs longa duração: comparativo de evidência 2026.</h1>
+          <TLDR
+            resposta="A escolha entre programa curto (8-12 semanas) e programa longo (6-24 meses) em reabilitação neuropsicológica não é decisão de preferência — é decisão de indicação. Cicerone et al. (2024, Arch Phys Med Rehabil) com INCOG 2.0 e Wilson (2024-2025) consolidam que lesões circunscritas pós-agudas (TCE leve, AVC focal) respondem bem a programas curtos com estratégias compensatórias, enquanto lesões complexas (TCE moderado a grave, esclerose múltipla, demência leve) demandam programas longos com generalização ecológica e suporte familiar prolongado. A pergunta clínica central é qual a complexidade da lesão, o tempo desde o evento e a disponibilidade de suporte longitudinal."
+            fontes={["Cicerone et al., 2024 — Arch Phys Med Rehabil · INCOG 2.0", "Wilson, 2024-2025 — revisão de literatura aplicada", "IBNR Brasil 2025 · Brain Injury Association 2025"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Onze dimensões de decisão clínica com perfil de paciente para escolha entre curto e longo.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">Comparativo clínico · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          MBA em Reabilitação Neuro
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese: programa curto e programa longo não competem — atendem perfis distintos</h2>
+        <p>
+          A leitura simplista que opõe reabilitação neuropsicológica curta e longa como rivais ignora o que a literatura empírica acumulada mostra. Cicerone e equipe, em INCOG 2.0 (2024, Arch Phys Med Rehabil), atualização do consenso clínico de referência mundial em reabilitação cognitiva, classificam intervenções por força de evidência (Practice Standard, Practice Guideline, Practice Option) por componente e por população. Wilson (2024-2025), em revisões e atualizações de seu trabalho clássico de reabilitação neuropsicológica, sustenta paradigma similar — programas curtos com foco em estratégia compensatória e programas longos com foco em integração ecológica atendem perfis clinicamente diferentes.
+        </p>
+        <p>
+          A inversão prática para o consultório: a pergunta correta não é "qual programa é melhor", e sim "qual programa é indicado para esse paciente, com essa lesão, nesse tempo pós-evento, com esse suporte e com essa janela funcional". O comparativo abaixo organiza onze dimensões de decisão para que neuropsicóloga e neuropsicólogo possam justificar a escolha tecnicamente — e revisar a indicação quando o quadro evoluir.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Onze dimensões comparativas</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Dimensão</th>
+                <th class="text-left px-4 py-3">Programa curto (8-12 semanas)</th>
+                <th class="text-left px-4 py-3">Programa longo (6-24 meses)</th>
+                <th class="text-left px-4 py-3">Pergunta-chave</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {linhas.map(l => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{l.dimensao}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{l.curta}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{l.longa}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{l.pergunta}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Sete perfis de paciente: qual escolher</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Perfil clínico</th>
+                <th class="text-left px-4 py-3">Recomendação canônica</th>
+                <th class="text-left px-4 py-3">Racional</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {perfilEscolha.map(p => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{p.perfil}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{p.recomendacao}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{p.racional}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que INCOG 2.0 efetivamente recomenda em 2024</h2>
+        <p>
+          O INCOG 2.0 (Cicerone et al., 2024, Arch Phys Med Rehabil) é a atualização do consenso clínico de referência mundial em reabilitação cognitiva pós-TCE, integrando evidência publicada entre 2014 e 2023. A revisão classifica intervenções por força em três níveis: Practice Standard (evidência mais robusta), Practice Guideline (evidência substancial) e Practice Option (evidência preliminar). Componentes com Practice Standard em programas curtos para TCE pós-agudo: treino de atenção com Attention Process Training (Sohlberg & Mateer), estratégias compensatórias para memória prospectiva, treino de função executiva com problem-solving training e metacognitive strategy training, e psicoeducação estruturada.
+        </p>
+        <p>
+          Componentes com Practice Guideline em programas longos para TCE moderado a grave e em fase crônica: comprehensive holistic neurorehabilitation programs (Ben-Yishay e equipe, Christensen e equipe), goal management training (Levine et al.) com seguimento extenso, integração ocupacional com job coach, suporte familiar com terapia sistêmica, e adaptação ambiental progressiva. A leitura agregada do INCOG 2.0 é convergente com a literatura europeia e australiana — programa curto e programa longo são complementares e atendem fases distintas da trajetória pós-lesão. A escolha exige avaliação inicial cuidadosa do tempo desde o evento, da complexidade da lesão, dos recursos disponíveis e dos objetivos funcionais.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Cenário brasileiro: IBNR 2025 e ANS Rol 2024</h2>
+        <p>
+          O Instituto Brasileiro de Neurorreabilitação (IBNR), em mapeamento 2025, identificou 87 centros públicos com programa estruturado de reabilitação neuropsicológica no Brasil — concentrados em capitais e regiões metropolitanas, com cobertura desigual entre Sudeste, Nordeste, Sul, Centro-Oeste e Norte. A maior parte dos Centros Especializados em Reabilitação (CER) do SUS oferece reabilitação neuropsicológica como componente de plano terapêutico singular articulado com fonoaudiologia, terapia ocupacional e fisioterapia. O fluxograma público brasileiro favorece programas mais longos com integração multiprofissional, embora a capacidade real varie por região.
+        </p>
+        <p>
+          A ANS atualizou em 2024 o Rol de Procedimentos com inclusão de Reabilitação Neuropsicológica em sessões com cobertura por número limitado de sessões por ano em planos de saúde. A cobertura ampliada exige laudo de reavaliação periódica justificando manutenção — o que favorece programas longos quando há indicação clínica documentada. Para neuropsicóloga e neuropsicólogo em consultório privado e em redes credenciadas, o domínio do laudo defensável e da reavaliação seriada é fator operacional crítico — paciente sem laudo bem estruturado tem renovação de sessões frequentemente negada pela operadora.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Implicação para a formação aplicada</h2>
+        <p>
+          Neuropsicóloga e neuropsicólogo que conduzem reabilitação cognitiva em 2026 precisam de competência simultânea em quatro frentes: bateria neuropsicológica para baseline e reavaliação seriada, intervenção compensatória e restitutiva conforme INCOG 2.0 e Wilson, articulação com equipe multiprofissional (fonoaudiologia, terapia ocupacional, fisioterapia, medicina, serviço social), e laudo defensável conforme Resolução CFP 06/2019 com reavaliação seriada para sustentar cobertura no SUS e na ANS. A literatura específica em reabilitação cognitiva amadureceu — INCOG 2.0, Wilson 2024-2025, Cicerone 2024, IBNR 2025 e Brain Injury Association 2025 são leituras obrigatórias.
+        </p>
+        <p>
+          A formação aplicada em Reabilitação Neuropsicológica para clínica de adultos exige base sólida em neuroanatomia funcional, neuroplasticidade, bateria neuropsicológica, intervenção cognitiva por componente, articulação interdisciplinar e gestão de programa longitudinal. Programas de pós-graduação em Psicologia que integram esses eixos com supervisão prática preparam para a clínica de 2026-2028. O IPOG mantém o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo em formato Ao Vivo síncrono com corpo docente nominal — fundamentação técnica direta para neuropsicóloga e neuropsicólogo que conduzem programas curtos e longos em consultório, em redes credenciadas e em centros de referência. Consulte ipog.edu.br para grade vigente.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/comparativos/reabilitacao-neuropsi-vs-cst-estimulacao" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">Reabilitação neuropsi vs CST</p>
+            <p class="text-xs text-ink-700 mt-2">Quando indicar cada abordagem em demência.</p>
+          </a>
+          <a href="/guias/avaliacao-demencia-precoce-jovem-adulto-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">EOD em adulto 45-65 anos</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo de avaliação em 10 passos.</p>
+          </a>
+          <a href="/faq/neuropsi-pos-avc-jovem-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Neuropsi pós-AVC em adulto jovem</p>
+            <p class="text-xs text-ink-700 mt-2">Avaliação, reabilitação e direitos.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Programa curto e programa longo não competem — atendem fases distintas da trajetória pós-lesão.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A escolha entre 8-12 semanas e 6-24 meses depende da complexidade da lesão, do tempo desde o evento, do perfil neuropsicológico, da janela funcional, do suporte disponível e dos objetivos do paciente. Cicerone INCOG 2.0 (2024), Wilson (2024-2025), IBNR Brasil 2025 e Brain Injury Association 2025 sustentam que decisão técnica baseada em evidência é o padrão. Neuropsicóloga e neuropsicólogo que conduzem essa decisão consolidam fundamentação em bateria, intervenção compensatória e restitutiva, articulação multiprofissional e laudo defensável — eixos do MBA em Reabilitação Neuropsicológica do IPOG em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro ? mbaNeuro.shortName : 'MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo'}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro ? mbaNeuro.description : 'O IPOG oferece MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo em formato Ao Vivo síncrono.'}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.archives-pmr.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Arch Phys Med Rehabil · INCOG 2.0</a></li>
+          <li><a href="https://www.biausa.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Brain Injury Association of America</a></li>
+          <li><a href="https://www.gov.br/ans/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANS · Rol de Procedimentos 2024</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP · Resolução 06/2019</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

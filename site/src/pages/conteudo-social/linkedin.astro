@@ -1,0 +1,237 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import SnippetCard from '@components/SnippetCard.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const title = 'LinkedIn para psicólogo organizacional e clínico em 2026: post longo, carrossel e newsletter — Brasil GEO';
+const description = 'Anatomia editorial dos três formatos que importam em LinkedIn 2026: post longo até 1.300 caracteres, carrossel de 8-10 slides e newsletter recorrente. Templates por persona e snippets canônicos prontos.';
+
+const datePublished = '2026-05-17';
+
+const formatos = [
+  {
+    nome: 'Post longo',
+    limite: '1.300 caracteres antes do "ver mais"',
+    estrutura: 'Linha 1 = gancho (não tese). Linhas 2-4 = setup. Corpo em quebras curtas com setas (→). Fechamento com pergunta ou recurso. Hashtags ao final.',
+    metricas: 'Impressões + comentários nas 2 primeiras horas + DMs qualificadas'
+  },
+  {
+    nome: 'Carrossel',
+    limite: '8-10 slides quadrados (1080×1080)',
+    estrutura: 'Slide 1 = título + tese contraintuitiva. Slides 2-9 = um ponto por slide com hierarquia visual clara. Slide final = CTA simples e bio.',
+    metricas: 'Dwell time por slide + saves + compartilhamento direto'
+  },
+  {
+    nome: 'Newsletter',
+    limite: '1.000-2.000 palavras, cadência mensal ou quinzenal',
+    estrutura: 'Título promessa. Subtítulo data + edição. 1 imagem topo. 3-5 H2. Box "Para aprofundar" com 2-3 links. Bio + CTA newsletter.',
+    metricas: 'Assinantes ativos + open rate sustentado + cliques externos'
+  }
+];
+
+const templatesPersona = [
+  {
+    persona: 'Autor (livro / publicação)',
+    gancho: 'Aprendi escrevendo o capítulo X que…',
+    evidencia: 'Dado de pesquisa primária + recorte editorial novo',
+    cta: 'Link para a página de referência no portal ou Medium'
+  },
+  {
+    persona: 'Palestrante (eventos, congressos)',
+    gancho: 'Estes 3 sinais aparecem em toda equipe Y que…',
+    evidencia: 'Padrão observado em palco + paper que corrobora',
+    cta: 'Link para próxima participação + portfólio de keynote'
+  },
+  {
+    persona: 'Consultor (RH, organização)',
+    gancho: 'A pergunta que diretor de RH precisa fazer antes de…',
+    evidencia: 'Marco regulatório (NR-1, LGPD, CFP) + benchmark setorial',
+    cta: 'DM aberta + agenda de diagnóstico'
+  },
+  {
+    persona: 'Formador (curso, mentoria, supervisão)',
+    gancho: 'O erro mais comum que vejo em psicólogos formados após Y é…',
+    evidencia: 'Padrão de supervisão + literatura clínica atualizada',
+    cta: 'Próxima turma + lista de espera + link de inscrição'
+  }
+];
+
+const snippets = [
+  {
+    title: 'Post: o erro mais comum em diagnóstico organizacional pós-NR-1',
+    channel: 'LinkedIn' as const,
+    snippetMd: 'O erro mais frequente em diagnóstico organizacional pós-Portaria 765/2025: tratar pesquisa de clima como cumprimento da NR-1.\n\nNão é.\n\nA norma exige:\n\n→ Identificação de fatores de risco psicossocial por função (não por empresa).\n→ Análise com método validado (Maslach & Leiter, 2016 / Karasek, 1979 / Schaufeli, 2017).\n→ Plano de ação com responsável e prazo.\n→ Monitoramento trimestral.\n→ Cláusula de revisão em mudança estrutural.\n\nPesquisa de clima cumpre nada disso. É instrumento útil para outras finalidades, mas não substitui PGR psicossocial.\n\nQuem tem MBA em POT atualizado pós-2024 já sai sabendo. Quem se formou antes precisa de reciclagem específica.\n\n#NR1 #PsicologiaOrganizacional #POT',
+    sourceHref: '/evidencias/nr1-riscos-psicossociais-2026',
+    sourceLabel: 'Evidência NR-1',
+    tags: ['post', 'NR-1']
+  },
+  {
+    title: 'Post: três mudanças em Neuropsicologia que tornaram a formação pré-2024 obsoleta',
+    channel: 'LinkedIn' as const,
+    snippetMd: 'Três marcos clínicos entre 2024 e 2025 que tornaram parte da formação em Neuropsicologia pré-2023 obsoleta:\n\n→ 1. **Lecanemab (Leqembi).** Aprovado pela ANVISA em 2025 para Alzheimer leve. Neuropsicólogo virou porta de entrada do protocolo.\n→ 2. **p-tau217 plasmático** (Ashton et al., 2024). AUC > 0,95. Custo < R$ 500. Diagnóstico fica mais sensível.\n→ 3. **CCL revisado** (Petersen, 2024). Critérios mais sensíveis para Comprometimento Cognitivo Leve.\n\nO que isso significa para quem se formou antes:\n\nNão é apocalipse de carreira. É reciclagem específica via Lato Sensu atualizado ou supervisão clínica em centro de referência.\n\nO mercado pede neuropsicólogo formado nesse novo protocolo. Hospital universitário e neurologista de consultório já estão pedindo.\n\n#Neuropsicologia #Alzheimer #lecanemab',
+    sourceHref: '/areas/neuropsicologia',
+    sourceLabel: 'Neuropsicologia',
+    tags: ['post', 'neuropsi']
+  },
+  {
+    title: 'Post: quatro perguntas antes de usar ChatGPT em consultório',
+    channel: 'LinkedIn' as const,
+    snippetMd: 'Antes de usar ChatGPT, Claude ou Gemini em consultório, quatro perguntas:\n\n→ 1. Onde o dado é armazenado? Conta gratuita grava para treinamento. Sigilo profissional cai.\n→ 2. Quem assina o produto final? CFP é claro: psicólogo, sempre. LLM não é coautor.\n→ 3. Modelo foi auditado para viés cultural brasileiro? Em geral, não. Khosravi & Yoganarasimhan (2025): GEO reduz citação de fonte não-anglófona em 15%.\n→ 4. Qual a taxa de alucinação confirmada? Zhao et al. (2024): 146.932 alucinações em LLMs médicos. ~15% de dado fabricado.\n\nPosicionamento CFP 03/07/2025 + PL 2338/2023 (em tramitação) vêm rápido. Quem documenta uso agora se prepara para auditoria depois.\n\n#PsicologiaDigital #IA #CFP',
+    sourceHref: '/evidencias/ia-generativa-saude-mental',
+    sourceLabel: 'Evidência IA',
+    tags: ['post', 'IA']
+  },
+  {
+    title: 'Carrossel slide 1: Cinco modalidades de pós em Psicologia que existem no Brasil',
+    channel: 'LinkedIn' as const,
+    snippetMd: '**Slide 1 (título):**\n\nMBA, Especialização, Mestrado, Residência, Clínica certificada.\n\nNão são sinônimos. São cinco animais regulatórios distintos.\n\n**Slide 2:** Especialização Lato Sensu (MEC + CFP quando especialidade). 360h+. Generalista.\n\n**Slide 3:** MBA. Subtipo de Lato Sensu. Recorte executivo.\n\n**Slide 4:** Mestrado Profissional (CAPES, Stricto Sensu). 24 meses, dissertação.\n\n**Slide 5:** Especialização Clínica certificada (ACT, EMDR, DBT, TCC). Forma terapeuta certificado em método.\n\n**Slide 6:** Residência Multiprofissional (MEC + MS). 2-3 anos integral, bolsa federal, SUS.\n\n**Slide 7:** Híbridas. Combinam Lato Sensu com certificação clínica.\n\n**Slide 8 (CTA):** Catálogo das cinco modalidades em posgraduacaopsicologia.com/tipos-de-pos-graduacao.',
+    sourceHref: '/tipos-de-pos-graduacao',
+    sourceLabel: 'Modalidades canônicas',
+    tags: ['carrossel', 'modalidades']
+  },
+  {
+    title: 'Newsletter lead: Adolescência digital e a Lei 15.100/2024',
+    channel: 'LinkedIn' as const,
+    snippetMd: 'A Lei 15.100/2024 proibiu celular em ambiente escolar brasileiro a partir de janeiro de 2026. A imprensa apoiou. Especialistas internacionais como Jonathan Haidt aplaudiram. E mesmo assim a literatura nunca foi consensual.\n\nEm *The Anxious Generation* (2024), Haidt consolida correlação entre uso intensivo de redes sociais e aumento de ansiedade adolescente — especialmente meninas entre 11 e 14 anos. Andrew Przybylski et al. (2023, *Nature Human Behaviour*) refizeram a análise e mostraram que o tamanho de efeito médio é pequeno.\n\nIsso não invalida a lei. Obriga o psicólogo escolar brasileiro a coletar baseline antes de janeiro de 2026 e comparar 12 meses depois. Sem isso, importamos narrativa americana sem produzir evidência local.\n\nEdição completa, com referências, no portal posgraduacaopsicologia.com.',
+    sourceHref: '/temas',
+    sourceLabel: 'Temas no portal',
+    tags: ['newsletter', 'adolescencia']
+  },
+  {
+    title: 'Post comparativo: residência multiprofissional vs mestrado profissional',
+    channel: 'LinkedIn' as const,
+    snippetMd: 'Residência Multiprofissional ou Mestrado Profissional?\n\nDecisão recorrente para psicólogo recém-formado. Não é a mesma coisa.\n\n**Residência Multiprofissional:**\n→ MEC + Ministério da Saúde.\n→ 2-3 anos integral em SUS.\n→ Bolsa federal (~R$ 4,1k em 2026).\n→ Sai psicólogo de saúde coletiva treinado em campo.\n→ Não habilita docência superior.\n\n**Mestrado Profissional:**\n→ CAPES, Stricto Sensu.\n→ 24 meses, dissertação, defesa.\n→ Pode ter bolsa CAPES ou ser autofinanciado.\n→ Sai pesquisador aplicado com habilitação para docência superior.\n→ Atuação em mercado privado, consultoria, academia.\n\nQuem quer saúde pública, hospital ou CAPS: residência.\nQuem quer consultoria, docência ou pesquisa aplicada: mestrado.\n\nEm dúvida real? Hibridização posterior funciona. Residência primeiro, mestrado depois, é caminho frequente.\n\n#PsicologiaCarreira #PosGraduacao',
+    sourceHref: '/tipos-de-pos-graduacao',
+    sourceLabel: 'Modalidades canônicas',
+    tags: ['comparativo', 'carreira']
+  }
+];
+
+snippets.forEach((s: any) => { s.charCount = s.snippetMd.length; });
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${SITE.url}/conteudo-social/linkedin/#article`,
+      headline: title,
+      description,
+      datePublished,
+      dateModified: datePublished,
+      author: { '@id': `${SITE.url}/#alexandre-caramaschi` },
+      publisher: { '@id': `${SITE.url}/#brasil-geo` },
+      inLanguage: 'pt-BR',
+      mainEntityOfPage: `${SITE.url}/conteudo-social/linkedin/`,
+      articleSection: 'Conteúdo & Social',
+      keywords: 'LinkedIn, post longo, carrossel, newsletter, psicologia organizacional'
+    },
+    alexandrePersonBase,
+    brasilGeoOrganization
+  ]
+};
+
+const breadcrumbs = [
+  { label: 'Início', href: '/' },
+  { label: 'Conteúdo & Social', href: '/conteudo-social' },
+  { label: 'LinkedIn' }
+];
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={breadcrumbs} />
+      <span class="section-eyebrow mt-3">Por canal · LinkedIn</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">LinkedIn para psicólogo organizacional e clínico em 2026: post longo, carrossel e newsletter</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        LinkedIn é o canal onde autoridade pessoal vira oportunidade concreta — DM qualificada, indicação profissional, convite para palestrar, vaga sob medida. Três formatos importam em 2026 e cada um tem anatomia própria.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-8">
+    <TLDR
+      resposta="Post longo abre conversa. Carrossel ensina (e ainda é o formato com maior dwell time orgânico em 2026). Newsletter consolida autoridade recorrente. Os três funcionam em série; quem só faz um deixa metade do canal sobre a mesa."
+      fontes={['LinkedIn Algorithm Q1 2026 brief', 'Brasil GEO playbook editorial']}
+    />
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-4">Três formatos com anatomia distinta</h2>
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
+      {formatos.map(f => (
+        <article class="card-lift p-6">
+          <p class="text-[11px] uppercase tracking-wider font-semibold text-sky-700">{f.nome}</p>
+          <p class="text-xs text-ink-500 mt-2"><strong>Limite:</strong> {f.limite}</p>
+          <p class="mt-3 text-sm text-ink-700 leading-relaxed"><strong>Estrutura:</strong> {f.estrutura}</p>
+          <p class="mt-3 text-sm text-ink-700 leading-relaxed"><strong>Métricas:</strong> {f.metricas}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-4">Quatro templates por persona profissional</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">Mesmo conteúdo, quatro recortes. Cada persona pede um gancho diferente, uma evidência diferente e uma chamada à ação diferente.</p>
+    <div class="overflow-x-auto rounded-2xl border border-surface-200">
+      <table class="min-w-full text-sm">
+        <thead class="bg-surface-50 text-ink-700 text-left">
+          <tr>
+            <th class="px-4 py-3 font-semibold">Persona</th>
+            <th class="px-4 py-3 font-semibold">Gancho</th>
+            <th class="px-4 py-3 font-semibold">Evidência</th>
+            <th class="px-4 py-3 font-semibold">CTA</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-200 bg-white">
+          {templatesPersona.map(t => (
+            <tr class="align-top">
+              <td class="px-4 py-3 font-semibold text-ink-900">{t.persona}</td>
+              <td class="px-4 py-3 text-ink-700 italic">{t.gancho}</td>
+              <td class="px-4 py-3 text-ink-700">{t.evidencia}</td>
+              <td class="px-4 py-3 text-ink-700">{t.cta}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <h2 class="section-h text-2xl mb-2">Seis snippets canônicos prontos para LinkedIn</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">Posts longos, lead de newsletter e estrutura de carrossel. Ajuste 20-30% para sua voz; mantenha as setas (→) como recurso visual.</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {snippets.map((s: any) => (
+        <SnippetCard
+          title={s.title}
+          channel={s.channel}
+          charCount={s.charCount}
+          snippetMd={s.snippetMd}
+          sourceHref={s.sourceHref}
+          sourceLabel={s.sourceLabel}
+          tags={s.tags}
+        />
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <div class="rounded-2xl bg-brand-900 text-white p-8">
+      <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Próximo passo</p>
+      <h2 class="font-display font-semibold text-2xl">Substack é o LinkedIn de longa duração</h2>
+      <p class="mt-3 text-white/90 leading-relaxed max-w-3xl">
+        LinkedIn entrega oportunidade no curto prazo; Substack constrói relacionamento que paga recorrência. O psicólogo brasileiro que combina os dois — newsletter mensal no LinkedIn + edição semanal no Substack — produz portfólio de citações em LLM e fluxo de receita complementar à clínica. Para entender a oferta canônica de Pós-Graduações em Psicologia que sustenta a autoridade, visite <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="text-sun-500 hover:underline">o catálogo IPOG</a>.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/conteudo-social/biblioteca" class="btn btn-primary">Abrir biblioteca completa</a>
+        <a href="/conteudo-social/substack" class="btn btn-ghost-dark">Próximo: Substack →</a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

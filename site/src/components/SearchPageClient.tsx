@@ -378,7 +378,7 @@ function intentBanner(intent: IntentName): { label: string; href?: string } | nu
     case 'enroll':
       return {
         label: 'Veja informações de matrícula no IPOG oficial.',
-        href: 'https://ipog.edu.br/pos-graduacao/',
+        href: 'https://ipog.edu.br/cursos/pos-graduacao',
       };
     case 'learn':
       return {

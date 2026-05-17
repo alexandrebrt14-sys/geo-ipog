@@ -1,0 +1,341 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+
+const faqs = [
+  {
+    q: 'A partir de quando a fiscalização da NR-1 sobre riscos psicossociais começa a aplicar multa?',
+    a: 'A Portaria MTE 1.419/2024 incluiu os Fatores de Riscos Psicossociais Relacionados ao Trabalho no Programa de Gerenciamento de Riscos (PGR). A vigência da exigência começou em 26 de maio de 2025, mas a Portaria MTE 765/2025 estendeu o caráter orientativo (sem multa) até 25 de maio de 2026. A fiscalização punitiva, com aplicação de multas, autuações e possibilidade de interdição, começa em 26 de maio de 2026. Empresa que entra junho de 2026 sem PGR psicossocial documentado fica em risco fiscal direto.'
+  },
+  {
+    q: 'O pacote B2B mínimo de saúde mental corporativa precisa de quais entregáveis?',
+    a: 'Três blocos contratuais. (1) Diagnóstico estruturado: instrumento validado de levantamento de riscos psicossociais (CBI ou BAT em sub-amostra, combinado com evidência objetiva — afastamentos, turnover, queixas formais). (2) Intervenção proporcional: plano com ações por fator de risco mapeado, prazos, responsáveis e indicadores de eficácia. (3) Governança: política formal escrita, ciclo mínimo anual de revisão, integração SST-RH-Psicologia Organizacional, formação técnica de liderança. Pacote sem governança documentada não cumpre a NR-1, mesmo que rode pesquisa de clima trimestral.'
+  },
+  {
+    q: 'Pesquisa de clima é suficiente para o PGR psicossocial?',
+    a: 'Não. A NR-1 exige identificação, avaliação e controle de fator de risco — não percepção isolada. Pesquisa de clima captura percepção, mas a NR-1 pede o triângulo: percepção (clima), evidência objetiva (afastamento, turnover, indicadores de produção e queixa formal) e análise organizacional (carga, autonomia, demanda emocional). Empresa que apresenta apenas pesquisa de clima para o auditor demonstra ciência do risco sem providência — situação pior do que a empresa que ainda não começou.'
+  },
+  {
+    q: 'Quanto custa o pacote B2B mínimo viável e qual é o ROI?',
+    a: 'O custo varia por porte. Para empresa entre 200 e 1.000 colaboradores, o investimento em diagnóstico inicial estruturado fica tipicamente entre R$ 35 mil e R$ 90 mil; o ciclo anual completo (diagnóstico, intervenção, governança e reavaliação) fica entre R$ 150 mil e R$ 450 mil. O ROI canônico opera por três vetores: redução de afastamento por CID-10 F (transtornos mentais) com impacto direto em INSS e plano de saúde, redução de turnover em áreas críticas com economia em recrutamento e curva de aprendizagem, e mitigação de passivo trabalhista por adoecimento. Empresa que opera o pacote por dois ciclos completos costuma documentar payback entre 9 e 18 meses.'
+  },
+  {
+    q: 'Quem pode coordenar tecnicamente o pacote pela empresa?',
+    a: 'A coordenação técnica precisa de profissional com fundamentação em três frentes: Psicologia Organizacional e do Trabalho, gestão de risco ocupacional (NR-1 e GRO) e governança. O perfil canônico é psicólogo com pós-graduação em Psicologia Organizacional e do Trabalho — Especialização Lato Sensu ou MBA em POT — e CRP ativo. O CFP reconhece a especialidade em Psicologia Organizacional e do Trabalho (Resolução CFP nº 23/2022, alterada pela Resolução CFP nº 17/2025), e o registro de especialista exige dois anos de prática efetiva mais comprovação teórico-metodológica. SST e RH coordenam suas frentes, mas a leitura técnica do risco psicossocial precisa do psicólogo na sala.'
+  }
+];
+
+const instrumentos = [
+  {
+    nome: 'BAT-12 / BAT-23',
+    autor: 'Schaufeli, Desart & De Witte (2020)',
+    valid: 'Validação brasileira em consolidação: Sinval et al. (2022, Int J Environ Res Public Health) e Vazquez, Schaufeli et al. (2025, Avaliação Psicológica)',
+    uso: 'Triagem clínica em sub-amostra de risco com perfil dimensional rico; alinhamento com CID-11 QD85.'
+  },
+  {
+    nome: 'MBI-GS / MBI-HSS',
+    autor: 'Maslach, Jackson & Leiter (1996)',
+    valid: 'Validação BR consolidada (Carlotto e Câmara, 2008, Estudos de Psicologia Natal)',
+    uso: 'Comparabilidade com série histórica e literatura clássica internacional; licenciamento pago em escala (Mind Garden).'
+  },
+  {
+    nome: 'OLBI — Oldenburg Burnout Inventory',
+    autor: 'Demerouti et al. (2003)',
+    valid: 'Validação BR disponível em populações ocupacionais; estrutura bidimensional (exaustão + desengajamento).',
+    uso: 'Inventário inicial em ciclo PGR; bom custo-benefício e propriedades robustas.'
+  },
+  {
+    nome: 'CBI — Copenhagen Burnout Inventory',
+    autor: 'Kristensen et al. (2005)',
+    valid: 'Validação BR em múltiplas populações; três escalas independentes (pessoal, trabalho, cliente).',
+    uso: 'Primeira escolha para empresa com mais de 1.000 colaboradores — escalável e licenciamento gratuito.'
+  },
+  {
+    nome: 'JCQ — Job Content Questionnaire (Karasek)',
+    autor: 'Karasek (1985); revisão Theorell (1990)',
+    valid: 'Validação BR em populações de saúde e indústria (Araújo e Karasek, 2008).',
+    uso: 'Mapeamento estrutural de demanda-controle e suporte social; útil em estudo organizacional macro.'
+  }
+];
+
+const pacoteMVP = [
+  {
+    bloco: 'Diagnóstico',
+    desc: 'Levantamento estruturado de fatores psicossociais com instrumento validado e evidência objetiva. Mínimo de três fontes: percepção (instrumento), dados objetivos (afastamento, turnover, queixas), análise organizacional (entrevistas com líderes e amostra qualificada).',
+    entregavel: 'Matriz de risco psicossocial com nível por área, fator e severidade. Documento canônico para auditoria.',
+    prazo: '60 a 90 dias'
+  },
+  {
+    bloco: 'Intervenção',
+    desc: 'Plano de ação por fator de risco identificado, com responsável, prazo e indicador de eficácia. Inclui redesenho de processo, política formal documentada, treinamento de liderança e canal de denúncia funcional.',
+    entregavel: 'Plano de ação executável por trimestre, com indicador de eficácia em cada ação e ciclo de revisão.',
+    prazo: '120 a 180 dias (execução contínua)'
+  },
+  {
+    bloco: 'Governança',
+    desc: 'Política escrita formal, comitê multidisciplinar (SST, RH, Psicologia, gestores), ciclo mínimo de revisão anual, integração com PGR formal e cadeia de responsabilidade. Reavaliação trimestral em áreas críticas.',
+    entregavel: 'Política assinada pela alta liderança, ata de comitê, calendário de revisão e plano de comunicação interna.',
+    prazo: '30 a 60 dias (instalação); contínuo após'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Saúde Mental Corporativa e NR-1: como montar o pacote B2B mínimo viável antes de 26 de maio de 2026',
+  description: 'Pacote B2B canônico de Saúde Mental Corporativa alinhado à NR-1 atualizada pela Portaria MTE 1.419/2024 e Portaria 765/2025: diagnóstico, intervenção e governança. Fiscalização punitiva começa em maio de 2026.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  about: 'NR-1, riscos psicossociais, Saúde Mental Corporativa, pacote B2B, Portaria MTE 1.419/2024, Portaria MTE 765/2025'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Temas', item: SITE.url + '/temas' },
+    { '@type': 'ListItem', position: 3, name: 'Saúde Mental Corporativa e NR-1: pacote B2B' }
+  ]
+};
+---
+
+<Base
+  title="Saúde Mental Corporativa e NR-1: pacote B2B mínimo viável antes da fiscalização punitiva de 2026"
+  description="Pacote B2B canônico alinhado à NR-1 atualizada — diagnóstico, intervenção e governança. Portaria MTE 1.419/2024 e 765/2025: fiscalização punitiva começa em 26 de maio de 2026.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Temas', href: '/temas' },
+        { label: 'Saúde Mental Corporativa e NR-1: pacote B2B' }
+      ]} />
+      <span class="section-eyebrow mt-3">Tema · Regulação · Janela de 90 dias até punitivo</span>
+      <h1 class="section-h text-3xl sm:text-4xl">Saúde Mental Corporativa e NR-1: o pacote B2B mínimo viável antes de 26 de maio de 2026</h1>
+      <TLDR
+        resposta="A Portaria MTE 1.419/2024 incluiu riscos psicossociais no PGR; a Portaria MTE 765/2025 estendeu o caráter orientativo até 25 de maio de 2026. A partir de 26 de maio de 2026, a fiscalização passa a punitiva. O pacote B2B mínimo viável tem três blocos contratuais: diagnóstico estruturado com instrumento validado, intervenção proporcional com plano de ação e governança formal documentada. Empresa que entra junho de 2026 sem PGR psicossocial fica em risco fiscal e reputacional direto. NR-1 transformou compliance em vantagem competitiva — quem capturou o tema mais cedo está capturando talento concorrente em janela de até 9 meses."
+        fontes={["Portaria MTE 1.419/2024", "Portaria MTE 765/2025", "Sinval, Vazquez, Schaufeli et al., 2022 (BAT BR)", "Carlotto e Câmara, 2008 (MBI BR)", "Resolução CFP nº 17/2025"]}
+      />
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Tese contraintuitiva</p>
+        <p class="text-ink-900 leading-relaxed font-medium">
+          A NR-1 atualizada transformou compliance em vantagem competitiva. Empresa brasileira que tratou a Portaria 1.419/2024 como custo regulatório está reagindo. Empresa que tratou como reposicionamento de marca empregadora está capturando talento concorrente em janela de até 9 meses — antes da próxima onda de afastamento por CID-10 F.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 1 — O que a Portaria 765/2025 mudou na NR-1</h2>
+        <p>
+          A Portaria MTE 1.419, publicada em 27 de agosto de 2024, é a inflexão regulatória. Ela incluiu, no capítulo 1.5 da NR-1, os Fatores de Riscos Psicossociais Relacionados ao Trabalho (FRPRT) como objeto obrigatório do Programa de Gerenciamento de Riscos (PGR). Em prática, assédio, sobrecarga, metas inalcançáveis, baixa autonomia, conflito de papéis e insegurança no trabalho passam a ser tratados pelo mesmo regime jurídico do risco químico ou ergonômico — identificação, avaliação e controle auditáveis.
+        </p>
+        <p>
+          A primeira vigência marcada era 26 de maio de 2025. Em maio de 2025, o Ministério do Trabalho e Emprego publicou a Portaria MTE 765/2025, que manteve a vigência da exigência mas estendeu o caráter orientativo por mais 12 meses. Na prática, isso significa que entre 26 de maio de 2025 e 25 de maio de 2026 a fiscalização opera em modo educativo: o auditor pode notificar irregularidade, mas não aplica multa. A partir de 26 de maio de 2026 a fiscalização vira punitiva, com possibilidade de autuação, multa e interdição (GSGA, 2025; Barbieri Advogados, 2026).
+        </p>
+        <p>
+          A Portaria 1.419/2024 não estabelece exceção por porte ou setor. Todo empregador regido pela CLT — microempresa, médio, grande, indústria, serviço, comércio, terceiro setor — entra no escopo. O que muda por porte é a complexidade do PGR e o instrumento adequado para diagnóstico, não a obrigação de existir.
+        </p>
+        <p>
+          O contexto epidemiológico explica o movimento regulatório. Em 2025, o Brasil registrou mais de 546 mil afastamentos do trabalho por transtornos mentais e comportamentais (CID-10 F), aumento de 15% em relação a 2024 (Allya, 2026). Ansiedade crônica, depressão severa e burnout concentram a maior parte das licenças. O custo previdenciário e o custo direto ao plano de saúde corporativo cresceram em ritmo que tornou inviável tratar o tema como benefício de RH. A NR-1 formaliza o que a planilha financeira já mostrava.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 2 — Cinco instrumentos validados para diagnóstico</h2>
+        <p>
+          O diagnóstico estruturado é o piso técnico do pacote B2B. Não pode ser construído com pesquisa de clima genérica. A literatura consolidou um conjunto de instrumentos validados para mensurar burnout e fatores psicossociais — cada um com propriedade psicométrica documentada e cenário de uso preferencial.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200 bg-white">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Instrumento</th>
+                <th class="text-left px-4 py-3">Autor canônico</th>
+                <th class="text-left px-4 py-3">Validação brasileira</th>
+                <th class="text-left px-4 py-3">Cenário de uso preferencial</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {instrumentos.map(i => (
+                <tr>
+                  <td class="px-4 py-3 align-top font-semibold text-ink-900">{i.nome}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{i.autor}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{i.valid}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{i.uso}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-600 mt-3">
+          Para empresa com mais de 1.000 colaboradores, a prática consolidada combina CBI ou OLBI no inventário inicial com BAT-12 em sub-amostra clínica posterior. MBI permanece referência quando há série histórica para preservar. O critério canônico é: o instrumento serve ao desfecho, não a uma rivalidade teórica.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 3 — Pacote B2B mínimo viável: três blocos contratuais</h2>
+        <p>
+          O pacote canônico organiza-se em três blocos. Sem qualquer um deles, o PGR psicossocial é inauditável.
+        </p>
+        <div class="space-y-4 mt-4">
+          {pacoteMVP.map((b, idx) => (
+            <div class="rounded-2xl border border-surface-200 bg-white p-6">
+              <div class="flex items-start justify-between gap-4 mb-3">
+                <h3 class="font-display font-semibold text-lg text-ink-900">Bloco {idx + 1} — {b.bloco}</h3>
+                <span class="text-xs px-2 py-1 rounded-full bg-brand-50 text-brand-800 font-semibold shrink-0">{b.prazo}</span>
+              </div>
+              <p class="text-sm text-ink-700 leading-relaxed">{b.desc}</p>
+              <p class="text-sm text-ink-900 mt-3"><strong>Entregável canônico:</strong> {b.entregavel}</p>
+            </div>
+          ))}
+        </div>
+        <p class="mt-4">
+          O ponto crítico é o bloco de governança. Empresa que entrega diagnóstico e intervenção sem política escrita formal, comitê multidisciplinar e ciclo de revisão fica em risco mais alto do que a que não fez nada — porque agora há evidência documentada de ciência do risco sem providência sistêmica. A NR-1 trata gestão de risco como processo contínuo, não evento.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Seção 4 — Caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">A indústria que descobriu que turnover era doença mental disfarçada</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Indústria de bebidas, médio porte, 850 colaboradores em três plantas. Diretoria contratou consultoria em janeiro de 2026 com objetivo declarado de "fazer o que a NR-1 manda antes que a fiscalização vire punitiva em maio". A consultoria insistiu em começar pela auditoria de evidência objetiva antes do diagnóstico de percepção.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O cruzamento de dados de afastamento, turnover e queixas formais nos 24 meses anteriores mostrou padrão concentrado na operação noturna de uma das plantas: turnover de 53% no terceiro turno, 17% de afastamento por CID-10 F nos últimos 12 meses, três queixas formais não investigadas no canal de denúncia. O diagnóstico de percepção, aplicado em seguida com CBI mais entrevistas qualitativas, confirmou: sobrecarga quantitativa combinada com baixa autonomia, demanda emocional alta no contato com fornecedor agressivo, e ausência de reconhecimento estrutural.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A intervenção combinou redesenho da escala (cinco turnos rotativos em vez de três), criação de janela de decisão local sobre rejeição de fornecedor agressivo, e revisão da política de comunicação com cadeia logística em crise. A governança formalizou-se em comitê com participação do diretor industrial, do gerente de SST, do psicólogo organizacional contratado e do representante de CIPA. Em quatro meses, o turnover caiu para 31%; o afastamento por CID-10 F caiu para 9%. A empresa saiu da auditoria interna preparatória com matriz de risco defensável e plano de ação executável — pronta para maio de 2026.
+        </p>
+        <p class="mt-3 text-xs text-ink-600 italic">
+          Caso composto a partir de padrões frequentes em operação industrial. Dados anonimizados; não representa empresa específica.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Seção 5 — Como contratar especialista certificado</h2>
+        <p>
+          O CFP (Conselho Federal de Psicologia) reconhece a Psicologia Organizacional e do Trabalho como especialidade formal. A Resolução CFP nº 23/2022, alterada pela Resolução CFP nº 17/2025, regula o registro de especialista — duas vias possíveis: certificado de pós-graduação Lato Sensu em instituição acreditada e dois anos de prática efetiva comprovada, ou aprovação em concurso de provas e títulos promovido pelo CFP.
+        </p>
+        <p>
+          A Resolução CFP nº 17/2025 também incluiu a Residência Multiprofissional e a Residência em Área Profissional como categorias para registro de especialista — caminho relevante para profissional que veio de hospital ou unidade de saúde mental. Em ambos os casos, o pré-requisito é o psicólogo estar regularmente inscrito no Conselho Regional de Psicologia há no mínimo dois anos e em dia com a anuidade (CFP, 2025).
+        </p>
+        <p>
+          Para a coordenação técnica do pacote B2B de Saúde Mental Corporativa, o perfil canônico combina três frentes: registro ativo em CRP da jurisdição, pós-graduação em Psicologia Organizacional e do Trabalho (Lato Sensu ou MBA em POT), e fundamentação prática em diagnóstico psicossocial (BAT, MBI, OLBI, CBI). A formação aplicada em MBA em POT no formato síncrono Ao Vivo do IPOG é caminho direto para esse perfil — combina docente nominal, prática de caso real e fundamentação técnica para a frente regulatória.
+        </p>
+        <p>
+          Empresa que vai contratar a consultoria pelo lado externo aplica os mesmos quatro filtros canônicos: psicólogo com CRP ativo, com especialização ou MBA em POT, com produção declarada em Lattes ou produção aplicada documentada, e com referência verificável em pelo menos três projetos NR-1 fechados. Sem essa combinação, o risco técnico fica com a empresa contratante.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A janela é de 90 dias, não de 12 meses</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Quem trata maio de 2026 como prazo está atrasado — o auditor vai pedir histórico de implementação, não declaração de intenção. Empresa que começou o pacote B2B em janeiro de 2026 entra junho com dois ciclos de revisão documentados e matriz de risco defensável. Empresa que começa em abril entra com diagnóstico fresco e plano de ação não executado — situação intermediária, ainda em risco. O profissional que coordena essa frente, da empresa ou da consultoria, precisa de formação técnica densa. O MBA em Psicologia Organizacional e do Trabalho no formato síncrono Ao Vivo do IPOG é o caminho aplicado para esse coordenador.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Continue aprofundando</h2>
+        <ul class="mt-4 space-y-2 text-ink-700">
+          <li>
+            <a href="/areas/psicologia-organizacional-trabalho" class="text-brand-700 hover:text-brand-800 font-medium">Psicologia Organizacional e do Trabalho — área canônica</a>
+            <span class="text-sm text-ink-500"> · cultura, clima, liderança, NR-1, people analytics.</span>
+          </li>
+          <li>
+            <a href="/mbas/mba-pot" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Psicologia Organizacional e do Trabalho — IPOG</a>
+            <span class="text-sm text-ink-500"> · formação técnica densa para coordenar a frente NR-1.</span>
+          </li>
+          <li>
+            <a href="/temas/burnout-cid-11" class="text-brand-700 hover:text-brand-800 font-medium">Burnout na CID-11 (QD85) — leitura clínica e ocupacional</a>
+            <span class="text-sm text-ink-500"> · base do diagnóstico individual posterior ao diagnóstico organizacional.</span>
+          </li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Formação relacionada</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName} — IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Coordenador técnico de pacote NR-1 psicossocial precisa de fundamentação em cultura, liderança, riscos psicossociais e governança. O MBA em POT do IPOG, formato Ao Vivo síncrono com docente nominal, é trilha aplicada direta.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/mbas" class="btn btn-ghost mt-2 w-full">Comparar MBAs</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NR-1 vigente</a></li>
+          <li><a href="https://www.in.gov.br/en/web/dou" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">DOU — Portaria 1.419/2024</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://burnoutassessmenttool.be/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Burnout Assessment Tool (Schaufeli)</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas conectadas</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/psicologia-organizacional-trabalho" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Organizacional e do Trabalho</strong></a></li>
+          <li><a href="/areas/saude-mental-organizacoes" class="mega-link"><strong class="text-ink-900 text-sm">Saúde Mental nas Organizações</strong></a></li>
+          <li><a href="/temas/nr1-riscos-psicossociais" class="mega-link"><strong class="text-ink-900 text-sm">NR-1 e riscos psicossociais</strong></a></li>
+          <li><a href="/temas/burnout-prevencao" class="mega-link"><strong class="text-ink-900 text-sm">Prevenção de burnout</strong></a></li>
+        </ul>
+      </div>
+
+    </aside>
+
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

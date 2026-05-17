@@ -2,6 +2,7 @@
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import { SITE, MBAS, AREAS } from '@lib/data';
+import { buildEducationalOccupationalProgram } from '@lib/schemas/educational-program';
 
 const mba = MBAS.find(m => m.id === 'mba-positiva')!;
 const others = MBAS.filter(m => m.id !== 'mba-positiva');
@@ -30,17 +31,17 @@ const FAQS_PAGINA = [
 
 const ldProgram = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'EducationalOccupationalProgram',
-  name: mba.name,
-  programType: 'MBA',
-  educationalProgramMode: 'online (Ao Vivo síncrono ou híbrido conforme IPOG)',
-  occupationalCategory: 'Head de Cultura, Head de Bem-Estar, Consultor de Saúde Mental Organizacional, Psicólogo Organizacional',
-  description: mba.description,
-  provider: {
-    '@type': 'EducationalOrganization',
-    name: 'IPOG — Instituto de Pós-Graduação',
-    url: 'https://ipog.edu.br/'
-  }
+  ...buildEducationalOccupationalProgram({
+    name: mba.name,
+    slug: '/mbas/mba-positiva',
+    description: mba.description,
+    programType: 'MBA',
+    timeRequired: 'P360H',
+    occupationalCredentialAwarded: 'MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações',
+    educationalCredentialAwarded: 'Pós-Graduação Lato Sensu em Psicologia Positiva e Bem-Estar Corporativo',
+    educationalProgramMode: 'blended',
+    hasCourseNames: ['Psicologia Positiva aplicada', 'Segurança Psicológica', 'Prevenção de Burnout', 'Bem-Estar Corporativo', 'Cultura de Cuidado']
+  })
 });
 
 const ldBreadcrumb = JSON.stringify({

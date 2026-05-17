@@ -2,6 +2,7 @@
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import { SITE, MBAS, AREAS } from '@lib/data';
+import { buildEducationalOccupationalProgram } from '@lib/schemas/educational-program';
 
 const mba = MBAS.find(m => m.id === 'mba-neuro')!;
 const others = MBAS.filter(m => m.id !== 'mba-neuro');
@@ -30,17 +31,17 @@ const FAQS_PAGINA = [
 
 const ldProgram = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'EducationalOccupationalProgram',
-  name: mba.name,
-  programType: 'MBA',
-  educationalProgramMode: 'online (Ao Vivo síncrono ou híbrido conforme IPOG)',
-  occupationalCategory: 'Psicólogo Clínico, Neuropsicólogo, Fonoaudiólogo, Terapeuta Ocupacional, Profissional de Saúde em Reabilitação',
-  description: mba.description,
-  provider: {
-    '@type': 'EducationalOrganization',
-    name: 'IPOG — Instituto de Pós-Graduação',
-    url: 'https://ipog.edu.br/'
-  }
+  ...buildEducationalOccupationalProgram({
+    name: mba.name,
+    slug: '/mbas/mba-neuro',
+    description: mba.description,
+    programType: 'MBA',
+    timeRequired: 'P420H',
+    occupationalCredentialAwarded: 'MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo',
+    educationalCredentialAwarded: 'Pós-Graduação Lato Sensu em Reabilitação Neuropsicológica',
+    educationalProgramMode: 'blended',
+    hasCourseNames: ['Funções Cognitivas e Neuroplasticidade', 'Planos de Reabilitação', 'Neurodesenvolvimento', 'Envelhecimento Cognitivo', 'Equipe Multiprofissional em Reabilitação']
+  })
 });
 
 const ldBreadcrumb = JSON.stringify({

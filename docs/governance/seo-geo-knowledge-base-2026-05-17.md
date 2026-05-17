@@ -418,6 +418,13 @@ SEO + GEO Knowledge Base 2026
 - A taxonomia em §2 só muda quando a estrutura conceitual mudar — nova categoria de motor, novo standard major, nova frente regulatória LGPD/EU AI Act.
 - Glossário em §4 é a fonte canônica de nomenclatura — qualquer copy pública deste programa usa essas definições.
 
+### Histórico de revisões incrementais
+
+| Data | Wave | Escopo |
+|------|------|--------|
+| 2026-05-17 | A–E (inicial) | Pesquisa completa em 5 dossiês paralelos. 203 fontes mapeadas, 70+ confirmadas. |
+| 2026-05-17 | BB (remediação) | Resolução de 10 marcações `[VERIFICAR]`/`[FALTA EVIDÊNCIA]` das waves A-E. 7 CONFIRMADOS, 1 CORRIGIDO (MercadoLibre não é parceiro AP2), 1 NÃO LOCALIZÁVEL (e-MEC via portal WAF, código 12916 confirmado via fonte secundária), 1 PARCIALMENTE RESOLVIDO (Wikidata Q54864393). Ver `docs/research/verifications-followup-20260517.md`. |
+
 ---
 
-**Sources consolidadas:** 203 referências distribuídas pelos 5 dossiês das waves A-E em `docs/research/`. Spot-check date stamp: 2026-05-17. Nenhuma citação inventada foi aceita — todas têm URL real ou marcação `[VERIFICAR]` / `[FALTA EVIDÊNCIA]` quando incertas.
+**Sources consolidadas:** 203 referências distribuídas pelos 5 dossiês das waves A-E em `docs/research/`. Spot-check date stamp: 2026-05-17. Wave BB de remediação: 2026-05-17. Nenhuma citação inventada foi aceita — todas têm URL real, marcação `[VERIFICAR]` quando incertas, ou resolução explícita quando verificadas.

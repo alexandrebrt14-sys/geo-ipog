@@ -5,8 +5,11 @@
  * - `@id` âncora `#ipog-educational-organization` reconcilia entidade IPOG em todo o portal.
  * - IPOG é o PROVEDOR educacional; Brasil GEO é o PUBLISHER do portal editorial.
  *   São entidades distintas no `@graph` (não confundir com brasilGeoOrganization).
- * - `sameAs` cita perfis públicos verificáveis. e-MEC ID [VERIFICAR] — não localizei
- *   ID público em fonte primária; placeholder reservado até confirmação do time IPOG.
+ * - `sameAs` cita perfis públicos verificáveis. e-MEC código IES 12916 (confirmado
+ *   via portal e-MEC MTI5MTY= + busca secundária em 2026-05-17). Portaria de
+ *   recredenciamento nº 884 de 12/08/2016.
+ * - Wikidata Q54864393 confirmado em 2026-05-17 (10 declarações, país=Brasil,
+ *   localidade=Goiânia, website ipog.edu.br).
  * - `accreditedBy` referencia MEC como órgão acreditador (ScholarlyOrganization
  *   formalmente, mas usamos GovernmentOrganization que é mais preciso para MEC).
  *
@@ -36,15 +39,17 @@ export const ipogEducationalOrganization = {
   },
   areaServed: { '@type': 'Country', name: 'Brazil' },
   inLanguage: 'pt-BR',
-  // sameAs — apenas referências públicas verificáveis. [VERIFICAR] Wikidata ID se houver.
+  // sameAs — referências públicas verificáveis. Confirmadas em 2026-05-17.
+  // e-MEC código IES 12916 — confirmado via emec.mec.gov.br (MTI5MTY= = base64 de "12916").
+  // Wikidata Q54864393 — confirmado via Wikidata Special:Search em 2026-05-17.
   sameAs: [
     'https://ipog.edu.br/',
     'https://www.linkedin.com/school/ipog/',
     'https://www.instagram.com/ipogoficial/',
     'https://www.facebook.com/IPOGoficial',
-    'https://www.youtube.com/@ipogoficial'
-    // 'https://emec.mec.gov.br/...' — [VERIFICAR] ID e-MEC IPOG (placeholder até confirmar com time)
-    // 'https://www.wikidata.org/wiki/Q...' — [VERIFICAR] Wikidata item IPOG (criar se não existir)
+    'https://www.youtube.com/@ipogoficial',
+    'https://www.wikidata.org/wiki/Q54864393',
+    'https://emec.mec.gov.br/emec/consulta-cadastro/detalhes-ies/d96957f455f6405d14c6542552b0f6eb/MTI5MTY='
   ],
   accreditedBy: {
     '@type': 'GovernmentOrganization',
@@ -89,7 +94,7 @@ export const ipogEducationalOrganization = {
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'admissions',
-    url: 'https://ipog.edu.br/pos-graduacao/',
+    url: 'https://ipog.edu.br/cursos/pos-graduacao',
     availableLanguage: ['Portuguese']
   }
 } as const;

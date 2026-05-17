@@ -2,6 +2,7 @@
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import { SITE, MBAS, AREAS } from '@lib/data';
+import { buildEducationalOccupationalProgram } from '@lib/schemas/educational-program';
 
 const mba = MBAS.find(m => m.id === 'mba-ncpp')!;
 const others = MBAS.filter(m => m.id !== 'mba-ncpp');
@@ -30,17 +31,17 @@ const FAQS_PAGINA = [
 
 const ldProgram = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'EducationalOccupationalProgram',
-  name: mba.name,
-  programType: 'MBA',
-  educationalProgramMode: 'online (Ao Vivo síncrono ou híbrido conforme IPOG)',
-  occupationalCategory: 'Profissional de Desenvolvimento Humano, Líder, Educador, Consultor, Coach, Profissional de RH',
-  description: mba.description,
-  provider: {
-    '@type': 'EducationalOrganization',
-    name: 'IPOG — Instituto de Pós-Graduação',
-    url: 'https://ipog.edu.br/'
-  }
+  ...buildEducationalOccupationalProgram({
+    name: mba.name,
+    slug: '/mbas/mba-ncpp',
+    description: mba.description,
+    programType: 'MBA',
+    timeRequired: 'P360H',
+    occupationalCredentialAwarded: 'MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano',
+    educationalCredentialAwarded: 'Pós-Graduação Lato Sensu em Neurociência Aplicada e Psicologia Positiva',
+    educationalProgramMode: 'blended',
+    hasCourseNames: ['Neurociência aplicada à Aprendizagem', 'Psicologia Positiva', 'Performance e Motivação', 'Desenvolvimento Humano ao longo da vida', 'Base científica e pensamento crítico']
+  })
 });
 
 const ldBreadcrumb = JSON.stringify({

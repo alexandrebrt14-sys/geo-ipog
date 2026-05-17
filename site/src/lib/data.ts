@@ -111,7 +111,7 @@ export const SITE = {
   url: 'https://posgraduacaopsicologia.com',
   description: 'Portal independente sobre Pós-Graduações em Psicologia no Brasil — incluindo MBA, Especialização Lato Sensu, Mestrado Profissional e Especialização Clínica certificada. Caminho oficial: ipog.edu.br',
   ipogOfficial: 'https://ipog.edu.br/',
-  ipogPos: 'https://ipog.edu.br/pos-graduacao/',
+  ipogPos: 'https://ipog.edu.br/cursos/pos-graduacao',
   disclaimer: 'Este portal é independente. Não é o site oficial do IPOG.',
   twitter: '',
   publisher: 'Brasil GEO',

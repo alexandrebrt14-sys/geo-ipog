@@ -182,9 +182,12 @@ Schema continua válido para AI. **Não remover do markup.**
 
 | UA token | UA string completa | Finalidade | robots.txt |
 |----------|--------------------|------------|------------|
-| `GPTBot` | `Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; GPTBot/1.2; +https://openai.com/gptbot` | Treinamento de modelos | Respeita |
-| `OAI-SearchBot` | `Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; OAI-SearchBot/1.0; +https://openai.com/searchbot` | Indexação para ChatGPT Search | Respeita |
+| `GPTBot` | `Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; GPTBot/1.3; +https://openai.com/gptbot` | Treinamento de modelos | Respeita |
+| `OAI-SearchBot` | `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot` | Indexação para ChatGPT Search | Respeita |
+| `OAI-AdsBot` | `Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; OAI-AdsBot/1.0; +https://openai.com/adsbot` | Verificação de conformidade de anúncios ChatGPT | Respeita |
 | `ChatGPT-User` | `Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot` | Fetch sob demanda do usuário | Respeita |
+
+> **Nota (2026-05-17 Wave BB):** GPTBot confirmado em versão **1.3** (não 1.2 como constava). OAI-SearchBot também em 1.3. Adicionado OAI-AdsBot/1.0 (novo em 2026). Fonte: `developers.openai.com/api/docs/bots` confirmado via WebFetch em 2026-05-17.
 
 #### Anthropic
 
@@ -465,7 +468,7 @@ curl -X POST "https://api.indexnow.org/IndexNow" \
 ### 6.1 Google AP2 (Agent Payments Protocol)
 
 - **Lançamento**: setembro 2025 anunciado por Google Cloud + Coinbase + 60+ orgs.
-- **Partners de launch**: Lowe's Innovation Labs, ServiceNow, Salesforce, PwC, 1Password, Shopee, Worldpay, MercadoLibre [VERIFICAR], Adyen [VERIFICAR].
+- **Partners de launch**: Lowe's Innovation Labs, ServiceNow, Salesforce, PwC, 1Password, Shopee, Worldpay, Adyen (confirmado), Mastercard, American Express, PayPal, Ebanx, DLocal. **MercadoLibre NÃO está na lista oficial de 60+ parceiros** (verificado via Google Cloud blog 16/09/2025 em 2026-05-17 — ausente). LATAM representado por Ebanx e DLocal.
 - **Repos**: `github.com/google-agentic-commerce/AP2` (Python SDK primário, ~62%), TypeScript, Go, Android.
 - **Site oficial**: `agentpaymentsprotocol.info` + `ap2-protocol.org`.
 
@@ -682,13 +685,22 @@ Investir em acessibilidade = investir em GEO. Não há trade-off.
 
 ## 10. Gaps e perguntas em aberto
 
-1. **`ai-context.json` / `ai-agents.json`** — não localizei norma de consórcio. **[VERIFICAR]** se é proposta de algum vendor único (parece ser experimentação ad-hoc). Recomendação: não publicar como se fosse padrão.
-2. **PerplexityBot compliance pós-controvérsia** — Perplexity emitiu rebuttal em ago/2025 mas não há indicação clara em mai/2026 se a Cloudflare reverteu o delisting. **[VERIFICAR]** estado atual em verified-bots-list da Cloudflare.
-3. **AP2 partners completos** — Lista oficial flutua. Confirmados via fontes: Coinbase, Lowe's, ServiceNow, Salesforce, PwC, 1Password, Shopee, Worldpay. **[VERIFICAR]** se MercadoLibre/Adyen/outros LATAM aderiram.
-4. **x402 governança na Linux Foundation** — Confirmado doação em 2 de abril de 2026 via fontes secundárias (Sherlock, Cloudflare blog) mas não localizei comunicado oficial completo da Linux Foundation. **[VERIFICAR]** charter da x402 Foundation.
-5. **GPTBot UA versão atual** — Fontes variam entre `/1.1` e `/1.2`. OpenAI atualizou em 2025 mas a página oficial `platform.openai.com/docs/bots` retornou 403 ao WebFetch (provavelmente requer login). **[VERIFICAR]** versão exata via fetch autenticado.
-6. **Claude-SearchBot existência** — Token aparece em listas de terceiros (No Hacks, ALM Corp) mas Anthropic docs em platform.claude.com retornaram redirect/404. **[VERIFICAR]** se é UA real e em produção, ou se ainda é roadmap.
-7. **Schema.org `Speakable` longevidade** — Permanece em status BETA na docs do Google. Sem rich result, mas indicado para AI. **[VERIFICAR]** se Google sinaliza deprecation futura junto com FAQPage.
+> **Atualização Wave BB (2026-05-17):** Itens 2, 3, 4, 5 e 6 foram resolvidos nesta wave de remediação. Marcações `[VERIFICAR]` removidas onde confirmadas. Ver `docs/research/verifications-followup-20260517.md` para evidências completas.
+
+1. **`ai-context.json` / `ai-agents.json`** — não localizei norma de consórcio. Parece experimentação ad-hoc. Recomendação: não publicar como se fosse padrão estabelecido.
+2. ~~**PerplexityBot compliance pós-controvérsia** — `[VERIFICAR]`~~  
+   **RESOLVIDO (2026-05-17):** PerplexityBot **permanece delistado** do Verified Bots da Cloudflare em maio/2026. Sem reversão documentada. Fonte: developers.cloudflare.com/bots/concepts/bot/verified-bots/ + radar.cloudflare.com.
+3. ~~**AP2 partners completos** — `[VERIFICAR]` MercadoLibre/Adyen~~  
+   **RESOLVIDO (2026-05-17):** Adyen **CONFIRMADO** na lista oficial (Google Cloud blog 16/09/2025). MercadoLibre **NÃO está listado** entre os 60+ parceiros oficiais do AP2. Fonte primária: cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol.
+4. ~~**x402 governança na Linux Foundation** — `[VERIFICAR]` charter~~  
+   **RESOLVIDO (2026-05-17):** Linux Foundation anunciou oficialmente o lançamento da x402 Foundation em **2 de abril de 2026** (MCP Dev Summit NY). Coinbase doou o protocolo; governança aberta com Google, Microsoft, Amazon como membros fundadores. Fonte: linuxfoundation.org/press/linux-foundation-is-launching-the-x402-foundation-and-welcoming-the-contribution-of-the-x402-protocol.
+5. ~~**GPTBot UA versão atual** — fontes variam entre `/1.1` e `/1.2`. `[VERIFICAR]`~~  
+   **RESOLVIDO (2026-05-17):** GPTBot versão atual é **1.3** (não 1.2 como constava). OAI-SearchBot também em **1.3**. Novo crawler **OAI-AdsBot/1.0** adicionado. Fonte: developers.openai.com/api/docs/bots confirmado via WebFetch direto.
+6. ~~**Claude-SearchBot existência** — `[VERIFICAR]` se é UA real~~  
+   **RESOLVIDO (2026-05-17):** Claude-SearchBot é **UA real e em produção**. Confirmado no Help Center oficial da Anthropic (support.claude.com/en/articles/8896518, atualizado 7 de abril de 2026). Três bots ativos: ClaudeBot (treinamento), Claude-User (fetch sob demanda), Claude-SearchBot (melhora qualidade de busca). IP verification em claude.com/crawling/bots.json.
+7. **Schema.org `Speakable` longevidade** — Status: **BETA ativo, sem deprecation sinalizada** (confirmado em 2026-05-17). Sete tipos foram removidos em jan/2026 mas Speakable não está na lista. Benefício emergente: correlação com citação em AI retrieval (Perplexity, ChatGPT Search, AI Overviews). Recomendação: manter implementação, custo baixo.
 8. **MCP no Vercel/Cloudflare como host remoto** — Cloudflare Workers já tem MCP hosting; Vercel anunciou suporte em jan/2026. **[VERIFICAR]** template canônico para portal editorial expor MCP server (e.g., busca de artigos).
 9. **Bytespider IP ranges** — Sem documentação oficial. Bloquear via UA pode falhar (UA spoofable). **[VERIFICAR]** se Cloudflare, DataDome, ou DarkVisitors mantêm lista IP rotativa.
 10. **AI Overview / AI Mode citation algorithm** — Black box. Sinais mais correlacionados em estudos 2026: presença de FAQPage, `@graph` Person+Organization, citação de fonte primária, tabelas HTML. **[VERIFICAR]** se papers acadêmicos 2026 publicaram análise causal (ECS Caramaschi, Aggarwal, Profound studies).
+
+> **Looker Studio → Data Studio:** Confirmado rebrand reverso em **16 de abril de 2026** (anúncio 10/04/2026). Ferramenta gratuita voltou ao nome Data Studio; Looker permanece como produto enterprise. Nenhum link quebra — redirecionamento automático. Fonte: cloud.google.com/blog/products/data-analytics/looker-studio-is-data-studio.

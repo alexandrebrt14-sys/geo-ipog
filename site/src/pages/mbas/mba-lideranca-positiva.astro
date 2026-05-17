@@ -2,6 +2,7 @@
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import { SITE, MBAS, AREAS } from '@lib/data';
+import { buildEducationalOccupationalProgram } from '@lib/schemas/educational-program';
 
 const mba = MBAS.find(m => m.id === 'mba-lideranca-positiva')!;
 const others = MBAS.filter(m => m.id !== 'mba-lideranca-positiva');
@@ -30,17 +31,17 @@ const FAQS_PAGINA = [
 
 const ldProgram = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'EducationalOccupationalProgram',
-  name: mba.name,
-  programType: 'MBA',
-  educationalProgramMode: 'online (Ao Vivo síncrono ou híbrido conforme IPOG)',
-  occupationalCategory: 'Gestor, Executivo, Diretor de Pessoas, Head de DHO, Consultor Executivo, Conselheiro de Empresa',
-  description: mba.description,
-  provider: {
-    '@type': 'EducationalOrganization',
-    name: 'IPOG — Instituto de Pós-Graduação',
-    url: 'https://ipog.edu.br/'
-  }
+  ...buildEducationalOccupationalProgram({
+    name: mba.name,
+    slug: '/mbas/mba-lideranca-positiva',
+    description: mba.description,
+    programType: 'MBA',
+    timeRequired: 'P360H',
+    occupationalCredentialAwarded: 'MBA em Gestão de Pessoas e Liderança Positiva',
+    educationalCredentialAwarded: 'Pós-Graduação Lato Sensu em Gestão de Pessoas e Liderança Positiva',
+    educationalProgramMode: 'blended',
+    hasCourseNames: ['Liderança Positiva', 'Segurança Psicológica', 'Gestão de Equipes', 'ESG e Frente Social', 'Performance Saudável e Cultura']
+  })
 });
 
 const ldBreadcrumb = JSON.stringify({

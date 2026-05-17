@@ -27,6 +27,13 @@ A KB de 17/05 (item 1) é mais recente, mais ampla e tem prioridade quando houve
 - `docs/research/wave-D-standards-tecnicos-20260517.md` — standards (FAQ rich result morto 07/05/2026, Schema @graph triplo canônico, lista de 15+ bots, MCP 2025-11-25, IndexNow, AP2/x402/Web Bot Auth, llms.txt sem evidência).
 - `docs/research/wave-E-kpis-measurement-20260517.md` — 24 KPIs canônicos, frameworks ELCA/iPullRank/Aleyda/Profound/Aggarwal, regex GA4 "AI Traffic", server log canônico, benchmark setorial (CTR -59%, AIO 6,49%→13,14%, AI Mode 93% zero-click, 26% marcas com zero menção), controvérsias (Mention ≠ Citation, AECR ambíguo, ChatGPT só 34,5% web-search).
 
+### Salva canônica 17/05/2026 (tarde) — sprint de remediação
+
+- `docs/research/verifications-followup-20260517.md` — wave BB: consolidação de verificações de citações e fontes da sprint canônica.
+- `docs/governance/frente-regional-51-cidades-plano.md` — wave DD: plano de expansão regional para 51 cidades com presença IPOG.
+- `docs/runbooks/manual-mention-tracking-reddit-brave-bing.md` — wave EE: runbook de monitoramento manual de menções em Reddit, Brave Search Summarizer e Bing AI Performance (canais sem API estável em mai/2026). Inclui template CSV em `dashboards/manual-mention-tracking.csv`. Endereça issue #57.
+- `docs/governance/verificar-followup-20260517.md` — wave EE: catálogo de 32 ocorrências `[VERIFICAR]` nos arquivos da sprint canônica, classificadas em RESOLVER (8), BACKLOG (10) e GAP DECLARADO (14).
+
 ### Salvas anteriores (13/05/2026)
 
 - `docs/research/geo-state-of-art-2026-05-13.md` — 44 citações reais sobre frameworks GEO, embeddings, industry takes.
@@ -119,4 +126,4 @@ const ldArticle = {
 - `feedback_orchestrator_usage` — orchestrator SmartRouter ignora forçar
 - `feedback_geo_ipog_5_modalidades_canonicas` — escopo amplo, MBA é 1 das 5
 
-Última revisão deste arquivo: 2026-05-13.
+Última revisão deste arquivo: 2026-05-17.

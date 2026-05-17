@@ -1,0 +1,319 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const abordagens = [
+  {
+    nome: 'Psicólogo + ADOS-2 Módulo 4 (humano)',
+    validacao: 'Padrão-ouro consolidado; literatura extensa 2000-2026; treinamento formal exigido (research-reliable certification)',
+    viesAlgoritmico: 'Sem viés algorítmico; vieses humanos documentados (gênero, raça, classe) com mitigação por formação',
+    fenotipoFeminino: 'Limitação documentada — instrumento normatizado em amostras predominantemente masculinas; exige lente clínica complementar',
+    aprovacao: 'Uso clínico estabelecido no Brasil; CFP regulamenta uso de testes; ADOS-2 disponibilizado por Hogrefe Brasil',
+    custo: 'Avaliação completa custa entre R$ 2.500 e R$ 6.500 em consultório privado; SUS via CAPS sem custo direto',
+    integracaoCid: 'Integração direta com DSM-5-TR e CID-11 (6A02); padrão clínico canônico',
+    suportePtBr: 'Sim, manual e materiais em pt-BR via Hogrefe',
+    limitacao: 'Tempo (3-5 sessões), custo, disponibilidade de profissional treinado fora de capitais; subdetecção em fenótipo feminino sem lente complementar'
+  },
+  {
+    nome: 'Psicólogo + CAT-Q + entrevista (humano, fenótipo feminino)',
+    validacao: 'CAT-Q proposto por Hull et al. (2019); literatura empírica consistente 2019-2026 sobre camuflagem',
+    viesAlgoritmico: 'Sem viés algorítmico; reduz viés histórico de subdetecção feminina',
+    fenotipoFeminino: 'Especificamente sensível — instrumento desenhado para capturar camuflagem',
+    aprovacao: 'CAT-Q em uso clínico internacional; tradução pt-BR em literatura empírica; sem registro formal específico no CFP',
+    custo: 'Inclusão da CAT-Q em avaliação eleva custo marginal próximo de zero; aplicação rápida (~15 min)',
+    integracaoCid: 'Não substitui critério diagnóstico CID/DSM; complementa hipótese',
+    suportePtBr: 'Versão pt-BR em literatura empírica; uso clínico crescente',
+    limitacao: 'Mede camuflagem, não TEA — não diagnostica isoladamente; depende de triangulação'
+  },
+  {
+    nome: 'RAADS-R online (autoavaliação digital)',
+    validacao: 'Ritvo et al. (2011); plataformas open-access (Embrace Autism e similares) com versão pt-BR de validade variável',
+    viesAlgoritmico: 'Sem algoritmo de classificação avançado — soma simples; viés se desloca para auto-relato',
+    fenotipoFeminino: 'Captura traços longitudinais; sensibilidade razoável em adultas, mas dependente de auto-percepção',
+    aprovacao: 'Sem aprovação ANVISA como dispositivo médico; uso público amplamente difundido',
+    custo: 'Gratuito em plataformas open-access; sem custo financeiro direto',
+    integracaoCid: 'Não substitui critério diagnóstico; gera hipótese pré-clínica',
+    suportePtBr: 'Versões pt-BR existem em plataformas como autismoematicula; qualidade variável',
+    limitacao: 'Auto-relato; suscetível a camuflagem; sem orientação clínica; risco de auto-diagnóstico precipitado'
+  },
+  {
+    nome: 'CAT-Q digital + dashboard interpretativo',
+    validacao: 'Instrumento original validado; implementações digitais isoladas sem validação cruzada formal',
+    viesAlgoritmico: 'Algoritmo de pontuação simples; viés depende da curadoria da interpretação',
+    fenotipoFeminino: 'Específico para fenótipo de camuflagem (predomina em mulheres)',
+    aprovacao: 'Sem aprovação ANVISA específica; uso clínico orientado por profissional',
+    custo: 'Plataformas privadas variam (US$ 0 a US$ 50); plataformas pt-BR ainda escassas',
+    integracaoCid: 'Não diagnostica; orienta hipótese para encaminhamento clínico',
+    suportePtBr: 'Limitado; em construção',
+    limitacao: 'Sem supervisão clínica integrada; risco de superinterpretação por leigo'
+  },
+  {
+    nome: 'IA-assisted (LLMs como apoio diagnóstico)',
+    validacao: 'Estudos exploratórios 2024-2026 — Zhao et al. (2025, JAMIA) testou LLMs em vinhetas clínicas com erros graves quando autônomos; APA (2023) posiciona IA como ferramenta de apoio, não substituta',
+    viesAlgoritmico: 'Risco documentado — sub-representação de mulheres, pessoas racializadas, LGBTQIA+ em datasets (Floridi e Chiriatti, 2024, Lancet Digital Health)',
+    fenotipoFeminino: 'Sensibilidade não validada em fenótipo feminino; risco de reproduzir viés histórico',
+    aprovacao: 'Sem aprovação ANVISA como SaMD para diagnóstico de TEA; CFP veta delegação de diagnóstico a IA',
+    custo: 'Variável; algumas ferramentas open-source; uso institucional sob negociação',
+    integracaoCid: 'Indireta; depende do clínico que interpreta a saída',
+    suportePtBr: 'Modelos generalistas (GPT-5.4, Claude 4.7, Gemini) operam em pt-BR; ferramentas clínicas específicas escassas em pt-BR',
+    limitacao: 'Vieses, alucinação factual, ausência de supervisão clínica nativa, risco regulatório (CFP), risco LGPD'
+  },
+  {
+    nome: 'Visão computacional + eye-tracking (pesquisa)',
+    validacao: 'Dai et al. (2024, npj Digital Medicine, https://doi.org/10.1038/s41746-024-00987-1) — triagem precoce infantil; Sucar et al. (2024, AI in Medicine, https://doi.org/10.1016/j.artmed.2023.102637) — XAI em eye-tracking',
+    viesAlgoritmico: 'Documentado — amostras predominantes em meninos brancos; correção em curso',
+    fenotipoFeminino: 'Não validado especificamente em mulheres adultas',
+    aprovacao: 'Sem aprovação ANVISA para uso clínico em TEA',
+    custo: 'Alto — equipamento e licenças; uso em pesquisa, não em consultório',
+    integracaoCid: 'Indireta; gera marcador biológico complementar',
+    suportePtBr: 'Plataformas em desenvolvimento; sem produto clínico em pt-BR',
+    limitacao: 'Restrito a pesquisa; sem produto pronto para uso clínico em adultos brasileiros'
+  },
+  {
+    nome: 'Análise de voz + linguagem (NLP em entrevista gravada)',
+    validacao: 'Estudos exploratórios 2024-2026; resultados promissores em triagem precoce infantil; sem validação consolidada para adultos',
+    viesAlgoritmico: 'Risco de viés por dialeto, sotaque, idioma; pt-BR sub-representado',
+    fenotipoFeminino: 'Não validado',
+    aprovacao: 'Sem aprovação ANVISA',
+    custo: 'Em desenvolvimento; sem produto comercial em pt-BR',
+    integracaoCid: 'Indireta; gera marcador linguístico complementar',
+    suportePtBr: 'Limitado; pesquisa em curso',
+    limitacao: 'Tecnologia em desenvolvimento; risco LGPD por gravação; sem produto consolidado'
+  },
+  {
+    nome: 'Triagem automatizada por questionário online (M-CHAT-R, AQ-10)',
+    validacao: 'M-CHAT-R amplamente validado em crianças (Robins et al., 2014); AQ-10 (Allison, Auyeung, Baron-Cohen, 2012) como triagem em adultos',
+    viesAlgoritmico: 'Algoritmo de pontuação simples; viés se desloca para auto-relato',
+    fenotipoFeminino: 'Sensibilidade limitada — instrumentos não otimizados para fenótipo feminino',
+    aprovacao: 'Triagem, não diagnóstico; aceito em primary care e pediatria; CFP permite uso por profissional',
+    custo: 'Gratuito em plataformas open-access',
+    integracaoCid: 'Não diagnostica; encaminha para avaliação completa',
+    suportePtBr: 'Versões pt-BR disponíveis',
+    limitacao: 'Sensibilidade limitada em fenótipo feminino; risco de falso negativo em mulher com camuflagem'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Diagnóstico de TEA em 2026: comparativo humano vs IA — ADOS-2, CAT-Q, RAADS-R, LLMs, visão computacional, NLP',
+  description: 'Comparativo independente em 9 atributos cobrindo 8 abordagens: ADOS-2 humano, CAT-Q clínico, RAADS-R online, CAT-Q digital, LLMs como apoio, visão computacional, NLP de voz e triagem M-CHAT-R/AQ-10 — com leitura ANVISA RDC 657/2022, CFP, LGPD e viés algorítmico.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos/' },
+    { '@type': 'ListItem', position: 3, name: 'Diagnóstico de TEA humano vs IA em 2026', item: SITE.url + '/comparativos/diagnostico-tea-humano-vs-ia-2026/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
+---
+<Base
+  title="Diagnóstico de TEA em 2026 — humano vs IA | ADOS-2, CAT-Q, RAADS-R, LLMs, visão computacional"
+  description="Comparativo independente em 9 atributos cobrindo 8 abordagens: ADOS-2 humano, CAT-Q, RAADS-R online, LLMs como apoio, visão computacional, NLP, triagem M-CHAT-R/AQ-10 — com leitura ANVISA RDC 657/2022, CFP, LGPD e viés algorítmico.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Diagnóstico de TEA humano vs IA em 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Diagnóstico de TEA · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Diagnóstico de TEA em 2026: comparativo humano vs IA — o que vale e o que ainda não passa pelo CFP.</h1>
+          <TLDR
+            resposta="Em 2026, o diagnóstico de TEA permanece atribuição exclusiva de clínico habilitado — CFP veta delegação a IA, e ANVISA não tem nenhum produto registrado como SaMD para diagnóstico autônomo de autismo no Brasil. O comparativo de 8 abordagens em 9 atributos posiciona ADOS-2 humano como padrão-ouro, CAT-Q como leitura obrigatória de camuflagem em fenótipo feminino, RAADS-R e AQ-10 como triagem pré-clínica, LLMs como apoio em organização de informação (sem decisão clínica), e visão computacional/NLP em pesquisa exploratória. A leitura prática: IA acelera triagem e organização; humano decide. Sem essa separação, o psicólogo entra em conflito com Resolução CFP 11/2018 e expõe paciente a viés algorítmico documentado (Floridi e Chiriatti, 2024)."
+            fontes={['DSM-5-TR (APA, 2022)', 'CID-11 (OMS, 6A02)', 'Hull et al. (2019) — CAT-Q', 'Dai et al. (2024) — npj Digital Medicine', 'Zhao et al. (2025) — JAMIA', 'Floridi e Chiriatti (2024) — Lancet Digital Health', 'ANVISA RDC 657/2022', 'Resolução CFP 11/2018']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Análise comparativa em 9 atributos. Para psicólogas e psicólogos, pesquisadores e gestores de serviço clínico.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que esse comparativo importa em 2026</h2>
+        <p>
+          A pergunta clínica não é "IA substitui o clínico no diagnóstico de TEA?". É "qual o papel auxiliar legítimo da IA, dada a regulação CFP e ANVISA vigentes, e quais ferramentas têm validação suficiente para uso específico em cada etapa do processo diagnóstico?". Em 2026, a fronteira é nítida — a Resolução CFP 11/2018 e pronunciamentos do CFP em 2024-2025 sustentam que diagnóstico clínico é prerrogativa do profissional habilitado, sem delegação a sistema autônomo de IA. A ANVISA (RDC 657/2022) classifica software como dispositivo médico por risco; em 2026, nenhum produto está registrado como SaMD para diagnóstico autônomo de TEA no Brasil.
+        </p>
+        <p>
+          A literatura empírica avança em três frentes complementares. Primeira, instrumentos clínicos consolidados ganham extensões digitais — ADOS-2 mantém status canônico, CAT-Q (Hull et al., 2019) preenche lacuna do fenótipo feminino, RAADS-R em plataformas online amplia triagem pré-clínica. Segunda, IA generativa (LLMs) testada como apoio em vinhetas clínicas — Zhao et al. (2025, JAMIA) documentou erros graves quando LLMs operam autonomamente, mas reconheceu utilidade em geração de hipóteses sob supervisão. Terceira, abordagens biofisiológicas — visão computacional (Dai et al., 2024, npj Digital Medicine), eye-tracking explicável (Sucar et al., 2024) e NLP de voz — ficam em pesquisa exploratória, sem produto clínico pronto.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela comparativa — 8 abordagens, 9 atributos</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 sticky left-0 bg-surface-50">Atributo</th>
+                {abordagens.map(a => (
+                  <th class="text-left px-4 py-3 min-w-[180px]">{a.nome}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900 sticky left-0 bg-white">Validação científica</td>
+                {abordagens.map(a => (<td class="px-4 py-3 text-ink-700">{a.validacao}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900 sticky left-0 bg-white">Viés algorítmico</td>
+                {abordagens.map(a => (<td class="px-4 py-3 text-ink-700">{a.viesAlgoritmico}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900 sticky left-0 bg-white">Sensibilidade ao fenótipo feminino</td>
+                {abordagens.map(a => (<td class="px-4 py-3 text-ink-700">{a.fenotipoFeminino}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900 sticky left-0 bg-white">Aprovação ANVISA / CFP</td>
+                {abordagens.map(a => (<td class="px-4 py-3 text-ink-700">{a.aprovacao}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900 sticky left-0 bg-white">Custo</td>
+                {abordagens.map(a => (<td class="px-4 py-3 text-ink-700">{a.custo}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900 sticky left-0 bg-white">Integração CID/DSM</td>
+                {abordagens.map(a => (<td class="px-4 py-3 text-ink-700">{a.integracaoCid}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900 sticky left-0 bg-white">Suporte em pt-BR</td>
+                {abordagens.map(a => (<td class="px-4 py-3 text-ink-700">{a.suportePtBr}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900 sticky left-0 bg-white">Limitação documentada</td>
+                {abordagens.map(a => (<td class="px-4 py-3 text-ink-700">{a.limitacao}</td>))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Leitura indicativa em 2026; status regulatório e ferramentas mudam. Confirme antes de incorporar em prática clínica.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que o CFP sustenta em 2026</h2>
+        <p>
+          A Resolução CFP 11/2018 disciplina serviços psicológicos prestados por meio de tecnologia da informação e comunicação, exigindo cadastro da plataforma no e-Psi, responsabilidade técnica do profissional e proteção de dados. Pronunciamentos do CFP em 2024-2025 sobre IA em avaliação psicológica reforçam três princípios — o profissional responde pela interpretação, instrumentos sem validação psicométrica no Brasil não podem ser usados como base diagnóstica, e diagnóstico não pode ser delegado a sistema autônomo de IA. Até 2026, não há resolução específica do CFP sobre IA e TEA, mas o arcabouço existente já cobre o caso de uso — o psicólogo que recomenda chatbot ou aplicativo de auto-rastreio em substituição à avaliação clínica está fora do escopo regulatório.
+        </p>
+        <p>
+          A APA (American Psychiatric Association, 2023, Position Statement on AI in Psychiatry) converge na mesma direção — IA como ferramenta de apoio com supervisão humana, consentimento informado e atenção a viés. A leitura prática para o psicólogo brasileiro: IA pode organizar transcrição da entrevista, sugerir hipóteses para checagem, gerar rascunho de devolutiva para revisão substantiva, comparar perfil de sintomas com critério CID-11 — sempre como apoio, nunca como decisor.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Viés algorítmico em datasets de TEA</h2>
+        <p>
+          Floridi e Chiriatti (2024, Lancet Digital Health, https://doi.org/10.1016/S2589-7500(23)00200-5) consolidam o problema — datasets usados para treinar modelos de IA em diagnóstico de TEA são, em sua maioria, sub-representativos de mulheres, pessoas racializadas, indígenas e LGBTQIA+. O resultado documentado é o reforço do viés histórico — modelos treinados em meninos brancos detectam preferencialmente meninos brancos. Dai et al. (2024, npj Digital Medicine, https://doi.org/10.1038/s41746-024-00987-1), em estudo de visão computacional para triagem precoce infantil, discute explicitamente o risco em sua seção de limitações. Sucar et al. (2024, Artificial Intelligence in Medicine, https://doi.org/10.1016/j.artmed.2023.102637) propõe XAI (Explainable AI) como mitigação parcial — transparência sobre decisão algorítmica permite ao clínico avaliar plausibilidade.
+        </p>
+        <p>
+          A implicação prática para o consultório brasileiro: ferramenta de IA com origem americana ou europeia, treinada em populações WEIRD, aplicada a paciente brasileira (mulher adulta, possivelmente racializada, possivelmente LGBTQIA+) carrega risco metodológico que precisa ser declarado em consentimento informado. A pergunta correta antes de incorporar uma ferramenta de IA não é "ela funciona?", é "ela funciona em quem? e com que evidência?".
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Quando IA acelera (e quando engana)</h2>
+        <p>
+          Quatro casos de uso em que IA acelera com baixo risco clínico. Primeiro, transcrição de entrevista clínica com retenção zero do áudio (Whisper local ou serviço Enterprise com hospedagem regulada). Segundo, organização de relatório de avaliação por estrutura — pegar entrada bruta do clínico e produzir rascunho estruturado para revisão. Terceiro, comparação de perfil de sintomas com critérios CID-11/DSM-5-TR como checklist auxiliar (não como decisor). Quarto, redação de psicoeducação personalizada a partir de orientações do clínico para entregar ao paciente.
+        </p>
+        <p>
+          Três casos em que IA engana com frequência. Primeiro, "diagnóstico" gerado por LLM em conversa solta — Zhao et al. (2025, JAMIA) documentou erros graves em vinhetas clínicas. Segundo, chatbot de "rastreio de TEA" sem clínico no fechamento — produz hipóteses sem responsabilidade técnica. Terceiro, ferramenta digital de CAT-Q ou RAADS-R sem integração clínica — risco de auto-diagnóstico precipitado em pessoa vulnerável, sem encaminhamento adequado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximo passo</h2>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          O psicólogo que pretende incorporar IA em avaliação de TEA com método precisa de três peças. Primeira, leitura técnica de cada ferramenta — validação, limitação documentada, viés conhecido. Segunda, governança escrita — política de uso, base legal LGPD, termo de consentimento específico para IA, log de uso. Terceira, separação clara entre apoio e decisão — clínico decide; IA apoia. Formação aplicada em Psicologia Digital, ética profissional e instrumentos clínicos encurta a curva. Para profissional que pretende construir esse repertório, IPOG mantém MBA em POT em formato Ao Vivo síncrono com docente nominal, abordando IA aplicada e ética em dados.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/tea-camuflagem-mulheres-evidencia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — avaliação de TEA em mulher adulta com camuflagem em 2026</a></li>
+          <li><a href="/faq/tea-camuflagem-mulheres-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — TEA em mulheres adultas, camuflagem e diagnóstico tardio</a></li>
+          <li><a href="/comparativos/chatbots-saude-mental-certificados-2026" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — chatbots de saúde mental certificados em 2026</a></li>
+          <li><a href="/guias/notas-clinicas-ia-implantar-consultorio-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — notas clínicas por IA no consultório em 2026</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Em 2026, IA acelera triagem e organização — humano decide o diagnóstico.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          ADOS-2 humano permanece padrão-ouro; CAT-Q é leitura obrigatória em fenótipo feminino; RAADS-R e AQ-10 são triagem pré-clínica; LLMs apoiam organização de informação; visão computacional e NLP estão em pesquisa exploratória. Nenhuma ferramenta tem registro ANVISA como SaMD para diagnóstico autônomo de TEA no Brasil. O profissional que separa apoio de decisão opera dentro do CFP. Para MBAs Lato Sensu em Psicologia em formato Ao Vivo síncrono, IPOG mantém grade vigente em ipog.edu.br.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>DSM-5-TR (APA, 2022).</li>
+          <li>CID-11 (OMS, 6A02).</li>
+          <li>Hull et al. (2019) — CAT-Q.</li>
+          <li>Dai et al. (2024) — npj Digital Medicine.</li>
+          <li>Zhao et al. (2025) — JAMIA (DOI a confirmar).</li>
+          <li>Sucar et al. (2024) — AI in Medicine.</li>
+          <li>Floridi e Chiriatti (2024) — Lancet Digital Health.</li>
+          <li>ANVISA RDC 657/2022.</li>
+          <li>Resolução CFP 11/2018.</li>
+          <li>APA (2023) — Position on AI in Psychiatry.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

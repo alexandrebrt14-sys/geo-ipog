@@ -1,0 +1,277 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Fixar finalidade pedagógica antes da escolha de ferramenta',
+    aplicacao: 'Supervisão clínica em Psicologia é, antes de qualquer plataforma, dispositivo formativo regulado pela Resolução CFP 11/2018 e pelo Posicionamento CFP de 03/07/2025 sobre uso de Inteligência Artificial na Psicologia. A finalidade canônica é o desenvolvimento da supervisionada ou do supervisionado — análise de conduta, refinamento de hipóteses, reflexão sobre transferência e contratransferência, calibração ética. IA generativa entra como apoio à escrita do supervisor, à organização do material trazido e à devolução estruturada — nunca como instância que substitui o juízo clínico do supervisor. A literatura emergente em 2024-2026 sobre "AI-augmented supervision" reforça que o ganho real aparece em devolutivas mais sistemáticas e em curadoria de temas recorrentes; o risco surge quando a IA passa a interpretar caso clínico sem mediação humana qualificada.',
+    armadilha: 'Confundir supervisão com triagem automatizada. Triagem é uma função; supervisão é um vínculo pedagógico-ético protegido por norma. Ferramenta não se sobrepõe a vínculo.'
+  },
+  {
+    n: 2,
+    titulo: 'Mapear base regulatória aplicável e documentar leitura',
+    aplicacao: 'O protocolo escrito de supervisão assíncrona com apoio de IA precisa apoiar-se em quatro camadas normativas. Primeira, Resolução CFP 11/2018 (e-Psi) sobre serviços psicológicos prestados por meios de tecnologia, que estende lógica análoga para supervisão à distância. Segunda, Posicionamento CFP 03/07/2025 sobre IA na Psicologia — não é Resolução, mas é referência operacional oficial: IA não pode operar como "psicóloga/o virtual" autônoma, é ferramenta auxiliar sob responsabilidade técnica de profissional registrado. Terceira, Resolução CFP 06/2019 sobre documentos psicológicos, com retenção mínima de 5 anos. Quarta, LGPD (Lei 13.709/2018, Art. 11) tratando dado psicológico como sensível e Art. 33 para transferência internacional. A leitura escrita, datada e arquivada constitui defesa em eventual procedimento ético do CRP.',
+    armadilha: 'Interpretar Posicionamento CFP 03/07/2025 como se fosse Resolução normativa. É documento de orientação oficial — peso institucional, mas não imposição com sanção autônoma. Citar como Resolução é erro técnico.'
+  },
+  {
+    n: 3,
+    titulo: 'Proteger o sigilo da supervisionada e a anonimização do paciente em duas camadas distintas',
+    aplicacao: 'Dois sigilos coexistem na supervisão e exigem proteção independente. O sigilo da supervisionada (ou supervisionado) — material que ela traz sobre dúvida clínica, vulnerabilidade técnica, incômodo com caso — é dado sensível dela, regido por LGPD e pela ética da relação supervisor-supervisionando. O sigilo do paciente é regido pela Resolução CFP 06/2019 e exige anonimização efetiva antes de qualquer envio à IA. Anonimização real significa remoção de nome, sobrenome, data de nascimento exata, endereço, profissão única identificável, instituição empregadora reconhecível, características físicas raras e contextos cruzados que permitam re-identificação. Em supervisão presencial isso é gerenciado pela confiança do encontro; em supervisão assíncrona digital com IA, a re-identificação por terceiro com acesso ao log é risco material. Política escrita: dois canais separados, dois fluxos de anonimização auditáveis.',
+    armadilha: 'Anonimizar só nome — Sweeney (Harvard, 2000-2018) mostrou que três variáveis (CEP, gênero, data de nascimento) re-identificam 87% da população dos EUA. Pseudonimização parcial é falsa segurança.'
+  },
+  {
+    n: 4,
+    titulo: 'Escolher ferramenta com compatibilidade LGPD documentada por contrato',
+    aplicacao: 'A escolha de ferramenta em 2026 é decisão jurídica antes de ser decisão técnica. Critérios canônicos para supervisão assíncrona com IA: hospedagem regional comprovada (tenant Brazil South no Microsoft 365 Copilot, AWS Bedrock região São Paulo, Azure Brazil South) ou solução self-hosted (Whisper local, Llama 4 com guardrails locais); cláusula contratual escrita sobre não-uso do conteúdo para treinamento de modelo (zero data retention quando disponível na API Enterprise); contrato com Data Processing Agreement (DPA) específico para dado sensível; possibilidade auditável de exclusão definitiva sob requisição. Versões consumer gratuitas de ChatGPT, Claude.ai ou Gemini não atendem o padrão — não há contrato individual de tratamento de dado sensível. A versão Enterprise é o piso operacional defensável.',
+    armadilha: 'Usar conta gratuita "para teste" e nunca migrar. O teste vira produção; a produção vira incidente; o incidente vira procedimento. Ponto de partida deve ser o ponto de chegada.'
+  },
+  {
+    n: 5,
+    titulo: 'Redigir contrato de supervisão com cláusula específica sobre IA',
+    aplicacao: 'O contrato pedagógico de supervisão precisa de adendo escrito sobre IA, assinado em separado pela supervisionada antes do primeiro uso. Conteúdo mínimo: identificação da ferramenta (nome, fornecedor, versão, plano contratado), finalidade exata do uso (sumarização de material trazido, organização de devolutivas, busca de literatura sob critério do supervisor), tipos de material processado (texto anonimizado de relato clínico, dúvidas técnicas, notas reflexivas), tempo de retenção, base legal LGPD invocada (tutela do desenvolvimento profissional sob CFP 11/2018 + consentimento específico), direito de revogação a qualquer momento, consequências da revogação (continuidade da supervisão sem IA), canal para reportar incidente. O termo padrão de psicoterapia ou contrato genérico de supervisão não cobre — exige peça específica.',
+    armadilha: 'Anexar parágrafo curto ao contrato existente sem revisão integral. Incoerência entre cláusulas é argumento de fragilidade em perícia ética.'
+  },
+  {
+    n: 6,
+    titulo: 'Estruturar governança operacional com papéis e responsabilidades nomeadas',
+    aplicacao: 'Em supervisão individual, supervisor é responsável técnica final por toda decisão de uso de IA e por toda devolutiva produzida. Em supervisão grupal ou em programa institucional (residência, pós-graduação, clínica-escola), a governança escrita precisa nomear: responsável técnica geral (psicóloga ou psicólogo sênior com CRP ativo), responsável operacional pela ferramenta (gestão de licença, autenticação, controle de acesso), responsável jurídica (DPO interno ou terceirizado), responsável por auditoria periódica de qualidade. A governança opera em três horizontes — antes (curadoria do que entra na ferramenta), durante (revisão substantiva do que ela produz), depois (auditoria do material gerado). Sem nomes nessas três camadas, o protocolo é teoria.',
+    armadilha: 'Tratar "todo mundo é responsável" como suficiente. Responsabilidade difusa em ética profissional é responsabilidade ausente. Nome, função, prazo.'
+  },
+  {
+    n: 7,
+    titulo: 'Implantar log de auditoria com imutabilidade e revisão periódica',
+    aplicacao: 'Toda interação com a IA dentro do fluxo de supervisão precisa ser logada — quem (supervisor, supervisionando, suporte), quando (timestamp), qual operação (sumarização, busca, redação), qual material entrou (referência ao caso anonimizado), qual saída foi produzida, qual revisão humana foi feita. O log é parte da defesa em fiscalização da ANPD ou em procedimento do CRP. Em consultório individual de supervisão, planilha datada com colunas mínimas serve no curto prazo. Em programa institucional, log automático e imutável (write-once em sistema sem permissão de edição retroativa) é canônico. Revisão trimestral do log pelo responsável técnico — amostragem de 10% das interações — entra como prática mínima de governança.',
+    armadilha: 'Tratar o log como obrigação burocrática a ser ativada "quando precisar". O log que precisa começa antes do incidente, não depois.'
+  },
+  {
+    n: 8,
+    titulo: 'Avaliar qualidade pedagógica da supervisão com indicadores próprios',
+    aplicacao: 'A introdução de IA na supervisão pode ganhar tempo e perder profundidade — ou ganhar os dois. A diferença está em medir. Indicadores canônicos para supervisão assíncrona com IA em 2026: tempo médio de devolutiva ao supervisionando (esperado: redução de 20-40% sem perda de qualidade); profundidade percebida da devolutiva em auto-avaliação trimestral da supervisionanda (escala 1-5); recorrência de temas trabalhados em supervisão e desfecho (encerrados, em aprofundamento, abertos); cobertura de aspectos éticos discutidos por trimestre; satisfação clínica subjetiva da supervisionanda. Auditoria semestral compara coorte pré-IA com coorte com IA — se a profundidade cair, o protocolo é revisto antes da escala.',
+    armadilha: 'Medir só tempo ganho. Tempo ganho sem qualidade preservada é prejuízo formativo travestido de eficiência.'
+  },
+  {
+    n: 9,
+    titulo: 'Definir política de incidente com notificação em 24-72 horas à ANPD',
+    aplicacao: 'A LGPD (Art. 48) exige comunicação à ANPD em prazo razoável em incidente envolvendo dado pessoal — interpretado em 2024-2025 como 24 a 72 horas dependendo da gravidade. Em supervisão com IA, cenários típicos de incidente: vazamento de conta com material clínico anonimizado mas re-identificável; misconfiguration de permissão em ferramenta colaborativa expondo log; comprometimento de credencial do supervisor com acesso histórico ao material da supervisionanda; resposta inadequada da IA replicando viés sistêmico documentado (Nouri et al., 2024 sobre LLMs em vinhetas psiquiátricas). Playbook escrito cobre detecção (alarme técnico, comunicação da supervisionanda, descoberta interna), contenção (revogação de acesso, troca de credencial, isolamento de instância), notificação (supervisionanda afetada, ANPD, CRP em caso de violação ética), remediação documentada com plano de prevenção.',
+    armadilha: 'Improvisar sob pressão. Política escrita é fria por design — política improvisada é quente, e quente erra em manejo de incidente.'
+  },
+  {
+    n: 10,
+    titulo: 'Documentar tudo para fins éticos e periciais — log, política, decisão',
+    aplicacao: 'Se a IA entrou no fluxo de supervisão, ela aparece em qualquer eventual processo. Para cada relação de supervisão com IA ativa, documentar: ferramenta usada e versão (quando rastreável), template e configuração aplicada, tempo de revisão humana por devolutiva, decisões de não-uso (casos em que supervisor descartou sugestão da IA — registro positivo de juízo profissional ativo), eventual edição substantiva de material gerado, e decisão final. A APA (Statement on AI in Mental Health Care, 2024) recomenda log mínimo de uso de IA em saúde mental; o Posicionamento CFP 03/07/2025 sinaliza convergência. Documentação não é burocracia paralela — é prova técnica de cuidado e de responsabilidade ativa.',
+    armadilha: 'Usar IA e não registrar. Em procedimento ético, ausência de registro é interpretada como ausência de cuidado.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Supervisão clínica assíncrona com apoio de IA em 2026: protocolo em 10 passos sob CFP 11/2018, Posicionamento CFP 03/07/2025 e LGPD',
+  description: 'Protocolo operacional para psicólogos supervisores brasileiros: finalidade pedagógica, base regulatória, sigilo da supervisionada, anonimização do paciente, escolha de ferramenta LGPD-compatível, governança nomeada, log de auditoria, qualidade pedagógica, política de incidente e documentação ética.',
+  totalTime: 'PT25M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Supervisão clínica assíncrona com apoio de IA em 2026: protocolo em 10 passos sob CFP, LGPD e Posicionamento CFP 03/07/2025',
+  description: 'Como implantar supervisão clínica assíncrona apoiada por IA generativa em 2026 — finalidade pedagógica, base regulatória CFP 11/2018 e Posicionamento 03/07/2025, sigilo, anonimização, escolha de ferramenta, governança, log, qualidade, incidente e documentação.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: SITE.url + '/guias/' },
+    { '@type': 'ListItem', position: 3, name: 'Supervisão assíncrona com IA em 2026', item: SITE.url + '/guias/supervisao-async-ia-2026-protocolo-cfp/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+---
+<Base
+  title="Supervisão clínica assíncrona com IA em 2026 — protocolo em 10 passos | CFP 11/2018, Posicionamento 03/07/2025, LGPD"
+  description="Protocolo operacional em 10 passos para psicólogos supervisores: CFP 11/2018, Posicionamento CFP 03/07/2025 sobre IA, sigilo duplo, anonimização, escolha de ferramenta LGPD-compatível, governança, log, qualidade pedagógica, incidente e documentação ética.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Supervisão assíncrona com IA em 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · HowTo · 10 passos · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Supervisão clínica assíncrona com apoio de IA em 2026: protocolo em 10 passos sob CFP e LGPD.</h1>
+          <TLDR
+            resposta="Supervisão assíncrona com apoio de IA em 2026 é projeto de governança pedagógica e ética, não compra de ferramenta. Em 10 passos: fixar finalidade pedagógica, mapear base regulatória (CFP 11/2018 + Posicionamento 03/07/2025 + CFP 06/2019 + LGPD), proteger dois sigilos (supervisionanda e paciente) com anonimização auditável, escolher ferramenta com contrato LGPD documentado, redigir adendo específico ao contrato de supervisão, nomear governança em três camadas, implantar log imutável, medir qualidade pedagógica com indicadores próprios, definir política de incidente com prazo ANPD e documentar tudo para fins éticos. A IA não interpreta caso — apoia a escrita do supervisor."
+            fontes={['CFP Resolução 11/2018 (e-Psi)', 'CFP Posicionamento 03/07/2025 sobre IA na Psicologia', 'CFP Resolução 06/2019 (documentos psicológicos)', 'LGPD Lei 13.709/2018 Art. 11 e Art. 33', 'APA (2024) Statement on AI in Mental Health Care', 'Nouri et al. (2024) Lancet Digital Health — viés em LLMs']}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Para psicólogos supervisores, coordenadores de programa, residências multiprofissionais e clínicas-escola que adotam IA generativa no fluxo formativo.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBA em POT no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura corrente sobre IA em supervisão clínica trata a ferramenta como ganho de produtividade — devolutivas mais rápidas, sumarização instantânea, automação da parte "chata" da supervisão. O ganho é real e mensurável. A inversão prática que define o resultado em 2026 é outra: o ganho só sobrevive quando a IA opera dentro de governança escrita que protege dois sigilos, nomeia responsabilidades e mantém o supervisor como instância pedagógica final. Supervisão sob CFP 11/2018 e sob o Posicionamento CFP 03/07/2025 não admite IA como "supervisor virtual". Admite IA como ferramenta auxiliar à escrita e à organização — função tão limitada quanto valiosa quando bem desenhada.
+        </p>
+        <p>
+          O profissional que costura Resolução CFP 11/2018, Posicionamento CFP 03/07/2025, Resolução CFP 06/2019, LGPD Art. 11 e Art. 33 e literatura emergente sobre AI-augmented supervision em política escrita constrói defesa. O profissional que improvisa constrói passivo regulatório e fragilidade pedagógica simultânea. O Posicionamento CFP 03/07/2025 é o documento operacional mais relevante para essa decisão em 2026 — não é Resolução normativa, mas é referência institucional do conselho que regula a profissão.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 10 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de implantação em 90 dias</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Etapa</th>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Quando</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Finalidade pedagógica documentada</td><td class="px-4 py-3 text-ink-700">Documento de finalidade escrita arquivado</td><td class="px-4 py-3 text-ink-700">Semana 1</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Leitura regulatória escrita</td><td class="px-4 py-3 text-ink-700">Memorando com CFP 11/2018 + Posic. 03/07/2025 + 06/2019 + LGPD</td><td class="px-4 py-3 text-ink-700">Semana 2</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Política de duplo sigilo e anonimização</td><td class="px-4 py-3 text-ink-700">Fluxo escrito com critérios e auditoria</td><td class="px-4 py-3 text-ink-700">Semana 3</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Contrato de ferramenta LGPD</td><td class="px-4 py-3 text-ink-700">DPA assinado com cláusula de não-treinamento</td><td class="px-4 py-3 text-ink-700">Semana 4</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Adendo de IA ao contrato de supervisão</td><td class="px-4 py-3 text-ink-700">Termo específico assinado pela supervisionanda</td><td class="px-4 py-3 text-ink-700">Semana 5</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Governança em três camadas</td><td class="px-4 py-3 text-ink-700">Nomes, papéis e prazos formalizados</td><td class="px-4 py-3 text-ink-700">Semana 6</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Log imutável de auditoria</td><td class="px-4 py-3 text-ink-700">Trilha ativa com revisão trimestral</td><td class="px-4 py-3 text-ink-700">Semana 7</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Indicadores de qualidade pedagógica</td><td class="px-4 py-3 text-ink-700">Painel trimestral com cinco métricas</td><td class="px-4 py-3 text-ink-700">Semana 8</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Política de incidente ANPD</td><td class="px-4 py-3 text-ink-700">Playbook escrito com prazo 24-72h</td><td class="px-4 py-3 text-ink-700">Semana 9</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Documentação ética contínua</td><td class="px-4 py-3 text-ink-700">Log por relação de supervisão</td><td class="px-4 py-3 text-ink-700">Contínuo</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Programa de residência multiprofissional adota supervisão async com IA em 90 dias</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Programa de residência multiprofissional em hospital universitário com 18 residentes de Psicologia distribuídos em quatro ênfases identificou gargalo na devolutiva de supervisão coletiva — supervisores sêniores entregavam parecer com atraso médio de 12 dias, comprometendo o aprendizado próximo do caso. Em 90 dias, fluxo desenhado: assinatura institucional de Microsoft 365 Copilot com tenant Brazil South e DPA específico, governança nomeada (coordenação técnica da residência + DPO da fundação universitária + auditoria semestral pela comissão de ética), adendo de IA aos contratos pedagógicos com cláusula clara sobre uso auxiliar, fluxo de anonimização escrito em duas camadas, log imutável em sistema institucional.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Em 6 meses, dois indicadores. Tempo médio de devolutiva caiu de 12 para 5 dias com revisão substantiva do supervisor; auto-avaliação trimestral de profundidade da devolutiva pelos residentes manteve-se estável em 4,1 de 5,0 (escala interna). Zero incidente reportado. A coordenação registrou que o ganho real veio da estruturação do roteiro de devolutiva — a IA forçou um padrão mínimo de cobertura ética e técnica que a redação manual nem sempre mantinha.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/notas-clinicas-ia-implantar-consultorio-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — implantar notas clínicas por IA no consultório em 2026</a></li>
+          <li><a href="/comparativos/gpt55-vs-claude47-vs-gemini25-clinica-2026" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — GPT-5.5 vs Claude 4.7 vs Gemini 2.5 Pro em clínica em 2026</a></li>
+          <li><a href="/faq/regulacao-ia-cfp-anvisa-pl-2338-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — regulação de IA em saúde mental no Brasil em 2026</a></li>
+          <li><a href="/temas/supervisao-clinica-async-ia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema — supervisão clínica assíncrona com IA em 2026</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções 11/2018 e 06/2019 e Posicionamento 03/07/2025</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">LGPD — Lei 13.709/2018, Art. 11, Art. 33 e Art. 48</a></li>
+          <li><a href="https://www.gov.br/anpd/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANPD — orientações de tratamento de dados sensíveis</a></li>
+          <li><a href="https://www.apa.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA — Statement on AI in Mental Health Care (2024)</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Supervisão com IA só sobrevive sob governança escrita e duplo sigilo protegido.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Finalidade pedagógica, base regulatória CFP 11/2018 e Posicionamento 03/07/2025, sigilo da supervisionanda e anonimização do paciente em camadas distintas, ferramenta com DPA LGPD, adendo contratual específico, governança nomeada em três camadas, log imutável, indicadores de qualidade pedagógica, política de incidente com prazo ANPD e documentação ética contínua. O MBA em Psicologia Organizacional e do Trabalho do IPOG aborda governança de dados sensíveis, ética profissional e people analytics em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBA no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes citadas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>CFP Resolução 11/2018 (e-Psi).</li>
+          <li>CFP Posicionamento 03/07/2025 sobre IA na Psicologia.</li>
+          <li>CFP Resolução 06/2019 (documentos psicológicos).</li>
+          <li>LGPD Lei 13.709/2018 Art. 11, Art. 33 e Art. 48.</li>
+          <li>APA (2024). Statement on AI in Mental Health Care.</li>
+          <li>Nouri et al. (2024). Lancet Digital Health 6(11) — viés em LLMs.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

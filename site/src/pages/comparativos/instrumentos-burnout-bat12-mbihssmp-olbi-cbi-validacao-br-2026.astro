@@ -1,0 +1,292 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const instrumentos = [
+  {
+    nome: 'BAT-12',
+    dimensoes: 'Exaustão, distanciamento mental, prejuízo cognitivo, prejuízo emocional (versão curta, 12 itens; versão longa BAT-23)',
+    validacaoBr: 'Estudos brasileiros em andamento; [FALTA EVIDÊNCIA] de norma nacional única consolidada 2024-2026',
+    cutoffs: 'Sem cutoff canônico universal; desenvolvedores recomendam interpretação por normas e percentis (Schaufeli, Desart & De Witte, 2020)',
+    tempoAplicacao: 'BAT-12 cerca de 4-6 minutos; BAT-23 cerca de 8-12 minutos',
+    usoOcupacionalClinico: 'Instrumento contemporâneo alinhado ao construto burnout 2020-2026; aplicação ocupacional e ocupacional-clínica',
+    alinhamentoCid11: 'Dimensão cognitiva e emocional alinhadas ao espírito da CID-11 QD85 (síndrome de esgotamento profissional)',
+    custo: 'Acesso acadêmico via burnoutassessmenttool.be; uso comercial sob licenciamento',
+    plataformasDigitais: 'KU Leuven, plataformas integradas em consultoria internacional; integrações brasileiras emergentes',
+    idiomaPtBr: 'Tradução em português europeu disponível; equivalência transcultural pt-BR em processo de validação',
+    limitacoes: 'Validação BR ainda heterogênea; ausência de norma populacional brasileira consolidada; comparabilidade entre versões (BAT-12 vs BAT-23) exige cautela'
+  },
+  {
+    nome: 'MBI-HSS-MP',
+    dimensoes: 'Exaustão emocional, despersonalização, realização profissional reduzida (versão MP — Medical Professionals; 22 itens MBI-HSS, derivações para profissionais médicos)',
+    validacaoBr: 'Validação brasileira histórica do MBI-HSS por Carlotto e Câmara (2008); adaptações para profissionais de saúde em estudos posteriores; consistência interna de boa a aceitável em amostras nacionais',
+    cutoffs: 'Sem cutoff canônico universal; Maslach Burnout Inventory Manual oferece interpretação por percentis e categorias normativas que dependem de país, versão e amostra',
+    tempoAplicacao: '10-15 minutos',
+    usoOcupacionalClinico: 'Referência histórica dominante; uso ocupacional e em pesquisa; predominante em profissionais de saúde',
+    alinhamentoCid11: 'Construto clássico de Maslach precede CID-11; alinhamento ao QD85 é interpretativo, não direto',
+    custo: 'Licenciamento via Mind Garden; uso acadêmico com tarifa reduzida; uso institucional comercial',
+    plataformasDigitais: 'Mind Garden Transform; integrações brasileiras em consultorias de POT',
+    idiomaPtBr: 'Validação brasileira consolidada do MBI-HSS; versões adaptadas para profissionais de saúde',
+    limitacoes: 'Dependência do paradigma clássico de Maslach (sem dimensão cognitiva específica); cutoffs variáveis por amostra; críticas conceituais 2020-2025 sobre adequação ao construto atualizado'
+  },
+  {
+    nome: 'OLBI',
+    dimensoes: 'Exaustão, desengajamento do trabalho (16 itens — modelo bidimensional com itens positivos e negativos)',
+    validacaoBr: 'Estudos de adaptação brasileiros disponíveis; psicometria com bom desempenho em algumas amostras ocupacionais; [FALTA EVIDÊNCIA] de norma nacional única consolidada 2024-2026',
+    cutoffs: 'Sem cutoff canônico universal; uso comparativo via percentis e medidas contínuas',
+    tempoAplicacao: '5-8 minutos',
+    usoOcupacionalClinico: 'Uso ocupacional amplo, especialmente em pesquisa europeia; aplicável a profissões variadas (não restrito a profissionais de saúde)',
+    alinhamentoCid11: 'Dimensão de desengajamento capta aspectos próximos ao distanciamento mental da CID-11 QD85',
+    custo: 'Uso acadêmico aberto; uso comercial sob negociação com Demerouti e equipe original',
+    plataformasDigitais: 'Implementações acadêmicas; sem plataforma comercial dominante',
+    idiomaPtBr: 'Versões brasileiras em estudos; equivalência psicométrica heterogênea entre amostras',
+    limitacoes: 'Menor difusão clínica que MBI; bidimensionalidade pode subdimensionar aspectos cognitivo-emocionais; comparabilidade transcultural exige cautela'
+  },
+  {
+    nome: 'CBI',
+    dimensoes: 'Burnout pessoal, burnout no trabalho, burnout no cliente/paciente (três subescalas independentes — 19 itens; pode ser usado parcialmente)',
+    validacaoBr: 'Validação brasileira em profissionais de saúde por Fonte e colaboradores (2024, Cad. Saúde Pública); bom desempenho psicométrico em amostras do SUS',
+    cutoffs: 'Sem cutoff canônico universal; desenvolvedores (Kristensen et al., 2005) oferecem categorias interpretativas heurísticas que dependem de contexto',
+    tempoAplicacao: '8-10 minutos (três subescalas) ou 3-5 minutos (subescala única)',
+    usoOcupacionalClinico: 'Forte aplicabilidade em estudos populacionais de saúde ocupacional; permite separar burnout pessoal de burnout do trabalho',
+    alinhamentoCid11: 'Subescalas pessoal e trabalho aproximam-se da QD85; subescala cliente/paciente é específica para profissionais relacionais',
+    custo: 'Acesso aberto para uso acadêmico e não-comercial; bom para serviços públicos',
+    plataformasDigitais: 'Implementações em sistemas de gestão hospitalar e em pesquisa; sem plataforma comercial dominante',
+    idiomaPtBr: 'Versões em português do Brasil disponíveis e validadas em subgrupos profissionais',
+    limitacoes: 'Subescala "cliente/paciente" exige adaptação semântica conforme profissão; comparabilidade direta com MBI requer cuidado interpretativo'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Instrumentos de burnout em 2026: BAT-12, MBI-HSS-MP, OLBI e CBI — comparativo de validação brasileira',
+  description: 'Comparativo independente em 10 atributos: dimensões, validação brasileira, cutoffs, tempo de aplicação, uso ocupacional vs clínico, alinhamento CID-11 QD85, custo, plataformas, idioma pt-BR e limitações documentadas.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos/' },
+    { '@type': 'ListItem', position: 3, name: 'Instrumentos de burnout em 2026 (BAT-12, MBI-HSS-MP, OLBI, CBI)', item: SITE.url + '/comparativos/instrumentos-burnout-bat12-mbihssmp-olbi-cbi-validacao-br-2026/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes');
+const areaPositiva = AREAS.find(a => a.id === 'psicologia-positiva');
+---
+<Base
+  title="Instrumentos de burnout em 2026 — BAT-12 vs MBI-HSS-MP vs OLBI vs CBI | validação BR, CID-11 QD85"
+  description="Comparativo independente em 10 atributos dos quatro instrumentos canônicos de burnout em 2026: dimensões, validação brasileira, cutoffs, alinhamento CID-11 QD85, custo, plataformas, idioma pt-BR e limitações.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Instrumentos de burnout em 2026 (BAT-12, MBI-HSS-MP, OLBI, CBI)' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Instrumentação · Burnout · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Instrumentos de burnout em 2026: BAT-12, MBI-HSS-MP, OLBI e CBI — comparativo de validação brasileira.</h1>
+          <TLDR
+            resposta="Em 2026, BAT é o instrumento conceitualmente mais alinhado ao construto contemporâneo de burnout, com quatro dimensões (exaustão, distanciamento mental, prejuízo cognitivo, prejuízo emocional). MBI segue dominante em pesquisa histórica e em profissionais de saúde, com validação brasileira consolidada por Carlotto e Câmara (2008). OLBI capta exaustão e desengajamento com boa parcimônia. CBI permite separar burnout pessoal, do trabalho e do cliente/paciente, com validação brasileira para profissionais de saúde por Fonte e colaboradores (2024). Nenhum dos quatro tem cutoff canônico universal — interpretação responsável usa percentis, normas locais e juízo clínico contextual. Para uso pericial e ocupacional pós-NR-1 atualizada, a triangulação de dois instrumentos com bases conceituais distintas é boa prática."
+            fontes={['Schaufeli, Desart & De Witte (2020) BAT', 'Maslach Burnout Inventory Manual', 'Demerouti et al. OLBI', 'Kristensen et al. (2005) CBI', 'Carlotto & Câmara (2008) — validação BR MBI-HSS', 'Fonte et al. (2024) — validação BR CBI no SUS']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Análise comparativa em 10 atributos. Para psicólogos peritos, gestores de saúde mental ocupacional, pesquisadores em POT e advogados trabalhistas que precisam escolher instrumento com fundamentação técnica.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que esse comparativo importa em 2026</h2>
+        <p>
+          A entrada em vigência fiscalizatória plena da NR-1 atualizada em 25 de maio de 2026 muda o estatuto da medida de burnout no Brasil. A escolha do instrumento deixa de ser preferência acadêmica e passa a integrar a defesa documental do empregador, o laudo pericial em ação trabalhista e o protocolo de saúde mental ocupacional em hospitais, redes de saúde, grandes empregadores e operadoras. Em paralelo, o construto teórico do burnout evoluiu — a literatura 2020-2026 desloca o foco de exaustão isolada para um construto de quatro dimensões com prejuízo cognitivo e emocional (Schaufeli, Desart & De Witte, 2020), refletido no Burnout Assessment Tool. Esse deslocamento conceitual tem implicação prática: o instrumento escolhido carrega uma teoria implícita sobre o que burnout é.
+        </p>
+        <p>
+          A leitura técnica em 2026: nenhum dos quatro instrumentos tem cutoff canônico universal. Os desenvolvedores do BAT recomendam interpretação por normas e percentis, não por corte diagnóstico único. O Maslach Burnout Inventory Manual oferece categorias normativas que dependem de país, versão e amostra. CBI e OLBI seguem lógica similar. O profissional responsável escolhe o instrumento conforme objetivo (rastreio, pesquisa, perícia, programa institucional), reporta consistência interna na amostra, evita "diagnóstico" com base em um único score e, quando o contexto pericial exige robustez, triangula dois instrumentos com bases conceituais complementares — por exemplo, MBI-HSS-MP (referência histórica) com BAT-12 (construto contemporâneo).
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela comparativa — 4 instrumentos, 10 atributos</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Atributo</th>
+                {instrumentos.map(i => (
+                  <th class="text-left px-4 py-3">{i.nome}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Dimensões medidas</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.dimensoes}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Validação brasileira</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.validacaoBr}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Cutoffs canônicos</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.cutoffs}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Tempo de aplicação</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.tempoAplicacao}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Uso ocupacional vs clínico</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.usoOcupacionalClinico}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Alinhamento CID-11 QD85</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.alinhamentoCid11}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Custo</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.custo}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Plataformas digitais</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.plataformasDigitais}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Idioma pt-BR</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.idiomaPtBr}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Limitações documentadas</td>
+                {instrumentos.map(i => (<td class="px-4 py-3 text-ink-700">{i.limitacoes}</td>))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Leitura indicativa em 2026; status de validação, licenciamento e plataformas mudam. Confirme com desenvolvedor antes de uso institucional ou pericial.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">BAT-12 em 2026 — o construto contemporâneo</h2>
+        <p>
+          O Burnout Assessment Tool foi desenvolvido por Schaufeli, Desart e De Witte (2020) como resposta às limitações teóricas do paradigma clássico de Maslach. A inovação central é a inclusão de quatro dimensões — exaustão, distanciamento mental, prejuízo cognitivo e prejuízo emocional — que se aproximam do construto de burnout como síndrome multidimensional alinhada à CID-11 QD85. A versão BAT-12 é instrumento curto com 12 itens, útil para rastreio rápido e para estudos populacionais; a versão BAT-23 oferece detalhamento adicional. Em 2026, validações brasileiras estão em curso, mas a norma nacional única consolidada ainda é evidência fragmentada [FALTA EVIDÊNCIA na consolidação 2024-2026]. O uso técnico responsável em contexto brasileiro reporta o escore médio e a consistência interna na amostra estudada, sem aplicar cutoff importado sem ressalva.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">MBI-HSS-MP — a referência histórica</h2>
+        <p>
+          O Maslach Burnout Inventory permanece, em 2026, como instrumento mais aplicado historicamente em pesquisa internacional de burnout. A versão HSS (Human Services Survey) é a referência canônica para profissionais de serviços humanos; a derivação MP (Medical Professionals) adapta itens para profissionais médicos. As três dimensões clássicas — exaustão emocional, despersonalização e realização profissional reduzida — fundam o paradigma que dominou de 1981 a 2020. A validação brasileira por Carlotto e Câmara (2008) consolidou uso em amostras nacionais com boa consistência interna. As críticas conceituais 2020-2025 apontam ausência de dimensão cognitiva específica e dependência teórica do paradigma original. O uso em 2026 segue defensável quando o objetivo é comparabilidade com literatura histórica internacional; quando o objetivo é alinhamento à CID-11 QD85, BAT é alternativa conceitualmente superior.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">OLBI e CBI — alternativas com perfis distintos</h2>
+        <p>
+          OLBI (Oldenburg Burnout Inventory), desenvolvido por Demerouti e colaboradores, opera com duas dimensões — exaustão e desengajamento — em modelo bidimensional com itens positivos e negativos balanceados. A parcimônia é virtude para estudos populacionais; a profundidade conceitual é menor que BAT. CBI (Copenhagen Burnout Inventory), desenvolvido por Kristensen e colaboradores (2005), inova ao oferecer três subescalas independentes — burnout pessoal, burnout no trabalho, burnout no cliente/paciente. A validação brasileira por Fonte e colaboradores (2024, Cadernos de Saúde Pública) consolidou uso em amostras do SUS com bom desempenho psicométrico. CBI é especialmente útil quando o objetivo é distinguir esgotamento pessoal de esgotamento relacionado ao trabalho — distinção relevante em peritagem trabalhista e em programas de saúde ocupacional. O acesso aberto para uso acadêmico e não-comercial é diferencial prático.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Como escolher em 2026 — três cenários</h2>
+        <p>
+          Três cenários e a escolha defensável. Primeiro, rastreio populacional em grande empregador (mil ou mais colaboradores) para diagnóstico inicial do PGR psicossocial NR-1: BAT-12 pela brevidade e construto contemporâneo, ou CBI subescalas pessoal e trabalho pelo acesso aberto e separação conceitual. Segundo, pesquisa acadêmica com necessidade de comparabilidade internacional histórica: MBI-HSS ou MBI-HSS-MP por massa crítica de literatura. Terceiro, perícia psicológica em ação trabalhista individual: triangulação de dois instrumentos com bases conceituais complementares — por exemplo, MBI-HSS-MP (referência) com BAT-12 (atualizado). Em qualquer cenário, o laudo reporta instrumento, escore, classificação interpretativa contextualizada e juízo clínico fundamentado, sem reduzir o diagnóstico de burnout a um único score.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Quando NÃO usar — cinco contraindicações práticas</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li>1. Aplicação isolada sem articulação com anamnese ocupacional, prontuário ou contexto institucional — score isolado é frágil.</li>
+          <li>2. Importação de cutoff de amostra estrangeira sem ajuste local — comparabilidade transcultural exige cautela.</li>
+          <li>3. Substituição do diagnóstico clínico psiquiátrico — burnout pode coocorrer com depressão, CPTSD, long COVID, TDAH e outros quadros que exigem diferencial técnico.</li>
+          <li>4. Comparação direta entre instrumentos sem reporte de consistência interna na amostra — dado bruto comparado sem psicometria é dado enganoso.</li>
+          <li>5. Uso comercial sem licenciamento adequado (especialmente MBI via Mind Garden) — questão ética e legal.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/jurisprudencia-nr1-tst-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — jurisprudência da NR-1 atualizada no TST/TRT em 2026</a></li>
+          <li><a href="/faq/burnout-pos-covid-4anos-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — burnout em profissionais de saúde 4 anos pós-COVID</a></li>
+          <li><a href="/guias/escalas-burnout-bat-mbi-olbi-cbi" class="text-brand-700 hover:text-brand-800 font-medium">Guia — escalas de burnout BAT, MBI, OLBI e CBI</a></li>
+          <li><a href="/comparativos/burnout-vs-depressao-vs-cptsd" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — burnout vs depressão vs CPTSD</a></li>
+          <li><a href="/temas/burnout-profissionais-saude-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema — burnout em profissionais de saúde em 2026</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">BAT é conceitualmente atual; MBI é referência histórica; CBI tem acesso aberto e separação de subescalas; OLBI tem parcimônia.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Nenhum dos quatro tem cutoff canônico universal. A escolha responsável em 2026 combina objetivo, amostra, contexto regulatório (NR-1 atualizada) e juízo clínico. Triangulação de dois instrumentos com bases conceituais complementares é boa prática em peritagem e em programa institucional robusto. O MBA em POT do IPOG aborda risco psicossocial, instrumentação validada e perícia em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaSmo && <li><a href={`/areas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>}
+          {areaPositiva && <li><a href={`/areas/${areaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaPositiva.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Schaufeli, W., Desart, S., De Witte, H. (2020). BAT. DOI 10.1037/str0000150.</li>
+          <li>Maslach Burnout Inventory Manual (versões diversas).</li>
+          <li>Demerouti et al. — Oldenburg Burnout Inventory.</li>
+          <li>Kristensen, T. et al. (2005). Copenhagen Burnout Inventory.</li>
+          <li>Carlotto, M., Câmara, S. (2008). Validação BR do MBI-HSS.</li>
+          <li>Fonte et al. (2024). Validação BR CBI. Cad. Saúde Pública.</li>
+          <li>burnoutassessmenttool.be (manual oficial BAT).</li>
+          <li>OMS — CID-11 QD85.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

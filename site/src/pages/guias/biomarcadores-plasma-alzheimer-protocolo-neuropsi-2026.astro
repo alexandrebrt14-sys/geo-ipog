@@ -1,0 +1,277 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Reconhecer o lugar do neuropsicólogo no novo fluxo diagnóstico — biomarcador não substitui bateria, e bateria não substitui biomarcador',
+    aplicacao: 'A entrada da p-tau217 plasmática na rotina diagnóstica em 2025-2026 reconfigura, mas não substitui, o lugar da neuropsicologia. Palmqvist e colaboradores (2020, JAMA) consolidaram a acurácia discriminativa da p-tau217 plasmática frente a outras demências neurodegenerativas, com AUC acima de 0,90 em coortes multicêntricas. Coortes europeias subsequentes (Lund, Barcelonaβeta, Sant Pau, Gotemburgo) reforçaram que o marcador identifica positividade amiloide antes de declínio mensurável em testes neuropsicológicos. A leitura prática: o exame de plasma fala da biologia subjacente; a bateria neuropsicológica fala do funcionamento cognitivo atual. Os dois leem coisas diferentes e a clínica precisa dos dois. Quem confunde substituibilidade reduz a profissão e perde o paciente.',
+    armadilha: 'Tratar o exame de plasma como "novo MMSE" ou como atalho para diagnóstico. O biomarcador estabelece probabilidade biológica de doença de Alzheimer; o desempenho cognitivo permanece como objeto exclusivo da neuropsicologia.'
+  },
+  {
+    n: 2,
+    titulo: 'Indicar p-tau217 plasmática apenas com hipótese clínica formulada — não é screening populacional',
+    aplicacao: 'A indicação responsável da p-tau217 em 2026 segue critério clínico: queixa cognitiva persistente (auto ou de informante), desempenho discrepante em pelo menos um domínio na avaliação neuropsicológica, exclusão razoável de causas reversíveis (depressão maior, hipotireoidismo, deficiência de B12, efeito de medicação) e contexto etário plausível (geralmente após os 55-60 anos para o eixo Alzheimer). Em indivíduos assintomáticos sem queixa, o uso é apropriado apenas no contexto de pesquisa clínica formal. Estudos como ALFA+ (Barcelonaβeta) mostram que a p-tau217 detecta amiloidose antes da bateria — o que tem valor de pesquisa, mas não justifica pedido amplo em consultório sem indicação. A Resolução CFP 06/2019 sobre documentos psicológicos exige justificativa estruturada do encaminhamento.',
+    armadilha: 'Solicitar (ou induzir o médico a solicitar) o exame em paciente sem queixa cognitiva. O achado positivo em assintomático abre cascata de ansiedade, perda de seguro, decisões precipitadas — sem benefício terapêutico consolidado correspondente.'
+  },
+  {
+    n: 3,
+    titulo: 'Articular fluxo formal com médico (neurologista ou geriatra) antes do pedido',
+    aplicacao: 'O exame de p-tau217 é solicitado por médico, não por psicólogo. O neuropsicólogo articula o fluxo: avaliação neuropsicológica inicial estrutura a hipótese, relatório técnico fundamenta o encaminhamento, neurologista ou geriatra decide a solicitação e a comunica ao paciente. Plataformas automatizadas (Lumipulse G da Fujirebio, Roche Elecsys) viabilizaram o ensaio em rotina hospitalar em mercados maduros; no Brasil, em 2026, a oferta cresce mas permanece concentrada em centros de referência e laboratórios privados de grande porte. O neuropsicólogo que opera sozinho, sem rede médica de retaguarda, expõe paciente e a si mesmo. A APA (Statement on biomarkers in neuropsychology, 2024) reforça que a interpretação biomarcador-cognição é multidisciplinar.',
+    armadilha: 'Operar em silo. Receber o resultado do exame sem conversa prévia com o médico solicitante produz interpretação fragmentada e devolutiva incoerente para a família.'
+  },
+  {
+    n: 4,
+    titulo: 'Padronizar a bateria neuropsicológica pré-resultado — sensibilidade adequada à fase pré-clínica',
+    aplicacao: 'A bateria que antecede o pedido do biomarcador precisa ter sensibilidade para detectar prejuízo sutil. Mini-baterias como MMSE ou MoCA isolados não bastam — captam declínio franco, não comprometimento incipiente. O padrão de 2026 inclui: testes de memória episódica com lista de palavras (RAVLT, FCSRT em versão brasileira), testes de função executiva e velocidade de processamento (Trail Making A e B, Stroop, Digit Symbol), fluência verbal semântica e fonêmica, e medida funcional formal (FAQ Pfeffer ou Lawton-Brody). A normatização precisa considerar escolaridade — efeito robusto em amostras brasileiras conforme literatura nacional consolidada. Cosenza, Bueno e colaboradores documentam a necessidade de normas estratificadas para a realidade brasileira.',
+    armadilha: 'Pedir biomarcador antes de fazer a bateria. Sem baseline neuropsicológico, o resultado biológico fica órfão — não há objeto cognitivo para comparar ao longo do tempo.'
+  },
+  {
+    n: 5,
+    titulo: 'Aplicar critérios de Comprometimento Cognitivo Leve (CCL) revisados (NIA-AA e Petersen)',
+    aplicacao: 'Os critérios contemporâneos de CCL combinam quatro elementos: queixa cognitiva subjetiva (auto ou de informante), desempenho aproximadamente 1 a 1,5 desvio-padrão abaixo do esperado em pelo menos um domínio cognitivo, preservação relativa das atividades básicas de vida diária com leve dificuldade em atividades complexas, e ausência de demência franca. A grande mudança recente é o enquadramento biológico: CCL devido à doença de Alzheimer exige evidência de amiloide positivo (A+) e tau positivo (T+) por LCR, PET ou biomarcadores sanguíneos validados; CCL não especificado ou de etiologia mista quando os biomarcadores são ausentes ou inconclusivos. Petersen e colaboradores reforçam a heterogeneidade do CCL — amnéstico vs não-amnéstico, multidomínio vs domínio único — com implicações de prognóstico e de seguimento. A bateria sensível define o subtipo; o biomarcador define a etiologia provável.',
+    armadilha: 'Aplicar rótulo "CCL devido à doença de Alzheimer" apenas com base no resultado positivo de p-tau217, sem o quadro clínico-neuropsicológico que o sustente. O critério é conjunto, não substitutivo.'
+  },
+  {
+    n: 6,
+    titulo: 'Comunicar resultado com método — paciente e família como sujeitos do processo',
+    aplicacao: 'A devolutiva do resultado é momento clínico, não administrativo. O paciente que recebe positividade biológica para Alzheimer, especialmente em fase pré-clínica ou CCL, atravessa três frentes em paralelo — biológica (o que isso significa para o cérebro), pragmática (o que muda na vida hoje), simbólica (como reorganizar identidade e projetos). O Código de Ética do Psicólogo e o Posicionamento CFP 03/07/2025 sobre práticas com IA convergem na centralidade do consentimento informado e da escuta. A comunicação responsável estrutura: o que o exame mede, qual a margem de incerteza, o que o resultado significa em probabilidade (não em sentença), quais decisões podem (e quais não devem) ser tomadas no calor do recebimento, qual a agenda de seguimento. Família participa quando o paciente autoriza. Filhos adultos têm direito a orientação separada quando há implicação de risco familiar — sem violação de sigilo do paciente.',
+    armadilha: 'Devolutiva no formato laudo entregue por e-mail. Resultado biológico de Alzheimer comunicado fora da relação clínica é potencialmente iatrogênico — depressão reativa, suicídio, decisões precipitadas sobre aposentadoria ou direção veicular estão documentados na literatura.'
+  },
+  {
+    n: 7,
+    titulo: 'Encaminhar com critério ético — não toda positividade exige tratamento medicamentoso anti-amiloide',
+    aplicacao: 'Lecanemab e donanemab (ver comparativo correlato neste portal) entraram em discussão regulatória global após CLARITY-AD e TRAILBLAZER-ALZ. A indicação típica é restrita: CCL amnéstico devido à doença de Alzheimer ou demência leve devido à doença de Alzheimer, amiloide positivo confirmado, ausência de comorbidades graves que aumentem risco de ARIA (uso de anticoagulantes, micro-hemorragias extensas em ressonância). A decisão é médica, com base em risco-benefício, e exige infraestrutura de monitoramento (ressonância seriada, equipe multiprofissional, centro de infusão). O neuropsicólogo participa do trecho cognitivo do follow-up — não decide a indicação medicamentosa. No Brasil em 2026, a aprovação ANVISA dessas drogas permanece em evolução; quem afirma certezas regulatórias está se adiantando à evidência pública. A postura ética é apresentar o estado da arte, sem confabular aprovações.',
+    armadilha: 'Apresentar o anti-amiloide como "a cura" disponível. A magnitude de benefício é modesta, o risco de ARIA é real e portadores de APOE ε4 têm risco elevado. A leitura precisa ser sóbria e técnica.'
+  },
+  {
+    n: 8,
+    titulo: 'Reavaliar longitudinalmente — neuropsi a cada 6-12 meses no CCL, anual no Alzheimer leve',
+    aplicacao: 'O acompanhamento neuropsicológico longitudinal é o que dá significado clínico ao biomarcador. Reavaliação a cada 6-12 meses no CCL e anual no Alzheimer leve permite documentar trajetória — taxa de declínio em memória episódica, atenção, funções executivas e linguagem. Escalas usadas em ensaios clínicos (CDR-SB, ADAS-Cog, iADL) são referência internacional; a aplicação no Brasil exige adaptação com instrumentos validados em português. A análise longitudinal pessoal — comparar o paciente consigo mesmo ao longo do tempo, corrigindo efeito de prática — é mais informativa que a comparação com norma populacional em casos limítrofes. Estudos longitudinais com p-tau217 (Ashton e colaboradores em diversos trabalhos 2023-2025) sugerem correlação entre níveis basais e velocidade de declínio cognitivo, mas a tradução ainda está em consolidação para uso clínico individualizado.',
+    armadilha: 'Bateria longitudinal usando instrumentos diferentes a cada ciclo. A comparabilidade exige protocolo estável; mudanças metodológicas precisam ser documentadas e contextualizadas no relatório.'
+  },
+  {
+    n: 9,
+    titulo: 'Considerar pesquisa clínica como destino de parte dos pacientes',
+    aplicacao: 'A integração de biomarcadores sanguíneos em ensaios de prevenção e tratamento (AHEAD 3-45, TRAILBLAZER-ALZ 3 em prevenção, plataformas adaptativas) abriu janela de pesquisa para pacientes com positividade biológica precoce. O neuropsicólogo informado sobre ensaios ativos no Brasil e na América Latina presta serviço relevante ao paciente — não como recrutador, mas como referência técnica. A inscrição em ensaio depende de critérios rígidos (idade, status amiloide, ausência de comorbidades, baseline cognitivo dentro de faixa) e da decisão livre e informada do paciente. A REBEC (Registro Brasileiro de Ensaios Clínicos) e o ClinicalTrials.gov mantêm registros públicos consultáveis. Indicar ensaio ético é parte do cuidado contemporâneo; omitir essa possibilidade é desinformação por omissão.',
+    armadilha: 'Pressionar paciente a participar de ensaio. O consentimento livre é cláusula pétrea da pesquisa em seres humanos — Resolução CNS 466/2012 e atualizações.'
+  },
+  {
+    n: 10,
+    titulo: 'Atualizar formação continuamente — biomarcadores mudam de ano em ano',
+    aplicacao: 'O campo de biomarcadores plasmáticos em 2026 está em movimento rápido. Plataformas (Simoa, Lumipulse, Roche Elecsys) competem em desempenho e custo; cut-offs replicáveis entre centros consolidam-se; modelos de "relógio sanguíneo" baseados em p-tau217 propõem estimar idade provável de início de sintomas em portadores assintomáticos, com erros médios em ordem de poucos anos em coortes específicas. A neuropsicologia brasileira precisa de formação continuada em três frentes: leitura crítica da literatura primária (Alzheimer\'s & Dementia, JAMA Neurology, Lancet Neurology, Neurology), capacitação técnica em baterias longitudinais sensíveis, e domínio das normativas regulatórias brasileiras à medida que evoluem. MBAs aplicados como o de Neurociência e Comportamento e formação em Neuropsicologia oferecidos em programas Lato Sensu reconhecidos consolidam essa base.',
+    armadilha: 'Tratar a formação inicial como suficiente. Profissional que diagnostica em 2030 com a leitura de 2024 entrega anacronismo travestido de técnica.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Biomarcadores em plasma para Alzheimer (p-tau217) em 2026: protocolo do neuropsicólogo em 10 passos',
+  description: 'Protocolo do neuropsicólogo brasileiro com biomarcadores plasmáticos para Alzheimer disponíveis em 2026 — indicação, articulação médica, bateria pré e pós, CCL Petersen/NIA-AA, devolutiva e longitudinal.',
+  totalTime: 'PT30M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Biomarcadores plasma para Alzheimer em 2026: como o neuropsicólogo se posiciona com p-tau217 — HowTo 10 passos',
+  description: 'Guia operacional para o neuropsicólogo brasileiro com p-tau217 plasmática em rotina 2026, CCL Petersen/NIA-AA, articulação com neurologia e devolutiva responsável.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: SITE.url + '/guias/' },
+    { '@type': 'ListItem', position: 3, name: 'Biomarcadores plasma Alzheimer — protocolo neuropsi 2026', item: SITE.url + '/guias/biomarcadores-plasma-alzheimer-protocolo-neuropsi-2026/' }
+  ]
+};
+
+const areaNeuro = AREAS.find(a => a.id === 'neurociencia-neuropsicologia');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neurociencia-positiva') || MBAS.find(m => m.id === 'mba-positiva');
+---
+<Base
+  title="Biomarcadores plasma Alzheimer (p-tau217) em 2026 — protocolo do neuropsicólogo em 10 passos"
+  description="Como o neuropsicólogo se posiciona com p-tau217 plasmática disponível em 2026: indicação, articulação com neurologia, bateria pré e pós, CCL Petersen/NIA-AA, devolutiva e longitudinal.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Biomarcadores plasma Alzheimer — protocolo neuropsi 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · HowTo · Neuropsicologia · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Biomarcadores plasmáticos para Alzheimer em 2026: como o neuropsicólogo se posiciona com p-tau217 — protocolo em 10 passos.</h1>
+          <TLDR
+            resposta="A entrada da p-tau217 plasmática na rotina diagnóstica em 2025-2026 reconfigura, mas não substitui, o lugar da neuropsicologia. O exame fala da biologia subjacente; a bateria fala do funcionamento cognitivo atual. O protocolo defensável em 10 passos: lugar canônico do neuropsicólogo, indicação com hipótese clínica formulada, articulação com neurologia, bateria pré-resultado sensível, critérios CCL revisados, devolutiva como momento clínico, encaminhamento ético, longitudinal a cada 6-12 meses, pesquisa clínica como destino quando indicado, e formação continuada."
+            fontes={['Palmqvist et al. (2020) JAMA', 'NIA-AA framework 2024 (referência conceitual)', 'Petersen 2024 — atualizações CCL', 'Ashton e colaboradores 2023-2025 — p-tau217', 'CFP Resolução 06/2019 e Posicionamento 03/07/2025', 'CNS Resolução 466/2012']}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Para neuropsicólogos, neurologistas, geriatras e gestores de serviços de cognição que operam o eixo Alzheimer em 2026.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura dominante sobre a chegada da p-tau217 plasmática à clínica trata o exame como avanço que reduz a importância da bateria neuropsicológica. A inversão prática: ocorre o oposto. Quando o biomarcador biológico passa a estar disponível em fase pré-clínica e em CCL, a bateria sensível precisa ser melhor, mais longitudinal e mais bem articulada com o médico. O exame fala da biologia subjacente — amiloide, tau, neurodegeneração. A bateria fala do funcionamento cognitivo atual e da trajetória individual. Quem confunde substituibilidade reduz a profissão; quem articula os dois entrega cuidado contemporâneo.
+        </p>
+        <p>
+          Em 2026, o neuropsicólogo brasileiro opera em um cenário com três frentes simultâneas. Primeiro, expansão técnica do biomarcador plasmático em centros de referência (Lumipulse G, Roche Elecsys) e aprovação da FDA de painéis sanguíneos para apoio diagnóstico. Segundo, atualização conceitual do critério de CCL (Petersen e colaboradores) com enquadramento biológico opcional. Terceiro, discussão regulatória sobre lecanemab e donanemab, com aprovação ANVISA ainda em evolução em fontes públicas verificáveis. O profissional que costura essas frentes em protocolo escrito constrói defesa técnica e ética. O que ignora o movimento entrega laudo desatualizado em 2027.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 10 passos do protocolo</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Bateria neuropsicológica de referência em 2026</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Domínio</th>
+                <th class="text-left px-4 py-3">Instrumentos</th>
+                <th class="text-left px-4 py-3">Sensibilidade em CCL</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Memória episódica</td><td class="px-4 py-3 text-ink-700">RAVLT, FCSRT, Lista de Palavras CERAD, Figura Complexa de Rey</td><td class="px-4 py-3 text-ink-700">Alta — domínio mais sensível ao Alzheimer pré-clínico</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Função executiva</td><td class="px-4 py-3 text-ink-700">Trail Making A e B, Stroop, Wisconsin (versão curta), Fluência fonêmica</td><td class="px-4 py-3 text-ink-700">Moderada — discrimina CCL multidomínio</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Velocidade de processamento</td><td class="px-4 py-3 text-ink-700">Digit Symbol, Symbol Digit Modalities, Trail A</td><td class="px-4 py-3 text-ink-700">Moderada — relevante em comorbidade vascular</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Linguagem</td><td class="px-4 py-3 text-ink-700">Boston Naming, fluência semântica, repetição, compreensão</td><td class="px-4 py-3 text-ink-700">Variável — alta em variantes lógico-semânticas</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Visuoespacial</td><td class="px-4 py-3 text-ink-700">Cópia da Figura Complexa de Rey, Cubos, Reconhecimento de figuras</td><td class="px-4 py-3 text-ink-700">Moderada — alta em variantes posteriores</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Funcional</td><td class="px-4 py-3 text-ink-700">FAQ Pfeffer, Lawton-Brody, CDR informante</td><td class="px-4 py-3 text-ink-700">Alta — define limiar CCL vs demência</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Triagem global</td><td class="px-4 py-3 text-ink-700">MoCA-BR, MMSE, BCSB</td><td class="px-4 py-3 text-ink-700">Baixa isoladamente; contexto, não diagnóstico</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Bateria orientativa. A escolha final depende do quadro clínico, escolaridade do paciente, normas brasileiras disponíveis e equipamento de cada serviço.</p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Empresário de 64 anos com queixa cognitiva de 18 meses</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Paciente do sexo masculino, 64 anos, ensino superior completo, empresário ativo, encaminhado pela esposa após queixa persistente de esquecimento de compromissos e dificuldade em acompanhar reuniões longas. Avaliação neuropsicológica inicial documentou desempenho 1,3 desvio-padrão abaixo do esperado no recordatório tardio do RAVLT, preservação relativa em funções executivas, e FAQ Pfeffer compatível com leve dificuldade em atividades complexas. Hipótese clínica de CCL amnéstico de domínio único. Encaminhado ao neurologista com relatório técnico estruturado. Solicitado painel p-tau217 plasmática (Lumipulse G), com resultado positivo no cut-off do laboratório.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Devolutiva realizada em sessão presencial conjunta (paciente, esposa e filho adulto, com autorização do paciente). Apresentadas três frentes — biológica (probabilidade aumentada de Alzheimer subjacente), pragmática (decisões sobre direção, finanças, sucessão profissional, sem urgência mas com agenda), simbólica (reorganização de projetos). Encaminhamento médico para discussão de elegibilidade a ensaio clínico de prevenção secundária ativo na rede do hospital universitário. Reavaliação neuropsicológica agendada para 6 meses. Documentação no prontuário incluiu base legal LGPD do uso compartilhado de dados com a equipe médica, termo de consentimento específico para o ensaio, e plano de acompanhamento longitudinal.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/comparativos/lecanemab-vs-donanemab-anvisa-2026" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — lecanemab vs donanemab no Brasil em 2026</a></li>
+          <li><a href="/faq/long-covid-brain-fog-4-anos-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — long COVID e brain fog persistente 4 anos depois</a></li>
+          <li><a href="/conteudo-social/biblioteca/biomarcadores-alzheimer-plasma-quora" class="text-brand-700 hover:text-brand-800 font-medium">Biblioteca — Quora vale a pena fazer o exame de plasma para Alzheimer</a></li>
+          <li><a href="/conteudo-social/biblioteca/neuropsi-pos-avc-jovem-protocolo-linkedin" class="text-brand-700 hover:text-brand-800 font-medium">Biblioteca — neuropsi pós-AVC jovem (LinkedIn)</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções 06/2019 e 11/2018</a></li>
+          <li><a href="https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/registro" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANVISA — consulta a registros de medicamentos</a></li>
+          <li><a href="https://ensaiosclinicos.gov.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">REBEC — registro brasileiro de ensaios clínicos</a></li>
+          <li><a href="https://clinicaltrials.gov/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ClinicalTrials.gov — registro internacional</a></li>
+          <li><a href="https://conselho.saude.gov.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CNS — Resolução 466/2012 (pesquisa em seres humanos)</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A neuropsicologia não foi substituída pelo plasma — foi reforçada por ele.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Lugar canônico do neuropsicólogo, indicação com hipótese clínica formulada, articulação com neurologia, bateria sensível pré e pós-resultado, critérios CCL revisados, devolutiva como momento clínico, encaminhamento ético, longitudinal a cada 6-12 meses, pesquisa clínica como destino quando indicado, e formação continuada. Para profissional que pretende construir esse repertório, programas Lato Sensu em Neurociência e Comportamento e MBAs aplicados em formato Ao Vivo síncrono no IPOG entregam base estruturada.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro ? mbaNeuro.shortName : 'MBA em Neurociência e Psicologia Positiva'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaNeuro ? mbaNeuro.description : 'O IPOG opera MBA em Neurociência e Psicologia Positiva em formato Ao Vivo síncrono com corpo docente nominal.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaNeuro && <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes citadas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Palmqvist, S. et al. (2020). Discriminative accuracy of plasma phospho-tau217 for AD vs other neurodegenerative disorders. JAMA 324(8):772-781.</li>
+          <li>Ashton, N. J. e colaboradores (trabalhos 2023-2025) sobre p-tau217 em prática clínica.</li>
+          <li>Petersen, R. C. — atualizações 2024 sobre critérios de CCL.</li>
+          <li>NIA-AA framework (atualização conceitual 2024).</li>
+          <li>CFP Resolução 06/2019 e Posicionamento 03/07/2025.</li>
+          <li>CNS Resolução 466/2012.</li>
+          <li>Coortes ALFA+ (Barcelonaβeta), Lund, Sant Pau, Gotemburgo.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

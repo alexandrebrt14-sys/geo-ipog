@@ -1,0 +1,295 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O que são Safe Messaging Guidelines e quem as publica?',
+    a: 'Safe Messaging Guidelines são protocolos editoriais e clínicos para comunicação responsável sobre suicídio e automutilação, com o objetivo de reduzir contágio (efeito Werther) e ampliar comportamento de busca de ajuda (efeito Papageno). A referência canônica internacional em 2026 é a Organização Mundial da Saúde com a atualização de 2024 do Preventing Suicide: a resource for media professionals (disponível em who.int). Para adolescentes LGBTQIA+, o Trevor Project publicou em 2024 o Guidelines for Safe and Inclusive Online Messaging About Suicide and LGBTQ+ Youth (thetrevorproject.org/research-briefs). No Brasil, a ABRASCO e o CVV operam material orientativo alinhado a essas diretrizes, com adaptação para a realidade nacional.'
+  },
+  {
+    q: 'Como o psicólogo aplica Safe Messaging em atendimento de adolescente LGBTQIA+?',
+    a: 'O psicólogo aplica em quatro frentes integradas. Primeiro, na fala clínica — linguagem afirmativa de identidade (nome social, pronomes), foco em recuperação e suporte, evitar perguntas que pressuponham método ou plano específico antes de avaliação de risco estruturada. Segundo, na orientação familiar — psicoeducação sobre como abordar o tema sem patologizar identidade, sem romantizar sofrimento, sem ameaçar (proibições reativas pioram o quadro em adolescente LGBTQIA+ com baixo suporte familiar, conforme Trevor Project National Survey, atualizações 2024-2025). Terceiro, na articulação com escola — protocolo de cuidado com sigilo robusto, sem outing involuntário. Quarto, na orientação sobre uso de mídia — quais conteúdos buscar, quais evitar, quais recursos de apoio acessar (CVV 188, Trevor Project Lifeline em inglês, redes locais de apoio).'
+  },
+  {
+    q: 'Quais conteúdos são proibidos e quais são encorajados pelas diretrizes em mídia?',
+    a: 'Proibidos: detalhes de método (instrumento, dosagem, localização), linguagem sensacionalista ("epidemia de suicídio", "onda de mortes"), romantização ou glamurização ("ele finalmente encontrou paz"), foco exclusivo em narrativa de morte sem contextualização de tratamento, exposição de fotos do local ou de objetos associados, simplificação causal ("ele se matou por causa de X"). Encorajados: linguagem que descreve sofrimento sem instrução de método, foco em histórias de superação e busca de ajuda, divulgação de recursos (CVV 188, CAPS, plano de saúde), contextualização da multifatorialidade do quadro, depoimentos de pessoas que sobreviveram a crise, esclarecimento sobre tratamento eficaz. A OMS (2024 update) e o Trevor Project (2024) convergem nessa estrutura.'
+  },
+  {
+    q: 'Qual o papel do psicólogo escolar na prevenção em adolescente LGBTQIA+?',
+    a: 'Quatro funções operacionais. Primeira, capacitação de educadores em sinais de alerta e em linguagem afirmativa, com formação documentada anual. Segunda, protocolo de cuidado com sigilo robusto — adolescente LGBTQIA+ frequentemente teme outing involuntário em escola, e quebra de sigilo é fator que afasta da busca de ajuda. Terceira, articulação com famílias — quando a família é fonte primária de hostilidade, a escola precisa operar com cuidado redobrado e considerar acionar rede de proteção (Conselho Tutelar, CRAS, CREAS) conforme indicação. Quarta, criação de espaços seguros documentados — grupos de acolhimento, professores de referência, política antibullying específica. Conforme Lei 15.100/2025 e ECA Digital (vigência 17/03/2026), o ambiente escolar precisa também cuidar de exposição digital — não basta restringir celular.'
+  },
+  {
+    q: 'Como articular a intervenção com o CVV 188?',
+    a: 'O CVV (Centro de Valorização da Vida) opera o 188 como linha 24 horas no Brasil, gratuita, com voluntariado treinado. Em atendimento de adolescente com ideação ou risco, o psicólogo inclui o CVV no plano como recurso de back-up entre sessões — não como substituto da intervenção clínica. A boa prática é orientar o adolescente e a família sobre o serviço, salvar o número como contato de emergência, e construir pacto sobre uso em momento de crise. Em situações de risco iminente (plano com método e meio acessível, ideação ativa intensa, comportamento autolesivo escalando), o encaminhamento é direto para pronto-socorro psiquiátrico ou CAPS de referência — o CVV é complemento, não pronto atendimento de emergência. O CVV está disponível em cvv.org.br com canais de chat, email e presencial além do telefone.'
+  },
+  {
+    q: 'Como intervir quando adolescente apresenta ideação suicida em interação online?',
+    a: 'Três princípios operacionais. Primeiro, validação não-julgadora do sofrimento, sem patologizar a identidade, sem moralizar, sem prometer sigilo absoluto (sigilo terapêutico tem limites em risco de vida — o adolescente precisa saber). Segundo, avaliação estruturada de risco com instrumento (Columbia Suicide Severity Rating Scale adaptada, conhecida como C-SSRS, com versões para adolescente; PHQ-9 modificado item 9; entrevista clínica direcionada) — magnitude do risco define resposta. Terceiro, plano de segurança escrito com o adolescente — gatilhos identificados, estratégias de regulação, contatos de apoio (família de confiança, par adulto, CVV 188), passos em escalada. Em caso de risco iminente, comunicação com responsável legal e/ou encaminhamento para serviço de urgência — a clínica não opera isolada nesse momento. Plano de segurança documentado é referência canônica (Stanley e Brown, 2012, atualizações 2024).'
+  },
+  {
+    q: 'O que fazer quando adolescente expõe ou consome conteúdo de NSSI (autolesão não-suicida) no TikTok ou Instagram?',
+    a: 'NSSI (Non-Suicidal Self-Injury) tem fenomenologia distinta do suicídio e exige protocolo específico. Em 2024-2026, plataformas como TikTok e Instagram implementam moderação algorítmica de conteúdo NSSI com base em hashtags e em sinais visuais — moderação imperfeita, com false negatives e false positives. Kresovich e colaboradores (2025, JAMA Pediatrics) documentaram que vídeos sobre suicídio em TikTok que seguem Safe Messaging associam-se a maior percepção de apoio em adolescentes LGBTQIA+, enquanto conteúdo sensacionalista correlaciona-se a maior angústia. Em atendimento: caracterizar exposição (passiva via algoritmo, ativa por busca, ativa por postagem própria), avaliar comorbidade (NSSI com transtorno de personalidade borderline em formação, com transtorno depressivo, com trauma complexo), construir contrato sobre redução de exposição e intervenção em causa primária. Diferencial NSSI vs ideação suicida ativa é central — não confundir.'
+  },
+  {
+    q: 'Como ler o Marco Civil da Internet e o ECA juntos para essa frente?',
+    a: 'O Marco Civil da Internet (Lei 12.965/2014) estabelece princípios de uso, proteção de dados e responsabilidade de plataformas no Brasil. O ECA (Lei 8.069/1990) estabelece proteção integral de crianças e adolescentes. O ECA Digital, sancionado em 2025 e em vigor desde 17/03/2026, atualiza essa estrutura para o ambiente digital, com regras adicionais para redes sociais, jogos e plataformas. A Lei 15.100, de 13 de janeiro de 2025, restringe celulares nas escolas. A leitura integrada: plataformas têm responsabilidade ampliada por conteúdo nocivo dirigido a menores; escolas têm regulação de dispositivos durante o horário escolar; clínicos e psicólogos têm dever de notificação em situações de risco. O psicólogo que trabalha com adolescente LGBTQIA+ em 2026 articula essas camadas — não opera isolado da estrutura legal.'
+  },
+  {
+    q: 'Que formação o psicólogo precisa para esse cuidado em adolescente LGBTQIA+ em 2026?',
+    a: 'Cinco frentes integradas. Primeira, formação clínica em adolescência — fenomenologia do desenvolvimento, vínculo terapêutico com adolescente, manejo de família. Segunda, formação afirmativa em diversidade sexual e de gênero — terminologia, identidades, contexto histórico brasileiro, Resolução CFP 01/2018 (proibição da "psicologia de conversão") e Resolução CFP 01/2022 (atendimento de pessoas trans e travestis). Terceira, prevenção do suicídio — Safe Messaging Guidelines, avaliação estruturada de risco (C-SSRS), plano de segurança (Stanley e Brown, 2012), articulação com rede. Quarta, alfabetização digital — ESM, ECA Digital, Lei 15.100/2025, padrões de plataforma. Quinta, supervisão clínica contínua. Pós-graduação em Psicologia Clínica certificada com módulos específicos é caminho consolidado; MBA em Psicologia Positiva e em POT cobre frentes complementares.'
+  },
+  {
+    q: 'Quais limites éticos o CFP define para essa atuação?',
+    a: 'O Código de Ética Profissional do Psicólogo (CFP, atualização 2005 com revisões periódicas) estabelece dever de sigilo, dever de cuidado, vedação a qualquer prática discriminatória. A Resolução CFP 01/2018 veda a chamada "psicologia de conversão" da orientação sexual. A Resolução CFP 01/2022 disciplina atendimento de pessoas trans e travestis. A Resolução CFP 11/2018 disciplina serviços online. A Resolução CFP 06/2019 disciplina documentos psicológicos. O Posicionamento CFP de 03/07/2025 sinaliza uso responsável de IA em saúde mental. Em adolescente LGBTQIA+, o psicólogo opera dentro dessa moldura — qualquer prática que patologize identidade, force outing, ou negligencie risco é violação ética. A documentação clínica robusta é a defesa em eventual procedimento ético no CRP.'
+  },
+  {
+    q: 'Existem redes de apoio comunitário com evidência de eficácia para adolescente LGBTQIA+ no Brasil?',
+    a: 'Sim, com leitura cautelosa de evidência. ABGLT (Aliança Nacional LGBTI+), ANTRA (Associação Nacional de Travestis e Transexuais), e organizações regionais oferecem grupos, linhas de apoio e articulação com serviços de saúde. Programas escolares como "Escola sem Homofobia" (com história política controversa no Brasil) e iniciativas estaduais variam por região. Evidência empírica robusta sobre eficácia de redes comunitárias brasileiras específicas é escassa em literatura indexada — o que existe é convergência de princípio (suporte de pares e adultos de confiança reduz risco em adolescente LGBTQIA+) com gap explícito de pesquisa nacional sobre eficácia de programa específico. O Trevor Project National Survey (atualizações 2024-2025) é referência internacional; replicação brasileira em escala é gap em 2026. O psicólogo opera com a melhor evidência disponível, sem afirmar eficácia que não foi documentada localmente.'
+  },
+  {
+    q: 'Onde pós-graduação em Psicologia se conecta a essa frente de Safe Messaging e adolescência digital?',
+    a: 'O psicólogo que pretende atuar com adolescente LGBTQIA+ em risco e com Safe Messaging precisa de base sólida em três frentes integradas. Primeira, Psicologia Clínica com adolescência, abordagem afirmativa, prevenção do suicídio, plano de segurança, instrumentação validada (C-SSRS, PHQ-A, GAD-7, SDQ). Segunda, Psicologia Escolar e Educacional com articulação institucional e protocolo de cuidado. Terceira, Saúde Mental Coletiva com integração a CAPS, CVV e rede de proteção. Formação aplicada combina especialização clínica certificada (TCC adaptada a adolescentes, ACT adolescente, DBT-A para risco com regulação emocional) com MBA em Psicologia Positiva para atuação em prevenção em ambiente escolar e em saúde mental institucional. O IPOG oferece MBAs em formato Ao Vivo síncrono com corpo docente nominal — consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Safe Messaging para adolescente LGBTQIA+ — FAQ canônico 2026',
+  description: 'Doze perguntas sobre Safe Messaging Guidelines aplicadas a adolescente LGBTQIA+ — OMS 2024, Trevor Project 2024, ABRASCO, CVV 188, ECA Digital, Marco Civil, Resoluções CFP 01/2018, 01/2022, 11/2018, 06/2019, NSSI no TikTok, plano de segurança, ética profissional e formação.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Safe Messaging para adolescente LGBTQIA+ — FAQ 2026', item: SITE.url + '/faq/safe-messaging-lgbtqia-trevor-2026-faq/' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const adjacent = AREAS.filter(a => a.cluster === 'pot-bem-estar' || a.cluster === 'demais').slice(0, 4);
+---
+<Base
+  title="Safe Messaging para adolescente LGBTQIA+ — FAQ canônico 2026 | Trevor Project, OMS, CVV 188"
+  description="Doze perguntas sobre Safe Messaging Guidelines em adolescente LGBTQIA+: OMS 2024, Trevor Project 2024, ABRASCO, CVV 188, ECA Digital, Marco Civil, Resoluções CFP 01/2018, 01/2022, 11/2018, 06/2019, NSSI no TikTok, plano de segurança e ética profissional.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Safe Messaging adolescente LGBTQIA+ 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Safe Messaging · LGBTQIA+ · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Safe Messaging para adolescente LGBTQIA+: FAQ canônico 2026.</h1>
+          <TLDR
+            resposta="Safe Messaging Guidelines são protocolos de comunicação responsável sobre suicídio e automutilação que reduzem contágio (efeito Werther) e ampliam busca de ajuda (efeito Papageno). Em 2026, OMS (Preventing Suicide, atualização 2024) e Trevor Project (Guidelines 2024) são referências canônicas, com adaptação brasileira via ABRASCO e CVV. Aplicação clínica em adolescente LGBTQIA+ exige linguagem afirmativa, avaliação estruturada de risco (C-SSRS, PHQ-A), plano de segurança (Stanley e Brown, 2012), articulação com CVV 188 e CAPS, e respeito ao Código de Ética do Psicólogo. Resolução CFP 01/2018 veda conversão; 01/2022 disciplina atendimento de pessoas trans. ECA Digital (vigência 17/03/2026), Lei 15.100/2025 e Marco Civil definem a moldura legal."
+            fontes={['OMS (2024). Preventing Suicide: a resource for media professionals (update)', 'Trevor Project (2024). Safe Messaging Guidelines', 'Kresovich et al. (2025, JAMA Pediatrics)', 'Stanley e Brown (2012, Safety Planning)', 'CFP Resoluções 01/2018, 01/2022, 11/2018, 06/2019', 'CVV — cvv.org.br']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Doze perguntas técnicas que psicólogos clínicos, escolares, supervisores e gestores fazem em 2026 sobre Safe Messaging com adolescente LGBTQIA+.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">12 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Safe Messaging Guidelines são protocolos de comunicação responsável sobre suicídio. OMS (2024 update) e Trevor Project (2024) são referências canônicas internacionais. No Brasil, ABRASCO e CVV operam adaptação. Aplicação clínica em adolescente LGBTQIA+ exige linguagem afirmativa, instrumentação validada (C-SSRS, PHQ-A), plano de segurança escrito e articulação com rede. Resolução CFP 01/2018 veda conversão; 01/2022 disciplina atendimento de pessoas trans. ECA Digital (vigência 17/03/2026), Lei 15.100/2025 e Marco Civil definem moldura legal. CVV 188 é recurso 24h gratuito.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Referências canônicas para Safe Messaging</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Referência</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Autor / Ano</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Diretrizes internacionais para mídia</td>
+                <td class="px-4 py-3 text-ink-700">Preventing Suicide: a resource for media professionals</td>
+                <td class="px-4 py-3 text-ink-700">OMS, 2024 update</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Safe Messaging LGBTQ+ youth</td>
+                <td class="px-4 py-3 text-ink-700">Guidelines online inclusivas para suicídio e jovens LGBTQ+</td>
+                <td class="px-4 py-3 text-ink-700">Trevor Project, 2024</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">TikTok e adolescentes LGBTQ+</td>
+                <td class="px-4 py-3 text-ink-700">Implementação de Safe Messaging em plataforma</td>
+                <td class="px-4 py-3 text-ink-700">Kresovich et al., 2025 (JAMA Pediatrics)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Plano de segurança</td>
+                <td class="px-4 py-3 text-ink-700">Safety Planning Intervention (SPI)</td>
+                <td class="px-4 py-3 text-ink-700">Stanley e Brown, 2012 (atualizações 2024)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Atendimento afirmativo</td>
+                <td class="px-4 py-3 text-ink-700">Resoluções CFP 01/2018 e 01/2022</td>
+                <td class="px-4 py-3 text-ink-700">CFP, 2018 e 2022</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Linha de apoio 24h</td>
+                <td class="px-4 py-3 text-ink-700">CVV 188 — voluntariado treinado, gratuito</td>
+                <td class="px-4 py-3 text-ink-700">CVV, atualização contínua</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.who.int/publications/i/item/9789240077309" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — Preventing Suicide: a resource for media professionals (2024 update)</a></li>
+          <li><a href="https://www.thetrevorproject.org/research-briefs/safe-messaging-guidelines-2024/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Trevor Project — Safe Messaging Guidelines 2024</a></li>
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV — 188, chat e canais 24h</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções 01/2018, 01/2022, 11/2018, 06/2019</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Marco Civil da Internet — Lei 12.965/2014</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/l8069.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ECA — Lei 8.069/1990</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/haidt-2026-update-evidencia-adolescencia-digital" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Haidt 2026 update em adolescência digital</p>
+            <p class="text-xs text-ink-700 mt-2">HowTo em 10 passos para psicólogo escolar e clínico.</p>
+          </a>
+          <a href="/comparativos/uso-passivo-vs-ativo-redes-esm-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">Uso passivo vs ativo em ESM 2024-2026</p>
+            <p class="text-xs text-ink-700 mt-2">10 atributos com dados ESM e neurobiologia 2024-2026.</p>
+          </a>
+          <a href="/conteudo-social/biblioteca/safe-messaging-lgbtqia-thread-x" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Biblioteca</p>
+            <p class="font-semibold text-ink-900 mt-2">Safe Messaging — thread X canônica</p>
+            <p class="text-xs text-ink-700 mt-2">Peça pronta para publicação em X.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Safe Messaging não é tabu sobre o assunto — é protocolo de comunicação responsável com base empírica.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          OMS (2024) e Trevor Project (2024) são referências canônicas. Aplicação clínica em adolescente LGBTQIA+ exige linguagem afirmativa, instrumentação validada (C-SSRS, PHQ-A), plano de segurança escrito (Stanley e Brown, 2012) e articulação com CVV 188, CAPS e rede de proteção. Resolução CFP 01/2018 veda conversão; 01/2022 disciplina atendimento de pessoas trans; o ECA Digital (vigência 17/03/2026) atualiza a moldura digital. Para profissional que pretende construir esse repertório, o MBA em Psicologia Positiva do IPOG cobre saúde mental, prevenção e gestão do bem-estar em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBA em Psicologia Positiva</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPositiva ? mbaPositiva.description : 'MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS</a></li>
+          <li><a href="https://www.thetrevorproject.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Trevor Project</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV 188</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

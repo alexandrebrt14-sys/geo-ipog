@@ -1,0 +1,290 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Quatro anos depois da infecção aguda, ainda existe brain fog em pacientes pós-COVID? O que a literatura mostra em 2024-2026?',
+    a: 'Sim. Coortes longitudinais europeias e norte-americanas de 2 a 4 anos pós-infecção, sintetizadas em revisões de Davis e colaboradores (2024, Nature Reviews Microbiology) e em publicações do consórcio NIH RECOVER, documentam que um subgrupo mensurável de pacientes mantém queixas de brain fog, fadiga cognitiva, dificuldade de concentração e lentidão de processamento. O padrão é mais marcado em quem teve quadro agudo moderado a grave ou longa duração de sintomas sistêmicos. Embora a maioria melhore ao longo do tempo, uma minoria persiste com sintomas ≥24 meses — a janela de 48 meses é mais recente e ainda em consolidação. O comprometimento é frequentemente subclínico em funcionalidade major, mas impacta produtividade e retorno ao ritmo de trabalho prévio.'
+  },
+  {
+    q: 'O que o NIH RECOVER atualizou em 2024-2026 sobre o eixo neurocognitivo do long COVID?',
+    a: 'O consórcio NIH RECOVER publicou e continua a publicar resultados sobre neurocognição em long COVID em vertentes adulta (RECOVER-Adult) e pediátrica (RECOVER-Pediatric). Os achados consolidados nas atualizações 2024-2026 incluem: identificação de subtipos clínicos, com tipo "neurológico-cognitivo" caracterizado por proeminência de queixas de atenção, memória e fadiga mental ao lado de subtipos cardiorrespiratório e outros; perfis neuropsicológicos com leve queda em testes de velocidade e atenção sustentada, em magnitude tipicamente maior que em memória episódica tradicional; forte associação com fadiga, sono fragmentado e ansiedade/depressão, com evidência de déficits objetivos mesmo após controle estatístico desses fatores em parte dos pacientes. Material institucional em recovercovid.org.'
+  },
+  {
+    q: 'A bateria neuropsicológica do consultório consegue diferenciar brain fog pós-COVID de burnout, depressão e CCL incipiente?',
+    a: 'A bateria sozinha não fecha o diferencial — é a costura entre bateria, anamnese, marcadores temporais e instrumentos coadjuvantes. O perfil típico do brain fog pós-COVID combina queda em velocidade de processamento (Digit Symbol, SDMT, Trail Making A), atenção sustentada (n-back, vigilância contínua) e função executiva (Trail B, Stroop) em magnitude leve a moderada, com memória episódica relativamente preservada na maioria dos casos. Burnout produz exaustão e despersonalização sem necessariamente queda objetiva em testes neuropsicológicos. Depressão maior traz lentificação e queda em memória de trabalho mais reativas a humor. CCL incipiente (especialmente devido à doença de Alzheimer) tende a comprometer memória episódica como assinatura inicial. Anamnese temporal é decisiva — long COVID começa em proximidade à infecção e tem PEM como marcador distintivo.'
+  },
+  {
+    q: 'Como o brain fog pós-COVID coocorre com burnout e como diferenciar?',
+    a: 'A coocorrência é comum, particularmente em profissionais de saúde que tiveram COVID na fase aguda. Três marcadores ajudam a diferenciar. Primeiro, mal-estar pós-esforço (PEM) — piora desproporcional em 12-48 horas após esforço cognitivo ou físico, presente no long COVID e tipicamente ausente no burnout puro. Segundo, padrão temporal — long COVID começa em proximidade à infecção e persiste; burnout escala com sobrecarga ocupacional. Terceiro, resposta a folga — long COVID melhora pouco em férias; burnout costuma melhorar parcialmente com afastamento. Aplicar PEM-Questionnaire ou DePaul Symptom Questionnaire em paralelo ao MBI, BAT ou CBI permite mapeamento clínico estruturado. A literatura de Davis e colaboradores e dos relatórios RECOVER reforça que ambos podem coexistir, exigindo plano de cuidado que enderece as duas frentes.'
+  },
+  {
+    q: 'Quais mecanismos hipotéticos para o brain fog persistente 4 anos depois?',
+    a: 'A literatura 2024-2026 trabalha com modelo multifatorial. Quatro eixos são discutidos com base empírica heterogênea. Primeiro, neuroinflamação persistente — ativação microglial e elevação de marcadores inflamatórios em subgrupo de pacientes; estudos de imagem com PET-TSPO sugerem ativação imune cerebral residual em parte dos casos. Segundo, disautonomia — disfunção autonômica com taquicardia postural, hipotensão ortostática e variabilidade de frequência cardíaca alterada, frequentemente em sobreposição com critério de POTS. Terceiro, persistência viral — evidência de antígenos virais ou RNA em sítios anatômicos específicos em estudos de autópsia e de tecido, com magnitude e relevância clínica ainda em consolidação. Quarto, disfunção de barreira hematoencefálica e alterações de microvasculatura. Os mecanismos não são mutuamente excludentes e o peso relativo de cada um varia entre pacientes.'
+  },
+  {
+    q: 'Existe algum tratamento com evidência preliminar para brain fog pós-COVID em 2024-2026?',
+    a: 'A evidência ainda é preliminar e nenhum tratamento tem aprovação específica consolidada. Três frentes recebem investigação científica. Primeiro, guanfacina (alfa-2 agonista), em discussão em literatura clínica (Fesharaki-Zadeh e Arnsten, 2024, com atualizações 2025) com hipótese de melhora em funções executivas pré-frontais pós-COVID; a base é de séries de casos e estudos pequenos, não de ensaios fase 3 conclusivos. Segundo, reabilitação cognitiva estruturada — protocolos de treino atencional, estratégias compensatórias, manejo de fadiga (pacing), com evidência mais consolidada para o ramo de fadiga que para reversão objetiva de déficits. Terceiro, manejo de comorbidades — tratar disautonomia, otimizar sono, tratar depressão/ansiedade coocorrente — frequentemente melhora a queixa subjetiva mais que intervenções dirigidas ao próprio brain fog. A decisão medicamentosa é psiquiátrica/neurológica.'
+  },
+  {
+    q: 'Como orientar paciente com prejuízo cognitivo residual em retorno ao trabalho?',
+    a: 'O retorno responsável é gradual e documentado. Quatro elementos compõem o plano. Primeiro, avaliação neuropsicológica baseline antes do retorno, com bateria sensível em atenção, velocidade e função executiva. Segundo, retorno em carga reduzida (50-60% nos primeiros 60 dias) com tarefas que comportam ritmo próprio e pausas estruturadas, evitando atividades de carga cognitiva extrema sustentada. Terceiro, monitoramento de PEM — registro estruturado de esforço e fadiga, ajuste se houver piora consistente em 24-48 horas pós-esforço. Quarto, articulação com medicina ocupacional e RH para acomodação razoável, com base em laudo técnico. Em magnitude maior de comprometimento, afastamento por mais tempo ou mudança de função é defensável. A literatura sobre return-to-work pós-COVID (Shanafelt e colaboradores, 2024; De Hert, 2024) reforça que o retorno bem-sucedido ocorre em 60-70% dos casos, com prejuízo residual mensurável em 20-25% e saída precoce em 10-15%.'
+  },
+  {
+    q: 'Quando o paciente tem direito a benefício previdenciário pelo INSS por brain fog pós-COVID?',
+    a: 'A perícia médica do INSS avalia incapacidade laborativa com base em quadro clínico documentado, não em diagnóstico isolado. Em long COVID com prejuízo cognitivo, a documentação técnica robusta é essencial: relatório médico detalhado, avaliação neuropsicológica com escores e contexto, registro temporal da infecção e dos sintomas persistentes, tentativas terapêuticas e suas respostas, impacto funcional comprovado. CID-10 U09.9 (condição pós-COVID-19) e CID-11 RA02 são códigos utilizáveis. A literatura jurídica e médica brasileira 2024-2026 documenta jurisprudência crescente reconhecendo long COVID como base para auxílio-doença e, em casos mais graves, aposentadoria por incapacidade. A AMB e a CNTSS contribuíram com manifestações sobre o tema. O psicólogo prepara o relatório técnico de função cognitiva; a decisão pericial é médica.'
+  },
+  {
+    q: 'Quais protocolos de reabilitação cognitiva têm evidência preliminar em 2025-2026?',
+    a: 'Os protocolos com mais material publicado nos últimos anos combinam quatro componentes. Primeiro, treino atencional estruturado — atenção sustentada, alternada e dividida com progressão gradual de dificuldade, com plataformas digitais ou aplicação presencial. Segundo, estratégias compensatórias — uso estruturado de agenda externa, listas, lembretes, rotinas de revisão, reorganização ambiental. Terceiro, manejo de fadiga pelo princípio do pacing — distribuição estratégica de esforço, identificação de envelope energético individual, uso preventivo de pausas. Quarto, intervenção em sono, humor e ansiedade coocorrentes. A evidência empírica é mais consistente para melhora subjetiva e funcional do que para reversão objetiva em testes neuropsicológicos isolados. Programas multidisciplinares (neuropsicologia, terapia ocupacional, fisioterapia, medicina) têm vantagem sobre intervenção monodisciplinar.'
+  },
+  {
+    q: 'Qual o prognóstico de longo prazo para brain fog persistente após 4 anos?',
+    a: 'O prognóstico é heterogêneo e ainda em consolidação. Os dados disponíveis em 2024-2026 sugerem três padrões. Primeiro, recuperação lenta progressiva — a maioria dos pacientes apresenta melhora gradual ao longo dos primeiros 24-36 meses, com retorno funcional substantivo na janela 3-4 anos. Segundo, persistência em platô — um subgrupo mantém déficits leves a moderados estáveis ao longo do tempo, sem progressão mas sem reversão completa. Terceiro, piora ou flutuação — minoria com sintomas que oscilam ou pioram, frequentemente associados a comorbidades não tratadas. A questão sobre se long COVID grave aumentaria risco subsequente de declínio cognitivo neurodegenerativo está em investigação ativa, com evidência ainda preliminar. A leitura técnica responsável: trajetória individual variável, monitoramento longitudinal recomendado, prognóstico definitivo só com tempo e seguimento.'
+  },
+  {
+    q: 'Como a fadiga sistêmica e o sono fragmentado interferem na avaliação neuropsicológica do paciente com long COVID?',
+    a: 'A interferência é substancial e exige protocolo de cuidado. Pacientes com fadiga marcada e sono fragmentado podem apresentar desempenho rebaixado em testes neuropsicológicos por estado momentâneo, não por déficit estrutural. Quatro precauções operam. Primeiro, agendar a avaliação no melhor horário do paciente, evitando fim de tarde se a fadiga escala ao longo do dia. Segundo, fracionar a bateria em sessões (90-120 minutos por sessão) com intervalos, em vez de bloco único longo. Terceiro, registrar PEM nas 24-48 horas seguintes para detectar se a avaliação produziu piora sintomática (informação clínica relevante por si só). Quarto, repetir testes-chave em sessão separada quando houver dúvida sobre confiabilidade do desempenho. A documentação no relatório inclui o contexto de fadiga e sono — sem omitir, sem superinterpretar.'
+  },
+  {
+    q: 'Onde a pós-graduação em Psicologia se conecta a essa frente de neuropsi pós-COVID?',
+    a: 'Psicóloga ou psicólogo que pretende atuar com pacientes em long COVID com brain fog persistente precisa de base em três frentes. Primeiro, neuropsicologia clínica com domínio de baterias sensíveis em atenção, velocidade e função executiva, articulação com medicina e capacidade de relatório técnico para fins clínicos, previdenciários e ocupacionais. Segundo, leitura crítica da literatura primária pós-COVID — Davis e colaboradores, RECOVER, revisões em revistas como Nature Reviews Microbiology, Lancet, JAMA. Terceiro, integração com reabilitação cognitiva e protocolos multidisciplinares. Formações Lato Sensu em Neuropsicologia e em Neurociência e Comportamento, e MBAs aplicados em Psicologia Organizacional e do Trabalho que tocam saúde mental ocupacional, encurtam a curva. O IPOG oferece MBAs aplicados em formato Ao Vivo síncrono com corpo docente nominal — consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Long COVID e brain fog persistente 4 anos depois: FAQ neuropsicológico 2026',
+  description: 'Doze perguntas sobre brain fog persistente 4 anos pós-COVID — prevalência, NIH RECOVER, bateria diferencial, comorbidade com burnout, mecanismos, tratamentos preliminares, retorno ao trabalho, INSS, reabilitação cognitiva e prognóstico.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Long COVID brain fog 4 anos FAQ', item: SITE.url + '/faq/long-covid-brain-fog-4-anos-2026-faq/' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neurociencia-positiva') || MBAS.find(m => m.id === 'mba-positiva');
+const adjacent = AREAS.filter(a => a.cluster === 'neuro-avaliacao' || a.cluster === 'pot-bem-estar').slice(0, 4);
+---
+<Base
+  title="Long COVID e brain fog persistente 4 anos depois — FAQ neuropsicológico 2026"
+  description="Doze perguntas sobre brain fog 4 anos pós-COVID — NIH RECOVER, bateria neuropsi diferencial, mecanismos, guanfacina preliminar, retorno ao trabalho, INSS, reabilitação cognitiva e prognóstico.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Long COVID brain fog 4 anos' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Long COVID · Neuropsicologia · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Long COVID e brain fog persistente 4 anos depois: FAQ neuropsicológico 2026.</h1>
+          <TLDR
+            resposta="Quatro anos depois da infecção aguda, um subgrupo mensurável de pacientes mantém queixas de brain fog, fadiga cognitiva e lentidão de processamento. O perfil neuropsicológico típico inclui queda em velocidade e atenção, com memória episódica relativamente preservada. NIH RECOVER consolidou subtipos clínicos e perfis. PEM, padrão temporal e resposta a folga diferenciam de burnout e depressão. Tratamentos com evidência preliminar incluem reabilitação cognitiva estruturada e, em discussão científica, guanfacina (Fesharaki-Zadeh e Arnsten, 2024). Retorno ao trabalho gradual e protocolos multidisciplinares têm mais evidência funcional."
+            fontes={['Davis et al. (2024) Nature Reviews Microbiology', 'NIH RECOVER — atualizações 2024-2026 (recovercovid.org)', 'Fesharaki-Zadeh e Arnsten (2024) — guanfacina', 'Shanafelt et al. (2024) — return-to-work', 'OMS — long COVID definição operacional 2024']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Doze perguntas que neuropsicólogos, médicos do trabalho, peritos do INSS e gestores de saúde mental enfrentam em 2026.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">12 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          O brain fog persistente em janela de 4 anos pós-COVID é fenômeno mensurável em subgrupo de pacientes, com perfil de atenção e velocidade mais que de memória episódica. PEM, padrão temporal e resposta a folga diferenciam de burnout e depressão. NIH RECOVER consolidou subtipos clínicos. Reabilitação cognitiva estruturada e tratamento de comorbidades têm mais evidência funcional que monoterapias dirigidas; guanfacina está em discussão científica como hipótese preliminar. Retorno ao trabalho é gradual; CID-10 U09.9 sustenta documentação previdenciária quando há prejuízo objetivo.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Referências canônicas para long COVID e neuropsicologia</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Referência</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Autor / Ano</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Revisão de long COVID</td>
+                <td class="px-4 py-3 text-ink-700">Mecanismos, perfis e prognóstico</td>
+                <td class="px-4 py-3 text-ink-700">Davis et al., 2024 (Nat Rev Microbiol)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">NIH RECOVER — eixo neurocognitivo</td>
+                <td class="px-4 py-3 text-ink-700">Subtipos clínicos e perfis neuropsicológicos</td>
+                <td class="px-4 py-3 text-ink-700">Consórcio NIH RECOVER, atualizações 2024-2026</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Guanfacina em long COVID</td>
+                <td class="px-4 py-3 text-ink-700">Hipótese pré-frontal e funções executivas</td>
+                <td class="px-4 py-3 text-ink-700">Fesharaki-Zadeh e Arnsten, 2024 (atualizações 2025)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Definição operacional de long COVID</td>
+                <td class="px-4 py-3 text-ink-700">Critérios temporais e sintomatológicos</td>
+                <td class="px-4 py-3 text-ink-700">OMS, 2024 (atualização)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Return-to-work pós-COVID</td>
+                <td class="px-4 py-3 text-ink-700">Padrões em profissionais de saúde</td>
+                <td class="px-4 py-3 text-ink-700">Shanafelt et al., 2024 (Mayo Clin Proc)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://recovercovid.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NIH RECOVER — recovercovid.org</a></li>
+          <li><a href="https://www.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — long COVID e definição operacional</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde — condição pós-COVID</a></li>
+          <li><a href="https://www.gov.br/inss/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">INSS — perícia médica federal</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — orientações profissionais</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/biomarcadores-plasma-alzheimer-protocolo-neuropsi-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Biomarcadores plasma para Alzheimer — protocolo neuropsi 2026</p>
+            <p class="text-xs text-ink-700 mt-2">HowTo em 10 passos para o neuropsicólogo.</p>
+          </a>
+          <a href="/comparativos/lecanemab-vs-donanemab-anvisa-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">Lecanemab vs donanemab — ANVISA 2026</p>
+            <p class="text-xs text-ink-700 mt-2">11 atributos, foco em neuropsi.</p>
+          </a>
+          <a href="/faq/burnout-pos-covid-4anos-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Burnout pós-COVID 4 anos</p>
+            <p class="text-xs text-ink-700 mt-2">Diferencial com brain fog e platô elevado pós-pandêmico.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Quatro anos depois, brain fog é fenômeno mensurável em subgrupo — e exige protocolo, não palpite.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          NIH RECOVER consolidou subtipos e perfis. PEM, padrão temporal e resposta a folga diferenciam de burnout e depressão. Reabilitação cognitiva estruturada e tratamento de comorbidades têm mais evidência funcional. CID-10 U09.9 sustenta documentação previdenciária. Para psicóloga ou psicólogo que pretende atuar com essa demanda, MBAs aplicados e Lato Sensu em Neuropsicologia e em Psicologia Positiva oferecidos pelo IPOG, em formato Ao Vivo síncrono com corpo docente nominal, encurtam a curva.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro ? mbaNeuro.shortName : 'MBA em Neurociência e Psicologia Positiva'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaNeuro ? mbaNeuro.description : 'O IPOG opera MBA em Neurociência e Psicologia Positiva em formato Ao Vivo síncrono com corpo docente nominal.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://recovercovid.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NIH RECOVER</a></li>
+          <li><a href="https://www.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS</a></li>
+          <li><a href="https://www.gov.br/inss/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">INSS</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

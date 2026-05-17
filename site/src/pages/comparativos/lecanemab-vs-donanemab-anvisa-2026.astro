@@ -1,0 +1,244 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const drogas = [
+  {
+    nome: 'Lecanemab (Leqembi)',
+    fabricante: 'Eisai e Biogen',
+    anvisa: 'Status público em 2025-2026: registro em discussão. Não foi localizado parecer final público de aprovação ANVISA até a data desta página. Verificar gov.br/anvisa para atualização.',
+    indicacao: 'Doença de Alzheimer em fase inicial: CCL amnéstico (CCL devido à doença de Alzheimer) ou demência leve devido à doença de Alzheimer, com confirmação de amiloidose cerebral por PET ou biomarcadores LCR/sangue validados.',
+    via: 'Infusão intravenosa.',
+    frequencia: 'A cada 2 semanas, conforme rotulagem americana baseada no estudo CLARITY-AD.',
+    aria: 'ARIA-E (edema) e ARIA-H (micro-hemorragia) documentados em CLARITY-AD; risco maior em portadores de APOE ε4 homozigotos. Monitoramento por ressonância seriada conforme protocolo.',
+    monitoramentoNeuropsi: 'Avaliação neuropsicológica baseline obrigatória e reavaliação a cada 6 meses recomendada; documentação com escalas como CDR-SB, ADAS-Cog, iADL adaptadas; bateria sensível em memória episódica e função executiva.',
+    custo: 'Nos EUA, custo de aquisição do fármaco em torno de US$ 26.500/ano em rotulagem 2023-2024, sem contar infusão, monitoramento e exames de imagem. Custos totais com infraestrutura podem ultrapassar US$ 40-50 mil/ano. No Brasil, sem tabela SUS ou rol ANS específico em 2026; projeções permanecem em modelagem.',
+    evidencia: 'CLARITY-AD (van Dyck et al., 2023, NEJM): redução de declínio em CDR-SB em magnitude estatisticamente significativa, com benefício modesto sob a régua de relevância clínica e risco mensurável de ARIA.',
+    contraindicacoes: 'Uso de anticoagulantes com risco aumentado de ARIA-H; micro-hemorragias extensas em ressonância; comorbidades graves; sensibilidade aumentada em APOE ε4 homozigotos (genotipagem recomendada na decisão).',
+    papelPsicologo: 'Avaliação neuropsicológica baseline antes da infusão, follow-up cognitivo a cada 6 meses, suporte ao paciente e família durante o tratamento, documentação longitudinal para subsidiar decisões de continuidade.'
+  },
+  {
+    nome: 'Donanemab (Kisunla)',
+    fabricante: 'Eli Lilly',
+    anvisa: 'Status público em 2025-2026: registro em discussão. Não foi localizado parecer final público de aprovação ANVISA até a data desta página. Verificar gov.br/anvisa para atualização.',
+    indicacao: 'Doença de Alzheimer em fase inicial (CCL amnéstico ou demência leve), amiloide positivo confirmado e tau dentro de certa faixa (segundo critério usado em TRAILBLAZER-ALZ 2).',
+    via: 'Infusão intravenosa.',
+    frequencia: 'A cada 4 semanas, conforme rotulagem americana baseada no estudo TRAILBLAZER-ALZ 2. Possibilidade de interrupção quando metas de redução amiloide são atingidas é particularidade do donanemab.',
+    aria: 'ARIA-E e ARIA-H documentados em TRAILBLAZER-ALZ 2; risco mais elevado em portadores de APOE ε4, com magnitude que motiva genotipagem como parte da decisão.',
+    monitoramentoNeuropsi: 'Avaliação neuropsicológica baseline obrigatória e reavaliação periódica recomendada; bateria sensível em memória episódica, função executiva e medida funcional (iADL, FAQ).',
+    custo: 'Nos EUA, custo de aquisição em ordem de grandeza similar ao lecanemab segundo divulgações da indústria; possibilidade de interrupção do tratamento ao atingir meta de clearance amiloide pode reduzir custo total em parte dos pacientes. No Brasil, sem tabela SUS ou rol ANS específico em 2026.',
+    evidencia: 'TRAILBLAZER-ALZ 2 (Sims et al., 2023, JAMA): redução de declínio em iADRS em magnitude estatisticamente significativa, com benefício modesto sob a régua de relevância clínica e risco mensurável de ARIA.',
+    contraindicacoes: 'Uso de anticoagulantes; micro-hemorragias extensas em ressonância; sensibilidade aumentada em APOE ε4 homozigotos (genotipagem recomendada).',
+    papelPsicologo: 'Avaliação neuropsicológica baseline antes da infusão, follow-up cognitivo periódico, suporte longitudinal ao paciente e família, documentação para subsidiar decisões de continuidade ou interrupção quando alvo amiloide é atingido.'
+  }
+];
+
+const atributos = [
+  { chave: 'fabricante', label: 'Fabricante' },
+  { chave: 'anvisa', label: 'Status ANVISA 2025-2026' },
+  { chave: 'indicacao', label: 'Indicação canônica' },
+  { chave: 'via', label: 'Via de administração' },
+  { chave: 'frequencia', label: 'Frequência' },
+  { chave: 'aria', label: 'ARIA (edema/hemorragia)' },
+  { chave: 'monitoramentoNeuropsi', label: 'Monitoramento neuropsi' },
+  { chave: 'custo', label: 'Custo (referência internacional)' },
+  { chave: 'evidencia', label: 'Evidência fase 3' },
+  { chave: 'contraindicacoes', label: 'Contraindicações e APOE ε4' },
+  { chave: 'papelPsicologo', label: 'Papel do psicólogo' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Lecanemab vs donanemab no Brasil em 2026: comparativo em 11 atributos com foco no protocolo neuropsicológico',
+  description: 'Comparativo independente lecanemab (Leqembi) vs donanemab (Kisunla) em 2026 — status ANVISA, indicação, ARIA, monitoramento neuropsi, custo, evidência fase 3, APOE ε4 e papel do psicólogo.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos/' },
+    { '@type': 'ListItem', position: 3, name: 'Lecanemab vs donanemab — ANVISA 2026', item: SITE.url + '/comparativos/lecanemab-vs-donanemab-anvisa-2026/' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neurociencia-positiva') || MBAS.find(m => m.id === 'mba-positiva');
+const areaNeuro = AREAS.find(a => a.id === 'neurociencia-neuropsicologia');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+---
+<Base
+  title="Lecanemab vs donanemab no Brasil em 2026 — comparativo em 11 atributos com foco neuropsi"
+  description="Comparativo independente Leqembi (lecanemab) vs Kisunla (donanemab) em 2026 — status ANVISA, indicação, ARIA, monitoramento neuropsi, custo, fase 3, APOE ε4 e papel do psicólogo.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Lecanemab vs donanemab — ANVISA 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Anti-amiloides · Alzheimer · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Lecanemab vs donanemab no Brasil em 2026: comparativo em 11 atributos com foco no protocolo neuropsicológico.</h1>
+          <TLDR
+            resposta="Em 2026, lecanemab (Leqembi, Eisai/Biogen) e donanemab (Kisunla, Eli Lilly) são os dois anticorpos anti-amiloide com fase 3 publicada (CLARITY-AD e TRAILBLAZER-ALZ 2). Ambos têm aprovação FDA, indicação restrita a CCL ou demência leve devido à doença de Alzheimer, risco de ARIA — maior em portadores de APOE ε4 — e benefício clínico modesto em escalas globais. No Brasil, o status público ANVISA em 2025-2026 permanece em evolução; não foi localizado parecer final público de aprovação. O neuropsicólogo participa do protocolo com avaliação baseline e follow-up periódico, não decide a indicação."
+            fontes={['van Dyck et al. (2023) NEJM — CLARITY-AD', 'Sims et al. (2023) JAMA — TRAILBLAZER-ALZ 2', 'FDA — aprovações 2023-2024', 'ANVISA — consulta pública de registro (verificar atualização)', 'CFP Posicionamento 03/07/2025']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Análise comparativa em 11 atributos. Para neuropsicólogos, neurologistas, geriatras e gestores de serviços de cognição que operam o eixo Alzheimer.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que esse comparativo importa em 2026</h2>
+        <p>
+          A discussão sobre anti-amiloides em Alzheimer mudou de natureza entre 2023 e 2026. CLARITY-AD (lecanemab) e TRAILBLAZER-ALZ 2 (donanemab) saíram do horizonte hipotético e produziram dois braços de evidência fase 3 publicados em revistas de impacto, com aprovações FDA encadeadas em 2023-2024. A magnitude de benefício é modesta — redução estatisticamente significativa em escalas globais como CDR-SB e iADRS, sem reversão de declínio, com efeitos clinicamente perceptíveis em janela mensurável de tempo. O risco de ARIA (edema e micro-hemorragia visíveis em ressonância) é real e maior em portadores de APOE ε4 homozigotos.
+        </p>
+        <p>
+          No Brasil em 2026, a situação regulatória é específica e exige cautela editorial. Pesquisa em bases públicas de consultas e resoluções da ANVISA mostra processos em discussão, com menções na mídia especializada a tramitação em curso, mas não foi localizado parecer final público e definitivo de aprovação de qualquer dos dois fármacos até a data desta página. O profissional que escreve sobre o tema em 2026 — psicólogo, jornalista, blog institucional — precisa diferenciar com clareza o que é aprovação FDA (vigente), o que é tramitação ANVISA (em curso) e o que é especulação. A confabulação regulatória é forma comum de erro técnico em conteúdo de saúde. Este comparativo segue a regra editorial do portal: o que está em fonte pública verificável é descrito; o que não está é declarado como ausência de evidência.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela comparativa — 2 anti-amiloides, 11 atributos</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Atributo</th>
+                {drogas.map(d => (<th class="text-left px-4 py-3">{d.nome}</th>))}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {atributos.map(att => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{att.label}</td>
+                  {drogas.map(d => (<td class="px-4 py-3 text-ink-700">{(d as any)[att.chave]}</td>))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Leitura indicativa em maio de 2026; status regulatório, indicações e bula podem evoluir. Confirme em gov.br/anvisa e na rotulagem oficial antes de recomendar a paciente.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">CLARITY-AD e TRAILBLAZER-ALZ 2 — o que os ensaios mostram</h2>
+        <p>
+          CLARITY-AD (van Dyck et al., 2023, New England Journal of Medicine) foi o ensaio pivotal do lecanemab, com cerca de 1.795 participantes com CCL ou demência leve devido à doença de Alzheimer, amiloide positivo confirmado por PET ou LCR. O desfecho primário foi mudança em CDR-SB em 18 meses; o resultado mostrou redução estatisticamente significativa do declínio em magnitude que correspondeu a benefício clínico modesto mas mensurável, com ARIA-E em proporção relevante dos pacientes — maior em APOE ε4 homozigotos.
+        </p>
+        <p>
+          TRAILBLAZER-ALZ 2 (Sims et al., 2023, JAMA) testou donanemab com aproximadamente 1.736 participantes com CCL ou demência leve, com critério adicional de tau dentro de faixa específica. O desfecho primário foi mudança em iADRS em 76 semanas; o resultado mostrou redução estatisticamente significativa do declínio, com perfil de ARIA similar em ordem de grandeza ao do lecanemab e maior em APOE ε4. Particularidade clínica relevante: o donanemab permite interrupção do tratamento quando metas de clearance amiloide são atingidas, o que pode reduzir custo total e exposição em parte dos pacientes.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">ARIA, APOE ε4 e a decisão clínica conjunta</h2>
+        <p>
+          ARIA (Amyloid-Related Imaging Abnormalities) é o achado de segurança que mais condiciona a decisão. ARIA-E (edema) e ARIA-H (micro-hemorragia ou siderose) aparecem em proporção mensurável dos pacientes em ambos os ensaios, com a maioria assintomática mas com casos clinicamente relevantes em proporção menor. O risco é dose-dependente, tempo-dependente e fortemente moduladopelo genótipo APOE ε4 — portadores heterozigotos têm risco intermediário; homozigotos têm risco substancialmente maior, especialmente para ARIA-H. A FDA recomenda genotipagem APOE como parte da decisão informada de tratamento. A ressonância magnética seriada é parte do protocolo, com leitura por radiologista familiarizado com o padrão.
+        </p>
+        <p>
+          O neuropsicólogo participa do protocolo no eixo cognitivo — baseline antes da primeira infusão, reavaliação periódica para documentar trajetória, suporte ao paciente e família ao longo do tratamento. Não decide a indicação medicamentosa nem interpreta ressonância. A divisão clara de papéis é critério de cuidado e de defesa técnica.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">ANVISA em 2026 — o que está em fonte pública</h2>
+        <p>
+          A pesquisa em fontes públicas brasileiras (gov.br/anvisa, consulta a registros de medicamentos) em 2025-2026 mostra processos em discussão para anticorpos anti-amiloide, com menções na mídia especializada a tramitação em curso, mas não foi localizado parecer final público e definitivo de aprovação de lecanemab ou donanemab até a data desta página. Em ausência de registro nacional, o uso clínico no Brasil em 2026 é restrito a contextos de pesquisa clínica formal (com aprovação CONEP), importação excepcional regulamentada caso a caso, ou expectativa de futura aprovação. A modelagem de custo no Brasil permanece estimativa baseada em conversão de preços e custos de infraestrutura (ressonância seriada, centros de infusão, equipe multiprofissional). Para confirmação, consulte gov.br/anvisa diretamente.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O lugar do neuropsicólogo no protocolo</h2>
+        <p>
+          O psicólogo informado sobre o estado da arte presta serviço relevante ao paciente e à equipe — sem extrapolar competências. Quatro frentes operam de forma defensável. Primeira, avaliação neuropsicológica baseline com bateria sensível (RAVLT, FCSRT, Trail Making, Stroop, Digit Symbol, medidas funcionais) antes da decisão da equipe médica. Segunda, reavaliação cognitiva a cada 6 meses durante o tratamento, com escalas internacionais (CDR-SB, ADAS-Cog, iADL) adaptadas e bateria longitudinal estável. Terceira, suporte ao paciente e família — comunicação do que o tratamento faz e do que não faz, manejo de expectativas, processamento emocional do diagnóstico. Quarta, documentação rigorosa que subsidie decisões de continuidade ou interrupção. A decisão de prescrever, monitorar imagem e gerenciar ARIA é médica.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximo passo</h2>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          O neuropsicólogo que pretende operar nesse cenário precisa de três peças: leitura crítica da literatura primária (CLARITY-AD, TRAILBLAZER-ALZ 2 e ensaios subsequentes), bateria longitudinal estável e sensível, e articulação institucional com neurologia/geriatria. Formação aplicada em Neurociência e Neuropsicologia encurta essa curva. MBAs e Lato Sensu em Neurociência aplicada e em Psicologia Positiva oferecidos pelo IPOG em formato Ao Vivo síncrono com corpo docente nominal entregam base estruturada para esse repertório clínico contemporâneo.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/biomarcadores-plasma-alzheimer-protocolo-neuropsi-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — biomarcadores plasma para Alzheimer e protocolo neuropsi 2026</a></li>
+          <li><a href="/faq/long-covid-brain-fog-4-anos-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — long COVID e brain fog persistente 4 anos depois</a></li>
+          <li><a href="/conteudo-social/biblioteca/biomarcadores-alzheimer-plasma-quora" class="text-brand-700 hover:text-brand-800 font-medium">Biblioteca — Quora sobre exame de plasma para Alzheimer</a></li>
+          <li><a href="/conteudo-social/biblioteca/long-covid-brain-fog-clinico-substack" class="text-brand-700 hover:text-brand-800 font-medium">Biblioteca — Substack sobre brain fog clínico 4 anos depois</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Dois anti-amiloides com fase 3 publicada, benefício modesto e risco real — e ainda sem aprovação ANVISA pública confirmada em 2026.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Lecanemab e donanemab têm aprovação FDA, indicação restrita, ARIA mensurável (maior em APOE ε4), monitoramento por ressonância seriada e custo elevado. No Brasil, o status ANVISA permanece em evolução em fontes públicas. O neuropsicólogo opera o eixo cognitivo do protocolo — baseline, follow-up, suporte — sem decidir indicação. MBAs e Lato Sensu em Neurociência aplicada no IPOG, em formato Ao Vivo síncrono com corpo docente nominal, constroem a base.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro ? mbaNeuro.shortName : 'MBA em Neurociência e Psicologia Positiva'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaNeuro ? mbaNeuro.description : 'O IPOG opera MBA em Neurociência e Psicologia Positiva em formato Ao Vivo síncrono com corpo docente nominal.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaNeuro && <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>van Dyck, C. H. et al. (2023). Lecanemab in early Alzheimer\'s disease (CLARITY-AD). NEJM 388:9-21.</li>
+          <li>Sims, J. R. et al. (2023). Donanemab in early symptomatic Alzheimer disease (TRAILBLAZER-ALZ 2). JAMA 330(6):512-527.</li>
+          <li>FDA — aprovações 2023-2024 de lecanemab e donanemab.</li>
+          <li>ANVISA — consulta a registros de medicamentos (verificar atualização).</li>
+          <li>CFP (2025). Posicionamento sobre IA e prática profissional. 03/07/2025.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

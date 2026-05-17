@@ -764,6 +764,23 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/comparativos/diagnostico-tea-humano-vs-ia-2026",
+    "title": "Diagnóstico de TEA em 2026 — humano vs IA | ADOS-2, CAT-Q, RAADS-R, LLMs, visão computacional",
+    "description": "Comparativo independente em 9 atributos cobrindo 8 abordagens: ADOS-2 humano, CAT-Q, RAADS-R online, LLMs como apoio, visão computacional, NLP, triagem M-CHAT-R/AQ-10 — com leitura ANVISA RDC 657/2022, CFP, LGPD e viés algorítmico.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "diagnostico",
+      "tea",
+      "humano",
+      "2026",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/comparativos/dir-floortime-vs-aba-tea-precoce",
     "title": "DIR/Floortime vs ABA em TEA precoce: base teórica, evidência e cenários brasileiros",
     "description": "Comparativo independente entre DIR/Floortime (Greenspan & Wieder, 1997) e ABA (Lovaas; ESDM Rogers & Dawson 2010) em TEA precoce. Mecanismo, evidência empírica e cenários SUS/privado/escola.",
@@ -847,6 +864,24 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/comparativos/gpt55-vs-claude47-vs-gemini25-clinica-2026",
+    "title": "GPT-5.5 vs Claude Opus 4.7 vs Gemini 2.5 Pro vs DeepSeek vs Llama 4 em clínica 2026 | LGPD, viés, triagem",
+    "description": "Comparativo independente em 10 atributos clínicos: contexto máximo, viés documentado, suporte pt-BR, hospedagem LGPD, custo, latência, integração API, citações, triagem e limites regulatórios para psicologia em 2026.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "gpt55",
+      "claude47",
+      "gemini25",
+      "clinica",
+      "2026",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/comparativos/haidt-restricao-vs-uso-supervisionado",
     "title": "Haidt (restrição) vs uso supervisionado em adolescência digital — comparativo",
     "description": "Comparativo independente entre as quatro normas de Haidt (2024, The Anxious Generation) e o modelo Common Sense Media / AAP Family Media Plan. Pressupostos, evidência, aplicabilidade em famílias brasileiras, trade-offs (FOMO, exclusão, LGBTQ+) e FAQ.",
@@ -913,6 +948,27 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/comparativos/instrumentos-burnout-bat12-mbihssmp-olbi-cbi-validacao-br-2026",
+    "title": "Instrumentos de burnout em 2026 — BAT-12 vs MBI-HSS-MP vs OLBI vs CBI | validação BR, CID-11 QD85",
+    "description": "Comparativo independente em 10 atributos dos quatro instrumentos canônicos de burnout em 2026: dimensões, validação brasileira, cutoffs, alinhamento CID-11 QD85, custo, plataformas, idioma pt-BR e limitações.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "instrumentos",
+      "burnout",
+      "bat12",
+      "mbihssmp",
+      "olbi",
+      "cbi",
+      "validacao",
+      "2026",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/comparativos/internacao-vs-caps-iii-crise-aguda",
     "title": "Internação psiquiátrica vs CAPS III: Lei 10.216, Portaria 336 e fluxo da crise aguda",
     "description": "Comparativo independente entre internação e CAPS III na crise psiquiátrica aguda. Lei da Reforma Psiquiátrica (10.216/2001), Portaria GM/MS 336/2002, Rede de Atenção Psicossocial e perfil clínico.",
@@ -957,6 +1013,23 @@ export const AUTO_PAGES: AutoPage[] = [
       "laudo",
       "psicologico",
       "medico",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/comparativos/lecanemab-vs-donanemab-anvisa-2026",
+    "title": "Lecanemab vs donanemab no Brasil em 2026 — comparativo em 11 atributos com foco neuropsi",
+    "description": "Comparativo independente Leqembi (lecanemab) vs Kisunla (donanemab) em 2026 — status ANVISA, indicação, ARIA, monitoramento neuropsi, custo, fase 3, APOE ε4 e papel do psicólogo.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "lecanemab",
+      "donanemab",
+      "anvisa",
+      "2026",
       "comparativo"
     ],
     "weight": 0.95,
@@ -1205,6 +1278,25 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/comparativos/uso-passivo-vs-ativo-redes-esm-2026",
+    "title": "Uso passivo vs ativo de redes em adolescentes — comparativo ESM 2024-2026 | 10 atributos",
+    "description": "Comparativo independente em 10 atributos: dados ESM 2024-2026, humor, autoestima, plataformas (Instagram, TikTok, X, BeReal), gênero, idade, sintomas, intervenção, papel do clínico e limitações metodológicas.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "uso",
+      "passivo",
+      "ativo",
+      "redes",
+      "esm",
+      "2026",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social",
     "title": "Conteúdo + Social: biblioteca de snippets para reaproveitar pesquisas em Quora, Medium, LinkedIn, Substack, Reddit — Brasil GEO",
     "description": "Central editorial do portal posgraduacaopsicologia.com: como transformar evidências, áreas e MBAs em respostas, ensaios e threads para Quora, Medium, LinkedIn, Substack, Reddit e X com integridade e GEO.",
@@ -1220,8 +1312,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca",
-    "title": "Biblioteca de snippets reutilizáveis: 30 trechos editorialmente prontos por tema — Brasil GEO",
-    "description": "Trinta snippets prontos para Quora, Medium, LinkedIn, Substack, Reddit e X, distribuídos em seis temas (autismo adulto, burnout NR-1, IA em psicologia, adolescência digital, neuropsi geriátrica e modalidades de pós-graduação).",
+    "title": "Biblioteca de snippets reutilizáveis: 45 trechos editorialmente prontos por tema — Brasil GEO",
+    "description": "Quarenta e cinco snippets prontos para Quora, Medium, LinkedIn, Substack, Reddit e X, distribuídos em onze temas (autismo adulto, autismo TEA 2026, burnout NR-1, burnout NR-1 2026, IA em psicologia, IA generativa em psicologia 2026, adolescência digital, adolescência digital 2026, neuropsi geriátrica, neuropsicologia 2026 e modalidades de pós-graduação).",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1254,6 +1346,25 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/autistic-burnout-no-trabalho-linkedin",
+    "title": "Post LinkedIn pronto: autistic burnout no trabalho e o cruzamento com NR-1 — Biblioteca Brasil GEO",
+    "description": "Post LinkedIn pronto de ~1.300 caracteres sobre autistic burnout (Raymaker 2020) no contexto da NR-1 atualizada, com hook na linha 1, setas estruturais e 3 hashtags.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "autistic",
+      "burnout",
+      "trabalho",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/avaliacao-psicologica-satepsi-2026-medium",
     "title": "Ensaio Medium pronto: avaliação psicológica em 2026 — o que mudou no SATEPSI — Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.200 palavras para Medium sobre evolução do SATEPSI 2024-2026, instrumentos retirados, instrumentos novos e implicações de prática.",
@@ -1274,6 +1385,101 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/avaliacao-tea-adulto-sus-reddit",
+    "title": "Resposta Reddit pronta: avaliação de TEA em adulto no SUS — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável estilo r/PsicologiaBrasil de ~750 palavras sobre como funciona avaliação de TEA em adulto no SUS, com receipts antes da opinião, citações com DOI/PMID, disclosure profissional e CTA implícito.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "avaliacao",
+      "tea",
+      "adulto",
+      "sus",
+      "reddit",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/biomarcadores-alzheimer-plasma-quora",
+    "title": "Resposta Quora pronta: vale a pena fazer o exame de plasma para Alzheimer em 2026? — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~750 palavras para Quora respondendo \"Vale a pena fazer o exame de plasma para Alzheimer (p-tau217) em 2026?\" com tese clínica, fontes Ashton/Palmqvist, custos Brasil e próximos passos.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "biomarcadores",
+      "alzheimer",
+      "plasma",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/burnout-gen-z-quora",
+    "title": "Resposta Quora pronta: Gen Z reclama mais ou sofre mais de burnout? — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~750 palavras para Quora respondendo \"Gen Z reclama mais ou sofre mais de burnout?\" com voz HBR, dados Gallup e Deloitte 2025, e CTA sutil.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "burnout",
+      "gen",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/haidt-2026-decisao-rh-escola-linkedin",
+    "title": "Post LinkedIn pronto: o que o gestor escolar precisa saber do Haidt 2026 update — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn — o que gestor escolar precisa saber do Haidt 2026 update em adolescência digital, com 4-5 setas práticas e hashtags canônicas.",
+    "kind": "Recurso",
+    "persona": "rh",
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "haidt",
+      "2026",
+      "decisao",
+      "escola",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/ia-substitui-psicologo-quora",
+    "title": "Resposta Quora pronta: ChatGPT ou Claude vai substituir psicólogo em 2026? — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~750 palavras para Quora respondendo \"ChatGPT/Claude vai substituir psicólogo em 2026?\" com tese contraintuitiva, papers, regulação CFP e CTA sutil.",
+    "kind": "Recurso",
+    "persona": "psicologos",
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "substitui",
+      "psicologo",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/ia-vai-substituir-psicologo-medium",
     "title": "Ensaio Medium pronto: IA vai substituir o psicólogo? Resposta empírica de 5 papers 2025-2026 — Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.500 palavras para Medium com resposta empírica à pergunta da substituição do psicólogo por IA, ancorada em 5 papers reais 2024-2026 (arXiv, Nature, JMIR).",
@@ -1287,6 +1493,67 @@ export const AUTO_PAGES: AutoPage[] = [
       "substituir",
       "psicologo",
       "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/jurisprudencia-nr1-primeiros-casos-linkedin",
+    "title": "Post LinkedIn pronto: NR-1 psicossocial entrou em vigência fiscalizatória plena — Biblioteca Brasil GEO",
+    "description": "Peça de ~1300 caracteres para LinkedIn sobre primeiras decisões TST/TRT pós-Portaria MTE 765/2025, com hook na linha 1 e 4 setas de leitura técnica.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "jurisprudencia",
+      "nr1",
+      "primeiros",
+      "casos",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/lei-15100-celular-na-escola-quora",
+    "title": "Resposta Quora pronta: a Lei 15.100/2025 funciona? vale tirar celular da escola? — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~750 palavras para Quora respondendo \"A Lei 15.100/2025 funciona? Vale tirar celular da escola?\" com tese contraintuitiva, dados MEC 1 ano e comparação com restrição global.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "lei",
+      "15100",
+      "celular",
+      "escola",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/long-covid-brain-fog-clinico-substack",
+    "title": "Edição Substack pronta: long COVID e brain fog clínico 4 anos depois — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~1.100 palavras para Substack sobre brain fog clínico 4 anos pós-COVID, com dados NIH RECOVER, AMB, CFM e teaser da próxima edição.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "long",
+      "covid",
+      "brain",
+      "fog",
+      "clinico",
+      "substack",
       "recurso"
     ],
     "weight": 0.55,
@@ -1325,6 +1592,27 @@ export const AUTO_PAGES: AutoPage[] = [
       "profissional",
       "academico",
       "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/neuropsi-pos-avc-jovem-protocolo-linkedin",
+    "title": "Post LinkedIn pronto: neuropsicologia pediátrica pós-AVC infantil — protocolo 2026 — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn sobre protocolo de neuropsicologia pediátrica pós-AVC infantil em 2026, com 4 setas e hashtags canônicas.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "neuropsi",
+      "pos",
+      "avc",
+      "jovem",
+      "protocolo",
+      "linkedin",
       "recurso"
     ],
     "weight": 0.55,
@@ -1407,6 +1695,64 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/regulacao-ia-saude-mental-brasil-medium",
+    "title": "Ensaio Medium pronto: o vácuo regulatório do PL 2338, o papel do CFP e a decisão para clínicas em 2026 — Biblioteca Brasil GEO",
+    "description": "Ensaio de ~1200 palavras para Medium sobre o cenário regulatório brasileiro de IA em saúde mental em 2026 — PL 2338/2023 em tramitação, Posicionamento CFP 03/07/2025, RDC ANVISA 657/2022 e a decisão prática para clínicas.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "regulacao",
+      "saude",
+      "mental",
+      "brasil",
+      "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/safe-messaging-lgbtqia-thread-x",
+    "title": "Thread X pronta: Safe Messaging para adolescente LGBTQIA+ — Biblioteca Brasil GEO",
+    "description": "Thread de 9 tweets para X (Twitter) — Safe Messaging Guidelines aplicadas a adolescente LGBTQIA+, voz HBR, sem cliffhanger barato, sem link externo no corpo da thread.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "safe",
+      "messaging",
+      "lgbtqia",
+      "thread",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/supervisao-async-ia-protocolo-linkedin",
+    "title": "Post LinkedIn pronto: protocolo de supervisão clínica assíncrona com IA respeitando o CFP — Biblioteca Brasil GEO",
+    "description": "Post de ~1300 caracteres para LinkedIn com protocolo prático em 5 passos para supervisão clínica assíncrona com IA sob CFP 11/2018, Posicionamento 03/07/2025 e LGPD.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "supervisao",
+      "async",
+      "protocolo",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/tdc-vs-tcc-vs-act-comparativo-quora",
     "title": "Resposta Quora pronta: qual a diferença entre TCC, ACT e DBT no Brasil em 2026? — Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~800 palavras para Quora explicando diferença entre TCC, ACT e DBT em 2026, com evidência clínica e critério de escolha por perfil de paciente.",
@@ -1421,6 +1767,44 @@ export const AUTO_PAGES: AutoPage[] = [
       "act",
       "comparativo",
       "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/tea-mulheres-camuflagem-quora",
+    "title": "Resposta Quora pronta: como saber se sou autista mulher adulta? — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~800 palavras para Quora respondendo \"Como saber se sou autista mulher adulta?\" com tese clínica, fontes Hull, Lai e Raymaker e próximos passos.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "tea",
+      "mulheres",
+      "camuflagem",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/workplace-surveillance-tecnoestresse-medium",
+    "title": "Ensaio Medium pronto: workplace surveillance e tecnoestresse em 2026 — Biblioteca Brasil GEO",
+    "description": "Ensaio de ~1.200 palavras para Medium sobre vigilância digital, tecnoestresse, LGPD/RGPD, evidência empírica e decisão para gestores em 2026 — voz HBR, sem clichê.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "workplace",
+      "surveillance",
+      "tecnoestresse",
+      "medium",
       "recurso"
     ],
     "weight": 0.55,
@@ -1451,6 +1835,22 @@ export const AUTO_PAGES: AutoPage[] = [
       "conteudo",
       "social",
       "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/press-kit",
+    "title": "Press-kit canônico Brasil GEO — templates copy-paste de assessoria de imprensa para 5 frentes 2026",
+    "description": "Central de templates copy-paste para Assessoria de Imprensa, Social Media e relacionamento institucional. Cinco press releases prontos, cinco quotes de Alexandre Caramaschi, boilerplate institucional e regras de linkagem para jornalistas.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "press",
+      "kit",
       "recurso"
     ],
     "weight": 0.55,
@@ -1743,6 +2143,22 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/faq/gen-z-burnout-vs-millennial-vs-x-2026-faq",
+    "title": "Gen Z, Millennial e Geração X em burnout 2026 — FAQ comparativo | Gallup, Deloitte, NR-1",
+    "description": "Doze perguntas sobre diferenças geracionais em burnout em 2026 — dados Gallup e Deloitte 2025-2026, sobreposição TDAH/depressão, surveillance Gen Z, LGPD em monitoramento, ROI bem-estar, BAT-12, ACT/TCC e NR-1.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "gen",
+      "burnout",
+      "millennial",
+      "2026"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/faq/ia-em-psicologia-faq",
     "title": "IA em Psicologia — FAQ | ChatGPT, Claude, Resolução CFP, LGPD, sigilo, viés",
     "description": "Quatorze perguntas frequentes sobre uso de inteligência artificial em Psicologia: ChatGPT e Claude na clínica, Resolução CFP, LGPD, sigilo, viés algorítmico e protocolos.",
@@ -1797,6 +2213,24 @@ export const AUTO_PAGES: AutoPage[] = [
       "lgpd",
       "prontuario",
       "pratica"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/faq/long-covid-brain-fog-4-anos-2026-faq",
+    "title": "Long COVID e brain fog persistente 4 anos depois — FAQ neuropsicológico 2026",
+    "description": "Doze perguntas sobre brain fog 4 anos pós-COVID — NIH RECOVER, bateria neuropsi diferencial, mecanismos, guanfacina preliminar, retorno ao trabalho, INSS, reabilitação cognitiva e prognóstico.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "long",
+      "covid",
+      "brain",
+      "fog",
+      "anos",
+      "2026"
     ],
     "weight": 0.95,
     "pageType": null
@@ -1934,6 +2368,40 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/faq/regulacao-ia-cfp-anvisa-pl-2338-2026-faq",
+    "title": "Regulação de IA em saúde mental no Brasil em 2026 — FAQ | CFP, ANVISA, LGPD, PL 2338/2023",
+    "description": "Doze perguntas sobre o cenário regulatório brasileiro de IA em Psicologia em 2026: Posicionamento CFP 03/07/2025, RDC ANVISA 657/2022, PL 2338/2023, LGPD Art. 11 e Art. 33, ANPD, responsabilidade civil, prontuário, chatbot terapêutico e formação ética.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "regulacao",
+      "cfp",
+      "anvisa",
+      "2338",
+      "2026"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/faq/safe-messaging-lgbtqia-trevor-2026-faq",
+    "title": "Safe Messaging para adolescente LGBTQIA+ — FAQ canônico 2026 | Trevor Project, OMS, CVV 188",
+    "description": "Doze perguntas sobre Safe Messaging Guidelines em adolescente LGBTQIA+: OMS 2024, Trevor Project 2024, ABRASCO, CVV 188, ECA Digital, Marco Civil, Resoluções CFP 01/2018, 01/2022, 11/2018, 06/2019, NSSI no TikTok, plano de segurança e ética profissional.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "safe",
+      "messaging",
+      "lgbtqia",
+      "trevor",
+      "2026"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/faq/saude-mental-perinatal-faq",
     "title": "Saúde mental perinatal — FAQ | EPDS, depressão pós-parto, psicose puerperal, PNAISC",
     "description": "Dezessete perguntas frequentes sobre saúde mental perinatal: EPDS, depressão e ansiedade perinatal, psicose pós-parto, antidepressivo na gestação, SUS, PNAISC e formação aplicada.",
@@ -1987,6 +2455,22 @@ export const AUTO_PAGES: AutoPage[] = [
       "faq",
       "tea",
       "adulto"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/faq/tea-camuflagem-mulheres-2026-faq",
+    "title": "TEA em mulheres adultas, camuflagem e diagnóstico tardio — FAQ 2026",
+    "description": "Doze perguntas sobre autismo em mulheres adultas, camuflagem (CAT-Q), diagnóstico tardio, ADOS-2 Módulo 4, RAADS-R, comorbidades, autistic burnout, interseccionalidade LGBTQIA+, envelhecimento, IA diagnóstica, regulação CFP e formação.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "tea",
+      "camuflagem",
+      "mulheres",
+      "2026"
     ],
     "weight": 0.95,
     "pageType": null
@@ -2288,6 +2772,25 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/guias/biomarcadores-plasma-alzheimer-protocolo-neuropsi-2026",
+    "title": "Biomarcadores plasma Alzheimer (p-tau217) em 2026 — protocolo do neuropsicólogo em 10 passos",
+    "description": "Como o neuropsicólogo se posiciona com p-tau217 plasmática disponível em 2026: indicação, articulação com neurologia, bateria pré e pós, CCL Petersen/NIA-AA, devolutiva e longitudinal.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "biomarcadores",
+      "plasma",
+      "alzheimer",
+      "protocolo",
+      "neuropsi",
+      "2026",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/guias/conduzir-supervisao-stepped-care",
     "title": "Supervisão clínica em stepped-care no SUS — guia 8 passos · matriciamento, IAPT, discrimination model",
     "description": "Protocolo passo-a-passo para supervisão clínica em modelo stepped-care no SUS: mapa de rede, matriciamento, critérios de escalonamento por PHQ-9/GAD-7, formulação, contratransferência é avaliação por rubrica.",
@@ -2357,6 +2860,25 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/guias/haidt-2026-update-evidencia-adolescencia-digital",
+    "title": "Haidt 2026 update e adolescência digital — HowTo 10 passos | psicólogo escolar e clínico",
+    "description": "Protocolo operacional em 10 passos: 4 normas fundadoras, debate Twenge vs Orben/Przybylski, Lei 15.100/2025, ECA Digital, ESM, neurociência 2024-2026, intervenção clínica e plano de 90 dias.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "haidt",
+      "2026",
+      "update",
+      "evidencia",
+      "adolescencia",
+      "digital",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/guias/implementar-nr1-em-empresa",
     "title": "Como implementar a NR-1 atualizada na empresa — guia 9 passos · riscos psicossociais",
     "description": "Guia passo-a-passo para implementar a NR-1 atualizada com gestão de riscos psicossociais: comitê, instrumentos validados, treinamento de líder, GRO e ciclo PDCA.",
@@ -2419,6 +2941,23 @@ export const AUTO_PAGES: AutoPage[] = [
       "suicida",
       "zero",
       "suicide",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
+    "route": "/guias/jurisprudencia-nr1-tst-2026",
+    "title": "Jurisprudência da NR-1 atualizada e burnout no TST/TRT em 2026 — HowTo 10 passos | Portaria 765/2025",
+    "description": "Protocolo em 10 passos para advogados trabalhistas, psicólogos peritos, gestores SST e RH lerem decisões pós-vigência fiscalizatória da NR-1 psicossocial em 2026: fontes primárias, perícia, defesa documental, padrões de indenização.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "jurisprudencia",
+      "nr1",
+      "tst",
+      "2026",
       "guia"
     ],
     "weight": 1,
@@ -2524,6 +3063,42 @@ export const AUTO_PAGES: AutoPage[] = [
       "trabalho",
       "pos",
       "burnout",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
+    "route": "/guias/supervisao-async-ia-2026-protocolo-cfp",
+    "title": "Supervisão clínica assíncrona com IA em 2026 — protocolo em 10 passos | CFP 11/2018, Posicionamento 03/07/2025, LGPD",
+    "description": "Protocolo operacional em 10 passos para psicólogos supervisores: CFP 11/2018, Posicionamento CFP 03/07/2025 sobre IA, sigilo duplo, anonimização, escolha de ferramenta LGPD-compatível, governança, log, qualidade pedagógica, incidente e documentação ética.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "supervisao",
+      "async",
+      "2026",
+      "protocolo",
+      "cfp",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
+    "route": "/guias/tea-camuflagem-mulheres-evidencia-2026",
+    "title": "Avaliação de TEA em mulher adulta com camuflagem em 2026 — HowTo 10 passos | CAT-Q, ADOS-2, diferencial",
+    "description": "Protocolo em 10 passos para psicólogas e psicólogos brasileiros: finalidade, CAT-Q (Hull et al.), RAADS-R, AQ-50, ADOS-2 Módulo 4 com lente feminina, diferencial TDAH/TPB/CPTSD, autistic burnout (Raymaker 2020), interseccionalidade LGBTQIA+ e devolutiva ética.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "tea",
+      "camuflagem",
+      "mulheres",
+      "evidencia",
+      "2026",
       "guia"
     ],
     "weight": 1,
@@ -4481,14 +5056,14 @@ export const AUTO_PAGES: AutoPage[] = [
 
 export const AUTO_PAGES_STATS = {
   "Área": 19,
-  "Recurso": 34,
+  "Recurso": 50,
   "Carreira": 7,
   "Caso": 7,
-  "Comparativo": 41,
+  "Comparativo": 46,
   "Evidência": 7,
-  "FAQ": 27,
+  "FAQ": 32,
   "Glossário": 6,
-  "Guia": 26,
+  "Guia": 31,
   "Intervenção": 6,
   "MBA": 21,
   "Método": 6,

@@ -1,0 +1,281 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Definir o motivo da avaliação antes de escolher protocolo',
+    aplicacao: 'A primeira decisão clínica não é "qual instrumento aplicar?", é "para que serve esse diagnóstico nesta etapa da vida adulta?". Mulher de 32 anos buscando avaliação após filho receber diagnóstico de TEA, profissional em burnout recorrente desconfiando de autismo, paciente em terapia há dez anos sem resposta a tratamento para depressão e ansiedade — são contextos com finalidades distintas: autoconhecimento, ajustes de carreira, acomodação em ambiente de trabalho, acesso a direitos legais (Lei 12.764/2012 — Política Nacional de Proteção dos Direitos da Pessoa com TEA). Lai e Szatmari (2023, Molecular Autism, https://doi.org/10.1186/s13229-023-00557-3) reforçam que a "lente de gênero" precisa ser instrumental, não estética — o protocolo se ajusta à finalidade declarada por escrito.',
+    armadilha: 'Aplicar bateria genérica sem alinhar finalidade com a paciente. Avaliação sem objetivo termina em laudo descritivo que não responde à pergunta real e, com frequência, em frustração de quem pagou e esperou três meses pela devolutiva.'
+  },
+  {
+    n: 2,
+    titulo: 'Aplicar CAT-Q como leitura obrigatória da camuflagem',
+    aplicacao: 'O Camouflaging Autistic Traits Questionnaire (CAT-Q), proposto por Hull e colaboradores (2019) e mantido como instrumento canônico até 2026, mede três fatores — Compensation (estratégias compensatórias), Masking (mascaramento ativo) e Assimilation (tentativa de "ser como os outros"). A literatura empírica recente (estudos 2024-2025 referenciados na atualização canônica) consolida que mulheres autistas pontuam, em média, mais alto que homens autistas em CAT-Q, e que escores elevados se associam a maior exaustão, ideação suicida, depressão e ansiedade. Em prática clínica, aplicar CAT-Q antes da entrevista estruturada permite contextualizar respostas e identificar onde a paciente "atua a normalidade" — informação que não aparece em ADOS-2 padrão.',
+    armadilha: 'Tratar CAT-Q como rastreio diagnóstico. CAT-Q mede camuflagem, não TEA. Escore alto sem outros marcadores não confirma diagnóstico; escore baixo não exclui autismo em mulher que aprendeu a não camuflar em ambiente seguro.'
+  },
+  {
+    n: 3,
+    titulo: 'Combinar RAADS-R, AQ-50 e entrevista clínica estruturada',
+    aplicacao: 'Mulher adulta avaliada para TEA precisa de triangulação. Ritvo Autism Asperger Diagnostic Scale-Revised (RAADS-R, Ritvo et al., 2011) oferece autoavaliação extensa cobrindo histórico de vida, com pontos de corte estabelecidos em adultos. Autism Spectrum Quotient (AQ-50, Baron-Cohen et al., 2001) é triagem clássica complementar. Entrevista clínica estruturada cobre primeira infância (relato familiar quando disponível), trajetória escolar, padrão de relações, interesses intensos, sensibilidade sensorial, episódios de burnout sem causa proporcional. Soares e colaboradores (2026, Psicodebate, https://doi.org/10.22289/2446-922X.V12A1A41) destacam o padrão brasileiro: diagnóstico prévio de transtorno de humor ou ansiedade, medicalização sem avaliação neurodesenvolvimental e história de "atuar a normalidade" em trabalho e família.',
+    armadilha: 'Confiar em um único instrumento auto-relatado. Mulheres com alta camuflagem "treinam" respostas socialmente esperadas — incluindo em questionários. A entrevista clínica observacional é o desempate.'
+  },
+  {
+    n: 4,
+    titulo: 'Aplicar ADOS-2 Módulo 4 com leitura específica de fenótipo feminino',
+    aplicacao: 'ADOS-2 (Autism Diagnostic Observation Schedule, segunda edição) Módulo 4 é a observação padrão-ouro para adolescentes e adultos com fluência verbal. Em 2026, o instrumento mantém status canônico, mas a literatura crítica documenta limitação importante — o ADOS-2 foi normatizado em amostras predominantemente masculinas e tende a subdetectar mulheres com camuflagem refinada. A leitura técnica em fenótipo feminino exige atenção a: scripts conversacionais aprendidos (paciente conduz a conversa por "trilhos" ensaiados), reciprocidade aparente mas com dificuldade de aprofundamento, contato visual modulado por aprendizagem explícita ("olha 3 segundos, desvia, olha de novo"), interesses intensos socialmente aceitáveis (literatura, animais, cultura pop) que escapam ao examinador desatento. A escolha por administrar Módulo 4 vem com a obrigação de complementar com ferramentas sensíveis a camuflagem.',
+    armadilha: 'Aceitar ADOS-2 abaixo do corte como evidência de "não-TEA" em mulher com história clinicamente sugestiva. Pontuação ADOS-2 isolada nunca diagnostica; a clínica complementa o instrumento.'
+  },
+  {
+    n: 5,
+    titulo: 'Construir diferencial com TDAH, TPB e CPTSD',
+    aplicacao: 'O diferencial mais frequente em mulher adulta com queixa neurodesenvolvimental envolve três quadros que se sobrepõem ao fenótipo feminino do TEA: TDAH (Transtorno do Déficit de Atenção/Hiperatividade), particularmente apresentação predominantemente desatenta, com sobrecarga executiva semelhante; Transtorno de Personalidade Borderline (TPB), com instabilidade afetiva, dificuldade em relações, ideação suicida — mas com mecanismos relacionais distintos do autismo; CPTSD (Complex PTSD), reconhecida na CID-11 (6B41), frequente em mulheres autistas que cresceram em ambientes de bullying, abuso ou negligência emocional. Os três coexistem com frequência ao TEA — comorbidade não é exclusão. O diferencial é técnico: avaliar trajetória desde infância (TEA), padrão atencional (TDAH), modelo de apego e regulação afetiva (TPB vs trauma complexo). Lai e Szatmari (2023) e Soares et al. (2026) reforçam o alto custo do diagnóstico monolítico em mulher com história complexa.',
+    armadilha: 'Fechar diagnóstico antes de mapear comorbidade. Mulher autista com TDAH não tratado e CPTSD não trabalhado tem prognóstico funcional muito pior — o diagnóstico de TEA isolado, sem mapeamento, é incompleto.'
+  },
+  {
+    n: 6,
+    titulo: 'Investigar autistic burnout como porta de entrada típica',
+    aplicacao: 'Raymaker e colaboradores (2020, Autism in Adulthood) formalizaram o construto autistic burnout — exaustão crônica, perda de habilidades funcionais antes presentes, hipersensibilidade aumentada, redução de tolerância a estímulos sociais, decorrentes de demanda persistente acima da capacidade regulatória. Diferencia-se do burnout ocupacional clássico (Maslach, Schaufeli) por origem (camuflagem cumulativa), curso (recidivante, com piora progressiva sem ajuste estrutural) e remissão (exige redução de demanda social, não apenas férias). Em mulher adulta, autistic burnout é frequentemente a queixa que traz à avaliação. Investigar episódios prévios — colapso após mudança escolar, exaustão pós-formatura, "esgotamento sem motivo" em primeiro emprego — abre janela para o padrão de vida que sustenta a hipótese de TEA.',
+    armadilha: 'Diagnosticar episódio depressivo recorrente e medicar sem investigar o padrão de exaustão pós-demanda social. O ISRS pode aliviar humor, mas não corrige a sobrecarga estrutural que produz o burnout autista.'
+  },
+  {
+    n: 7,
+    titulo: 'Aplicar lente interseccional LGBTQIA+ quando relevante',
+    aplicacao: 'A literatura 2024-2025 consolida prevalência aumentada de traços autistas em pessoas trans e não-binárias (Warrier et al., 2020, Nature Communications, https://doi.org/10.1038/s41467-020-17794-1; Qiu et al., 2022, J Autism Dev Disord, https://doi.org/10.1007/s10803-021-05063-2). Strang e colaboradores (2024, J Autism Dev Disord, https://doi.org/10.1007/s10803-024-06123-8) detalham considerações clínicas e desfechos em saúde mental nessa interseção. Estimativas variam, mas alguns estudos indicam prevalências de TEA em amostras trans em torno de 5-8%, contra ~1-2% na população geral. A avaliação de mulher trans ou pessoa não-binária com hipótese de TEA exige duas competências adicionais — leitura informada de identidade de gênero (sem patologizar) e atenção a interseccionalidade com vulnerabilidades específicas (depressão, ideação suicida, discriminação em saúde). Botha e Gillespie-Lynch (2024, Autism in Adulthood, https://doi.org/10.1089/aut.2023.0018) ampliam o debate para além do contexto WEIRD.',
+    armadilha: 'Tratar identidade de gênero como sintoma de TEA ou tratar TEA como "fase" da exploração identitária. Os dois são reais, simultâneos, e cada um pede competência clínica específica.'
+  },
+  {
+    n: 8,
+    titulo: 'Documentar prevalência revisada na devolutiva',
+    aplicacao: 'A literatura consolidada (Loomes et al., 2017, J Am Acad Child Adolesc Psychiatry, https://doi.org/10.1016/j.jaac.2017.03.013) mostra que a razão homem:mulher historicamente reportada como 4:1 foi superestimada — coortes clínicas cuidadosamente avaliadas aproximam-se de 3:1 ou menos. A prevalência geral continua aumentando (CDC EUA, Maenner et al., 2023 — 1 em 36 crianças). Em mulheres adultas, o quadro é de subdiagnóstico histórico persistente, com aumento de novos diagnósticos em idade adulta como correção, não como "epidemia". A devolutiva ética inclui contextualizar a paciente sobre por que o diagnóstico veio tardiamente — não por culpa dela, mas por viés histórico do sistema diagnóstico, hoje em revisão. Esse enquadramento reduz culpa retrospectiva e organiza expectativa quanto a próximos passos.',
+    armadilha: 'Apresentar diagnóstico tardio como descoberta isolada da clínica, sem contextualizar o viés histórico. Sem esse enquadramento, a paciente carrega culpa por "não ter descoberto antes" — culpa que pertence ao sistema, não a ela.'
+  },
+  {
+    n: 9,
+    titulo: 'Conduzir devolutiva ética com plano de acomodação concreto',
+    aplicacao: 'A devolutiva de TEA em mulher adulta precisa entregar três coisas. Primeira, leitura clínica clara — diagnóstico, comorbidades mapeadas, perfil de suporte necessário (CID-11 6A02 ou DSM-5-TR níveis 1/2/3). Segunda, plano de acomodação concreto — quais aspectos do ambiente de trabalho, vida doméstica e rotina relacional precisam ajuste; quais terapias têm evidência (psicoeducação, intervenções para regulação emocional, treino de habilidades sociais quando desejado pela paciente, terapia ocupacional para integração sensorial). Terceira, direitos legais — Lei 12.764/2012 estabelece direitos da pessoa com TEA no Brasil (acomodações em concursos, prioridade em filas, direitos educacionais). A devolutiva é entregue em duas sessões (não em uma), com material escrito para a paciente reler em casa. Material em vídeo ou áudio é alternativa para paciente com sobrecarga visual.',
+    armadilha: 'Entregar diagnóstico sem plano de acomodação. Diagnóstico sem caminho prático produz alívio momentâneo seguido de paralisia — "agora sei o que sou, e agora?".'
+  },
+  {
+    n: 10,
+    titulo: 'Articular acompanhamento longitudinal com pares e rede',
+    aplicacao: 'A avaliação não termina na devolutiva. Mulher adulta recém-diagnosticada se beneficia de três frentes longitudinais — psicoterapia com profissional informado em fenótipo feminino do TEA (não qualquer psicólogo serve), conexão com pares (grupos online moderados, encontros presenciais quando disponíveis, comunidades autistas brasileiras), e rede multiprofissional quando indicada (terapia ocupacional, fonoaudiologia para pragmática, psiquiatria para comorbidades, neuropsicologia para perfil cognitivo detalhado quando útil). A psicoeducação no primeiro ano pós-diagnóstico é fase específica — não é "psicoterapia clássica". Em paciente com history de tratamento psicológico ineficaz por anos, o psicólogo que conduz a primeira fase pós-diagnóstico precisa ter formação específica. Sem isso, a paciente retorna ao padrão anterior — agora com um rótulo a mais.',
+    armadilha: 'Encerrar o acompanhamento após a devolutiva. O diagnóstico em mulher adulta é abertura, não fechamento. A continuidade clínica define o desfecho funcional.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Avaliação de TEA em mulher adulta considerando camuflagem em 2026: HowTo em 10 passos',
+  description: 'Protocolo clínico para psicólogas e psicólogos brasileiros: finalidade, CAT-Q, RAADS-R, ADOS-2 Módulo 4, diferencial TDAH/TPB/CPTSD, autistic burnout, interseccionalidade LGBTQIA+, devolutiva ética e acompanhamento.',
+  totalTime: 'PT30M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliação de TEA em mulher adulta com camuflagem em 2026: HowTo passo-a-passo com CAT-Q, ADOS-2 e diferencial',
+  description: 'Protocolo em 10 passos para avaliação de TEA em mulheres adultas com camuflagem (CAT-Q), considerando prevalência revisada 3:1, comorbidades, autistic burnout (Raymaker 2020), interseccionalidade LGBTQIA+ (Strang 2024) e devolutiva ética com Lei 12.764/2012.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: SITE.url + '/guias/' },
+    { '@type': 'ListItem', position: 3, name: 'TEA em mulheres adultas — avaliação 2026', item: SITE.url + '/guias/tea-camuflagem-mulheres-evidencia-2026/' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia');
+---
+<Base
+  title="Avaliação de TEA em mulher adulta com camuflagem em 2026 — HowTo 10 passos | CAT-Q, ADOS-2, diferencial"
+  description="Protocolo em 10 passos para psicólogas e psicólogos brasileiros: finalidade, CAT-Q (Hull et al.), RAADS-R, AQ-50, ADOS-2 Módulo 4 com lente feminina, diferencial TDAH/TPB/CPTSD, autistic burnout (Raymaker 2020), interseccionalidade LGBTQIA+ e devolutiva ética.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'TEA em mulheres adultas — avaliação 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · HowTo · 10 passos · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliação de TEA em mulher adulta com camuflagem em 2026: HowTo passo-a-passo com CAT-Q, ADOS-2 e diferencial.</h1>
+          <TLDR
+            resposta="Avaliar TEA em mulher adulta em 2026 não é repetir o protocolo infantil. A literatura consolidada (Hull 2019, Lai e Szatmari 2023, Soares 2026, Raymaker 2020, Strang 2024) reposiciona o quadro: prevalência revisada de 3:1 (não 4:1), camuflagem mensurável via CAT-Q, autistic burnout como porta de entrada típica, e interseccionalidade LGBTQIA+ com prevalência aumentada. Em 10 passos: finalidade explícita, CAT-Q, triangulação RAADS-R/AQ-50/entrevista, ADOS-2 Módulo 4 com lente feminina, diferencial TDAH/TPB/CPTSD, autistic burnout, lente interseccional, prevalência revisada na devolutiva, plano de acomodação concreto e acompanhamento longitudinal."
+            fontes={['Hull et al. (2019) — CAT-Q', 'Lai e Szatmari (2023) — Molecular Autism', 'Soares et al. (2026) — Psicodebate', 'Raymaker et al. (2020) — Autistic burnout', 'Strang et al. (2024) — interseccionalidade LGBTQIA+', 'DSM-5-TR (APA, 2022)', 'Lei 12.764/2012 — Política Nacional TEA']}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Para psicólogas e psicólogos brasileiros conduzindo avaliação neurodesenvolvimental em mulheres adultas, mulheres trans e pessoas não-binárias.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBAs em Psicologia no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A leitura dominante sobre "TEA em mulheres" enfatiza o subdiagnóstico — verdade, mas leitura insuficiente. A inversão prática: o subdiagnóstico não é simétrico ao masculino. Não basta aplicar o mesmo protocolo a outra população e esperar resultado correto. O fenótipo feminino do autismo se constitui em interação com expectativas sociais de gênero — camuflagem refinada, scripts conversacionais aprendidos, interesses intensos socialmente aceitáveis, comorbidades acumuladas (depressão, ansiedade, TPB suspeita, anorexia) que mascaram a hipótese neurodesenvolvimental. O CAT-Q (Hull et al., 2019) é o instrumento que mede esse padrão. Sem ele, a avaliação reproduz o viés histórico — instrumentos normatizados em meninos brancos detectando preferencialmente meninos brancos.
+        </p>
+        <p>
+          A literatura 2024-2026 consolida três deslocamentos. Primeiro, prevalência revisada — a razão homem:mulher de 4:1 (Loomes et al., 2017) era superestimada; coortes cuidadosamente avaliadas se aproximam de 3:1 ou menos. Segundo, autistic burnout (Raymaker et al., 2020) como construto clínico autônomo, distinto do burnout ocupacional clássico — exaustão por demanda social cumulativa, com perda de habilidades antes presentes e redução de tolerância sensorial. Terceiro, interseccionalidade LGBTQIA+ — Warrier et al. (2020) e Strang et al. (2024) documentam prevalência aumentada em pessoas trans e não-binárias, exigindo competência clínica adicional. O DSM-5-TR (APA, 2022) mantém critérios sem diferenciação por gênero; a clínica responsável aplica lente de gênero ao critério, não ao avesso.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 10 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Mulher de 34 anos, dois burnouts prévios, diagnóstico tardio em 4 sessões</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Engenheira de software, 34 anos, três anos em terapia para "depressão recorrente com episódios ansiosos" sem resposta consistente a sertralina e psicoterapia TCC clássica. Procurou avaliação após filho de 5 anos receber diagnóstico de TEA nível 1 — reconheceu padrões da infância dele em sua própria história. Quatro sessões de avaliação: sessão 1, finalidade e entrevista clínica estruturada (trajetória, primeira infância via relato materno, episódios de burnout aos 22 e aos 29 anos com colapso funcional); sessão 2, CAT-Q (escore alto, perfil Compensation+Masking elevado), RAADS-R (acima do corte), AQ-50 (acima do corte), MBI-GS (perfil de exaustão sem cinismo); sessão 3, ADOS-2 Módulo 4 com leitura específica de fenótipo feminino — scripts conversacionais identificados, contato visual modulado por aprendizagem, interesse intenso em literatura japonesa contemporânea (Murakami, Yoshimoto) com profundidade que escapou a três terapeutas anteriores; sessão 4, devolutiva em duas partes (parte 1 escrita entregue por e-mail uma semana antes da sessão para leitura prévia, parte 2 presencial com plano de acomodação concreto).
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Diagnóstico final: TEA nível 1 (DSM-5-TR) com TDAH apresentação predominantemente desatenta coocorrente; depressão recorrente em remissão parcial atribuída a autistic burnout cumulativo, não a episódio depressivo primário. Plano: redução de carga de reuniões síncronas (acomodação negociada com empregador via Lei 12.764/2012), psicoterapia com colega informada em fenótipo feminino, conexão com grupo online moderado de mulheres autistas brasileiras, neuropsicologia em três meses para perfil cognitivo detalhado se útil. Em 8 meses, paciente reportou redução de exaustão crônica, retomada de prática artística antes abandonada e reorganização da rotina relacional. O alívio relatado em devolutiva ("não fui preguiçosa esses 34 anos, fui autista") é desfecho clínico relevante e replicável.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Instrumentos canônicos em 2026 — quando usar</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Instrumento</th>
+                <th class="text-left px-4 py-3">O que mede</th>
+                <th class="text-left px-4 py-3">Quando aplicar</th>
+                <th class="text-left px-4 py-3">Limitação</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">CAT-Q</td><td class="px-4 py-3 text-ink-700">Camuflagem (Compensation, Masking, Assimilation)</td><td class="px-4 py-3 text-ink-700">Antes da entrevista, em toda mulher adulta avaliada</td><td class="px-4 py-3 text-ink-700">Mede camuflagem, não TEA</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">RAADS-R</td><td class="px-4 py-3 text-ink-700">Autoavaliação longitudinal de traços autistas</td><td class="px-4 py-3 text-ink-700">Triagem inicial em adultos</td><td class="px-4 py-3 text-ink-700">Auto-relatado; suscetível a camuflagem</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">AQ-50</td><td class="px-4 py-3 text-ink-700">Triagem geral de traços autistas</td><td class="px-4 py-3 text-ink-700">Complementar a RAADS-R</td><td class="px-4 py-3 text-ink-700">Sensibilidade limitada em fenótipo feminino</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">ADOS-2 Módulo 4</td><td class="px-4 py-3 text-ink-700">Observação estruturada padrão-ouro</td><td class="px-4 py-3 text-ink-700">Confirmação clínica em adultos com fluência verbal</td><td class="px-4 py-3 text-ink-700">Subdetecta mulheres com camuflagem refinada</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">ADI-R</td><td class="px-4 py-3 text-ink-700">Entrevista com informante (primeira infância)</td><td class="px-4 py-3 text-ink-700">Quando há informante disponível e infância acessível</td><td class="px-4 py-3 text-ink-700">Depende da memória do informante</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">Entrevista clínica estruturada</td><td class="px-4 py-3 text-ink-700">Trajetória de vida, comorbidades, padrão funcional</td><td class="px-4 py-3 text-ink-700">Em toda avaliação; insubstituível</td><td class="px-4 py-3 text-ink-700">Depende da formação do clínico</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Leitura indicativa em 2026; nenhum instrumento isolado diagnostica. A triangulação é a clínica.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/faq/tea-camuflagem-mulheres-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — TEA em mulheres adultas, camuflagem e diagnóstico tardio</a></li>
+          <li><a href="/comparativos/diagnostico-tea-humano-vs-ia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — diagnóstico de TEA humano vs IA em 2026</a></li>
+          <li><a href="/guias/notas-clinicas-ia-implantar-consultorio-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — notas clínicas por IA no consultório em 2026</a></li>
+          <li><a href="/faq/burnout-pos-covid-4anos-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — burnout em profissionais de saúde 4 anos pós-COVID</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://doi.org/10.1186/s13229-023-00557-3" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lai e Szatmari (2023) — Sex/gender differences and autism. Molecular Autism.</a></li>
+          <li><a href="https://doi.org/10.22289/2446-922X.V12A1A41" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Soares et al. (2026) — Diagnóstico tardio em mulheres. Psicodebate.</a></li>
+          <li><a href="https://doi.org/10.1016/j.jaac.2017.03.013" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Loomes et al. (2017) — Razão homem:mulher em TEA.</a></li>
+          <li><a href="https://doi.org/10.1038/s41467-020-17794-1" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Warrier et al. (2020) — TEA em pessoas trans e gênero-diversas. Nature Communications.</a></li>
+          <li><a href="https://doi.org/10.1007/s10803-024-06123-8" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Strang et al. (2024) — Interseccionalidade gênero e autismo.</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 12.764/2012 — Política Nacional de Proteção dos Direitos da Pessoa com TEA.</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Avaliar TEA em mulher adulta em 2026 é triangular instrumentos com lente de gênero — não repetir protocolo infantil.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          CAT-Q como leitura obrigatória de camuflagem. RAADS-R, AQ-50 e entrevista clínica como triangulação. ADOS-2 Módulo 4 com leitura específica de fenótipo feminino. Diferencial TDAH/TPB/CPTSD mapeado, não excluído. Autistic burnout (Raymaker, 2020) como construto autônomo. Interseccionalidade LGBTQIA+ quando relevante. Devolutiva em duas sessões com plano de acomodação concreto. Acompanhamento longitudinal com profissional informado. Para MBAs Lato Sensu em Psicologia em formato Ao Vivo síncrono, IPOG mantém grade vigente em ipog.edu.br.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva ? mbaPositiva.shortName : 'MBA em Psicologia Positiva'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPositiva ? mbaPositiva.description : 'MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+          {areaNeuro && <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes citadas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Hull et al. (2019) — CAT-Q.</li>
+          <li>Lai e Szatmari (2023) — Molecular Autism.</li>
+          <li>Soares et al. (2026) — Psicodebate.</li>
+          <li>Loomes et al. (2017) — Razão H:M.</li>
+          <li>Raymaker et al. (2020) — Autistic burnout. Autism in Adulthood.</li>
+          <li>Warrier et al. (2020) — Nature Communications.</li>
+          <li>Strang et al. (2024) — J Autism Dev Disord.</li>
+          <li>DSM-5-TR (APA, 2022).</li>
+          <li>Lei 12.764/2012 — Política Nacional TEA.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

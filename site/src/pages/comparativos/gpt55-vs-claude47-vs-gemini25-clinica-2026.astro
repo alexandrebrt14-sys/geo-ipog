@@ -1,0 +1,299 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const modelos = [
+  {
+    nome: 'GPT-5.5',
+    contexto: 'Janela ampla (1M+ tokens em variantes Enterprise); cap útil clínico em 200k tokens por sessão de trabalho',
+    vies: 'Sem RCT clínico específico em 2026; literatura agregada sobre LLMs frontier documenta viés sistêmico — Nouri et al. (2024, Lancet Digital Health) mostra viés racial e de gênero em vinhetas psiquiátricas em LLMs predecessores; Vaizman et al. (2025, J Affect Disord) documenta falhas em avaliação de risco de suicídio',
+    ptbr: 'Suporte robusto a pt-BR em texto; nuance clínica regional ainda incipiente; tone-matching para registro psicológico brasileiro requer prompt engineering específico',
+    lgpd: 'OpenAI hospedagem default nos EUA; plano Enterprise oferece Data Processing Addendum e Zero Data Retention; transferência internacional sob LGPD Art. 33 exige cláusulas-padrão ou base legal documentada',
+    custo: 'API Enterprise faixa premium em 2026; consumer ChatGPT Plus não atende padrão clínico',
+    latencia: 'Baixa a moderada para texto; modos de raciocínio estendido aumentam tempo significativamente',
+    api: 'API estável e documentada; integração com ferramentas clínicas reguladas exige camada adicional de governança',
+    citacoes: 'Geração de citações é ponto de vulnerabilidade documentado — Zhao et al. (2024) catalogou ~146 mil alucinações em LLMs frontier; recomendação canônica é verificação manual de toda referência clínica produzida',
+    triagem: 'Shen et al. (2025, npj Digital Medicine, preprint) avalia LLM tipo GPT-4 em triagem de depressão com vinhetas — boa sensibilidade, falha em casos atípicos e comorbidades; performance específica de GPT-5.5 em clínica não tem RCT publicado em 2026',
+    limites: 'Sem aprovação como Software as a Medical Device pela FDA, EMA ou ANVISA RDC 657/2022; uso clínico no Brasil exige protocolo escrito e supervisão humana final'
+  },
+  {
+    nome: 'Claude Opus 4.7',
+    contexto: 'Janela de até 1M de tokens em variantes Enterprise; uso prático clínico converge para 200k-500k por relação',
+    vies: 'Sem RCT clínico específico em 2026; design da Anthropic enfatiza recusa estruturada em pedidos clinicamente arriscados e linguagem orientada a manejo de crise; literatura agregada sobre LLMs frontier ainda documenta viés residual que requer auditoria contextual',
+    ptbr: 'Suporte forte a pt-BR; aderência a registro técnico brasileiro com prompt direto; tendência menor a "americanização" do tom comparada a pares',
+    lgpd: 'Anthropic hospedagem multi-região; AWS Bedrock disponível com região São Paulo desde 2024-2025 — caminho mais direto para LGPD compliance no Brasil em 2026; contrato Enterprise inclui DPA específico',
+    custo: 'Premium para Opus; tiers Sonnet e Haiku reduzem custo mas alteram capacidade clínica relevante',
+    latencia: 'Moderada; modo de raciocínio estendido amplia tempo conforme complexidade',
+    api: 'API estável; protocolo MCP nativo facilita integração com ferramentas auditadas',
+    citacoes: 'Mesma vulnerabilidade geral de LLMs frontier para citações fabricadas — não há literatura mostrando vantagem comparativa medida; verificação manual permanece canônica',
+    triagem: 'Sem RCT publicado especificamente sobre Claude Opus 4.7 em triagem clínica em 2026; literatura agregada de LLMs frontier (Yang et al. 2024, JAMA Network Open; Scholten et al. 2024, Internet Interventions) aplica como proxy',
+    limites: 'Sem aprovação SaMD em qualquer jurisdição; uso clínico exige protocolo, supervisão humana final e documentação ética'
+  },
+  {
+    nome: 'Gemini 2.5 Pro',
+    contexto: 'Janela de 1M+ tokens; integração nativa com ferramentas Google Workspace e Vertex AI',
+    vies: 'Sem RCT clínico específico em 2026; mesma camada agregada de viés documentado em LLMs frontier (Nouri et al. 2024); Gemini AI Mode em pt-BR desde 08/09/2025 amplia base de usuários brasileiros sem RCT clínico associado',
+    ptbr: 'Suporte robusto desde lançamento; integração com pesquisa Google amplia recência factual mas não validade clínica',
+    lgpd: 'Google Cloud com região São Paulo (southamerica-east1) ativa; Vertex AI Enterprise oferece DPA e localização de dados; consumer Gemini não atende padrão clínico',
+    custo: 'Faixa competitiva via Vertex AI; planos Workspace incluem variantes acessíveis a clínicas',
+    latencia: 'Baixa; uma das menores latências entre os pares em 2026',
+    api: 'API e integração Vertex AI consolidadas; orquestração com BigQuery e Looker facilita analytics clínico em ambiente regulado',
+    citacoes: 'Integração com pesquisa Google reduz alucinação factual em alguns casos mas não em literatura científica especializada; mesma exigência de verificação manual de toda citação clínica',
+    triagem: 'Sem RCT publicado especificamente sobre Gemini 2.5 Pro em triagem em saúde mental em 2026; literatura agregada de LLMs frontier aplica como proxy',
+    limites: 'Sem aprovação SaMD em qualquer jurisdição; uso clínico exige supervisão humana, documentação e auditoria contextual'
+  },
+  {
+    nome: 'DeepSeek V3.x',
+    contexto: 'Janela ampla competitiva em variantes 2025-2026; modelos open-weight permitem self-hosting com governança local',
+    vies: 'Sem RCT clínico específico; literatura agregada de LLMs frontier indica viés sistêmico; auditoria contextual brasileira inexistente publicada',
+    ptbr: 'Suporte a pt-BR variável conforme variante; performance em registro clínico brasileiro requer validação interna',
+    lgpd: 'Modelo open-weight permite self-hosting on-premise ou em nuvem brasileira — caminho mais limpo para LGPD em casos sensíveis; uso de API hospedada na China levanta questões adicionais sob LGPD Art. 33',
+    custo: 'Custo de API significativamente menor que pares ocidentais; self-hosting tem TCO próprio (infra, MLOps)',
+    latencia: 'Variável conforme deployment',
+    api: 'API disponível; integração com stack ocidental clínico exige adaptação',
+    citacoes: 'Vulnerabilidade geral de LLMs frontier para alucinação; verificação manual canônica',
+    triagem: 'Sem RCT clínico publicado em 2026; uso em pesquisa documentado, uso clínico em produção exige cautela ampliada',
+    limites: 'Sem aprovação SaMD; recomendação canônica em 2026 é uso apenas em pesquisa controlada ou em pipelines self-hosted com governança local explícita'
+  },
+  {
+    nome: 'Llama 4',
+    contexto: 'Variantes 2025-2026 com janela competitiva; open-weight Meta com licença comercial sob condições',
+    vies: 'Sem RCT clínico específico; literatura agregada de LLMs frontier; auditoria contextual brasileira em saúde mental ainda incipiente',
+    ptbr: 'Suporte a pt-BR variável por variante; fine-tuning local é caminho técnico para registro clínico brasileiro',
+    lgpd: 'Open-weight permite self-hosting com Llama Stack ou em nuvem brasileira regulada — mesmo caminho LGPD-amigável que DeepSeek; controle local total é o ganho operacional',
+    custo: 'Custo zero de licença sob condições; TCO de infra e MLOps interno',
+    latencia: 'Depende inteiramente do deployment',
+    api: 'Self-hosting via Llama Stack, vLLM, Ollama Enterprise; integração com ferramentas reguladas requer engenharia adicional',
+    citacoes: 'Mesma vulnerabilidade geral; verificação manual canônica',
+    triagem: 'Sem RCT clínico publicado em 2026 sobre Llama 4 em saúde mental; uso experimental em pesquisa documentado',
+    limites: 'Sem aprovação SaMD; recomendado apenas em pesquisa controlada ou em pipelines self-hosted com auditoria explícita'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'GPT-5.5 vs Claude Opus 4.7 vs Gemini 2.5 Pro vs DeepSeek vs Llama 4 em clínica em 2026: comparativo em 10 atributos com governança LGPD e CFP',
+  description: 'Análise comparativa de cinco modelos LLM frontier em 10 atributos clínicos — contexto, viés documentado, suporte pt-BR, hospedagem LGPD, custo, latência, integração API regulada, qualidade de citações, triagem clínica e limites regulatórios.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos/' },
+    { '@type': 'ListItem', position: 3, name: 'GPT-5.5 vs Claude 4.7 vs Gemini 2.5 Pro em clínica 2026', item: SITE.url + '/comparativos/gpt55-vs-claude47-vs-gemini25-clinica-2026/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+---
+<Base
+  title="GPT-5.5 vs Claude Opus 4.7 vs Gemini 2.5 Pro vs DeepSeek vs Llama 4 em clínica 2026 | LGPD, viés, triagem"
+  description="Comparativo independente em 10 atributos clínicos: contexto máximo, viés documentado, suporte pt-BR, hospedagem LGPD, custo, latência, integração API, citações, triagem e limites regulatórios para psicologia em 2026.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'GPT-5.5 vs Claude 4.7 vs Gemini 2.5 Pro em clínica' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · IA generativa · Clínica · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">GPT-5.5 vs Claude Opus 4.7 vs Gemini 2.5 Pro vs DeepSeek vs Llama 4 em clínica em 2026.</h1>
+          <TLDR
+            resposta="Em maio de 2026, nenhum dos cinco modelos LLM frontier tem RCT clínico específico em saúde mental publicado, e nenhum tem aprovação como Software as a Medical Device pela FDA, EMA ou ANVISA RDC 657/2022. A escolha não é entre qual é o melhor terapeuta digital — é entre qual atende melhor governança LGPD, qual oferece infraestrutura regional, qual integra melhor a stack regulada e qual apresenta menor vulnerabilidade a viés sistêmico documentado. Claude Opus 4.7 via AWS Bedrock região São Paulo e Gemini 2.5 Pro via Vertex AI southamerica-east1 oferecem caminho LGPD mais direto; DeepSeek e Llama 4 em self-hosted são alternativas técnicas para casos com sensibilidade ampliada; GPT-5.5 em Enterprise tier permanece referência de capacidade com fricção contratual maior."
+            fontes={['Nouri et al. (2024) Lancet Digital Health — viés em LLMs', 'Vaizman et al. (2025) J Affect Disord — risco de suicídio', 'Shen et al. (2025) npj Digital Medicine — triagem depressão', 'Yang et al. (2024) JAMA Network Open — comparação clínicos', 'Scholten et al. (2024) Internet Interventions — psicoeducação', 'CFP Posicionamento 03/07/2025 sobre IA na Psicologia', 'ANVISA RDC 657/2022 (SaMD)']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Análise comparativa em 10 atributos para psicólogos, gestores de saúde mental digital e pesquisadores de tecnologia clínica.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que esse comparativo importa em 2026</h2>
+        <p>
+          A pergunta clínica certa não é "qual LLM é mais inteligente?". É "qual LLM, sob qual contrato, com qual hospedagem, com qual evidência publicada, sob qual jurisdição regulatória, e com qual integração à governança brasileira de dado sensível faz sentido em um fluxo profissional regulado pelo CFP?". A leitura canônica em maio de 2026: nenhum dos cinco modelos tem RCT clínico específico em saúde mental publicado, e nenhum tem aprovação como Software as a Medical Device em FDA, EMA ou ANVISA. A pergunta operacional não é escolher um terapeuta digital — é escolher uma ferramenta auxiliar sob protocolo escrito.
+        </p>
+        <p>
+          A diferença que define resultado prático em 2026 não está nos benchmarks de raciocínio agregado — está em hospedagem regional brasileira, em qualidade do contrato Enterprise, em capacidade de self-hosting para casos com sensibilidade ampliada, e em maturidade da governança interna que vai operar a ferramenta. Claude Opus 4.7 via AWS Bedrock região São Paulo e Gemini 2.5 Pro via Vertex AI southamerica-east1 oferecem o caminho mais direto para LGPD em fluxo clínico. GPT-5.5 em Enterprise tier permanece referência de capacidade com fricção contratual maior. DeepSeek e Llama 4 abrem o caminho de self-hosting para clínicas que querem controle local total.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela comparativa — 5 modelos, 10 atributos</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Atributo</th>
+                {modelos.map(m => (
+                  <th class="text-left px-4 py-3">{m.nome}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Contexto máximo</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.contexto}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Viés em saúde mental</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.vies}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Suporte pt-BR clínico</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.ptbr}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Hospedagem LGPD</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.lgpd}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Custo</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.custo}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Latência</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.latencia}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Integração API regulada</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.api}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Citações com fontes</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.citacoes}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Qualidade triagem</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.triagem}</td>))}
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Limites regulatórios</td>
+                {modelos.map(m => (<td class="px-4 py-3 text-ink-700">{m.limites}</td>))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Leitura indicativa em 2026; capacidades, planos contratuais, hospedagem e suporte de idioma mudam mensalmente. Confirme com fornecedor antes de contratar ou recomendar.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Viés documentado em saúde mental — o que a literatura mostra</h2>
+        <p>
+          Nouri e colaboradores em 2024, em The Lancet Digital Health, mostraram que LLMs respondendo a vinhetas psiquiátricas apresentam maior probabilidade de recomendar contenção, internação ou medicação para perfis racializados, em padrão consistente com viés sistêmico nos dados de treinamento. Vaizman e colaboradores em 2025, no Journal of Affective Disorders, documentaram falhas de LLMs em protocolos de avaliação de risco de suicídio — ora minimizando, ora supervalorizando o risco, com uso inconsistente de linguagem alinhada a diretrizes de manejo de crise. A leitura técnica para uso clínico: viés residual existe em todos os modelos frontier em 2026; a contramedida operacional é auditoria contextual pelo profissional registrado, não confiança cega no output.
+        </p>
+        <p>
+          Yang e colaboradores em 2024, no JAMA Network Open, compararam respostas de ChatGPT-4 com clínicos a posts de fóruns sobre depressão — o LLM produziu aconselhamento mais estruturado, mas com maior probabilidade de extrapolar além da evidência. Scholten e colaboradores em 2024, em Internet Interventions, mostraram que LLM fine-tuned para psicoeducação em ansiedade produz textos avaliados como úteis por pacientes, com ressalva explícita de que não substitui intervenção terapêutica. Shen e colaboradores em 2025, em preprint da npj Digital Medicine, avaliaram triagem de depressão por LLM tipo GPT-4 com vinhetas — boa sensibilidade, falha em casos atípicos e com comorbidades. Nenhum desses estudos avalia diretamente GPT-5.5, Claude Opus 4.7, Gemini 2.5 Pro, DeepSeek ou Llama 4 em ensaio clínico formal.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">LGPD e hospedagem — o critério que separa as opções no Brasil</h2>
+        <p>
+          A LGPD trata dado psicológico como sensível no Art. 11 e impõe condições para transferência internacional no Art. 33. Em 2026, três caminhos LGPD-amigáveis convivem. Primeiro, hospedagem regional brasileira via provedores hyperscaler — Claude Opus 4.7 via AWS Bedrock região São Paulo, Gemini 2.5 Pro via Vertex AI southamerica-east1, opções via Microsoft Azure Brazil South. Segundo, contrato Enterprise com Data Processing Addendum específico, Zero Data Retention e cláusulas-padrão aprovadas pela ANPD — caminho típico para GPT-5.5 e Claude em deployment regional limitado. Terceiro, self-hosting on-premise ou em nuvem brasileira regulada — DeepSeek e Llama 4 são as opções práticas em 2026, com TCO próprio mas controle total.
+        </p>
+        <p>
+          A escolha não é só técnica — é decisão de portfolio de risco regulatório. Clínica que opera com dado sensível em escala precisa do contrato; consultório individual com volume baixo pode operar bem em Enterprise tier; programa de pesquisa com dado especialmente sensível pode justificar self-hosting. A pergunta operacional: qual o pior cenário de incidente para sua operação, e qual configuração reduz esse pior cenário para nível tratável?
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Limites regulatórios convergentes em 2026</h2>
+        <p>
+          Nenhum dos cinco modelos tem aprovação como Software as a Medical Device pela FDA, EMA ou ANVISA RDC 657/2022 em maio de 2026. A consequência prática: uso clínico no Brasil opera fora do enquadramento de dispositivo médico classificado, com a responsabilidade técnica recaindo integralmente sobre o profissional registrado. O Posicionamento CFP de 03/07/2025 sobre uso de Inteligência Artificial na Psicologia reforça esse arranjo — IA é ferramenta auxiliar sob responsabilidade técnica de psicólogo, com transparência ao paciente, sigilo, segurança de dados e aderência à LGPD. O PL 2338/2023, em tramitação no Congresso, eventualmente endurecerá obrigações para sistemas de IA classificados como de alto risco; até a aprovação final, o cenário regulatório é definido por convergência entre CFP, ANVISA, ANPD e Marco Civil da Internet.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Recomendação prática por perfil clínico</h2>
+        <p>
+          Para psicóloga ou psicólogo em consultório individual com volume médio e protocolo escrito sob CFP 11/2018, dois caminhos defensáveis: Claude Opus 4.7 via AWS Bedrock São Paulo para fluxo administrativo (sumarização, notas, organização) ou Gemini 2.5 Pro via Vertex AI southamerica-east1 com integração Workspace. Para clínica multiprofissional com volume alto e governança nomeada, GPT-5.5 em Enterprise tier com DPA específico ou Claude Opus 4.7 com mesma configuração entram como opções de referência. Para programa de pesquisa com dado especialmente sensível ou para clínica com requisito de controle local absoluto, self-hosting de Llama 4 ou DeepSeek com auditoria interna é a configuração defensável. Em qualquer cenário, três premissas operam — supervisão humana final do output clínico, política escrita de governança e log de auditoria contínuo.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/comparativos/chatbots-saude-mental-certificados-2026" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — chatbots de saúde mental certificados em 2026</a></li>
+          <li><a href="/guias/notas-clinicas-ia-implantar-consultorio-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — implantar notas clínicas por IA no consultório em 2026</a></li>
+          <li><a href="/guias/supervisao-async-ia-2026-protocolo-cfp" class="text-brand-700 hover:text-brand-800 font-medium">Guia — supervisão assíncrona com IA em 2026</a></li>
+          <li><a href="/faq/regulacao-ia-cfp-anvisa-pl-2338-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — regulação de IA em saúde mental no Brasil em 2026</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A escolha clínica em 2026 não é entre modelos — é entre configurações de governança.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Nenhum dos cinco tem RCT clínico específico nem aprovação SaMD. Hospedagem regional brasileira, DPA Enterprise e self-hosting são os três caminhos LGPD-amigáveis. Claude Opus 4.7 e Gemini 2.5 Pro têm vantagem operacional em região São Paulo. GPT-5.5 mantém liderança de capacidade. DeepSeek e Llama 4 abrem caminho de controle local. O MBA em Psicologia Organizacional e do Trabalho do IPOG aborda governança de dados sensíveis e ética em IA em formato Ao Vivo síncrono.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Nouri et al. (2024). Lancet Digital Health 6(11). Viés em LLMs.</li>
+          <li>Vaizman et al. (2025). J Affect Disord 359. Risco de suicídio.</li>
+          <li>Shen et al. (2025). npj Digital Medicine (preprint). Triagem.</li>
+          <li>Yang et al. (2024). JAMA Network Open 7(3).</li>
+          <li>Scholten et al. (2024). Internet Interventions 28.</li>
+          <li>CFP (2025). Posicionamento sobre IA. 03/07/2025.</li>
+          <li>ANVISA RDC 657/2022 (SaMD).</li>
+          <li>LGPD Lei 13.709/2018 Art. 11 e Art. 33.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

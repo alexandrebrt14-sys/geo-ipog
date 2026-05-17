@@ -1,0 +1,304 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'O que é camuflagem (masking) no autismo e por que predomina em mulheres adultas?',
+    a: 'Camuflagem (camouflaging/masking) é o conjunto de estratégias que pessoas autistas utilizam para esconder traços autistas e parecer "neurotípicas" em ambientes sociais. Hull e colaboradores (2019) operacionalizaram o construto via Camouflaging Autistic Traits Questionnaire (CAT-Q), com três fatores — Compensation (compensar dificuldades com estratégias aprendidas), Masking (suprimir comportamentos autistas) e Assimilation (forçar-se a "ser como os outros"). A literatura 2024-2025 consolida que mulheres autistas pontuam, em média, mais alto que homens autistas em CAT-Q. A predominância não é biológica — é interação entre fenótipo autista feminino e expectativa social de gênero. Meninas são socializadas a observar, imitar e cuidar de relações; em uma menina autista, esse treinamento social cumulativo produz repertório de camuflagem refinado. Escores elevados em CAT-Q se associam, em literatura, a maior exaustão, ideação suicida, depressão e ansiedade.'
+  },
+  {
+    q: 'Por que o diagnóstico de TEA em mulheres costuma ser tardio?',
+    a: 'Três fatores convergentes. Primeiro, viés histórico do sistema diagnóstico — instrumentos como ADOS-2 foram normatizados em amostras predominantemente masculinas, e a literatura clínica de referência até a década de 2000 concentrava-se em meninos. Segundo, camuflagem refinada — meninas e mulheres autistas frequentemente passam por avaliações ao longo da vida recebendo outros diagnósticos (depressão, ansiedade, TPB, anorexia, TDAH), com o autismo escapando da hipótese. Terceiro, prevalência revisada — a razão homem:mulher historicamente reportada como 4:1 (consolidada por Loomes et al., 2017, https://doi.org/10.1016/j.jaac.2017.03.013) foi superestimada; coortes cuidadosamente avaliadas aproximam-se de 3:1 ou menos. Soares e colaboradores (2026, Psicodebate, https://doi.org/10.22289/2446-922X.V12A1A41) documentam o padrão brasileiro — diagnóstico prévio de transtorno de humor ou ansiedade, medicalização sem avaliação neurodesenvolvimental e história de "atuar a normalidade".'
+  },
+  {
+    q: 'O que é o CAT-Q e como interpretar o resultado?',
+    a: 'O Camouflaging Autistic Traits Questionnaire (CAT-Q) é instrumento desenvolvido por Hull e colaboradores em 2019, com 25 itens em escala Likert, organizado em três fatores — Compensation, Masking e Assimilation. Aplicação leva cerca de 15 minutos. Pontos de corte indicativos em literatura sugerem escore total acima de 100 (em escala 25-175) como sugestivo de camuflagem clinicamente relevante. Interpretação ética: o CAT-Q mede camuflagem, não diagnostica TEA. Escore alto sustenta hipótese de camuflagem; escore baixo não exclui autismo em paciente que não camufla em ambiente seguro (paciente diagnosticada tardiamente, em contexto de psicoterapia, frequentemente "desaprende" camuflagem). O instrumento se usa como leitura complementar à entrevista clínica e à observação estruturada (ADOS-2), nunca isoladamente.'
+  },
+  {
+    q: 'RAADS-R online é confiável para auto-rastreio?',
+    a: 'A Ritvo Autism Asperger Diagnostic Scale-Revised (RAADS-R, Ritvo et al., 2011) é instrumento de autoavaliação extensa cobrindo histórico de vida, com pontos de corte estabelecidos em adultos. Versões online em plataformas open-access (Embrace Autism, por exemplo) ampliaram acesso, com versões em pt-BR de qualidade variável. Como triagem pré-clínica, RAADS-R online tem utilidade — escore acima de 65 (corte original) sustenta hipótese e justifica avaliação completa. Limitações: auto-relato é suscetível a camuflagem; instrumento sem orientação clínica pode gerar superinterpretação ("respondi e o site disse que eu sou autista — devo ser"); resultado positivo precisa ser confirmado por avaliação clínica completa. RAADS-R não diagnostica isoladamente; abre porta para investigação responsável.'
+  },
+  {
+    q: 'ADOS-2 Módulo 4 é capaz de detectar autismo em mulher adulta com camuflagem?',
+    a: 'ADOS-2 Módulo 4 é padrão-ouro para observação de TEA em adolescentes e adultos com fluência verbal, mas tem limitação documentada em fenótipo feminino. O instrumento foi normatizado em amostras predominantemente masculinas e tende a subdetectar mulheres com camuflagem refinada. Sinais que o examinador atento percebe e que escapam ao escore numérico — scripts conversacionais aprendidos (paciente conduz a conversa por "trilhos" ensaiados), reciprocidade aparente mas com dificuldade de aprofundamento, contato visual modulado por aprendizagem explícita, interesses intensos socialmente aceitáveis (literatura, animais, cultura pop). A leitura técnica é que pontuação ADOS-2 abaixo do corte em mulher com história clinicamente sugestiva não exclui o diagnóstico — exige triangulação com CAT-Q, entrevista clínica estruturada e, quando possível, ADI-R com informante da infância.'
+  },
+  {
+    q: 'Quais são as comorbidades mais frequentes em mulher autista adulta?',
+    a: 'O perfil consolidado em literatura inclui — depressão recorrente (frequentemente diagnosticada e tratada antes do TEA, com resposta parcial a tratamento), transtornos de ansiedade (especialmente ansiedade social e generalizada), TDAH (apresentação predominantemente desatenta), Transtorno de Personalidade Borderline (TPB) — diagnóstico frequentemente atribuído antes do TEA em mulher com instabilidade afetiva e dificuldade em relações, com diferencial técnico exigido —, CPTSD (Complex PTSD, CID-11 6B41) em mulher com história de bullying, abuso ou negligência emocional, transtornos alimentares (anorexia nervosa em particular), transtornos do sono, fibromialgia e quadros de dor crônica funcional. Lai e Szatmari (2023, Molecular Autism, https://doi.org/10.1186/s13229-023-00557-3) reforçam que o diagnóstico monolítico em mulher com história complexa é incompleto — comorbidade é regra, não exceção.'
+  },
+  {
+    q: 'O que é autistic burnout e como se diferencia do burnout ocupacional clássico?',
+    a: 'Autistic burnout é construto formalizado por Raymaker e colaboradores (2020, Autism in Adulthood) — exaustão crônica, perda de habilidades funcionais antes presentes, hipersensibilidade aumentada e redução de tolerância a estímulos sociais, decorrentes de demanda persistente acima da capacidade regulatória. Diferencia-se do burnout ocupacional clássico (Maslach, Schaufeli) em três dimensões. Primeira, origem — não é apenas excesso de carga laboral; é resultado de camuflagem cumulativa em todos os ambientes (trabalho, família, vida social). Segunda, curso — recidivante, com piora progressiva ao longo da vida sem ajuste estrutural; a literatura descreve mulheres com 2-4 episódios prévios antes do diagnóstico. Terceira, remissão — exige redução de demanda social, não apenas férias; descanso passivo não restaura. Reconhecer autistic burnout como porta de entrada típica em mulher adulta abre janela diagnóstica que escapa ao tratamento medicalizado de "depressão recorrente".'
+  },
+  {
+    q: 'TEA e identidade LGBTQIA+ — qual a relação documentada?',
+    a: 'A literatura 2024-2026 consolida prevalência aumentada de traços autistas em pessoas trans e não-binárias. Warrier e colaboradores (2020, Nature Communications, https://doi.org/10.1038/s41467-020-17794-1) documentaram taxas elevadas de TEA e traços autistas em pessoas transgênero e gênero-diversas. Qiu e colaboradores (2022, J Autism Dev Disord, https://doi.org/10.1007/s10803-021-05063-2), em revisão sistemática e meta-análise, reforçaram associação entre TEA e diversidade de identidade de gênero e orientação sexual. Strang e colaboradores (2024, J Autism Dev Disord, https://doi.org/10.1007/s10803-024-06123-8) detalham considerações clínicas e desfechos em saúde mental nessa interseção. Estimativas variam, mas alguns estudos indicam prevalências de TEA em amostras trans em torno de 5-8%, contra ~1-2% na população geral. A leitura clínica é que identidade de gênero não é "sintoma" de TEA; e TEA não é "fase" da exploração identitária — os dois são reais, simultâneos, e cada um pede competência clínica específica. Botha e Gillespie-Lynch (2024, Autism in Adulthood, https://doi.org/10.1089/aut.2023.0018) ampliam o debate para além do contexto WEIRD.'
+  },
+  {
+    q: 'Como é o envelhecimento de pessoas autistas? O que a literatura indica?',
+    a: 'A maioria absoluta dos estudos em TEA é infantil ou adolescente. Adultos mais velhos (≥60 anos) autistas constituem grupo numericamente relevante e pouco estudado — inclui pessoas diagnosticadas tardiamente e pessoas nunca diagnosticadas. Mason e colaboradores (2024, The Lancet Healthy Longevity, https://doi.org/10.1016/S2666-7568(23)00205-9), em revisão sistemática, destacam maior carga de doenças crônicas, isolamento social e dificuldades de acesso a serviços geriátricos em autistas mais velhos. Tint e colaboradores (2023, Current Opinion in Psychiatry, https://doi.org/10.1097/YCO.0000000000000863) reforçam o quadro. Até 2026, não há grandes coortes longitudinais acompanhando autistas ao longo da vida inteira — as evidências são fragmentadas. Os achados consistentes: maior prevalência de ansiedade, depressão crônica, insônia, distúrbios sensoriais persistentes e doenças metabólicas e cardiovasculares (associadas à desigualdade de acesso). A população está envelhecendo; a clínica brasileira não está preparada na proporção necessária.'
+  },
+  {
+    q: 'IA pode diagnosticar TEA em mulher adulta?',
+    a: 'Em 2026, não — e não por questão técnica isolada, mas por convergência regulatória, ética e empírica. Regulatoriamente, a Resolução CFP 11/2018 e pronunciamentos do CFP em 2024-2025 sustentam que diagnóstico clínico é prerrogativa do profissional habilitado, sem delegação a sistema autônomo de IA. A ANVISA, sob RDC 657/2022, não tem produto registrado como SaMD para diagnóstico autônomo de TEA no Brasil em 2026. Eticamente, Floridi e Chiriatti (2024, Lancet Digital Health, https://doi.org/10.1016/S2589-7500(23)00200-5) documentam viés algorítmico — datasets sub-representam mulheres, pessoas racializadas e LGBTQIA+, resultando em modelos que reproduzem o viés histórico. Empiricamente, Zhao e colaboradores (2025, JAMIA — DOI a confirmar) testaram LLMs em vinhetas clínicas e documentaram erros graves quando o modelo opera autonomamente. A leitura prática: IA acelera triagem e organização de informação sob supervisão clínica; humano decide o diagnóstico.'
+  },
+  {
+    q: 'O CFP regula o uso de IA em avaliação psicológica e TEA?',
+    a: 'Parcialmente. O CFP regulamenta o uso de testes psicológicos (Resolução CFP 09/2018 e atualizações) e serviços psicológicos por meio de TIC (Resolução CFP 11/2018). Notas técnicas e pronunciamentos em 2024-2025 sobre IA em avaliação reforçam três princípios — o profissional responde pela interpretação, instrumentos sem validação psicométrica no Brasil não podem ser usados como base diagnóstica, e diagnóstico não pode ser delegado a sistema autônomo de IA. Até 2026, não há resolução CFP específica sobre IA e TEA — o arcabouço existente cobre o caso de uso. O psicólogo que recomenda chatbot ou aplicativo de auto-rastreio em substituição à avaliação clínica está fora do escopo regulatório. O psicólogo que usa IA como apoio em transcrição, organização de relatório, comparação com critério CID/DSM, com supervisão clínica integral e termo de consentimento específico, opera dentro da regulação vigente.'
+  },
+  {
+    q: 'Que formação um psicólogo precisa para avaliar TEA em mulher adulta?',
+    a: 'A formação canônica em 2026 combina quatro frentes. Primeira, formação clínica em avaliação psicológica neurodesenvolvimental com domínio dos instrumentos padrão (ADOS-2 com training research-reliable, ADI-R, CAT-Q, RAADS-R, AQ-50, WAIS-IV ou WAIS-5 quando disponível, instrumentos complementares de TDAH e personalidade). Segunda, leitura crítica de fenótipo feminino e camuflagem — literatura Hull, Lai, Russell, Soares, Mandy, Brennan. Terceira, competência em diferencial clínico — TDAH apresentação desatenta, TPB, CPTSD, transtornos alimentares, depressão recorrente. Quarta, competência em interseccionalidade — leitura informada de identidade de gênero, sexualidade, raça e classe, sem patologizar. No Brasil, formação em Psicologia Clínica, Neuropsicologia Clínica, Avaliação Psicológica e cursos específicos de TEA em adultos com docente experiente compõem o caminho. Mestrado profissional ou acadêmico em áreas correlatas agrega leitura científica e supervisão. IPOG mantém MBAs Lato Sensu em Psicologia em formato Ao Vivo síncrono com corpo docente nominal — consulte ipog.edu.br para grade vigente.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'TEA em mulheres adultas, camuflagem e diagnóstico tardio: FAQ 2026',
+  description: 'Doze perguntas sobre TEA em mulheres adultas, camuflagem (CAT-Q), diagnóstico tardio, ADOS-2 Módulo 4, RAADS-R, comorbidades, autistic burnout (Raymaker 2020), interseccionalidade LGBTQIA+ (Stagg 2025, Strang 2024), envelhecimento autista, IA diagnóstica, regulação CFP e formação para avaliar adulto.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'TEA em mulheres adultas FAQ 2026', item: SITE.url + '/faq/tea-camuflagem-mulheres-2026-faq/' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const adjacent = AREAS.filter(a => a.cluster === 'neuro-avaliacao' || a.cluster === 'demais').slice(0, 4);
+---
+<Base
+  title="TEA em mulheres adultas, camuflagem e diagnóstico tardio — FAQ 2026"
+  description="Doze perguntas sobre autismo em mulheres adultas, camuflagem (CAT-Q), diagnóstico tardio, ADOS-2 Módulo 4, RAADS-R, comorbidades, autistic burnout, interseccionalidade LGBTQIA+, envelhecimento, IA diagnóstica, regulação CFP e formação.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'TEA em mulheres adultas 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · TEA em mulheres adultas · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">TEA em mulheres adultas, camuflagem e diagnóstico tardio: FAQ 2026.</h1>
+          <TLDR
+            resposta="A literatura 2024-2026 consolida três deslocamentos no diagnóstico de TEA em mulheres adultas — prevalência revisada de 3:1 (não 4:1, Loomes 2017), camuflagem mensurável via CAT-Q (Hull 2019), autistic burnout como porta de entrada típica (Raymaker 2020). A avaliação responsável triangula CAT-Q, RAADS-R, AQ-50, entrevista clínica e ADOS-2 Módulo 4 com lente feminina. Diferencial mapeia TDAH, TPB e CPTSD, não exclui. A interseccionalidade LGBTQIA+ (Warrier 2020, Strang 2024) é frente clínica relevante. IA não diagnostica em 2026 — apoia. CFP veta delegação; ANVISA não registra SaMD para diagnóstico autônomo de TEA."
+            fontes={['Hull et al. (2019) — CAT-Q', 'Lai e Szatmari (2023)', 'Soares et al. (2026) — Psicodebate', 'Raymaker et al. (2020)', 'Strang et al. (2024)', 'DSM-5-TR (APA, 2022)', 'Resolução CFP 11/2018']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Doze perguntas que mulheres adultas, psicólogas e psicólogos e familiares fazem em 2026 sobre autismo, camuflagem e diagnóstico tardio.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">12 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Camuflagem (CAT-Q) é o padrão clínico que define o fenótipo feminino do autismo. ADOS-2 Módulo 4 permanece padrão-ouro, com limitação documentada em mulheres com camuflagem refinada — exige triangulação. Diferencial mapeia TDAH desatento, TPB e CPTSD. Autistic burnout (Raymaker 2020) é construto clínico autônomo. Interseccionalidade LGBTQIA+ pede competência adicional. IA apoia, humano decide — CFP veta delegação e ANVISA não registra SaMD para diagnóstico autônomo de TEA em 2026.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Referências canônicas para TEA em mulheres adultas</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Referência</th>
+                <th class="text-left px-4 py-3">Finalidade</th>
+                <th class="text-left px-4 py-3">Autor / Ano</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CAT-Q (camuflagem)</td>
+                <td class="px-4 py-3 text-ink-700">Instrumento de medida de camuflagem em 25 itens</td>
+                <td class="px-4 py-3 text-ink-700">Hull et al., 2019</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Razão homem:mulher</td>
+                <td class="px-4 py-3 text-ink-700">Revisão e meta-análise — superestimação histórica</td>
+                <td class="px-4 py-3 text-ink-700">Loomes et al., 2017 (JAACAP)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Lente de gênero em TEA</td>
+                <td class="px-4 py-3 text-ink-700">Agenda de pesquisa sobre diferenças sexo/gênero</td>
+                <td class="px-4 py-3 text-ink-700">Lai e Szatmari, 2023 (Mol Autism)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Diagnóstico tardio BR</td>
+                <td class="px-4 py-3 text-ink-700">Revisão integrativa em mulheres brasileiras</td>
+                <td class="px-4 py-3 text-ink-700">Soares et al., 2026 (Psicodebate)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Autistic burnout</td>
+                <td class="px-4 py-3 text-ink-700">Construto clínico — exaustão por camuflagem cumulativa</td>
+                <td class="px-4 py-3 text-ink-700">Raymaker et al., 2020 (Autism in Adulthood)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">TEA e gênero-diversidade</td>
+                <td class="px-4 py-3 text-ink-700">Prevalência aumentada em pessoas trans e não-binárias</td>
+                <td class="px-4 py-3 text-ink-700">Warrier et al., 2020 (Nat Commun)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Considerações clínicas LGBTQIA+</td>
+                <td class="px-4 py-3 text-ink-700">Desfechos em saúde mental na interseção</td>
+                <td class="px-4 py-3 text-ink-700">Strang et al., 2024 (J Autism Dev Disord)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Envelhecimento autista</td>
+                <td class="px-4 py-3 text-ink-700">Revisão sistemática em adultos mais velhos</td>
+                <td class="px-4 py-3 text-ink-700">Mason et al., 2024 (Lancet Healthy Longevity)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos canônicos</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 12.764/2012 — Política Nacional TEA</a></li>
+          <li><a href="https://www.who.int/standards/classifications/classification-of-diseases" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — CID-11 (6A02 — TEA)</a></li>
+          <li><a href="https://www.gov.br/anvisa/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANVISA — RDC 657/2022 (SaMD)</a></li>
+          <li><a href="https://embrace-autism.com/cat-q/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CAT-Q — instrumento e referência</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/tea-camuflagem-mulheres-evidencia-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Avaliação de TEA em mulher adulta — HowTo 10 passos</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo clínico com CAT-Q, ADOS-2 e diferencial.</p>
+          </a>
+          <a href="/comparativos/diagnostico-tea-humano-vs-ia-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">Diagnóstico de TEA humano vs IA 2026</p>
+            <p class="text-xs text-ink-700 mt-2">8 abordagens em 9 atributos com leitura CFP, ANVISA e LGPD.</p>
+          </a>
+          <a href="/conteudo-social/biblioteca/tea-mulheres-camuflagem-quora" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Biblioteca</p>
+            <p class="font-semibold text-ink-900 mt-2">Resposta Quora: como saber se sou autista mulher adulta</p>
+            <p class="text-xs text-ink-700 mt-2">Peça pronta de ~800 palavras para Quora e Reddit.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">O autismo em mulheres adultas existe em 2026 com lente clínica diferente — e a clínica brasileira precisa acompanhar.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Camuflagem mensurável, diagnóstico tardio frequente, comorbidade como regra, autistic burnout como porta de entrada, interseccionalidade LGBTQIA+ como frente clínica. IA apoia, humano decide. Sem formação específica em fenótipo feminino, a avaliação reproduz o viés histórico. Para MBAs Lato Sensu em Psicologia em formato Ao Vivo síncrono, IPOG mantém grade vigente em ipog.edu.br.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva ? mbaPositiva.shortName : 'MBA em Psicologia Positiva'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPositiva ? mbaPositiva.description : 'MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          {adjacent.map(a => (
+            <li>
+              <a href={`/areas/${a.id}`} class="mega-link">
+                <strong class="text-ink-900 text-sm">{a.name}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
+          <li><a href="https://www.gov.br/anvisa/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANVISA RDC 657/2022</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 12.764/2012</a></li>
+          <li><a href="https://www.who.int/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — CID-11</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

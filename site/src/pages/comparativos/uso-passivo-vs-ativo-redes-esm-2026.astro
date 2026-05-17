@@ -1,0 +1,283 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const padroes = [
+  {
+    nome: 'Uso passivo',
+    descricao: 'Consumo sem interação direta — scroll de feed, visualização de vídeos curtos, leitura de comentários sem participação, consumo de Stories e Reels.',
+    perfil: 'Receptor; baixa criação; alta exposição a comparação social.'
+  },
+  {
+    nome: 'Uso ativo',
+    descricao: 'Interação direcionada — postar, comentar com amigo conhecido off-line, mensagem direta a contato próximo, participação em grupo fechado, criação de conteúdo.',
+    perfil: 'Emissor; alta criação; exposição relacional.'
+  }
+];
+
+const atributos = [
+  {
+    n: 1,
+    nome: 'Dados ESM 2024-2026',
+    passivo: 'Meier e colaboradores (2024, Pediatrics) documentaram queda pequena de humor momentâneo após episódios de uso passivo em adolescentes, com efeito mais marcado em uso noturno e em sessões longas (acima de 45 minutos). ESM supera medida agregada autorrelatada — "horas por dia" tem erro grosseiro.',
+    ativo: 'Mesmo estudo de Meier et al. (2024) sugere associação neutra a leve positiva entre uso ativo com amigo conhecido off-line e bem-estar momentâneo. Achado precisa replicação ampliada; ESM em adolescentes brasileiros é escasso em 2026 — gap explícito de pesquisa nacional.'
+  },
+  {
+    n: 2,
+    nome: 'Efeito em humor',
+    passivo: 'Scroll passivo associa-se a pequena queda de humor pós-uso, especialmente em estados de fadiga ou solidão pré-existentes. Verduyn e colaboradores (revisões 2017 atualizadas até 2024) sustentam padrão consistente, com magnitude pequena no agregado e mais marcada em subgrupos vulneráveis.',
+    ativo: 'Interação ativa com vínculo afetivo conhecido tende a ter efeito neutro ou levemente positivo. Distinção importante: postar para audiência ampla e desconhecida ativa comparação social e expectativa de feedback público — comportamento intermediário entre passivo puro e ativo relacional.'
+  },
+  {
+    n: 3,
+    nome: 'Efeito em autoestima',
+    passivo: 'Comparação social ascendente (upward comparison) com perfis editados ou idealizados associa-se a queda de autoestima em meninas adolescentes — efeito documentado em Vogel e colaboradores (2014, atualizações 2024) e em séries pós-pandêmicas. Tilt para meninas é replicado em múltiplas amostras.',
+    ativo: 'Reforço positivo via curtidas, comentários e mensagens diretas de pares próximos pode estabilizar autoestima — porém, dependência de feedback público é fator de risco para fragilização. Sherman e colaboradores (2024, JAMA Pediatrics) documentaram que responsividade do estriado ventral a "likes" aos 13-15 anos prediz padrão de uso aos 16-17.'
+  },
+  {
+    n: 4,
+    nome: 'Diferença por plataforma',
+    passivo: 'Instagram (Reels, Stories), TikTok (For You Page) e YouTube Shorts dominam padrão passivo em 2024-2026. Algoritmo de recomendação maximiza tempo de tela com conteúdo otimizado para engajamento — escolha algorítmica, não escolha do usuário.',
+    ativo: 'WhatsApp e mensagens diretas em Instagram concentram uso ativo relacional. BeReal (lançado 2020, queda de uso em 2024-2025) tentou modelo ativo com prompt diário — efeito de longo prazo ainda inconclusivo. X (antigo Twitter) tem padrão misto com forte componente passivo desde 2023.'
+  },
+  {
+    n: 5,
+    nome: 'Diferença por gênero',
+    passivo: 'Meninas adolescentes (11-15 anos) apresentam maior tempo médio em uso passivo, maior exposição a conteúdo de comparação corporal e estética, e magnitude maior de associação com sintomas de ansiedade e depressão — Twenge, Haidt e colaboradores (2025, Journal of Adolescence) consolidam essa direção em reanálises de dados nacionais americanos.',
+    ativo: 'Meninos adolescentes apresentam maior tempo médio em games online com componente social (Discord, comunidades de plataformas), com padrão de risco diferente — exposição a conteúdos de violência, comunidades tóxicas, gambling em loot boxes. Direção do efeito por gênero é replicada mas magnitude continua em debate metodológico ativo (Orben e Przybylski, 2024-2025).'
+  },
+  {
+    n: 6,
+    nome: 'Diferença por idade',
+    passivo: 'A janela 11 a 15 anos é o período de maior vulnerabilidade documentada para uso passivo em meninas — coincide com pico de puberdade, instalação de comparação social pública e plasticidade cerebral em maturação. Sherman e colaboradores (2024) confirmam neurobiologia subjacente.',
+    ativo: 'Em adolescentes de 16 a 18 anos, uso ativo com vínculo off-line correlaciona-se com melhor integração social e suporte percebido — desde que combinado com ativo presencial. Em adolescentes com 10 anos ou menos, recomendação canônica permanece restrição maior — proposta das 4 normas de Haidt (sem redes antes dos 16 anos é a norma 2).'
+  },
+  {
+    n: 7,
+    nome: 'Sintomas associados',
+    passivo: 'Insônia (uso noturno), ansiedade matutina, ruminação, sintomas depressivos leves a moderados, sensação de "vazio" após sessões longas, ideação de comparação social negativa. Em subgrupos vulneráveis (histórico de bullying, jovens LGBTQIA+ sem suporte familiar), risco amplificado.',
+    ativo: 'Dependência de feedback público para regulação afetiva, dificuldade de autoregulação sem dispositivo, ansiedade social quando offline, sintomas de "phantom vibration" e checagem compulsiva. Em uso ativo saudável com pares próximos, sintomas associados são raros — distinção é qualitativa, não quantitativa.'
+  },
+  {
+    n: 8,
+    nome: 'Intervenção recomendada',
+    passivo: 'Substituição de uso passivo por uso ativo presencial (esporte, arte, encontro com amigos off-line), restrição de uso noturno (sem dispositivo no quarto), psicoeducação sobre comparação social, tempo limite de plataformas de scroll infinito. Em adolescente com sintoma depressivo coocorrente, intervenção clínica primária no transtorno.',
+    ativo: 'Manter uso ativo com pares conhecidos off-line; redirecionar para grupos fechados em vez de feed público; psicoeducação sobre dependência de validação pública; quando há comorbidade ansiosa, intervenção clínica em paralelo à conversa sobre uso.'
+  },
+  {
+    n: 9,
+    nome: 'Papel do clínico',
+    passivo: 'Caracterizar padrão (diário estruturado 14 dias, não autorrelato retrospectivo), identificar gatilhos contextuais (solidão noturna, fadiga após escola, conflito familiar), trabalhar substituição comportamental, monitorar sintomas em paralelo com instrumentos validados (PHQ-A, GAD-7, SDQ).',
+    ativo: 'Caracterizar qualidade do vínculo (conhecido vs desconhecido off-line), identificar se uso ativo está substituindo presencial ou complementando, trabalhar regulação afetiva sem dependência de feedback público, validar uso saudável quando documentado.'
+  },
+  {
+    n: 10,
+    nome: 'Limitações metodológicas',
+    passivo: 'Distinção passivo vs ativo é heurística útil mas simplifica padrão real — adolescente alterna entre os dois padrões em minutos. ESM rigoroso é caro e logisticamente complexo; em consultório, substitui-se parcialmente por diário estruturado. Dados brasileiros longitudinais em ESM com adolescentes são raros em 2026 — replicação local é gap explícito de pesquisa.',
+    ativo: 'Mesmo achado de efeito neutro a positivo em uso ativo precisa replicação em amostras diversas. Causalidade segue contestada — Orben e Przybylski (2024-2025) sustentam que efeitos médios em amostras gerais são pequenos (r entre 0,05 e 0,10), com variação significativa por escolha analítica.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Uso passivo vs ativo de redes em adolescentes — comparativo em 10 atributos com dados ESM 2024-2026',
+  description: 'Comparativo independente em 10 atributos entre uso passivo (scroll, consumo) e uso ativo (post, interação direta) de redes sociais em adolescentes — ESM 2024-2026, efeito em humor e autoestima, diferenças por plataforma, gênero e idade, intervenção e limitações metodológicas.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos/' },
+    { '@type': 'ListItem', position: 3, name: 'Uso passivo vs ativo de redes em adolescentes ESM 2026', item: SITE.url + '/comparativos/uso-passivo-vs-ativo-redes-esm-2026/' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+const areaEscolar = AREAS.find(a => a.id === 'psicologia-escolar-educacional');
+---
+<Base
+  title="Uso passivo vs ativo de redes em adolescentes — comparativo ESM 2024-2026 | 10 atributos"
+  description="Comparativo independente em 10 atributos: dados ESM 2024-2026, humor, autoestima, plataformas (Instagram, TikTok, X, BeReal), gênero, idade, sintomas, intervenção, papel do clínico e limitações metodológicas.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Uso passivo vs ativo de redes em adolescentes ESM 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Adolescência digital · ESM 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Uso passivo vs ativo de redes em adolescentes: comparativo em 10 atributos com dados ESM 2024-2026.</h1>
+          <TLDR
+            resposta="A distinção uso passivo (scroll, consumo) vs uso ativo (post, interação direta) é heurística útil para clínica e prática escolar em 2026 — não é dicotomia absoluta. Dados ESM de Meier e colaboradores (2024, Pediatrics) sustentam queda pequena de humor após sessões longas de uso passivo, especialmente em uso noturno e em meninas de 11-15 anos. Uso ativo com vínculo off-line conhecido tende a efeito neutro a leve positivo. Sherman e colaboradores (2024, JAMA Pediatrics) caracterizam neurobiologia subjacente em estriado ventral. Intervenção recomendada: substituir passivo por presencial, restringir noturno, monitorar sintomas com instrumentos validados (PHQ-A, GAD-7). ESM rigoroso em adolescentes brasileiros é gap explícito de pesquisa nacional em 2026."
+            fontes={['Meier et al. (2024, Pediatrics)', 'Sherman et al. (2024, JAMA Pediatrics)', 'Twenge, Haidt, Blake et al. (2025, J Adolescence)', 'Orben e Przybylski (2024-2025, PsyArXiv e Annual Review preprint)', 'Verduyn et al. (2017 e atualizações 2024)']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Para psicólogos clínicos da infância e adolescência, psicólogos escolares, pesquisadores e gestores de saúde mental.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que esse comparativo importa em 2026</h2>
+        <p>
+          A pergunta clínica e escolar correta sobre redes sociais em adolescentes não é "quanto tempo?" — é "qual padrão, em qual contexto, com qual vínculo". Em 2024-2026, ESM (Experience Sampling Method) e EMA (Ecological Momentary Assessment) deslocaram o campo do autorrelato retrospectivo viesado para captura em tempo real de uso, humor e contexto. A distinção passivo vs ativo é o resultado mais consolidado dessa transição — e o achado é que a dicotomia simples falha: o efeito depende do tipo de uso, do vínculo subjacente, do momento do dia, da idade, do gênero e da presença de psicopatologia coocorrente.
+        </p>
+        <p>
+          A leitura canônica em 2026: uso passivo prolongado, especialmente noturno e em meninas de 11-15 anos, associa-se a pequena queda de humor pós-uso e a sintomas como insônia, ansiedade matutina e ruminação. Uso ativo com vínculo conhecido off-line tende a efeito neutro a positivo — desde que não substitua presencial. O profissional que opera essa distinção com método articula intervenção individualizada; o profissional que não a opera fica refém de "horas por dia" autorrelatadas, medida com erro grosseiro e inferência fraca.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Os dois padrões em 1 minuto</h2>
+        <div class="grid sm:grid-cols-2 gap-4 mt-4">
+          {padroes.map(p => (
+            <div class="card p-6">
+              <h3 class="font-display font-semibold text-lg text-ink-900">{p.nome}</h3>
+              <p class="mt-3 text-ink-700 leading-relaxed text-sm">{p.descricao}</p>
+              <p class="mt-3 text-xs uppercase tracking-wider text-ink-500 font-semibold">Perfil</p>
+              <p class="text-sm text-ink-700 mt-1">{p.perfil}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Tabela comparativa — 10 atributos</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Atributo</th>
+                <th class="text-left px-4 py-3">Uso passivo</th>
+                <th class="text-left px-4 py-3">Uso ativo</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {atributos.map(a => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top whitespace-nowrap">{a.n}. {a.nome}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{a.passivo}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{a.ativo}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500 italic">Leitura indicativa em 2026; campo em revisão metodológica ativa. ESM rigoroso em adolescentes brasileiros segue como gap de pesquisa nacional.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">ESM e EMA — por que substituem o "horas por dia"</h2>
+        <p>
+          O autorrelato retrospectivo de tempo de tela tem erro grosseiro documentado em múltiplos estudos — adolescentes superestimam ou subestimam o uso em magnitudes superiores a 30% quando comparados com logs reais do dispositivo. Orben e Przybylski (2024-2025), em reanálise multiverso de surveys nacionais, mostram que escolha analítica e qualidade da medida explicam parte substantiva da variância em estudos prévios sobre uso e bem-estar. ESM resolve parte do problema — prompts em smartphone captam uso em tempo real, humor antes e depois, contexto situacional (sozinho, com amigos, à noite). Meier e colaboradores (2024, Pediatrics) usaram ESM para documentar a distinção passivo vs ativo em adolescentes europeus; replicação brasileira é gap explícito em 2026.
+        </p>
+        <p>
+          Para consultório individual sem orçamento para ESM rigoroso, o substituto razoável é diário estruturado de 14 dias com prompts em horários definidos — não substitui ESM em pesquisa, mas supera autorrelato retrospectivo em clínica. A documentação clínica registra padrão observado, gatilhos contextuais, sintomas correlacionados e mudança ao longo do plano de intervenção.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Neurobiologia em 2024-2026 — o que diz e o que não diz</h2>
+        <p>
+          Sherman e colaboradores (2024, JAMA Pediatrics) documentaram em estudo fMRI longitudinal que maior responsividade ao feedback social (curtidas) no estriado ventral aos 13-15 anos prediz uso mais intenso de redes aos 16-17 — com magnitude moderada por depressão prévia e gênero. Tiego e colaboradores (2024, Neuroscience and Biobehavioral Reviews) consolidam meta-análise de fMRI em uso problemático de redes em adolescentes — padrões de ativação em estriado e córtex pré-frontal aparecem, com similaridade parcial a circuitos de recompensa de outras experiências prazerosas, mas sem evidência de neuroadaptação equivalente à dependência de drogas. Pessiglione e Louie (2025, Trends in Cognitive Sciences) revisam o papel da dopamina em ambientes digitais — dopamina sinaliza erro de previsão de recompensa, e feeds infinitos exploram reforço intermitente, mas isso não equivale a "telas destroem serotonina" ou "dopamina de tela igual a dopamina de crack". Slogans midiáticos simplificam sistemas complexos. O profissional clínico opera com nuance.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Decisão clínica em consultório brasileiro</h2>
+        <p>
+          Três cenários defensáveis. Primeiro, uso sem prejuízo funcional — caracterização e psicoeducação familiar; não é caso clínico. Segundo, uso problemático sem psicopatologia primária — diário estruturado, contrato comportamental, redução gradual de uso passivo noturno, substituição por presencial, monitoramento por 90 dias com instrumentos validados. Terceiro, uso problemático com psicopatologia primária — o transtorno é o foco; uso é variável secundária. Em adolescente LGBTQIA+ com sintoma depressivo e exposição a conteúdo NSSI no TikTok, articulação adicional com Safe Messaging Guidelines do Trevor Project (2024) e da OMS (atualização 2024). Em adolescente com ideação suicida ativa, encaminhamento imediato — CVV 188, CAPS de referência, plano de saúde com canal de urgência.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximo passo</h2>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          O profissional que pretende navegar adolescência digital com método em 2026 precisa de três peças. Primeira, base teórica integrada — neurociência do desenvolvimento (Sherman, Tiego, Pessiglione), ESM e EMA (Meier), debate metodológico (Twenge/Haidt vs Orben/Przybylski). Segunda, articulação legal — Lei 15.100/2025 e ECA Digital (vigência 17/03/2026), Resoluções CFP 11/2018 e 06/2019, Posicionamento CFP 03/07/2025 sobre IA em saúde mental. Terceira, instrumentação validada — PHQ-A, GAD-7, SDQ e escalas de uso problemático com validação brasileira. Formação aplicada em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar acelera essa curva. O MBA em Psicologia Positiva do IPOG aborda essas frentes em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/haidt-2026-update-evidencia-adolescencia-digital" class="text-brand-700 hover:text-brand-800 font-medium">Guia — Haidt 2026 update em adolescência digital, HowTo em 10 passos</a></li>
+          <li><a href="/faq/safe-messaging-lgbtqia-trevor-2026-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — Safe Messaging para adolescente LGBTQIA+ em 2026</a></li>
+          <li><a href="/conteudo-social/biblioteca/lei-15100-celular-na-escola-quora" class="text-brand-700 hover:text-brand-800 font-medium">Biblioteca — Lei 15.100 funciona? resposta canônica em Quora</a></li>
+          <li><a href="/comparativos/chatbots-saude-mental-certificados-2026" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo — chatbots de saúde mental certificados em 2026</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A pergunta não é "quanto tempo" — é "qual padrão, com qual vínculo, em qual contexto".</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Uso passivo prolongado e noturno em meninas de 11-15 anos é o foco de risco mais consolidado em 2024-2026. Uso ativo com vínculo conhecido off-line tende a efeito neutro a positivo. ESM substitui "horas por dia" autorrelatadas; PHQ-A, GAD-7 e SDQ monitoram sintomas em paralelo. O MBA em Psicologia Positiva do IPOG cobre saúde mental, prevenção e gestão do bem-estar em formato Ao Vivo síncrono.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBA no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva ? mbaPositiva.shortName : 'MBA em Psicologia Positiva'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPositiva ? mbaPositiva.description : 'MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+          {areaEscolar && <li><a href={`/areas/${areaEscolar.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaEscolar.name}</strong></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Meier, A. et al. (2024). Pediatrics — ESM em uso de redes em adolescentes.</li>
+          <li>Sherman, L.E. et al. (2024). JAMA Pediatrics — fMRI longitudinal.</li>
+          <li>Twenge, Haidt, Blake et al. (2025). Journal of Adolescence — reanálise nacional.</li>
+          <li>Orben, A. e Przybylski, A.K. (2024-2025). PsyArXiv; Annual Review of Developmental Psychology (preprint).</li>
+          <li>Verduyn, P. et al. (2017 e atualizações 2024) — passivo, ativo e bem-estar.</li>
+          <li>Tiego, J. et al. (2024). Neuroscience and Biobehavioral Reviews.</li>
+          <li>Pessiglione, M. e Louie, K. (2025). Trends in Cognitive Sciences.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

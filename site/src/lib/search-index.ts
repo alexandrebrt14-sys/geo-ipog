@@ -28,6 +28,7 @@ import {
   TEMAS_EMERGENTES_2025_2026,
 } from './data';
 import { SYNONYMS, TAG_MAP, TAG_MAP_MBA } from './taxonomy';
+import { AUTO_PAGES, type AutoPage } from './auto-pages';
 import {
   indexEngine,
   bm25Search,
@@ -590,8 +591,54 @@ export function buildIndex(): SearchDoc[] {
     });
   }
 
+  // -------------------------------------------------------------------------
+  // Merge auto-discovered pages (gerado por scripts/gen-search-pages.mjs).
+  // Manual wins: se ja existe doc com mesmo href, ignora o auto.
+  // -------------------------------------------------------------------------
+  const existingHrefs = new Set(docs.map(d => normalizeHref(d.href)));
+  for (const p of AUTO_PAGES) {
+    const norm = normalizeHref(p.route);
+    if (existingHrefs.has(norm)) continue;
+    docs.push(autoToDoc(p));
+    existingHrefs.add(norm);
+  }
+
   _cache = docs;
   return docs;
+}
+
+/** Normaliza href para dedupe entre manual e auto: trailing slash + lowercase. */
+function normalizeHref(href: string): string {
+  if (!href) return '';
+  let h = href.split('#')[0].split('?')[0];
+  h = h.replace(/\/+$/, '');
+  return h.toLowerCase();
+}
+
+const KIND_VALID: DocKind[] = [
+  'Área', 'MBA', 'Tema', 'Estado', 'Persona', 'Guia', 'FAQ',
+  'Glossário', 'Método', 'Evidência', 'Caso', 'Intervenção',
+  'Comparativo', 'Carreira', 'Recurso',
+];
+
+function autoToDoc(p: AutoPage): SearchDoc {
+  const kind = (KIND_VALID.includes(p.kind as DocKind) ? p.kind : 'Recurso') as DocKind;
+  return {
+    id: `auto:${p.route}`,
+    title: p.title,
+    subtitle: p.description ? p.description.slice(0, 140) : undefined,
+    href: p.route,
+    kind,
+    tags: p.tags,
+    keywords: mkKeywords(
+      p.title,
+      p.description,
+      p.tags,
+      p.route.replace(/^\/+|\/+$/g, '').replace(/[\/-]/g, ' '),
+    ),
+    weight: p.weight,
+    persona: p.persona ? [p.persona] : undefined,
+  };
 }
 
 // ---------------------------------------------------------------------------

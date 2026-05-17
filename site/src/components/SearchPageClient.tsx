@@ -448,22 +448,37 @@ export default function SearchPageClient({
   }, [initialPersona]);
 
   // -------------------------------------------------------------------------
-  // popstate (back/forward)
+  // popstate (back/forward) + hidratacao inicial via URL (deep linking).
+  // Em build estatico, /busca/?q=foo entrega initialQ='' do SSR (page foi gerada
+  // sem query). Lemos window.location.search no mount para hidratar o estado e
+  // suportar deep linking + compartilhamento de URL.
   // -------------------------------------------------------------------------
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const handler = () => {
+    const hydrate = () => {
       const params = new URLSearchParams(window.location.search);
-      setQ(params.get('q') ?? '');
-      setKinds(parseCsvParam(params.get('kind')));
-      setPersona(params.get('persona') ?? '');
-      setCluster(params.get('cluster') ?? '');
-      setRegulatoryLevels(parseCsvParam(params.get('regulatoryLevel')));
-      setRegioes(parseCsvParam(params.get('regiao')));
-      setPage(Math.max(1, parseInt(params.get('page') ?? '1', 10) || 1));
+      const qParam = params.get('q') ?? '';
+      const kindsParam = parseCsvParam(params.get('kind'));
+      const personaParam = params.get('persona') ?? '';
+      const clusterParam = params.get('cluster') ?? '';
+      const regLevelsParam = parseCsvParam(params.get('regulatoryLevel'));
+      const regioesParam = parseCsvParam(params.get('regiao'));
+      const pageParam = Math.max(1, parseInt(params.get('page') ?? '1', 10) || 1);
+      // Aplica apenas se diferente do estado atual para evitar loops com syncUrl.
+      setQ(prev => (prev === qParam ? prev : qParam));
+      setKinds(prev => (prev.join(',') === kindsParam.join(',') ? prev : kindsParam));
+      setPersona(prev => (prev === personaParam ? prev : personaParam));
+      setCluster(prev => (prev === clusterParam ? prev : clusterParam));
+      setRegulatoryLevels(prev => (prev.join(',') === regLevelsParam.join(',') ? prev : regLevelsParam));
+      setRegioes(prev => (prev.join(',') === regioesParam.join(',') ? prev : regioesParam));
+      setPage(prev => (prev === pageParam ? prev : pageParam));
+      if (qParam && inputRef.current && inputRef.current.value !== qParam) {
+        inputRef.current.value = qParam;
+      }
     };
-    window.addEventListener('popstate', handler);
-    return () => window.removeEventListener('popstate', handler);
+    hydrate();
+    window.addEventListener('popstate', hydrate);
+    return () => window.removeEventListener('popstate', hydrate);
   }, []);
 
   // -------------------------------------------------------------------------

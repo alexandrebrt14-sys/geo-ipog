@@ -23,6 +23,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   buildIndex,
   fold,
+  getIndexStats,
   search,
   trending,
   byPersona,
@@ -122,11 +123,14 @@ const FILTERS: FilterChip[] = [
   { id: 'MBA', label: 'MBAs' },
   { id: 'Guia', label: 'Guias' },
   { id: 'FAQ', label: 'FAQs' },
-  { id: 'Glossário', label: 'Glossário' },
+  { id: 'Comparativo', label: 'Comparativos' },
+  { id: 'Tema', label: 'Temas' },
   { id: 'Evidência', label: 'Evidências' },
+  { id: 'Método', label: 'Métodos' },
   { id: 'Caso', label: 'Casos' },
   { id: 'Intervenção', label: 'Intervenções' },
-  { id: 'Método', label: 'Métodos' },
+  { id: 'Glossário', label: 'Glossário' },
+  { id: 'Carreira', label: 'Carreira' },
 ];
 
 const QUICK_QUERIES = ['NR-1', 'Burnout', 'POT', 'Neuro', 'IA', 'TEA', 'MBA', 'Supervisor'];
@@ -456,6 +460,7 @@ export default function SearchOverlay() {
 
   const debouncedQ = useDebounce(q, DEBOUNCE_MS);
   const trendingDocs = useMemo(() => trending().slice(0, 6), []);
+  const indexStats = useMemo(() => getIndexStats(), []);
   const isDev = useMemo(() => {
     if (typeof window === 'undefined') return false;
     try {
@@ -883,7 +888,7 @@ export default function SearchOverlay() {
         {liveMessage}
       </div>
 
-      <div className="relative mx-auto mt-12 sm:mt-16 max-w-2xl px-3 sm:px-4 animate-slide-up">
+      <div className="relative mx-auto mt-4 sm:mt-16 max-w-2xl px-3 sm:px-4 animate-slide-up">
         <div className="rounded-2xl bg-white shadow-lift border border-surface-200 overflow-hidden">
           {/* Input + autocomplete */}
           <div className="flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-surface-200">
@@ -982,28 +987,27 @@ export default function SearchOverlay() {
             </div>
           ) : null}
 
-          {/* Filter chips (sticky) */}
-          <div className="flex flex-wrap items-center gap-1.5 px-4 py-2 border-b border-surface-200 bg-surface-50/60 sticky top-0 z-10">
-            {FILTERS.map(f => (
-              <button
-                key={f.id}
-                onClick={() => setKindFilter(f.id)}
-                className={`text-xs px-2.5 py-1 rounded-full border transition ${
-                  effectiveKindFilter === f.id
-                    ? 'bg-brand-600 text-white border-brand-600'
-                    : 'bg-white text-ink-700 border-surface-200 hover:border-brand-300 hover:text-brand-700'
-                }`}
-                aria-pressed={effectiveKindFilter === f.id}
-              >
-                {f.label}
-              </button>
-            ))}
+          {/* Filter chips (sticky, horizontal scroll no mobile pra nao quebrar linhas) */}
+          <div className="sticky top-0 z-10 border-b border-surface-200 bg-surface-50/60 px-4 py-2 flex items-center gap-2">
+            <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap flex-1 -mx-1 px-1 scrollbar-thin">
+              {FILTERS.map(f => (
+                <button
+                  key={f.id}
+                  onClick={() => setKindFilter(f.id)}
+                  className={`shrink-0 text-xs px-2.5 py-1 rounded-full border transition ${
+                    effectiveKindFilter === f.id
+                      ? 'bg-brand-600 text-white border-brand-600'
+                      : 'bg-white text-ink-700 border-surface-200 hover:border-brand-300 hover:text-brand-700'
+                  }`}
+                  aria-pressed={effectiveKindFilter === f.id}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
             {!showZero && results.length > 0 && (
-              <span className="ml-auto text-[11px] text-ink-500">
+              <span className="shrink-0 text-[11px] text-ink-500 hidden sm:inline">
                 {results.length} {results.length === 1 ? 'resultado' : 'resultados'}
-                {allMatchedTerms.length > 0 && (
-                  <> · {allMatchedTerms.length} {allMatchedTerms.length === 1 ? 'termo casado' : 'termos casados'}</>
-                )}
               </span>
             )}
           </div>
@@ -1040,6 +1044,7 @@ export default function SearchOverlay() {
               <ZeroState
                 recent={recent}
                 trendingDocs={trendingDocs}
+                indexStats={indexStats}
                 onGo={go}
                 onSelectQuery={setQ}
                 onClearRecent={() => {
@@ -1202,12 +1207,14 @@ function SkeletonRows() {
 function ZeroState({
   recent,
   trendingDocs,
+  indexStats,
   onGo,
   onSelectQuery,
   onClearRecent,
 }: {
   recent: RecentEntry[];
   trendingDocs: SearchDoc[];
+  indexStats: { docs: number; terms: number; avgDocLen: number; kinds: Record<DocKind, number> };
   onGo: (href: string, query?: string) => void;
   onSelectQuery: (q: string) => void;
   onClearRecent: () => void;
@@ -1224,8 +1231,23 @@ function ZeroState({
     'Avaliação psicológica',
   ];
   const now = Date.now();
+  const coverageLine = (() => {
+    const k = indexStats.kinds;
+    const parts: string[] = [];
+    if (k['Área']) parts.push(`${k['Área']} áreas`);
+    if (k['MBA']) parts.push(`${k['MBA']} MBAs`);
+    if (k['Guia']) parts.push(`${k['Guia']} guias`);
+    if (k['Comparativo']) parts.push(`${k['Comparativo']} comparativos`);
+    if (k['FAQ']) parts.push(`${k['FAQ']} FAQs`);
+    if (k['Tema']) parts.push(`${k['Tema']} temas`);
+    return parts.slice(0, 5).join(' · ');
+  })();
   return (
     <div className="space-y-5 px-1.5 py-2">
+      <div className="rounded-lg bg-brand-50/60 border border-brand-100 px-3 py-2 text-[11px] text-brand-800">
+        <span className="font-semibold">{indexStats.docs}</span> entradas indexadas no portal
+        {coverageLine && <span className="text-ink-500"> · {coverageLine}</span>}
+      </div>
       {recent.length > 0 && (
         <Section
           title="Buscas recentes"

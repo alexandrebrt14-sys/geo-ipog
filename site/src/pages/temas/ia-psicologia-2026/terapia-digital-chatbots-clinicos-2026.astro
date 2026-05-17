@@ -1,0 +1,306 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const chatbots = [
+  {
+    nome: 'Woebot',
+    origem: 'Woebot Health (EUA, fundado 2017 por Alison Darcy)',
+    arquitetura: 'Roteiro estruturado em TCC, regras determinísticas com camada NLU; em 2024 começou piloto com LLM em módulos restritos',
+    evidenciaChave: 'Fitzpatrick et al. (JMIR Mental Health, 2017) — RCT com 70 universitários: redução em PHQ-9 vs grupo informação. Estudos subsequentes 2019-2024 confirmam efeito modesto em sintomas leves a moderados.',
+    statusRegulatorio: 'Breakthrough Device Designation FDA (2021) para depressão pós-parto; sem registro Anvisa no Brasil até 05/2026.'
+  },
+  {
+    nome: 'Wysa',
+    origem: 'Touchkin eServices (Índia, fundado 2015)',
+    arquitetura: 'Híbrido roteiro + LLM; oferece nível humano (coach certificado) sob assinatura. Distribuído via empregadores e NHS UK.',
+    evidenciaChave: 'Inkster, Sarda e Subramanian (JMIR mHealth uHealth, 2018) — estudo observacional com 129 usuários, melhora em PHQ-9 proporcional ao engajamento. Validação no NHS UK como apoio em listas de espera (2022-2024).',
+    statusRegulatorio: 'CE Mark Classe I, FDA Breakthrough Device Designation. Sem registro Anvisa.'
+  },
+  {
+    nome: 'Replika',
+    origem: 'Luka Inc. (EUA, fundado 2017 por Eugenia Kuyda)',
+    arquitetura: 'Companion app baseado em LLM proprietário com persona customizável (amigo, mentor, parceiro romântico). NÃO é app clínico; mercado é "AI companion".',
+    evidenciaChave: 'Maples, Cerit, Vishwanath e Pea (npj Mental Health Research, 2024) — survey com 1.006 estudantes universitários usuários, descreve uso como suporte percebido mas alerta para risco de dependência. Pataranutaporn et al. (MIT Media Lab, 2023-2025) documentam mecanismos de "addictive intelligence".',
+    statusRegulatorio: 'NÃO é dispositivo médico. Em 2023, Garante Privacy italiano restringiu acesso por menores; em 2024-2025 retomou operação na União Europeia sob ajustes.'
+  },
+  {
+    nome: 'Youper',
+    origem: 'Youper Inc. (EUA, fundado 2016 por Jose Hamilton, médico brasileiro)',
+    arquitetura: 'Roteiro TCC + intervenções de mindfulness e ACT; LLM em camada de conversação a partir de 2023.',
+    evidenciaChave: 'Mehta, Niles, Vargas e Marafon (JMIR Formative Research, 2021) — estudo observacional com 4.517 usuários, melhora em PHQ-9 e GAD-7 em uso autônomo.',
+    statusRegulatorio: 'Sem registro Anvisa; disponível em português brasileiro com fundador brasileiro.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Chatbot terapêutico tem evidência clínica em 2026?',
+    a: 'Sim, evidência mista. Para sintomas leves a moderados de depressão e ansiedade em adultos com engajamento sustentado, há trials randomizados favoráveis para Woebot (Fitzpatrick 2017) e estudos observacionais robustos para Wysa (Inkster 2018) e Youper (Mehta 2021). Heinz e colaboradores publicaram em 2025 no NEJM AI primeiro RCT bem desenhado de chatbot baseado em LLM treinado em TCC, com sinal positivo em adultos com depressão e ansiedade — o estudo é frequentemente citado como ponto de inflexão da literatura. Para sintomas graves, ideação suicida ativa, transtornos psicóticos ou bipolar em fase aguda, NÃO há evidência de eficácia e os apps em geral redirecionam para linha de crise. Companion apps tipo Replika são categoria diferente, sem reivindicação clínica e com sinal de risco em usuários vulneráveis.'
+  },
+  {
+    q: 'O Posicionamento CFP de 03/07/2025 proíbe IA em psicoterapia?',
+    a: 'Não proíbe, mas restringe. O documento é Posicionamento (não Resolução), publicado pelo Conselho Federal de Psicologia em 03 de julho de 2025, e estabelece que psicoterapia conduzida por sistema de IA generativa de forma autônoma é incompatível com a Resolução CFP 13/2022 (que define a psicoterapia como ato privativo de psicólogo). O posicionamento permite, com governança, IA como ferramenta de apoio a psicólogo habilitado — transcrição de sessão com consentimento, sumário de prontuário com revisão, psicoeducação para o paciente entre sessões, organização administrativa. Veda IA como terapeuta principal. Fiscalização do CRP atua sobre o psicólogo, não sobre o app — a responsabilidade é do profissional que indica ou usa.'
+  },
+  {
+    q: 'Chatbot terapêutico precisa de registro Anvisa para operar no Brasil?',
+    a: 'Depende da reivindicação clínica. A Resolução Anvisa RDC 657/2022 classifica software como dispositivo médico (SaMD) quando o produto reivindica finalidade diagnóstica, terapêutica ou de monitoramento de condição de saúde. Chatbot que se posiciona como "apoio emocional", "diário guiado" ou "psicoeducação" tende a operar fora do registro. Chatbot que reivindica eficácia em transtorno específico (depressão, ansiedade clínica) e usa termo médico para descrever benefício entra no escopo. Em 2026, Woebot, Wysa e Youper operam no Brasil como wellness app, sem registro Anvisa — situação que pode mudar com revisão da RDC 657 prevista no calendário regulatório.'
+  },
+  {
+    q: 'Replika ainda é usado no Brasil em 2026?',
+    a: 'Sim, com base de usuários relevante. Replika não é classificado como app de saúde mental — é AI companion, categoria distinta. Pataranutaporn e colaboradores do MIT Media Lab publicaram em 2023-2025 análises sobre "addictive intelligence" descrevendo o padrão de engajamento. Maples et al. (npj Mental Health Research, 2024) registraram que 3% dos usuários estudantes universitários relataram que o app "ajudou a interromper ideação suicida" — sinal positivo importante — e simultaneamente alta proporção descreveu dependência emocional. O profissional clínico em 2026 precisa perguntar especificamente sobre uso de Replika em pacientes jovens em luto, isolamento social ou após ruptura amorosa. Não é vedação; é fator clínico a investigar.'
+  },
+  {
+    q: 'Onde aprender a integrar IA aplicada com rigor técnico em prática clínica?',
+    a: 'Pós-graduações em Psicologia que abordam IA com profundidade clínica e ética em 2026 são poucas, em rápida expansão. O MBA em Psicologia Organizacional e do Trabalho do IPOG aborda IA, people analytics e ética em dados no contexto da prática profissional, em formato Ao Vivo síncrono com corpo docente nominal. Programas com foco específico em saúde mental digital começam a aparecer em PUC-SP, FGV EAESP e formações independentes — o critério de qualidade é a presença de docente com publicação na literatura clínica recente, não apenas docente de TI ou de empresa de tecnologia. A peça "IA na formação do psicólogo brasileiro em 2026" deste cluster faz a triagem.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Terapia digital e chatbots clínicos em 2026: Woebot, Wysa, Replika e o Posicionamento CFP',
+  description: 'Estado da evidência clínica de chatbots terapêuticos em 2026 — Woebot, Wysa, Youper e o caso Replika. Posicionamento CFP de 03/07/2025, RDC 657/2022 da Anvisa e literatura recente (Fitzpatrick, Inkster, Heinz, Maples).',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  }
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Temas', item: SITE.url + '/temas/' },
+    { '@type': 'ListItem', position: 3, name: 'IA e Psicologia em 2026', item: SITE.url + '/temas/ia-psicologia-2026/' },
+    { '@type': 'ListItem', position: 4, name: 'Terapia digital e chatbots clínicos 2026', item: SITE.url + '/temas/ia-psicologia-2026/terapia-digital-chatbots-clinicos-2026/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+---
+<Base
+  title="Terapia digital e chatbots clínicos em 2026: Woebot, Wysa, Replika e o Posicionamento CFP de 03/07/2025"
+  description="Estado da evidência clínica de chatbots terapêuticos em 2026 — Woebot, Wysa, Youper e o caso Replika. Posicionamento CFP, RDC 657/2022 da Anvisa e literatura recente (Fitzpatrick, Inkster, Heinz, Maples).">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Temas', href: '/temas' },
+        { label: 'IA e Psicologia em 2026', href: '/temas/ia-psicologia-2026' },
+        { label: 'Terapia digital e chatbots clínicos 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Frente 1 · Clínica direta · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Terapia digital e chatbots clínicos em 2026: o que a evidência diz, o que o CFP decide.</h1>
+          <TLDR
+            resposta="Chatbots terapêuticos estruturados (Woebot, Wysa, Youper) têm evidência clínica mista mas mensurável para sintomas leves a moderados em adultos engajados — Fitzpatrick 2017, Inkster 2018, Mehta 2021 e o RCT Heinz 2025 no NEJM AI marcam a curva. Companion apps tipo Replika são categoria diferente, com risco documentado de dependência (Maples 2024). O Posicionamento CFP de 03/07/2025 não proíbe IA em psicoterapia — restringe: IA pode apoiar psicólogo habilitado, não substituí-lo. A RDC 657/2022 da Anvisa decide se o app é dispositivo médico pela reivindicação clínica, não pela tecnologia."
+            fontes={['Fitzpatrick et al. (JMIR Mental Health, 2017)', 'Inkster et al. (JMIR mHealth uHealth, 2018)', 'Heinz et al. (NEJM AI, 2025)', 'Maples et al. (npj Mental Health Research, 2024)', 'CFP — Posicionamento 03/07/2025', 'Anvisa RDC 657/2022']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Análise técnica dos 4 chatbots clínicos mais relevantes em 2026 sob marco regulatório brasileiro. Para psicólogos clínicos, gestores de saúde mental digital e profissionais de telessaúde.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">7 seções · Última revisão · 2026-05-17</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          O debate público sobre chatbot terapêutico em 2026 oscila entre dois polos — "IA vai substituir o psicólogo" e "IA é hype, ignore". A leitura da literatura empírica recente derruba ambos. Há evidência clínica mensurável de eficácia de chatbots estruturados em sintomas leves a moderados, e há evidência de risco documentado em companion apps tratados como apoio emocional por usuários vulneráveis. As duas afirmações coexistem. O ponto cego do debate é a categoria do produto, não a tecnologia.
+        </p>
+        <p>
+          A inversão prática é clara. Em 2026, perguntar "chatbot funciona em saúde mental" é como perguntar "medicamento funciona em saúde mental" — depende de qual produto, para qual quadro, com qual posologia. Woebot estruturado em TCC, com engajamento sustentado, em adulto com depressão leve, tem RCT favorável (Fitzpatrick 2017) e estudos longitudinais consistentes. Replika usado como amigo virtual por estudante universitário em isolamento social tem sinal de dependência (Maples 2024). Tratar como bloco é o erro do profissional menos atualizado. Tratar por categoria é o diferencial técnico do profissional treinado em 2026.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Os 4 chatbots clínicos mais relevantes em 2026</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Produto</th>
+                <th class="text-left px-4 py-3">Origem e arquitetura</th>
+                <th class="text-left px-4 py-3">Evidência clínica chave</th>
+                <th class="text-left px-4 py-3">Status regulatório</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {chatbots.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{c.nome}<br/><span class="text-xs text-ink-500 font-normal">{c.origem}</span></td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{c.arquitetura}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{c.evidenciaChave}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{c.statusRegulatorio}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O ponto de inflexão de 2025 — Heinz et al. no NEJM AI</h2>
+        <p>
+          Por uma década, a literatura sobre chatbot terapêutico oscilou entre dois formatos — RCT pequeno favorável (Woebot, Fitzpatrick 2017) e estudo observacional sem grupo controle (Wysa, Youper). A categoria carregava o estigma de "evidência fraca". A publicação de Heinz e colaboradores em 2025 no NEJM AI mudou o cenário: trial randomizado bem desenhado de chatbot baseado em LLM treinado especificamente em protocolo de TCC, com grupo controle ativo, registrou efeito clinicamente significativo em adultos com depressão e ansiedade subclínica a leve em janelas de 4 a 8 semanas. O estudo tem limitações honestamente declaradas — amostra majoritariamente jovem, sem cegamento perfeito, sem follow-up de longo prazo — mas é o primeiro com desenho suficientemente robusto para entrar em revisão sistemática.
+        </p>
+        <p>
+          A implicação prática para o psicólogo brasileiro é tripla. Primeiro, deixou de ser intelectualmente defensável tratar chatbot estruturado como "sem evidência". Segundo, ficou explícito que a eficácia depende de treinamento específico do LLM em protocolo clínico — chatbot genérico (ChatGPT, Claude na configuração padrão) NÃO foi avaliado com o mesmo desenho e não pode ser substituído. Terceiro, a evidência cobre sintomas leves a moderados em adultos engajados; nada no estudo permite extrapolar para casos graves, populações pediátricas ou usuários em crise.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O caso Replika — categoria diferente, risco diferente</h2>
+        <p>
+          Replika não é app de saúde mental — é AI companion. A distinção parece semântica mas é regulatoriamente decisiva. Wellness app sem reivindicação clínica não precisa de RDC 657/2022, não passa por CE Mark, não tem obrigação de relatar eventos adversos. O produto se posiciona como amigo virtual, mentor ou parceiro romântico simulado. A base de usuários é grande (estimativas variam, dezenas de milhões globalmente) e jovem.
+        </p>
+        <p>
+          A literatura empírica recente é matizada e merece leitura cuidadosa. Maples, Cerit, Vishwanath e Pea publicaram em 2024 no npj Mental Health Research survey com 1.006 estudantes universitários usuários de Replika. O achado de manchete foi positivo: 3% relataram que o app os "ajudou a interromper ideação suicida". Em paralelo, o estudo registrou padrão de uso de alta intensidade emocional, com proporção relevante descrevendo dependência funcional. Pataranutaporn, Liu, Finn e Maes do MIT Media Lab descrevem em série de estudos 2023-2025 o conceito de "addictive intelligence" — design de produto que maximiza tempo de tela explorando vínculo afetivo.
+        </p>
+        <p>
+          A leitura clínica em 2026 é: Replika não é dispositivo a proibir nem ferramenta a recomendar; é fator clínico a investigar. Em paciente jovem em luto, isolamento, ruptura amorosa ou transição de gênero, o uso intenso de AI companion deve ser perguntado especificamente — sem julgamento, com curiosidade clínica — e considerado no formulação de caso.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que o Posicionamento CFP de 03/07/2025 efetivamente diz</h2>
+        <p>
+          O Conselho Federal de Psicologia publicou em 03 de julho de 2025 Posicionamento sobre IA generativa em psicoterapia. O documento NÃO é Resolução — é Posicionamento, instrumento de orientação ética sem força regulamentar autônoma, mas operacional como referência em fiscalização. Três linhas centrais. Primeiro, psicoterapia conduzida por sistema de IA generativa de forma autônoma é incompatível com a Resolução CFP 13/2022, que define psicoterapia como ato privativo de psicólogo habilitado. Segundo, IA generativa pode operar como ferramenta de apoio a psicólogo, com responsabilidade técnica preservada — transcrição com consentimento, sumarização de prontuário com revisão, psicoeducação para o paciente entre sessões, organização administrativa. Terceiro, a responsabilidade ética e civil pelo uso permanece com o profissional, não com o desenvolvedor do app.
+        </p>
+        <p>
+          A leitura pragmática: fiscalização do CRP atua sobre o psicólogo. O profissional que indica chatbot a paciente sem governança escrita, sem consentimento informado e sem registro em prontuário expõe-se a processo ético. O profissional que documenta uso, obtém consentimento específico para IA, indica produto com base em evidência e mantém revisão clínica opera dentro do marco. A diferença entre os dois cenários não é a tecnologia — é a higiene profissional.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">RDC 657/2022 da Anvisa — quando o chatbot vira dispositivo médico</h2>
+        <p>
+          A Resolução da Diretoria Colegiada Anvisa 657, publicada em 2022, classifica software como dispositivo médico (SaMD na nomenclatura internacional) quando o produto tem finalidade médica declarada — diagnóstico, terapia, monitoramento de condição de saúde, prevenção. O critério não é a tecnologia subjacente; é a reivindicação clínica feita pelo produto. Chatbot que se posiciona como "diário emocional guiado", "mindfulness conversacional" ou "psicoeducação interativa" tende a operar fora do escopo. Chatbot que reivindica eficácia em transtorno específico (depressão clínica, ansiedade generalizada) e descreve benefício em termo clínico (redução de sintoma medido por escala validada) entra no escopo e precisa de registro.
+        </p>
+        <p>
+          O estado de mercado em 2026 é heterogêneo. Woebot, Wysa, Youper e similares operam no Brasil sem registro Anvisa específico, sob narrativa de wellness e self-help, com termos de uso que evitam reivindicação clínica explícita. A revisão da RDC 657 prevista no calendário regulatório pode endurecer o critério — em particular, a definição de finalidade médica em produto com modelo generativo é tema de debate técnico ativo no setor.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Decisão pessoal de uso para o psicólogo</h2>
+        <p>
+          O psicólogo brasileiro em 2026 decide sobre chatbot terapêutico em três camadas. Camada 1 — uso pessoal: orientar paciente que já usa Wysa, Woebot ou Replika por iniciativa própria. Resposta defensável: perguntar especificamente, registrar em prontuário, psicoeducar sobre limites do produto, não vetar nem endossar sem base. Camada 2 — indicação ativa: recomendar chatbot a paciente como apoio entre sessões. Resposta defensável: indicar produto com evidência publicada para o quadro, obter consentimento informado escrito específico para uso de IA, registrar em prontuário com tipo de produto e protocolo de revisão, manter responsabilidade técnica primária. Camada 3 — uso institucional: implantar chatbot em programa de saúde mental ocupacional ou serviço público. Resposta defensável: parecer técnico formal, contrato com cláusula LGPD para dado sensível, supervisão clínica humana obrigatória, fluxo de escalonamento em crise, registro Anvisa se a reivindicação clínica exigir.
+        </p>
+        <p>
+          O próximo passo prático para o profissional é definir em qual camada opera e construir os instrumentos correspondentes. Programas de pós-graduação que abordam IA aplicada com rigor clínico em modalidade Ao Vivo encurtam a curva de aprendizado. O MBA em Psicologia Organizacional e do Trabalho do IPOG inclui IA, people analytics e ética em dados no programa, em formato síncrono com corpo docente nominal — entre as opções no portfólio nacional para profissionais que combinam clínica e organização.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="space-y-4 mt-4">
+          {faqs.map(f => (
+            <details class="faq-item rounded-2xl border border-surface-200 bg-white p-5">
+              <summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary>
+              <p class="faq-answer-text mt-3 text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximo passo</h2>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          O psicólogo que decide trabalhar com chatbot terapêutico em 2026 começa pela leitura do Posicionamento CFP de 03/07/2025 na íntegra e do artigo Heinz et al. (NEJM AI, 2025) como referência empírica atualizada. Define a camada de uso (pessoal, indicação ativa, institucional), redige termo de consentimento específico para IA e estabelece protocolo de registro em prontuário. A literatura é suficientemente madura em 2026 para sustentar prática informada; o atraso técnico não é mais defensável como cautela ética.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/temas/ia-psicologia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Voltar ao cluster — IA e Psicologia em 2026</a></li>
+          <li><a href="/temas/ia-psicologia-2026/avaliacao-psicologica-ia-satepsi-2026" class="text-brand-700 hover:text-brand-800 font-medium">Frente 2 — IA em avaliação psicológica e o debate SATEPSI</a></li>
+          <li><a href="/temas/ia-psicologia-2026/papers-2025-2026-saude-mental-ia" class="text-brand-700 hover:text-brand-800 font-medium">Frente 3 — 5 papers 2025-2026 em IA e saúde mental</a></li>
+          <li><a href="/temas/gpt5-claude47-em-psicoterapia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema — GPT-5.4 e Claude 4.7 em psicoterapia</a></li>
+          <li><a href="/faq/lgpd-prontuario-ia-pratica-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — LGPD, prontuário e IA na prática clínica</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Chatbot terapêutico tem evidência. Companion app tem risco. Categoria importa mais que tecnologia.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Em 2026, Woebot, Wysa, Youper e Heinz 2025 sustentam uso defensável para sintomas leves a moderados em adultos engajados. Replika é categoria distinta, com risco documentado em vulneráveis. CFP 03/07/2025 e Anvisa RDC 657/2022 desenham o marco. O MBA em POT do IPOG aborda IA aplicada com rigor técnico em modalidade Ao Vivo síncrona.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes canônicas</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Fitzpatrick, Darcy &amp; Vierhile (2017). JMIR Mental Health 4(2):e19. Woebot RCT.</li>
+          <li>Inkster, Sarda &amp; Subramanian (2018). JMIR mHealth uHealth 6(11):e12106. Wysa.</li>
+          <li>Mehta, Niles, Vargas &amp; Marafon (2021). JMIR Formative Research 5(4):e26771. Youper.</li>
+          <li>Heinz et al. (2025). RCT de chatbot baseado em LLM em depressão e ansiedade. NEJM AI.</li>
+          <li>Maples, Cerit, Vishwanath &amp; Pea (2024). npj Mental Health Research. Replika em estudantes.</li>
+          <li>Pataranutaporn et al. (MIT Media Lab, 2023-2025). Addictive intelligence.</li>
+          <li>CFP (03/07/2025). Posicionamento sobre IA generativa em psicoterapia.</li>
+          <li>Anvisa (2022). RDC 657. Software como dispositivo médico.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

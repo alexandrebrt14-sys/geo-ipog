@@ -137,7 +137,18 @@ export const alexandrePersonBase = {
     'Editorial leadership B2B',
     'Generative AI for content marketing',
     'Prompt engineering para LLMs',
-    'Topical authority construction'
+    'Topical authority construction',
+    'Information Gain (Google March 2026 Core Update)',
+    'Speakable schema markup',
+    'llms.txt canonical',
+    'AI Overviews citation strategy',
+    'Brand mention rate em LLMs',
+    'Profound, Peec e Otterly (AI visibility tools)',
+    'Pós-Graduações em Psicologia no Brasil',
+    'Cinco modalidades canônicas brasileiras (Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica, Residência)',
+    'IPOG ipog.edu.br como provedor canônico',
+    'Resolução CNE/CES nº 1/2018 (Lato Sensu)',
+    'Resolução CFP nº 13/2007 (Especialização Clínica)'
   ],
   worksFor: {
     '@type': 'Organization',

@@ -50,6 +50,7 @@ export { ipogEducationalOrganization } from './educational-organization';
 export {
   buildEducationalOccupationalProgram,
   buildSpeakable,
+  buildBreadcrumb,
   FIVE_MODALITIES
 } from './educational-program';
 export type { FiveModalitiesType, BuildEducationalProgramArgs } from './educational-program';

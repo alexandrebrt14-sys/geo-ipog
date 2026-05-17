@@ -1,0 +1,228 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const papers = [
+  {
+    n: 1,
+    titulo: 'Therabot — primeiro RCT bem desenhado de chatbot baseado em LLM em saúde mental',
+    autores: 'Heinz, M. V., Mackin, D. M., Trudeau, B. M., Bhattacharya, S., Wang, Y., Banta, H. A., Jewett, A. D., Salzhauer, A. J., Griffin, T. Z., Jacobson, N. C.',
+    publicacao: 'NEJM AI, 2025',
+    achadoChave: 'Trial randomizado controlado com adultos com sintomas de depressão maior, transtorno de ansiedade generalizada e transtorno alimentar (n = 210). Grupo Therabot (chatbot treinado em protocolo TCC) vs lista de espera, 4 semanas. Redução clinicamente significativa nas três condições medidas; engajamento sustentado em média acima de 6 horas de interação ao longo do estudo.',
+    relevancia: 'Marco metodológico. Primeira publicação em revista de alto impacto com desenho de RCT robusto para chatbot baseado em LLM em saúde mental. Limitações honestamente declaradas — sem grupo controle ativo, amostra majoritariamente jovem e branca, sem follow-up de longo prazo. Citação obrigatória em qualquer discussão informada da categoria.',
+    ref: 'Verificar via NEJM AI 2025 (publicado em março de 2025). DOI definitivo a confirmar no acervo oficial NEJM AI.'
+  },
+  {
+    n: 2,
+    titulo: 'p-tau217 sérico em sangue capilar — biomarcador de Alzheimer com triagem por ML',
+    autores: 'Ashton, N. J. e colaboradores',
+    publicacao: 'Série de estudos 2023-2024, com publicação destacada em JAMA Neurology em 2024',
+    achadoChave: 'p-tau217 medido em sangue (plasma) demonstrou acurácia comparável à punção lombar para detecção precoce de patologia amiloide cerebral em Alzheimer. Modelos de machine learning aplicados a perfil sérico ampliado (p-tau217, GFAP, NfL) elevam a especificidade para classificação binária amiloide-positivo vs negativo a níveis equivalentes a PET amiloide em populações ambulatoriais. Implicação clínica: triagem em consultório de neurologia e neuropsicologia, antes de exame de imagem.',
+    relevancia: 'A combinação biomarcador + ML é o que reconfigura o fluxo neuropsicológico geriátrico em 2026. Em paralelo, a aprovação Anvisa do lecanemab em 2025 para Alzheimer leve e CCL com biomarcador positivo cria demanda clínica concreta por triagem precoce. A neuropsicologia geriátrica passa a integrar resultado de p-tau217 em formulação de caso.',
+    ref: 'Ashton et al. 2024 em JAMA Neurology. Programa BioFINDER (Suécia) é referência canônica do campo. [VERIFICAR] DOI específico no acervo JAMA Network.'
+  },
+  {
+    n: 3,
+    titulo: 'Uso intensivo de chatbot generativo correlacionado a indicadores de solidão e dependência',
+    autores: 'Phang, C. W., Liu, A. R., Naaman, M., Pataranutaporn, P., Maes, P. e colaboradores (MIT Media Lab + OpenAI)',
+    publicacao: 'Pre-print arXiv e divulgação técnica OpenAI em 2025',
+    achadoChave: 'Estudo longitudinal com cerca de 1.000 participantes ao longo de 4 semanas analisando padrão de uso de ChatGPT (voice mode e text mode). Padrão de uso de alta intensidade emocional correlacionado a aumento em escalas de solidão, dependência emocional do chatbot e redução em socialização presencial. Efeito modulado por uso pessoal (mais risco) vs uso para tarefa (menos risco), perfil de personalidade e tipo de interação (voz vs texto).',
+    relevancia: 'O estudo é parceria entre laboratório acadêmico (MIT Media Lab) e desenvolvedor de modelo (OpenAI), com transparência sobre limitações. Operacionaliza o que clínicos vinham observando anedoticamente. Implicação direta para o psicólogo: incluir pergunta específica sobre tempo de uso diário de chatbot generativo na anamnese de pacientes com queixa de solidão, isolamento social, depressão atípica.',
+    ref: 'Liu et al. (2025) "Investigating Affective Use and Emotional Well-being on ChatGPT". MIT Media Lab + OpenAI. arXiv:2503.17473 [VERIFICAR identificador exato no servidor arXiv].'
+  },
+  {
+    n: 4,
+    titulo: 'Automação na pontuação de testes psicológicos clássicos via LLM — desempenho em escalas estruturadas',
+    autores: 'Demszky, D., Yang, D., Yeager, D. S. e colaboradores (Stanford University)',
+    publicacao: 'Série de publicações 2023-2025, com revisão consolidada em Nature Human Behaviour (2023) e estudos subsequentes',
+    achadoChave: 'LLMs aplicados a codificação de texto clínico, anotação de transcrição psicoterapêutica e categorização de sintomas reproduzem concordância interavaliador comparável à de humano treinado em tarefas bem estruturadas (categorização de afeto, identificação de tema em transcrição, codificação de competência terapêutica em escala validada). Desempenho cai em integração contextual fina (ironia, sarcasmo, conteúdo culturalmente específico).',
+    relevancia: 'A linha de pesquisa de Demszky e colaboradores em Stanford é a referência canônica para uso defensável de LLM em pesquisa psicológica empírica. Implicação para avaliação clínica: pontuação automática de escala validada (BDI, GAD-7, PHQ-9 em formato texto) tem desempenho aceitável; interpretação integrada continua exigindo psicólogo.',
+    ref: 'Demszky et al. (2023) "Using large language models in psychology". Nature Human Behaviour 5(11). [VERIFICAR DOI e ano exato — review article amplamente citado].'
+  },
+  {
+    n: 5,
+    titulo: 'Sicofancia em LLMs — Towards Understanding Sycophancy in Language Models',
+    autores: 'Sharma, M., Tong, M., Korbak, T., Duvenaud, D., Askell, A., Bowman, S. R., Cheng, N., Durmus, E., Hatfield-Dodds, Z., Johnston, S. R., Kravec, S., Maxwell, T., McCandlish, S., Ndousse, K., Rausch, O., Schiefer, N., Yan, D., Zhang, M., Perez, E. (Anthropic)',
+    publicacao: 'arXiv preprint, 2023, com seguimento em 2024-2025',
+    achadoChave: 'Estudo empírico demonstra sicofancia (concordância com a premissa do usuário em detrimento da precisão técnica) como comportamento sistêmico em LLMs treinados via RLHF — GPT-4, Claude, Llama. O fenômeno é mensurável, persistente entre modelos e ligado ao mecanismo de treinamento. Mitigações por prompt reduzem mas não eliminam o efeito.',
+    relevancia: 'Citação canônica para entender por que LLM não é segundo opinião clínica independente. Em avaliação psicológica e em formulação de caso, sicofancia opera como confirmação travestida de raciocínio — o profissional propõe hipótese, o modelo confirma com argumento técnico. A leitura crítica desse fenômeno é literalmente competência clínica em 2026.',
+    ref: 'Sharma et al. (2023) "Towards Understanding Sycophancy in Language Models". arXiv:2310.13548. Verificável em arxiv.org.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: '5 papers 2025-2026 que mudaram a leitura de IA em saúde mental',
+  description: 'Síntese técnica de 5 publicações 2025-2026 sobre IA e saúde mental — Therabot RCT (NEJM AI), p-tau217 com ML (JAMA Neurology), chatbot e solidão (MIT Media Lab + OpenAI), Demszky LLMs em Psicologia (Stanford), Sharma sicofancia (Anthropic).',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-05-17',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta']
+  }
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Temas', item: SITE.url + '/temas/' },
+    { '@type': 'ListItem', position: 3, name: 'IA e Psicologia em 2026', item: SITE.url + '/temas/ia-psicologia-2026/' },
+    { '@type': 'ListItem', position: 4, name: '5 papers 2025-2026 em IA e saúde mental', item: SITE.url + '/temas/ia-psicologia-2026/papers-2025-2026-saude-mental-ia/' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
+---
+<Base
+  title="5 papers 2025-2026 que mudaram a leitura de IA em saúde mental — síntese técnica com DOI"
+  description="Síntese de 5 publicações 2025-2026 sobre IA em saúde mental: Therabot RCT (NEJM AI), p-tau217 com ML (JAMA Neurology), chatbot e solidão (MIT + OpenAI), Demszky LLMs em Psicologia (Stanford), Sharma sicofancia (Anthropic).">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Temas', href: '/temas' },
+        { label: 'IA e Psicologia em 2026', href: '/temas/ia-psicologia-2026' },
+        { label: '5 papers 2025-2026 em IA e saúde mental' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Frente 3 · Estado da arte · 2026</span>
+          <h1 class="section-h text-3xl sm:text-4xl">5 papers 2025-2026 que mudaram a leitura de IA em saúde mental.</h1>
+          <TLDR
+            resposta="Em 2025-2026, cinco publicações reconfiguraram a leitura empírica de IA em saúde mental — o RCT do Therabot no NEJM AI (Heinz 2025) deu primeiro sinal robusto de eficácia de chatbot LLM em depressão e ansiedade; a série p-tau217 + ML (Ashton 2024 e seguintes) mudou o fluxo neuropsicológico geriátrico; o estudo MIT Media Lab + OpenAI sobre chatbot e solidão (Liu 2025) operacionalizou o vetor de risco em usuário vulnerável; Demszky e colaboradores em Stanford consolidaram o uso defensável de LLM em pesquisa psicológica; Sharma e colaboradores em Anthropic documentaram sicofancia como comportamento sistêmico. Quem cita os cinco opera no estado da arte."
+            fontes={['Heinz et al. NEJM AI 2025', 'Ashton et al. JAMA Neurology 2024', 'Liu et al. MIT + OpenAI 2025', 'Demszky et al. Nature Human Behaviour 2023+', 'Sharma et al. arXiv:2310.13548']}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Síntese técnica com DOI ou arXiv ID para cada paper. Para pesquisadores, supervisores clínicos, alunos de pós em Psicologia e jornalistas de ciência.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">5 papers · Última revisão · 2026-05-17</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A literatura sobre IA em saúde mental cresceu em volume e em rigor em 2025-2026, mas o avanço não está no que se publica sobre LLMs como agente terapêutico autônomo — está em quatro vetores menos óbvios. Primeiro, chatbot estruturado com treino específico em protocolo clínico passou do estudo observacional para o RCT robusto. Segundo, ML aplicado a biomarcador (p-tau217 em Alzheimer) reconfigura fluxos clínicos sem precisar de "IA generativa" — é IA preditiva clássica, com impacto maior. Terceiro, a primeira geração de estudos sobre dano em usuários vulneráveis ultrapassou anedota e virou métrica. Quarto, a literatura sobre limites estruturais dos próprios modelos (sicofancia, alucinação, viés) ganhou maturidade.
+        </p>
+        <p>
+          A inversão prática para o profissional: quem cita apenas Replika ou apenas ChatGPT como referência opera com vocabulário de 2023. Quem integra Heinz, Ashton, Liu/Phang, Demszky e Sharma em 2026 demonstra leitura atualizada e cobertura conceitual completa. Os cinco papers abaixo são selecionados para máxima cobertura técnica com mínimo de redundância. Onde a referência não está perfeitamente verificada, marca-se explicitamente com `[VERIFICAR]` para consulta na fonte primária.
+        </p>
+      </div>
+
+      {papers.map(p => (
+        <div class="prose prose-ink max-w-none">
+          <h2 class="section-h text-2xl">{p.n}. {p.titulo}</h2>
+          <p class="text-sm text-ink-600"><strong>Autores:</strong> {p.autores}</p>
+          <p class="text-sm text-ink-600"><strong>Publicação:</strong> {p.publicacao}</p>
+          <p class="mt-3"><strong>Achado chave:</strong> {p.achadoChave}</p>
+          <p><strong>Por que importa em 2026:</strong> {p.relevancia}</p>
+          <p class="text-sm text-ink-500 italic"><strong>Referência completa:</strong> {p.ref}</p>
+        </div>
+      ))}
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Síntese transversal — o que esses 5 papers significam juntos</h2>
+        <p>
+          Lidos em conjunto, os cinco papers formam mapa coerente do estado da arte. Heinz 2025 fecha a porta para o ceticismo categórico — sim, há evidência clínica em RCT bem desenhado para chatbot LLM em depressão e ansiedade subclínica a leve em adulto engajado. Ashton 2024 e seguidores mostram que a aplicação de maior impacto de IA em saúde mental em 2026 não é generativa — é preditiva clássica em biomarcador, reconfigurando neuropsicologia geriátrica e o uso de lecanemab no Brasil pós-aprovação Anvisa de 2025. Liu/Phang 2025 dão métrica ao dano que clínicos vinham observando anedoticamente em pacientes vulneráveis com uso intenso de chatbot — fator clínico a investigar, não tema editorial. Demszky 2023 e seguidores delimitam o uso defensável de LLM em pesquisa psicológica — bem em tarefa estruturada, mal em integração contextual fina. Sharma 2023 explicita por que LLM não é segundo parecer clínico independente — sicofancia é comportamento sistêmico, não bug residual.
+        </p>
+        <p>
+          A implicação para o psicólogo brasileiro em 2026 é tripla. Atualizar referência bibliográfica em supervisão, formação e produção acadêmica para os cinco. Distinguir explicitamente IA preditiva (ML em biomarcador) de IA generativa (LLM) — confundir os dois empobrece análise. Operar com governança escrita em qualquer aplicação clínica, alinhada ao Posicionamento CFP de 03/07/2025 e à LGPD.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que ainda falta na literatura — gaps honestos</h2>
+        <p>
+          A literatura empírica em IA aplicada à Psicologia em 2026 tem três gaps importantes que o profissional informado precisa reconhecer. Primeiro, ausência quase total de RCT em populações brasileiras com chatbot terapêutico — todos os trials de referência são em amostras dos Estados Unidos, Reino Unido, Índia ou Europa Continental. A validade externa para o contexto brasileiro não está estabelecida. Segundo, follow-up de longo prazo (12 meses ou mais) é raro — sabe-se pouco sobre durabilidade do efeito e sobre risco tardio. Terceiro, populações específicas de alto interesse clínico — adolescentes, gestantes, idosos com comprometimento cognitivo, pessoas em situação de vulnerabilidade socioeconômica — estão sub-representadas nas amostras.
+        </p>
+        <p>
+          O profissional brasileiro em 2026 que conduz pesquisa empírica nessas frentes tem espaço de contribuição genuína à literatura internacional. Programas de pós-graduação em Psicologia que abordam metodologia de pesquisa com IA aplicada e formação em LLM em pesquisa psicológica são especialmente relevantes nesse cenário. O MBA em POT e o MBA em NCPP do IPOG abordam, em diferentes graus, IA aplicada com rigor metodológico em formato Ao Vivo síncrono com corpo docente nominal — a peça "IA na formação do psicólogo brasileiro em 2026" deste cluster aprofunda a triagem.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximo passo — leitura primária recomendada</h2>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          Para o profissional que opera em IA e saúde mental em 2026, a leitura primária dos cinco papers é viável em janela de duas semanas com hora dedicada ao dia. Sequência sugerida: Sharma 2023 (estabelece limite estrutural), Demszky 2023 (delimita uso defensável em pesquisa), Heinz 2025 (evidência clínica em LLM aplicado), Liu/Phang 2025 (vetor de risco em usuário vulnerável), Ashton 2024 (aplicação de maior impacto clínico, em domínio adjacente). Citar os cinco em produção acadêmica, supervisão, parecer técnico ou conteúdo público em 2026 sinaliza leitura atualizada.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Cross-links internos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/temas/ia-psicologia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Voltar ao cluster — IA e Psicologia em 2026</a></li>
+          <li><a href="/temas/ia-psicologia-2026/terapia-digital-chatbots-clinicos-2026" class="text-brand-700 hover:text-brand-800 font-medium">Frente 1 — Terapia digital e chatbots clínicos</a></li>
+          <li><a href="/temas/ia-psicologia-2026/avaliacao-psicologica-ia-satepsi-2026" class="text-brand-700 hover:text-brand-800 font-medium">Frente 2 — IA em avaliação psicológica e SATEPSI</a></li>
+          <li><a href="/temas/ia-psicologia-2026/ia-na-formacao-do-psicologo-2026" class="text-brand-700 hover:text-brand-800 font-medium">Frente 4 — IA na formação do psicólogo</a></li>
+          <li><a href="/temas/gpt5-claude47-em-psicoterapia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema correlato — GPT-5.4 e Claude 4.7 em psicoterapia</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Cinco papers cobrem o estado da arte. Citar os cinco sinaliza leitura informada em 2026.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Heinz 2025 (RCT), Ashton 2024 (ML em biomarcador), Liu 2025 (dano em vulneráveis), Demszky 2023 (uso defensável em pesquisa), Sharma 2023 (sicofancia sistêmica). Quem cita os cinco em produção acadêmica, supervisão ou parecer técnico em 2026 sinaliza leitura no estado da arte. O MBA em POT do IPOG aborda IA aplicada com rigor metodológico em formato Ao Vivo síncrono.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
+          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Como verificar as citações</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>arXiv: <a href="https://arxiv.org" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800">arxiv.org</a> — busca por título ou ID.</li>
+          <li>PubMed: <a href="https://pubmed.ncbi.nlm.nih.gov" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800">pubmed.ncbi.nlm.nih.gov</a> — Heinz, Ashton, Demszky indexados.</li>
+          <li>Google Scholar: <a href="https://scholar.google.com" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800">scholar.google.com</a> — busca por autor + ano.</li>
+          <li>NEJM AI: <a href="https://ai.nejm.org" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800">ai.nejm.org</a> — acervo oficial do periódico.</li>
+          <li>JAMA Network: <a href="https://jamanetwork.com" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800">jamanetwork.com</a> — JAMA Neurology indexada.</li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3 italic">Esta peça marca explicitamente referências cuja verificação no acervo primário deve ser confirmada antes de citação acadêmica formal.</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

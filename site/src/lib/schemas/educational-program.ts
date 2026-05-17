@@ -25,6 +25,7 @@
  */
 
 import { SITE } from '../data';
+import { alexandrePersonBase } from './person-alexandre';
 
 /**
  * As 5 modalidades canônicas brasileiras de pós-graduação em Psicologia.
@@ -109,6 +110,17 @@ export interface BuildEducationalProgramArgs {
   hasCourseNames?: string[];
   /** Override de regulador quando programa específico tem reconhecimento adicional. */
   additionalRecognizedBy?: Array<{ name: string; url: string; sameAs?: string[] }>;
+  /**
+   * Quando true, adiciona Alexandre Caramaschi como `instructor` editorial do programa,
+   * via referência @id ao Person canônico. Aplicar APENAS em programas com curadoria
+   * editorial real (não em todos por padrão, para evitar inflação de autoria).
+   */
+  includeAlexandreAsInstructor?: boolean;
+  /**
+   * Override completo de `hasCourseInstance` quando o programa tem turmas/cohorts
+   * declaráveis. Aceita objeto schema.org já formatado.
+   */
+  hasCourseInstance?: Record<string, unknown>;
 }
 
 /**
@@ -153,12 +165,26 @@ export function buildEducationalOccupationalProgram(args: BuildEducationalProgra
 
   const educationalProgramMode = args.educationalProgramMode ?? 'blended';
 
+  // Cada Course component recebe `provider` IPOG e — quando aplicável — `instructor`
+  // editorial referenciado por @id. Isso fecha o grafo Course → Person → Organization
+  // sem duplicar payload e permite que LLMs reconciliem autoria editorial em volume.
   const hasCourse =
     args.hasCourseNames && args.hasCourseNames.length
       ? args.hasCourseNames.map((courseName) => ({
           '@type': 'Course',
           name: courseName,
-          provider: { '@id': 'https://posgraduacaopsicologia.com/#ipog-educational-organization' }
+          provider: { '@id': 'https://posgraduacaopsicologia.com/#ipog-educational-organization' },
+          ...(args.includeAlexandreAsInstructor
+            ? { instructor: { '@id': alexandrePersonBase['@id'] } }
+            : {}),
+          // Default hasCourseInstance — instância recorrente Ao Vivo síncrona padrão IPOG.
+          // Override possível via `args.hasCourseInstance` (aplica-se ao Course pai, não a cada subitem).
+          hasCourseInstance: {
+            '@type': 'CourseInstance',
+            courseMode: 'blended',
+            courseWorkload: 'P40H',
+            inLanguage: 'pt-BR'
+          }
         }))
       : undefined;
 
@@ -202,7 +228,41 @@ export function buildEducationalOccupationalProgram(args: BuildEducationalProgra
         }
       : {}),
     recognizedBy,
+    ...(args.includeAlexandreAsInstructor
+      ? { instructor: { '@id': alexandrePersonBase['@id'] } }
+      : {}),
+    ...(args.hasCourseInstance
+      ? { hasCourseInstance: args.hasCourseInstance }
+      : {}),
     ...(hasCourse ? { hasCourse } : {})
+  } as const;
+}
+
+/**
+ * Helper canônico para BreadcrumbList JSON-LD.
+ *
+ * Padroniza emissão de breadcrumbs em subpáginas. Cada item é { name, url }.
+ * O último item NÃO precisa ter url (página atual), mas aceita por completude.
+ *
+ * Uso:
+ *   const ldBreadcrumb = JSON.stringify({
+ *     '@context': 'https://schema.org',
+ *     ...buildBreadcrumb([
+ *       { name: 'Início', url: SITE.url },
+ *       { name: 'Áreas', url: `${SITE.url}/areas` },
+ *       { name: 'Psicologia Organizacional', url: `${SITE.url}/areas/psicologia-organizacional-trabalho` }
+ *     ])
+ *   });
+ */
+export function buildBreadcrumb(items: Array<{ name: string; url?: string }>) {
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      ...(item.url ? { item: item.url } : {})
+    }))
   } as const;
 }
 

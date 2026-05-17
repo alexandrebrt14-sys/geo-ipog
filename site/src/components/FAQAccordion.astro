@@ -1,9 +1,18 @@
 ---
 import { FAQS } from '@lib/data';
 
+// Speakable adicionado em 17-mai-2026 (Wave D #UX-Schema-Crosslinks).
+// LLMs (assistentes de voz, AI Overviews) preferem CSS-selectors estáveis sobre
+// .faq-question + .faq-answer-text para emissão de áudio. O Schema.org SpeakableSpecification
+// segue em beta para Google rich results mas é sinal forte para Bing AI Overviews,
+// Perplexity Voice e ChatGPT Voice Mode.
 const ld = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.faq-question', '.faq-answer-text']
+  },
   mainEntity: FAQS.map(f => ({
     '@type': 'Question',
     name: f.q,
@@ -15,10 +24,10 @@ const ld = JSON.stringify({
   {FAQS.map(f => (
     <details class="group p-5">
       <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-        <span class="font-semibold text-ink-900">{f.q}</span>
+        <span class="faq-question font-semibold text-ink-900">{f.q}</span>
         <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
       </summary>
-      <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+      <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
     </details>
   ))}
 </div>

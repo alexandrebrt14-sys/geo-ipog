@@ -223,6 +223,38 @@ Cinco sprints canônicas executadas em 17 de maio de 2026 (semana 21), com cinco
 - **Wave J** — Caso-modelo Ceará 81 polos como narrativa pública (moat regulatório, Issue #55).
 - **Wave K** — Schema piloto canônico em `ipog.edu.br` + `llms.txt` + `robots.txt` (Issue #61, dependência cliente IPOG).
 
+---
+
+## Waves operacionais L-Q — 110 missões digitais GEO IPOG
+
+Adicionadas em 2026-05-18 (W21) por decisão arquitetural do programa GEO IPOG. As waves F-K cobrem entregas de citação, regionalização e schema piloto. As waves **L-Q** operacionalizam os **9 eixos das 110 missões digitais** consolidadas em `audits/CHECKLIST-DIGITAL-GEO-IPOG-110.md`, taxonomia canônica que articula a categorização NAIA original (A-J em `audits/PLAYBOOK-AUDITORIA-NAIA.md`) com quatro novas dimensões emergentes — jornada de conversão, cobertura semântica, citabilidade GEO e E-E-A-T institucional.
+
+Cada wave tem dual track de execução: (1) auditoria em `ipog.edu.br` sem destravamento de cliente, (2) execução demonstrativa em `posgraduacaopsicologia.com`, (3) plano de implantação em `ipog.edu.br` quando os bloqueios canônicos forem destravados (Issues #6, #36, #61).
+
+- **Wave L — Crawlability + Performance baseline** (19-05-2026 a 02-06-2026, W21-W22). Cobre eixos 1 e 2 do checklist (missões 1-20) + matriz de priorização 110. Saídas: relatórios canônicos sob `audits/reports/` para HTTP status, redirects, canonical, robots, sitemap, llms.txt, status de URLs, páginas órfãs, links quebrados, HTTPS, mixed content, peso HTML, scripts, mobile-friendly, Core Web Vitals, performance percebida, alt text, acessibilidade WCAG 2.2 AA. Dependência NAIA-F + NAIA-H.
+
+- **Wave M — SEO on-page + Conteúdo editorial** (02-06-2026 a 16-06-2026, W23-W24). Cobre eixo 3 (missões 21-26) e primeira metade do eixo 4 (missões 27-32). Saídas: title/meta/H1/H2-H3 audit, estrutura editorial HBR aplicada, escaneabilidade Flesch ≥ 50, SSR coverage check, profundidade textual, intent map, voice guard enforced, clareza da promessa, primeira dobra validada. Dependência: `content/PADRAO-EDITORIAL.md`.
+
+- **Wave N — Entidade + Cobertura semântica + Jornada de conversão** (16-06-2026 a 30-06-2026, W25-W26). Cobre segunda metade do eixo 4 (missões 33-37) e eixo 5 inteiro (38-53). Saídas: CTA primário rastreado, formulários LGPD-compliant, WhatsApp/telefone clicáveis, jornada de conversão documentada, entity coherence, term coverage matrix, FAQPage ≥ 10 Q&A por curso, answer capsules, DefinedTerm em glossário, comparativos mobile-first, cannibalization audit. Dependência: KIT-PROMPTS-V0 + acesso GA4 destravado (Issue #36).
+
+- **Wave O — Schema completion** (30-06-2026 a 14-07-2026, W27-W28). Cobre eixo 6 inteiro (missões 54-71). Saídas: EducationalOrganization + LocalBusiness por unidade + WebSite + WebPage + BreadcrumbList + FAQPage + Service + Article + Person + ImageObject + ContactPoint + sameAs + @id canônicos + checksum schema↔HTML + zero schema inflado/ausente/duplicado/inconsistente. Dependência: Schema piloto em `ipog.edu.br` (Issue #61, gating-ipog).
+
+- **Wave P — Citabilidade GEO + Infraestrutura LLM** (14-07-2026 a 28-07-2026, W29-W30). Cobre eixo 7 inteiro (missões 72-89). Saídas: Citability Score ≥ 70 nas peças HBR, mention rate ≥ 60% por persona-cluster, Voice Guard 2.0 contra pseudo-GEO, promo:fact ratio ≤ 0,3, fontes externas ≥ 3 por peça, autoria Person canônica, dates ISO 8601, `/llms-full.txt` + `/.well-known/ai-citations.json` + `entity-map.json` + `knowledge-base.json` + `ai-policy.json` publicados, robots.txt aberto a crawlers LLM, attribution gap ≤ 60%, zero-click risk reportado. `llms-full.txt` + `ai-policy.json` já ativos em `posgraduacaopsicologia.com` desde 13-05-2026; falta publicar `ai-citations.json` + `entity-map.json` + `knowledge-base.json` e replicar tudo em `ipog.edu.br`.
+
+- **Wave Q — E-E-A-T institucional** (28-07-2026 a 11-08-2026, W31-W32). Cobre eixo 8 inteiro (missões 90-109). Saídas: páginas `/sobre`, `/fale-conosco`, `/politica-de-privacidade`, `/termos-de-uso`, `/equipe-editorial`, `/autores/{slug}`, `/corpo-docente`, `/cases`; LGPD com Consent Mode v2; selos MEC + CFP/ABRAP/FBT + CAPES visíveis; fotos reais; endereço + CNPJ coerentes em rodapé + Sobre + PostalAddress; credenciais com `hasCredential`; histórico institucional canônico; clareza institucional validada via teste "5 perguntas em 5 segundos". Dependência: acesso editorial e fotos institucionais IPOG (gating-ipog).
+
+**Cronograma com o ciclo de captação:**
+
+- Waves L, M, N e O precisam estar **concluídas até 15-07-2026** para entrar no pico de captação 2026.2 com cobertura completa.
+- Waves P e Q ampliam a base entre 14-07 e 11-08-2026, capitalizando o pico para gerar autoridade que entra no corpus paramétrico antes do pico de captação 2027.1.
+
+**Governança das 110 missões:**
+
+- Revisão mensal com Ronan Maia (matriz de priorização canônica — missão 110).
+- Sincronização quinzenal com Bruno Azambuja (entregáveis + bloqueios + parcerias).
+- Smoke audit NAIA mensal cruzando 100+ checks (auditoria `ipog.edu.br`) com execução demonstrativa (`posgraduacaopsicologia.com`).
+- Coleta cross-LLM diária para alimentar mention rate, share-of-voice e citation quality por wave.
+
 **Issues fechadas em 17-05-2026 (state CLOSED no GitHub repo `alexandrebrt14-sys/geo-ipog`):**
 
 Conferido via `gh issue list --state closed --limit 30`. Não confundir comentário com fechamento — issues abaixo estão CLOSED:

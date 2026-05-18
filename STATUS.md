@@ -11,6 +11,49 @@
 ### Páginas no ar
 **235 páginas** (era 232 antes das waves 17/05).
 
+### Sessão N — Briefing canônico das 110 missões digitais GEO IPOG (18/05/2026)
+
+**Objetivo:** organizar e taxonomizar as 110 missões digitais GEO IPOG demandadas pelo CEO Alexandre Caramaschi (Brasil GEO, atuando como Engenheiro de Software e Arquiteto de Sistemas do programa) em estrutura canônica acionável por wave operacional, articulada com a taxonomia NAIA existente.
+
+**Entregues:**
+
+1. **`audits/CHECKLIST-DIGITAL-GEO-IPOG-110.md`** — documento mestre com as 110 missões organizadas em 9 eixos:
+   - Eixo 1 — Infraestrutura técnica e crawlability (missões 1-15)
+   - Eixo 2 — Performance, mobile e acessibilidade (16-20)
+   - Eixo 3 — SEO on-page tradicional (21-26)
+   - Eixo 4 — Conteúdo, profundidade e jornada de conversão (27-37)
+   - Eixo 5 — Entidade, cobertura semântica e cobertura GEO (38-53)
+   - Eixo 6 — Schema.org e dados estruturados (54-71)
+   - Eixo 7 — Citabilidade GEO e infraestrutura LLM (72-89)
+   - Eixo 8 — Confiança institucional e E-E-A-T (90-109)
+   - Eixo 9 — Priorização operacional (110)
+
+   Cada missão tem ID estável `GEO-IPOG-XXX`, mapeamento opcional para NAIA-XXX, severidade default (P0/P1/P2), wave de execução (L-Q), owner nominal, critério de done verificável e saída esperada. Dual track explícito: auditoria em `ipog.edu.br` + execução demonstrativa em `posgraduacaopsicologia.com` + plano de implantação gated por destravamento de cliente (Issues #6, #36, #61).
+
+2. **`ROADMAP.md` atualizado** — bloco "Waves operacionais L-Q — 110 missões digitais GEO IPOG" inserido após a seção "Próximas waves planejadas (F-K)". Distribuição:
+   - **Wave L** (19-05 a 02-06): Crawlability + Performance baseline — eixos 1, 2 + missão 110
+   - **Wave M** (02-06 a 16-06): SEO on-page + Conteúdo editorial — eixo 3 + parte do 4
+   - **Wave N** (16-06 a 30-06): Entidade + Cobertura semântica + Jornada — parte do 4 + eixo 5
+   - **Wave O** (30-06 a 14-07): Schema completion — eixo 6 [gating-ipog: Issue #61]
+   - **Wave P** (14-07 a 28-07): Citabilidade GEO + Infra LLM — eixo 7
+   - **Wave Q** (28-07 a 11-08): E-E-A-T institucional — eixo 8 [gating-ipog]
+
+3. **Articulação com ciclo de captação:** waves L, M, N e O concluídas até 15-07-2026 (entrada do pico 2026.2); waves P e Q ampliam a base entre 14-07 e 11-08-2026 para alimentar o pico 2027.1.
+
+**Mapeamento NAIA das 110 missões:**
+
+- ~60% das missões mapeiam diretamente para checks NAIA-A a NAIA-J existentes em `audits/PLAYBOOK-AUDITORIA-NAIA.md` (Schema institucional, Schema curso, FAQ, Person, llms.txt, sitemap/robots, conteúdo declarado, performance, citações cross-LLM, autoridade externa).
+- ~40% das missões são gaps emergentes que recomendam-se promover a **novas categorias NAIA-K (Conteúdo + jornada de conversão), NAIA-L (Entidade + cobertura semântica), NAIA-M (Citabilidade GEO + infra LLM), NAIA-N (E-E-A-T institucional)** na próxima revisão do playbook.
+
+**Próximos passos operacionais:**
+
+1. Abrir 1 epic GitHub por wave (`[L] Crawlability + Performance baseline`, etc.) no repo `alexandrebrt14-sys/geo-ipog` — opcional, conforme decisão de governança.
+2. Iniciar Wave L imediatamente em `posgraduacaopsicologia.com` (baseline executável sem destravamento de cliente).
+3. Levar a matriz de priorização canônica (missão 110) ao próximo checkpoint com Ronan Maia.
+4. Sincronizar com Bruno Azambuja na cadência quinzenal para destravar Issues #6 (robots.txt) e #36 (GSC+GA4) antes do início da Wave O.
+
+**Custo estimado da sessão:** $0,00 (trabalho de arquitetura conduzido no Claude principal sem fan-out de sub-agentes).
+
 ### Sessão 1 — Sprint KB + 5 waves research (17/05/2026)
 
 Arquivos canônicos gerados:

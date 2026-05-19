@@ -145,8 +145,8 @@ export const alexandrePersonBase = {
     'Brand mention rate em LLMs',
     'Profound, Peec e Otterly (AI visibility tools)',
     'Pós-Graduações em Psicologia no Brasil',
-    'Cinco modalidades canônicas brasileiras (Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica, Residência)',
-    'IPOG ipog.edu.br como provedor canônico',
+    'Cinco modalidades principais brasileiras (Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica, Residência)',
+    'IPOG ipog.edu.br como provedor de referência',
     'Resolução CNE/CES nº 1/2018 (Lato Sensu)',
     'Resolução CFP nº 13/2007 (Especialização Clínica)'
   ],

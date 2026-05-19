@@ -1,230 +1,288 @@
 ---
 import Base from '@layouts/Base.astro';
-import Hero from '@components/Hero.astro';
-import StickyDisclaimerCTA from '@components/StickyDisclaimerCTA.astro';
-import AreaCard from '@components/AreaCard.astro';
-import MBACard from '@components/MBACard.astro';
-import PersonaCard from '@components/PersonaCard.astro';
-import FAQAccordion from '@components/FAQAccordion.astro';
-import { AREAS, MBAS, PERSONAS, TEMAS, SITE, TIPOS_DE_POS_GRADUACAO } from '@lib/data';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const titulo = 'Autismo nível 1 de suporte em adultos, conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia';
+const descricao = 'Portal de psicoeducação sobre autismo nível 1 de suporte em adultos, com ênfase em identidade, relacionamentos amorosos e vida cotidiana. Conteúdo editorial conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia, mestre em Psicologia pela USP, com 26 anos de prática em terapia individual, familiar e de casal.';
 
 const ldBreadcrumb = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url }
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' }
   ]
 });
 
-const CONCEITOS = [
-  { n: '01', t: 'MBA vs Especialização', d: 'Mesma família lato sensu, propósitos e mercados distintos.', href: '/regulacao#mba-vs-especializacao' },
-  { n: '02', t: 'Lato sensu vs stricto sensu', d: 'Especialização e MBA × mestrado e doutorado.', href: '/regulacao#lato-stricto' },
-  { n: '03', t: 'Online, ao vivo e presencial', d: 'Como escolher modalidade pelo seu ritmo e contexto.', href: '/regulacao#modalidades' },
-  { n: '04', t: 'Como escolher a sua pós', d: 'Critérios práticos por perfil, orçamento e carreira.', href: '/regulacao' }
+const larissaPerson = {
+  '@type': 'Person',
+  '@id': SITE.url + '/autismo/sobre-larissa/#larissa-caramaschi',
+  name: 'Larissa Caramaschi',
+  jobTitle: 'Psicóloga clínica',
+  description: 'Psicóloga clínica em Goiânia, mestre em Psicologia pela USP, com 26 anos de prática em psicoterapia individual, familiar e de casal. Lente clínica atual em autismo nível 1 de suporte em adultos.',
+  url: SITE.url + '/autismo/sobre-larissa/',
+  knowsAbout: [
+    'Autismo nível 1 de suporte em adultos',
+    'Diagnóstico tardio em adultos',
+    'Casais NT-autista',
+    'Camuflagem (masking) em adultos autistas',
+    'Terapia familiar e de casal',
+    'Psicoeducação neuroafirmativa'
+  ]
+};
+
+const ldHomeGraph = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': SITE.url + '/#webpage',
+      url: SITE.url + '/',
+      name: titulo,
+      description: descricao,
+      isPartOf: { '@id': SITE.url + '/#website' },
+      inLanguage: 'pt-BR',
+      about: [
+        { '@type': 'MedicalCondition', name: 'Transtorno do Espectro Autista nível 1 de suporte em adultos' },
+        { '@type': 'Thing', name: 'Relacionamentos amorosos NT-autista' },
+        { '@type': 'Thing', name: 'Camuflagem (masking) em adultos autistas' }
+      ],
+      mainEntity: { '@id': SITE.url + '/autismo/sobre-larissa/#larissa-caramaschi' }
+    },
+    larissaPerson
+  ]
+});
+
+interface ArtigoCard {
+  slug: string;
+  titulo: string;
+  resumo: string;
+}
+
+const ARTIGOS: ArtigoCard[] = [
+  {
+    slug: 'diagnostico-tardio-adulto-2026',
+    titulo: 'Diagnóstico tardio em adultos',
+    resumo: 'Reorganização biográfica, custos invisíveis e o que muda quando se nomeia o que sempre esteve lá.'
+  },
+  {
+    slug: 'relacionamentos-amorosos-nt-autista-2026',
+    titulo: 'Casais NT-autista',
+    resumo: 'Relacionamentos amorosos entre pessoa neurotípica e pessoa autista, sob a lente da dupla empatia e da regulação relacional.'
+  },
+  {
+    slug: 'camuflagem-masking-cat-q-adulto-2026',
+    titulo: 'Camuflagem (masking) em adultos',
+    resumo: 'Três dimensões da camuflagem, instrumento CAT-Q, e a clínica do desmascaramento gradual em adultos autistas.'
+  },
+  {
+    slug: 'vida-cotidiana-trabalho-autista-adulto-2026',
+    titulo: 'Trabalho e vida cotidiana',
+    resumo: 'Acomodações razoáveis, gestão de energia social, sobrecarga sensorial e funcionamento profissional no Brasil em 2026.'
+  },
+  {
+    slug: 'clinica-tea-adulto-evidencia-2026',
+    titulo: 'Clínica do TEA adulto',
+    resumo: 'O que a evidência clínica recente sustenta sobre avaliação, acompanhamento e prognóstico em adultos com autismo nível 1.'
+  },
+  {
+    slug: 'fronteira-pesquisa-tea-adulto-2026',
+    titulo: 'Fronteira de pesquisa 2026',
+    resumo: 'Linhas de pesquisa abertas em 2026, do biomarcador molecular à dupla empatia, com leitura crítica do estado da arte.'
+  }
+];
+
+interface PortaCard {
+  href: string;
+  rotulo: string;
+  titulo: string;
+  resumo: string;
+}
+
+const PORTAS: PortaCard[] = [
+  {
+    href: '/autismo/para-pacientes/',
+    rotulo: 'Porta 01',
+    titulo: 'Para pacientes e famílias',
+    resumo: 'Entrada acessível para adultos recém-diagnosticados, parceiros e familiares que querem entender o terreno antes da decisão clínica.'
+  },
+  {
+    href: '/autismo/para-profissionais/',
+    rotulo: 'Porta 02',
+    titulo: 'Para profissionais de psicologia',
+    resumo: 'Material clínico de referência para psicólogos, psiquiatras, neuropsicólogos e terapeutas que atendem adultos autistas.'
+  },
+  {
+    href: '/autismo/para-pesquisadores/',
+    rotulo: 'Porta 03',
+    titulo: 'Para pesquisadores',
+    resumo: 'Mapas de literatura, fontes primárias e questões abertas em autismo adulto, voltado a quem investiga ou orienta pesquisa.'
+  }
+];
+
+interface Deslocamento {
+  numero: string;
+  de: string;
+  para: string;
+}
+
+const DESLOCAMENTOS: Deslocamento[] = [
+  { numero: '01', de: 'Da culpa', para: 'para compreensão funcional' },
+  { numero: '02', de: 'Da patologização', para: 'para tradução' },
+  { numero: '03', de: 'Do conserto do parceiro', para: 'para construção de linguagem relacional' },
+  { numero: '04', de: 'Do jargão clínico fechado', para: 'para vocabulário acessível e tecnicamente honesto' }
 ];
 ---
 
-<Base>
-  <Hero />
+<Base title={titulo} description={descricao}>
 
-  <StickyDisclaimerCTA />
-
-  <!-- Conceitos pilar -->
-  <section class="container-page py-16 lg:py-20">
-    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
-      <div class="max-w-2xl">
-        <span class="section-eyebrow">01 · Guia central</span>
-        <h2 class="section-h text-3xl sm:text-4xl">Comece pelo que ainda não está claro.</h2>
-        <p class="mt-3 text-ink-700">Conceitos que confundem mais do que parecem — esclareça antes de decidir.</p>
+  <!-- HERO -->
+  <section class="bg-gradient-to-b from-brand-50 to-white border-b border-surface-200">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-4xl">
+        <span class="section-eyebrow">Portal de psicoeducação</span>
+        <h1 class="section-h text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight">
+          Autismo nível 1 de suporte em adultos, identidade, relacionamentos amorosos e vida cotidiana, com profundidade clínica e respeito à comunidade adulta.
+        </h1>
+        <p class="mt-6 text-base sm:text-lg text-ink-700 leading-relaxed max-w-3xl" style="text-align: justify;">
+          Portal de psicoeducação conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia, mestre em Psicologia pela Universidade de São Paulo, com vinte e seis anos de prática em psicoterapia individual, familiar e de casal. O material reunido aqui é de leitura aberta, escrito em vocabulário identity-first, com foco em adultos brasileiros que reconhecem traços autísticos em si ou em pessoas próximas, e em profissionais que querem aprofundar a clínica neuroafirmativa.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/autismo/" class="btn btn-primary btn-lg">
+            Conhecer o material
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M3 10h12.5l-4.3-4.3 1.4-1.4L19.4 10l-6.8 6.7-1.4-1.4 4.3-4.3H3z"/></svg>
+          </a>
+          <a href="/autismo/sobre-larissa/" class="btn btn-ghost-dark btn-lg">
+            Sobre Larissa Caramaschi
+          </a>
+        </div>
       </div>
-      <a href="/regulacao" class="hidden lg:inline-flex items-center gap-2 text-brand-700 font-semibold hover:text-brand-800">
-        Guia completo de regulação <span aria-hidden="true">→</span>
-      </a>
     </div>
+  </section>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {CONCEITOS.map(c => (
-        <a href={c.href} class="card-lift block p-6 group">
-          <div class="text-brand-700 font-display font-bold text-sm">Conceito · {c.n}</div>
-          <h3 class="font-display font-semibold text-lg mt-2 text-ink-900 group-hover:text-brand-800 transition">{c.t}</h3>
-          <p class="mt-2 text-sm text-ink-500">{c.d}</p>
-          <span class="mt-4 inline-flex items-center gap-1 text-sm text-brand-700 font-semibold">Ler <span aria-hidden="true" class="group-hover:translate-x-0.5 transition">→</span></span>
+  <!-- 3 PORTAS DE AUDIÊNCIA -->
+  <section class="container-page py-16 lg:py-20">
+    <div class="max-w-3xl mb-10">
+      <span class="section-eyebrow">01 · Três portas por onde entrar</span>
+      <h2 class="section-h text-3xl sm:text-4xl">Material organizado por intenção de leitura.</h2>
+      <p class="mt-3 text-ink-700 text-base sm:text-lg" style="text-align: justify;">
+        O mesmo corpo de conhecimento ganha contornos diferentes conforme quem chega. Escolha a porta que dialoga com a sua intenção atual, sem hierarquia entre as três.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {PORTAS.map(p => (
+        <a href={p.href} class="card-lift block p-7 group">
+          <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">{p.rotulo}</p>
+          <h3 class="font-display font-semibold text-xl mt-2 text-ink-900 group-hover:text-brand-800 transition leading-snug">{p.titulo}</h3>
+          <p class="mt-3 text-sm sm:text-base text-ink-700 leading-relaxed" style="text-align: justify;">{p.resumo}</p>
+          <span class="mt-5 inline-flex items-center gap-1 text-sm text-brand-700 font-semibold">
+            Entrar por aqui <span aria-hidden="true" class="group-hover:translate-x-0.5 transition">→</span>
+          </span>
         </a>
       ))}
     </div>
   </section>
 
-  <!-- Tipos de pós-graduação · escopo amplo -->
-  <section id="tipos-pos-graduacao" class="bg-white border-y border-surface-200">
+  <!-- ARTIGOS PUBLICADOS -->
+  <section class="bg-surface-50 border-y border-surface-200">
     <div class="container-page py-16 lg:py-20">
       <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
         <div class="max-w-2xl">
-          <span class="section-eyebrow">02 · Cinco modalidades canônicas</span>
-          <h2 class="section-h text-3xl sm:text-4xl">Pós-Graduação em Psicologia não é só MBA.</h2>
-          <p class="mt-3 text-ink-700">
-            O portal cobre cinco modalidades regulamentadas: Especialização Lato Sensu (CFP/MEC), MBA aplicado,
-            Mestrado Profissional (CAPES), Especialização Clínica certificada por Conselho e Residência Multiprofissional.
-            Cada uma responde a um momento de carreira distinto.
+          <span class="section-eyebrow">02 · Artigos publicados</span>
+          <h2 class="section-h text-3xl sm:text-4xl">Seis leituras longas sobre autismo adulto.</h2>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg" style="text-align: justify;">
+            Cada artigo combina referência técnica explícita e vocabulário acessível. A profundidade é proposital, são textos para leitura cuidadosa, não para escaneio rápido.
           </p>
         </div>
-        <a href="/tipos-de-pos-graduacao" class="inline-flex items-center gap-2 text-brand-700 font-semibold hover:text-brand-800">Ver as cinco modalidades <span aria-hidden="true">→</span></a>
+        <a href="/autismo/" class="inline-flex items-center gap-2 text-brand-700 font-semibold hover:text-brand-800">
+          Ver hub completo <span aria-hidden="true">→</span>
+        </a>
       </div>
 
-      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        {TIPOS_DE_POS_GRADUACAO.map(t => (
-          <a href={`/tipos-de-pos-graduacao#${t.id}`} class="card-lift block p-5 group">
-            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">{t.shortName}</p>
-            <h3 class="font-display font-semibold text-base mt-2 text-ink-900 group-hover:text-brand-800 transition leading-snug">{t.name}</h3>
-            <p class="text-xs text-ink-500 mt-2"><strong>Carga horária:</strong> {t.cargaHoraria}</p>
-            <p class="text-xs text-ink-500 mt-1"><strong>Regulador:</strong> {t.regulador}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {ARTIGOS.map((a, i) => (
+          <a href={`/autismo/artigos/${a.slug}/`} class="card-lift block p-6 group bg-white">
+            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">Artigo · {String(i + 1).padStart(2, '0')}</p>
+            <h3 class="font-display font-semibold text-lg mt-2 text-ink-900 group-hover:text-brand-800 transition leading-snug">{a.titulo}</h3>
+            <p class="mt-3 text-sm text-ink-700 leading-relaxed" style="text-align: justify;">{a.resumo}</p>
+            <span class="mt-5 inline-flex items-center gap-1 text-sm text-brand-700 font-semibold">
+              Ler <span aria-hidden="true" class="group-hover:translate-x-0.5 transition">→</span>
+            </span>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- MBAs em destaque -->
-  <section id="mbas-preview" class="bg-surface-50 border-y border-surface-200">
-    <div class="container-page py-16 lg:py-20">
-      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
-        <div class="max-w-2xl">
-          <span class="section-eyebrow">03 · MBAs em destaque · uma das modalidades</span>
-          <h2 class="section-h text-3xl sm:text-4xl">Cinco MBAs do portfólio IPOG em Psicologia aplicada.</h2>
-          <p class="mt-3 text-ink-700">
-            Recorte da modalidade MBA — aplicado a Psicologia Organizacional, Neurociência, Bem-Estar e Liderança.
-            Para Especializações, Mestrado Profissional e Clínica certificada, veja
-            <a href="/tipos-de-pos-graduacao" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">as cinco modalidades</a>.
-            Ofertas vigentes em
-            <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">portal oficial</a>.
-          </p>
-        </div>
-        <a href="/mbas" class="inline-flex items-center gap-2 text-brand-700 font-semibold hover:text-brand-800">Ver todos os MBAs <span aria-hidden="true">→</span></a>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-4">
-        {MBAS.map(m => <MBACard mba={m} />)}
-      </div>
-    </div>
-  </section>
-
-  <!-- Áreas -->
+  <!-- GLOSSÁRIO -->
   <section class="container-page py-16 lg:py-20">
-    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
-      <div class="max-w-2xl">
-        <span class="section-eyebrow">04 · Áreas</span>
-        <h2 class="section-h text-3xl sm:text-4xl">Áreas da Psicologia mapeadas.</h2>
-        <p class="mt-3 text-ink-700">As 13 especialidades reconhecidas pelo CFP mais áreas correlatas estratégicas.</p>
-      </div>
-      <a href="/areas" class="inline-flex items-center gap-2 text-brand-700 font-semibold hover:text-brand-800">Ver todas as 18 áreas <span aria-hidden="true">→</span></a>
-    </div>
-
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {AREAS.slice(0, 6).map(a => <AreaCard area={a} />)}
+    <div class="max-w-4xl mx-auto">
+      <a href="/autismo/glossario/" class="card-lift block p-8 sm:p-12 group bg-brand-50">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
+          <div class="flex-1">
+            <span class="section-eyebrow">03 · Glossário em construção</span>
+            <h2 class="section-h text-2xl sm:text-3xl lg:text-4xl mt-2 group-hover:text-brand-800 transition">Cinquenta e quatro verbetes sobre autismo adulto.</h2>
+            <p class="mt-4 text-base sm:text-lg text-ink-700 leading-relaxed" style="text-align: justify;">
+              Vocabulário técnico, ético e atualizado em 2026, do diagnóstico tardio à dupla empatia, da camuflagem ao apego, em definições operacionais escritas para pacientes, profissionais e pesquisadores. O glossário segue em construção contínua.
+            </p>
+            <span class="mt-6 inline-flex items-center gap-1 text-sm text-brand-700 font-semibold">
+              Abrir glossário <span aria-hidden="true" class="group-hover:translate-x-0.5 transition">→</span>
+            </span>
+          </div>
+          <div class="flex-shrink-0 hidden lg:flex items-center justify-center w-32 h-32 rounded-full bg-white text-brand-800">
+            <span class="font-display font-bold text-5xl">54</span>
+          </div>
+        </div>
+      </a>
     </div>
   </section>
 
-  <!-- Temas em alta -->
-  <section id="temas" class="bg-gradient-to-b from-surface-50 to-white border-y border-surface-200">
-    <div class="container-page py-16 lg:py-20">
-      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8">
-        <div class="max-w-2xl">
-          <span class="section-eyebrow">05 · Temas em alta</span>
-          <h2 class="section-h text-3xl sm:text-4xl">Pautas que movem o mercado em 2026.</h2>
-          <p class="mt-3 text-ink-700">NR-1, saúde mental, IA em RH, neurociência aplicada e segurança psicológica.</p>
-        </div>
+  <!-- PRINCÍPIOS EDITORIAIS -->
+  <section class="bg-brand-900 text-white relative overflow-hidden">
+    <div class="absolute -top-20 -right-10 w-72 h-72 rounded-full" aria-hidden="true" style="background: radial-gradient(closest-side, rgba(245,180,0,.25), transparent);"></div>
+    <div class="container-page py-16 lg:py-20 relative">
+      <div class="max-w-3xl mb-10">
+        <span class="tag mb-4"><span class="w-1.5 h-1.5 rounded-full bg-sun-500"></span> 04 · Princípios editoriais</span>
+        <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight">Quatro deslocamentos que orientam toda a linha editorial.</h2>
+        <p class="mt-4 text-white/85 text-base sm:text-lg leading-relaxed" style="text-align: justify;">
+          Cada texto deste portal foi escrito com a intenção explícita de deslocar quatro pontos de partida frequentes no debate público sobre autismo adulto no Brasil.
+        </p>
       </div>
-
-      <div class="flex gap-3 overflow-x-auto scroll-fade pb-2 -mx-4 sm:-mx-6 px-4 sm:px-6 scroll-x-snap">
-        {TEMAS.map(t => (
-          <a href={t.area ? `/areas/${t.area}` : '/'} class="shrink-0 chip">
-            <span class="w-1.5 h-1.5 rounded-full bg-brand-700"></span>
-            {t.name}
-          </a>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+        {DESLOCAMENTOS.map(d => (
+          <div class="bg-white/5 border border-white/10 rounded-lg p-6 lg:p-8">
+            <p class="text-sun-500 font-display font-bold text-sm">Deslocamento · {d.numero}</p>
+            <p class="mt-3 text-white/70 text-base">{d.de}</p>
+            <p class="mt-2 font-display font-semibold text-xl sm:text-2xl text-white leading-snug">{d.para}</p>
+          </div>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- Personas -->
-  <section id="para-quem" class="container-page py-16 lg:py-20">
-    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
-      <div class="max-w-2xl">
-        <span class="section-eyebrow">06 · Para quem</span>
-        <h2 class="section-h text-3xl sm:text-4xl">Trilhas por perfil.</h2>
-        <p class="mt-3 text-ink-700">Nem todo conteúdo recomenda o mesmo curso. Escolha o ponto de partida que combina com sua história.</p>
-      </div>
-    </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {PERSONAS.map(p => <PersonaCard persona={p} />)}
+  <!-- CONTEÚDO COMPLEMENTAR -->
+  <section class="container-page py-14 lg:py-16">
+    <div class="max-w-3xl mx-auto text-center">
+      <span class="section-eyebrow">05 · Conteúdo complementar</span>
+      <p class="mt-4 text-base sm:text-lg text-ink-700 leading-relaxed" style="text-align: justify;">
+        O portal também mantém material amplo sobre pós-graduações em Psicologia (áreas, modalidades, FAQ) em <a href="/areas/" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">áreas de atuação</a>, <a href="/tipos-de-pos-graduacao" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">cinco modalidades de pós-graduação</a>, <a href="/guias/" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">guias práticos</a> e <a href="/faq/" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">perguntas frequentes</a>.
+      </p>
     </div>
   </section>
 
-  <!-- CTA final -->
-  <section class="bg-brand-900 text-white relative overflow-hidden">
-    <div class="absolute -top-20 -right-10 w-72 h-72 rounded-full" aria-hidden="true" style="background: radial-gradient(closest-side, rgba(245,180,0,.30), transparent);"></div>
-    <div class="container-page py-16 lg:py-20 relative">
-      <div class="grid lg:grid-cols-12 gap-10 items-center">
-        <div class="lg:col-span-7">
-          <span class="tag mb-4"><span class="w-1.5 h-1.5 rounded-full bg-sun-500"></span> Próximo passo</span>
-          <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight">
-            Decidiu? O caminho oficial é <span class="text-sun-500">ipog.edu.br</span>.
-          </h2>
-          <p class="mt-4 text-white/85 text-lg max-w-xl">
-            Use este portal para mapear. Use o IPOG para se inscrever, falar com consultor e iniciar sua matrícula.
-          </p>
-        </div>
-        <div class="lg:col-span-5 flex flex-col gap-3">
-          <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-primary btn-lg">
-            Acessar portal oficial IPOG
-            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-          </a>
-          <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-ghost-dark btn-lg">Ver pós-graduações do IPOG</a>
-          <p class="text-xs text-white/55 mt-1">Portal independente.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section id="faq" class="bg-surface-50 border-y border-surface-200">
-    <div class="container-page py-16 lg:py-20 max-w-4xl mx-auto">
-      <span class="section-eyebrow">07 · FAQ</span>
-      <h2 class="section-h text-3xl sm:text-4xl">Perguntas que repetem.</h2>
-      <p class="mt-3 text-ink-700">Respostas curtas para as dúvidas mais buscadas sobre pós-graduação em Psicologia.</p>
-      <div class="mt-8">
-        <FAQAccordion />
-      </div>
-    </div>
-  </section>
-
-  <!-- Leitura relacionada · Information Gain (Google March 2026 Core Update) -->
-  <section class="bg-white border-t border-surface-200" aria-labelledby="leitura-relacionada-home">
-    <div class="container-page py-14 lg:py-16">
-      <div class="max-w-2xl">
-        <span class="section-eyebrow">Leitura relacionada</span>
-        <h2 id="leitura-relacionada-home" class="section-h text-2xl sm:text-3xl">Quatro caminhos que aprofundam o que esta home apenas resume.</h2>
-        <p class="mt-3 text-ink-700 text-sm sm:text-base">Selecionamos cabeçalhos editoriais com âncora descritiva e síntese de uma frase — siga o que responde à sua dúvida específica.</p>
-      </div>
-      <div class="mt-8 grid md:grid-cols-2 gap-5">
-        <a href="/tipos-de-pos-graduacao" class="card-lift block p-6 group">
-          <h3 class="font-display font-semibold text-lg text-ink-900 group-hover:text-brand-800 transition leading-snug">As cinco modalidades canônicas de Pós-Graduação em Psicologia (não é só MBA)</h3>
-          <p class="mt-2 text-sm text-ink-700 leading-relaxed">Especialização Lato Sensu (MEC), MBA aplicado, Mestrado Profissional (CAPES), Especialização Clínica (CFP) e Residência — quando cada uma faz sentido para o momento de carreira.</p>
-        </a>
-        <a href="/faq/nr1-faq" class="card-lift block p-6 group">
-          <h3 class="font-display font-semibold text-lg text-ink-900 group-hover:text-brand-800 transition leading-snug">NR-1 atualizada — 14 perguntas sobre prazo, GRO, eSocial e riscos psicossociais</h3>
-          <p class="mt-2 text-sm text-ink-700 leading-relaxed">Portaria MTE 1.419/2024, obrigações por porte (MEI, ME, EPP), papel da liderança e instrumentos de avaliação aceitos pela auditoria fiscal.</p>
-        </a>
-        <a href="/regulacao" class="card-lift block p-6 group">
-          <h3 class="font-display font-semibold text-lg text-ink-900 group-hover:text-brand-800 transition leading-snug">Regulação MEC, CAPES e CFP — onde começa a validade de cada pós</h3>
-          <p class="mt-2 text-sm text-ink-700 leading-relaxed">CNE/CES 1/2018, registro de especialista no CRP, reconhecimento internacional e o que separa título de mercado de credencial regulatória defensável.</p>
-        </a>
-        <a href="/comparativos/mba-vs-especializacao" class="card-lift block p-6 group">
-          <h3 class="font-display font-semibold text-lg text-ink-900 group-hover:text-brand-800 transition leading-snug">MBA vs Especialização Lato Sensu — ambos são reconhecidos pelo MEC</h3>
-          <p class="mt-2 text-sm text-ink-700 leading-relaxed">A diferença prática é de público, não de título: o que muda é o portfólio de cases e o perfil da turma, não a validade do certificado.</p>
-        </a>
+  <!-- DISCLAIMER CFP -->
+  <section class="bg-surface-50 border-t border-surface-200">
+    <div class="container-page py-10 max-w-3xl mx-auto">
+      <div class="rounded-lg border border-surface-200 bg-white p-6 sm:p-8">
+        <p class="text-sm sm:text-base font-display font-semibold text-ink-900">Aviso ético e clínico</p>
+        <p class="mt-3 text-sm text-ink-700 leading-relaxed" style="text-align: justify;">
+          Este portal é independente e tem finalidade exclusivamente informativa e de psicoeducação. O conteúdo aqui exposto não substitui consulta, avaliação, diagnóstico ou acompanhamento psicológico individualizado. A divulgação respeita a Resolução CFP nº 03/2007, que regulamenta a publicidade de serviços psicológicos no Brasil, sem promessa de cura, sem comparação com outros profissionais, sem garantia de resultado e sem sensacionalismo. A modalidade de atendimento clínico online de Larissa Caramaschi é oferecida nos termos da Resolução CFP nº 11/2018.
+        </p>
       </div>
     </div>
   </section>
 
   <script type="application/ld+json" set:html={ldBreadcrumb} />
+  <script type="application/ld+json" set:html={ldHomeGraph} />
 </Base>

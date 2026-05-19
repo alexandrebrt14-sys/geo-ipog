@@ -1,0 +1,330 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const titulo = 'Atender adultos autistas nível 1 na prática clínica em 2026: avaliação, enquadre, intervenções com evidência e erros comuns';
+const descricao = 'Guia técnico para psicólogos clínicos sobre avaliação diagnóstica, adaptação do enquadre, instrumentos (AQ-50, RAADS-R, ADOS-2, ADI-R, CAT-Q, AAA), TCC adaptada, terapia familiar sistêmica, dupla empatia e intervenções neuroafirmativas no acompanhamento de adultos autistas nível 1 de suporte.';
+const slug = 'clinica-tea-adulto-evidencia-2026';
+const dataPublicacao = '2026-05-19';
+
+const faqs = [
+  {
+    q: 'Posso fechar um diagnóstico de autismo nível 1 em adulto apenas com AQ-50 e RAADS-R?',
+    a: 'Não. Escalas de autodeclaração são úteis para triagem e para mapear o perfil subjetivo, mas não substituem um processo clínico integrado. O fechamento diagnóstico exige entrevista clínica detalhada com foco no desenvolvimento, observação direta, heteroanamnese sempre que possível, análise de funcionamento adaptativo, avaliação de comorbidades e referência aos critérios do DSM-5-TR ou CID-11. A Resolução CFP nº 03/2007 exige fundamentação por instrumentos validados; AQ-50 e RAADS-R não constam do SATEPSI, portanto entram como instrumentos auxiliares de triagem, não como teste psicológico em sentido jurídico.'
+  },
+  {
+    q: 'Qual a sensibilidade da AQ-50 e da RAADS-R em mulheres adultas que mascaram?',
+    a: 'A literatura recente, em especial os trabalhos de Hull, Mandy e do grupo do Centre for Research in Autism and Education, mostra que AQ-50 e RAADS-R subestimam sistematicamente traços em mulheres adultas que apresentam camuflagem alta. RAADS-R tem melhor desempenho em adulto camuflador do que a AQ-50, mas ainda perde casos. A recomendação prática é combinar uma das duas escalas com a CAT-Q, justamente para capturar o esforço de mascaramento, e nunca tratar a triagem como suficiente.'
+  },
+  {
+    q: 'O ADOS-2 módulo 4 ainda é o padrão ouro em 2026 para adultos verbalmente fluentes?',
+    a: 'Sim, segue como referência observacional, mas com ressalvas relevantes. Em adultos de alto QI e com história de camuflagem, a sensibilidade do módulo 4 cai. A literatura (Lord, Kim, e revisões recentes) recomenda interpretar o resultado dentro de protocolo multidisciplinar e nunca isoladamente. No Brasil, a oferta de aplicadores treinados ainda é restrita, o que torna razoável trabalhar com um conjunto convergente de evidências quando o ADOS-2 não está disponível, desde que essa limitação seja registrada no laudo.'
+  },
+  {
+    q: 'Como conduzir o enquadre quando o adulto autista chega já com hipótese diagnóstica autoidentificada?',
+    a: 'A escuta inicial precisa validar a hipótese autoidentificada como dado clínico relevante, sem confirmá-la nem descartá-la antes da avaliação. Estudos qualitativos recentes mostram que adultos que se autoidentificam costumam ter alto grau de acerto, especialmente mulheres e pessoas LGBTQIA+. Trabalho prático: explorar a história desenvolvimental, perfil sensorial, padrão de interesses e camuflagem, alinhar expectativas sobre o processo, e devolver o resultado com fundamentação técnica. Negar valor à autoidentificação tende a romper o vínculo; abraçá-la acriticamente compromete a validade do processo.'
+  },
+  {
+    q: 'Quais ajustes mínimos de enquadre o consultório precisa ter para receber adulto autista nível 1?',
+    a: 'Cinco ajustes têm retorno alto e custo baixo: previsibilidade explícita do roteiro da sessão, redução de estímulos sensoriais (luz neutra, ruído controlado, ausência de odores fortes), comunicação direta com explicitação de inferências, flexibilidade para reagendamento sem julgamento moral, e permissão explícita para stims não autolesivos. Esses ajustes funcionam tanto no presencial quanto no online; no online, soma-se a possibilidade de câmera desligada e uso do chat como canal paralelo.'
+  },
+  {
+    q: 'Como diferenciar autismo nível 1 de TDAH, transtorno de personalidade esquizoide, fobia social e TEPT complexo?',
+    a: 'O diagnóstico diferencial é provavelmente o ponto técnico mais delicado. O autismo nível 1 é uma condição de neurodesenvolvimento, com sinais desde a primeira infância, mesmo que tenham passado despercebidos. TDAH adulto é frequentemente comórbido (estimativas de 30 a 50% de coocorrência). Transtorno esquizoide difere pela ausência de necessidade de vínculo; muitos adultos autistas, ao contrário, querem vínculo e sofrem com sua dificuldade de operacionalizá-lo. Fobia social é situacional e responde bem a exposição; o autismo é traço estável e a exposição sem ajuste de demanda agrava sofrimento. TEPT complexo pode imitar embotamento e hiperreatividade sensorial, mas tem trigger claramente traumático. A entrevista desenvolvimental é o eixo do diferencial.'
+  },
+  {
+    q: 'TCC adaptada para adulto autista funciona para depressão e ansiedade?',
+    a: 'A meta-análise mais recente sobre TCC adaptada para adultos autistas mostra efeitos pequenos a moderados sobre ansiedade e efeitos moderados sobre depressão, com tamanho de efeito comparável ao obtido em populações não autistas quando a adaptação respeita previsibilidade, linguagem concreta, recursos visuais e integração com manejo sensorial. O ganho clínico aparece, mas é menor se o terapeuta aplica protocolo padrão sem adaptação. Resultado prático: o psicólogo precisa explicitar adaptações no plano de caso e medir desfechos.'
+  },
+  {
+    q: 'O que a abordagem neuroafirmativa muda na prática, em termos concretos de sessão?',
+    a: 'Três mudanças concretas. Primeiro, a meta deixa de ser "parecer menos autista" e passa a ser "sofrer menos, participar mais do que importa para você". Segundo, stims não autolesivos são tratados como autorregulação válida, não como sintoma a extinguir. Terceiro, contato visual, expressões faciais e linguagem corporal deixam de ser exigência tácita; o terapeuta explicita que o paciente pode se acomodar como for confortável. Não há ensaio clínico randomizado comparando "neuroafirmativa" versus "não neuroafirmativa" em adultos nível 1, mas estudos qualitativos e revisões mostram associação clara entre práticas não afirmativas, drop-out e piora de sintomas internalizantes.'
+  },
+  {
+    q: 'Como aplicar Carter e McGoldrick ao ciclo de vida da família com um adulto autista nível 1 diagnosticado tardiamente?',
+    a: 'O diagnóstico tardio reorganiza retrospectivamente a história familiar. Aplicado ao modelo de Carter e McGoldrick, o terapeuta trabalha três frentes: ressignificação das fases anteriores (mal-entendidos, rótulos como preguiçoso ou antissocial, conflitos conjugais não compreendidos), renegociação da fase atual (autonomia, finanças, projeto de vida, parentalidade) e construção de transições futuras realistas. A meta é interromper ciclos relacionais que se sustentavam em interpretações neurotípicas equivocadas, sem tratar a família como culpada.'
+  },
+  {
+    q: 'Qual o nível de evidência para terapia familiar sistêmica em adultos autistas nível 1?',
+    a: 'A evidência direta em adultos autistas nível 1 ainda é limitada. A maior parte dos estudos sistêmicos foi feita com famílias de crianças e adolescentes autistas. Revisões conceituais como a de Preece e Jordan defendem a aplicação dos princípios sistêmicos no contexto adulto, mas não há ensaios clínicos randomizados específicos para essa população em 2024 a 2026. A prática se sustenta em fundamentação teórica e em estudos qualitativos. O psicólogo deve explicitar essa limitação ao paciente e à família.'
+  },
+  {
+    q: 'Como aplicar a dupla empatia de Milton na supervisão de casos com adultos autistas?',
+    a: 'A dupla empatia muda o eixo da supervisão. Em vez de perguntar "onde o paciente falhou em compreender o terapeuta", o supervisor passa a perguntar "onde o terapeuta neurotípico falhou em compreender o paciente e quais inferências automáticas precisam ser revisadas". Na prática, isso significa rever transcrições e sessões à luz de duas hipóteses concorrentes: "isso é resistência" versus "isso é uma diferença de estilo cognitivo que eu interpretei como resistência". A maior parte dos impasses clínicos em adultos autistas se dissolve quando a segunda hipótese é levada a sério.'
+  },
+  {
+    q: 'Existe risco de overdiagnosis em adulto autista nível 1 com a popularização do tema nas redes?',
+    a: 'Sim, e o risco é real, mas precisa ser dimensionado com cuidado. O fenômeno mais frequente nos serviços brasileiros segue sendo subdiagnóstico, em especial em mulheres adultas, pessoas LGBTQIA+ e adultos com alta capacidade cognitiva. A popularização do tema gera procura, e parte dessa procura é apropriada. O psicólogo deve aplicar critério clínico rigoroso, considerar diferenciais, evitar tanto a confirmação acrítica quanto a negação preconceituosa. A norma técnica é a mesma de qualquer hipótese diagnóstica: evidência convergente, fundamentação, transparência sobre limites.'
+  }
+];
+
+const ldArticle = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: titulo,
+  description: descricao,
+  datePublished: dataPublicacao,
+  dateModified: dataPublicacao,
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  mainEntityOfPage: SITE.url + '/autismo/artigos/' + slug + '/',
+  about: [
+    { '@type': 'Thing', name: 'Autismo em adultos' },
+    { '@type': 'Thing', name: 'Nível 1 de suporte' },
+    { '@type': 'Thing', name: 'Avaliação psicológica' },
+    { '@type': 'Thing', name: 'TCC adaptada' },
+    { '@type': 'Thing', name: 'Terapia familiar sistêmica' },
+    { '@type': 'Thing', name: 'Dupla empatia' },
+    { '@type': 'Thing', name: 'Intervenções neuroafirmativas' }
+  ],
+  audience: { '@type': 'Audience', audienceType: 'Psicólogos clínicos com registro ativo no CRP' }
+});
+
+const ldFAQ = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+});
+---
+
+<Base title={titulo + ', autismo nível 1 em adultos'} description={descricao} pageType="article">
+  <article class="container-page py-8 lg:py-12 max-w-3xl mx-auto">
+    <Breadcrumbs items={[
+      { label: 'Início', href: '/' },
+      { label: 'Autismo em adultos', href: '/autismo/' },
+      { label: 'Para profissionais de psicologia', href: '/autismo/para-profissionais/' },
+      { label: 'Clínica do TEA adulto' }
+    ]} />
+
+    <header class="mt-6">
+      <p class="text-xs font-semibold uppercase tracking-wider text-brand-700">Para profissionais de psicologia</p>
+      <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-900 mt-3 leading-tight">{titulo}</h1>
+      <p class="text-base sm:text-lg text-ink-700 mt-4 leading-relaxed">{descricao}</p>
+      <p class="text-xs text-ink-500 mt-3">Publicado em 19 de maio de 2026 · leitura de cerca de 22 minutos</p>
+    </header>
+
+    <TLDR resposta="A clínica do autismo nível 1 de suporte em adulto, em 2026, deixou de ser um caso raro e passou a ser uma demanda consistente em consultório, sobretudo de mulheres adultas que viveram décadas sob diagnósticos equivocados. O psicólogo precisa atualizar três frentes simultâneas: avaliação diagnóstica integrada (AQ-50, RAADS-R, CAT-Q como triagem, ADOS-2 módulo 4 e ADI-R como referência observacional, sempre articulados com entrevista desenvolvimental e funcionamento adaptativo), adaptação do enquadre (previsibilidade, sensorialidade, linguagem concreta) e intervenção fundamentada (TCC adaptada com evidência consolidada, terapia familiar sistêmica aplicada ao ciclo de vida, dupla empatia de Milton como princípio reflexivo e orientação neuroafirmativa como ética de fundo). A Resolução CFP nº 03/2007 segue como referência sobre avaliação; a Resolução CFP nº 11/2018 e a Resolução CFP nº 06/2019 organizam atendimento online e produção de documentos." fontes={['Lai e colaboradores, 2019', 'Hull e colaboradores, 2021', 'Milton, 2012', 'Carter e McGoldrick, ciclo de vida familiar', 'CFP, Resoluções 03/2007, 11/2018, 06/2019']} />
+
+    <div class="prose-autismo mt-8 text-ink-800 leading-relaxed" style="text-align: justify; hyphens: auto;">
+
+      <p>Há um caso clínico que voltou três vezes nos últimos doze meses, em três configurações diferentes. Mulher entre trinta e cinco e cinquenta anos, escolaridade alta, carreira estabelecida, casamento longo. Chega encaminhada por outro profissional, frequentemente com diagnóstico anterior de depressão recorrente, transtorno de ansiedade generalizada, transtorno de personalidade evitante ou borderline. Relata exaustão que não responde ao tratamento, sensação persistente de estar atuando um papel social, dificuldades sensoriais que aprendeu a esconder desde criança, episódios de colapso após eventos sociais aparentemente comuns. Em algum momento dos últimos dois anos, alguém da família, terapeuta anterior ou ela mesma levantou a hipótese de autismo. O encaminhamento chega com a frase: "ela quer descartar autismo".</p>
+
+      <p>Não é caso raro. É a clínica do autismo nível 1 de suporte em adulto, e ela mudou o consultório.</p>
+
+      <p>A literatura epidemiológica acumulada até 2026 sustenta o que a prática já tornou evidente: a razão de prevalência entre homens e mulheres autistas, historicamente reportada entre 4:1 e 5:1, está mais próxima de 3:1 quando o instrumento de avaliação é sensível à camuflagem feminina, e há indícios de que, em adultos com QI médio ou acima da média, a proporção se aproxima de 2:1. Adultos diagnosticados na vida adulta passam, em média, mais de duas décadas com diagnósticos equivocados antes da hipótese correta. Em mulheres, esse intervalo é maior. A tese contraintuitiva deste artigo é simples: a maior parte do que se aprendeu sobre autismo na pós-graduação clássica em psicologia clínica, voltada para o modelo médico e para o quadro masculino infantil, atrapalha quando o paciente é um adulto nível 1, em especial mulher. O profissional que mantém o quadro pediátrico como referência implícita vai subdiagnosticar, vai medir progresso pelo critério errado, e vai reforçar o ciclo de exaustão e camuflagem que trouxe o paciente para a sala.</p>
+
+      <p>O que segue é uma síntese, em linguagem de colega, do que tenho ajustado na minha prática clínica nos últimos anos e do que a literatura mais recente sustenta. Não é manual; é o que considero, em maio de 2026, o mínimo razoável para receber adulto autista nível 1 em consultório com responsabilidade técnica.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">1. O enquadre clínico precisa mudar</h2>
+
+      <p>O enquadre tradicional da psicoterapia em consultório, herdado de matrizes que pressupõem comunicação majoritariamente neurotípica, faz três exigências tácitas que pesam de forma desproporcional para o adulto autista nível 1: leitura de intenções pela linguagem não verbal do terapeuta, tolerância a ambiguidade no roteiro da sessão, e adaptação contínua a estímulos sensoriais do setting que o paciente não controla. Esses três pontos, somados, criam um custo cognitivo invisível que muitas vezes o paciente paga em colapso após a sessão, e que o terapeuta interpreta erroneamente como resistência, evitação ou fragilidade narcísica.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">1.1 Clareza e previsibilidade explícita</h3>
+
+      <p>A previsibilidade não é capricho; é condição de funcionamento executivo. O ajuste prático mais simples é abrir a sessão com um microrroteiro de trinta segundos: "Hoje eu pensei em revisitar o que aconteceu na semana, depois retomar o exercício que ficou pendente da última vez, e nos últimos quinze minutos definir um pequeno passo para a próxima semana. Algo precisa entrar antes?" Esse gesto, que parece trivial, reduz o uso de recursos executivos em monitoramento de ambiguidade e libera capacidade para o trabalho terapêutico em si. Vale também para encerramento: marcar o tempo restante em pontos definidos da sessão e antecipar a transição, em vez de cortar abruptamente.</p>
+
+      <p>Reagendamentos seguem a mesma lógica. Cancelar uma sessão com vinte e quatro horas de antecedência é, para muitos adultos autistas, uma reorganização interna substantiva. Comunicar com antecedência maior, sempre que possível, e sustentar uma política previsível sobre faltas, sem deslizes morais, faz diferença concreta no vínculo.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">1.2 Sensorialidade do setting</h3>
+
+      <p>O consultório padrão é ruidoso para um perfil sensorial autista. Luz fluorescente, perfumes próximos, ruído de ar-condicionado, eco de corredor, móveis com texturas inesperadas, contato com objetos compartilhados. Ajustes baratos: luz indireta de temperatura quente, eliminar fragrâncias ambientais, oferecer almofada ou objeto de regulação tátil, manter um copo de água acessível, perguntar na primeira sessão o que costuma atrapalhar a concentração do paciente. Em atendimento online, perguntar pela qualidade do som e do ambiente do lado do paciente faz parte do enquadre, não da cortesia.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">1.3 Comunicação explícita</h3>
+
+      <p>Inferências sociais que parecem óbvias para o terapeuta neurotípico costumam ser ambíguas para o adulto autista. Frases como "como você se sente em relação a isso?" abrem campos demasiadamente abertos. Funciona melhor explicitar: "Quando você descreve o jantar de domingo, escuto duas coisas ao mesmo tempo. Uma é o relato dos fatos. A outra é alguma coisa no tom da sua voz que me sugere desconforto. Estou interpretando direito? Você quer me contar mais sobre isso?" A direção do trabalho não muda; muda a granularidade do convite.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">2. Instrumentos de avaliação em adulto: pontos fortes e limites</h2>
+
+      <p>Nenhum instrumento, isoladamente, fecha o diagnóstico em adulto. O que segue é um mapa de uso, não um protocolo único. A Resolução CFP nº 03/2007 organiza o uso de instrumentos: testes psicológicos com status jurídico de avaliação psicodiagnóstica formal exigem aprovação no SATEPSI; instrumentos auxiliares de triagem ou escalas de pesquisa entram no processo como apoio, com transparência sobre seu escopo.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">2.1 AQ-50 (Autism-Spectrum Quotient, Baron-Cohen)</h3>
+
+      <p>É a escala de autodeclaração mais usada no mundo, com cinquenta itens distribuídos em cinco domínios. Tem tradução brasileira disponível há mais de uma década e é amplamente reconhecida em estudos. Pontos fortes: economia, simplicidade, boa replicabilidade em pesquisa, ponto de corte clássico em trinta e dois sugerido em populações clínicas. Limites importantes: subestima sistematicamente traços em mulheres adultas que mascaram (Hull e colaboradores, sucessivos estudos desde 2018), tem itens com formulação que envelheceu mal e itens de fronteira difusa com TDAH e com ansiedade social. Uso prático: triagem em adulto adulto com baixa hipótese a priori; em mulher adulta com suspeita clínica, complementar obrigatoriamente com a CAT-Q.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">2.2 RAADS-R (Ritvo Autism Asperger Diagnostic Scale Revised)</h3>
+
+      <p>Oitenta itens, quatro domínios (linguagem, relacionamento social, interesses circunscritos, sensorimotor). Tem desempenho superior à AQ-50 em adulto com camuflagem e cobre melhor o domínio sensorial. Pontos fortes: granularidade, sensibilidade em casos limítrofes, escala de quatro pontos que reduz o efeito teto. Limites: aplicação mais demorada, possibilidade de falso positivo em adulto com TEPT complexo ou com alexitimia traumática, ponto de corte sugerido em sessenta e cinco que precisa ser interpretado em contexto. Uso prático: minha preferência atual como escala única, quando preciso escolher entre AQ-50 e RAADS-R, especialmente em adulto com suspeita de camuflagem ou com alta capacidade cognitiva.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">2.3 CAT-Q (Camouflaging Autistic Traits Questionnaire)</h3>
+
+      <p>Vinte e cinco itens distribuídos em três fatores (compensação, mascaramento, assimilação). É o instrumento que faltava por décadas: capta o esforço de camuflar, não os traços em si. Em mulher adulta autista, frequentemente a AQ-50 fica abaixo do ponto de corte enquanto a CAT-Q sinaliza camuflagem alta, o que ajuda a explicar o subdiagnóstico histórico. Pontos fortes: sensibilidade ao fenômeno mais relevante na clínica adulta atual, associação robusta com exaustão, depressão e ideação suicida em adultos autistas (Cassidy e colaboradores, série de estudos). Limites: não diagnostica; descreve um processo. Uso prático: aplicar sempre que houver hipótese de autismo em mulher adulta, em pessoa LGBTQIA+ que tenha vivenciado pressão de conformidade prolongada, ou em qualquer adulto com história de "sempre senti que estava atuando".</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">2.4 ADOS-2, módulo 4</h3>
+
+      <p>Padrão observacional para adulto verbalmente fluente. Exige treinamento formal e calibração entre aplicadores. Pontos fortes: estrutura semipadronizada que permite observar reciprocidade social, comunicação não verbal e padrões restritos em situação controlada; literatura robusta de validação. Limites: sensibilidade cai em adulto com camuflagem treinada e em mulher adulta com perfil internalizante; oferta de aplicadores ainda restrita no Brasil; resultado precisa ser interpretado dentro de protocolo multidisciplinar. Uso prático: encaminhar quando há acesso a aplicador treinado e quando o caso justifica o custo, em especial quando há divergência entre escalas e entrevista clínica.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">2.5 ADI-R</h3>
+
+      <p>Entrevista estruturada com informante, com foco no desenvolvimento. Em adulto, a acurácia depende fortemente do informante: pai, mãe ou cuidador que conheceu o paciente nos primeiros anos. Pontos fortes: ancora o critério desenvolvimental que o DSM-5-TR exige (sinais presentes no início do desenvolvimento, mesmo que reconhecidos tardiamente). Limites: alguns adultos chegam sem informante disponível, por luto, distanciamento familiar ou histórico de negligência; nesse caso, a alternativa é reconstrução biográfica a partir de relatos, diários, registros escolares e fotos, com transparência metodológica no laudo.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">2.6 AAA (Adult Asperger Assessment)</h3>
+
+      <p>Protocolo proposto por Baron-Cohen e colaboradores, articulando AQ, EQ (Empathy Quotient) e entrevista clínica para fechar diagnóstico em adulto sem deficiência intelectual associada. É um conjunto de procedimentos, não um teste único, e funciona como roteiro útil para profissional que está organizando o próprio fluxo de avaliação. Não há, até maio de 2026, uma versão padronizada e validada do AAA com normas brasileiras; o uso recomendado é como referência metodológica, não como ferramenta autoaplicável.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">2.7 Avaliações complementares</h3>
+
+      <p>Em adulto com suspeita de autismo nível 1, eu costumo agregar três frentes: avaliação de funcionamento adaptativo com instrumento como o ABAS-3 sempre que disponível, rastreio sistemático de comorbidades (depressão maior, transtornos de ansiedade, TDAH adulto, TOC, TEPT, transtornos alimentares, disforia de gênero), e mapa sensorial qualitativo, mesmo que com instrumento informal, porque o perfil sensorial costuma orientar tanto a hipótese diagnóstica quanto o plano de intervenção subsequente.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">3. TCC adaptada para o adulto autista nível 1</h2>
+
+      <p>A TCC adaptada é, em 2026, a abordagem com a evidência mais consolidada para reduzir sintomas internalizantes em adulto autista nível 1. As revisões sistemáticas e meta-análises recentes (Spain e colaboradores, revisões sucessivas) convergem em efeitos pequenos a moderados sobre ansiedade e moderados sobre depressão. O detalhe importante é que esses efeitos se materializam quando a adaptação acontece de fato, e desaparecem quando o psicólogo aplica protocolo padrão sem ajustes.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">3.1 Estrutura e materiais</h3>
+
+      <p>A reestruturação cognitiva escrita, com cartões, fluxogramas e listas, supera consistentemente a reestruturação predominantemente verbal. Em adulto autista, vale escrever a hipótese alternativa em vez de pedir que ele a verbalize de improviso. Tarefas de casa funcionam melhor quando são quantificáveis, com critério explícito de conclusão, em vez de instruções abertas como "observe seus pensamentos durante a semana". Registros de pensamento, planejamento de exposição, hierarquias e contratos comportamentais ganham robustez em formato escrito.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">3.2 Linguagem</h3>
+
+      <p>Metáforas costumam ser obstáculo, não atalho. "Encare o medo de frente" é frase que muitos adultos autistas tentam interpretar literalmente antes de descartar. Funciona melhor expressar a mesma intervenção em linguagem concreta: "Vou pedir que você entre em uma situação específica, com pessoas específicas, durante um tempo específico, e que registre o que aconteceu com seu corpo e seus pensamentos". A clareza não é simplificação; é redução de ambiguidade.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">3.3 Integração com manejo sensorial</h3>
+
+      <p>Qualquer protocolo de TCC adaptada deve incorporar plano de manejo sensorial, porque a sobrecarga sensorial é gatilho recorrente para os episódios que o paciente identifica como crises de ansiedade ou de depressão. Trabalhar gatilhos sensoriais, sinalizadores precoces de saturação (visão turva, dor de cabeça, sensação de não ouvir mais o que está sendo dito), estratégias de retirada controlada e planos de recuperação pós-evento muda a curva clínica de muitos pacientes.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">3.4 Camuflagem como objeto de trabalho</h3>
+
+      <p>Inserir a camuflagem como objeto explícito da terapia, em vez de tratá-la como mecanismo de defesa a confrontar, organiza o plano. O trabalho é mapear, item a item, o repertório de camuflagem do paciente, quantificar o custo de cada item, identificar onde a camuflagem é estratégica e onde se tornou autodestrutiva, e construir gradualmente espaços de não camuflagem com segurança. Não é "deixar de mascarar"; é decidir conscientemente em que contexto mascarar vale o custo.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">4. Terapia Familiar Sistêmica aplicada ao adulto autista nível 1</h2>
+
+      <p>O diagnóstico tardio do adulto autista reorganiza retrospectivamente a história familiar. A abordagem sistêmica oferece o instrumental para esse trabalho, ainda que a evidência empírica direta em adulto autista nível 1 seja limitada e a maior parte dos estudos sistêmicos venha de famílias com crianças. Trabalhos como o de Preece e Jordan sintetizam princípios aplicáveis ao contexto adulto.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">4.1 Carter e McGoldrick, ciclo de vida</h3>
+
+      <p>O modelo de Carter e McGoldrick organiza as transições familiares em fases previsíveis: jovem adulto, formação do casal, família com filhos pequenos, família com adolescentes, lançamento dos filhos, família tardia. Quando o diagnóstico do adulto chega aos quarenta anos, três ou quatro fases anteriores precisam ser relidas. Conflitos antes interpretados como teimosia, distância afetiva ou rebeldia ganham outra leitura. O trabalho terapêutico não é apagar o que aconteceu, mas oferecer uma nova narrativa familiar que evite tanto a romantização ("agora tudo se explica") quanto a culpabilização cruzada ("se eu soubesse, teria sido diferente").</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">4.2 Dinâmicas de dependência e autonomia</h3>
+
+      <p>Famílias de adulto autista frequentemente oscilam entre superproteção e negligência. Adulto nível 1 costuma ter funcionalidade alta em domínios estruturados (trabalho previsível, rotina conhecida) e fragilidade em domínios pouco estruturados (mudança, eventos imprevistos, decisões com pressão social). O risco é tratar o adulto como criança nos domínios em que apresenta fragilidade ou exigir dele autonomia neurotípica nos domínios em que claramente precisa de apoio. O trabalho sistêmico negocia, com a família, quais apoios são razoáveis sem infantilizar e quais expectativas são realistas sem abandonar.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">4.3 Conjugalidade neurodiversa</h3>
+
+      <p>Quando o diagnóstico chega em casamento longo, frequentemente os dois cônjuges precisam reorganizar a leitura mútua. Estudos qualitativos com casais neurodiversos mostram que o atrito comum não decorre de "falta de amor", mas de incompatibilidade de estilos comunicacionais e regulações sensoriais que ninguém nomeou. O trabalho terapêutico aqui se beneficia de psicoeducação dirigida ao cônjuge não autista (sem patologizá-lo), pactos explícitos de comunicação e redistribuição de carga cognitiva doméstica e relacional.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">5. Dupla empatia em sessão</h2>
+
+      <p>O conceito de dupla empatia, proposto por Damian Milton em 2012, é o ajuste teórico mais relevante para a clínica adulta atual. A formulação clássica do "déficit social autista" assume que o adulto autista tem dificuldade em compreender o social neurotípico. Milton acrescentou a segunda perna: o adulto neurotípico tem dificuldade equivalente em compreender o social autista, e a chamada falha social é, na verdade, um problema bidirecional de interlocução.</p>
+
+      <p>O que isso muda na sessão é menos óbvio do que parece. Em primeiro lugar, muda a postura do terapeuta diante de silêncios, contato visual reduzido, pausas longas, respostas literais. Em vez de interpretar como resistência, dissociação ou evitação, o terapeuta sustenta como hipótese inicial que se trata de outra norma comunicacional, e pergunta. Em segundo lugar, muda a leitura das rupturas. Quando o paciente reage de forma aparentemente desproporcional a uma intervenção, a primeira hipótese a testar deixa de ser "o que disparou na transferência" e passa a ser "o que eu disse que pode ter sido interpretado em sentido literal, e como reformular".</p>
+
+      <p>Em terceiro lugar, muda a supervisão. Supervisionar casos de adulto autista nível 1 exige perguntar, com regularidade, "onde minha leitura neurotípica está obstruindo o trabalho". Não é autocrítica performática; é instrumento técnico. Em casos em que o impasse parecia indicar fim de processo, levar essa pergunta a sério reabriu sessões.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">6. Intervenções neuroafirmativas e o modelo médico</h2>
+
+      <p>A discussão sobre intervenções neuroafirmativas atravessou os últimos cinco anos e ganhou corpo conceitual na clínica adulta. Em síntese, a abordagem neuroafirmativa parte da premissa de que o autismo é uma diferença neurocognitiva, e não um déficit a ser corrigido. A meta da intervenção deixa de ser "parecer menos autista" e passa a ser "reduzir sofrimento, aumentar autonomia, ampliar a participação significativa". Essa reformulação não nega que existam dificuldades concretas; nega que essas dificuldades sejam o autismo em si, em vez de consequências da interação entre o adulto autista e um ambiente que não foi pensado para ele.</p>
+
+      <p>Em maio de 2026, não existe ensaio clínico randomizado comparando "terapia neuroafirmativa" versus "terapia não afirmativa" em adulto nível 1, e o leitor deve desconfiar de qualquer texto que sugira o contrário. O que existe é literatura conceitual robusta (Botha, Milton, Pellicano), estudos qualitativos com adultos autistas sobre experiência de cuidado, e dados sobre desfechos negativos associados a práticas não afirmativas, sobretudo em sintomas internalizantes e em risco de suicídio, especialmente quando há sobreposição com camuflagem alta.</p>
+
+      <p>Na prática, três decisões traduzem a abordagem afirmativa em sessão. Primeiro, decidir, com o paciente, o que é objetivo legítimo. Segundo, tratar stims não autolesivos como autorregulação válida, não como sintoma a extinguir; o trabalho terapêutico se concentra em stims autolesivos ou que prejudiquem participação significativa, e mesmo neles a meta é substituição, não supressão. Terceiro, abandonar exigências tácitas de contato visual, expressão facial e linguagem corporal "ajustada"; o terapeuta nomeia explicitamente que o paciente pode se acomodar como for confortável e que isso não muda a leitura clínica.</p>
+
+      <p>Pontos de tensão honestos. Há situações em que objetivos do paciente colidem com a recomendação afirmativa. Adulto autista que pede explicitamente ajuda para "passar despercebido" em entrevistas de emprego está pedindo ajuda em camuflagem estratégica. O terapeuta não substitui a decisão do paciente pela própria ética; trabalha com ele o custo, a sustentabilidade e o contexto de cada camada de camuflagem, sem moralizar nem prescrever. Adulto autista que apresenta comportamento que ele mesmo identifica como obstáculo (atrasos crônicos, dificuldade em concluir tarefas, paralisia de decisão) merece intervenção comportamental concreta, e isso não conflita com a postura afirmativa, contanto que a meta seja definida com ele, não para ele.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">7. CFP: resoluções relevantes</h2>
+
+      <p>Três resoluções do Conselho Federal de Psicologia organizam o trabalho clínico com adulto autista no Brasil, ainda que nenhuma seja específica do tema.</p>
+
+      <p>A Resolução CFP nº 03/2007 trata da avaliação psicológica e do uso de instrumentos. O princípio é o uso de instrumentos com evidência de validade, reconhecidos pelo Sistema de Avaliação de Testes Psicológicos (SATEPSI). Escalas como AQ-50, RAADS-R e CAT-Q não constam do SATEPSI; portanto, entram no processo como instrumentos auxiliares de triagem ou de pesquisa, com transparência sobre seu estatuto. O fechamento diagnóstico segue critérios internacionais (DSM-5-TR, CID-11), integra fontes (entrevista, observação, instrumentos, heteroanamnese, funcionamento adaptativo) e é registrado em laudo conforme a Resolução CFP nº 06/2019, que disciplina a elaboração de documentos.</p>
+
+      <p>A Resolução CFP nº 11/2018 organiza a prestação de serviços psicológicos por meio de tecnologia da informação e da comunicação. Para a clínica do adulto autista nível 1, esse ponto é prático: muitos pacientes preferem ou precisam do atendimento online por razões sensoriais, de transporte, de exaustão social ou de moradia em região com escassez de profissionais especializados. O cadastro do serviço no e-Psi, a obtenção de consentimento informado documentado, o uso de plataformas com adequação à LGPD e o registro adequado das sessões são exigências objetivas que valem para qualquer atendimento online, não específicas do tema.</p>
+
+      <p>A Resolução CFP nº 06/2019, sobre elaboração de documentos psicológicos, organiza laudos, atestados, declarações e pareceres. No laudo de adulto autista, três pontos costumam ser negligenciados e merecem cuidado: a explicitação metodológica (quais instrumentos, em que ordem, com quais limites), a articulação entre os dados convergentes e a hipótese diagnóstica (em vez de relatar achados sem síntese), e a redação acessível ao paciente, que muitas vezes é o destinatário primário.</p>
+
+      <p>Até maio de 2026, não há resolução do CFP dedicada exclusivamente ao TEA adulto. Acompanhar o site institucional e as notas técnicas do conselho regional faz parte da atualização profissional regular.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">8. Erros comuns e como evitá-los</h2>
+
+      <p>Lista do que tenho visto com mais frequência em supervisão e em discussão clínica entre colegas. Cada item é uma armadilha real, observada repetidamente.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">8.1 Aplicar quadro pediátrico ao adulto</h3>
+
+      <p>Adulto autista nível 1 raramente apresenta os sinais clássicos descritos em manual pediátrico (ecolalia, ausência de fala, fixação visual em objetos giratórios). Procurar esses sinais no adulto e descartar autismo por sua ausência é o erro mais comum em profissional não especializado. O adulto nível 1 apresenta padrão refinado de reciprocidade social atípica, interesses intensos socialmente compatíveis, sensorialidade compensada e camuflagem.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">8.2 Tratar camuflagem como traço de personalidade</h3>
+
+      <p>Adulto que descreve sensação de "estar atuando" desde a infância frequentemente recebe diagnóstico de transtorno de personalidade, fobia social ou depressão atípica. A camuflagem autista é processo descritível, mensurável (CAT-Q) e tem dinâmica distinta. Confundir com traço caracterológico patologiza um mecanismo adaptativo que tem custo, mas que protegeu funcionalmente o paciente durante décadas.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">8.3 Negar autoidentificação acriticamente</h3>
+
+      <p>Adulto que chega com hipótese autoidentificada não está em delírio. Estudos qualitativos mostram alta taxa de acerto entre adultos autoidentificados, especialmente mulheres. Tratar a autoidentificação como sintoma a deconstruir compromete o vínculo e perde dados clínicos relevantes. O caminho técnico é tratar a autoidentificação como hipótese a investigar com seriedade, com o mesmo rigor que se aplica a qualquer hipótese diagnóstica.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">8.4 Confirmar autoidentificação acriticamente</h3>
+
+      <p>O extremo oposto também acontece. Em um contexto em que o tema ganhou visibilidade nas redes, parte dos pacientes chega com hipótese autoidentificada que se baseou em informações de baixa qualidade. Confirmar diagnóstico para preservar vínculo, ou por afinidade com a abordagem afirmativa, é falha técnica equivalente à negação acrítica. O critério é o mesmo: evidência convergente, fundamentação metodológica, transparência sobre os limites.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">8.5 Aplicar TCC sem adaptação</h3>
+
+      <p>Protocolo padrão de TCC para ansiedade em adulto autista, sem adaptação, costuma produzir desfecho pior que o esperado. O paciente abandona o tratamento ou conclui o protocolo com sintomas estáveis. A adaptação não é cortesia; é variável que altera o tamanho de efeito.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">8.6 Tratar stims como sintoma a extinguir</h3>
+
+      <p>Balançar a perna, manipular um objeto pequeno, apertar as próprias mãos, repetir movimentos discretos são, em adulto nível 1, comportamentos de autorregulação. Pedir explicitamente ou implicitamente que o paciente "pare" durante a sessão produz aumento de carga sensorial e cognitiva, e compromete o trabalho. A regra prática é simples: stims autolesivos exigem intervenção; stims não autolesivos não exigem.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">8.7 Subestimar comorbidade</h3>
+
+      <p>A coocorrência de TDAH, transtorno de ansiedade, depressão, TOC, TEPT, transtornos alimentares e disforia de gênero em adulto autista é alta. Tratar apenas a comorbidade visível ("depressão") sem reconhecer o autismo subjacente costuma produzir resposta parcial e recidiva. Tratar apenas o autismo sem reconhecer a comorbidade ativa também não funciona.</p>
+
+      <h3 class="font-display text-xl font-bold text-ink-900 mt-8 mb-3">8.8 Encaminhar para grupo sem critério</h3>
+
+      <p>Grupos terapêuticos genéricos costumam ser experiência negativa para adulto autista nível 1, pelo excesso de estímulo social e pela ambiguidade comunicacional. Grupos específicos para adultos autistas, com facilitação informada e regras explícitas, podem ser experiência transformadora. A diferença é técnica, não cosmética.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">9. Vinheta de supervisão clínica</h2>
+
+      <p>A vinheta a seguir é uma composição construída a partir de elementos recorrentes em casos supervisionados nos últimos doze meses. Não corresponde a uma paciente real; foi montada para fins de discussão didática, com dados intencionalmente alterados em todos os marcadores identificatórios.</p>
+
+      <p>Paciente M., quarenta e dois anos, casada há quinze anos, dois filhos, profissão liberal estável. Encaminhada por colega que a acompanhou por seis anos com diagnóstico de depressão recorrente e transtorno de ansiedade generalizada. Resposta parcial a três tentativas de farmacoterapia. Chegou pedindo "uma segunda opinião". Na primeira sessão, descreveu episódios de colapso após eventos sociais aparentemente comuns (reunião escolar dos filhos, jantar com amigos do marido), exaustão crônica não responsiva a férias, sensação contínua de "estar atuando" desde a adolescência, sensibilidade a sons agudos e a tecidos específicos que aprendeu a esconder, padrão de interesses intensos em domínios técnicos que a família caracterizava como "obsessão" e ela mesma considerava sua área de paz.</p>
+
+      <p>Avaliação. AQ-50: vinte e oito (abaixo do ponto de corte clássico). RAADS-R: oitenta e dois (acima do ponto de corte). CAT-Q: cento e quarenta e dois (camuflagem alta). Entrevista desenvolvimental com a mãe (heteroanamnese): relato consistente de criança "diferente, mas muito inteligente", episódios de meltdown na infância interpretados como "drama", isolamento social compensado por desempenho escolar. ABAS-3: funcionamento adaptativo médio com prejuízo específico em comunicação social e em autodireção em contextos não estruturados.</p>
+
+      <p>Hipótese fechada como autismo nível 1 de suporte, com comorbidade depressiva ativa e ansiedade social secundária. O laudo foi redigido com fundamentação metodológica explícita, articulação entre os dados convergentes, registro dos limites (ausência de aplicador ADOS-2 acessível na cidade, ausência de informante paterno por falecimento precoce) e linguagem acessível à paciente.</p>
+
+      <p>Reorganização do plano. Adaptação do enquadre (previsibilidade, ajustes sensoriais, comunicação explícita). TCC adaptada para depressão e ansiedade social, com material escrito, planos de manejo sensorial e trabalho específico sobre camuflagem. Encontros sistêmicos pontuais com o marido, focados em renegociação de divisão de carga doméstica e em pactos de comunicação. Encaminhamento para psiquiatra com escuta atualizada para adulto autista, com revisão da medicação.</p>
+
+      <p>Quatro meses depois, redução de sintomas depressivos para faixa mínima, manutenção de ansiedade social em contextos específicos com ganho funcional substantivo, redução autorrelatada de episódios de colapso pós-evento de quatro por mês para um, redistribuição efetiva de carga doméstica que liberou capacidade cognitiva, melhora de qualidade de sono. A paciente nomeou o conjunto como "primeira vez em vinte anos que entendi o que estava acontecendo comigo".</p>
+
+      <p>O que essa vinheta sustenta tecnicamente. Que a discrepância entre AQ-50 e RAADS-R com CAT-Q alta é padrão clínico relevante, especialmente em mulher adulta. Que a heteroanamnese com cuidador da infância continua sendo eixo. Que TCC adaptada e sistêmica não são alternativas excludentes. Que a reorganização do plano após o diagnóstico produz ganho mensurável em prazo curto, quando o ajuste é técnico e sustentado.</p>
+
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mt-12 mb-4">10. Três ações práticas para a próxima sessão</h2>
+
+      <p>O fechamento é deliberadamente operacional. Três decisões que o psicólogo pode levar para a próxima sessão com adulto autista nível 1, independentemente da abordagem teórica de base.</p>
+
+      <p>Primeira ação: abrir a sessão com microrroteiro de trinta segundos. Apenas isso, por quatro sessões consecutivas, e observar o que muda no fluxo do trabalho. O custo é zero e o ganho costuma aparecer já na segunda ou terceira sessão, em forma de aprofundamento mais rápido, maior tolerância a temas difíceis e redução de respostas curtas evasivas.</p>
+
+      <p>Segunda ação: aplicar a CAT-Q em qualquer paciente adulto, mulher ou homem, que descreva sensação prolongada de "estar atuando" socialmente, exaustão não explicada por sobrecarga objetiva, ou padrão de colapso após eventos sociais. A escala leva entre dez e quinze minutos, é gratuita, tem versão em português, e abre conversas que dificilmente apareceriam de outro modo. Independentemente da hipótese de autismo, o resultado costuma reorganizar o foco do trabalho.</p>
+
+      <p>Terceira ação: revisar o último laudo, atestado ou parecer redigido em caso de avaliação de adulto, à luz da Resolução CFP nº 06/2019, e perguntar três coisas. A metodologia está explicitada? Os dados convergentes estão articulados em síntese, e não apenas listados? A linguagem é acessível ao paciente, que provavelmente é o leitor primário? Se a resposta a qualquer das três for "mais ou menos", o documento precisa ser refeito. O laudo é, para o adulto que recebeu o diagnóstico na vida adulta, peça relacional, não apenas técnica.</p>
+
+      <p>Atender adulto autista nível 1 em 2026 não exige aderência a uma escola única nem dispositivo exclusivo. Exige atualização técnica honesta, ajuste de enquadre, instrumental de avaliação adequado à clínica adulta, articulação com a literatura mais recente, respeito ao paciente como interlocutor competente e disposição para revisar inferências que pareciam evidentes. A maioria dos colegas com quem tenho conversado nos últimos anos foi formada antes desse reposicionamento e está, agora, em processo de atualização. O ponto não é ter chegado antes; é estar disposto a reorganizar a prática quando a evidência sustenta a reorganização.</p>
+
+    </div>
+
+    <section class="mt-12">
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900 mb-6">Perguntas frequentes</h2>
+      <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white">
+        {faqs.map((f) => (
+          <details class="group p-5">
+            <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+              <span class="faq-question font-semibold text-ink-900">{f.q}</span>
+              <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+            </summary>
+            <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <footer class="mt-12 pt-8 border-t border-surface-200 text-sm text-ink-600 leading-relaxed">
+      <p>Material destinado a psicólogos clínicos com registro ativo no CRP. Conteúdo informativo baseado em literatura científica e em prática clínica em adultos autistas nível 1 de suporte. Não substitui supervisão clínica individualizada.</p>
+      <p class="mt-3">Larissa Caramaschi, psicóloga clínica, mestre em Psicologia pela USP, formação em Terapia Familiar e de Casal e em Terapia Cognitivo-Comportamental, atende em Goiânia (Setor Marista) e online. Para supervisão clínica em TEA adulto, consulte a <a href="/autismo/sobre-larissa/" class="underline text-brand-700">página de atendimento</a>.</p>
+    </footer>
+  </article>
+  <script type="application/ld+json" set:html={ldArticle} is:inline />
+  <script type="application/ld+json" set:html={ldFAQ} is:inline />
+</Base>

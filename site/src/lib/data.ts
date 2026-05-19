@@ -1,5 +1,5 @@
 /**
- * Dados canônicos do portal: taxonomia de áreas, MBAs, temas, estados, personas.
+ * Dados principais do portal: taxonomia de áreas, MBAs, temas, estados, personas.
  * Fonte da verdade para componentes Astro e React.
  *
  * REGRAS:
@@ -35,7 +35,7 @@ export interface MBA {
 }
 
 /**
- * Modalidade canônica de pós-graduação em Psicologia.
+ * Modalidade principal de pós-graduação em Psicologia.
  *
  * REFRAME 2026-05-12: o escopo do portal é "Pós-Graduações em Psicologia" como guarda-chuva amplo;
  * MBA é apenas UMA das cinco modalidades cobertas. Não substitui MBAS; complementa.
@@ -149,7 +149,7 @@ export const MBAS: MBA[] = [
 ];
 
 /**
- * Cinco tipos canônicos de pós-graduação em Psicologia cobertos pelo portal.
+ * Cinco tipos principais de pós-graduação em Psicologia cobertos pelo portal.
  * MBA é UMA das cinco modalidades — não é a única vertical.
  */
 export const TIPOS_DE_POS_GRADUACAO: PosGraduacaoTipo[] = [
@@ -221,7 +221,7 @@ export const TIPOS_DE_POS_GRADUACAO: PosGraduacaoTipo[] = [
 ];
 
 /**
- * Especializações Lato Sensu representativas no recorte canônico.
+ * Especializações Lato Sensu representativas no recorte principal.
  * Conteúdo informacional — caminho oficial em ipog.edu.br.
  */
 export const ESPECIALIZACOES_LATO_SENSU: EspecializacaoLatoSensu[] = [

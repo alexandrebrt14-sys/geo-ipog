@@ -6,9 +6,59 @@
 
 ---
 
-## W21 — Semana 17/05/2026
+## W21 — Sessão 19/05/2026 — Pivô para Autismo em adultos com Larissa Caramaschi
 
 ### Páginas no ar
+**332 páginas** (era 320 antes desta sessão; +12 dedicadas a Autismo em adultos).
+
+### Sessão UU — Reescrita de ontologia e taxonomia para Autismo em adultos com Larissa Caramaschi (19/05/2026)
+
+**Objetivo:** redirecionar o portal `posgraduacaopsicologia.com` para ter Larissa Caramaschi como autoridade central em autismo nível 1 de suporte em adultos. Conteúdo útil para 3 audiências (pacientes e famílias, profissionais de psicologia, pesquisadores). Eliminar jargão técnico GEO visível ao leitor final.
+
+**Entregues:**
+
+1. **Pesquisa Perplexity em 6 frentes paralelas** (`_tmp/autismo-research-20260519/`):
+   - 01 Diagnóstico tardio em adultos
+   - 02 Relacionamentos NT-autista
+   - 03 Camuflagem e CAT-Q
+   - 04 Clínica adulto baseada em evidência
+   - 05 Fronteira de pesquisa 2026
+   - 06 Vida cotidiana e trabalho
+
+2. **12 páginas novas** em `src/pages/autismo/`:
+   - Hub `/autismo/` (index)
+   - 3 portas de audiência: `/autismo/para-pacientes/`, `/autismo/para-profissionais/`, `/autismo/para-pesquisadores/`
+   - 6 artigos longos HBR (3.500 a 5.000 palavras cada):
+     * `diagnostico-tardio-adulto-2026`
+     * `relacionamentos-amorosos-nt-autista-2026`
+     * `camuflagem-masking-cat-q-adulto-2026`
+     * `vida-cotidiana-trabalho-autista-adulto-2026`
+     * `clinica-tea-adulto-evidencia-2026`
+     * `fronteira-pesquisa-tea-adulto-2026`
+   - Glossário com 54 verbetes em 6 clusters: `/autismo/glossario`
+   - Biografia profissional: `/autismo/sobre-larissa`
+
+3. **Home reescrita** (`src/pages/index.astro`): nova ontologia centrada em autismo adulto. Hubs antigos (Áreas, Pós-Graduações, Guias, FAQ) viraram conteúdo complementar acessível por menu.
+
+4. **Menu primário atualizado** (Header, MegaMenu, MobileBottomNav, Footer): "Autismo em adultos" é agora o primeiro item, com submenu de 3 portas + glossário + sobre + 6 artigos.
+
+5. **Limpeza de jargão visível**: 152 arquivos legados modificados, 652 substituições removendo "canônico/canônica/canônicos/canônicas" visíveis ao leitor (preservados apenas usos técnicos `rel="canonical"`, identificadores TS).
+
+6. **Travessões em-dash removidos** dos 6 artigos novos (regra anti-padrão IA).
+
+**Voz editorial Larissa Caramaschi aplicada:**
+- Identity-first ("pessoa autista", "adulto autista") como default
+- Vocabulário ético: "autismo nível 1 de suporte" (nunca "leve", "Asperger", "alto funcionamento")
+- CFP-compliance (Resolução 03/2007, 11/2018, 06/2019): sem promessa de cura, sem comparativo com outros profissionais, sem antes/depois
+- Densidade HBR com vinhetas hipotéticas marcadas como compostas
+- Frontend: text-align justify + hyphens auto, mobile-first, max-w-3xl/4xl
+
+**Quality gates:**
+- `npx astro check`: 0 errors, 0 warnings, 939 hints (apenas hints `is:inline` esperados)
+- `npm run build`: 332 páginas em 24s, exit 0
+- Acentuação ortográfica: revisão completa pré-commit
+
+### Páginas no ar (histórico)
 **235 páginas** (era 232 antes das waves 17/05).
 
 ### Sessão N — Briefing canônico das 110 missões digitais GEO IPOG (18/05/2026)

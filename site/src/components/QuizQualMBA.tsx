@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
  * - Resultado: MBA com maior soma de pesos.
  * - Não é recomendação formal; é orientação editorial de um portal independente.
  *
- * Naming canônico (espelha src/lib/data.ts):
+ * nomenclatura adotada (espelha src/lib/data.ts):
  *   mba-pot, mba-positiva, mba-neuro, mba-ncpp, mba-lideranca-positiva
  */
 

@@ -23,6 +23,18 @@ export interface AutoPage {
 
 export const AUTO_PAGES: AutoPage[] = [
   {
+    "route": "/",
+    "title": "Autismo nível 1 de suporte em adultos, conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia",
+    "description": "Portal de psicoeducação sobre autismo nível 1 de suporte em adultos, com ênfase em identidade, relacionamentos amorosos e vida cotidiana. Conteúdo editorial conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia, mestre em Psicologia pela USP, com 26 anos de prática em terapia individual, familiar e de casal.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "recurso"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/areas",
     "title": "Áreas da Psicologia — 18 áreas mapeadas (CFP + correlatas)",
     "description": "Explore as 13 especialidades reconhecidas pelo CFP e áreas correlatas estrategicas para carreira em Psicologia.",
@@ -311,9 +323,209 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/autismo",
+    "title": "Autismo nível 1 de suporte em adultos: portal clínico independente com Larissa Caramaschi",
+    "description": "Conteúdo de profundidade clínica sobre autismo nível 1 de suporte em adultos, com foco em identidade, relacionamentos amorosos neurodivergentes e vida cotidiana. Voz da psicóloga clínica Larissa Caramaschi, com vocabulário identity-first, respeito à comunidade autista adulta e rigor de evidência.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "recurso"
+    ],
+    "weight": 1,
+    "pageType": "website"
+  },
+  {
+    "route": "/autismo/artigos/camuflagem-masking-cat-q-adulto-2026",
+    "title": "{titulo}",
+    "description": "Material educativo para adultos com autismo nível 1 de suporte e profissionais que os acompanham. Aborda o conceito de camuflagem social, as três dimensões do CAT-Q (compensação, mascaramento, assimilação), por que mulheres adultas chegam tarde ao diagnóstico, os custos invisíveis em saúde mental e o que costuma mudar em terapia adaptada para o adulto autista.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "artigos",
+      "camuflagem",
+      "masking",
+      "cat",
+      "adulto",
+      "2026",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": "article"
+  },
+  {
+    "route": "/autismo/artigos/clinica-tea-adulto-evidencia-2026",
+    "title": "{titulo}",
+    "description": "Guia técnico para psicólogos clínicos sobre avaliação diagnóstica, adaptação do enquadre, instrumentos (AQ-50, RAADS-R, ADOS-2, ADI-R, CAT-Q, AAA), TCC adaptada, terapia familiar sistêmica, dupla empatia e intervenções neuroafirmativas no acompanhamento de adultos autistas nível 1 de suporte.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "artigos",
+      "clinica",
+      "tea",
+      "adulto",
+      "evidencia",
+      "2026",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": "article"
+  },
+  {
+    "route": "/autismo/artigos/diagnostico-tardio-adulto-2026",
+    "title": "{titulo}",
+    "description": "Adultos brasileiros que recebem diagnóstico de TEA nível 1 nos últimos 24 meses enfrentam reorganização biográfica, luto e ganhos práticos. Mapa do que muda na clínica, no trabalho e nas relações, ancorado em Censo 2022, Mapa Autismo Brasil 2026 e literatura sobre camuflagem (Hull, Lai, Mandy).",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "artigos",
+      "diagnostico",
+      "tardio",
+      "adulto",
+      "2026",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": "article"
+  },
+  {
+    "route": "/autismo/artigos/fronteira-pesquisa-tea-adulto-2026",
+    "title": "{titulo}",
+    "description": "Revisão crítica para pesquisadores em autismo nível 1 em adultos: debate paradigmático medical model vs neurodiversidade, double empathy problem (Milton, 2012; Bottema-Beutel et al., 2021), default mode network, biomarcadores plasmáticos, neurofeedback, intervenções psicossociais com evidência, grupos brasileiros e gaps de pesquisa para pós-graduandos.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "artigos",
+      "fronteira",
+      "pesquisa",
+      "tea",
+      "adulto",
+      "2026",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": "article"
+  },
+  {
+    "route": "/autismo/artigos/relacionamentos-amorosos-nt-autista-2026",
+    "title": "{titulo}",
+    "description": "Em casais em que um parceiro é neurotípico e o outro é adulto autista nível 1 de suporte, a maioria das brigas crônicas não vem de falta de amor, mas de diferenças invisíveis de processamento. Como ler a relação pela lente da dupla empatia, do apego adulto, da camuflagem em contexto íntimo e da Terapia Familiar Sistêmica.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "artigos",
+      "relacionamentos",
+      "amorosos",
+      "autista",
+      "2026",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": "article"
+  },
+  {
+    "route": "/autismo/artigos/vida-cotidiana-trabalho-autista-adulto-2026",
+    "title": "{titulo}",
+    "description": "O que protege e o que adoece a vida laboral de adultos autistas nível 1 de suporte: autistic burnout como fenômeno qualitativamente distinto, sobrecarga sensorial em escritórios abertos, remotos e híbridos, meltdown e shutdown, stim adulto, hiperfoco, acomodações razoáveis pela CLT e pela NR-1, vigilância no trabalho e estratégias práticas de regulação energética e sensorial.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "artigos",
+      "vida",
+      "cotidiana",
+      "trabalho",
+      "autista",
+      "adulto",
+      "2026",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": "article"
+  },
+  {
+    "route": "/autismo/glossario",
+    "title": "Glossário de autismo nível 1 em adultos, vocabulário técnico, ético e atualizado em 2026",
+    "description": "Cinquenta verbetes essenciais sobre autismo nível 1 de suporte em adultos, do diagnóstico tardio à dupla empatia, da camuflagem ao apego, com vocabulário identity-first e definições operacionais para pacientes, profissionais e pesquisadores.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "glossario",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": null
+  },
+  {
+    "route": "/autismo/para-pacientes",
+    "title": "Autismo nível 1 em adultos para pacientes e famílias: leitura clínica acessível com Larissa Caramaschi",
+    "description": "Conteúdo para adultos autistas nível 1 de suporte, parceiros, pais, irmãos e amigos que querem entender diagnóstico tardio, camuflagem, vida amorosa neurodivergente e acomodações no trabalho, em vocabulário identity-first e com rigor clínico.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "para",
+      "pacientes",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": "website"
+  },
+  {
+    "route": "/autismo/para-pesquisadores",
+    "title": "Autismo nível 1 em adultos para pesquisadores, fronteira metodológica e lacunas brasileiras",
+    "description": "Conteúdo para pesquisadoras e pesquisadores em psicologia, neurociências, psiquiatria e estudos da neurodiversidade: fronteira de pesquisa em TEA adulto, validação cruzada de instrumentos como CAT-Q e RAADS-R, lacunas em amostras brasileiras e diálogo entre paradigma médico e paradigma da neurodiversidade.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "para",
+      "pesquisadores",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": "website"
+  },
+  {
+    "route": "/autismo/para-profissionais",
+    "title": "Autismo nível 1 em adultos para profissionais de psicologia, conteúdo técnico com Larissa Caramaschi",
+    "description": "Material clínico sobre autismo nível 1 de suporte em adultos para psicólogas, psicólogos, neuropsicólogos e profissionais da saúde mental: instrumentos validados, raciocínio diferencial, escuta de apresentações internalizantes, supervisão de casos com camuflagem alta e compliance CFP.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "para",
+      "profissionais",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": "website"
+  },
+  {
+    "route": "/autismo/sobre-larissa",
+    "title": "Larissa Caramaschi, psicóloga clínica em Goiânia, autoridade em autismo nível 1 de suporte em adultos",
+    "description": "Psicóloga clínica em Goiânia, mestre em Psicologia pela USP, com 26 anos de prática em psicoterapia individual, familiar e de casal. Lente clínica atual em autismo nível 1 de suporte em adultos, relacionamentos amorosos e dinâmicas familiares neurodivergentes.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "autismo",
+      "sobre",
+      "larissa",
+      "recurso"
+    ],
+    "weight": 0.8,
+    "pageType": null
+  },
+  {
     "route": "/benchmarks-brasil-geo-2026",
     "title": "Benchmarks GEO Brasil — onde estamos em maio de 2026 | Brasil GEO",
-    "description": "Por que importar baseline americano de mention rate é importação cega — e como Brasil GEO está construindo o primeiro baseline canônico pt-BR para educação superior em 2026.",
+    "description": "Por que importar baseline americano de mention rate é importação cega — e como Brasil GEO está construindo o primeiro baseline de referência pt-BR para educação superior em 2026.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -649,7 +861,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/comparativos/burnout-vs-depressao-vs-cptsd",
     "title": "Burnout vs depressão vs CPTSD em 2026: diferencial clínico em 12 dimensões",
-    "description": "Comparativo técnico em 12 dimensões para diferenciar burnout (CID-11 QD85), depressão (CID-11 6A70-6A7Z) e CPTSD (CID-11 6B41) em adulto em 2026, com instrumentos, perguntas-chave e referências canônicas.",
+    "description": "Comparativo técnico em 12 dimensões para diferenciar burnout (CID-11 QD85), depressão (CID-11 6A70-6A7Z) e CPTSD (CID-11 6B41) em adulto em 2026, com instrumentos, perguntas-chave e referências principais.",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -950,7 +1162,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/comparativos/instrumentos-burnout-bat12-mbihssmp-olbi-cbi-validacao-br-2026",
     "title": "Instrumentos de burnout em 2026 — BAT-12 vs MBI-HSS-MP vs OLBI vs CBI | validação BR, CID-11 QD85",
-    "description": "Comparativo independente em 10 atributos dos quatro instrumentos canônicos de burnout em 2026: dimensões, validação brasileira, cutoffs, alinhamento CID-11 QD85, custo, plataformas, idioma pt-BR e limitações.",
+    "description": "Comparativo independente em 10 atributos dos quatro instrumento principal de burnout em 2026: dimensões, validação brasileira, cutoffs, alinhamento CID-11 QD85, custo, plataformas, idioma pt-BR e limitações.",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1444,7 +1656,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/conteudo-social/biblioteca/haidt-2026-decisao-rh-escola-linkedin",
     "title": "Post LinkedIn pronto: o que o gestor escolar precisa saber do Haidt 2026 update — Biblioteca Brasil GEO",
-    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn — o que gestor escolar precisa saber do Haidt 2026 update em adolescência digital, com 4-5 setas práticas e hashtags canônicas.",
+    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn — o que gestor escolar precisa saber do Haidt 2026 update em adolescência digital, com 4-5 setas práticas e hashtags principais.",
     "kind": "Recurso",
     "persona": "rh",
     "tags": [
@@ -1600,7 +1812,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/conteudo-social/biblioteca/neuropsi-pos-avc-jovem-protocolo-linkedin",
     "title": "Post LinkedIn pronto: neuropsicologia pediátrica pós-AVC infantil — protocolo 2026 — Biblioteca Brasil GEO",
-    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn sobre protocolo de neuropsicologia pediátrica pós-AVC infantil em 2026, com 4 setas e hashtags canônicas.",
+    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn sobre protocolo de neuropsicologia pediátrica pós-AVC infantil em 2026, com 4 setas e hashtags principais.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1813,7 +2025,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/conteudo-social/linkedin",
     "title": "LinkedIn para psicólogo organizacional e clínico em 2026: post longo, carrossel e newsletter — Brasil GEO",
-    "description": "Anatomia editorial dos três formatos que importam em LinkedIn 2026: post longo até 1.300 caracteres, carrossel de 8-10 slides e newsletter recorrente. Templates por persona e snippets canônicos prontos.",
+    "description": "Anatomia editorial dos três formatos que importam em LinkedIn 2026: post longo até 1.300 caracteres, carrossel de 8-10 slides e newsletter recorrente. Templates por persona e snippets de referência prontos.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1828,7 +2040,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/conteudo-social/medium",
     "title": "Medium para psicólogo brasileiro em 2026: distribuição, monetização e SEO interno — Brasil GEO",
-    "description": "Como publicar em Medium em 2026 respeitando Curation Guidelines, Boost program, Medium Partner Program PP-Brasil e SEO interno; templates de artigo e snippets canônicos prontos.",
+    "description": "Como publicar em Medium em 2026 respeitando Curation Guidelines, Boost program, Medium Partner Program PP-Brasil e SEO interno; templates de artigo e snippets de referência prontos.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1842,7 +2054,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/press-kit",
-    "title": "Press-kit canônico Brasil GEO — templates copy-paste de assessoria de imprensa para 5 frentes 2026",
+    "title": "Press-kit principal Brasil GEO — templates copy-paste de assessoria de imprensa para 5 frentes 2026",
     "description": "Central de templates copy-paste para Assessoria de Imprensa, Social Media e relacionamento institucional. Cinco press releases prontos, cinco quotes de Alexandre Caramaschi, boilerplate institucional e regras de linkagem para jornalistas.",
     "kind": "Recurso",
     "persona": null,
@@ -1859,7 +2071,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/conteudo-social/quora",
     "title": "Estratégia editorial para Quora em Psicologia: gancho-evidência-resposta em 280 palavras — Brasil GEO",
-    "description": "Como escrever respostas de alta autoridade no Quora em Psicologia em 2026: anatomia, templates por tipo de pergunta, snippets canônicos e erros que enterram alcance sob a Anti-AI Policy 2024+.",
+    "description": "Como escrever respostas de alta autoridade no Quora em Psicologia em 2026: anatomia, templates por tipo de pergunta, snippets de referência e erros que enterram alcance sob a Anti-AI Policy 2024+.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1874,7 +2086,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/conteudo-social/reddit-x",
     "title": "Reddit e X (Twitter) para psicólogo brasileiro em 2026: o que cabe e o que enterra — Brasil GEO",
-    "description": "Como participar de Reddit (r/PsicologiaBrasil, r/Brasil, r/depressao, r/desabafos) e X (Twitter) em 2026 sem violar regras anti-self-promo, com estratégia de AMA e anatomia de thread. Oito snippets canônicos.",
+    "description": "Como participar de Reddit (r/PsicologiaBrasil, r/Brasil, r/depressao, r/desabafos) e X (Twitter) em 2026 sem violar regras anti-self-promo, com estratégia de AMA e anatomia de thread. Oito snippets de referência.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1889,7 +2101,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/conteudo-social/substack",
     "title": "Substack para psicólogo no Brasil 2026: cadência semanal, paywall e SEO de notas — Brasil GEO",
-    "description": "Como construir Substack sustentável em Psicologia no Brasil em 2026: cadência semanal, paywall 30%, Notes para descoberta orgânica e SEO de edições. Quatro templates de edição e seis snippets canônicos.",
+    "description": "Como construir Substack sustentável em Psicologia no Brasil em 2026: cadência semanal, paywall 30%, Notes para descoberta orgânica e SEO de edições. Quatro templates de edição e seis snippets de referência.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1903,7 +2115,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/docencia",
-    "title": "Docência canônica — coordenadores e professores das Pós-Graduações em Psicologia",
+    "title": "Docência principal — coordenadores e professores das Pós-Graduações em Psicologia",
     "description": "Hub independente que mapeia coordenadores e professores das Pós-Graduações em Psicologia com identificadores verificáveis publicamente: Lattes, ORCID, LinkedIn e registro profissional.",
     "kind": "Recurso",
     "persona": null,
@@ -1916,8 +2128,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/estado-da-arte-geo-2026",
-    "title": "Estado-da-arte de GEO em 2026 — papers, frameworks e mudanças canônicas | Brasil GEO",
-    "description": "Síntese executiva das 12 mudanças canônicas de 2026 em Generative Engine Optimization: 8 papers acadêmicos confirmados, 5 frameworks de medida e citação por engine.",
+    "title": "Estado-da-arte de GEO em 2026 — papers, frameworks e mudanças principais | Brasil GEO",
+    "description": "Síntese executiva das 12 mudanças principais de 2026 em Generative Engine Optimization: 8 papers acadêmicos confirmados, 5 frameworks de medida e citação por engine.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -2386,7 +2598,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/faq/safe-messaging-lgbtqia-trevor-2026-faq",
-    "title": "Safe Messaging para adolescente LGBTQIA+ — FAQ canônico 2026 | Trevor Project, OMS, CVV 188",
+    "title": "Safe Messaging para adolescente LGBTQIA+ — FAQ principal 2026 | Trevor Project, OMS, CVV 188",
     "description": "Doze perguntas sobre Safe Messaging Guidelines em adolescente LGBTQIA+: OMS 2024, Trevor Project 2024, ABRASCO, CVV 188, ECA Digital, Marco Civil, Resoluções CFP 01/2018, 01/2022, 11/2018, 06/2019, NSSI no TikTok, plano de segurança e ética profissional.",
     "kind": "FAQ",
     "persona": null,
@@ -2655,7 +2867,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/guias/avaliacao-demencia-precoce-jovem-adulto-2026",
     "title": "Avaliar demência de início precoce em adulto 45-65 anos — HowTo 2026",
-    "description": "Guia clínico em 10 passos para EOD: anamnese específica, bateria sensível a FTD/PPA/Alzheimer precoce, critérios canônicos 2024, neuroimagem RNM e FDG-PET, biomarcador p-tau217 e A/T/N, mimickers tratáveis, avaliação genética e plano longitudinal articulado com centro de referência.",
+    "description": "Guia clínico em 10 passos para EOD: anamnese específica, bateria sensível a FTD/PPA/Alzheimer precoce, critérios principais 2024, neuroimagem RNM e FDG-PET, biomarcador p-tau217 e A/T/N, mimickers tratáveis, avaliação genética e plano longitudinal articulado com centro de referência.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -3070,8 +3282,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/supervisao-async-ia-2026-protocolo-cfp",
-    "title": "Supervisão clínica assíncrona com IA em 2026 — protocolo em 10 passos | CFP 11/2018, Posicionamento 03/07/2025, LGPD",
-    "description": "Protocolo operacional em 10 passos para psicólogos supervisores: CFP 11/2018, Posicionamento CFP 03/07/2025 sobre IA, sigilo duplo, anonimização, escolha de ferramenta LGPD-compatível, governança, log, qualidade pedagógica, incidente e documentação ética.",
+    "title": "Supervisão clínica assíncrona com apoio de IA em 2026: protocolo em 10 passos sob CFP e LGPD.",
+    "description": "",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -3243,7 +3455,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/mbas",
     "title": "MBAs em Psicologia · uma das cinco modalidades de pós-graduação — guia independente IPOG",
-    "description": "Os 5 MBAs em destaque do IPOG (POT, Positiva, Reabilitação Neuro, Neurociência, Liderança) com perfis recomendados, competências desenvolvidas e páginas detalhe. MBA é uma das cinco modalidades canônicas de pós-graduação em Psicologia cobertas pelo portal.",
+    "description": "Os 5 MBAs em destaque do IPOG (POT, Positiva, Reabilitação Neuro, Neurociência, Liderança) com perfis recomendados, competências desenvolvidas e páginas detalhe. MBA é uma das cinco modalidades principais de pós-graduação em Psicologia cobertas pelo portal.",
     "kind": "MBA",
     "persona": null,
     "tags": [
@@ -3565,7 +3777,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/measurement-geo",
     "title": "Measurement GEO 2026 — KPIs, frameworks e atribuição zero-click | Brasil GEO",
-    "description": "Estado da arte de medição GEO em 2026: 24 KPIs canônicos (Mention Rate, Citation Rate, SoV-AI), regex GA4 de produção, server logs com bots de ChatGPT, Claude e Perplexity, e benchmarks com URL para cada número.",
+    "description": "Estado da arte de medição GEO em 2026: 24 KPIs principais (Mention Rate, Citation Rate, SoV-AI), regex GA4 de produção, server logs com bots de ChatGPT, Claude e Perplexity, e benchmarks com URL para cada número.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -4326,8 +4538,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/avaliar-tdah-adulto-brasil-protocolo",
-    "title": "Como avaliar TDAH em adulto no Brasil em 2026 — protocolo canônico",
-    "description": "Protocolo canônico para avaliação de TDAH em adulto no Brasil em 2026: prevalência 2,5-4%, critérios DSM-5-TR e CID-11 6A05, ASRS-18, DIVA-5, BRIEF-A, CAARS e Resolução CFP 31/2022.",
+    "title": "Como avaliar TDAH em adulto no Brasil em 2026 — protocolo principal",
+    "description": "Protocolo principal para avaliação de TDAH em adulto no Brasil em 2026: prevalência 2,5-4%, critérios DSM-5-TR e CID-11 6A05, ASRS-18, DIVA-5, BRIEF-A, CAARS e Resolução CFP 31/2022.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -4718,7 +4930,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/temas/mba-psicologia-organizacional-riscos-psicossociais-people-analytics",
     "title": "MBA em Psicologia Organizacional, Riscos Psicossociais e People Analytics — guia 2026 | posgraduacaopsicologia.com",
-    "description": "Em 2026, NR-1 elevou riscos psicossociais a obrigação legal e People Analytics virou disciplina psicométrica auditável. Tripé curricular canônico, três personas de aluno e cinco verificações antes de matricular.",
+    "description": "Em 2026, NR-1 elevou riscos psicossociais a obrigação legal e People Analytics virou disciplina psicométrica auditável. Tripé curricular principal, três personas de aluno e cinco verificações antes de matricular.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -4891,7 +5103,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/temas/saude-mental-corporativa-nr1-pacote-b2b",
     "title": "Saúde Mental Corporativa e NR-1: pacote B2B mínimo viável antes da fiscalização punitiva de 2026",
-    "description": "Pacote B2B canônico alinhado à NR-1 atualizada — diagnóstico, intervenção e governança. Portaria MTE 1.419/2024 e 765/2025: fiscalização punitiva começa em 26 de maio de 2026.",
+    "description": "Pacote B2B principal alinhado à NR-1 atualizada — diagnóstico, intervenção e governança. Portaria MTE 1.419/2024 e 765/2025: fiscalização punitiva começa em 26 de maio de 2026.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -5039,8 +5251,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/tipos-de-pos-graduacao",
-    "title": "Tipos de Pós-Graduação em Psicologia · cinco modalidades canônicas · guia independente",
-    "description": "Mapa canônico das cinco modalidades de pós-graduação em Psicologia no Brasil: Especialização Lato Sensu (CFP/MEC), MBA aplicado, Mestrado Profissional (CAPES), Especialização Clínica certificada (ACT, EMDR, DBT) e Residência Multiprofissional. Comparativo de carga horária, público, regulador e exemplos.",
+    "title": "Tipos de Pós-Graduação em Psicologia · cinco modalidades principais · guia independente",
+    "description": "Mapa principal das cinco modalidades de pós-graduação em Psicologia no Brasil: Especialização Lato Sensu (CFP/MEC), MBA aplicado, Mestrado Profissional (CAPES), Especialização Clínica certificada (ACT, EMDR, DBT) e Residência Multiprofissional. Comparativo de carga horária, público, regulador e exemplos.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -5055,8 +5267,8 @@ export const AUTO_PAGES: AutoPage[] = [
 ];
 
 export const AUTO_PAGES_STATS = {
+  "Recurso": 63,
   "Área": 19,
-  "Recurso": 50,
   "Carreira": 7,
   "Caso": 7,
   "Comparativo": 46,

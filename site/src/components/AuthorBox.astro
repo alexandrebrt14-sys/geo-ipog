@@ -1,0 +1,121 @@
+---
+/**
+ * AuthorBox.astro
+ *
+ * Cartão visual reutilizável de autoria E-E-A-T para o portal posgraduacaopsicologia.com.
+ * Renderiza informações de autor canônico (Larissa Caramaschi ou Alexandre Caramaschi)
+ * com selo de revisão técnica, datas de publicação/revisão e link para a página de bio.
+ *
+ * NÃO emite JSON-LD próprio. O Person canônico (`larissaPersonBase` / `alexandrePersonBase`)
+ * é injetado pelo `@graph` da página via Base.astro (rotas /autismo/*) ou pelos schemas
+ * individuais de cada página (Article, CollectionPage, etc.).
+ *
+ * Uso típico em página HBR de autoria Larissa:
+ *   <AuthorBox
+ *     author="larissa"
+ *     datePublished="2026-05-19"
+ *     dateModified="2026-05-20"
+ *     reviewedBy="alexandre"
+ *   />
+ */
+import { larissaPersonBase, alexandrePersonBase } from '@lib/schemas';
+
+interface Props {
+  author: 'larissa' | 'alexandre';
+  role?: string;
+  datePublished?: string;
+  dateModified?: string;
+  reviewedBy?: 'larissa' | 'alexandre' | null;
+}
+
+const { author, role, datePublished, dateModified, reviewedBy = null } = Astro.props;
+
+const personMap = {
+  larissa: {
+    base: larissaPersonBase,
+    iniciais: 'LC',
+    nome: 'Larissa Caramaschi',
+    cargo: 'Psicóloga clínica · responsável pela voz editorial do hub Autismo',
+    credencial:
+      'Psicóloga clínica formada pela USP, mestre pela mesma instituição, 26 anos de prática em Goiânia, GO. Foco em adultos autistas nível 1 de suporte e relacionamentos amorosos neurodivergentes.',
+    href: '/autismo/sobre-larissa/',
+    externo: false
+  },
+  alexandre: {
+    base: alexandrePersonBase,
+    iniciais: 'AC',
+    nome: 'Alexandre Caramaschi',
+    cargo: 'CEO da Brasil GEO · editor responsável pelo portal',
+    credencial:
+      'CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq STIX), cofundador da AI Brasil. Lidera a estratégia editorial GEO do portal posgraduacaopsicologia.com.',
+    href: 'https://alexandrecaramaschi.com',
+    externo: true
+  }
+} as const;
+
+const autor = personMap[author];
+const revisor = reviewedBy ? personMap[reviewedBy] : null;
+
+function formatarData(iso?: string): string | null {
+  if (!iso) return null;
+  const partes = iso.split('-');
+  if (partes.length !== 3) return iso;
+  const [ano, mes, dia] = partes;
+  return `${dia}/${mes}/${ano}`;
+}
+
+const dataPublicacaoFmt = formatarData(datePublished);
+const dataRevisaoFmt = formatarData(dateModified);
+
+const cargoExibido = role || autor.cargo;
+
+const linhaMeta: string[] = [];
+if (dataPublicacaoFmt) linhaMeta.push(`Publicado em ${dataPublicacaoFmt}`);
+if (dataRevisaoFmt) linhaMeta.push(`Revisado em ${dataRevisaoFmt}`);
+if (revisor) linhaMeta.push(`Revisão técnica: ${revisor.nome}`);
+---
+
+<aside
+  class="not-prose bg-brand-50 border border-brand-100 rounded-2xl p-5 max-w-3xl mt-6"
+  aria-label={`Autoria, ${autor.nome}`}
+>
+  <div class="flex items-start gap-4">
+    <div
+      class="flex-none w-14 h-14 rounded-full bg-brand-100 flex items-center justify-center text-brand-800 font-display font-bold tracking-tight"
+      aria-hidden="true"
+    >
+      <span class="text-lg">{autor.iniciais}</span>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-base text-ink-900 leading-snug">
+        <strong class="font-display font-semibold">{autor.nome}</strong>
+        <span class="text-ink-700"> · {cargoExibido}</span>
+      </p>
+      <p class="mt-1 text-sm text-ink-700 leading-relaxed">{autor.credencial}</p>
+      {linhaMeta.length > 0 && (
+        <p class="mt-2 text-xs text-ink-500 leading-relaxed">
+          {linhaMeta.join(' · ')}
+        </p>
+      )}
+      <p class="mt-3 text-sm">
+        {autor.externo ? (
+          <a
+            href={autor.href}
+            target="_blank"
+            rel="noopener external"
+            class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-brand-300 underline-offset-2"
+          >
+            Mais sobre {autor.nome} &rarr;
+          </a>
+        ) : (
+          <a
+            href={autor.href}
+            class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-brand-300 underline-offset-2"
+          >
+            Mais sobre {autor.nome} &rarr;
+          </a>
+        )}
+      </p>
+    </div>
+  </div>
+</aside>

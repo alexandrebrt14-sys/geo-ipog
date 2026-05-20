@@ -289,17 +289,101 @@ letras.forEach(l => { termosPorLetra[l] = termos.filter(t => t.letra === l).sort
 const ldDefinedTermSet = {
   '@context': 'https://schema.org',
   '@type': 'DefinedTermSet',
+  '@id': SITE.url + '/glossario/#termset',
   name: 'Glossário de pós-graduação e Psicologia aplicada',
   description: 'Definições técnicas de termos centrais de pós-graduação, áreas da Psicologia, regulação profissional, conceitos organizacionais e instituições.',
   inLanguage: 'pt-BR',
+  url: SITE.url + '/glossario/',
+  isPartOf: { '@id': SITE.url + '/#website' },
+  publisher: { '@id': SITE.url + '/#brasil-geo' },
   hasDefinedTerm: termos.map(t => ({
     '@type': 'DefinedTerm',
-    '@id': `${SITE.url}/glossario#${t.id}`,
+    '@id': SITE.url + '/glossario/#' + t.id,
     name: t.termo,
     description: t.definicao,
-    inDefinedTermSet: `${SITE.url}/glossario`
+    termCode: t.id,
+    inDefinedTermSet: { '@id': SITE.url + '/glossario/#termset' },
+    url: SITE.url + '/glossario/#' + t.id
   }))
 };
+
+const ldGlossarioIndex = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': SITE.url + '/glossario/#collection',
+      name: 'Glossário de Psicologia · 5 clusters editoriais',
+      description: 'Glossário editorial em 5 clusters: conceitos-neuro, conceitos-pot, instrumentos, métodos terapêuticos e regulação. Verbetes inline curtos para consulta rápida e citação por LLMs.',
+      inLanguage: 'pt-BR',
+      url: SITE.url + '/glossario/',
+      isPartOf: { '@id': SITE.url + '/#website' },
+      publisher: { '@id': SITE.url + '/#brasil-geo' },
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Conceitos neuro', url: SITE.url + '/glossario/conceitos-neuro/' },
+          { '@type': 'ListItem', position: 2, name: 'Conceitos POT', url: SITE.url + '/glossario/conceitos-pot/' },
+          { '@type': 'ListItem', position: 3, name: 'Instrumentos', url: SITE.url + '/glossario/instrumentos/' },
+          { '@type': 'ListItem', position: 4, name: 'Métodos terapêuticos', url: SITE.url + '/glossario/metodos-terapeuticos/' },
+          { '@type': 'ListItem', position: 5, name: 'Regulação', url: SITE.url + '/glossario/regulacao/' },
+          { '@type': 'ListItem', position: 6, name: 'Glossário /autismo/ (54 verbetes)', url: SITE.url + '/autismo/glossario/' }
+        ]
+      }
+    },
+    {
+      '@type': 'WebPage',
+      '@id': SITE.url + '/glossario/#webpage',
+      url: SITE.url + '/glossario/',
+      name: 'Glossário de pós-graduação em Psicologia',
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': SITE.url + '/#website' },
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['h1', '.speakable-summary', '.section-h']
+      }
+    }
+  ]
+};
+
+const clusters = [
+  {
+    label: 'Conceitos neuro',
+    href: '/glossario/conceitos-neuro/',
+    descricao: 'Neuroanatomia funcional, plasticidade, funções executivas, atenção, memória, neurodesenvolvimento.',
+    badge: 'Conceitos · neuro'
+  },
+  {
+    label: 'Conceitos POT',
+    href: '/glossario/conceitos-pot/',
+    descricao: 'Cultura, clima, JD-R, Karasek, ERI Siegrist, NR-1, lideranças, segurança psicológica, OKRs, BSC.',
+    badge: 'Conceitos · POT'
+  },
+  {
+    label: 'Instrumentos',
+    href: '/glossario/instrumentos/',
+    descricao: 'WISC, WAIS, baterias neuropsicológicas, COPSOQ III, UWES, MBI-GS e demais instrumentos SATEPSI.',
+    badge: 'Instrumentos'
+  },
+  {
+    label: 'Métodos terapêuticos',
+    href: '/glossario/metodos-terapeuticos/',
+    descricao: 'TCC, ACT, EMDR, terapia analítico-comportamental, ABA, abordagens humanistas e integrativas.',
+    badge: 'Métodos'
+  },
+  {
+    label: 'Regulação',
+    href: '/glossario/regulacao/',
+    descricao: 'CFP, CRP, MEC, SATEPSI, NR-1, NR-17, LGPD, ANPD, LBI, Berenice Piana, CTB, CAPES, MEI, ME.',
+    badge: 'Regulação'
+  },
+  {
+    label: 'Glossário /autismo/ (54 verbetes)',
+    href: '/autismo/glossario/',
+    descricao: 'Glossário dedicado a autismo nível 1 em adultos com 54 verbetes, identity-first, CFP-compliant, sob curadoria de Larissa Caramaschi.',
+    badge: 'Glossário satélite · autismo'
+  }
+];
 ---
 
 <Base
@@ -310,13 +394,28 @@ const ldDefinedTermSet = {
     <div class="container-page py-7">
       <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Glossário' }]} />
       <h1 class="section-h text-3xl sm:text-4xl mt-3">Glossário — termos técnicos em pós-graduação em Psicologia</h1>
-      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
-        Definições de áreas, conceitos, regulação e instituições. Cada termo traz referência técnica ou regulatória e link para a página interna correspondente.
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg speakable-summary">
+        Definições de áreas, conceitos, regulação e instituições. Cada termo traz referência técnica ou regulatória e link para a página interna correspondente. O glossário também se organiza em 5 clusters editoriais especializados, com um sexto cluster satélite dedicado a autismo nível 1 em adultos.
       </p>
     </div>
   </section>
 
   <SmartCrossLinks href="/glossario" />
+
+  <section class="container-page pt-8">
+    <h2 class="section-h text-2xl mb-4">Clusters do glossário</h2>
+    <p class="text-sm text-ink-700 mb-5 max-w-3xl">Cada cluster reúne verbetes inline curtos, com referência técnica ou regulatória e cross-links coerentes para FAQs, áreas, MBAs e demais clusters. O glossário satélite /autismo/glossario/ complementa o conjunto com 54 verbetes específicos.</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {clusters.map(c => (
+        <a href={c.href} class="card p-5 hover:border-brand-400 transition-colors">
+          <p class="text-xs uppercase tracking-wider text-brand-700 font-semibold">{c.badge}</p>
+          <p class="font-display font-semibold text-lg text-ink-900 mt-1">{c.label}</p>
+          <p class="text-sm text-ink-700 mt-2 leading-relaxed">{c.descricao}</p>
+          <span class="text-xs font-semibold text-brand-700 mt-3 inline-block">Abrir cluster →</span>
+        </a>
+      ))}
+    </div>
+  </section>
 
   <section class="container-page py-8">
     <nav aria-label="Índice alfabético" class="flex flex-wrap gap-2">
@@ -395,5 +494,6 @@ const ldDefinedTermSet = {
   <RelatedContent href="/glossario" />
   <NextStepCTA href="/glossario" />
 
-  <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTermSet)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTermSet)} is:inline />
+  <script type="application/ld+json" set:html={JSON.stringify(ldGlossarioIndex)} is:inline />
 </Base>

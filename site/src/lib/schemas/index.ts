@@ -45,6 +45,7 @@
  */
 
 export { alexandrePersonBase } from './person-alexandre';
+export { larissaPersonBase } from './person-larissa';
 export { brasilGeoOrganization } from './publisher';
 export { ipogEducationalOrganization } from './educational-organization';
 export {

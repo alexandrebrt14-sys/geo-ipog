@@ -1,6 +1,6 @@
 ---
 import { SITE } from '@lib/data';
-import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+import { alexandrePersonBase, brasilGeoOrganization, larissaPersonBase } from '@lib/schemas';
 import '@styles/global.css';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
@@ -29,6 +29,41 @@ const {
   bodyClass = '',
   searchPrefill = ''
 } = Astro.props;
+
+// E-E-A-T: rotas do hub /autismo/* têm Larissa Caramaschi como autora canônica.
+// Injeta o Person de Larissa no @graph para que LLMs e Google reconciliem a entidade
+// via @id (#larissa-caramaschi), em paralelo ao Person de Alexandre (editor/publisher founder).
+const isAutismoRoute = Astro.url.pathname.startsWith('/autismo');
+const baseGraph: any[] = [
+  {
+    '@type': 'WebSite',
+    '@id': SITE.url + '/#website',
+    name: SITE.name,
+    url: SITE.url,
+    description: SITE.description,
+    inLanguage: 'pt-BR',
+    publisher: { '@id': SITE.url + '/#brasil-geo' },
+    copyrightHolder: { '@id': SITE.url + '/#brasil-geo' },
+    creator: { '@id': SITE.url + '/#alexandre-caramaschi' },
+    disambiguatingDescription: 'Portal independente sobre Pós-Graduações em Psicologia. Não é o site oficial do IPOG (ipog.edu.br). Conteúdo editorial liderado por Alexandre Caramaschi, CEO da Brasil GEO.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: SITE.url + '/busca?q={search_term}'
+      },
+      'query-input': 'required name=search_term'
+    }
+  },
+  {
+    ...brasilGeoOrganization,
+    disambiguatingDescription: 'Brasil GEO opera o portal posgraduacaopsicologia.com como veículo editorial independente. Não é o site oficial do IPOG (ipog.edu.br).'
+  },
+  alexandrePersonBase
+];
+if (isAutismoRoute) {
+  baseGraph.push(larissaPersonBase);
+}
 ---
 
 <!doctype html>
@@ -112,33 +147,7 @@ const {
 
   <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebSite',
-        '@id': SITE.url + '/#website',
-        name: SITE.name,
-        url: SITE.url,
-        description: SITE.description,
-        inLanguage: 'pt-BR',
-        publisher: { '@id': SITE.url + '/#brasil-geo' },
-        copyrightHolder: { '@id': SITE.url + '/#brasil-geo' },
-        creator: { '@id': SITE.url + '/#alexandre-caramaschi' },
-        disambiguatingDescription: 'Portal independente sobre Pós-Graduações em Psicologia. Não é o site oficial do IPOG (ipog.edu.br). Conteúdo editorial liderado por Alexandre Caramaschi, CEO da Brasil GEO.',
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: {
-            '@type': 'EntryPoint',
-            urlTemplate: SITE.url + '/busca?q={search_term}'
-          },
-          'query-input': 'required name=search_term'
-        }
-      },
-      {
-        ...brasilGeoOrganization,
-        disambiguatingDescription: 'Brasil GEO opera o portal posgraduacaopsicologia.com como veículo editorial independente. Não é o site oficial do IPOG (ipog.edu.br).'
-      },
-      alexandrePersonBase
-    ]
+    '@graph': baseGraph
   })} />
 </head>
 <body class={`bg-white text-ink-900 ${bodyClass}`} data-search-prefill={searchPrefill || undefined}>

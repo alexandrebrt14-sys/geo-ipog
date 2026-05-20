@@ -2,7 +2,7 @@
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import { SITE } from '@lib/data';
-import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+import { larissaPersonBase, brasilGeoOrganization } from '@lib/schemas';
 
 const titulo = 'Glossário de autismo nível 1 em adultos, vocabulário técnico, ético e atualizado em 2026';
 const descricao = 'Cinquenta verbetes essenciais sobre autismo nível 1 de suporte em adultos, do diagnóstico tardio à dupla empatia, da camuflagem ao apego, com vocabulário identity-first e definições operacionais para pacientes, profissionais e pesquisadores.';
@@ -280,15 +280,23 @@ const verbetes: Verbete[] = [
 
 const ldGlossary = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'DefinedTermSet',
-  name: titulo,
-  description: descricao,
-  inLanguage: 'pt-BR',
-  hasDefinedTerm: verbetes.map(v => ({
-    '@type': 'DefinedTerm',
-    name: v.termo,
-    description: v.definicao
-  }))
+  '@graph': [
+    {
+      '@type': 'DefinedTermSet',
+      '@id': SITE.url + '/autismo/glossario/#glossario',
+      name: titulo,
+      description: descricao,
+      inLanguage: 'pt-BR',
+      creator: { '@id': 'https://posgraduacaopsicologia.com/#larissa-caramaschi' },
+      publisher: brasilGeoOrganization,
+      hasDefinedTerm: verbetes.map(v => ({
+        '@type': 'DefinedTerm',
+        name: v.termo,
+        description: v.definicao
+      }))
+    },
+    larissaPersonBase
+  ]
 });
 
 const verbeteId = (t: string) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

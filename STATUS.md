@@ -6,6 +6,50 @@
 
 ---
 
+## W22 — Sessão 24/05/2026 — 7 ondas Google I/O 2026 + Maio 2026 Core Update
+
+### Páginas no ar
+**332 páginas** (estável; foco da sessão foi enrich + padronização estrutural, não criação).
+
+### Entregues (commit `9e9c707` main · push origin OK · 32 arquivos · +1115/-95)
+
+1. **/feed.xml RSS 2.0 canônico** (Information Agents 24/7, Google I/O 2026). Endpoint Astro em `src/pages/feed.xml.ts` com 31 entradas curadas (hub /autismo + 6 artigos + sobre-larissa + 5 FAQs Larissa-linked + 5 hubs glossário + 5 MBAs + 5 áreas + 2 índices). lastBuildDate via mtime real, RFC 822, dc:creator por entrada, ttl 360.
+2. **YMYLDisclaimer.astro componente canônico** (`src/components/YMYLDisclaimer.astro`). Caixa visual `role="note"` com 4 variantes de domain (autismo / saude-mental / neuropsicologia / geral). Texto canônico "não substitui avaliação clínica" + indicação de busca por psicólogo + revisão clínica nominal + dateModified. Injetado em 10 páginas /autismo via patch idempotente (`site/scripts/patch-ymyl-disclaimer.mjs`).
+3. **EducationalOccupationalProgram canônico em 15 sub-páginas MBA** (`site/scripts/patch-mba-subpages-eop.mjs`). Refatora `ldProgram` legado para usar factory `buildEducationalOccupationalProgram` do schema canônico com: `timeRequired: P360H`, `educationalProgramMode: blended`, `provider` por `@id #ipog-educational-organization`, `recognizedBy` MEC + IPOG, `isPartOf` apontando para `@id` do MBA pai (`/mbas/{id}#program`), `speakable` em h1/.section-h/#resposta-rapida.
+4. **llms.txt v3** (`site/public/llms.txt`). Header com disclaimer "non-Google LLMs" explícito, nota Information Agents 24/7, dataModified 2026-05-24, link para /feed.xml, YMYL CRÍTICO declarado.
+5. **ai-policy.json v1.2** (`site/public/.well-known/ai-policy.json`). dateModified 2026-05-24, version 1.2.0, `ymylCategories`, `criticalUpdate20260524` com changelog, `manifests.feed` apontando para /feed.xml.
+6. **robots.txt** atualizado com referência ao feed RSS para Information Agents.
+7. **Sub-páginas /autismo + portas** (hub + 3 portas + 6 artigos = 10) ganharam YMYLDisclaimer.
+
+### Quality gate
+
+- `npm run check` (astro check): **0 erros · 0 warnings · 956 hints** (385 files).
+- `npm run build`: **332 páginas em 23.88s** + 18 sub-sitemaps + /feed.xml.
+- Smoke produção 15/15 HTTP 200 (cb cache-busted).
+- Validação produção: YMYL "Aviso clínico" em /autismo/artigos/diagnostico-tardio (1 hit), EducationalOccupationalProgram + isPartOf + ipog-educational-organization em /mbas/mba-pot/grade-curricular (3 hits), /feed.xml com 31 items, llms.txt v3 com 2 menções a "non-Google LLMs / Information Agents 24/7".
+
+### IndexNow
+
+- 38 URLs × 3 engines.
+- **Yandex 202** OK. Bing + api.indexnow.org **403 "UserForbiddedToAccessSite"** (key file servido HTTP 200 com conteúdo correto `geoipogIN2026\n`; provavelmente o domínio nunca foi associado ao IndexNow no Bing Webmaster Tools ou ban temporal por excesso de pings de outros projetos do mesmo IP). Gap operacional **não-bloqueante** — Yandex já fechou crawl da wave.
+
+### Custo
+
+- 1 sub-agent Opus paralelo (este turno); scripts mjs idempotentes reusáveis.
+- 1 push Cloudflare Pages (deploy automático via Git connection).
+
+### Próximos passos (não executados)
+
+1. **Resolver IndexNow Bing**: associar o domínio ao Bing Webmaster Tools (manual UI) ou tentar IndexNow GET single-URL com IP origin diferente.
+2. **GSC sitemap-index.xml resubmit** via Chrome MCP (manual; tornaria as 332 URLs re-crawled).
+3. **Expandir YMYLDisclaimer para /areas/aba-tea-neurodesenvolvimento** (clínica YMYL adicional).
+4. **Adicionar EducationalOccupationalProgram nas páginas de comparativo entre modalidades** se relevante.
+5. **Auditar glossário Wikidata** — 12/169 verbetes têm sameAs; potencial expansão para TEA Q244329, TDAH Q181923, Depressão Q41112, Ansiedade Q175854 (já existe `Q11081` Alzheimer comprovado, padrão funciona).
+
+Veja também `project_geo_ipog_seo_geo_eeat_waves_20260520` (W21).
+
+---
+
 ## W21 — Sessão 19/05/2026 — Pivô para Autismo em adultos com Larissa Caramaschi
 
 ### Páginas no ar

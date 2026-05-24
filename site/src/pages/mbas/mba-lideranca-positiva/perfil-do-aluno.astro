@@ -2,6 +2,7 @@
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import { SITE, MBAS } from '@lib/data';
+import { buildEducationalOccupationalProgram, buildSpeakable } from '@lib/schemas';
 
 const mba = MBAS.find(m => m.id === 'mba-lideranca-positiva')!;
 const others = MBAS.filter(m => m.id !== 'mba-lideranca-positiva');
@@ -26,13 +27,21 @@ const FAQS_PAGINA = [
 
 const ldProgram = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'EducationalOccupationalProgram',
-  name: `${mba.name} — Perfil do aluno`,
-  programType: 'MBA',
-  educationalProgramMode: 'online (Ao Vivo síncrono conforme IPOG)',
+  ...buildEducationalOccupationalProgram({
+    name: `${mba.name} — Perfil do aluno`,
+    slug: `/mbas/${mba.id}/perfil-do-aluno`,
+    description: 'Perfil de público-alvo, pré-requisitos e motivações típicas em MBA em Gestão de Pessoas e Liderança Positiva.',
+    programType: 'MBA',
+    timeRequired: 'P360H',
+    educationalProgramMode: 'blended',
+    additionalRecognizedBy: [{
+      name: 'IPOG · oferta vigente em ipog.edu.br',
+      url: 'https://ipog.edu.br/cursos/pos-graduacao'
+    }]
+  }),
   occupationalCategory: 'Líder executivo, Gestor de pessoas, Business Partner de RH, Consultor em liderança',
-  description: 'Perfil de público-alvo, pré-requisitos e motivações típicas em MBA em Gestão de Pessoas e Liderança Positiva.',
-  provider: { '@type': 'EducationalOrganization', name: 'IPOG — Instituto de Pós-Graduação', url: 'https://ipog.edu.br/' }
+  isPartOf: { '@id': `${SITE.url}/mbas/${mba.id}#program` },
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.section-h', '#resposta-rapida'] }
 });
 
 const ldBreadcrumb = JSON.stringify({

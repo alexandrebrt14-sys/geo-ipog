@@ -1,0 +1,113 @@
+---
+/**
+ * YMYLDisclaimer.astro
+ *
+ * Disclaimer canônico para páginas YMYL clínicas (autismo, transtornos mentais,
+ * avaliação psicológica, etc.).
+ *
+ * Por que existir:
+ * - Maio 2026 Core Update do Google penaliza conteúdo clínico sem revisor identificado
+ *   e sem aviso de "não substitui avaliação clínica".
+ * - Google I/O 2026 reforça YMYL como camada de filtragem agressiva para Information Agents.
+ * - LLMs (Claude, Gemini, ChatGPT, Perplexity) usam Schema.org MedicalWebPage como sinal
+ *   de confiabilidade para citar páginas clínicas em respostas grounded.
+ *
+ * Estratégia:
+ * - Caixa visual discreta (não-prose) no topo do conteúdo.
+ * - Texto canônico: "não substitui avaliação clínica" + indicação de busca por psicólogo.
+ * - Atributo HTML5 `role="note"` para AT (acessibilidade).
+ * - Selo visual de revisão técnica (autor + revisor) reforça E-E-A-T.
+ *
+ * NÃO emite JSON-LD próprio. O parent emite MedicalWebPage / Article com `lastReviewed`
+ * e `reviewedBy` referenciando `larissaPersonBase` ou `alexandrePersonBase`.
+ *
+ * Uso típico:
+ *   <YMYLDisclaimer
+ *     domain="autismo"
+ *     reviewerName="Larissa Caramaschi"
+ *     reviewerHref="/autismo/sobre-larissa/"
+ *     lastReviewed="2026-05-24"
+ *   />
+ *
+ * Domain controla a copy do disclaimer:
+ *   - "autismo" → foca em TEA, diagnóstico, identidade
+ *   - "saude-mental" → foca em transtornos mentais comuns
+ *   - "neuropsicologia" → foca em avaliação cognitiva
+ *   - "geral" → genérico clínico
+ */
+interface Props {
+  domain?: 'autismo' | 'saude-mental' | 'neuropsicologia' | 'geral';
+  reviewerName?: string;
+  reviewerHref?: string;
+  lastReviewed?: string;
+  compact?: boolean;
+}
+
+const {
+  domain = 'geral',
+  reviewerName = 'Larissa Caramaschi',
+  reviewerHref = '/autismo/sobre-larissa/',
+  lastReviewed,
+  compact = false
+} = Astro.props;
+
+const COPY: Record<NonNullable<Props['domain']>, { title: string; body: string }> = {
+  autismo: {
+    title: 'Aviso clínico · conteúdo educacional',
+    body: 'Este conteúdo é educacional e não substitui avaliação clínica, hipótese diagnóstica ou supervisão profissional. Suspeita de autismo em adultos exige avaliação por psicólogo ou psiquiatra com experiência em TEA adulto, com instrumentos validados (ADOS-2 Módulo 4, ADI-R, RAADS-R, CAT-Q) e raciocínio diferencial. O portal segue Resolução CFP 11/2018 sobre comunicação técnica e identity-first language por escolha editorial.'
+  },
+  'saude-mental': {
+    title: 'Aviso clínico · conteúdo educacional',
+    body: 'Este conteúdo é educacional e não substitui avaliação clínica, prescrição médica, psicoterapia ou supervisão profissional. Em sofrimento agudo ou risco de vida, ligue 188 (CVV, 24h) ou busque pronto-socorro psiquiátrico. Para acompanhamento contínuo, procure psicólogo registrado no CRP e, quando indicado, psiquiatra com CRM ativo.'
+  },
+  neuropsicologia: {
+    title: 'Aviso clínico · conteúdo educacional',
+    body: 'Este conteúdo é educacional e não substitui avaliação neuropsicológica formal. Avaliação cognitiva, parecer e laudo são privativos de psicólogo com registro ativo no CRP, conforme Resolução CFP 06/2019. Instrumentos citados (WAIS-IV, RAVLT, Trail Making, Stroop, BVMT-R, entre outros) só podem ser aplicados por profissional habilitado e em condições controladas.'
+  },
+  geral: {
+    title: 'Aviso clínico · conteúdo educacional',
+    body: 'Este conteúdo é editorial e educacional. Não substitui avaliação clínica, psicoterapia, supervisão profissional, parecer regulatório do CFP ou prescrição médica. Decisões clínicas, profissionais ou de matrícula em pós-graduação devem ser tomadas com fonte oficial e profissional habilitado.'
+  }
+};
+
+const c = COPY[domain];
+
+function formatarData(iso?: string): string | null {
+  if (!iso) return null;
+  const partes = iso.split('-');
+  if (partes.length !== 3) return iso;
+  const [ano, mes, dia] = partes;
+  return `${dia}/${mes}/${ano}`;
+}
+
+const lastReviewedFmt = formatarData(lastReviewed);
+---
+
+<aside
+  class={`not-prose ${compact ? 'mt-4 mb-4 p-4' : 'mt-6 mb-6 p-5'} border-l-4 border-sun-500 bg-sun-50 rounded-r-2xl max-w-3xl`}
+  role="note"
+  aria-label={c.title}
+  data-ymyl-disclaimer
+  data-domain={domain}
+>
+  <p class={`${compact ? 'text-xs' : 'text-xs'} uppercase tracking-wider font-semibold text-sun-800 mb-2`}>
+    {c.title}
+  </p>
+  <p class={`${compact ? 'text-sm' : 'text-sm sm:text-base'} text-ink-800 leading-relaxed`}>
+    {c.body}
+  </p>
+  {(reviewerName || lastReviewedFmt) && (
+    <p class="mt-3 text-xs text-ink-600 leading-relaxed">
+      {reviewerName && (
+        <>
+          Revisão clínica: <a
+            href={reviewerHref}
+            class="font-semibold underline decoration-sun-500 underline-offset-2 hover:text-brand-700"
+          >{reviewerName}</a>
+        </>
+      )}
+      {reviewerName && lastReviewedFmt && ' · '}
+      {lastReviewedFmt && <>Revisado em {lastReviewedFmt}</>}
+    </p>
+  )}
+</aside>

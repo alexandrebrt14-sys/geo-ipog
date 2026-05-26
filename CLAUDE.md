@@ -73,11 +73,35 @@ A KB de 17/05 (item 2) é mais recente e tem prioridade quando houver conflito f
 
 ## Fluxo padrão de onda de conteúdo
 
-1. **Research:** 3-5 chamadas Perplexity Sonar Pro paralelas → dossiê em `docs/research/<tema>-YYYY-MM-DD.md`.
-2. **Spot-check** de 3-5 citações (URL real, autor plausível).
-3. **Sub-agents Opus paralelos** (3-5) com dossiê + template canônico + instrução PT-BR acentuado + slugs ASCII + `docs/governance/GEO_50_CONCEITOS_CANONICAL.md` (taxonomia editorial obrigatória) + prioridades específicas do tipo de página (HowTo: 7/8/11/13/25; FAQ: 11/12/13/14; comparativo: 9/10/49; clínica: 21/22/23) + anti-padrão 26 literal.
-4. **Pós-build:** sanity check de slugs/hrefs/schemas via Python cirúrgico.
-5. **Build + push + IndexNow (3 engines) + GSC sitemap resubmit (manual).**
+1. **Consulta wiki primeiro.** Abrir `wiki/index.md` e procurar o tema em `entities/`, `concepts/`, `sources/` antes de qualquer pesquisa externa. Regra Karpathy K-07 (`scripts/wiki/query-playbook.md`).
+2. **Research:** 3-5 chamadas Perplexity Sonar Pro paralelas → dossiê em `docs/research/<tema>-YYYY-MM-DD.md`.
+3. **Spot-check** de 3-5 citações (URL real, autor plausível).
+4. **Sub-agents Opus paralelos** (3-5) com dossiê + template canônico + instrução PT-BR acentuado + slugs ASCII + `docs/governance/GEO_50_CONCEITOS_CANONICAL.md` (taxonomia editorial obrigatória) + prioridades específicas do tipo de página (HowTo: 7/8/11/13/25; FAQ: 11/12/13/14; comparativo: 9/10/49; clínica: 21/22/23) + anti-padrão 26 literal.
+5. **Pós-build:** sanity check de slugs/hrefs/schemas via Python cirúrgico.
+6. **Build + push + IndexNow (3 engines) + GSC sitemap resubmit (manual).**
+7. **Wiki ingest:** processar o dossiê novo conforme `scripts/wiki/ingest-playbook.md`. Tocar de 5 a 15 páginas wiki. Apendar `wiki/log.md`. Rodar `python scripts/wiki/lint.py`.
+
+## Wiki workflow obrigatório (padrão Karpathy LLM Wiki)
+
+Repositório adotou em 2026-05-26 o padrão LLM Wiki descrito por Andrej Karpathy em [gist.github.com/karpathy/442a6bf555914893e9891c11519de94f](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). Camada `wiki/` é mutável, atômica, cross-linkada e mantida por agentes LLM. Convive com `docs/research/` (raw imutável), `docs/governance/` (canônico longo) e `STATUS.md` (ledger narrativo). Detalhes em `docs/governance/karpathy-llm-wiki-methodology.md` e ADR completo em `wiki/decisions/ADR-001-adopcao-llm-wiki.md`.
+
+**Disciplina inviolável:**
+
+1. **Antes** de qualquer onda nova: consultar `wiki/index.md`. Tema já coberto?
+2. **Durante**: tocar páginas existentes, criar páginas novas quando faltar.
+3. **Ao final** da onda: registrar em `wiki/log.md` (append-only no formato canônico), rodar `python scripts/wiki/lint.py`, endereçar `broken_crosslinks` fora do backlog e `missing_frontmatter` zero, commitar tudo junto.
+4. **Mensalmente**: review formal em `wiki/reviews/YYYY-MM-DD-...md` com endereçamento de órfãos e stale claims.
+
+**Tipos canônicos de página:** `entities/`, `concepts/`, `decisions/`, `sources/`, `reviews/`. Detalhes do critério de criação em `docs/governance/karpathy-llm-wiki-methodology.md`.
+
+**Convenções inegociáveis:**
+
+- Frontmatter YAML com `name`, `type`, `status`, `created`, `updated`, `sources`, `related`.
+- Cross-links `[[slug]]` no corpo. Filenames ASCII kebab-case.
+- Português PT-BR acentuado. Sem emojis. Sem em-dash em copy editorial.
+- Cada onda fecha pelo menos 1 item do backlog explícito em `wiki/index.md` ou justifica.
+
+**Métricas (revisão em 30/60/90 dias):** 5+ páginas novas por wave; backlog reduz por wave; tempo médio de query operacional via wiki <2 minutos; 0 órfãos não-justificados em review mensal.
 
 ## Ferramentas canônicas
 
@@ -136,4 +160,4 @@ const ldArticle = {
 - `feedback_orchestrator_usage` — orchestrator SmartRouter ignora forçar
 - `feedback_geo_ipog_5_modalidades_canonicas` — escopo amplo, MBA é 1 das 5
 
-Última revisão deste arquivo: 2026-05-17.
+Última revisão deste arquivo: 2026-05-26 (adição do bloco "Wiki workflow obrigatório" e do passo 1 + passo 7 no fluxo padrão de onda).

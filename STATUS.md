@@ -6,6 +6,79 @@
 
 ---
 
+## W23 — Sessão 26/05/2026 — Adoção do padrão LLM Wiki Karpathy
+
+### Páginas no ar
+**332 páginas** (estável; sessão de governança/arquitetura, não criou páginas do portal).
+
+### Contexto
+
+Em 26-05-2026 Alexandre Caramaschi trouxe o gist Karpathy de 03-04-2026 ([gist.github.com/karpathy/442a6bf555914893e9891c11519de94f](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)) e pediu para revisar, aprofundar com pesquisas externas e implementar a metodologia no repo `geo-ipog` para garantir arquitetura de ganhos incrementais e atualização de conhecimentos.
+
+### Diagnóstico vs Karpathy
+
+Repo já tinha: `CLAUDE.md` denso (schema do Karpathy), `docs/research/` (raw sources, 19 dossiês datados), `docs/governance/` (canônicos longos), `STATUS.md` (ledger narrativo). Faltavam as 4 peças canônicas Karpathy: catálogo navegável (`index.md`), ledger append-only parseável (`log.md`), páginas wiki atômicas e cross-linkadas, e os 3 workflows formais (Ingest, Query, Lint).
+
+### Entregues
+
+**Camada `wiki/` Karpathy completa (21 arquivos novos):**
+
+- `wiki/README.md`, `wiki/index.md` (catálogo + backlog explícito de 14 páginas pendentes), `wiki/log.md` (append-only canônico).
+- `wiki/entities/` × 7: `ipog`, `brasil-geo`, `alexandre-caramaschi`, `larissa-caramaschi`, `ronan-maia`, `bruno-azambuja`, `naia`.
+- `wiki/concepts/` × 6: `geo`, `llms-txt`, `mention-rate`, `eeat-ymyl`, `schema-graph-triplo`, `llm-wiki-karpathy`.
+- `wiki/decisions/` × 1: `ADR-001-adopcao-llm-wiki.md` (contexto, alternativas consideradas, decisão, consequências, métricas de sucesso em 30/60/90 dias).
+- `wiki/sources/` × 3: `2026-04-03-karpathy-llm-wiki-gist.md` (13 claims canônicos K-01 a K-13 extraídos), `2026-05-17-seo-geo-kb-canonical.md` (mapeamento para 5 conceitos), `2026-05-19-autismo-research-larissa.md` (6 frentes para Larissa).
+- `wiki/reviews/2026-05-26-baseline.md` (inventário inicial, cross-links por categoria, findings zero, backlog explícito).
+
+**Workflows operacionais (3 arquivos):**
+
+- `scripts/wiki/lint.py` — Python funcional. Cheques: frontmatter YAML, cross-links quebrados (excluindo backlog declarado), órfãos, stale claims (>90 dias), conflitos marcados `[CONFLITO]`. Suporta `--json` para CI e `--fix-log` para apêndice automático.
+- `scripts/wiki/ingest-playbook.md` — receita canônica para processar fonte nova (1 fonte toca 5-15 páginas + apêndice no log).
+- `scripts/wiki/query-playbook.md` — receita para responder pergunta operacional consultando grafo antes de pesquisar externamente; respostas valiosas viram páginas novas.
+
+**Governance:**
+
+- `docs/governance/karpathy-llm-wiki-methodology.md` — documento canônico (tese, linhagem Vannevar Bush + Nelson + Luhmann + Matuschak, implementações comunitárias mapeadas: ΩmegaWiki, LLM-WIKI-MCP, Maoxunxing, adaptação concreta, métricas de sucesso, riscos e mitigações).
+- `CLAUDE.md` editado: novo bloco "Wiki workflow obrigatório" + fluxo padrão de onda agora começa com "Consulta wiki primeiro" (passo 1) e termina com "Wiki ingest" (passo 7).
+- `STATUS.md` editado: este registro W23.
+
+### Teses Karpathy aplicadas (referência canônica)
+
+1. **RAG é amnésico, LLM Wiki é stateful.** Acúmulo zero vs composição contínua.
+2. **Inversão do modo de falha humano.** Wikis humanos morrem por manutenção; LLMs não cansam.
+3. **3 camadas:** raw (imutável, humano cura) + wiki (mutável, LLM mantém) + schema (configuração).
+4. **4 operações:** Ingest, Query, Lint, Maintain.
+5. **2 arquivos críticos:** `index.md` substitui RAG até escala moderada; `log.md` append-only parseável.
+
+### Disciplina nova obrigatória
+
+Toda onda futura no `geo-ipog` deve:
+
+1. Antes: consultar `wiki/index.md`.
+2. Durante: tocar páginas existentes ou criar novas.
+3. Ao final: apendar `wiki/log.md`, rodar `python scripts/wiki/lint.py`, endereçar broken_crosslinks fora do backlog, commit junto.
+4. Mensal: review formal em `wiki/reviews/`.
+
+### Quality gate
+
+- `python scripts/wiki/lint.py` no estado inicial: 0 órfãos, 0 broken crosslinks (todos os 14 cross-links pendentes estão no backlog declarado), 0 missing frontmatter, 0 stale, 0 conflitos.
+
+### Custo
+
+- Sessão arquitetura conduzida no Claude principal (sem fan-out de sub-agentes).
+- 3 WebFetch (gist Karpathy + 2 análises comunitárias) + 1 WebSearch.
+- 0 chamadas Perplexity.
+- 0 build, 0 push Cloudflare Pages no portal (apenas push de repo no GitHub).
+
+### Próximos passos sugeridos
+
+1. Fechar 3 itens do backlog na próxima wave: criar `wiki/concepts/citation-rate.md`, `wiki/concepts/share-of-voice.md`, `wiki/decisions/ADR-002-portal-independente-vs-ipog-edu-br.md`.
+2. Ingest da próxima onda de research (W24) deve seguir `scripts/wiki/ingest-playbook.md` para validar o fluxo em produção.
+3. Em 30 dias (26-06-2026): primeiro review mensal formal em `wiki/reviews/2026-06-26-mensal.md`. Verificar métricas: crescimento de páginas, redução de backlog, tempo médio de query, órfãos.
+4. Considerar adicionar hook pre-commit que roda `python scripts/wiki/lint.py` quando há mudança em `wiki/**/*.md`.
+
+---
+
 ## W22 — Sessão 24/05/2026 — 7 ondas Google I/O 2026 + Maio 2026 Core Update
 
 ### Páginas no ar

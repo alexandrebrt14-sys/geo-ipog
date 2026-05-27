@@ -24,8 +24,8 @@ export interface AutoPage {
 export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/",
-    "title": "Autismo nível 1 de suporte em adultos, conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia",
-    "description": "Portal de psicoeducação sobre autismo nível 1 de suporte em adultos, com ênfase em identidade, relacionamentos amorosos e vida cotidiana. Conteúdo editorial conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia, mestre em Psicologia pela USP, com 26 anos de prática em terapia individual, familiar e de casal.",
+    "title": "Pós-graduação em Psicologia, guia editorial independente para escolher MBA, Especialização Lato Sensu, Mestrado Profissional, Especialização Clínica e Residência",
+    "description": "Portal editorial independente sobre pós-graduação em Psicologia no Brasil, com foco nas ofertas e na curadoria do IPOG (Instituto de Pós-Graduação e Graduação). Cobre as cinco modalidades canônicas (Especialização Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada e Residência Multiprofissional), os cinco MBAs do IPOG em Psicologia, 18 áreas mapeadas (CFP e correlatas), comparativos regulatórios CFP, MEC, CAPES, NR-1, SATEPSI, LBI, LGPD.",
     "kind": "Recurso",
     "persona": null,
     "tags": [

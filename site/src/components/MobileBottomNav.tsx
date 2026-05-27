@@ -12,11 +12,11 @@ interface NavItem {
 const IconHome = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-label="Início"><path d="M3 9.5 12 3l9 6.5V21H3z" /><path d="M9 21V12h6v9" /></svg>
 );
-const IconAutismo = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M12 2a4 4 0 0 1 4 4c0 1.2-.5 2.2-1.3 3 .8.4 1.5 1 2 1.7A4 4 0 0 1 18 14c0 1.6-1 3-2.4 3.6.2.5.4 1 .4 1.7a3 3 0 0 1-6 0c0-.6.2-1.2.4-1.7A4 4 0 0 1 8 14a4 4 0 0 1 1.3-2.9c-.8-.8-1.3-1.8-1.3-3a4 4 0 0 1 4-4Z"/><circle cx="10" cy="6.5" r="0.6" fill="currentColor"/><circle cx="14" cy="6.5" r="0.6" fill="currentColor"/></svg>
-);
 const IconAreas = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
+);
+const IconMba = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 11 12 6l9 5-9 5-9-5Z"/><path d="M5 12.5V17c0 1 3 2.5 7 2.5s7-1.5 7-2.5v-4.5"/><path d="M21 11v5"/></svg>
 );
 const IconSearch = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
@@ -29,8 +29,7 @@ const AUTISMO_PORTAS: { label: string; href: string; desc: string }[] = [
   { label: 'Para pacientes e famílias', href: '/autismo/para-pacientes/', desc: 'Diagnóstico tardio, dia a dia, relações' },
   { label: 'Para profissionais', href: '/autismo/para-profissionais/', desc: 'Avaliação, manejo clínico, supervisão' },
   { label: 'Para pesquisadores', href: '/autismo/para-pesquisadores/', desc: 'Fronteira da ciência, instrumentos, dados' },
-  { label: 'Glossário do autismo', href: '/autismo/glossario', desc: 'Termos definidos para adultos' },
-  { label: 'Sobre Larissa Caramaschi', href: '/autismo/sobre-larissa', desc: 'Autoridade clínica do hub' }
+  { label: 'Glossário do autismo', href: '/autismo/glossario', desc: 'Termos definidos para adultos' }
 ];
 
 const AUTISMO_ARTIGOS: { label: string; href: string }[] = [
@@ -116,8 +115,8 @@ export default function MobileBottomNav() {
   }, [moreOpen]);
 
   const items: NavItem[] = [
-    { id: 'autismo', label: 'Autismo', href: '/autismo/', icon: <IconAutismo /> },
     { id: 'home', label: 'Início', href: '/', icon: <IconHome /> },
+    { id: 'mbas', label: 'MBAs IPOG', href: '/mbas', icon: <IconMba /> },
     {
       id: 'busca',
       label: 'Buscar',
@@ -205,38 +204,6 @@ export default function MobileBottomNav() {
 
             <div className="p-5 space-y-6">
               <section>
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-xs font-semibold text-brand-800 uppercase tracking-wider">Autismo em adultos</h3>
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-sun-500 text-brand-900 text-[9px] font-bold uppercase tracking-wider leading-none">Novo</span>
-                </div>
-                <div className="grid grid-cols-1 gap-2">
-                  {AUTISMO_PORTAS.map(p => (
-                    <a
-                      key={p.href}
-                      href={p.href}
-                      onClick={() => setMoreOpen(false)}
-                      className="card-lift p-3">
-                      <div className="text-sm font-semibold text-ink-900">{p.label}</div>
-                      <div className="text-[11px] text-ink-500 mt-1">{p.desc}</div>
-                    </a>
-                  ))}
-                </div>
-                <h4 className="text-[11px] font-semibold text-ink-500 uppercase tracking-wider mt-4 mb-2">Artigos de profundidade</h4>
-                <ul className="divide-y divide-surface-200 rounded-xl border border-surface-200 overflow-hidden">
-                  {AUTISMO_ARTIGOS.map(a => (
-                    <li key={a.href}>
-                      <a
-                        href={a.href}
-                        onClick={() => setMoreOpen(false)}
-                        className="block px-4 py-3 hover:bg-surface-50 text-sm text-ink-900">
-                        {a.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <section>
                 <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-2">Hubs principais</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {HUBS_PRINCIPAIS.map(h => (
@@ -249,6 +216,36 @@ export default function MobileBottomNav() {
                     </a>
                   ))}
                 </div>
+              </section>
+
+              <section>
+                <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-2">Tema clínico transversal · TEA adulto</h3>
+                <p className="text-[11px] text-ink-500 mb-3">Tema que atravessa as áreas Clínica, Avaliação Psicológica, Neuropsicologia, ABA-TEA-Neurodesenvolvimento e POT (acomodações razoáveis, NR-1).</p>
+                <div className="grid grid-cols-1 gap-2">
+                  {AUTISMO_PORTAS.map(p => (
+                    <a
+                      key={p.href}
+                      href={p.href}
+                      onClick={() => setMoreOpen(false)}
+                      className="card-lift p-3">
+                      <div className="text-sm font-semibold text-ink-900">{p.label}</div>
+                      <div className="text-[11px] text-ink-500 mt-1">{p.desc}</div>
+                    </a>
+                  ))}
+                </div>
+                <h4 className="text-[11px] font-semibold text-ink-500 uppercase tracking-wider mt-4 mb-2">Artigos do tema</h4>
+                <ul className="divide-y divide-surface-200 rounded-xl border border-surface-200 overflow-hidden">
+                  {AUTISMO_ARTIGOS.map(a => (
+                    <li key={a.href}>
+                      <a
+                        href={a.href}
+                        onClick={() => setMoreOpen(false)}
+                        className="block px-4 py-3 hover:bg-surface-50 text-sm text-ink-900">
+                        {a.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </section>
 
               <section>

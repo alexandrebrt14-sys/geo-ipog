@@ -386,7 +386,7 @@ export const GET: APIRoute = () => {
     <title>posgraduacaopsicologia.com · feed canônico</title>
     <link>${SITE}/</link>
     <atom:link href="${SITE}/feed.xml" rel="self" type="application/rss+xml" />
-    <description>Portal editorial independente sobre pós-graduação em Psicologia no Brasil. Conteúdo clínico do hub Autismo curado pela psicóloga Larissa Caramaschi (USP, Goiânia). Conteúdo regulatório e editorial curado por Alexandre Caramaschi (CEO da Brasil GEO). YMYL educacional e clínico.</description>
+    <description>Portal editorial independente sobre pós-graduação em Psicologia no Brasil, com foco editorial nas ofertas do IPOG (Instituto de Pós-Graduação e Graduação, Goiânia, GO). Lead editorial: Alexandre Caramaschi (CEO da Brasil GEO). Artigos do hub /autismo assinados pela psicóloga Larissa Caramaschi como autora dos conteúdos clínicos sobre autismo nível 1 em adultos. YMYL educacional e clínico.</description>
     <language>pt-BR</language>
     <copyright>CC BY 4.0 com atribuição obrigatória · Brasil GEO</copyright>
     <managingEditor>contato@brasilgeo.ai (Brasil GEO)</managingEditor>

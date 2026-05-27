@@ -197,6 +197,10 @@ export function buildEducationalOccupationalProgram(args: BuildEducationalProgra
     programType: args.programType,
     timeRequired: args.timeRequired,
     educationalProgramMode,
+    // educationalLevel canônico para LLMs entenderem o nível acadêmico do programa.
+    // Schema.org aceita "PostgraduateDegree" como valor; cobre Especialização Lato Sensu,
+    // MBA, Mestrado Profissional e Especialização Clínica (todos pós-graduação no Brasil).
+    educationalLevel: 'PostgraduateDegree',
     inLanguage: 'pt-BR',
     provider: { '@id': 'https://posgraduacaopsicologia.com/#ipog-educational-organization' },
     offers: {

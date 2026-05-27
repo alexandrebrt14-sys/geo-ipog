@@ -1,11 +1,11 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { SITE } from '@lib/data';
-import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization, ipogEducationalOrganization } from '@lib/schemas';
 
-const titulo = 'Autismo nível 1 de suporte em adultos, conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia';
-const descricao = 'Portal de psicoeducação sobre autismo nível 1 de suporte em adultos, com ênfase em identidade, relacionamentos amorosos e vida cotidiana. Conteúdo editorial conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia, mestre em Psicologia pela USP, com 26 anos de prática em terapia individual, familiar e de casal.';
+const titulo = 'Pós-graduação em Psicologia, guia editorial independente para escolher MBA, Especialização Lato Sensu, Mestrado Profissional, Especialização Clínica e Residência';
+const descricao = 'Portal editorial independente sobre pós-graduação em Psicologia no Brasil. Cobre as cinco modalidades canônicas (Especialização Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada e Residência Multiprofissional), 18 áreas mapeadas (CFP e correlatas), comparativos regulatórios CFP, MEC, CAPES, NR-1, SATEPSI, LBI, LGPD, e hub clínico de autismo nível 1 em adultos conduzido por Larissa Caramaschi.';
 
 const ldBreadcrumb = JSON.stringify({
   '@context': 'https://schema.org',
@@ -14,23 +14,6 @@ const ldBreadcrumb = JSON.stringify({
     { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' }
   ]
 });
-
-const larissaPerson = {
-  '@type': 'Person',
-  '@id': SITE.url + '/autismo/sobre-larissa/#larissa-caramaschi',
-  name: 'Larissa Caramaschi',
-  jobTitle: 'Psicóloga clínica',
-  description: 'Psicóloga clínica em Goiânia, mestre em Psicologia pela USP, com 26 anos de prática em psicoterapia individual, familiar e de casal. Lente clínica atual em autismo nível 1 de suporte em adultos.',
-  url: SITE.url + '/autismo/sobre-larissa/',
-  knowsAbout: [
-    'Autismo nível 1 de suporte em adultos',
-    'Diagnóstico tardio em adultos',
-    'Casais NT-autista',
-    'Camuflagem (masking) em adultos autistas',
-    'Terapia familiar e de casal',
-    'Psicoeducação neuroafirmativa'
-  ]
-};
 
 const ldHomeGraph = JSON.stringify({
   '@context': 'https://schema.org',
@@ -44,94 +27,139 @@ const ldHomeGraph = JSON.stringify({
       isPartOf: { '@id': SITE.url + '/#website' },
       inLanguage: 'pt-BR',
       about: [
-        { '@type': 'MedicalCondition', name: 'Transtorno do Espectro Autista nível 1 de suporte em adultos' },
-        { '@type': 'Thing', name: 'Relacionamentos amorosos NT-autista' },
-        { '@type': 'Thing', name: 'Camuflagem (masking) em adultos autistas' }
+        { '@type': 'Thing', name: 'Pós-graduação Lato Sensu em Psicologia (CNE/CES 1/2018)' },
+        { '@type': 'Thing', name: 'MBA em Psicologia Organizacional e do Trabalho' },
+        { '@type': 'Thing', name: 'Mestrado Profissional em Psicologia (CAPES)' },
+        { '@type': 'Thing', name: 'Especialização Clínica em Psicologia (CFP 13/2007)' },
+        { '@type': 'Thing', name: 'Residência Multiprofissional em Saúde' }
       ],
-      mainEntity: { '@id': SITE.url + '/autismo/sobre-larissa/#larissa-caramaschi' }
+      mainEntity: { '@id': SITE.url + '/#brasil-geo' },
+      reviewedBy: { '@id': SITE.url + '/#alexandre-caramaschi' },
+      datePublished: '2026-05-13',
+      dateModified: '2026-05-27'
     },
-    larissaPerson
+    {
+      '@type': 'CollectionPage',
+      '@id': SITE.url + '/#collection-modalidades',
+      url: SITE.url + '/',
+      name: 'Cinco modalidades canônicas de pós-graduação em Psicologia',
+      inLanguage: 'pt-BR',
+      hasPart: [
+        { '@type': 'Thing', name: 'Especialização Lato Sensu', url: SITE.url + '/tipos-de-pos-graduacao#especializacao-lato-sensu' },
+        { '@type': 'Thing', name: 'MBA', url: SITE.url + '/mbas' },
+        { '@type': 'Thing', name: 'Mestrado Profissional', url: SITE.url + '/tipos-de-pos-graduacao#mestrado-profissional' },
+        { '@type': 'Thing', name: 'Especialização Clínica certificada', url: SITE.url + '/tipos-de-pos-graduacao#especializacao-clinica-certificada' },
+        { '@type': 'Thing', name: 'Residência Multiprofissional', url: SITE.url + '/tipos-de-pos-graduacao#residencia-hibrida' }
+      ]
+    }
   ]
 });
 
-interface ArtigoCard {
-  slug: string;
+interface ModalidadeCard {
+  href: string;
+  rotulo: string;
   titulo: string;
   resumo: string;
+  regulacao: string;
 }
 
-const ARTIGOS: ArtigoCard[] = [
+const MODALIDADES: ModalidadeCard[] = [
   {
-    slug: 'diagnostico-tardio-adulto-2026',
-    titulo: 'Diagnóstico tardio em adultos',
-    resumo: 'Reorganização biográfica, custos invisíveis e o que muda quando se nomeia o que sempre esteve lá.'
+    href: '/tipos-de-pos-graduacao#especializacao-lato-sensu',
+    rotulo: 'Modalidade 01',
+    titulo: 'Especialização Lato Sensu',
+    resumo: 'Pós-graduação de 360 a 600 horas, com carga teórica densa e supervisão prática. Modalidade mais ampla, abre escopo de atuação ou aprofunda área específica.',
+    regulacao: 'MEC, Resolução CNE/CES 1/2018'
   },
   {
-    slug: 'relacionamentos-amorosos-nt-autista-2026',
-    titulo: 'Casais NT-autista',
-    resumo: 'Relacionamentos amorosos entre pessoa neurotípica e pessoa autista, sob a lente da dupla empatia e da regulação relacional.'
+    href: '/mbas',
+    rotulo: 'Modalidade 02',
+    titulo: 'MBA',
+    resumo: 'Pós-graduação Lato Sensu de perfil executivo. No portal: cinco MBAs do IPOG em POT, Positiva, Reabilitação Neuro, Neurociência e Liderança Positiva, com análise técnica de cada um.',
+    regulacao: 'MEC, Resolução CNE/CES 1/2018 (Lato Sensu)'
   },
   {
-    slug: 'camuflagem-masking-cat-q-adulto-2026',
-    titulo: 'Camuflagem (masking) em adultos',
-    resumo: 'Três dimensões da camuflagem, instrumento CAT-Q, e a clínica do desmascaramento gradual em adultos autistas.'
+    href: '/tipos-de-pos-graduacao#mestrado-profissional',
+    rotulo: 'Modalidade 03',
+    titulo: 'Mestrado Profissional',
+    resumo: 'Stricto Sensu aplicado, com defesa de dissertação ou produto técnico-científico. Caminho híbrido entre prática e pesquisa, com seleção CAPES.',
+    regulacao: 'CAPES'
   },
   {
-    slug: 'vida-cotidiana-trabalho-autista-adulto-2026',
-    titulo: 'Trabalho e vida cotidiana',
-    resumo: 'Acomodações razoáveis, gestão de energia social, sobrecarga sensorial e funcionamento profissional no Brasil em 2026.'
+    href: '/tipos-de-pos-graduacao#especializacao-clinica-certificada',
+    rotulo: 'Modalidade 04',
+    titulo: 'Especialização Clínica certificada',
+    resumo: 'Formação clínica em abordagem específica (ACT, EMDR, DBT, Sistêmica, TCC, Psicanálise) certificada por conselho, com supervisão obrigatória.',
+    regulacao: 'CFP 13/2007, com supervisão prática'
   },
   {
-    slug: 'clinica-tea-adulto-evidencia-2026',
-    titulo: 'Clínica do TEA adulto',
-    resumo: 'O que a evidência clínica recente sustenta sobre avaliação, acompanhamento e prognóstico em adultos com autismo nível 1.'
-  },
-  {
-    slug: 'fronteira-pesquisa-tea-adulto-2026',
-    titulo: 'Fronteira de pesquisa 2026',
-    resumo: 'Linhas de pesquisa abertas em 2026, do biomarcador molecular à dupla empatia, com leitura crítica do estado da arte.'
+    href: '/tipos-de-pos-graduacao#residencia-hibrida',
+    rotulo: 'Modalidade 05',
+    titulo: 'Residência Multiprofissional',
+    resumo: 'Vínculo institucional em serviço de saúde, com bolsa, dois anos de carga horária integral. Processo seletivo nacional anual.',
+    regulacao: 'Comissão Nacional de Residência Multiprofissional em Saúde (CNRMS)'
   }
 ];
 
-interface PortaCard {
+interface HubCard {
   href: string;
   rotulo: string;
   titulo: string;
   resumo: string;
 }
 
-const PORTAS: PortaCard[] = [
+const HUBS: HubCard[] = [
   {
-    href: '/autismo/para-pacientes/',
-    rotulo: 'Porta 01',
-    titulo: 'Para pacientes e famílias',
-    resumo: 'Entrada acessível para adultos recém-diagnosticados, parceiros e familiares que querem entender o terreno antes da decisão clínica.'
+    href: '/areas/',
+    rotulo: 'Hub 01',
+    titulo: '18 áreas da Psicologia',
+    resumo: '13 especialidades reconhecidas pelo CFP mais 5 áreas correlatas estratégicas, com filtro por cluster e nível regulatório (R0 a R4).'
   },
   {
-    href: '/autismo/para-profissionais/',
-    rotulo: 'Porta 02',
-    titulo: 'Para profissionais de psicologia',
-    resumo: 'Material clínico de referência para psicólogos, psiquiatras, neuropsicólogos e terapeutas que atendem adultos autistas.'
+    href: '/mbas/',
+    rotulo: 'Hub 02',
+    titulo: '5 MBAs do IPOG em destaque',
+    resumo: 'POT, Positiva, Reabilitação Neuro, Neurociência e Liderança Positiva. Cada um com análise editorial independente do programa, para quem é, competências, carreira e limites regulatórios.'
   },
   {
-    href: '/autismo/para-pesquisadores/',
-    rotulo: 'Porta 03',
-    titulo: 'Para pesquisadores',
-    resumo: 'Mapas de literatura, fontes primárias e questões abertas em autismo adulto, voltado a quem investiga ou orienta pesquisa.'
+    href: '/guias/',
+    rotulo: 'Hub 03',
+    titulo: 'Guias práticos',
+    resumo: 'Como escolher MBA, como ler uma grade densa, como avaliar supervisão prática, como diferenciar EAD assíncrono de Ao Vivo síncrono, como navegar regulação CFP, MEC, CAPES e NR-1.'
+  },
+  {
+    href: '/comparativos/',
+    rotulo: 'Hub 04',
+    titulo: 'Comparativos editoriais',
+    resumo: 'MBA versus Especialização Lato Sensu, Mestrado Profissional versus Acadêmico, Especialização Clínica certificada versus pós-graduação genérica, Residência versus Especialização em Saúde.'
+  },
+  {
+    href: '/faq/',
+    rotulo: 'Hub 05',
+    titulo: '31 FAQs estruturadas',
+    resumo: 'Perguntas frequentes por área e modalidade, com respostas técnicas ancoradas em regulação real (CFP 03/2016, SATEPSI, CNE/CES 1/2018, NR-1, LBI 13.146/2015, LGPD).'
+  },
+  {
+    href: '/autismo/',
+    rotulo: 'Hub 06',
+    titulo: 'Autismo nível 1 em adultos',
+    resumo: 'Hub clínico YMYL conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia, mestre USP. Diagnóstico tardio, camuflagem, casais NT-autista, trabalho e vida cotidiana.'
   }
 ];
 
-interface Deslocamento {
-  numero: string;
-  de: string;
-  para: string;
+interface AreaCard {
+  href: string;
+  titulo: string;
+  cluster: string;
 }
 
-const DESLOCAMENTOS: Deslocamento[] = [
-  { numero: '01', de: 'Da culpa', para: 'para compreensão funcional' },
-  { numero: '02', de: 'Da patologização', para: 'para tradução' },
-  { numero: '03', de: 'Do conserto do parceiro', para: 'para construção de linguagem relacional' },
-  { numero: '04', de: 'Do jargão clínico fechado', para: 'para vocabulário acessível e tecnicamente honesto' }
+const AREAS_DESTAQUE: AreaCard[] = [
+  { href: '/areas/psicologia-clinica', titulo: 'Psicologia Clínica', cluster: 'CFP R3' },
+  { href: '/areas/psicologia-organizacional-trabalho', titulo: 'Psicologia Organizacional e do Trabalho', cluster: 'CFP R3' },
+  { href: '/areas/neuropsicologia', titulo: 'Neuropsicologia', cluster: 'CFP R3' },
+  { href: '/areas/psicologia-hospitalar', titulo: 'Psicologia Hospitalar', cluster: 'CFP R3' },
+  { href: '/areas/psicologia-juridica-forense', titulo: 'Psicologia Jurídica e Forense', cluster: 'CFP R3' },
+  { href: '/areas/avaliacao-psicologica', titulo: 'Avaliação Psicológica', cluster: 'SATEPSI' }
 ];
 ---
 
@@ -141,73 +169,77 @@ const DESLOCAMENTOS: Deslocamento[] = [
   <section class="bg-gradient-to-b from-brand-50 to-white border-b border-surface-200">
     <div class="container-page py-16 lg:py-24">
       <div class="max-w-4xl">
-        <span class="section-eyebrow">Portal de psicoeducação</span>
+        <span class="section-eyebrow">Portal editorial independente</span>
         <h1 class="section-h text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight">
-          Autismo nível 1 de suporte em adultos, identidade, relacionamentos amorosos e vida cotidiana, com profundidade clínica e respeito à comunidade adulta.
+          Pós-graduação em Psicologia, guia técnico para escolher MBA, Especialização Lato Sensu, Mestrado Profissional, Especialização Clínica e Residência.
         </h1>
         <p class="mt-6 text-base sm:text-lg text-ink-700 leading-relaxed max-w-3xl" style="text-align: justify;">
-          Portal de psicoeducação conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia, mestre em Psicologia pela Universidade de São Paulo, com vinte e seis anos de prática em psicoterapia individual, familiar e de casal. O material reunido aqui é de leitura aberta, escrito em vocabulário identity-first, com foco em adultos brasileiros que reconhecem traços autísticos em si ou em pessoas próximas, e em profissionais que querem aprofundar a clínica neuroafirmativa.
+          Portal editorial independente sobre pós-graduação em Psicologia no Brasil, com foco em densidade técnica e clareza regulatória. Cobre as cinco modalidades canônicas brasileiras, 18 áreas da Psicologia mapeadas (13 reconhecidas pelo CFP e cinco correlatas estratégicas), 5 MBAs do IPOG em destaque, comparativos editoriais e um hub clínico YMYL sobre autismo nível 1 de suporte em adultos. Liderança editorial: Alexandre Caramaschi, CEO da Brasil GEO. Lente clínica do hub /autismo: Larissa Caramaschi, psicóloga clínica em Goiânia, mestre USP.
         </p>
         <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <a href="/autismo/" class="btn btn-primary btn-lg">
-            Conhecer o material
+          <a href="/tipos-de-pos-graduacao" class="btn btn-primary btn-lg">
+            Ver as cinco modalidades
             <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M3 10h12.5l-4.3-4.3 1.4-1.4L19.4 10l-6.8 6.7-1.4-1.4 4.3-4.3H3z"/></svg>
           </a>
-          <a href="/autismo/sobre-larissa/" class="btn btn-ghost-dark btn-lg">
-            Sobre Larissa Caramaschi
+          <a href="/mbas/" class="btn btn-ghost-dark btn-lg">
+            Ver os 5 MBAs do IPOG
           </a>
         </div>
+        <p class="mt-6 text-xs text-ink-500">
+          Portal independente. Não é o site oficial do IPOG (ipog.edu.br). Matrículas, valores, modalidade e turma vigente sempre no portal oficial.
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- 3 PORTAS DE AUDIÊNCIA -->
+  <!-- 5 MODALIDADES CANÔNICAS -->
   <section class="container-page py-16 lg:py-20">
     <div class="max-w-3xl mb-10">
-      <span class="section-eyebrow">01 · Três portas por onde entrar</span>
-      <h2 class="section-h text-3xl sm:text-4xl">Material organizado por intenção de leitura.</h2>
+      <span class="section-eyebrow">01 · Cinco modalidades canônicas</span>
+      <h2 class="section-h text-3xl sm:text-4xl">Pós-graduação em Psicologia no Brasil tem cinco caminhos formais.</h2>
       <p class="mt-3 text-ink-700 text-base sm:text-lg" style="text-align: justify;">
-        O mesmo corpo de conhecimento ganha contornos diferentes conforme quem chega. Escolha a porta que dialoga com a sua intenção atual, sem hierarquia entre as três.
+        Cada modalidade tem regulação, carga horária, processo seletivo e saída profissional distintos. Escolher entre elas é a decisão estrutural de carreira; trocar de modalidade no meio do percurso custa tempo e dinheiro.
       </p>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {PORTAS.map(p => (
-        <a href={p.href} class="card-lift block p-7 group">
-          <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">{p.rotulo}</p>
-          <h3 class="font-display font-semibold text-xl mt-2 text-ink-900 group-hover:text-brand-800 transition leading-snug">{p.titulo}</h3>
-          <p class="mt-3 text-sm sm:text-base text-ink-700 leading-relaxed" style="text-align: justify;">{p.resumo}</p>
+      {MODALIDADES.map(m => (
+        <a href={m.href} class="card-lift block p-7 group">
+          <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">{m.rotulo}</p>
+          <h3 class="font-display font-semibold text-xl mt-2 text-ink-900 group-hover:text-brand-800 transition leading-snug">{m.titulo}</h3>
+          <p class="mt-3 text-sm sm:text-base text-ink-700 leading-relaxed" style="text-align: justify;">{m.resumo}</p>
+          <p class="mt-3 text-xs text-ink-500">Regulação: {m.regulacao}</p>
           <span class="mt-5 inline-flex items-center gap-1 text-sm text-brand-700 font-semibold">
-            Entrar por aqui <span aria-hidden="true" class="group-hover:translate-x-0.5 transition">→</span>
+            Entrar nesta modalidade <span aria-hidden="true" class="group-hover:translate-x-0.5 transition">→</span>
           </span>
         </a>
       ))}
     </div>
   </section>
 
-  <!-- ARTIGOS PUBLICADOS -->
+  <!-- HUBS EDITORIAIS -->
   <section class="bg-surface-50 border-y border-surface-200">
     <div class="container-page py-16 lg:py-20">
       <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
         <div class="max-w-2xl">
-          <span class="section-eyebrow">02 · Artigos publicados</span>
-          <h2 class="section-h text-3xl sm:text-4xl">Seis leituras longas sobre autismo adulto.</h2>
+          <span class="section-eyebrow">02 · Hubs editoriais</span>
+          <h2 class="section-h text-3xl sm:text-4xl">Seis entradas, conforme a sua dúvida atual.</h2>
           <p class="mt-3 text-ink-700 text-base sm:text-lg" style="text-align: justify;">
-            Cada artigo combina referência técnica explícita e vocabulário acessível. A profundidade é proposital, são textos para leitura cuidadosa, não para escaneio rápido.
+            O portal tem mais de trezentas páginas, organizadas em seis hubs. Escolha pela natureza da sua pergunta agora, sem hierarquia entre eles.
           </p>
         </div>
-        <a href="/autismo/" class="inline-flex items-center gap-2 text-brand-700 font-semibold hover:text-brand-800">
-          Ver hub completo <span aria-hidden="true">→</span>
+        <a href="/mapa-do-site" class="inline-flex items-center gap-2 text-brand-700 font-semibold hover:text-brand-800">
+          Ver mapa completo <span aria-hidden="true">→</span>
         </a>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {ARTIGOS.map((a, i) => (
-          <a href={`/autismo/artigos/${a.slug}/`} class="card-lift block p-6 group bg-white">
-            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">Artigo · {String(i + 1).padStart(2, '0')}</p>
-            <h3 class="font-display font-semibold text-lg mt-2 text-ink-900 group-hover:text-brand-800 transition leading-snug">{a.titulo}</h3>
-            <p class="mt-3 text-sm text-ink-700 leading-relaxed" style="text-align: justify;">{a.resumo}</p>
+        {HUBS.map(h => (
+          <a href={h.href} class="card-lift block p-6 group bg-white">
+            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">{h.rotulo}</p>
+            <h3 class="font-display font-semibold text-lg mt-2 text-ink-900 group-hover:text-brand-800 transition leading-snug">{h.titulo}</h3>
+            <p class="mt-3 text-sm text-ink-700 leading-relaxed" style="text-align: justify;">{h.resumo}</p>
             <span class="mt-5 inline-flex items-center gap-1 text-sm text-brand-700 font-semibold">
-              Ler <span aria-hidden="true" class="group-hover:translate-x-0.5 transition">→</span>
+              Abrir hub <span aria-hidden="true" class="group-hover:translate-x-0.5 transition">→</span>
             </span>
           </a>
         ))}
@@ -215,59 +247,60 @@ const DESLOCAMENTOS: Deslocamento[] = [
     </div>
   </section>
 
-  <!-- GLOSSÁRIO -->
+  <!-- ÁREAS EM DESTAQUE -->
   <section class="container-page py-16 lg:py-20">
-    <div class="max-w-4xl mx-auto">
-      <a href="/autismo/glossario/" class="card-lift block p-8 sm:p-12 group bg-brand-50">
-        <div class="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
-          <div class="flex-1">
-            <span class="section-eyebrow">03 · Glossário em construção</span>
-            <h2 class="section-h text-2xl sm:text-3xl lg:text-4xl mt-2 group-hover:text-brand-800 transition">Cinquenta e quatro verbetes sobre autismo adulto.</h2>
-            <p class="mt-4 text-base sm:text-lg text-ink-700 leading-relaxed" style="text-align: justify;">
-              Vocabulário técnico, ético e atualizado em 2026, do diagnóstico tardio à dupla empatia, da camuflagem ao apego, em definições operacionais escritas para pacientes, profissionais e pesquisadores. O glossário segue em construção contínua.
-            </p>
-            <span class="mt-6 inline-flex items-center gap-1 text-sm text-brand-700 font-semibold">
-              Abrir glossário <span aria-hidden="true" class="group-hover:translate-x-0.5 transition">→</span>
-            </span>
-          </div>
-          <div class="flex-shrink-0 hidden lg:flex items-center justify-center w-32 h-32 rounded-full bg-white text-brand-800">
-            <span class="font-display font-bold text-5xl">54</span>
-          </div>
-        </div>
-      </a>
+    <div class="max-w-3xl mb-8">
+      <span class="section-eyebrow">03 · Áreas em destaque</span>
+      <h2 class="section-h text-3xl sm:text-4xl">Seis áreas com maior demanda editorial.</h2>
+      <p class="mt-3 text-ink-700 text-base sm:text-lg" style="text-align: justify;">
+        Recorte por busca real do leitor do portal. Para o mapa completo das 18 áreas, com filtro por cluster e nível regulatório, abra o hub de áreas.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {AREAS_DESTAQUE.map(a => (
+        <a href={a.href} class="card-lift block p-5 group bg-white">
+          <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">{a.cluster}</p>
+          <h3 class="font-display font-semibold text-base mt-1 text-ink-900 group-hover:text-brand-800 transition leading-snug">{a.titulo}</h3>
+        </a>
+      ))}
+    </div>
+    <div class="mt-6">
+      <a href="/areas/" class="btn btn-secondary">Ver as 18 áreas mapeadas</a>
     </div>
   </section>
 
-  <!-- PRINCÍPIOS EDITORIAIS -->
+  <!-- HUB CLÍNICO AUTISMO -->
+  <section class="bg-brand-50 border-y border-brand-100">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-4xl">
+        <span class="section-eyebrow">04 · Hub clínico YMYL</span>
+        <h2 class="section-h text-3xl sm:text-4xl">Autismo nível 1 de suporte em adultos.</h2>
+        <p class="mt-4 text-base sm:text-lg text-ink-700 leading-relaxed" style="text-align: justify;">
+          O portal abriga um hub editorial e clínico dedicado a adultos com autismo nível 1 de suporte, conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia, mestre em Psicologia pela Universidade de São Paulo, com vinte e seis anos de prática em psicoterapia individual, familiar e de casal. O hub é independente do conteúdo de pós-graduação e está organizado em seis artigos longos sobre diagnóstico tardio, camuflagem, casais NT-autista, trabalho e vida cotidiana, clínica do TEA adulto e fronteira de pesquisa 2026.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/autismo/" class="btn btn-primary">Abrir hub /autismo</a>
+          <a href="/autismo/sobre-larissa/" class="btn btn-ghost">Sobre Larissa Caramaschi</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEAD EDITORIAL -->
   <section class="bg-brand-900 text-white relative overflow-hidden">
     <div class="absolute -top-20 -right-10 w-72 h-72 rounded-full" aria-hidden="true" style="background: radial-gradient(closest-side, rgba(245,180,0,.25), transparent);"></div>
     <div class="container-page py-16 lg:py-20 relative">
-      <div class="max-w-3xl mb-10">
-        <span class="tag mb-4"><span class="w-1.5 h-1.5 rounded-full bg-sun-500"></span> 04 · Princípios editoriais</span>
-        <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight">Quatro deslocamentos que orientam toda a linha editorial.</h2>
+      <div class="max-w-3xl">
+        <span class="tag mb-4"><span class="w-1.5 h-1.5 rounded-full bg-sun-500"></span> 05 · Lead editorial</span>
+        <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight">Padrão Harvard Business Review aplicado a pós-graduação em Psicologia.</h2>
         <p class="mt-4 text-white/85 text-base sm:text-lg leading-relaxed" style="text-align: justify;">
-          Cada texto deste portal foi escrito com a intenção explícita de deslocar quatro pontos de partida frequentes no debate público sobre autismo adulto no Brasil.
+          Liderança editorial de Alexandre Caramaschi, CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Cada artigo combina referência técnica explícita, citações verificáveis em bases públicas (PubMed, Cochrane, SciELO, NICE, OMS, CFP, MEC, SATEPSI) e vocabulário acessível. Não publicamos página de venda, modelo de laudo nem protocolo de aplicação de instrumento privativo do psicólogo.
         </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/sobre" class="btn btn-primary">Sobre o portal</a>
+          <a href="/regulacao" class="btn btn-ghost">Posicionamento regulatório</a>
+        </div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-        {DESLOCAMENTOS.map(d => (
-          <div class="bg-white/5 border border-white/10 rounded-lg p-6 lg:p-8">
-            <p class="text-sun-500 font-display font-bold text-sm">Deslocamento · {d.numero}</p>
-            <p class="mt-3 text-white/70 text-base">{d.de}</p>
-            <p class="mt-2 font-display font-semibold text-xl sm:text-2xl text-white leading-snug">{d.para}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTEÚDO COMPLEMENTAR -->
-  <section class="container-page py-14 lg:py-16">
-    <div class="max-w-3xl mx-auto text-center">
-      <span class="section-eyebrow">05 · Conteúdo complementar</span>
-      <p class="mt-4 text-base sm:text-lg text-ink-700 leading-relaxed" style="text-align: justify;">
-        O portal também mantém material amplo sobre pós-graduações em Psicologia (áreas, modalidades, FAQ) em <a href="/areas/" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">áreas de atuação</a>, <a href="/tipos-de-pos-graduacao" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">cinco modalidades de pós-graduação</a>, <a href="/guias/" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">guias práticos</a> e <a href="/faq/" class="font-semibold text-brand-700 hover:text-brand-800 underline decoration-sun-500 underline-offset-2">perguntas frequentes</a>.
-      </p>
     </div>
   </section>
 
@@ -275,9 +308,9 @@ const DESLOCAMENTOS: Deslocamento[] = [
   <section class="bg-surface-50 border-t border-surface-200">
     <div class="container-page py-10 max-w-3xl mx-auto">
       <div class="rounded-lg border border-surface-200 bg-white p-6 sm:p-8">
-        <p class="text-sm sm:text-base font-display font-semibold text-ink-900">Aviso ético e clínico</p>
+        <p class="text-sm sm:text-base font-display font-semibold text-ink-900">Aviso editorial e regulatório</p>
         <p class="mt-3 text-sm text-ink-700 leading-relaxed" style="text-align: justify;">
-          Este portal é independente e tem finalidade exclusivamente informativa e de psicoeducação. O conteúdo aqui exposto não substitui consulta, avaliação, diagnóstico ou acompanhamento psicológico individualizado. A divulgação respeita a Resolução CFP nº 03/2007, que regulamenta a publicidade de serviços psicológicos no Brasil, sem promessa de cura, sem comparação com outros profissionais, sem garantia de resultado e sem sensacionalismo. A modalidade de atendimento clínico online de Larissa Caramaschi é oferecida nos termos da Resolução CFP nº 11/2018.
+          Este portal é independente, com finalidade editorial e educacional. Não é o site oficial do IPOG (ipog.edu.br). Para matrículas, valores, calendário, modalidade e turma vigentes, o caminho oficial é diretamente o portal do IPOG. O conteúdo sobre Psicologia respeita a Resolução CFP 03/2016 e a Resolução CFP 11/2018, sem promessa de cura, sem comparação entre profissionais, sem garantia de resultado e sem sensacionalismo. Conteúdo clínico do hub /autismo é psicoeducação, não substitui consulta, avaliação, diagnóstico ou acompanhamento psicológico individualizado.
         </p>
       </div>
     </div>

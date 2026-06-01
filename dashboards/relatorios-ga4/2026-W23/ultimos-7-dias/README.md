@@ -1,0 +1,104 @@
+# Relatorio GA4 - posgraduacaopsicologia.com
+
+- Periodo: **ultimos-7-dias** (7daysAgo - today)
+- Property ID: `537256335`
+- Gerado: 2026-06-01T17:49:47
+
+## Visao geral
+
+| Active Users | New Users | Sessions | Pageviews | Avg Session (s) | Engagement Rate |
+|---|---|---|---|---|---|
+| 69 | 69 | 80 | 96 | 77.9763329125 | 0.225 |
+
+## Top 25 paginas
+
+| pagePath | pageTitle | screenPageViews | activeUsers | averageSessionDuration |
+|---|---|---|---|---|
+| / | Pós-graduação em Psicologia, guia editorial independente para escolher MBA, Especialização Lato Sensu, Mestrado Profissional, Especialização Clínica e Residência | 14 | 8 | 139.57777691666666 |
+| / | Autismo nível 1 de suporte em adultos, conduzido por Larissa Caramaschi, psicóloga clínica em Goiânia | 10 | 9 | 3.2076580833333335 |
+| /areas/psicologia-organizacional-trabalho/ | Psicologia Organizacional e do Trabalho (POT): cultura, NR-1 e pós aplicada | 6 | 6 | 0.53330033333333338 |
+| /autismo/ | Autismo nível 1 de suporte em adultos: portal clínico independente com Larissa Caramaschi | 4 | 2 | 33.14854 |
+| /evidencias/nr1-riscos-psicossociais-2026/ | NR-1 e riscos psicossociais · evidência 2025-2026 | 4 | 1 | 13.467621 |
+| /guias/implementar-nr1-em-empresa/ | Como implementar a NR-1 atualizada na empresa — guia 9 passos · riscos psicossociais | 4 | 4 | 0 |
+| /mbas/ | MBAs em Psicologia · uma das cinco modalidades de pós-graduação — guia independente IPOG | 4 | 4 | 0 |
+| /autismo/artigos/camuflagem-masking-cat-q-adulto-2026/ | Camuflagem em adultos autistas: definição operacional, modelo CAT-Q, custo invisível e o que muda em terapia, autismo nível 1 em adultos | 3 | 3 | 0 |
+| /areas/ | Áreas da Psicologia — 18 áreas mapeadas (CFP + correlatas) | 2 | 2 | 6.5211945 |
+| /areas/neuropsicologia/ | Neuropsicologia: o que é, escopo profissional e formação especializada | 2 | 1 | 31.513797 |
+| /autismo/artigos/fronteira-pesquisa-tea-adulto-2026/ | Fronteira de pesquisa em autismo nível 1 em adultos em 2026: paradigma da neurodiversidade, dupla empatia, bases neurais e o estado das intervenções psicossociais, autismo nível 1 em adultos | 2 | 2 | 0 |
+| /autismo/artigos/relacionamentos-amorosos-nt-autista-2026/ | Casais NT e autista: a assimetria comunicacional estrutural, dupla empatia e o que a Terapia Familiar Sistêmica oferece quando o circuito relacional emperra, autismo nível 1 em adultos | 2 | 2 | 697.213451 |
+| /autismo/para-pesquisadores/ | Autismo nível 1 em adultos para pesquisadores, fronteira metodológica e lacunas brasileiras | 2 | 1 | 6.0458365 |
+| /evidencias/terapias-terceira-onda/ | Terapias de terceira onda · evidência comparada 2024-2026 | 2 | 2 | 153.8155995 |
+| /guias/jurisprudencia-nr1-tst-2026/ | Jurisprudência da NR-1 atualizada e burnout no TST/TRT em 2026 — HowTo 10 passos | Portaria 765/2025 | 2 | 2 | 131.454902 |
+| /intervencoes/stepped-care/ | Stepped Care: cuidado escalonado para depressão e ansiedade — fundamentos, NICE, IAPT e RAPS | 2 | 2 | 0 |
+| /temas/ia-psicologia-2026/avaliacao-psicologica-ia-satepsi-2026/ | Avaliação psicológica com IA e o debate SATEPSI em 2026: o que é defensável, o que é vedado | 2 | 2 | 0 |
+| /areas/ia-people-analytics-psicologia-digital/ | IA, People Analytics e Psicologia Digital: pós aplicada ao RH | 1 | 1 | 1.772608 |
+| /areas/psicomotricidade/ | Psicomotricidade: corpo, movimento e desenvolvimento — pós interdisciplinar | 1 | 1 | 73.319817 |
+| /areas/reabilitacao-neuropsicologica/ | Reabilitação Neuropsicológica: o que é, abordagens e formação reconhecida | 1 | 1 | 54.648753 |
+| /autismo/artigos/clinica-tea-adulto-evidencia-2026/ | Atender adultos autistas nível 1 na prática clínica em 2026: avaliação, enquadre, intervenções com evidência e erros comuns, autismo nível 1 em adultos | 1 | 1 | 0 |
+| /comparativos/act-vs-tcc/ | ACT vs TCC: comparativo entre Aceitação e Compromisso e Cognitivo-Comportamental | 1 | 1 | 0 |
+| /comparativos/burnout-vs-depressao-vs-cptsd/ | Burnout vs depressão vs CPTSD em 2026: diferencial clínico em 12 dimensões | 1 | 1 | 0 |
+| /comparativos/emdr-vs-tcc-trauma/ | EMDR vs TCC focada em trauma (TF-CBT): qual escolher e quando | 1 | 1 | 0 |
+| /comparativos/mba-vs-especializacao/ | MBA vs Especialização em Psicologia: qual escolher e quando | 1 | 1 | 0 |
+
+## Canais e origens
+
+| sessionDefaultChannelGroup | sessionSource | sessions | activeUsers | engagementRate |
+|---|---|---|---|---|
+| Direct | (direct) | 65 | 55 | 0.15384615384615385 |
+| Organic Search | google | 9 | 8 | 0.44444444444444442 |
+| Referral | chatgpt.com | 2 | 2 | 1 |
+| Referral | notebooklm.google.com | 2 | 2 | 0.5 |
+| Referral | perplexity.ai | 1 | 1 | 1 |
+| Unassigned | chatgpt.com | 1 | 1 | 0 |
+
+## Regioes
+
+| country | region | activeUsers | sessions |
+|---|---|---|---|
+| (not set) | (not set) | 19 | 19 |
+| United States | California | 5 | 5 |
+| United States | Virginia | 5 | 5 |
+| Brazil | State of Goias | 4 | 11 |
+| Brazil | State of Sao Paulo | 4 | 4 |
+| Canada | British Columbia | 4 | 4 |
+| United States | Arizona | 4 | 4 |
+| United States | Illinois | 4 | 4 |
+| Brazil | State of Parana | 2 | 2 |
+| Brazil | State of Rio Grande do Sul | 2 | 2 |
+| Brazil | State of Rio de Janeiro | 2 | 2 |
+| China | (not set) | 2 | 2 |
+| Hong Kong | (not set) | 2 | 2 |
+| United States | Colorado | 2 | 2 |
+|  |  | 1 | 1 |
+| Brazil | Federal District | 1 | 1 |
+| Brazil | State of Maranhao | 1 | 1 |
+| Brazil | State of Minas Gerais | 1 | 1 |
+| Brazil | State of Para | 1 | 1 |
+| Brazil | State of Piaui | 1 | 1 |
+
+## Dispositivos
+
+| deviceCategory | activeUsers | sessions | engagementRate |
+|---|---|---|---|
+| desktop | 62 | 71 | 0.21126760563380281 |
+| mobile | 7 | 9 | 0.33333333333333331 |
+
+## Top eventos
+
+| eventName | eventCount | totalUsers |
+|---|---|---|
+| page_view | 96 | 69 |
+| session_start | 83 | 69 |
+| first_visit | 69 | 66 |
+| user_engagement | 27 | 15 |
+| scroll | 4 | 4 |
+| search_query | 3 | 1 |
+| click | 2 | 1 |
+| click_outbound_ipog | 2 | 1 |
+| search_result_click | 1 | 1 |
+
+## Cliques para ipog.edu.br
+
+| pagePath | eventName | eventCount | totalUsers |
+|---|---|---|---|
+| /areas/psicomotricidade/ | click_outbound_ipog | 2 | 1 |

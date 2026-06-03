@@ -2,7 +2,7 @@
 slug: pos-graduacao-hibrida-psicologia-mec-portaria-765-2026
 title: "Pós-graduação híbrida em Psicologia: o que mudou em 2026 com a MEC Portaria 765/2025"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-06-30"
 cluster_primary: "C0 — Estrutura de Pós-Graduação"
 cluster_transversal: ["C0 — Estrutura de Pós-Graduação", "C4 — Carreira do Psicólogo"]
@@ -105,4 +105,4 @@ SEMESP — Sindicato das Mantenedoras de Ensino Superior. (2025). *Mapa do Ensin
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).

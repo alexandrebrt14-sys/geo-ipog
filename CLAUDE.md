@@ -6,7 +6,7 @@
 
 Repositório do projeto **GEO IPOG**, executado pela **Brasil GEO** para o IPOG. Portal editorial independente em `posgraduacaopsicologia.com` cobrindo Pós-Graduações em Psicologia em todas as modalidades regulamentadas no Brasil. 198 páginas estáticas Astro 4 + Tailwind 3.4 hospedadas em Cloudflare Pages.
 
-**Lead:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil).
+**Lead:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil).
 
 ## Documento canônico de contexto enriquecido
 

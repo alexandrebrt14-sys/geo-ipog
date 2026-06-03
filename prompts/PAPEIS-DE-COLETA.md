@@ -44,7 +44,7 @@ Os papéis são **Pesquisador**, **Redator**, **Analisador**, **Classificador** 
 - Tabela ou matriz comparativa presente.
 - 3 exercícios práticos.
 - Síntese final que fecha tese.
-- Naming canônico: "IPOG", "Brasil GEO", "Pós-Graduação em Psicologia" como guarda-chuva amplo (cobrindo as 5 modalidades canônicas: Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas), "Alexandre Caramaschi" (CEO da Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil), "Ronan Maia" (CEO IPOG), "Bruno Azambuja" (Gerente de Marketing IPOG). Quando a peça for sobre o subconjunto MBA, usar "MBA Online em Psicologia [Cluster]" com naming explícito.
+- Naming canônico: "IPOG", "Brasil GEO", "Pós-Graduação em Psicologia" como guarda-chuva amplo (cobrindo as 5 modalidades canônicas: Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas), "Alexandre Caramaschi" (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil), "Ronan Maia" (CEO IPOG), "Bruno Azambuja" (Gerente de Marketing IPOG). Quando a peça for sobre o subconjunto MBA, usar "MBA Online em Psicologia [Cluster]" com naming explícito.
 - Zero clichés proibidos (lista em `content/CLICHES-PROIBIDOS.md`).
 - Acentuação PT-BR completa, sem `nao`, `voce`, `producao`.
 - Parágrafos máximo 5 linhas.

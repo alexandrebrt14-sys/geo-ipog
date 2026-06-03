@@ -2,7 +2,7 @@
 
 Este documento estabelece as diretrizes de colaboração para a equipe Brasil GEO e os colaboradores autorizados do IPOG no projeto de Generative Engine Optimization (GEO) com escopo canônico em **Pós-Graduações em Psicologia** (incluindo Especialização Lato Sensu, MBA em áreas correlatas, Mestrado Profissional, Especialização Clínica certificada por Conselhos profissionais como CFP, ABRAP e FBT, Residências e formações híbridas regulamentadas).
 
-**Head do projeto (Brasil GEO):** Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.
+**Head do projeto (Brasil GEO):** Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil.
 **GitHub:** @alexandrebrt14-sys
 
 **Sponsor executivo (IPOG):** Ronan Maia — CEO IPOG.

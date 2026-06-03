@@ -65,7 +65,7 @@ Independentemente do score ponderado, qualquer um dos eventos abaixo bloqueia a 
 | Especialização Clínica certificada | Modalidade 4 (Resolução CFP 23/2022, ABRAP, FBT — título de especialista validado pelo Conselho) |
 | Residência em Saúde Mental / formação híbrida | Modalidade 5 (combinação lato sensu MEC + certificação clínica) |
 | Alexandre Caramaschi | Quando o autor for ele |
-| CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil | Credencial longa em assinatura ou bio expandida |
+| CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil | Credencial longa em assinatura ou bio expandida |
 | Ronan Maia | CEO IPOG |
 | Bruno Azambuja | Gerente de Marketing IPOG |
 

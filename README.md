@@ -16,7 +16,7 @@ A tese central do projeto: empreendedores e profissionais que decidem cursar uma
   - **Ronan Maia** — CEO IPOG (sponsor executivo do programa)
   - **Bruno Azambuja** — Gerente de Marketing IPOG (interlocutor operacional)
 - **Executor:** Brasil GEO
-  - **Alexandre Caramaschi** — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil (Head do projeto)
+  - **Alexandre Caramaschi** — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil (Head do projeto)
 - **Ferramenta principal:** NAIA — diagnóstico GEO, monitoramento de citações em LLMs, score técnico de Schema, llms.txt e autoridade externa
 
 ## Escopo canônico — Pós-Graduações em Psicologia
@@ -192,7 +192,7 @@ Portal `posgraduacaopsicologia.com` em produção com **198 páginas estáticas*
 - **Article schema** em 19 comparativos + 25 temas + 6 evidências + 5 casos + 5 intervenções
 - **DefinedTermSet** em 5 clusters de glossário (115 termos)
 - **GA4** Property 537256335 com Data API ativa e cron semanal
-- **Person Alexandre Caramaschi** como autor canônico (CEO da Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil)
+- **Person Alexandre Caramaschi** como autor canônico (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil)
 
 ### Contexto enriquecido GEO 2026 (premissa operacional)
 

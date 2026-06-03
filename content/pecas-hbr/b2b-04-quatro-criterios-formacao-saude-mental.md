@@ -2,7 +2,7 @@
 slug: quatro-criterios-formacao-saude-mental-corporativa
 title: "Quem treina o time de saúde mental da sua empresa em 2027? — quatro critérios para escolher a formação certa"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-07-16"
 cluster_primary: "C1 extensão B2B — Saúde Mental Corporativa"
 cluster_transversal: ["C2 — Compliance NR-1", "C3 — L&D corporativo"]
@@ -251,6 +251,6 @@ SEMESP — Sindicato das Entidades Mantenedoras de Estabelecimentos de Ensino Su
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
 
 **Encerramento da série B2B.** Esta é a peça B2B-4 da série Cluster 1 Saúde Mental Corporativa, peça de decisão final do funil. As três peças anteriores são: B2B-1 sobre a fiscalização autuativa da NR-1 a partir de 26-05-2026, B2B-2 sobre o custo invisível do RH sem formação em Psicologia, e B2B-3 sobre o ROI da formação com payback documentado de 1-3 meses. A próxima série editorial, Cluster 2 Avaliação Psicológica e SATEPSI, abre em 30-07-2026.

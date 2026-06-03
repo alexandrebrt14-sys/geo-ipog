@@ -2,7 +2,7 @@
 slug: mba-ou-especializacao-decisao-pratica-cinco-perfis-2026
 title: "MBA ou Especialização? A decisão prática para 5 perfis de psicólogo"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-06-29"
 cluster_primary: "C4 — Carreira do Psicólogo"
 cluster_transversal: ["C4 — Carreira do Psicólogo", "C1 — Psicologia Organizacional e do Trabalho", "C2 — Clínica/Avaliação"]
@@ -134,4 +134,4 @@ Ministério da Educação. (2018). *Resolução CNE/CES nº 1/2018 — cursos de
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).

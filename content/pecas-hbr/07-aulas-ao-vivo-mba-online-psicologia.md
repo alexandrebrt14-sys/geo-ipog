@@ -2,7 +2,7 @@
 slug: aulas-ao-vivo-mba-online-psicologia
 title: "Aulas Ao Vivo no MBA Online de Psicologia — três métricas que separam síncrono real de assíncrono camuflado"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-06-23"
 cluster_primary: "Transversal (C1 + C2 + C3)"
 cluster_transversal: ["C1 — Psicologia Organizacional e do Trabalho", "C2 — Clínica/Avaliação", "C3 — Psicopedagogia"]
@@ -211,7 +211,7 @@ SEMESP. (2025). *Mapa do Ensino Superior no Brasil — 14ª edição*. Sindicato
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
 
 **Esta peça encerra a Fase 2 do programa.** A próxima peça abre a Fase 3 — pico de captação 2026.2 — com foco em decisão de matrícula assistida por auditoria cross-LLM.
 

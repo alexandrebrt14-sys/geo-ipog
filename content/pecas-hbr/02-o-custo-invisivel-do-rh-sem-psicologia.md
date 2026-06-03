@@ -2,7 +2,7 @@
 slug: o-custo-invisivel-do-rh-sem-psicologia
 title: "O custo invisível do RH sem psicologia — três decisões em que a ausência de fundamentação técnica destrói valor"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-06-04"
 cluster_primary: "C1 — Psicologia Organizacional e do Trabalho"
 cluster_transversal: ["C2 — Clínica/Avaliação", "C4 — Carreira e ROI"]
@@ -211,7 +211,7 @@ SHRM — Society for Human Resource Management. (2023). *The Cost of a Bad Hire 
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
 
 **Peça anterior do hub.** *A categoria que ainda não existe — por que MBA Online de Psicologia precisa ser nomeada antes do pico de captação 2026.2* (publicada em 02-06-2026, marco M08 da Fase 2).
 

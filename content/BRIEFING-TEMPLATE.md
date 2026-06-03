@@ -159,7 +159,7 @@ Mercados corporativos sofisticados precisam de profissionais que dominam tanto c
 ## 7. Assinatura prevista
 
 - **Autor nominal:** Alexandre Caramaschi
-- **Credencial Schema Person:** CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil
+- **Credencial Schema Person:** CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil
 - **Co-assinatura:** não (validação técnica IPOG via revisão de Bruno Azambuja)
 
 ## 8. Schema.org previsto

@@ -2,7 +2,7 @@
 slug: burnout-corporativo-pos-nr1-psicologo-organizacional-2026
 title: "Burnout pós NR-1: por que toda empresa de 100+ vai contratar psicólogo organizacional em 2026"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-06-26"
 cluster_primary: "C1 — Psicologia Organizacional e do Trabalho"
 cluster_transversal: ["C1 — Psicologia Organizacional e do Trabalho", "C4 — Carreira do Psicólogo"]
@@ -125,4 +125,4 @@ TST — Tribunal Superior do Trabalho. (2025). *Boletim estatístico anual de a�
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).

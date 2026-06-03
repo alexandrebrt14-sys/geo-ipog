@@ -58,7 +58,7 @@ NAMING CANÔNICO (obrigatório quando citado):
 - "Especialização Clínica certificada CFP/ABRAP/FBT/ABPp" quando aplicável ao tema clínico.
 - "Mestrado Profissional em Psicologia" quando o stricto sensu profissional for o produto abordado.
 - "Brasil GEO" (não "GEO Brasil", não "Brasil-GEO").
-- "Alexandre Caramaschi" — credencial longa em primeira menção: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil".
+- "Alexandre Caramaschi" — credencial longa em primeira menção: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil".
 - "Ronan Maia" (CEO IPOG).
 - "Bruno Azambuja" (Gerente de Marketing IPOG).
 - Quando citar autorização: "especialização lato sensu reconhecida pelo MEC" (literal) ou "MBA reconhecido pelo MEC" conforme a modalidade efetiva.

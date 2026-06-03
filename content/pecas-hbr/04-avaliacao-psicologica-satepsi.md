@@ -2,7 +2,7 @@
 slug: avaliacao-psicologica-satepsi
 title: "Avaliação Psicológica em conformidade SATEPSI — o flanco que IBNeuro e CETCC ainda não defendem"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-06-11"
 cluster_primary: "C2 — Clínica/Avaliação"
 cluster_transversal: ["C1 — Psicologia Organizacional e do Trabalho", "C3 — Psicopedagogia"]
@@ -225,7 +225,7 @@ Semrush. (2025). *AI Search Visibility Report — peso de fontes em respostas ge
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
 
 **Revisão jurídica.** Esta peça referencia normas do Conselho Federal de Psicologia (CFP 31/2022, CFP 23/2022, CFP 9/2024) e do Ministério do Trabalho e Emprego (Portaria MTE 1.419/2024). Antes da publicação, conferir vigência e redação literal de cada artigo citado, ratificar a inexistência de revisões posteriores e validar o uso dos termos "perícia psicológica", "laudo perito" e "registro de especialista" com revisor jurídico CFP (procedimento pendente para publicação 11-06-2026).
 

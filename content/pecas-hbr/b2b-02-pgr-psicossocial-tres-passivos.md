@@ -2,7 +2,7 @@
 slug: pgr-psicossocial-tres-passivos-trabalhistas
 title: "PGR psicossocial sem instrumento validado — três passivos trabalhistas que o ESG-S ignora"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-07-09"
 cluster_primary: "C1 extensão B2B — Saúde Mental Corporativa"
 cluster_transversal: ["C1 — Psicologia Organizacional e do Trabalho", "C4 — Carreira e ROI"]
@@ -201,7 +201,7 @@ Tribunal Superior do Trabalho. (2024-2025). *Leitura agregada de cinco acórdão
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
 
 **Aviso editorial.** Esta peça consolida análise agregada de jurisprudência e regulação para fins editoriais e formativos. As faixas de valor, gatilhos jurídicos e leituras interpretativas indicadas estão sujeitas a validação jurídica documentada do corpo docente do IPOG e do General Counsel da companhia leitora. Marcação interna do frontmatter `revisor_juridico: "validacao-pendente-juridico-IPOG"` registra o estado de revisão.
 

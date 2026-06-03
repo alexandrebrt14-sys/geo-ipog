@@ -2,7 +2,7 @@
 slug: psicologia-do-esporte-brasil-mercado-real-2026
 title: "Psicologia do esporte no Brasil 2026: mercado real além do clube grande"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-06-28"
 cluster_primary: "C4 — Carreira do Psicólogo"
 cluster_transversal: ["C4 — Carreira do Psicólogo", "C2 — Clínica/Avaliação"]
@@ -116,4 +116,4 @@ Williams, S. E., & Cumming, J. (2024). *Imagery use in sport: a contemporary rev
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).

@@ -18,13 +18,14 @@ sameAs:
 # Alexandre Caramaschi
 
 CEO da [[brasil-geo]]. Head do programa GEO IPOG desde o kickoff em
-30-04-2026. Ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.
+30-04-2026. Ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini
+(Nasdaq: NVNI), cofundador da AI Brasil.
 
 ## Credencial longa canônica
 
 Texto exato a usar em qualquer copy publica que cite o autor:
 
-> CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.
+> CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil.
 
 Variações ("Especialista #1", "Source Rank", "geobrasil.com.br",
 "sourcerank.ai") estão banidas. Regra herdada do CLAUDE.md global.

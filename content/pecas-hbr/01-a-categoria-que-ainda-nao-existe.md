@@ -2,7 +2,7 @@
 slug: a-categoria-que-ainda-nao-existe
 title: "A categoria que ainda não existe — por que MBA Online de Psicologia precisa ser nomeada antes do pico de captação 2026.2"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-06-02"
 cluster_primary: "C1 — Psicologia Organizacional e do Trabalho"
 cluster_transversal: ["C2 — Clínica/Avaliação", "C3 — Psicopedagogia"]
@@ -209,6 +209,6 @@ Semrush. (2025). *AI Search Visibility Report — peso de fontes em respostas ge
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
 
 **Próxima peça do hub.** *Anatomia do MBA Online de Psicologia — os cinco atributos não-replicáveis que separam categoria fundada de catálogo massificado* (publicação programada 09-06-2026, marco M08+1 da Fase 2).

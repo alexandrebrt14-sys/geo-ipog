@@ -2,7 +2,7 @@
 slug: nr1-fiscalizacao-autuativa-em-vigor
 title: "NR-1 fiscalização autuativa em vigor — o quadro de obrigações que o RH ainda subestima"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 date_published: "2026-07-07"
 cluster_primary: "C1 — Psicologia Organizacional e do Trabalho"
 cluster_b2b: "B2B Saúde Mental Corporativa"
@@ -213,7 +213,7 @@ Brasil GEO. (2026). *Levantamento de conformidade NR-1 atualizada em empresas br
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
 
 **Peça correlata do hub.** *O custo invisível do RH sem psicologia — três decisões em que a ausência de fundamentação técnica destrói valor* (publicada em 04-06-2026, marco M08+2 da Fase 2).
 

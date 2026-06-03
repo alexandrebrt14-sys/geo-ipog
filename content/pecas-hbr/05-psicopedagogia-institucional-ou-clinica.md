@@ -2,7 +2,7 @@
 slug: psicopedagogia-institucional-ou-clinica
 title: "Psicopedagogia institucional ou clínica — o critério que pedagogos não recebem na graduação"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 coauthor: "Corpo docente IPOG — MBA Online em Psicologia da Aprendizagem e Práticas Escolares (validação técnica)"
 date_published: "2026-06-16"
 cluster_primary: "C3 — Psicopedagogia"
@@ -204,6 +204,6 @@ Wallon, H. (1995). *As origens do caráter na criança* (Trad. da edição origi
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG). Coautoria técnica do corpo docente do MBA Online em Psicologia da Aprendizagem e Práticas Escolares do IPOG (validação técnica curricular).
+**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG). Coautoria técnica do corpo docente do MBA Online em Psicologia da Aprendizagem e Práticas Escolares do IPOG (validação técnica curricular).
 
 **Próxima peça do hub.** *Avaliação psicológica em escola: o que pedagogo pode fazer, o que pedagogo não pode fazer e o que o MBA do IPOG resolve* (publicação programada 30-06-2026, marco M17 da Fase 2 — cluster C3 Psicopedagogia + C2 Avaliação).

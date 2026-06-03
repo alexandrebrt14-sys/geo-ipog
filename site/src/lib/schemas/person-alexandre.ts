@@ -18,7 +18,7 @@ export const alexandrePersonBase = {
   givenName: 'Alexandre',
   familyName: 'Caramaschi',
   jobTitle: 'CEO da Brasil GEO',
-  description: 'CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq STIX), cofundador da AI Brasil. Lidera estratégia de Generative Engine Optimization (GEO) para B2B e educação executiva no Brasil, com foco em citações em LLMs (ChatGPT, Claude, Perplexity, Gemini, Grok).',
+  description: 'CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq STIX), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera estratégia de Generative Engine Optimization (GEO) para B2B e educação executiva no Brasil, com foco em citações em LLMs (ChatGPT, Claude, Perplexity, Gemini, Grok).',
   url: 'https://alexandrecaramaschi.com',
   image: 'https://alexandrecaramaschi.com/alexandre-caramaschi.jpg',
   // sameAs canônico — corrigido em 2026-05-17 (Wave III #63):
@@ -30,7 +30,7 @@ export const alexandrePersonBase = {
   sameAs: [
     'https://alexandrecaramaschi.com',
     'https://brasilgeo.ai',
-    'https://www.linkedin.com/in/alexandrecaramaschi',
+    'https://www.linkedin.com/in/alexandre-caramaschi/',
     'https://github.com/alexandrebrt14-sys',
     'https://twitter.com/acaramaschi',
     'https://x.com/acaramaschi',
@@ -90,6 +90,12 @@ export const alexandrePersonBase = {
       credentialCategory: 'Executive role',
       name: 'ex-CMO Semantix (Nasdaq STIX)',
       recognizedBy: { '@type': 'Organization', name: 'Semantix' }
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Advisory role',
+      name: 'Advisor Estratégico de Inteligência Artificial — Nuvini Group Limited (Nasdaq: NVNI)',
+      recognizedBy: { '@type': 'Organization', name: 'Nuvini Group Limited', url: 'https://nuvini.ai' }
     },
     {
       '@type': 'EducationalOccupationalCredential',

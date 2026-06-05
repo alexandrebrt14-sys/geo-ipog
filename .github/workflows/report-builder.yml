@@ -29,9 +29,13 @@ jobs:
         id: periodo
         run: |
           HOJE=$(date -u +%Y-%m-%d)
-          INICIO=$(date -u -d "monday this week" +%Y-%m-%d 2>/dev/null \
-            || date -u -v-mon +%Y-%m-%d)
-          SEMANA=$(date -u +%Y-W%V)
+          # Segunda-feira da semana CORRENTE via aritmetica de dia-da-semana.
+          # Antes usava `date -d "monday this week"`, que em GNU date (runner ubuntu)
+          # resolve para a PROXIMA segunda — gerava periodo invertido
+          # ("2026-06-08 a 2026-06-05") e busca `closed:>=<futuro>` retornava vazio.
+          DOW=$(date -u +%u)                              # 1=segunda .. 7=domingo
+          INICIO=$(date -u -d "-$((DOW - 1)) days" +%Y-%m-%d)
+          SEMANA=$(date -u +%G-W%V)                        # %G = ano-ISO (casa com %V; sem drift no virar do ano)
           echo "hoje=${HOJE}" >> "$GITHUB_OUTPUT"
           echo "inicio=${INICIO}" >> "$GITHUB_OUTPUT"
           echo "semana=${SEMANA}" >> "$GITHUB_OUTPUT"

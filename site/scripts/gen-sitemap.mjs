@@ -65,14 +65,17 @@ function lastmodForRoute(route, htmlPath) {
 
 function walk(dir, base = '') {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name.startsWith('_') || entry.name === 'assets') continue;
+    // Exclui internos, assets e as paginas de busca (noindex, fora do sitemap).
+    if (entry.name.startsWith('_') || entry.name === 'assets' || entry.name === 'busca') continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       walk(full, path.join(base, entry.name));
     } else if (entry.name === 'index.html') {
       const route = base.replace(/\\/g, '/');
-      const loc = SITE + '/' + route;
-      const cleanLoc = loc.replace(/\/+$/, '') || SITE;
+      // canonical/og:url do Astro saem COM barra final (build directory-format).
+      // Mantemos o sitemap coerente: toda <loc> de pagina termina com barra.
+      const stripped = (SITE + '/' + route).replace(/\/+$/, '');
+      const cleanLoc = stripped === SITE ? SITE + '/' : stripped + '/';
       out.push({
         loc: cleanLoc,
         priority: priorityForRoute(route),

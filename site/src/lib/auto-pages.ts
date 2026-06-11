@@ -524,7 +524,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/benchmarks-brasil-geo-2026",
-    "title": "Benchmarks GEO Brasil — onde estamos em maio de 2026 | Brasil GEO",
+    "title": "Benchmarks de GEO no Brasil — onde estamos em maio de 2026 | Brasil GEO",
     "description": "Por que importar baseline americano de mention rate é importação cega — e como Brasil GEO está construindo o primeiro baseline de referência pt-BR para educação superior em 2026.",
     "kind": "Recurso",
     "persona": null,
@@ -4466,7 +4466,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/roadmap",
     "title": "Roadmap Brasil GEO x IPOG - 2026 | posgraduacaopsicologia.com",
-    "description": "Roadmap institucional do programa GEO Brasil GEO x IPOG: quatro fases entre maio de 2026 e a captacao 2027.1, cinco sprints fechadas em 17-05 e seis waves planejadas (F a K).",
+    "description": "Roadmap institucional do programa Brasil GEO x IPOG: quatro fases entre maio de 2026 e a captação 2027.1, cinco sprints fechadas em 17-05 e seis waves planejadas (F a K).",
     "kind": "Recurso",
     "persona": null,
     "tags": [

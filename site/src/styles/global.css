@@ -543,6 +543,69 @@ details.faq-item[open] .faq-answer-text {
 }
 @keyframes heroParallax { to { transform: translateY(46px); opacity: .35; } }
 
+/* ============================================================
+   ANIMACOES — rodada 2 (Ondas 26-30), foco na home. CSS-first,
+   atras de prefers-reduced-motion; estado base sempre visivel.
+   ============================================================ */
+
+/* Line-draw: o check do seletor de decisao "se desenha" (stroke-dashoffset) */
+.draw-check path { stroke-dasharray: 24; stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .decision-reveal .draw-check path {
+    stroke-dashoffset: 24;
+    animation: drawCheck .55s cubic-bezier(.2, .8, .2, 1) forwards .12s;
+  }
+}
+@keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+/* Onda 26 — Hero H1: revelacao por palavras (word stagger no load) */
+.hero-word { display: inline-block; margin-right: .26em; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-word { opacity: 0; animation: wordRise .6s cubic-bezier(.2, .8, .2, 1) both; }
+}
+@keyframes wordRise {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Onda 27 — Cascata diagonal nos grids da home (scroll-driven, por coluna) */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-stagger > .reveal:nth-child(3n+2) { animation-range: entry 9% entry 50%; }
+    .reveal-stagger > .reveal:nth-child(3n+3) { animation-range: entry 14% entry 55%; }
+  }
+}
+
+/* Onda 28 — Marquee de selos regulatorios (pausa no hover; estatico sem motion) */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track { display: inline-flex; align-items: center; gap: 2.5rem; white-space: nowrap; }
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track { animation: marquee 30s linear infinite; }
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track { animation-play-state: paused; }
+}
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* Onda 29 — Realce do hero com gradiente animado deslizante (background-clip: text) */
+.grad-anim {
+  background-image: linear-gradient(90deg, #1E88E5, #F5B400, #2C4791, #1E88E5);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .grad-anim { animation: gradShift 7s linear infinite; }
+  /* Palavra do hero que tambem tem gradiente: combina entrada + gradiente
+     (senao o shorthand de .grad-anim sobrescreve o wordRise e fica opacity:0). */
+  .hero-word.grad-anim { animation: wordRise .6s cubic-bezier(.2, .8, .2, 1) both, gradShift 7s linear infinite; }
+}
+@keyframes gradShift { to { background-position: 200% 0; } }
+
 /* Impressao limpa: remove cromos de navegacao, expande FAQs, tinta economica */
 @media print {
   #reading-progress,

@@ -366,7 +366,15 @@ if (isAutismoRoute) {
         const p = Math.min(1, (now - start) / duration);
         const eased = 1 - Math.pow(1 - p, 3);
         el.textContent = prefix + Math.round(target * eased).toString() + suffix;
-        if (p < 1) requestAnimationFrame(tick);
+        if (p < 1) {
+          requestAnimationFrame(tick);
+        } else if (typeof el.animate === 'function') {
+          // WAAPI: pequeno pulso ao concluir a contagem.
+          el.animate(
+            [{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }, { transform: 'scale(1)' }],
+            { duration: 320, easing: 'ease-out' }
+          );
+        }
       };
       requestAnimationFrame(tick);
     };

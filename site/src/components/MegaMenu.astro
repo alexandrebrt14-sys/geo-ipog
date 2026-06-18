@@ -5,12 +5,13 @@ interface Props {
   id?: string;
   highlight?: boolean;
   badge?: string;
+  active?: boolean;
 }
-const { label, panelWidth = '640', id, highlight = false, badge } = Astro.props;
+const { label, panelWidth = '640', id, highlight = false, badge, active = false } = Astro.props;
 const menuId = id ?? `mega-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 const triggerClass = highlight
   ? 'nav-link inline-flex items-center gap-1.5 text-brand-800 font-semibold bg-brand-50 hover:bg-brand-100 ring-1 ring-brand-200/70'
-  : 'nav-link inline-flex items-center gap-1';
+  : `nav-link inline-flex items-center gap-1${active ? ' is-section-active text-brand-800' : ''}`;
 ---
 
 <div class="relative group/menu" data-mega data-mega-id={menuId}>
@@ -20,6 +21,7 @@ const triggerClass = highlight
     aria-haspopup="true"
     aria-expanded="false"
     aria-controls={`${menuId}-panel`}
+    aria-current={active ? 'true' : undefined}
     data-mega-trigger>
     {label}
     {badge && (
@@ -53,10 +55,16 @@ const triggerClass = highlight
       const panel = group.querySelector<HTMLElement>('[data-mega-panel]');
       if (!trigger || !panel) return;
 
-      const setOpen = (open: boolean) => {
+      const panelLinks = () => Array.from(panel.querySelectorAll<HTMLAnchorElement>('a[href]'));
+
+      const setOpen = (open: boolean, focusFirst = false) => {
         trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-        if (open) panel.setAttribute('data-open', 'true');
-        else panel.removeAttribute('data-open');
+        if (open) {
+          panel.setAttribute('data-open', 'true');
+          if (focusFirst) window.setTimeout(() => panelLinks()[0]?.focus(), 30);
+        } else {
+          panel.removeAttribute('data-open');
+        }
       };
 
       trigger.addEventListener('click', (event) => {
@@ -70,6 +78,38 @@ const triggerClass = highlight
           }
         });
         setOpen(!wasOpen);
+      });
+
+      // Abrir com Enter/Espaço/Seta-baixo e mover foco para o primeiro link
+      trigger.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setOpen(true, true);
+        }
+      });
+
+      // Navegação por setas dentro do painel (acessibilidade de teclado)
+      panel.addEventListener('keydown', (event) => {
+        const links = panelLinks();
+        if (!links.length) return;
+        const idx = links.indexOf(document.activeElement as HTMLAnchorElement);
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          links[(idx + 1) % links.length]?.focus();
+        } else if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          links[(idx - 1 + links.length) % links.length]?.focus();
+        } else if (event.key === 'Home') {
+          event.preventDefault();
+          links[0]?.focus();
+        } else if (event.key === 'End') {
+          event.preventDefault();
+          links[links.length - 1]?.focus();
+        } else if (event.key === 'Escape') {
+          event.preventDefault();
+          setOpen(false);
+          trigger.focus();
+        }
       });
 
       panel.addEventListener('click', (event) => {

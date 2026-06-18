@@ -68,6 +68,7 @@ const RECURSOS: { label: string; href: string }[] = [
 export default function MobileBottomNav() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [path, setPath] = useState('/');
+  const [hidden, setHidden] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const dragStartY = useRef<number | null>(null);
@@ -77,6 +78,25 @@ export default function MobileBottomNav() {
     const onChange = () => setPath(window.location.pathname || '/');
     document.addEventListener('astro:after-swap', onChange);
     return () => document.removeEventListener('astro:after-swap', onChange);
+  }, []);
+
+  // Esconde a barra ao rolar para baixo e revela ao rolar para cima (padrão mobile moderno).
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y > lastY + 8 && y > 120) setHidden(true);
+        else if (y < lastY - 8) setHidden(false);
+        lastY = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
@@ -147,7 +167,7 @@ export default function MobileBottomNav() {
     <>
       <nav
         aria-label="Navegação mobile"
-        className="fixed bottom-0 inset-x-0 z-30 lg:hidden bg-white border-t border-surface-200 pb-[max(8px,env(safe-area-inset-bottom))] shadow-[0_-1px_8px_rgba(15,37,67,.06)]">
+        className={`fixed bottom-0 inset-x-0 z-30 lg:hidden bg-white border-t border-surface-200 pb-[max(8px,env(safe-area-inset-bottom))] shadow-[0_-1px_8px_rgba(15,37,67,.06)] transition-transform duration-300 ${hidden && !moreOpen ? 'translate-y-full' : 'translate-y-0'}`}>
         <ul className="grid grid-cols-5">
           {items.map(it => {
             const active = isActive(it.href);

@@ -66,12 +66,22 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {results.map(a => (
-          <a key={a.id} href={`/areas/${a.id}`} className="card-lift block p-5 group">
-            <div className="flex items-center gap-2 text-xs">
-              <span className="tag tag-light"><span className="text-brand-700">●</span> Área</span>
-              <span className="text-ink-300">·</span>
-              <span className="text-ink-500">Regulação {a.regulatoryLevel}</span>
+        {results.map(a => {
+          const regMatch = /R\s*(\d)/.exec(a.regulatoryLevel || '');
+          const regValue = regMatch ? Math.min(4, Math.max(0, Number(regMatch[1]))) : 0;
+          return (
+          <a key={a.id} href={`/areas/${a.id}`} className="card-lift card-shine block p-5 group">
+            <div className="flex items-center justify-between gap-2 text-xs">
+              <span className="inline-flex items-center gap-2">
+                <span className="tag tag-light"><span className="text-brand-700">●</span> Área</span>
+                <span className="text-ink-300">·</span>
+                <span className="text-ink-500">Regulação {a.regulatoryLevel}</span>
+              </span>
+              <span className="reg-meter shrink-0" role="img" aria-label={`Nível regulatório ${a.regulatoryLevel}`} title={`Nível regulatório ${a.regulatoryLevel}`}>
+                {[0, 1, 2, 3].map(i => (
+                  <span key={i} className={i < regValue ? 'reg-on' : ''}></span>
+                ))}
+              </span>
             </div>
             <h3 className="font-display font-semibold text-lg mt-3 text-ink-900 group-hover:text-brand-800 transition">{a.name}</h3>
             <p className="mt-2 text-sm text-ink-500 line-clamp-2">{a.subareas.slice(0, 5).join(' · ')}</p>
@@ -80,7 +90,8 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
               <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition" viewBox="0 0 20 20" fill="currentColor"><path d="M11 4l6 6-6 6-1.4-1.4L13.2 11H3V9h10.2L9.6 5.4 11 4z" /></svg>
             </div>
           </a>
-        ))}
+          );
+        })}
         {results.length === 0 && (
           <div className="col-span-full text-center py-12 text-ink-500 text-sm">
             Nenhuma área encontrada com esses filtros.

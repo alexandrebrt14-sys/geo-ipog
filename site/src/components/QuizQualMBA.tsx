@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 /**
  * Quiz: qual MBA em Psicologia combina com você.
@@ -321,6 +322,7 @@ function computeResult(answers: number[]): ResultPayload {
 }
 
 export default function QuizQualMBA() {
+  const reduce = useReducedMotion();
   const [view, setView] = useState<View>('welcome');
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<number[]>(
@@ -427,7 +429,7 @@ export default function QuizQualMBA() {
     const selected = answers[current];
 
     return (
-      <div className="card p-6 sm:p-8 animate-fade-in">
+      <div className="card p-6 sm:p-8 overflow-hidden">
         <div className="flex items-center justify-between text-xs text-ink-500 uppercase tracking-wider font-semibold">
           <span>
             Pergunta {current + 1} de {total}
@@ -437,45 +439,57 @@ export default function QuizQualMBA() {
         <div
           className="mt-2 h-1.5 w-full rounded-full bg-surface-100 overflow-hidden"
           aria-hidden="true">
-          <div
-            className="h-full bg-sun-500 transition-all duration-300"
-            style={{ width: `${Math.max(progress, ((current + 1) / total) * 100)}%` }}
+          <motion.div
+            className="h-full bg-sun-500"
+            initial={false}
+            animate={{ width: `${Math.max(progress, ((current + 1) / total) * 100)}%` }}
+            transition={{ duration: reduce ? 0 : 0.3 }}
           />
         </div>
 
-        <h2 className="section-h text-xl sm:text-2xl mt-5">{q.text}</h2>
-        {q.helper && (
-          <p className="mt-2 text-sm text-ink-500">{q.helper}</p>
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={current}
+            initial={reduce ? false : { opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, x: -40 }}
+            transition={{ duration: reduce ? 0 : 0.25, ease: [0.2, 0.8, 0.2, 1] }}>
+            <h2 className="section-h text-xl sm:text-2xl mt-5">{q.text}</h2>
+            {q.helper && (
+              <p className="mt-2 text-sm text-ink-500">{q.helper}</p>
+            )}
 
-        <div className="mt-5 space-y-2.5">
-          {q.options.map((opt, i) => {
-            const active = selected === i;
-            return (
-              <button
-                key={i}
-                onClick={() => answer(i)}
-                className={`w-full text-left px-4 py-3 rounded-xl border transition-all duration-150 ${
-                  active
-                    ? 'border-brand-600 bg-brand-50 text-brand-900 shadow-soft'
-                    : 'border-surface-200 hover:border-brand-400 hover:bg-surface-50 text-ink-900'
-                }`}
-                aria-pressed={active}>
-                <span className="inline-flex items-center gap-3">
-                  <span
-                    className={`w-6 h-6 rounded-full inline-flex items-center justify-center text-xs font-bold border ${
+            <div className="mt-5 space-y-2.5">
+              {q.options.map((opt, i) => {
+                const active = selected === i;
+                return (
+                  <motion.button
+                    key={i}
+                    onClick={() => answer(i)}
+                    whileTap={reduce ? undefined : { scale: 0.985 }}
+                    className={`w-full text-left px-4 py-3 rounded-xl border transition-all duration-150 ${
                       active
-                        ? 'border-brand-600 bg-brand-600 text-white'
-                        : 'border-surface-200 text-ink-500'
-                    }`}>
-                    {String.fromCharCode(65 + i)}
-                  </span>
-                  <span>{opt.label}</span>
-                </span>
-              </button>
-            );
-          })}
-        </div>
+                        ? 'border-brand-600 bg-brand-50 text-brand-900 shadow-soft'
+                        : 'border-surface-200 hover:border-brand-400 hover:bg-surface-50 text-ink-900'
+                    }`}
+                    aria-pressed={active}>
+                    <span className="inline-flex items-center gap-3">
+                      <span
+                        className={`w-6 h-6 rounded-full inline-flex items-center justify-center text-xs font-bold border ${
+                          active
+                            ? 'border-brand-600 bg-brand-600 text-white'
+                            : 'border-surface-200 text-ink-500'
+                        }`}>
+                        {String.fromCharCode(65 + i)}
+                      </span>
+                      <span>{opt.label}</span>
+                    </span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
         <div className="mt-6 flex items-center justify-between">
           <button

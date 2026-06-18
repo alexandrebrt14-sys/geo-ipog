@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { PERSONAS, SITE } from '../lib/data';
 
 interface NavItem {
@@ -69,6 +70,7 @@ export default function MobileBottomNav() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [path, setPath] = useState('/');
   const [hidden, setHidden] = useState(false);
+  const reduce = useReducedMotion();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const dragStartY = useRef<number | null>(null);
@@ -194,20 +196,29 @@ export default function MobileBottomNav() {
         </ul>
       </nav>
 
+      <AnimatePresence>
       {moreOpen && (
-        <div
-          className="fixed inset-0 z-40 lg:hidden animate-fade-in"
+        <motion.div
+          className="fixed inset-0 z-40 lg:hidden"
           role="dialog"
           aria-modal="true"
           aria-labelledby="more-drawer-title"
-          ref={dialogRef}>
+          ref={dialogRef}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduce ? 0 : 0.2 }}>
           <div
             className="absolute inset-0 bg-brand-900/60 backdrop-blur-sm"
             onClick={() => setMoreOpen(false)}
             aria-hidden="true"
           />
-          <div
-            className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl pb-[max(16px,env(safe-area-inset-bottom))] max-h-[85vh] overflow-y-auto animate-slide-up"
+          <motion.div
+            className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl pb-[max(16px,env(safe-area-inset-bottom))] max-h-[85vh] overflow-y-auto"
+            initial={{ y: reduce ? 0 : '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: reduce ? 0 : '100%' }}
+            transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 320, damping: 34 }}
             onTouchStart={onDragStart}
             onTouchEnd={onDragEnd}>
             <div className="sticky top-0 bg-white pt-3 pb-2 border-b border-surface-200">
@@ -310,9 +321,10 @@ export default function MobileBottomNav() {
                 </a>
               </section>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </>
   );
 }

@@ -20,6 +20,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   buildIndex,
   fold,
@@ -442,6 +443,7 @@ function safeTrack(api: DynamicApi, event: string, payload?: Record<string, unkn
 // ---------------------------------------------------------------------------
 
 export default function SearchOverlay() {
+  const reduce = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const [activeIdx, setActiveIdx] = useState(0);
@@ -838,8 +840,6 @@ export default function SearchOverlay() {
     });
   };
 
-  if (!open) return null;
-
   const showZero = q.trim().length === 0;
   const noResults = !showZero && results.length === 0 && !showSkeleton;
   const visibleId = 'pp-search-listbox';
@@ -875,11 +875,17 @@ export default function SearchOverlay() {
   })();
 
   return (
-    <div
-      className="fixed inset-0 z-50 animate-fade-in"
+    <AnimatePresence>
+    {open && (
+    <motion.div
+      className="fixed inset-0 z-50"
       role="dialog"
       aria-modal="true"
       aria-label="Busca do portal"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: reduce ? 0 : 0.18 }}
     >
       <div className="absolute inset-0 bg-brand-900/60 backdrop-blur-sm" onClick={close} />
 
@@ -888,7 +894,13 @@ export default function SearchOverlay() {
         {liveMessage}
       </div>
 
-      <div className="relative mx-auto mt-4 sm:mt-16 max-w-2xl px-3 sm:px-4 animate-slide-up">
+      <motion.div
+        className="relative mx-auto mt-4 sm:mt-16 max-w-2xl px-3 sm:px-4"
+        initial={reduce ? { opacity: 0 } : { opacity: 0, y: -12, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8, scale: 0.98 }}
+        transition={{ duration: reduce ? 0 : 0.22, ease: [0.2, 0.8, 0.2, 1] }}
+      >
         <div className="rounded-2xl bg-white shadow-lift border border-surface-200 overflow-hidden">
           {/* Input + autocomplete */}
           <div className="flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-surface-200">
@@ -1121,8 +1133,10 @@ export default function SearchOverlay() {
             </span>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
+    )}
+    </AnimatePresence>
   );
 }
 

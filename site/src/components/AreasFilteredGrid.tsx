@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { AREAS, type PsychologyArea } from '../lib/data';
 
 const CLUSTERS = [
@@ -24,6 +25,7 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
   const [cluster, setCluster] = useState('all');
   const [reg, setReg] = useState('all');
   const [q, setQ] = useState('');
+  const reduce = useReducedMotion();
 
   const results = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -65,12 +67,23 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
         <p className="text-xs text-ink-500">{results.length} de {AREAS.length} áreas</p>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <motion.div layout={!reduce} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <AnimatePresence mode="popLayout" initial={false}>
         {results.map(a => {
           const regMatch = /R\s*(\d)/.exec(a.regulatoryLevel || '');
           const regValue = regMatch ? Math.min(4, Math.max(0, Number(regMatch[1]))) : 0;
           return (
-          <a key={a.id} href={`/areas/${a.id}`} className="card-lift card-shine block p-5 group">
+          <motion.a
+            key={a.id}
+            layout={!reduce}
+            initial={reduce ? false : { opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+            transition={{ duration: reduce ? 0 : 0.22 }}
+            whileHover={reduce ? undefined : { y: -4 }}
+            whileTap={reduce ? undefined : { scale: 0.99 }}
+            href={`/areas/${a.id}`}
+            className="card-lift card-shine block p-5 group">
             <div className="flex items-center justify-between gap-2 text-xs">
               <span className="inline-flex items-center gap-2">
                 <span className="tag tag-light"><span className="text-brand-700">●</span> Área</span>
@@ -89,15 +102,16 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
               Explorar
               <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition" viewBox="0 0 20 20" fill="currentColor"><path d="M11 4l6 6-6 6-1.4-1.4L13.2 11H3V9h10.2L9.6 5.4 11 4z" /></svg>
             </div>
-          </a>
+          </motion.a>
           );
         })}
+        </AnimatePresence>
         {results.length === 0 && (
           <div className="col-span-full text-center py-12 text-ink-500 text-sm">
             Nenhuma área encontrada com esses filtros.
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

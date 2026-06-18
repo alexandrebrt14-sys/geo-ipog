@@ -412,6 +412,103 @@ if (isAutismoRoute) {
       }
       if (event.key === 'Escape') closeKbdHelp();
     });
+
+    // ── Grupos de FAQ: filtro + expandir/recolher tudo ───────────────────────
+    const foldText = (s: string) => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+    const wireFaqGroup = (
+      items: HTMLDetailsElement[],
+      filter: HTMLInputElement | null,
+      toggleAll: HTMLButtonElement | null,
+      countEl: HTMLElement | null,
+      emptyEl: HTMLElement | null
+    ) => {
+      const total = items.length;
+      const updateCount = (visible: number) => {
+        if (countEl) countEl.textContent = visible === total ? `${total} perguntas` : `${visible} de ${total}`;
+        if (emptyEl) emptyEl.hidden = visible !== 0;
+      };
+      updateCount(total);
+      filter?.addEventListener('input', () => {
+        const term = foldText(filter.value.trim());
+        let visible = 0;
+        items.forEach(it => {
+          const match = !term || foldText(it.textContent || '').includes(term);
+          it.hidden = !match;
+          if (match) visible++;
+        });
+        updateCount(visible);
+      });
+      toggleAll?.addEventListener('click', () => {
+        const expand = toggleAll.getAttribute('aria-expanded') !== 'true';
+        items.forEach(it => { if (!it.hidden) it.open = expand; });
+        toggleAll.setAttribute('aria-expanded', expand ? 'true' : 'false');
+        toggleAll.textContent = expand ? 'Recolher tudo' : 'Expandir tudo';
+      });
+    };
+
+    // Grupos explícitos (componentes FAQAccordion / FAQAccordionInline)
+    const initExplicitFaq = () => {
+      document.querySelectorAll<HTMLElement>('[data-faq-group]').forEach(group => {
+        if (group.dataset.faqBound === '1') return;
+        group.dataset.faqBound = '1';
+        wireFaqGroup(
+          Array.from(group.querySelectorAll<HTMLDetailsElement>('.faq-item')),
+          group.querySelector<HTMLInputElement>('[data-faq-filter]'),
+          group.querySelector<HTMLButtonElement>('[data-faq-toggle-all]'),
+          group.querySelector<HTMLElement>('[data-faq-count]'),
+          group.querySelector<HTMLElement>('[data-faq-empty]')
+        );
+      });
+    };
+
+    // Detecção automática: páginas de FAQ que renderizam <details> próprios.
+    // Agrupa por contêiner-pai e injeta a barra de filtro + expandir/recolher.
+    const TOOLBAR_HTML =
+      '<div class="relative flex-1">' +
+      '<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>' +
+      '<input type="search" data-faq-filter placeholder="Filtrar perguntas..." aria-label="Filtrar perguntas frequentes" class="w-full pl-10 pr-4 py-2.5 border border-surface-200 rounded-xl text-sm focus:border-brand-400 outline-none bg-white" />' +
+      '</div>' +
+      '<div class="flex items-center gap-2 shrink-0"><span data-faq-count class="text-xs text-ink-500"></span>' +
+      '<button type="button" data-faq-toggle-all class="btn btn-ghost btn-sm" aria-expanded="false">Expandir tudo</button></div>';
+
+    const initAutoFaq = () => {
+      const groups = new Map<HTMLElement, HTMLDetailsElement[]>();
+      document.querySelectorAll<HTMLDetailsElement>('details').forEach(d => {
+        if (d.closest('[data-faq-group]')) return;
+        if (!d.querySelector('.faq-answer-text')) return;
+        const parent = d.parentElement as HTMLElement | null;
+        if (!parent) return;
+        if (!groups.has(parent)) groups.set(parent, []);
+        groups.get(parent)!.push(d);
+      });
+      groups.forEach((items, parent) => {
+        if (parent.dataset.faqAuto === '1' || items.length < 4) return;
+        parent.dataset.faqAuto = '1';
+        items.forEach(d => d.classList.add('faq-item'));
+        const bar = document.createElement('div');
+        bar.className = 'flex flex-col sm:flex-row sm:items-center gap-3 mb-4';
+        bar.innerHTML = TOOLBAR_HTML;
+        parent.parentElement?.insertBefore(bar, parent);
+        const empty = document.createElement('p');
+        empty.setAttribute('data-faq-empty', '');
+        empty.hidden = true;
+        empty.className = 'text-sm text-ink-500 text-center py-6';
+        empty.textContent = 'Nenhuma pergunta corresponde ao filtro.';
+        parent.parentElement?.insertBefore(empty, parent.nextSibling);
+        wireFaqGroup(
+          items,
+          bar.querySelector<HTMLInputElement>('[data-faq-filter]'),
+          bar.querySelector<HTMLButtonElement>('[data-faq-toggle-all]'),
+          bar.querySelector<HTMLElement>('[data-faq-count]'),
+          empty
+        );
+      });
+    };
+
+    const initFaq = () => { initExplicitFaq(); initAutoFaq(); };
+    initFaq();
+    document.addEventListener('astro:after-swap', initFaq);
   </script>
 </body>
 </html>

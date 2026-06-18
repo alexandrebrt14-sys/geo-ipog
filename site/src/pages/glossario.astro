@@ -425,8 +425,8 @@ const clusters = [
     <h2 class="section-h text-2xl mb-4">Clusters do glossário</h2>
     <p class="text-sm text-ink-700 mb-5 max-w-3xl">Cada cluster reúne verbetes inline curtos, com referência técnica ou regulatória e cross-links coerentes para FAQs, áreas, MBAs e demais clusters. O glossário satélite /autismo/glossario/ complementa o conjunto com 54 verbetes específicos.</p>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {clusters.map(c => (
-        <a href={c.href} class="card p-5 hover:border-brand-400 transition-colors">
+      {clusters.map((c, i) => (
+        <a href={c.href} class="card card-lift card-shine reveal p-5 hover:border-brand-400 transition-colors" data-reveal-delay={i * 55}>
           <p class="text-xs uppercase tracking-wider text-brand-700 font-semibold">{c.badge}</p>
           <p class="font-display font-semibold text-lg text-ink-900 mt-1">{c.label}</p>
           <p class="text-sm text-ink-700 mt-2 leading-relaxed">{c.descricao}</p>
@@ -436,24 +436,33 @@ const clusters = [
     </div>
   </section>
 
-  <section class="container-page py-8">
+  <section class="container-page py-8" data-glossary>
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
+      <div class="relative flex-1 max-w-md">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" data-glossary-filter placeholder="Filtrar termos por nome ou definição..." aria-label="Filtrar termos do glossário"
+          class="w-full pl-10 pr-4 py-2.5 border border-surface-200 rounded-xl text-sm focus:border-brand-400 outline-none bg-white" />
+      </div>
+      <span data-glossary-count class="text-xs text-ink-500"></span>
+    </div>
     <nav aria-label="Índice alfabético" class="flex flex-wrap gap-2">
       {letras.map(l => (
-        <a href={`#letra-${l}`} class="chip" aria-label={`Ir para termos com a letra ${l}`}>{l}</a>
+        <a href={`#letra-${l}`} data-letter-chip={l} class="chip" aria-label={`Ir para termos com a letra ${l}`}>{l}</a>
       ))}
     </nav>
+    <p data-glossary-empty hidden class="text-sm text-ink-500 py-6">Nenhum termo corresponde ao filtro.</p>
   </section>
 
   <section class="container-page pb-16 grid lg:grid-cols-12 gap-10">
     <article class="lg:col-span-8 space-y-10">
       {letras.map(letra => (
-        <div id={`letra-${letra}`} class="scroll-mt-24">
+        <div id={`letra-${letra}`} data-letter-group={letra} class="scroll-mt-24">
           <h2 class="section-h text-3xl mb-4">
             <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand-50 text-brand-800 font-display font-bold mr-3">{letra}</span>
           </h2>
           <div class="space-y-5">
             {termosPorLetra[letra].map(t => (
-              <article id={t.id} class="card p-6 scroll-mt-24">
+              <article id={t.id} data-term class="card card-shine p-6 scroll-mt-24">
                 <h3 class="font-display font-semibold text-lg text-ink-900">{t.termo}</h3>
                 <p class="mt-2 text-sm text-ink-700 leading-relaxed" set:html={t.definicao} />
                 {t.fonte && (
@@ -512,6 +521,65 @@ const clusters = [
 
   <RelatedContent href="/glossario" />
   <NextStepCTA href="/glossario" />
+
+  <script is:inline>
+    (function () {
+      var fold = function (s) { return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); };
+      var filter = document.querySelector('[data-glossary-filter]');
+      var countEl = document.querySelector('[data-glossary-count]');
+      var emptyEl = document.querySelector('[data-glossary-empty]');
+      var terms = Array.prototype.slice.call(document.querySelectorAll('[data-term]'));
+      var groups = Array.prototype.slice.call(document.querySelectorAll('[data-letter-group]'));
+      var total = terms.length;
+
+      function setCount(v) {
+        if (countEl) countEl.textContent = v === total ? (total + ' termos') : (v + ' de ' + total + ' termos');
+        if (emptyEl) emptyEl.hidden = v !== 0;
+      }
+      setCount(total);
+
+      if (filter) {
+        filter.addEventListener('input', function () {
+          var term = fold(filter.value.trim());
+          var visible = 0;
+          terms.forEach(function (el) {
+            var match = !term || fold(el.textContent || '').indexOf(term) !== -1;
+            el.hidden = !match;
+            if (match) visible++;
+          });
+          groups.forEach(function (g) {
+            var any = g.querySelector('[data-term]:not([hidden])');
+            g.hidden = !any;
+          });
+          setCount(visible);
+        });
+      }
+
+      // Scroll-spy: destaca a letra ativa no indice A-Z
+      var chips = Array.prototype.slice.call(document.querySelectorAll('[data-letter-chip]'));
+      if (chips.length && groups.length && 'IntersectionObserver' in window) {
+        var chipByLetter = {};
+        chips.forEach(function (c) { chipByLetter[c.getAttribute('data-letter-chip')] = c; });
+        var setActive = function (letter) {
+          chips.forEach(function (c) { c.classList.remove('chip-active'); });
+          var c = chipByLetter[letter];
+          if (c) c.classList.add('chip-active');
+        };
+        var visibleSet = {};
+        var obs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            var l = e.target.getAttribute('data-letter-group');
+            if (e.isIntersecting) visibleSet[l] = true; else delete visibleSet[l];
+          });
+          for (var i = 0; i < groups.length; i++) {
+            var l = groups[i].getAttribute('data-letter-group');
+            if (visibleSet[l]) { setActive(l); break; }
+          }
+        }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+        groups.forEach(function (g) { obs.observe(g); });
+      }
+    })();
+  </script>
 
   <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTermSet)} is:inline />
   <script type="application/ld+json" set:html={JSON.stringify(ldGlossarioIndex)} is:inline />

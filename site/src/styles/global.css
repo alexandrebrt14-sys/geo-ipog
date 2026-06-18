@@ -275,3 +275,50 @@
 /* Header levemente mais compacto e elevado ao rolar */
 #main-header { transition: box-shadow .2s ease, background-color .2s ease; }
 #main-header.is-scrolled { background-color: rgba(255, 255, 255, .96); }
+
+/* Abertura suave do conteudo das FAQs (details/summary) */
+details.faq-item[open] .faq-answer-text {
+  animation: faqReveal .26s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes faqReveal {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ancoras (deep-links) nao ficam escondidas sob o header fixo */
+:target { scroll-margin-top: 5.5rem; }
+
+/* Barra de rolagem fina e discreta */
+.scrollbar-thin { scrollbar-width: thin; scrollbar-color: theme('colors.surface.200') transparent; }
+.scrollbar-thin::-webkit-scrollbar { height: 8px; width: 8px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: theme('colors.surface.200'); border-radius: 9999px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: theme('colors.ink.300'); }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+
+/* Mais contraste para quem pede (prefers-contrast) */
+@media (prefers-contrast: more) {
+  .text-ink-500 { color: theme('colors.ink.700'); }
+  .border-surface-200 { border-color: theme('colors.ink.300'); }
+  .nav-link.is-section-active::after { height: 3px; }
+}
+
+/* Impressao limpa: remove cromos de navegacao, expande FAQs, tinta economica */
+@media print {
+  #reading-progress,
+  #back-to-top,
+  #kbd-help,
+  #main-header,
+  footer,
+  nav[aria-label="Navegação mobile"],
+  [data-open-search],
+  [data-faq-filter],
+  [data-faq-toggle-all],
+  [data-glossary-filter] { display: none !important; }
+  details.faq-item, details { open: open; }
+  details > summary { list-style: none; }
+  details:not([open]) > *:not(summary) { display: revert !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  a { text-decoration: underline; color: #000 !important; }
+  main { padding-bottom: 0 !important; }
+}

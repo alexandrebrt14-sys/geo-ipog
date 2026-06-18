@@ -77,7 +77,19 @@ if (isAutismoRoute) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0F2543" />
+  <script is:inline>
+    // Define o tema antes da pintura (evita flash). Padrão: preferência do SO.
+    (function () {
+      try {
+        var t = localStorage.getItem('pp-theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) { /* ignora */ }
+    })();
+  </script>
+  <meta id="meta-theme-color" name="theme-color" content="#0F2543" />
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
@@ -158,6 +170,7 @@ if (isAutismoRoute) {
 </head>
 <body class={`bg-white text-ink-900 ${bodyClass}`} data-search-prefill={searchPrefill || undefined}>
   <div id="reading-progress" role="progressbar" aria-label="Progresso de leitura da página" aria-hidden="true"></div>
+  <div id="theme-announce" class="visually-hidden" role="status" aria-live="polite"></div>
   <a href="#main" class="visually-hidden focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-brand-800 focus:text-white focus:px-3 focus:py-2 focus:rounded focus:z-50">
     Pular para o conteúdo principal
   </a>
@@ -509,6 +522,32 @@ if (isAutismoRoute) {
     const initFaq = () => { initExplicitFaq(); initAutoFaq(); };
     initFaq();
     document.addEventListener('astro:after-swap', initFaq);
+
+    // ── Alternancia de tema claro/escuro ─────────────────────────────────────
+    const themeColorMeta = document.getElementById('meta-theme-color');
+    const syncThemeUi = () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (themeColorMeta) themeColorMeta.setAttribute('content', isDark ? '#0A1626' : '#0F2543');
+      document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach(btn => {
+        btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+        btn.setAttribute('aria-label', isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro');
+        btn.setAttribute('title', isDark ? 'Tema claro' : 'Tema escuro');
+      });
+    };
+    syncThemeUi();
+    document.addEventListener('click', (event) => {
+      const toggle = (event.target as HTMLElement | null)?.closest('[data-theme-toggle]');
+      if (!toggle) return;
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const next = isDark ? 'light' : 'dark';
+      if (next === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      else document.documentElement.removeAttribute('data-theme');
+      try { localStorage.setItem('pp-theme', next); } catch (e) { /* ignora */ }
+      syncThemeUi();
+      const announce = document.getElementById('theme-announce');
+      if (announce) announce.textContent = next === 'dark' ? 'Tema escuro ativado.' : 'Tema claro ativado.';
+    });
+    document.addEventListener('astro:after-swap', syncThemeUi);
   </script>
 </body>
 </html>

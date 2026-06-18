@@ -1,0 +1,133 @@
+---
+/**
+ * DecisionPicker — seletor interativo de decisão (elemento visual assinatura).
+ * O leitor escolhe o objetivo principal e o portal revela, com animação, a
+ * modalidade de pós mais provável, a área correlata e o próximo passo.
+ * Sem dependências externas: HTML + CSS + script inline. Tema-aware (tokens).
+ */
+interface Opcao {
+  id: string;
+  rotulo: string;
+  desc: string;
+  modalidade: string;
+  modalidadeHref: string;
+  area: string;
+  areaHref: string;
+  nota: string;
+}
+
+const OPCOES: Opcao[] = [
+  {
+    id: 'clinica',
+    rotulo: 'Aprofundar a prática clínica',
+    desc: 'Atender melhor, com método e supervisão',
+    modalidade: 'Especialização Clínica certificada',
+    modalidadeHref: '/tipos-de-pos-graduacao#especializacao-clinica-certificada',
+    area: 'Psicologia Clínica',
+    areaHref: '/areas/psicologia-clinica',
+    nota: 'Certificação por conselho em abordagem específica (ACT, EMDR, DBT, TCC) com supervisão obrigatória.'
+  },
+  {
+    id: 'lideranca',
+    rotulo: 'Liderar pessoas e cultura',
+    desc: 'RH, gestão, clima e segurança psicológica',
+    modalidade: 'MBA aplicado (POT ou Liderança Positiva)',
+    modalidadeHref: '/mbas',
+    area: 'Psicologia Organizacional e do Trabalho',
+    areaHref: '/areas/psicologia-organizacional-trabalho',
+    nota: 'Perfil executivo, vocabulário de negócio e técnica psicológica para decisão sobre pessoas.'
+  },
+  {
+    id: 'avaliacao',
+    rotulo: 'Avaliar e atuar com neuro',
+    desc: 'Avaliação psicológica, neuropsicologia, laudos',
+    modalidade: 'Especialização Lato Sensu técnica',
+    modalidadeHref: '/tipos-de-pos-graduacao#especializacao-lato-sensu',
+    area: 'Neuropsicologia',
+    areaHref: '/areas/neuropsicologia',
+    nota: 'Densidade técnica e instrumentos SATEPSI; atividade privativa de psicólogo.'
+  },
+  {
+    id: 'pesquisa',
+    rotulo: 'Pesquisar e publicar',
+    desc: 'Carreira acadêmica ou produto técnico-científico',
+    modalidade: 'Mestrado Profissional (CAPES)',
+    modalidadeHref: '/tipos-de-pos-graduacao#mestrado-profissional',
+    area: 'Avaliação Psicológica',
+    areaHref: '/areas/avaliacao-psicologica',
+    nota: 'Stricto sensu aplicado, com defesa de dissertação ou produto técnico e seleção CAPES.'
+  }
+];
+---
+
+<section class="container-page py-12 lg:py-16" aria-labelledby="decision-picker-title">
+  <div class="rounded-3xl border border-surface-200 bg-surface-50 p-6 sm:p-8 lg:p-10" data-decision-picker>
+    <div class="max-w-2xl">
+      <span class="section-eyebrow">Trilha rápida</span>
+      <h2 id="decision-picker-title" class="section-h text-2xl sm:text-3xl mt-2">Em um clique, qual pós faz sentido para você?</h2>
+      <p class="mt-2 text-ink-700 text-sm sm:text-base">Escolha o seu objetivo principal. Mostramos a modalidade mais provável, a área correlata e por onde começar. Orientação editorial, não recomendação de matrícula.</p>
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" role="group" aria-label="Objetivo principal">
+      {OPCOES.map(o => (
+        <button
+          type="button"
+          data-decision-option={o.id}
+          aria-pressed="false"
+          class="text-left rounded-2xl border border-surface-200 bg-white p-4 transition hover:border-brand-400 hover:-translate-y-0.5">
+          <span class="block font-display font-semibold text-ink-900 leading-snug">{o.rotulo}</span>
+          <span class="block text-xs text-ink-500 mt-1">{o.desc}</span>
+        </button>
+      ))}
+    </div>
+
+    {OPCOES.map(o => (
+      <div data-decision-result={o.id} hidden class="mt-5 rounded-2xl border border-brand-200 bg-white p-5 sm:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8">
+          <div class="lg:flex-1">
+            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">Modalidade mais provável</p>
+            <p class="font-display font-bold text-xl text-ink-900 mt-1">{o.modalidade}</p>
+            <p class="text-sm text-ink-700 mt-2 leading-relaxed">{o.nota}</p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0">
+            <a href={o.modalidadeHref} class="btn btn-primary btn-sm">Ver a modalidade</a>
+            <a href={o.areaHref} class="btn btn-ghost btn-sm">Área: {o.area}</a>
+          </div>
+        </div>
+      </div>
+    ))}
+
+    <p data-decision-hint class="mt-5 text-xs text-ink-500">Dica: você pode trocar de objetivo a qualquer momento. Tudo se conecta na busca global (tecla <span class="kbd">/</span>).</p>
+  </div>
+</section>
+
+<script>
+  function initDecisionPickers() {
+    document.querySelectorAll<HTMLElement>('[data-decision-picker]').forEach(picker => {
+      if (picker.dataset.decisionBound === '1') return;
+      picker.dataset.decisionBound = '1';
+      const options = Array.from(picker.querySelectorAll<HTMLButtonElement>('[data-decision-option]'));
+      const results = Array.from(picker.querySelectorAll<HTMLElement>('[data-decision-result]'));
+      const hint = picker.querySelector<HTMLElement>('[data-decision-hint]');
+
+      options.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-decision-option');
+          options.forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+          options.forEach(b => b.classList.toggle('decision-active', b === btn));
+          results.forEach(r => { r.hidden = r.getAttribute('data-decision-result') !== id; });
+          if (hint) hint.hidden = true;
+          const active = results.find(r => !r.hidden);
+          if (active) {
+            active.classList.remove('decision-reveal');
+            // força reflow para reiniciar a animação
+            void active.offsetWidth;
+            active.classList.add('decision-reveal');
+          }
+        });
+      });
+    });
+  }
+  initDecisionPickers();
+  document.addEventListener('astro:after-swap', initDecisionPickers);
+</script>

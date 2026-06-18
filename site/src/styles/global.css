@@ -441,6 +441,104 @@ details.faq-item[open] .faq-answer-text {
 [data-theme="dark"] [data-theme-toggle] .icon-sun { display: inline-flex; }
 [data-theme="dark"] [data-theme-toggle] .icon-moon { display: none; }
 
+/* ============================================================
+   ANIMACOES (Ondas 16-20). CSS-first: scroll-driven timelines
+   (view()/scroll()), View Transitions e micro-interacoes de
+   feedback. Tudo atras de @supports e prefers-reduced-motion.
+   ============================================================ */
+
+/* Onda 16 — Reveal dirigido por scroll, puro CSS (substitui o
+   IntersectionObserver quando o navegador suporta view-timeline). */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: revealRise linear both;
+      animation-timeline: view();
+      animation-range: entry 4% entry 46%;
+    }
+  }
+}
+@keyframes revealRise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Onda 17 — Barra de progresso de leitura dirigida por scroll, puro CSS. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    #reading-progress {
+      width: 100%;
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+      animation: rpGrow linear both;
+      animation-timeline: scroll(root);
+      transition: none;
+    }
+  }
+}
+@keyframes rpGrow { to { transform: scaleX(1); } }
+
+/* Onda 18 — Feedback de acao: o controle afunda levemente ao ser pressionado. */
+@media (prefers-reduced-motion: no-preference) {
+  .btn { transition: transform .08s ease, background-color .15s ease, box-shadow .15s ease, color .15s ease; }
+  .btn:active { transform: translateY(1px) scale(.985); }
+  .chip:active,
+  .nav-link:active,
+  .crumb:active { transform: translateY(1px); }
+  .card-lift { will-change: transform; }
+  .card-lift:active { transform: translateY(0) scale(.992); transition-duration: .08s; }
+  [data-decision-option]:active,
+  [data-theme-toggle]:active,
+  [data-open-search]:active,
+  [data-faq-toggle-all]:active,
+  #back-to-top:active { transform: translateY(1px) scale(.96); }
+}
+
+/* Onda 19 — View Transitions: continuidade entre telas, sem "piscar". */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: vtOut .18s ease both; }
+  ::view-transition-new(root) { animation: vtIn .28s cubic-bezier(.2, .8, .2, 1) both; }
+}
+@keyframes vtOut { to { opacity: 0; } }
+@keyframes vtIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Onda 20 — Coreografia da home */
+/* Entrada do hero ao carregar (acima da dobra; com stagger via animation-delay inline) */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-enter { opacity: 0; animation: heroEnter .7s cubic-bezier(.2, .8, .2, 1) both; }
+}
+@keyframes heroEnter {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Painel/itens que entram deslizando da direita ao surgir na viewport */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .slide-in-right {
+      animation: slideInRight linear both;
+      animation-timeline: view();
+      animation-range: entry 2% entry 40%;
+    }
+  }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(26px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Parallax sutil da camada decorativa do hero, dirigido por scroll */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-parallax {
+      animation: heroParallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 60vh;
+    }
+  }
+}
+@keyframes heroParallax { to { transform: translateY(46px); opacity: .35; } }
+
 /* Impressao limpa: remove cromos de navegacao, expande FAQs, tinta economica */
 @media print {
   #reading-progress,

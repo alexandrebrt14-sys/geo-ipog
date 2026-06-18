@@ -201,10 +201,10 @@ if (isAutismoRoute) {
   <Footer />
 
   <!-- Mobile bottom navigation (React island for state) -->
-  <MobileBottomNav client:load />
+  <MobileBottomNav client:load transition:persist transition:name="mobile-nav" />
 
   <!-- Search overlay (React island) -->
-  <SearchOverlay client:idle />
+  <SearchOverlay client:idle transition:persist transition:name="search-overlay" />
 
   <!-- Voltar ao topo (aparece após rolar) -->
   <button id="back-to-top" type="button" aria-label="Voltar ao topo da página">
@@ -299,14 +299,24 @@ if (isAutismoRoute) {
       }, 30);
     });
 
+    // Suporte a timelines de scroll/view em CSS (Ondas 16-17): quando há,
+    // o CSS dirige reveal e barra de progresso; o JS só faz o fallback.
+    const cssSupports = (prop: string, val: string) => {
+      try { return typeof CSS !== 'undefined' && CSS.supports(prop, val); } catch (e) { return false; }
+    };
+    const supportsScrollTimeline = cssSupports('animation-timeline', 'scroll()');
+    const supportsViewTimeline = cssSupports('animation-timeline', 'view()');
+
     // ── Barra de progresso de leitura + botão "voltar ao topo" ───────────────
     const progressEl = document.getElementById('reading-progress');
     const backTop = document.getElementById('back-to-top');
     const updateScrollUI = () => {
       const doc = document.documentElement;
-      const scrollable = doc.scrollHeight - doc.clientHeight;
-      const ratio = scrollable > 0 ? Math.min(1, doc.scrollTop / scrollable) : 0;
-      if (progressEl) progressEl.style.width = (ratio * 100).toFixed(2) + '%';
+      if (progressEl && !supportsScrollTimeline) {
+        const scrollable = doc.scrollHeight - doc.clientHeight;
+        const ratio = scrollable > 0 ? Math.min(1, doc.scrollTop / scrollable) : 0;
+        progressEl.style.width = (ratio * 100).toFixed(2) + '%';
+      }
       if (backTop) backTop.classList.toggle('is-visible', doc.scrollTop > 600);
     };
     window.addEventListener('scroll', updateScrollUI, { passive: true });
@@ -321,6 +331,8 @@ if (isAutismoRoute) {
     // ── Reveal on-scroll (stagger) ───────────────────────────────────────────
     let revealObserver: IntersectionObserver | null = null;
     const initReveal = () => {
+      // Navegadores com view-timeline animam .reveal só em CSS (Onda 16).
+      if (supportsViewTimeline && !prefersReducedMotion) return;
       const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal:not(.reveal-in)'));
       if (!els.length) return;
       if (prefersReducedMotion || !('IntersectionObserver' in window)) {

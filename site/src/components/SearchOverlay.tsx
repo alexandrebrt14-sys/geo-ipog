@@ -1194,10 +1194,10 @@ function Chip({ label, onRemove, tone = 'brand' }: { label: string; onRemove?: (
       {onRemove && (
         <button
           onClick={onRemove}
-          className="ml-0.5 hover:opacity-70"
+          className="ml-0.5 inline-flex items-center justify-center hover:opacity-70"
           aria-label={`Remover filtro ${label}`}
         >
-          ×
+          <span aria-hidden="true">×</span>
         </button>
       )}
     </span>
@@ -1335,7 +1335,7 @@ function ZeroState({
                 <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded font-semibold ${KIND_COLOR[d.kind]}`}>{d.kind}</span>
                 <span className="truncate text-sm text-ink-900">{d.title}</span>
               </span>
-              <span className="text-ink-300 text-xs shrink-0">{crumbFromHref(d.href)}</span>
+              <span className="text-ink-500 text-xs shrink-0">{crumbFromHref(d.href)}</span>
             </button>
           ))}
         </div>

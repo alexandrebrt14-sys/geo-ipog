@@ -10,20 +10,22 @@ interface NavItem {
   action?: () => void;
 }
 
+// Icones puramente decorativos: o nome acessivel vem do texto do item
+// (ou do aria-label do botao "Buscar"). aria-hidden evita rotulo duplicado. (WCAG 1.1.1)
 const IconHome = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-label="Início"><path d="M3 9.5 12 3l9 6.5V21H3z" /><path d="M9 21V12h6v9" /></svg>
+  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5V21H3z" /><path d="M9 21V12h6v9" /></svg>
 );
 const IconAreas = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
+  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
 );
 const IconMba = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 11 12 6l9 5-9 5-9-5Z"/><path d="M5 12.5V17c0 1 3 2.5 7 2.5s7-1.5 7-2.5v-4.5"/><path d="M21 11v5"/></svg>
 );
 const IconSearch = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
 );
 const IconMore = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
+  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
 );
 
 const AUTISMO_PORTAS: { label: string; href: string; desc: string }[] = [
@@ -228,8 +230,8 @@ export default function MobileBottomNav() {
                 <button
                   ref={closeBtnRef}
                   onClick={() => setMoreOpen(false)}
-                  className="w-10 h-10 rounded-lg border border-surface-200 text-ink-700"
-                  aria-label="Fechar menu">×</button>
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-surface-200 text-ink-700"
+                  aria-label="Fechar menu"><span aria-hidden="true" className="text-lg leading-none">×</span></button>
               </div>
             </div>
 

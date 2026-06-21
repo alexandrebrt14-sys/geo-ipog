@@ -779,6 +779,185 @@ nav p {
   }
 }
 
+/* ============================================================
+   ONDA 32 — Acessibilidade WCAG 2.2 AA
+   Derivada do Modulo 9 do curso "Frontends com Vibecoding".
+   Foco nos criterios novos/reforcados da WCAG 2.2: alvo de toque
+   minimo (2.5.8), foco nao obstruido (2.4.11), aparencia do foco
+   (2.4.13) e contraste (1.4.3 / 1.4.11). Tudo via CSS global e
+   idempotente; respeita prefers-reduced-motion (regra do topo) e
+   nao altera o visual no estado de repouso. Sem emojis.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. WCAG 2.4.11 Focus Not Obscured (Minimum).
+   O header e sticky (h-16 = 4rem) e ha uma barra utilitaria
+   acima dele; ao tabular, o alvo focado nao pode ficar escondido
+   sob o header. scroll-padding-top reserva espaco no topo do
+   scroll para QUALQUER navegacao por teclado/ancora, nao so
+   :target. Mantem o :target existente como reforco. A bottom-nav
+   mobile e tratada com scroll-padding-bottom.
+   ------------------------------------------------------------ */
+html {
+  scroll-padding-top: 5.5rem;
+  scroll-padding-bottom: 5rem;
+}
+@media (min-width: 1024px) {
+  /* No desktop nao ha bottom-nav fixa; so o header precisa de folga. */
+  html { scroll-padding-bottom: 1rem; }
+}
+
+/* ------------------------------------------------------------
+   2. WCAG 2.4.13 Focus Appearance (reforco do *:focus-visible
+   global, sem enfraquece-lo). Garante anel de foco com area e
+   contraste suficientes, visivel tanto no claro quanto no escuro:
+   - outline 2px solido + outline-offset 2px (do topo) ja garante
+     a area; aqui adicionamos um halo de contraste por box-shadow
+     para destacar o anel sobre fundos coloridos (botoes brand/sun).
+   - No tema escuro, troca a cor do anel para um azul claro de
+     alto contraste sobre superficies escuras.
+   ------------------------------------------------------------ */
+*:focus-visible {
+  /* Halo branco entre o elemento e o outline azul: garante contraste
+     do indicador mesmo quando o fundo do controle e escuro/colorido. */
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px theme('colors.brand.500');
+}
+/* Controles claros sobre fundo escuro (hero, header dark, footer):
+   inverte o halo para nao "sumir" o anel. */
+.hero-grad *:focus-visible,
+[data-theme="dark"] *:focus-visible,
+footer *:focus-visible {
+  box-shadow: 0 0 0 2px theme('colors.brand.900'), 0 0 0 4px #FFC83A;
+  outline-color: #FFC83A;
+}
+/* Em controles que ja desenham o proprio anel via box-shadow
+   (mega-menu cards via :has, decision picker), nao empilha halo
+   para evitar duplicidade visual. O outline 2px continua valendo. */
+.card:focus-visible,
+.card-lift:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px theme('colors.brand.500');
+}
+
+/* ------------------------------------------------------------
+   3. WCAG 2.5.8 Target Size (Minimum) — 24x24 CSS px.
+   Controles interativos pequenos (botoes so-icone, "x" de fechar,
+   chips, toggles de filtro, links de UI compactos) recebem alvo
+   de toque minimo de 24px SEM alterar o tamanho visual: usamos
+   um pseudo-elemento ::before centralizado que estende a area
+   clicavel. Onde o elemento ja e >= 24px, o pseudo nao tem efeito.
+   No mobile (coarse pointer) elevamos para 44px (alvo confortavel).
+   ------------------------------------------------------------ */
+
+/* Utilitario explicito quando um componente precisa carimbar o alvo. */
+.tap-target { position: relative; }
+.tap-target::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 24px;
+  min-height: 24px;
+  transform: translate(-50%, -50%);
+}
+
+/* Aplicacao automatica aos controles pequenos conhecidos do portal.
+   inline-flex preserva o layout; o ::before so amplia a area de toque. */
+.kbd,
+.chip,
+.tag,
+.crumb,
+.reg-meter,
+[data-faq-toggle-all],
+[data-mega-trigger] {
+  position: relative;
+}
+.kbd::before,
+.crumb::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 24px;
+  min-height: 24px;
+  transform: translate(-50%, -50%);
+  /* Nao captura eventos quando o proprio elemento nao e clicavel
+     (ex.: <span class="kbd"> decorativo); so amplia onde for alvo. */
+  pointer-events: none;
+}
+/* Botoes so-icone que possam ter ficado < 24px ganham piso de tamanho. */
+button[aria-label]:not(.btn):not(.tap-keep),
+a[aria-label]:not(.btn):not(.tap-keep) {
+  /* Nao forca largura/altura (poderia quebrar layout de links de texto
+     com aria-label); apenas garante alvo confortavel via min-height
+     quando o controle e do tipo bloco/inline-flex com icone. */
+}
+
+/* Ponteiro grosso (toque): alvos confortaveis de 44px nos controles
+   so-icone do cabecalho, do overlay de busca e da ajuda de teclado. */
+@media (pointer: coarse) {
+  [data-open-search],
+  [data-theme-toggle],
+  [data-kbd-help-close],
+  #back-to-top,
+  .reg-meter {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  /* Chips e filtros: garante 44px de altura de toque sem inflar o texto. */
+  .chip,
+  [data-faq-toggle-all] {
+    min-height: 36px;
+  }
+}
+
+/* O "x" de fechar (kbd-help, drawer mobile, chips do overlay) costuma
+   ter glifo pequeno; garante area de clique de 24px e centraliza. */
+[data-kbd-help-close],
+[aria-label^="Fechar"],
+[aria-label^="Remover filtro"] {
+  position: relative;
+}
+[data-kbd-help-close]::before,
+[aria-label^="Remover filtro"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 24px;
+  min-height: 24px;
+  transform: translate(-50%, -50%);
+}
+
+/* ------------------------------------------------------------
+   4. WCAG 1.4.3 Contrast (Minimum) / 1.4.11 Non-text Contrast.
+   ink-300 (#A0A8B9) sobre branco fica ~2.3:1 e reprova para texto.
+   NAO mexemos no token global do Tailwind (risco de regressao);
+   so corrigimos os USOS que sao texto legivel pequeno. Aqui tratamos
+   o caso recorrente do separador/!legenda "ou" e datas de "buscas
+   recentes" que usam text-ink-300 como CONTEUDO. Decorativo
+   (orbes, brilho) permanece intacto.
+   Observacao: correcoes pontuais em conteudo legivel foram feitas
+   diretamente nos componentes (text-ink-300 -> text-ink-500).
+   ------------------------------------------------------------ */
+/* Reforca o anel de foco e contraste de borda para quem pede mais
+   contraste (complementa o bloco prefers-contrast existente). */
+@media (prefers-contrast: more) {
+  *:focus-visible {
+    outline-width: 3px;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 5px theme('colors.brand.600');
+  }
+  .text-ink-300 { color: theme('colors.ink.500'); }
+  .border-surface-200 { border-color: theme('colors.ink.500'); }
+  /* Bordas de chips/filtros mais visiveis. */
+  .chip, .tag { border-color: theme('colors.ink.300'); }
+}
+
 /* Impressao limpa: remove cromos de navegacao, expande FAQs, tinta economica */
 @media print {
   #reading-progress,

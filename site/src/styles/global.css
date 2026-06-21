@@ -1044,3 +1044,32 @@ body {
   a { text-decoration: underline; color: #000 !important; }
   main { padding-bottom: 0 !important; }
 }
+
+/* ============================================================
+   ONDA 34 — PWA e safe-area
+   Refinos de baixo risco para notch/ilhas em landscape e para o
+   modo standalone (app instalado). O bottom-nav e o #back-to-top
+   ja tratam o inset inferior; aqui cobrimos os insets laterais do
+   header fixo e da barra utilitaria do topo, que em landscape com
+   notch poderiam encostar conteudo na borda recortada.
+   Usa env() com fallback 0px (no-op em telas sem recorte).
+   ============================================================ */
+
+/* Insets laterais no conteudo do header e da util-bar superior.
+   Aplicado no .container-page interno desses dois blocos para nao
+   afetar o resto do site. Em telas sem notch, env() resolve 0px. */
+@supports (padding: env(safe-area-inset-left)) {
+  #main-header > .container-page,
+  [aria-label="Aviso de portal não oficial"] > .container-page {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  @media (min-width: 640px) {
+    #main-header > .container-page,
+    [aria-label="Aviso de portal não oficial"] > .container-page {
+      padding-left: max(1.5rem, env(safe-area-inset-left));
+      padding-right: max(1.5rem, env(safe-area-inset-right));
+    }
+  }
+}
+

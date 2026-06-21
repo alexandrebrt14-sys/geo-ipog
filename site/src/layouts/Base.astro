@@ -118,6 +118,8 @@ if (isAutismoRoute) {
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="mask-icon" href="/favicon.svg" color="#0F2543" />
+  <!-- Onda 34: PWA manifest (nome/icones/atalhos do app instalavel). -->
+  <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="apple-mobile-web-app-title" content="Pós Psicologia" />
   <meta name="application-name" content="posgraduacaopsicologia" />
 
@@ -600,6 +602,22 @@ if (isAutismoRoute) {
       if (announce) announce.textContent = next === 'dark' ? 'Tema escuro ativado.' : 'Tema claro ativado.';
     });
     document.addEventListener('astro:after-swap', syncThemeUi);
+  </script>
+
+  <!-- Onda 34: registro do service worker (PWA / offline). Conservador:
+       so registra se houver suporte, apos o load, com try/catch, escopo "/".
+       Nao forca update loops. -->
+  <script is:inline>
+    (function () {
+      if (!('serviceWorker' in navigator)) return;
+      window.addEventListener('load', function () {
+        try {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {
+            /* falha de registro nao deve quebrar a pagina */
+          });
+        } catch (e) { /* ignora */ }
+      });
+    })();
   </script>
 </body>
 </html>

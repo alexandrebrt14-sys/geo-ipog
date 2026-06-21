@@ -1,0 +1,159 @@
+---
+/**
+ * FichaRapida — bloco objetivo e escaneável com os dados-chave de uma ÁREA
+ * de Psicologia (ou, opcionalmente, de um MBA), reaproveitando exclusivamente
+ * campos que JÁ existem em src/lib/data.ts. Onda 36.
+ *
+ * REGRA YMYL: só renderiza uma linha quando o campo existe e não está vazio.
+ * Nenhum valor é inventado — campos ausentes são simplesmente omitidos.
+ *
+ * Markup de UI (dl/dt/dd, grid, spans) — NÃO usa <p> de prosa, para não herdar
+ * o justify aplicado a `.prose p`/`article > p` (Onda 31). Reusa tokens que já
+ * invertem no tema escuro (card, text-ink-*, text-brand-*, border-surface-*,
+ * tag, reg-meter), sem cores cruas que quebrem no [data-theme="dark"].
+ */
+import type { PsychologyArea, MBA } from '@lib/data';
+import { MBAS, AREAS } from '@lib/data';
+
+interface Props {
+  area?: PsychologyArea;
+  mba?: MBA;
+}
+
+const { area, mba } = Astro.props;
+
+// Capitaliza a primeira letra de cada item de público (em ÁREA os dados vêm
+// minúsculos; em MBA já vêm formatados). Siglas conhecidas ficam em caixa alta.
+const SIGLAS: Record<string, string> = { rh: 'RH', ia: 'IA' };
+function capitalizar(s: string): string {
+  if (!s) return s;
+  const k = s.trim().toLowerCase();
+  if (SIGLAS[k]) return SIGLAS[k];
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// ---- Caminho ÁREA -----------------------------------------------------------
+let titulo = '';
+let regLevel = '';
+let regValue = 0;
+let publico: string[] = [];
+let recomendado: { label: string; href: string } | null = null;
+
+// ---- Caminho MBA ------------------------------------------------------------
+let mbaTag = '';
+let mbaTopics: string[] = [];
+let mbaPublico: string[] = [];
+let areasRelacionadas: { label: string; href: string }[] = [];
+
+if (area) {
+  titulo = area.name;
+  regLevel = area.regulatoryLevel || '';
+  // Mesma leitura do AreaCard: primeiro dígito de R0..R4 acende as barras.
+  const m = /R\s*(\d)/.exec(regLevel);
+  regValue = m ? Math.min(4, Math.max(0, Number(m[1]))) : 0;
+  publico = Array.isArray(area.personas) ? area.personas.filter(Boolean) : [];
+  // MBA recomendado: primeiro curso relacionado que resolve para um MBA real.
+  if (Array.isArray(area.relatedCourses)) {
+    for (const cid of area.relatedCourses) {
+      const found = MBAS.find(x => x.id === cid);
+      if (found) {
+        recomendado = { label: found.shortName, href: `/mbas/${found.id}` };
+        break;
+      }
+    }
+  }
+} else if (mba) {
+  titulo = mba.name;
+  mbaTag = mba.tag || '';
+  mbaTopics = Array.isArray(mba.topics) ? mba.topics.filter(Boolean) : [];
+  mbaPublico = Array.isArray(mba.personas) ? mba.personas.filter(Boolean) : [];
+  // Não há campo de áreas no MBA: derivamos das ÁREAS que o referenciam
+  // em relatedCourses (mesma relação usada na página de área).
+  areasRelacionadas = AREAS
+    .filter(a => Array.isArray(a.relatedCourses) && a.relatedCourses.includes(mba.id))
+    .map(a => ({ label: a.short, href: `/areas/${a.id}` }));
+}
+
+const ehArea = !!area;
+const ehMba = !!mba && !area;
+
+const barras = [0, 1, 2, 3];
+const regAria = regValue > 0 ? `Nível regulatório ${regValue} de 4` : 'Nível regulatório não classificado';
+---
+
+{(ehArea || ehMba) && (
+  <aside aria-label={ehArea ? 'Ficha rápida da área' : 'Ficha rápida do MBA'} class="ficha-rapida card p-5 sm:p-6 my-6">
+    <p class="text-xs font-bold uppercase tracking-wider text-brand-800 mb-3">Ficha rápida</p>
+
+    <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-3">
+      {ehArea && regLevel && (
+        <div class="flex flex-col gap-1">
+          <dt class="text-xs uppercase tracking-wide text-ink-500 font-semibold">Nível regulatório</dt>
+          <dd class="flex items-center gap-2 text-sm text-ink-900 font-medium m-0">
+            <span class="reg-meter shrink-0" role="img" aria-label={regAria} title={regAria}>
+              {barras.map(i => (<span class={i < regValue ? 'reg-on' : ''}></span>))}
+            </span>
+            <span>{regLevel}</span>
+          </dd>
+        </div>
+      )}
+
+      {ehArea && publico.length > 0 && (
+        <div class="flex flex-col gap-1">
+          <dt class="text-xs uppercase tracking-wide text-ink-500 font-semibold">Público-alvo</dt>
+          <dd class="flex flex-wrap gap-1.5 text-sm text-ink-900 m-0">
+            {publico.map(p => (<span class="tag tag-light">{capitalizar(p)}</span>))}
+          </dd>
+        </div>
+      )}
+
+      {ehArea && recomendado && (
+        <div class="flex flex-col gap-1 sm:col-span-2">
+          <dt class="text-xs uppercase tracking-wide text-ink-500 font-semibold">MBA recomendado</dt>
+          <dd class="text-sm m-0">
+            <a href={recomendado.href} class="inline-flex items-center gap-1 font-semibold text-brand-700 hover:text-brand-800">
+              {recomendado.label}
+              <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 4l6 6-6 6-1.4-1.4L13.2 11H3V9h10.2L9.6 5.4 11 4z"/></svg>
+            </a>
+          </dd>
+        </div>
+      )}
+
+      {ehMba && mbaTag && (
+        <div class="flex flex-col gap-1">
+          <dt class="text-xs uppercase tracking-wide text-ink-500 font-semibold">Núcleo</dt>
+          <dd class="text-sm text-ink-900 font-medium m-0"><span class="tag">{mbaTag}</span></dd>
+        </div>
+      )}
+
+      {ehMba && mbaPublico.length > 0 && (
+        <div class="flex flex-col gap-1">
+          <dt class="text-xs uppercase tracking-wide text-ink-500 font-semibold">Público-alvo</dt>
+          <dd class="flex flex-wrap gap-1.5 text-sm text-ink-900 m-0">
+            {mbaPublico.map(p => (<span class="tag tag-light">{capitalizar(p)}</span>))}
+          </dd>
+        </div>
+      )}
+
+      {ehMba && mbaTopics.length > 0 && (
+        <div class="flex flex-col gap-1 sm:col-span-2">
+          <dt class="text-xs uppercase tracking-wide text-ink-500 font-semibold">Temas centrais</dt>
+          <dd class="flex flex-wrap gap-1.5 text-sm text-ink-900 m-0">
+            {mbaTopics.map(t => (<span class="tag tag-light">{t}</span>))}
+          </dd>
+        </div>
+      )}
+
+      {ehMba && areasRelacionadas.length > 0 && (
+        <div class="flex flex-col gap-1 sm:col-span-2">
+          <dt class="text-xs uppercase tracking-wide text-ink-500 font-semibold">Áreas relacionadas</dt>
+          <dd class="flex flex-wrap gap-x-3 gap-y-1 text-sm m-0">
+            {areasRelacionadas.map(a => (
+              <a href={a.href} class="font-semibold text-brand-700 hover:text-brand-800">{a.label}</a>
+            ))}
+          </dd>
+        </div>
+      )}
+    </dl>
+  </aside>
+)}

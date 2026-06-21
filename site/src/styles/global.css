@@ -606,6 +606,179 @@ details.faq-item[open] .faq-answer-text {
 }
 @keyframes gradShift { to { background-position: 200% 0; } }
 
+/* ============================================================
+   ONDA 31 — CSS moderno 2026
+   Justificacao tipografica de conteudo, text-wrap moderno,
+   realce decorativo em OKLCH/P3, container queries e :has().
+   Tudo via progressive enhancement (@supports); o estado base
+   continua renderizando bem em navegadores antigos. Respeita
+   prefers-reduced-motion (regra global no topo). Sem emojis.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. Paragrafos justificados (prioridade do dono).
+   Escopo: paragrafos de CONTEUDO de leitura longa (.prose p e
+   o corpo principal de artigo via <article>). NAO afeta texto
+   de UI (botoes, chips, labels, navegacao, cards pequenos,
+   legendas curtas), que permanece alinhado a esquerda.
+   - text-align-last: left evita a ultima linha esticada.
+   - hyphens: auto usa o lang="pt-BR" do <html> para hifenizar
+     corretamente e evitar "rios" e buracos grandes.
+   - overflow-wrap/word-break protegem URLs e palavras longas.
+   ------------------------------------------------------------ */
+.prose p,
+article > p,
+article .prose p {
+  text-align: justify;
+  text-align-last: left;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+/* Excecoes: nunca justificar paragrafos que sejam, na pratica,
+   texto de interface. Mantem esses alinhados a esquerda mesmo
+   quando aparecem dentro de um <article> ou .prose. */
+.prose p.text-sm,
+.prose p.text-xs,
+.prose figcaption,
+.prose .not-prose p,
+article p.text-sm,
+article p.text-xs,
+article figcaption,
+.card p,
+.tag,
+.chip,
+.btn,
+.nav-link,
+.crumb,
+.kbd,
+.section-eyebrow,
+[class*="line-clamp"],
+[role="navigation"] p,
+nav p {
+  text-align: left;
+  text-align-last: auto;
+  hyphens: manual;
+  -webkit-hyphens: manual;
+}
+
+/* ------------------------------------------------------------
+   2. text-wrap moderno (atras de @supports, com fallback ao
+   comportamento normal de quebra de linha).
+   - balance em titulos/headings: distribui as palavras em
+     linhas mais equilibradas, sem "viuvas".
+   - pretty em paragrafos de conteudo: melhora a ultima linha
+     e reduz orfas, complementando a justificacao acima.
+   ------------------------------------------------------------ */
+@supports (text-wrap: balance) {
+  .section-h,
+  .prose h1,
+  .prose h2,
+  .prose h3 {
+    text-wrap: balance;
+  }
+}
+@supports (text-wrap: pretty) {
+  .prose p,
+  article > p,
+  article .prose p {
+    text-wrap: pretty;
+  }
+}
+
+/* ------------------------------------------------------------
+   3. OKLCH (progressive enhancement). Apenas realce DECORATIVO:
+   recria os mesmos tons (brand #2C4791, accent #1E88E5,
+   sun #F5B400) em gamut amplo (P3/Rec2020) para gradientes mais
+   vividos. Os fallbacks hex acima permanecem intactos fora deste
+   bloco. NAO mexe em tokens do Tailwind nem em cor de texto, para
+   nao alterar contraste. So entra quando o navegador suporta oklch.
+   ------------------------------------------------------------ */
+@supports (color: oklch(0% 0 0)) {
+  /* Gradiente do hero: tons mais profundos e saturados em gamut amplo. */
+  .hero-grad {
+    background:
+      radial-gradient(1200px 600px at 20% -10%, oklch(82% 0.17 88 / .12), transparent 60%),
+      radial-gradient(900px 500px at 90% 10%, oklch(63% 0.18 250 / .18), transparent 60%),
+      linear-gradient(180deg, oklch(30% 0.09 256) 0%, oklch(33% 0.11 262) 60%, oklch(40% 0.14 264) 100%);
+  }
+
+  /* Barra de progresso de leitura: arco brand -> accent -> sun mais vivo. */
+  #reading-progress {
+    background: linear-gradient(90deg, oklch(40% 0.14 264) 0%, oklch(63% 0.18 250) 55%, oklch(82% 0.17 88) 100%);
+    box-shadow: 0 0 8px oklch(63% 0.18 250 / .4);
+  }
+
+  /* Realce de gradiente animado do hero (background-clip: text). */
+  .grad-anim {
+    background-image: linear-gradient(90deg, oklch(63% 0.18 250), oklch(82% 0.17 88), oklch(40% 0.14 264), oklch(63% 0.18 250));
+  }
+
+  /* Medidor regulatorio aceso: mesmo brand->accent, mais vivido. */
+  .reg-meter > span.reg-on {
+    background: linear-gradient(90deg, oklch(40% 0.14 264), oklch(63% 0.18 250));
+  }
+}
+
+/* ------------------------------------------------------------
+   4. Container queries (atras de @supports). O cartao de area
+   (.area-card, componente AreaCard.astro) vira contexto de
+   container e adapta o proprio layout ao ESPACO DISPONIVEL, nao
+   a viewport. Assim o mesmo cartao se comporta bem numa coluna
+   estreita (sidebar) ou larga (grid principal). Fallback: o
+   layout atual via Tailwind/utilitarios continua valendo.
+   container-type aplicado em: .area-card (raiz do AreaCard).
+   ------------------------------------------------------------ */
+@supports (container-type: inline-size) {
+  .area-card {
+    container-type: inline-size;
+    container-name: areacard;
+  }
+  /* Quando o cartao tem espaco (contêiner >= 22rem), aumenta o
+     respiro interno e o tamanho do titulo, sem media query. */
+  @container areacard (min-width: 22rem) {
+    .area-card h3 {
+      font-size: 1.25rem;
+      line-height: 1.4;
+    }
+  }
+  /* Em contêineres muito estreitos, reduz o respiro para nao
+     apertar o conteudo. */
+  @container areacard (max-width: 15rem) {
+    .area-card h3 {
+      font-size: 1rem;
+    }
+  }
+}
+
+/* ------------------------------------------------------------
+   5. :has() (progressive enhancement). Refinamentos visuais
+   seguros, sem alterar semantica:
+   a) um .card que contem um link/botao com foco via teclado
+      ganha um anel sutil de foco no proprio cartao, ajudando a
+      orientar quem navega por teclado.
+   b) um .card que contem uma .tag ganha um leve realce de borda
+      ao passar o mouse, indicando que e um item classificado.
+   ------------------------------------------------------------ */
+@supports selector(:has(*)) {
+  .card:has(a:focus-visible),
+  .card-lift:has(a:focus-visible) {
+    box-shadow: 0 0 0 2px theme('colors.brand.500');
+    border-color: theme('colors.brand.400');
+  }
+  .card:has(.tag):hover,
+  .card-lift:has(.tag):hover {
+    border-color: theme('colors.brand.300');
+  }
+  [data-theme="dark"] .card:has(a:focus-visible),
+  [data-theme="dark"] .card-lift:has(a:focus-visible) {
+    box-shadow: 0 0 0 2px #4D67B0;
+    border-color: #4D67B0;
+  }
+}
+
 /* Impressao limpa: remove cromos de navegacao, expande FAQs, tinta economica */
 @media print {
   #reading-progress,

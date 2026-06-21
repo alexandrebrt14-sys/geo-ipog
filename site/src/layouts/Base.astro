@@ -125,7 +125,39 @@ if (isAutismoRoute) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
+  <!-- Onda 33: dns-prefetch para os dominios do Google Analytics. Resolve o DNS
+       cedo (handshake mais curto quando o gtag async dispara) sem bloquear o
+       render. preconnect adicional ao googletagmanager, que e o primeiro a ser
+       requisitado. Nao remove nem atrasa o analytics. -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
   <ViewTransitions />
+
+  {/* Onda 33: Speculation Rules API (navegacao instantanea). Document rules
+      com eagerness "moderate" => o navegador faz PRERENDER de links internos
+      da mesma origem ao passar o mouse / focar. Complementa (nao duplica) o
+      prefetch nativo do Astro: o Astro so PREFETCHA o HTML por viewport; aqui
+      adicionamos PRERENDER sob intencao do usuario, um estagio alem. Excluimos
+      /busca (resultados dinamicos), ancoras e qualquer URL externa. Progressive
+      enhancement: navegadores sem suporte ignoram o bloco silenciosamente. */}
+  <script is:inline type="speculationrules" set:html={JSON.stringify({
+    prerender: [
+      {
+        source: 'document',
+        where: {
+          and: [
+            { href_matches: '/*' },
+            { not: { href_matches: '/busca*' } },
+            { not: { selector_matches: '[rel~="external"]' } },
+            { not: { selector_matches: '[target="_blank"]' } }
+          ]
+        },
+        eagerness: 'moderate'
+      }
+    ]
+  })}></script>
 
   <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${SITE.gaMeasurementId}`}></script>
   <script is:inline define:vars={{ gaId: SITE.gaMeasurementId, siteUrl: SITE.url }}>

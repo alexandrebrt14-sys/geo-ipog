@@ -958,6 +958,72 @@ a[aria-label]:not(.btn):not(.tap-keep) {
   .chip, .tag { border-color: theme('colors.ink.300'); }
 }
 
+/* ============================================================
+   ONDA 33 — Performance (Core Web Vitals)
+   Derivada dos Modulos 9 e 11 do curso "Frontends com Vibecoding"
+   (performance, do prototipo ao deploy). Foco em LCP, CLS e INP
+   sem regressao visual. Tudo via progressive enhancement; o
+   estado base continua identico nos navegadores sem suporte.
+   Sem emojis.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. CLS por troca de fonte (FOUT) — fallback com metricas ajustadas.
+   Enquanto as webfonts do Google (Inter/Exo) carregam, o navegador
+   pinta com a familia fallback. Sem ajuste de metricas, a troca para
+   a webfont reflui o layout (Cumulative Layout Shift). Declaramos
+   familias fallback locais espelhando as metricas da webfont real,
+   de modo que a area ocupada pelo texto seja quase identica antes e
+   depois do swap, zerando o reflow.
+   Valores: size-adjust/ascent/descent calibrados para Inter sobre
+   Arial e para Exo sobre Arial (valores conhecidos da comunidade,
+   conservadores). Uso: anexados AO FINAL da cadeia de font-family do
+   body e de .font-display, depois da webfont mas antes do generico,
+   para so entrarem em acao durante o carregamento.
+   ------------------------------------------------------------ */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22.43%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Exo Fallback';
+  src: local('Arial');
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+body {
+  font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+}
+.font-display {
+  font-family: 'Exo', 'Exo Fallback', system-ui, sans-serif;
+}
+
+/* ------------------------------------------------------------
+   2. content-visibility: renderizacao ociosa do rodape.
+   O <footer> fica sempre abaixo da dobra. content-visibility: auto
+   permite ao navegador pular layout/paint do rodape ate ele se
+   aproximar do viewport, reduzindo o trabalho de render inicial
+   (ajuda LCP e INP em paginas longas). contain-intrinsic-size
+   reserva uma altura estimada para evitar CLS e manter a barra de
+   rolagem estavel. Trade-off: busca na pagina (Ctrl+F) e ancoras
+   continuam funcionando em navegadores atuais porque o conteudo
+   pulado e renderizado sob demanda; escopo restrito ao rodape para
+   ser conservador. Progressive enhancement: ignorado onde nao ha
+   suporte.
+   ------------------------------------------------------------ */
+@supports (content-visibility: auto) {
+  footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
+  }
+}
+
 /* Impressao limpa: remove cromos de navegacao, expande FAQs, tinta economica */
 @media print {
   #reading-progress,

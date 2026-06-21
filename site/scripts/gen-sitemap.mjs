@@ -65,8 +65,9 @@ function lastmodForRoute(route, htmlPath) {
 
 function walk(dir, base = '') {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    // Exclui internos, assets e as paginas de busca (noindex, fora do sitemap).
-    if (entry.name.startsWith('_') || entry.name === 'assets' || entry.name === 'busca') continue;
+    // Exclui internos, assets e as paginas noindex (busca e offline) — fora do sitemap.
+    // Onda 35: 'offline' (fallback PWA da Onda 34) e noindex e nao deve poluir o sitemap.
+    if (entry.name.startsWith('_') || entry.name === 'assets' || entry.name === 'busca' || entry.name === 'offline') continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       walk(full, path.join(base, entry.name));

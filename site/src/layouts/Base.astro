@@ -18,6 +18,15 @@ interface Props {
   bodyClass?: string;
   searchPrefill?: string;
   noindex?: boolean;
+  /**
+   * Onda 35: emite um nó WebPage canônico no @graph global desta página.
+   * Opt-in (padrão false) PORQUE 315 das 335 páginas já declaram seu próprio
+   * nó de página (WebPage/AboutPage/Article/etc.) com @id próprio — emitir por
+   * padrão duplicaria esses nós. Ative SOMENTE em páginas que não têm nenhum nó
+   * de página (lacuna real). O nó usa @id `#primary-webpage` (distinto de
+   * `#webpage` usado por algumas páginas) e inclui speakable para GEO/voz.
+   */
+  emitWebPage?: boolean;
 }
 
 const {
@@ -29,7 +38,8 @@ const {
   showSearchInHeader = true,
   bodyClass = '',
   searchPrefill = '',
-  noindex = false
+  noindex = false,
+  emitWebPage = false
 } = Astro.props;
 
 // E-E-A-T: rotas do hub /autismo/* têm Larissa Caramaschi como autora canônica.
@@ -70,6 +80,31 @@ const baseGraph: any[] = [
 if (isAutismoRoute) {
   baseGraph.push(larissaPersonBase);
 }
+
+// Onda 35: nó WebPage opt-in para páginas SEM nó de página próprio (lacuna real).
+// @id `#primary-webpage` é estável por URL e distinto de `#webpage` (usado por
+// algumas páginas) para nunca colidir/duplicar. url/@id usam a MESMA forma da
+// canonical (trailingSlash: 'always'), garantindo coerência com og:url e sitemap.
+// speakable (SpeakableSpecification) reusa o conjunto de seletores canônico do
+// portal (h1 + TL;DR + perguntas de FAQ) — sinal forte para motores generativos
+// e assistentes de voz. NÃO inventa datePublished/dateModified.
+if (emitWebPage) {
+  baseGraph.push({
+    '@type': 'WebPage',
+    '@id': canonical + '#primary-webpage',
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: 'pt-BR',
+    isPartOf: { '@id': SITE.url + '/#website' },
+    primaryImageOfPage: { '@type': 'ImageObject', url: ogImage },
+    publisher: { '@id': SITE.url + '/#brasil-geo' },
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.tldr', '.tldr-resposta', '.faq-question']
+    }
+  });
+}
 ---
 
 <!doctype html>
@@ -89,6 +124,13 @@ if (isAutismoRoute) {
       } catch (e) { /* ignora */ }
     })();
   </script>
+  {/* Onda 35: theme-color declarativo por esquema de cor. O navegador aplica o
+      valor correto ANTES de o JS rodar (sem flash da cor errada na barra do SO).
+      O <meta id="meta-theme-color"> abaixo permanece e continua sendo atualizado
+      pelo JS quando o usuário alterna o tema manualmente (override sobre o media).
+      Light #0F2543 / Dark #0A1626 espelham os valores usados em syncThemeUi(). */}
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#0F2543" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0A1626" />
   <meta id="meta-theme-color" name="theme-color" content="#0F2543" />
   <title>{title}</title>
   <meta name="description" content={description} />

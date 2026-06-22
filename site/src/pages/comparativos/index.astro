@@ -1,6 +1,8 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
+import KpiCard from '@components/dataviz/KpiCard.astro';
+import MiniBar from '@components/dataviz/MiniBar.astro';
 import { SITE } from '@lib/data';
 
 const COMPARATIVOS = [
@@ -168,6 +170,19 @@ const COMPARATIVOS = [
   }
 ];
 
+// ─────────────────────────────────────────────
+// Métricas derivadas do próprio catálogo (sem inventar dados)
+// ─────────────────────────────────────────────
+const minutos = COMPARATIVOS.map(c => parseInt(c.duracaoLeitura, 10)).filter(n => !Number.isNaN(n));
+const totalComparativos = COMPARATIVOS.length;
+const tempoTotal = minutos.reduce((a, b) => a + b, 0);
+// Distribuição por faixa de profundidade (tempo de leitura)
+const faixas = [
+  { rotulo: 'Rápidos · 10–11 min', n: minutos.filter(m => m <= 11).length, cor: 'accent' as const },
+  { rotulo: 'Médios · 12–13 min', n: minutos.filter(m => m === 12 || m === 13).length, cor: 'brand' as const },
+  { rotulo: 'Profundos · 14 min', n: minutos.filter(m => m >= 14).length, cor: 'ink' as const }
+];
+
 const ldItemList = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -263,6 +278,30 @@ const ldBreadcrumb = JSON.stringify({
           </ol>
           <p class="mt-4 text-xs text-ink-500 italic">Se a resposta às três é clara, o comparativo confirma. Se é incerta, ele revela.</p>
         </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <KpiCard
+            rotulo="Comparativos"
+            valor={String(totalComparativos)}
+            direcao="neutro"
+            contexto="Análises independentes."
+          />
+          <KpiCard
+            rotulo="Leitura total"
+            valor={`${tempoTotal} min`}
+            direcao="positivo"
+            contexto="Soma das durações estimadas."
+          />
+        </div>
+
+        <MiniBar
+          titulo="Comparativos por profundidade"
+          subtitulo="Distribuição pela duração de leitura estimada"
+          unidade=""
+          max={totalComparativos}
+          tabelaCols={['Faixa de leitura', 'Quantidade']}
+          dados={faixas.map(f => ({ rotulo: f.rotulo, valor: f.n, cor: f.cor }))}
+        />
 
         <div class="card p-6">
           <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Próximo passo</p>

@@ -98,7 +98,8 @@ function PersonaPanel({ card, isActive, onSelect }: PersonaPanelProps) {
   const links = useTaxonomySafe(card.id, card.href);
   return (
     <article
-      className={`group relative flex h-full flex-col rounded-2xl border bg-white p-5 transition ${isActive ? 'border-brand-500 shadow-soft' : 'border-surface-200 hover:border-brand-400 hover:shadow-soft'}`}
+      aria-current={isActive ? 'true' : undefined}
+      className={`group relative flex h-full flex-col rounded-2xl border bg-white p-5 transition ${isActive ? 'border-brand-500 ring-2 ring-brand-500 ring-offset-2 shadow-soft' : 'border-surface-200 hover:border-brand-400 hover:shadow-soft'}`}
     >
       <header className="flex items-start gap-3">
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-800 font-display text-base font-bold text-white">
@@ -145,14 +146,20 @@ function PersonaPanel({ card, isActive, onSelect }: PersonaPanelProps) {
       <footer className="mt-auto pt-5">
         <div className="text-[11px] text-ink-500">Recomendado: <span className="font-semibold text-ink-700">{card.recommendedMBA}</span></div>
         <div className="mt-3 flex items-center justify-between gap-2">
-          <a href={card.href} className="text-xs font-semibold text-brand-700 hover:text-brand-800">
+          <a href={card.href} className="rounded-sm text-xs font-semibold text-brand-700 hover:text-brand-800">
             Ver trilha completa <span aria-hidden="true">→</span>
           </a>
           <button
             type="button"
             onClick={onSelect}
-            className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition ${isActive ? 'border-brand-700 bg-brand-700 text-white' : 'border-surface-200 text-ink-700 hover:border-brand-400 hover:text-brand-800'}`}
+            aria-pressed={isActive}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold transition ${isActive ? 'border-brand-700 bg-brand-700 text-white' : 'border-surface-200 text-ink-700 hover:border-brand-400 hover:text-brand-800'}`}
           >
+            {isActive && (
+              <svg aria-hidden="true" focusable="false" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.1 3.1 6.8-6.8a1 1 0 0 1 1.4 0z" clipRule="evenodd" />
+              </svg>
+            )}
             {isActive ? 'Selecionado' : 'Esse sou eu'}
           </button>
         </div>
@@ -197,7 +204,7 @@ export default function PersonaQuickPicker({ variant = 'home' }: Props) {
           <button
             type="button"
             onClick={() => { setActive(null); if (typeof window !== 'undefined') { window.localStorage.removeItem('pp_persona'); window.dispatchEvent(new CustomEvent('pp:persona-change', { detail: { persona: '' } })); } }}
-            className="text-xs font-semibold text-ink-500 hover:text-brand-800"
+            className="rounded-sm text-xs font-semibold text-ink-500 hover:text-brand-800"
           >
             Limpar seleção
           </button>

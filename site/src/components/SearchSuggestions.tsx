@@ -199,13 +199,18 @@ export default function SearchSuggestions({ variant = 'overlay', persona }: Prop
               <ul className="mt-2 space-y-1.5">
                 {personaDocs.map(doc => (
                   <li key={doc.href}>
-                    <a href={doc.href} className="block text-xs text-brand-700 hover:text-brand-800 hover:underline">
+                    <a href={doc.href} className="block rounded-sm text-xs text-brand-700 hover:text-brand-800 hover:underline">
                       {doc.title}
                     </a>
                   </li>
                 ))}
               </ul>
             </div>
+          )}
+          {!activePersona && (
+            <p className="mt-5 border-t border-surface-200 pt-4 text-[11px] text-ink-500">
+              Escolha o seu perfil na coluna "Por onde começar" para ver atalhos personalizados aqui.
+            </p>
           )}
         </div>
       </div>

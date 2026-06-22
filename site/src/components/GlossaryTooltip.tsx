@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { FocusEvent, ReactNode } from 'react';
 
 interface Props {
   term: string;
@@ -210,18 +210,29 @@ export default function GlossaryTooltip({ term, children, cluster }: Props) {
   const targetCluster = cluster ?? def.cluster;
   const href = `/glossario/${targetCluster}#${def.slug}`;
 
+  const handleBlur = (e: FocusEvent<HTMLSpanElement>) => {
+    // Só fecha quando o foco realmente sai do conjunto gatilho + tooltip,
+    // permitindo navegar até o link "Ver no glossário" por teclado.
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+      setOpen(false);
+    }
+  };
+
   return (
-    <span className="relative inline-block" ref={wrapperRef}>
+    <span
+      className="relative inline-block"
+      ref={wrapperRef}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onBlur={handleBlur}
+    >
       <button
         type="button"
         aria-describedby={open ? id : undefined}
         aria-expanded={open}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
         onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
         onClick={() => setOpen(o => !o)}
-        className="cursor-help border-b border-dotted border-brand-500 bg-transparent p-0 font-semibold text-brand-700 hover:text-brand-800"
+        className="cursor-help rounded-sm border-b border-dotted border-brand-500 bg-transparent p-0 font-semibold text-brand-700 hover:text-brand-800"
       >
         {children ?? def.label}
       </button>

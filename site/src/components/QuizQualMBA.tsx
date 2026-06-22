@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 /**
@@ -328,6 +328,7 @@ export default function QuizQualMBA() {
   const [answers, setAnswers] = useState<number[]>(
     () => QUESTIONS.map(() => -1)
   );
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const total = QUESTIONS.length;
   const answered = useMemo(
@@ -354,6 +355,35 @@ export default function QuizQualMBA() {
         setView('result');
       }
     }, 120);
+  }
+
+  function focusOption(index: number) {
+    window.requestAnimationFrame(() => {
+      optionRefs.current[index]?.focus();
+    });
+  }
+
+  // Navegação por teclado do radio group: setas movem o foco entre opções,
+  // Home/End vão para a primeira/última. Enter e Espaço já selecionam via onClick.
+  function onOptionKeyDown(
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    index: number,
+    count: number
+  ) {
+    let next = index;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+      next = (index + 1) % count;
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+      next = (index - 1 + count) % count;
+    } else if (event.key === 'Home') {
+      next = 0;
+    } else if (event.key === 'End') {
+      next = count - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    focusOption(next);
   }
 
   function goPrev() {
@@ -438,7 +468,11 @@ export default function QuizQualMBA() {
         </div>
         <div
           className="mt-2 h-1.5 w-full rounded-full bg-surface-100 overflow-hidden"
-          aria-hidden="true">
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`Progresso do quiz: ${progress}% respondido`}>
           <motion.div
             className="h-full bg-sun-500"
             initial={false}
@@ -454,33 +488,61 @@ export default function QuizQualMBA() {
             animate={{ opacity: 1, x: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, x: -40 }}
             transition={{ duration: reduce ? 0 : 0.25, ease: [0.2, 0.8, 0.2, 1] }}>
-            <h2 className="section-h text-xl sm:text-2xl mt-5">{q.text}</h2>
+            <h2
+              id={`quiz-q-${q.id}`}
+              className="section-h text-xl sm:text-2xl mt-5">{q.text}</h2>
             {q.helper && (
-              <p className="mt-2 text-sm text-ink-500">{q.helper}</p>
+              <p id={`quiz-help-${q.id}`} className="mt-2 text-sm text-ink-500">{q.helper}</p>
             )}
 
-            <div className="mt-5 space-y-2.5">
+            <div
+              role="radiogroup"
+              aria-labelledby={`quiz-q-${q.id}`}
+              aria-describedby={q.helper ? `quiz-help-${q.id}` : undefined}
+              className="mt-5 space-y-2.5">
               {q.options.map((opt, i) => {
                 const active = selected === i;
+                // No padrão radio group, apenas a opção marcada (ou a primeira,
+                // quando nenhuma foi escolhida) fica na ordem de tabulação.
+                const tabbable = selected >= 0 ? active : i === 0;
                 return (
                   <motion.button
                     key={i}
+                    ref={(el) => {
+                      optionRefs.current[i] = el;
+                    }}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    tabIndex={tabbable ? 0 : -1}
                     onClick={() => answer(i)}
+                    onKeyDown={(e) => onOptionKeyDown(e, i, q.options.length)}
                     whileTap={reduce ? undefined : { scale: 0.985 }}
-                    className={`w-full text-left px-4 py-3 rounded-xl border transition-all duration-150 ${
+                    className={`w-full text-left px-4 py-3 rounded-xl border transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
                       active
                         ? 'border-brand-600 bg-brand-50 text-brand-900 shadow-soft'
                         : 'border-surface-200 hover:border-brand-400 hover:bg-surface-50 text-ink-900'
-                    }`}
-                    aria-pressed={active}>
+                    }`}>
                     <span className="inline-flex items-center gap-3">
                       <span
-                        className={`w-6 h-6 rounded-full inline-flex items-center justify-center text-xs font-bold border ${
+                        className={`relative w-6 h-6 rounded-full inline-flex items-center justify-center text-xs font-bold border ${
                           active
                             ? 'border-brand-600 bg-brand-600 text-white'
                             : 'border-surface-200 text-ink-500'
                         }`}>
-                        {String.fromCharCode(65 + i)}
+                        {active ? (
+                          <svg
+                            className="w-4 h-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            aria-hidden="true">
+                            <path d="m5 12 5 5 9-10" />
+                          </svg>
+                        ) : (
+                          String.fromCharCode(65 + i)
+                        )}
                       </span>
                       <span>{opt.label}</span>
                     </span>
@@ -511,7 +573,11 @@ export default function QuizQualMBA() {
   // result
   if (!result) return null;
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div
+      className="space-y-6 animate-fade-in"
+      role="region"
+      aria-live="polite"
+      aria-label={`Resultado do quiz: encaixe principal ${result.primary.shortName}`}>
       <div className="card p-6 sm:p-8 bg-brand-800 text-white border-brand-800">
         <span className="tag tag-dark uppercase">Resultado · orientação</span>
         <h2 className="section-h text-white text-2xl sm:text-3xl mt-3">

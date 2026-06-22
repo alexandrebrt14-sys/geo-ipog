@@ -1,0 +1,100 @@
+---
+/**
+ * CompareTable — tabela comparativa A vs B (ou multi-coluna) acessivel.
+ * Celulas podem ser:
+ *  - texto livre (string)
+ *  - estado padronizado: { estado: 'alta' | 'media' | 'baixa' | 'sim' | 'nao' | 'parcial', texto?: string }
+ *    renderizado como ICONE contrastante + rotulo textual visivel (nunca so cor),
+ *    com sr-only redundante para leitores de tela.
+ *
+ * Estrutura responsiva: wrapper overflow-x-auto contido, <caption>, <th scope>.
+ * Contraste WCAG AA: texto quase-preto sobre claro; chips com fundo claro + texto escuro.
+ *
+ * Props:
+ *  - titulo: caption da tabela (obrigatorio para acessibilidade)
+ *  - colunas: string[] — cabecalhos (1a coluna = dimensao/linha)
+ *  - linhas: Array<Array<Celula>> — cada linha tem length = colunas.length
+ *            1a celula de cada linha vira <th scope="row">
+ *  - zebra: boolean (default true)
+ *  - destaqueCol: indice 1-based da coluna a destacar levemente (opcional)
+ */
+type Estado = 'alta' | 'media' | 'baixa' | 'sim' | 'nao' | 'parcial';
+type Celula = string | { estado: Estado; texto?: string };
+
+interface Props {
+  titulo: string;
+  colunas: string[];
+  linhas: Celula[][];
+  zebra?: boolean;
+  destaqueCol?: number;
+}
+const { titulo, colunas, linhas, zebra = true, destaqueCol } = Astro.props;
+
+const ICON: Record<string, string> = {
+  // check
+  pos: 'M16.7 6.3a1 1 0 0 1 0 1.4l-7 7a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.8 6.3-6.3a1 1 0 0 1 1.4 0z',
+  // x
+  neg: 'M6.2 5a1 1 0 0 0-1.2 1.2L8.8 10l-3.8 3.8a1 1 0 1 0 1.4 1.4L10 11.4l3.8 3.8a1 1 0 0 0 1.4-1.4L11.4 10l3.8-3.8a1 1 0 0 0-1.4-1.4L10 8.6 6.2 4.8z',
+  // dash / parcial
+  par: 'M5 9h10v2H5V9z'
+};
+
+const META: Record<Estado, { kind: 'pos' | 'neg' | 'par'; rotulo: string; chip: string; txt: string; ring: string }> = {
+  alta:    { kind: 'pos', rotulo: 'Evidencia alta',     chip: 'bg-emerald-50', txt: 'text-emerald-800', ring: 'ring-emerald-600/30' },
+  media:   { kind: 'par', rotulo: 'Evidencia moderada', chip: 'bg-sun-400/25', txt: 'text-ink-900',     ring: 'ring-sun-600/40' },
+  baixa:   { kind: 'neg', rotulo: 'Evidencia limitada', chip: 'bg-surface-100', txt: 'text-ink-700',    ring: 'ring-ink-300/40' },
+  sim:     { kind: 'pos', rotulo: 'Sim',                chip: 'bg-emerald-50', txt: 'text-emerald-800', ring: 'ring-emerald-600/30' },
+  nao:     { kind: 'neg', rotulo: 'Nao',                chip: 'bg-rose-50',    txt: 'text-rose-800',    ring: 'ring-rose-600/30' },
+  parcial: { kind: 'par', rotulo: 'Parcial',           chip: 'bg-sun-400/25', txt: 'text-ink-900',     ring: 'ring-sun-600/40' }
+};
+
+const isEstado = (c: Celula): c is { estado: Estado; texto?: string } =>
+  typeof c === 'object' && c !== null && 'estado' in c;
+---
+<figure>
+  <div class="overflow-x-auto rounded-2xl border border-surface-200">
+    <table class="min-w-full text-sm border-collapse">
+      <caption class="sr-only">{titulo}</caption>
+      <thead class="bg-surface-50">
+        <tr>
+          {colunas.map((col, ci) => (
+            <th
+              scope="col"
+              class={`text-left p-3 font-display font-semibold text-ink-900 ${ci === 0 ? 'min-w-[8rem]' : ''} ${destaqueCol === ci + 1 ? 'bg-brand-50' : ''}`}
+            >{col}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-surface-200">
+        {linhas.map((linha, ri) => (
+          <tr class={zebra && ri % 2 === 1 ? 'bg-surface-50/60' : ''}>
+            {linha.map((cel, ci) => {
+              const Tag = ci === 0 ? 'th' : 'td';
+              const destaque = destaqueCol === ci + 1 ? 'bg-brand-50/50' : '';
+              if (isEstado(cel)) {
+                const m = META[cel.estado];
+                const glyph = ICON[m.kind];
+                return (
+                  <Tag scope={ci === 0 ? 'row' : undefined} class={`p-3 align-top ${destaque}`}>
+                    <span class={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-semibold ring-1 ${m.chip} ${m.txt} ${m.ring}`}>
+                      <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d={glyph}/></svg>
+                      <span>{cel.texto ?? m.rotulo}</span>
+                      <span class="sr-only">({m.rotulo})</span>
+                    </span>
+                  </Tag>
+                );
+              }
+              return (
+                <Tag
+                  scope={ci === 0 ? 'row' : undefined}
+                  class={`p-3 align-top ${ci === 0 ? 'font-medium text-ink-900' : 'text-ink-700'} ${destaque}`}
+                >{cel}</Tag>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <figcaption class="sm:hidden text-xs text-ink-500 mt-2">Arraste a tabela para ver mais colunas.</figcaption>
+</figure>

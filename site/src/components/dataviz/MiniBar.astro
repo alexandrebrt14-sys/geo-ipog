@@ -1,0 +1,90 @@
+---
+/**
+ * MiniBar — barra de proporcao horizontal (sparkline de razao) acessivel.
+ * Renderiza uma lista de itens como barras comparaveis, com valor textual ao lado.
+ * Inclui <table> equivalente em sr-only para leitores de tela.
+ * Cor NUNCA carrega significado sozinha: cada barra tem rotulo + numero textual visivel.
+ *
+ * Props:
+ *  - titulo: titulo do bloco
+ *  - subtitulo: linha de apoio opcional (ex.: fonte/contexto)
+ *  - unidade: sufixo textual do valor (ex.: '%') — default '%'
+ *  - max: valor de referencia para 100% da largura (default 100)
+ *  - tabelaCols: rotulos das colunas da tabela acessivel [categoria, valor]
+ *  - dados: [{ rotulo, valor, cor?, nota? }]
+ *    cor: 'brand' | 'sun' | 'accent' | 'emerald' | 'rose' | 'ink' (default 'brand')
+ */
+interface ItemBar {
+  rotulo: string;
+  valor: number;
+  cor?: 'brand' | 'sun' | 'accent' | 'emerald' | 'rose' | 'ink';
+  nota?: string;
+}
+interface Props {
+  titulo: string;
+  subtitulo?: string;
+  unidade?: string;
+  max?: number;
+  tabelaCols?: [string, string];
+  dados: ItemBar[];
+}
+const {
+  titulo,
+  subtitulo,
+  unidade = '%',
+  max = 100,
+  tabelaCols = ['Categoria', 'Valor'],
+  dados
+} = Astro.props;
+
+const fill: Record<string, string> = {
+  brand: 'bg-brand-600',
+  sun: 'bg-sun-500',
+  accent: 'bg-accent-600',
+  emerald: 'bg-emerald-600',
+  rose: 'bg-rose-600',
+  ink: 'bg-ink-700'
+};
+const fmt = (n: number) => Number.isInteger(n) ? String(n) : String(n).replace('.', ',');
+---
+<figure class="card p-5">
+  <figcaption class="mb-4">
+    <p class="font-display font-semibold text-base text-ink-900">{titulo}</p>
+    {subtitulo && <p class="text-xs text-ink-500 mt-0.5">{subtitulo}</p>}
+  </figcaption>
+
+  <ul class="space-y-3" aria-hidden="true">
+    {dados.map((d) => {
+      const pct = Math.max(0, Math.min(100, (d.valor / max) * 100));
+      const cor = fill[d.cor ?? 'brand'];
+      return (
+        <li>
+          <div class="flex items-baseline justify-between gap-3 mb-1">
+            <span class="text-sm font-medium text-ink-900">{d.rotulo}</span>
+            <span class="text-sm font-bold text-ink-900 tabular-nums shrink-0">{fmt(d.valor)}{unidade}</span>
+          </div>
+          <div class="h-2.5 w-full rounded-full bg-surface-100 overflow-hidden">
+            <div class={`h-full rounded-full ${cor}`} style={`width:${pct}%`}></div>
+          </div>
+          {d.nota && <p class="text-xs text-ink-500 mt-1">{d.nota}</p>}
+        </li>
+      );
+    })}
+  </ul>
+
+  <!-- Equivalente tabular acessivel -->
+  <table class="sr-only">
+    <caption>{titulo}{subtitulo ? ` — ${subtitulo}` : ''}</caption>
+    <thead>
+      <tr><th scope="col">{tabelaCols[0]}</th><th scope="col">{tabelaCols[1]}</th></tr>
+    </thead>
+    <tbody>
+      {dados.map((d) => (
+        <tr>
+          <th scope="row">{d.rotulo}{d.nota ? ` (${d.nota})` : ''}</th>
+          <td>{fmt(d.valor)}{unidade}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</figure>

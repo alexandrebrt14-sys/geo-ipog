@@ -1,0 +1,60 @@
+---
+/**
+ * KpiCard — cartao de KPI no padrao "cockpit de decisao":
+ * rotulo + numero grande + contexto (vs meta/comparacao) + seta/icone de direcao + cor semantica.
+ * Nunca usa apenas cor: sempre numero + seta textual + rotulo de contexto.
+ *
+ * Props:
+ *  - rotulo: titulo curto do indicador
+ *  - valor: valor principal exibido grande (string ja formatada, ex.: "20%", "4/5")
+ *  - contexto: linha de apoio explicando contra o que se compara (vs meta, base, etc.)
+ *  - direcao: 'positivo' | 'neutro' | 'atencao' | 'negativo' — define cor + icone semantico
+ *  - tendencia: 'sobe' | 'desce' | 'estavel' (opcional) — seta direcional textual
+ *  - rodape: nota fina opcional sob o valor
+ */
+interface Props {
+  rotulo: string;
+  valor: string;
+  contexto?: string;
+  direcao?: 'positivo' | 'neutro' | 'atencao' | 'negativo';
+  tendencia?: 'sobe' | 'desce' | 'estavel';
+  rodape?: string;
+}
+const {
+  rotulo,
+  valor,
+  contexto,
+  direcao = 'neutro',
+  tendencia,
+  rodape
+} = Astro.props;
+
+const cores: Record<string, { valor: string; chip: string; chipTxt: string; borda: string }> = {
+  positivo: { valor: 'text-emerald-700', chip: 'bg-emerald-50', chipTxt: 'text-emerald-800', borda: 'border-l-emerald-600' },
+  neutro:   { valor: 'text-brand-700',   chip: 'bg-brand-50',   chipTxt: 'text-brand-800',   borda: 'border-l-brand-600' },
+  atencao:  { valor: 'text-amber-700',   chip: 'bg-sun-400/25', chipTxt: 'text-ink-900',     borda: 'border-l-sun-500' },
+  negativo: { valor: 'text-rose-700',    chip: 'bg-rose-50',    chipTxt: 'text-rose-800',    borda: 'border-l-rose-600' }
+};
+const c = cores[direcao];
+
+const setas: Record<string, { glyph: string; rotulo: string }> = {
+  sobe:    { glyph: 'M10 4l5 6h-3v6H8v-6H5l5-6z',            rotulo: 'em alta' },
+  desce:   { glyph: 'M10 16l-5-6h3V4h4v6h3l-5 6z',           rotulo: 'em queda' },
+  estavel: { glyph: 'M4 9h12v2H4V9z',                         rotulo: 'estavel' }
+};
+const seta = tendencia ? setas[tendencia] : null;
+---
+<div class={`card p-5 border-l-4 ${c.borda}`} role="group" aria-label={`${rotulo}: ${valor}${contexto ? ', ' + contexto : ''}`}>
+  <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-1">{rotulo}</p>
+  <div class="flex items-baseline gap-2">
+    <span class={`text-3xl font-display font-bold leading-none ${c.valor}`}>{valor}</span>
+    {seta && (
+      <span class={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${c.chip} ${c.chipTxt}`}>
+        <svg class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d={seta.glyph}/></svg>
+        {seta.rotulo}
+      </span>
+    )}
+  </div>
+  {contexto && <p class="mt-2 text-sm text-ink-700 leading-snug">{contexto}</p>}
+  {rodape && <p class="mt-1 text-xs text-ink-500">{rodape}</p>}
+</div>

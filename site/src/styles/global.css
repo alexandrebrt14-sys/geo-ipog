@@ -3,9 +3,61 @@
 @tailwind utilities;
 
 @layer base {
+  /*
+   * Camada de tokens semânticos (fundação WAVE 1).
+   * Mapeiam a paleta HEX já existente do tailwind.config para nomes de
+   * intenção (bg, surface, text, primary, accent, border, focus...).
+   * Regra do curso "Frontends com Vibecoding": cor = token nomeado, nunca
+   * hex espalhado. Os HEX continuam canônicos no tailwind.config (as 334
+   * páginas dependem das classes brand-, ink-, surface-, sun- e accent-);
+   * estes tokens são ADITIVOS e prontos para consumo futuro via var(--...).
+   * Equivalentes OKLCH (L previsível) anotados em comentário para referência.
+   * color-scheme permanece light-only — a estrutura abaixo deixa o caminho
+   * pronto para um futuro tema escuro sem reescrever consumidores.
+   */
   :root {
     color-scheme: light;
+
+    /* Superfícies e fundo */
+    --color-bg: #FFFFFF;            /* surface-0  · oklch(100% 0 0) */
+    --color-surface: #F7F9FC;       /* surface-50 · oklch(98.1% 0.005 258) */
+    --color-surface-2: #EEF1F7;     /* surface-100· oklch(95.8% 0.009 264) */
+    --color-surface-3: #E1E6F0;     /* surface-200· oklch(92.4% 0.015 264) */
+
+    /* Texto (todos passam WCAG AA sobre fundo branco) */
+    --color-text: #262B44;          /* ink-900 · 13,9:1 / branco · oklch(29.7% 0.046 275) */
+    --color-text-strong: #0A1A33;   /* brand-900 · 17,4:1 / branco */
+    --color-text-muted: #5A6478;    /* ink-500 · 5,95:1 / branco · oklch(50.2% 0.034 264) */
+    --color-text-subtle: #3D4366;   /* ink-700 · 9,58:1 / branco · oklch(39.3% 0.060 276) */
+    --color-text-on-primary: #FFFFFF;     /* texto sobre brand escuro */
+    --color-text-on-accent: #FFFFFF;      /* texto sobre accent */
+    --color-text-on-sun: #0A1A33;         /* brand-900 sobre sun · 9,44:1 */
+
+    /* Marca / primária (azul-marinho) */
+    --color-primary: #0F2543;       /* brand-800 · oklch(26.4% 0.063 257) */
+    --color-primary-hover: #162652; /* brand-700 */
+    --color-primary-ink: #0A1A33;   /* brand-900 (texto/contornos mais densos) */
+    --color-primary-soft: #EEF2FA;  /* brand-50 (chips/realces claros) · oklch(96% 0.012 264) */
+    --color-primary-ring: #2C4791;  /* brand-500 (foco) · 8,69:1 / branco · oklch(41.9% 0.126 266) */
+
+    /* Acento (azul informativo) e destaque dourado */
+    --color-accent: #1E88E5;        /* accent-500 · oklch(61.8% 0.167 251) */
+    --color-accent-hover: #1A78CC;  /* accent-600 */
+    --color-sun: #F5B400;           /* sun-500 (dourado) · oklch(80.9% 0.167 82) */
+    --color-sun-hover: #FFC83A;     /* sun-400 */
+    --color-sun-strong: #D9A000;    /* sun-600 (dourado sobre claro, mais legível) */
+
+    /* Bordas e foco */
+    --color-border: #E1E6F0;        /* surface-200 */
+    --color-border-strong: #A0A8B9; /* ink-300 (divisórias de maior contraste) */
+    --color-focus: #2C4791;         /* brand-500 · anel de foco visível, 8,69:1 / branco */
+    --color-focus-on-dark: #FFC83A; /* sun-400 · anel de foco visível sobre fundos escuros */
+
+    /* Métrica do anel de foco (reutilizável) */
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
   }
+
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
@@ -16,14 +68,19 @@
     background: theme('colors.surface.0');
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Quebra de linha tipográfica: evita "órfãs"/"viúvas" feias no corpo.
+       Progressivo — navegadores sem suporte simplesmente ignoram. */
+    text-wrap: pretty;
+    /* Remove o flash cinza de toque em dispositivos móveis. */
+    -webkit-tap-highlight-color: transparent;
   }
   ::selection {
     background: theme('colors.sun.500' / 30%);
     color: theme('colors.brand.900');
   }
   *:focus-visible {
-    outline: 2px solid theme('colors.brand.500');
-    outline-offset: 2px;
+    outline: var(--focus-ring-width) solid var(--color-focus);
+    outline-offset: var(--focus-ring-offset);
     border-radius: 4px;
   }
 }
@@ -51,6 +108,21 @@
     background: rgba(255,255,255,.85);
     backdrop-filter: saturate(160%) blur(16px);
   }
+
+  /*
+   * Auditoria de contraste WCAG AA (WAVE 1) — pares de TEXTO das classes abaixo,
+   * medidos com a fórmula de luminância relativa (piso 4,5:1 texto / 3:1 UI):
+   *   .tag        amber-800 sobre sun-500/15 compositado (#FEF4D9) ... 6,47:1  OK
+   *   .tag-light  brand-800 sobre brand-50 .......................... 13,70:1  OK
+   *   .chip/.btn-ghost  ink-700 sobre branco ........................  9,58:1  OK
+   *   .nav-link/.mega-link  ink-700 sobre branco ....................  9,58:1  OK
+   *   .crumb      ink-500 sobre branco .............................. 5,95:1  OK
+   *   .btn-primary brand-900 sobre sun-500 ..........................  9,44:1  OK
+   *   .btn-secondary branco sobre brand-800 ......................... 15,37:1  OK
+   *   foco (anel) brand-500 sobre branco (UI) .......................  8,69:1  OK
+   * Conclusão: nenhuma classe de componente reprova; paleta mantida sem
+   * escurecimento. Mantido como referência viva — reavaliar ao criar novos pares.
+   */
 
   /* Buttons */
   .btn { @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-150 select-none; }
@@ -84,11 +156,38 @@
   .mega-link-active { @apply bg-brand-50 text-brand-800; }
 
   /* Section headings */
-  .section-h { @apply font-display font-bold tracking-tight text-ink-900; }
+  .section-h {
+    @apply font-display font-bold tracking-tight text-ink-900;
+    /* Equilibra a quebra de títulos em 2-3 linhas (sem "viúvas"). */
+    text-wrap: balance;
+  }
   .section-eyebrow { @apply tag tag-light mb-3 uppercase; }
 
   /* Breadcrumb */
   .crumb { @apply text-sm text-ink-500 hover:text-brand-800 transition; }
+
+  /*
+   * Foco visível reforçado (WAVE 1).
+   * O seletor global *:focus-visible já garante o anel; estes blocos asseguram
+   * que botões/chips/links de navegação NUNCA removam o contorno e que o anel
+   * fique visível tanto sobre fundos claros quanto escuros. Token --color-focus
+   * (brand-500, 8,69:1 sobre branco) para superfícies claras; --color-focus-on-dark
+   * (sun-400) para os componentes de tema escuro.
+   */
+  .btn:focus-visible,
+  .chip:focus-visible,
+  .nav-link:focus-visible,
+  .mega-link:focus-visible,
+  .crumb:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-focus);
+    outline-offset: var(--focus-ring-offset);
+  }
+  /* Variantes sobre fundo escuro: anel dourado de alto contraste. */
+  .btn-secondary:focus-visible,
+  .btn-ghost-dark:focus-visible,
+  .tag-dark:focus-visible {
+    outline-color: var(--color-focus-on-dark);
+  }
 
   .scroll-fade { mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent); }
   .scroll-x-snap { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
@@ -100,9 +199,18 @@
     clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
   }
 
+  /* Respeito a prefers-reduced-motion (reforçado WAVE 1):
+     neutraliza durações, repetições e o scroll suave para quem pediu menos animação. */
   @media (prefers-reduced-motion: reduce) {
-    * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-    html { scroll-behavior: auto; }
+    *,
+    *::before,
+    *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+      scroll-behavior: auto !important;
+    }
+    html { scroll-behavior: auto !important; }
     .reveal { opacity: 1 !important; transform: none !important; }
   }
 }

@@ -184,11 +184,19 @@ export default function MobileBottomNav() {
             return (
               <li key={it.id} className="text-center">
                 {it.href ? (
-                  <a href={it.href} className="block" aria-current={active ? 'page' : undefined}>
+                  <a
+                    href={it.href}
+                    className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-inset"
+                    aria-current={active ? 'page' : undefined}>
                     {inner}
                   </a>
                 ) : (
-                  <button onClick={it.action} className="w-full" aria-label={it.label}>
+                  <button
+                    onClick={it.action}
+                    className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-inset"
+                    aria-label={it.label}
+                    aria-haspopup={it.id === 'mais' ? 'dialog' : undefined}
+                    aria-expanded={it.id === 'mais' ? moreOpen : undefined}>
                     {inner}
                   </button>
                 )}
@@ -230,7 +238,7 @@ export default function MobileBottomNav() {
                 <button
                   ref={closeBtnRef}
                   onClick={() => setMoreOpen(false)}
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-surface-200 text-ink-700"
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-surface-200 text-ink-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
                   aria-label="Fechar menu"><span aria-hidden="true" className="text-lg leading-none">×</span></button>
               </div>
             </div>

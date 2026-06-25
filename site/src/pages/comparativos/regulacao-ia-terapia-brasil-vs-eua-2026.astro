@@ -1,0 +1,392 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'É verdade que estados dos EUA proibiram terapia por IA?',
+    a: 'Sim, ao menos um estado proibiu de forma direta. Illinois sancionou em 4 de agosto de 2025 a lei conhecida como WOPR (Wellness and Oversight for Psychological Resources Act), tornando-se o primeiro estado a proibir que a inteligência artificial tome decisão terapêutica ou conduza comunicação terapêutica, permitindo IA apenas em apoio administrativo. Utah seguiu modelo diferente: em vez de proibir, exige disclosure, ou seja, que o usuário seja avisado de que conversa com uma máquina, além de restrições de publicidade e privacidade. Nevada também legislou sobre o tema. Há, portanto, dois modelos regulatórios opostos para o mesmo risco dentro dos próprios Estados Unidos: proibir e regular com transparência.'
+  },
+  {
+    q: 'Existe regra do CFP sobre inteligência artificial na psicologia em 2026?',
+    a: 'O Conselho Federal de Psicologia trabalha por orientação ética, não por proibição. Publicou uma Nota de Posicionamento sobre IA em julho de 2025 e uma Cartilha intitulada guia para uma prática ética e responsável de inteligência artificial na psicologia em dezembro de 2025. Antes disso, criou um grupo de trabalho de IA em outubro de 2024 e passou a integrar instâncias que discutem a regulamentação do uso de IA na saúde. Até onde se documenta, não há uma resolução específica que regule a IA na clínica, o que existe é soft law: posicionamento e cartilha que orientam conduta, apoiados em resoluções correlatas já existentes sobre psicoterapia, atendimento mediado por tecnologia e avaliação psicológica.'
+  },
+  {
+    q: 'Chatbot de IA pode substituir o psicólogo? O que diz a ciência?',
+    a: 'A ciência de 2025 produziu dois resultados aparentemente contraditórios que, juntos, dão a resposta. O ensaio clínico randomizado do Therabot (Dartmouth, publicado em NEJM AI em março de 2025) mostrou que um chatbot de IA generativa projetado e supervisionado clinicamente reduziu sintomas depressivos e de ansiedade em quatro semanas. No mesmo ano, um estudo da Universidade Stanford mostrou que chatbots comerciais populares estigmatizaram condições e deram respostas perigosas a situações de risco, inclusive em ideação suicida disfarçada. A distinção crítica não é a tecnologia, é a supervisão clínica e o desenho. Um chatbot testado em ensaio controlado e supervisionado é diferente de um chatbot comercial de companhia. Nenhum dos dois substitui o psicólogo no estado atual.'
+  },
+  {
+    q: 'Por que o Brasil escolheu orientar em vez de proibir a IA em terapia?',
+    a: 'A escolha brasileira por soft law, posicionamento e cartilha, em vez de proibição direta, reflete uma aposta em orientação ética da conduta profissional, ancorada no fato de que o psicólogo no Brasil é profissão regulamentada por conselho. Em vez de banir a ferramenta, o CFP define princípios, transparência, sigilo e proteção de dados, supervisão humana e vedações, e responsabiliza o profissional pelo uso. É um modelo intermediário entre proibir, como Illinois, e exigir apenas disclosure, como Utah. A vantagem é flexibilidade e responsabilização do profissional licenciado; o limite é que soft law não vincula da mesma forma que lei e não alcança diretamente apps de IA que operam sem psicólogo. Para psicólogos que estudam o tema, o IPOG mantém formação correlata em uso ético de tecnologia na prática.'
+  }
+];
+
+const tabelaJurisdicao = [
+  { jurisdicao: 'Brasil (CFP)', natureza: 'Soft law: Nota de Posicionamento (jul/2025) e Cartilha de IA (dez/2025); resoluções correlatas', oque: 'Orienta conduta ética: transparência, sigilo e proteção de dados, supervisão humana, vedações; não proíbe a ferramenta', enforcement: 'Responsabilização do profissional licenciado pelo conselho; soft law não vincula como lei', papel: 'Psicólogo é responsável pelo uso da IA em sua prática' },
+  { jurisdicao: 'EUA, Illinois', natureza: 'Lei WOPR (HB 1806), sancionada em 04/08/2025', oque: 'Proíbe IA de tomar decisão terapêutica ou conduzir comunicação terapêutica; permite só apoio administrativo', enforcement: 'Proibição estatutária; debate público sobre como será fiscalizada', papel: 'Profissional licenciado é insubstituível na função terapêutica' },
+  { jurisdicao: 'EUA, Utah', natureza: 'Lei HB 452', oque: 'Exige disclosure (avisar que é máquina) e impõe restrições de publicidade e privacidade; não proíbe', enforcement: 'Obrigações de transparência e privacidade fiscalizáveis', papel: 'Permite IA com dever de informar o usuário' },
+  { jurisdicao: 'EUA, federal (FDA)', natureza: 'Discussão em comitê consultivo de saúde digital (nov/2025)', oque: 'Debateu regulação de chatbots de terapia com IA generativa, reconhecendo saídas imprevisíveis e risco de dano', enforcement: 'Sem norma fechada no período; sinalização regulatória', papel: 'Tema em definição no nível federal' }
+];
+
+const tabelaEvidencia = [
+  { eixo: 'Estudo', therabot: 'RCT do Therabot (Dartmouth), NEJM AI, mar/2025', stanford: 'Estudo Stanford (2025), apresentado em conferência acadêmica' },
+  { eixo: 'Tipo de ferramenta', therabot: 'Chatbot de IA generativa projetado e supervisionado clinicamente', stanford: 'Chatbots comerciais populares de companhia e suporte' },
+  { eixo: 'Achado central', therabot: 'Redução de sintomas depressivos e de ansiedade em 4 semanas', stanford: 'Estigmatização de condições e respostas perigosas a situações de risco' },
+  { eixo: 'Resposta a ideação suicida', therabot: 'Desenho clínico com salvaguardas no ensaio controlado', stanford: 'Respostas inadequadas a ideação suicida disfarçada' },
+  { eixo: 'Modelos maiores foram melhores?', therabot: 'Desempenho ligado ao desenho e supervisão, não ao tamanho', stanford: 'Modelos maiores ou mais novos não foram necessariamente melhores' },
+  { eixo: 'Lição regulatória', therabot: 'IA clínica supervisionada pode ajudar como adjuvante', stanford: 'IA comercial sem supervisão expõe a risco real' }
+];
+
+const tabelaModelos = [
+  { eixo: 'Filosofia', proibir: 'Banir a função terapêutica da IA para conter risco', regular: 'Permitir com transparência e deveres', orientar: 'Orientar a conduta do profissional licenciado' },
+  { eixo: 'Exemplo', proibir: 'Illinois (WOPR)', regular: 'Utah (HB 452)', orientar: 'Brasil (CFP, soft law)' },
+  { eixo: 'Vantagem', proibir: 'Mensagem clara de proteção; limita IA autônoma em terapia', regular: 'Preserva inovação com consentimento informado', orientar: 'Flexível e responsabiliza quem detém a licença' },
+  { eixo: 'Limite', proibir: 'Tensão de fiscalização e de definir comunicação terapêutica', regular: 'Disclosure pode não bastar diante de risco grave', orientar: 'Soft law não vincula como lei nem alcança app sem psicólogo' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Regulação de IA em terapia: Brasil vs EUA em 2026',
+  description: 'Comparativo por jurisdição da regulação de IA em terapia. Brasil (soft law do CFP) vs EUA (Illinois proíbe, Utah exige disclosure, debate FDA). Tese: o Brasil optou por orientação ética.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Regulação de IA em terapia: Brasil vs EUA 2026' }
+  ]
+};
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot');
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+---
+
+<Base
+  title="Regulação de IA em terapia: Brasil vs EUA em 2026"
+  description="Comparativo por jurisdição da regulação de IA em terapia. Brasil opta por soft law do CFP (Nota jul/2025 e Cartilha dez/2025); EUA dividem-se entre Illinois (proíbe), Utah (disclosure) e debate da FDA. Tese: orientação ética, não proibição.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Regulação de IA em terapia: Brasil vs EUA 2026' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Regulação de IA na clínica</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Regulação de IA em terapia: Brasil vs EUA em 2026, proibir, regular ou orientar</h1>
+          <TLDR
+            resposta="Diante do mesmo risco da IA em terapia, jurisdições escolheram caminhos opostos. Illinois proibiu (lei WOPR, ago/2025). Utah exige disclosure (HB 452). A FDA discutiu regulação federal em nov/2025. O Brasil optou por soft law: o CFP publicou Nota de Posicionamento (jul/2025) e Cartilha de IA (dez/2025), orientando a conduta ética do profissional em vez de proibir a ferramenta. A tese: o Brasil escolheu orientação ética e responsabilização do psicólogo licenciado, um modelo intermediário entre banir e apenas exigir transparência."
+            fontes={["CFP, Nota de Posicionamento (jul/2025) e Cartilha de IA (dez/2025)", "Illinois, Lei WOPR (HB 1806), 04/08/2025", "Utah, HB 452; FDA, comitê de saúde digital (nov/2025)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">O risco é o mesmo: chatbots que conduzem conversa terapêutica sem supervisão clínica podem estigmatizar e dar respostas perigosas. A divergência está na resposta regulatória. Comparar Brasil e Estados Unidos por jurisdição revela três filosofias, proibir, regular com transparência e orientar a conduta profissional.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Em 2026, a regulação de IA em terapia diverge fortemente por jurisdição. Illinois aprovou a lei WOPR (Wellness and Oversight for Psychological Resources Act) em agosto de 2025, tornando-se o primeiro estado dos Estados Unidos a proibir que a IA tome decisão terapêutica ou conduza comunicação terapêutica, permitindo apenas apoio administrativo. Utah seguiu modelo de transparência com a HB 452, exigindo disclosure ao usuário e impondo restrições de publicidade e privacidade, sem proibir. No nível federal, a FDA discutiu o tema em comitê consultivo de saúde digital em novembro de 2025, reconhecendo saídas imprevisíveis e risco de dano, sem norma fechada. O Brasil escolheu soft law: o Conselho Federal de Psicologia publicou uma Nota de Posicionamento em julho de 2025 e uma Cartilha de uso ético de IA na psicologia em dezembro de 2025, orientando a conduta do profissional licenciado em vez de proibir a ferramenta. A tese deste comparativo é que o Brasil optou por orientação ética e responsabilização profissional, um caminho intermediário entre proibir e apenas exigir disclosure.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O mesmo risco, três respostas regulatórias</h2>
+        <p>
+          O problema que move toda essa regulação é concreto e foi documentado pela ciência em 2025. Um estudo da Universidade Stanford mostrou que chatbots comerciais populares estigmatizaram condições de saúde mental e deram respostas perigosas em situações de risco, incluindo respostas inadequadas a ideação suicida disfarçada, sem que modelos maiores ou mais novos fossem necessariamente melhores. No mesmo ano, o ensaio clínico randomizado do Therabot, da Dartmouth, publicado em NEJM AI, mostrou que um chatbot de IA generativa projetado e supervisionado clinicamente reduziu sintomas depressivos e de ansiedade. A distinção crítica que emerge é entre IA clínica supervisionada e IA comercial de companhia.
+        </p>
+        <p>
+          Diante desse risco comum, as jurisdições escolheram filosofias diferentes. Illinois proibiu a função terapêutica da IA, deixando-a restrita a tarefas administrativas. Utah permitiu, mas obrigou a transparência: o usuário precisa saber que conversa com uma máquina. A FDA, no nível federal dos Estados Unidos, ainda debate. O Brasil, por meio do CFP, não proibiu nem se limitou a exigir disclosure; orientou a conduta do profissional com princípios éticos e responsabilização.
+        </p>
+        <p>
+          Essa divergência não é ruído, é desenho. Cada modelo aposta em um mecanismo distinto de contenção de risco. A proibição aposta em remover a função perigosa. A exigência de disclosure aposta no consentimento informado. A orientação ética aposta na responsabilidade do profissional licenciado que usa a ferramenta. Entender os três é entender por que o Brasil, com sua tradição de regulação de profissões por conselho, escolheu o terceiro.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1: Regulação por jurisdição</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Jurisdição</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Natureza</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">O que faz</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Enforcement</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Papel do profissional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaJurisdicao.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.jurisdicao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.natureza}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.oque}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.enforcement}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.papel}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2: A evidência que move a regulação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Eixo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Therabot (clínico)</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Stanford (comercial)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaEvidencia.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.therabot}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.stanford}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Por que o Brasil escolheu orientar</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O mecanismo regulatório brasileiro nasce de uma característica estrutural: a psicologia é profissão regulamentada por conselho, e o CFP tem autoridade sobre a conduta de quem detém a licença. Em vez de criar uma lei que proíba a IA, o conselho usou os instrumentos que já possui, posicionamento e orientação, para responsabilizar o profissional pelo uso da ferramenta. A Cartilha de dezembro de 2025 traduz isso em princípios operacionais: transparência com o paciente, sigilo e proteção de dados, supervisão humana das decisões clínicas e vedações de uso. A aposta é que a responsabilização de quem é licenciado contém o risco sem precisar banir a tecnologia.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Esse caminho tem genealogia institucional. O CFP criou um grupo de trabalho de IA em outubro de 2024, publicou a Nota de Posicionamento em julho de 2025 e a Cartilha em dezembro de 2025, e passou a integrar instâncias que discutem a regulamentação do uso de IA na saúde. Existe ainda uma base normativa correlata, resoluções sobre psicoterapia, sobre atendimento mediado por tecnologia e sobre avaliação psicológica, que sustentam a orientação. O que não existe, até onde se documenta, é uma resolução específica que regule a IA na clínica com força vinculante própria. O Brasil opera, portanto, em soft law.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A vantagem desse modelo é dupla. Primeiro, flexibilidade: orientação se atualiza mais rápido que lei, o que importa em um campo que muda a cada ciclo de modelos. Segundo, responsabilização precisa: o psicólogo que usa IA de forma antiética responde perante o conselho, o que cria incentivo sem proibir a ferramenta para quem a usa bem, por exemplo como apoio administrativo ou adjuvante supervisionado. O contraste com Illinois é nítido: lá, a função terapêutica da IA é vedada por estatuto; aqui, é permitida sob responsabilidade profissional.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O limite do modelo brasileiro também é claro. Soft law não vincula da mesma forma que lei, e não alcança diretamente aplicativos de IA que operam sem psicólogo no circuito, justamente os chatbots comerciais que o estudo de Stanford mostrou serem perigosos. A orientação do CFP governa o profissional, não o aplicativo. Por isso o debate brasileiro tende a se conectar com discussões mais amplas de marco legal de IA e de regulação sanitária de software como dispositivo médico, que poderiam alcançar o que a soft law profissional não alcança.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3: Três filosofias regulatórias</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Eixo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Proibir</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Regular</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Orientar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaModelos.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.proibir}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.regular}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.orientar}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">O que a soft law brasileira cobre</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Conduta do profissional licenciado</p>
+              <p class="text-sm text-ink-700 mt-1">Transparência, sigilo, proteção de dados, supervisão humana e vedações orientam quem detém a licença.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Responsabilização perante o conselho</p>
+              <p class="text-sm text-ink-700 mt-1">Uso antiético da IA pelo psicólogo responde no âmbito ético-profissional.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Flexibilidade de atualização</p>
+              <p class="text-sm text-ink-700 mt-1">Orientação se adapta mais rápido que lei a um campo em mudança constante.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">O que a soft law não alcança</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Apps de IA sem psicólogo no circuito</p>
+              <p class="text-sm text-ink-700 mt-1">Chatbots comerciais que operam sem profissional não são governados pela orientação do conselho.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Força vinculante de lei</p>
+              <p class="text-sm text-ink-700 mt-1">Posicionamento e cartilha não obrigam como uma lei estadual ou federal.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Regulação sanitária do software</p>
+              <p class="text-sm text-ink-700 mt-1">Software como dispositivo médico e marco legal de IA são frentes distintas, ainda em definição.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Clínica brasileira decide como usar IA sob a Cartilha do CFP</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Uma clínica de psicologia no Brasil cogitou adotar uma ferramenta de IA generativa para apoiar a prática. A coordenação acompanhava a discussão internacional e sabia que Illinois havia proibido a IA na função terapêutica, enquanto Utah apenas exigia disclosure. A dúvida era prática: o que, afinal, era permitido fazer no Brasil. A equipe recorreu à Cartilha de IA do CFP de dezembro de 2025 e à Nota de Posicionamento de julho de 2025 para definir uma política interna.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A política separou usos. A IA foi autorizada como apoio administrativo e como auxílio à organização de notas, sempre com revisão humana e proteção de dados, nunca substituindo a decisão clínica nem conduzindo conversa terapêutica com o paciente sem o psicólogo. A clínica também decidiu não recomendar a pacientes chatbots comerciais de companhia sem antes avaliar a ferramenta, lembrando da distinção entre o Therabot, testado em ensaio controlado, e os chatbots comerciais que o estudo de Stanford mostrou perigosos.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          O ponto que organizou tudo foi a lógica brasileira de responsabilização: como a soft law governa o profissional, e não o aplicativo, a clínica documentou que cada psicólogo responde pelo uso que faz da IA. Em vez de esperar uma proibição ou uma permissão explícita item a item, a equipe internalizou os princípios da Cartilha e escreveu uma conduta auditável. Em uma jurisdição que orienta em vez de proibir, a maturidade ética do profissional é o que faz a diferença.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir dos documentos públicos do CFP (Nota de jul/2025 e Cartilha de dez/2025) e do contraste regulatório com Illinois e Utah. Reflete o modelo brasileiro de orientação ética e responsabilização do profissional licenciado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Quatro precauções. Primeiro, regulação de IA muda rápido; este comparativo retrata o quadro de 2025 e 2026 e pode estar desatualizado em ciclos seguintes. Segundo, o status de iniciativas mais amplas, como marco legal de IA e regulação de software como dispositivo médico, evolui e deve ser verificado na fonte oficial antes de decisões. Terceiro, soft law e lei têm naturezas distintas: comparar a Cartilha do CFP com a WOPR de Illinois não é comparar instrumentos equivalentes, e sim filosofias regulatórias. Quarto, este conteúdo é informativo e não substitui consulta às normas vigentes nem orientação jurídica para casos concretos.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A decisão profissional que decorre disso é direta. No Brasil de 2026, o psicólogo não espera uma lista de permissões; internaliza os princípios da Cartilha do CFP, documenta sua conduta com IA, mantém supervisão humana sobre decisões clínicas e avalia criticamente qualquer ferramenta antes de recomendá-la. A diferença entre o Therabot e os chatbots comerciais ensina que o que protege o paciente não é a tecnologia, é o desenho e a supervisão. Em um modelo que orienta em vez de proibir, essa responsabilidade recai, por escolha regulatória, sobre quem detém a licença.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Mesmo risco, três filosofias: o Brasil escolheu orientar.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Illinois proibiu a IA na função terapêutica (WOPR, ago/2025); Utah exige disclosure (HB 452).</li>
+          <li>A FDA discutiu regulação federal de chatbots de terapia em nov/2025, sem norma fechada.</li>
+          <li>O Brasil optou por soft law: Nota (jul/2025) e Cartilha (dez/2025) do CFP orientam a conduta, não proíbem.</li>
+          <li>O modelo brasileiro responsabiliza o profissional licenciado; seu limite é não alcançar apps sem psicólogo no circuito.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogas e psicólogos que pretendem aplicar uso ético de IA na prática e em organizações, o IPOG mantém MBAs correlatos em psicologia organizacional e em bem-estar, com módulos aplicados à conduta profissional contemporânea.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/guias/uso-etico-ia-clinica/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Uso ético de IA na clínica</a></li>
+          <li><a href="/comparativos/diagnostico-tea-humano-vs-ia-2026/" class="text-brand-700 hover:text-brand-800 font-medium">Diagnóstico de TEA: humano vs IA</a></li>
+          <li><a href="/faq/ia-em-psicologia-faq/" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · IA em psicologia</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs correlatos à psicologia organizacional, ao bem-estar e à conduta profissional contemporânea, com corpo docente nominal e estrutura multicampus.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaPot && <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPot.tag}</span></a></li>}
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/faq/ia-em-psicologia-faq/" class="mega-link"><strong class="text-ink-900 text-sm">IA em psicologia</strong></a></li>
+          <li><a href="/areas/avaliacao-psicologica/" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação Psicológica</strong></a></li>
+          <li><a href="/guias/uso-etico-ia-clinica/" class="mega-link"><strong class="text-ink-900 text-sm">Uso ético de IA na clínica</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>CFP. Nota de Posicionamento sobre Inteligência Artificial na prática psicológica (julho de 2025).</li>
+          <li>CFP. Cartilha: guia para uma prática ética e responsável de Inteligência Artificial na Psicologia (dezembro de 2025).</li>
+          <li>Illinois. Lei WOPR (HB 1806), Wellness and Oversight for Psychological Resources Act, sancionada em 04/08/2025.</li>
+          <li>Utah. Lei HB 452: disclosure e restrições de publicidade e privacidade para IA de saúde mental.</li>
+          <li>FDA. Comitê consultivo de saúde digital: discussão sobre chatbots de terapia com IA generativa (novembro de 2025).</li>
+          <li>Heinz et al. (2025). Ensaio do Therabot, NEJM AI; Moore et al. (2025), estudo Stanford sobre chatbots terapêuticos.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

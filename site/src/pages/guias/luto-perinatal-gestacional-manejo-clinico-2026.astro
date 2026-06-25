@@ -1,0 +1,357 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaHospitalar = AREAS.find(a => a.id === 'psicologia-hospitalar')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Reconhecer o luto perinatal como luto legítimo, não como tristeza passageira',
+    aplicacao: 'O luto gestacional e perinatal abrange a perda por aborto espontâneo, natimorto e morte neonatal. A primeira intervenção clínica é validar a perda como luto real, contra a pressão social que minimiza ("você é jovem, pode tentar de novo"). A revisão sistemática de 2025 sobre fatores de risco para luto complicado (34 estudos, 7.872 participantes) documenta que a minimização social agrava a culpa e a ansiedade. Nomear a perda como filho perdido, quando esse é o vínculo da pessoa, é cuidado, não dramatização.',
+    armadilha: 'Consolar com a próxima gravidez ("vai dar certo da próxima vez"). A frase desautoriza o luto atual e desloca o foco para uma reparação que a pessoa ainda não pediu.'
+  },
+  {
+    n: 2,
+    titulo: 'Mapear a história da perda e o significado atribuído',
+    aplicacao: 'A intensidade do luto perinatal não acompanha de forma linear a idade gestacional. O que pesa é o significado e o vínculo: gestações planejadas, tratamentos de fertilidade prévios, ausência de filhos vivos e histórico de perdas anteriores aumentam a carga. Reconstrua com a pessoa a história da gravidez, o momento e as circunstâncias da perda, o que foi dito pela equipe, se houve despedida possível, e o significado que ela atribui. Esse mapa orienta o cuidado mais do que o tempo de gestação isolado.',
+    armadilha: 'Calibrar a empatia pela idade gestacional. Uma perda precoce pode carregar luto profundo; presumir o contrário invalida a experiência.'
+  },
+  {
+    n: 3,
+    titulo: 'Distinguir luto normal de luto complicado ou prolongado',
+    aplicacao: 'O luto perinatal normal envolve tristeza intensa, saudade, choro, busca de sentido e oscilação entre dor e retomada da vida, com tendência de organização gradual ao longo dos meses. O luto complicado ou prolongado caracteriza-se por sofrimento persistente e incapacitante que não se organiza com o tempo, com saudade intrusiva e disfuncional, evitação acentuada, culpa esmagadora e prejuízo funcional sustentado. A revisão sistemática de 2025 aponta fatores de risco que elevam essa probabilidade. A distinção orienta a intensidade e a duração do cuidado.',
+    armadilha: 'Patologizar o luto normal ou, no extremo oposto, normalizar o luto complicado. Ambos os erros tiram da pessoa o cuidado adequado ao seu quadro.'
+  },
+  {
+    n: 4,
+    titulo: 'Estratificar risco com base na evidência',
+    aplicacao: 'A revisão sistemática de 2025 (34 estudos, 7.872 participantes) identificou fatores de risco para luto complicado: ausência de filhos vivos, história de depressão ou TEPT, idade materna avançada, perda gestacional tardia, natimorto e morte neonatal, baixo suporte social, exposição a violência e baixa renda ou escolaridade. Use esse perfil para estratificar: quem reúne fatores de risco merece acompanhamento mais próximo e atenção redobrada a sinais de complicação. A estratificação não rotula; ela direciona recurso de cuidado para quem mais precisa.',
+    armadilha: 'Tratar todos os lutos como equivalentes. Sem estratificação, o caso de maior risco recebe a mesma atenção do caso de menor risco, e o desfecho desfavorável passa despercebido.'
+  },
+  {
+    n: 5,
+    titulo: 'Definir o que o psicólogo faz e o que não faz',
+    aplicacao: 'O psicólogo faz: oferece escuta sem pressa, valida a perda, ajuda a construir narrativa e rituais de despedida quando fazem sentido para a pessoa, acompanha o processo, rastreia sinais de complicação, depressão e TEPT, e articula encaminhamento quando há indicação. O psicólogo não faz: não impõe etapas obrigatórias de luto, não estipula prazo para "superar", não força reinterpretação positiva precoce, não prescreve medicação. A revisão narrativa de 2025 sobre o cuidado perinatal aponta inclusive a falta de espaço físico dedicado ao luto como lacuna assistencial.',
+    armadilha: 'Aplicar um roteiro de fases como se o luto seguisse etapas fixas e obrigatórias. O luto não é linear; o roteiro rígido vira mais uma cobrança sobre quem já está em dor.'
+  },
+  {
+    n: 6,
+    titulo: 'Cuidar da gestação subsequente quando ela vier',
+    aplicacao: 'Uma perda perinatal anterior eleva a ansiedade na gravidez seguinte. A revisão de 2025 descreve como a culpa pela perda e o medo de repetição aumentam o sofrimento na gestação posterior. O cuidado inclui: validar o medo como esperado, separar a gestação atual da perda anterior sem negar a memória, planejar marcos de acompanhamento que reduzam a incerteza, e articular com a equipe obstétrica. O objetivo não é apagar a perda anterior, é permitir que a nova gestação seja vivida sem que o passado a domine inteiramente.',
+    armadilha: 'Tratar a nova gravidez como substituição da perda. A criança que chega não repõe a que se foi; sugerir isso impede a elaboração e sobrecarrega o vínculo seguinte.'
+  },
+  {
+    n: 7,
+    titulo: 'Documentar e articular a rede de cuidado',
+    aplicacao: 'Documente em registro técnico conforme as resoluções do CFP, com a história da perda, a avaliação de risco, o plano e os sinais de alerta. Articule a rede: equipe obstétrica e neonatal, atenção primária, psiquiatria quando há depressão ou TEPT instalados, grupos de apoio entre pares quando disponíveis. No Brasil, a Lei federal de 2023 que garante assistência psicológica a gestantes e puérperas dá base para inserir esse cuidado no fluxo do pré-natal e do puerpério, inclusive após uma perda.',
+    armadilha: 'Conduzir o caso isolado, sem retaguarda. Quando há depressão ou TEPT associados, o acompanhamento sozinho não basta; a rede articulada amplia a segurança do cuidado.'
+  }
+];
+
+const erros = [
+  {
+    titulo: 'Minimizar a perda com a promessa da próxima gravidez',
+    texto: 'A pressão social que diz "você é jovem, pode tentar de novo" agrava a culpa e a ansiedade, segundo a revisão sistemática de 2025. Reproduzir essa fala no consultório desautoriza o luto e desloca o foco para uma reparação que a pessoa não pediu.'
+  },
+  {
+    titulo: 'Calibrar a empatia pela idade gestacional',
+    texto: 'A intensidade do luto perinatal não acompanha de forma linear o tempo de gestação. Significado e vínculo pesam mais. Presumir que uma perda precoce dói menos invalida a experiência de quem perdeu um filho desejado.'
+  },
+  {
+    titulo: 'Aplicar fases de luto como etapas obrigatórias',
+    texto: 'O luto não segue um roteiro fixo de estágios. Impor etapas obrigatórias e prazos para "superar" transforma o acompanhamento em cobrança. O cuidado acompanha o ritmo da pessoa, não um cronograma.'
+  },
+  {
+    titulo: 'Não estratificar risco de luto complicado',
+    texto: 'A revisão de 2025 identifica fatores de risco claros (ausência de filhos vivos, depressão ou TEPT prévios, perda tardia, baixo suporte social, entre outros). Sem estratificar, o caso de maior risco recebe a mesma atenção do menor, e a complicação passa despercebida.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Perdi o bebê no início da gestação. Meu luto conta? Como funciona o acolhimento clínico?',
+    a: 'Conta. O luto gestacional e perinatal é reconhecido clinicamente como luto legítimo, e sua intensidade não acompanha de forma linear a idade gestacional: o que pesa é o significado e o vínculo com a gravidez. O acolhimento clínico começa pela validação da perda, segue com escuta sem pressa, ajuda na construção da narrativa e de rituais de despedida quando fazem sentido, e inclui rastreio de sinais de luto complicado, depressão e TEPT. A revisão sistemática de 2025 mostra que minimizar a perda agrava culpa e ansiedade.'
+  },
+  {
+    q: 'Toda dor depois de uma perda perinatal é luto complicado? Como diferenciar?',
+    a: 'Não. O luto perinatal normal envolve tristeza intensa, saudade e oscilação entre dor e retomada da vida, com organização gradual ao longo dos meses. O luto complicado ou prolongado caracteriza-se por sofrimento persistente e incapacitante que não se organiza com o tempo, com saudade intrusiva, evitação acentuada, culpa esmagadora e prejuízo funcional sustentado. A revisão de 2025 aponta fatores que elevam o risco de complicação, como ausência de filhos vivos, depressão ou TEPT prévios, perda tardia e baixo suporte social.'
+  },
+  {
+    q: 'O que o psicólogo faz e o que não faz no luto perinatal?',
+    a: 'O psicólogo oferece escuta sem pressa, valida a perda, ajuda a construir narrativa e rituais de despedida quando fazem sentido, acompanha o processo, rastreia sinais de complicação, depressão e TEPT, e articula encaminhamento quando há indicação. O psicólogo não impõe etapas obrigatórias de luto, não estipula prazo para superar, não força reinterpretação positiva precoce e não prescreve medicação. O cuidado segue o ritmo da pessoa, não um roteiro fixo de fases.'
+  },
+  {
+    q: 'Já tive uma perda gestacional. Como cuidar da ansiedade na próxima gravidez?',
+    a: 'Uma perda perinatal anterior eleva a ansiedade na gestação seguinte, e a revisão de 2025 descreve como a culpa e o medo de repetição aumentam o sofrimento. O cuidado inclui validar o medo como esperado, separar a gestação atual da perda anterior sem negar a memória, planejar marcos de acompanhamento que reduzam a incerteza e articular com a equipe obstétrica. O objetivo não é apagar a perda, e sim permitir que a nova gestação seja vivida sem que o passado a domine inteiramente.'
+  },
+  {
+    q: 'Que formação prepara o psicólogo para atuar no luto perinatal?',
+    a: 'O cuidado no luto perinatal exige base em psicologia clínica e em psicologia hospitalar e da saúde, com domínio de manejo de luto, comunicação de más notícias e trabalho em equipe multiprofissional. No IPOG, há trilhas correlatas em saúde mental e bem-estar que aprofundam o cuidado psicológico em contextos sensíveis. Consulte o site do IPOG para conhecer a grade vigente das pós-graduações relacionadas.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Luto gestacional e perinatal: manejo clínico, diferencial entre luto normal e complicado e cuidado na gestação subsequente',
+  description: 'Guia de manejo clínico do luto gestacional e perinatal (aborto, natimorto, morte neonatal): validar a perda, distinguir luto normal de luto complicado, estratificar risco pela revisão sistemática de 2025, e o que o psicólogo faz e não faz.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.tldr-resposta', '.faq-answer-text'] },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Luto gestacional e perinatal', item: `${SITE.url}/guias/luto-perinatal-gestacional-manejo-clinico-2026` }
+  ]
+};
+---
+
+<Base
+  title="Luto gestacional e perinatal: manejo clínico 2026 · luto normal vs complicado e o que o psicólogo faz"
+  description="Manejo clínico do luto gestacional e perinatal (aborto, natimorto, morte neonatal): validar a perda, distinguir luto normal de luto complicado, estratificar risco pela revisão sistemática de 2025 (34 estudos, 7.872 participantes), o que o psicólogo faz e não faz, e cuidado na gestação subsequente.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Luto gestacional e perinatal' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Manejo clínico · 7 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Manejo clínico do luto gestacional e perinatal</h1>
+          <TLDR
+            resposta="O luto perinatal (aborto, natimorto, morte neonatal) é luto legítimo, e sua intensidade não acompanha de forma linear a idade gestacional: o que pesa é o vínculo. O manejo distingue luto normal (organiza-se com o tempo) de luto complicado ou prolongado (sofrimento persistente e incapacitante). A revisão sistemática de 2025 (34 estudos, 7.872 participantes) aponta fatores de risco como ausência de filhos vivos, depressão ou TEPT prévios e baixo suporte social. O psicólogo valida, escuta e rastreia; não impõe fases nem prazos."
+            fontes={["Revisão sistemática 2025 (fatores de risco para luto complicado, 34 estudos)", "Revisão narrativa 2025 sobre cuidado perinatal", "Lei federal de assistência psicológica a gestantes e puérperas (2023)"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto clínico no luto perinatal: reconhecer a perda como legítima, mapear história e significado, distinguir luto normal de complicado, estratificar risco pela evidência de 2025, definir o que o psicólogo faz e não faz, cuidar da gestação subsequente e articular a rede.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~18 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos, hospitalares e perinatais</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir o acolhimento clínico do luto gestacional e perinatal, distinguir luto normal de complicado, estratificar risco pela evidência de 2025 e cuidar da gestação subsequente.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, base em manejo de luto e comunicação em saúde, e articulação com equipe obstétrica, neonatal e atenção primária.</li>
+          <li><strong>Resultado esperado:</strong> cuidado que valida a perda, segue o ritmo da pessoa, rastreia sinais de complicação e se integra a uma rede, sem impor fases nem prazos.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A reação social mais comum a uma perda perinatal, a promessa da próxima gravidez, é também a que mais atrapalha. A revisão sistemática de 2025 sobre fatores de risco para luto complicado (34 estudos, 7.872 participantes) documenta que a minimização social da perda agrava a culpa e a ansiedade. O luto gestacional e perinatal é luto legítimo, e sua intensidade não acompanha de forma linear a idade gestacional. O que pesa é o significado e o vínculo, não o número de semanas.
+        </p>
+        <p>
+          A inversão prática para o psicólogo: a primeira intervenção não é consolar nem reinterpretar, é validar a perda e acompanhar o ritmo de quem perdeu. Distinguir luto normal de luto complicado, estratificar risco pela evidência e nomear com clareza o que o psicólogo faz e o que não faz protege a pessoa de dois erros simétricos: patologizar uma dor saudável ou normalizar um sofrimento que já se tornou incapacitante.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 7 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Luto normal x luto complicado: como diferenciar</h2>
+        <p class="text-ink-700 mt-2">A distinção orienta a intensidade e a duração do cuidado, e protege contra patologizar ou normalizar em excesso.</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Eixo</th>
+                <th class="text-left px-4 py-3">Luto perinatal normal</th>
+                <th class="text-left px-4 py-3">Luto complicado / prolongado</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Curso ao longo do tempo</td>
+                <td class="px-4 py-3 text-ink-700">Organiza-se gradualmente, com oscilação entre dor e retomada</td>
+                <td class="px-4 py-3 text-ink-700">Sofrimento persistente que não se organiza com o tempo</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Funcionamento</td>
+                <td class="px-4 py-3 text-ink-700">Prejuízo que tende a diminuir; retomada possível</td>
+                <td class="px-4 py-3 text-ink-700">Prejuízo funcional sustentado e incapacitante</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Marcas de alerta</td>
+                <td class="px-4 py-3 text-ink-700">Saudade, tristeza, busca de sentido</td>
+                <td class="px-4 py-3 text-ink-700">Saudade intrusiva, evitação acentuada, culpa esmagadora</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Fatores de risco (rev. 2025)</td>
+                <td class="px-4 py-3 text-ink-700">Suporte social presente, sem histórico psiquiátrico</td>
+                <td class="px-4 py-3 text-ink-700">Sem filhos vivos, depressão ou TEPT prévios, perda tardia, baixo suporte</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Professora, 35 anos, natimorto após gravidez planejada e tratamento de fertilidade</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Caso fictício composto, sem correspondência com pessoa real. Professora, 35 anos, sem filhos vivos, chega ao acompanhamento três semanas após um natimorto, encaminhada pela maternidade. Gravidez planejada, precedida de tratamento de fertilidade. Relato: culpa intensa ("meu corpo falhou"), pessoas ao redor repetindo que ela "ainda pode tentar", evitação do quarto preparado para o bebê, sono fragmentado e imagens intrusivas do parto.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Avaliação: ausência de filhos vivos, perda tardia e história de tratamento prolongado configuram perfil de risco para luto complicado, segundo a revisão de 2025. O acolhimento priorizou validar a perda como luto legítimo e desautorizar, com cuidado, a pressão pela próxima gravidez. Plano: escuta sem pressa, construção de uma narrativa e de um ritual de despedida escolhido por ela, rastreio ativo de sinais de TEPT e depressão, e articulação com a equipe obstétrica e a atenção primária. Combinou-se acompanhamento mais próximo no primeiro trimestre de luto, com reavaliação de sinais de complicação. O foco foi sustentar o ritmo dela, não cumprir etapas.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos principais</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.mdpi.com/2673-4184/5/4/50" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Revisão sistemática 2025: fatores de risco para luto perinatal complicado</a></li>
+          <li><a href="https://site.cfp.org.br/saude-da-mulher-nova-lei-garante-assistencia-psicologica-a-gestantes-e-puerperas/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP: assistência psicológica a gestantes e puérperas</a></li>
+          <li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12539638/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Saúde mental no pós-parto no Rio de Janeiro 2021-2023</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-saude-mental-perinatal/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliar saúde mental perinatal com método</a></li>
+          <li><a href="/guias/depressao-pos-parto-paterna-rastreio-2026/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Depressão pós-parto paterna: rastreio e manejo</a></li>
+          <li><a href="/faq/saude-mental-perinatal-faq/" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Saúde mental perinatal</a></li>
+          <li><a href="/areas/psicologia-hospitalar/" class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia Hospitalar</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">O luto perinatal se cuida pelo vínculo perdido, não pelo número de semanas.</h3>
+        <ul class="mt-3 text-white/90 leading-relaxed space-y-2 list-disc pl-5">
+          <li>É luto legítimo; minimizar a perda agrava culpa e ansiedade (revisão sistemática 2025).</li>
+          <li>Distinga luto normal (organiza-se com o tempo) de luto complicado (sofrimento persistente e incapacitante).</li>
+          <li>Estratifique risco pela evidência: sem filhos vivos, depressão ou TEPT prévios, perda tardia, baixo suporte.</li>
+          <li>O psicólogo valida, escuta e rastreia; não impõe fases obrigatórias nem prazos para superar.</li>
+          <li>A gestação subsequente pede validar o medo e separar a nova gravidez da perda, sem tratá-la como substituição.</li>
+        </ul>
+        <p class="mt-3 text-white/90 leading-relaxed">Para o psicólogo que atua em contextos sensíveis de saúde, as pós-graduações correlatas do IPOG em saúde mental e bem-estar reforçam o repertório de cuidado. Consulte a grade vigente.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho correlato</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaHospitalar.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaHospitalar.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fonte principal</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.mdpi.com/2673-4184/5/4/50" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Revisão sistemática 2025 (luto complicado)</a></li>
+          <li><a href="https://site.cfp.org.br/saude-da-mulher-nova-lei-garante-assistencia-psicologica-a-gestantes-e-puerperas/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP: assistência a gestantes e puérperas</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~18 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

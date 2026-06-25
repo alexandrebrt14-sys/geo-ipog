@@ -1,0 +1,356 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Suspeitar de 2e diante de discrepância intra-individual extrema',
+    aplicacao: 'A dupla excepcionalidade (2e) descreve a coexistência de altas habilidades/superdotação (AHSD) com uma condição neurodivergente, como TDAH ou TEA. O sinal de alerta mais útil no adulto não é o escore alto nem o sintoma isolado, é a discrepância: brilhante e original em um domínio, ao mesmo tempo travado em tarefas que parecem triviais (responder e-mails, cumprir prazos administrativos, manter rotina). A literatura clínica de adultos 2e descreve o quadro de chegar exausto e não curioso sobre o talento, sênior na carreira e atrasado no básico. Discrepância larga é a porta de entrada da hipótese 2e.',
+    armadilha: 'Ler a discrepância como falha de caráter ("inteligente, mas relapso"). Em 2e, a discrepância é dado clínico, não moral.'
+  },
+  {
+    n: 2,
+    titulo: 'Reconhecer os dois mecanismos de mascaramento',
+    aplicacao: 'O erro central da avaliação 2e tem dois sentidos. No primeiro, o talento mascara o transtorno: o alto potencial cognitivo permite compensar déficits executivos ou dificuldades sociais por tempo suficiente para o transtorno passar despercebido, até o colapso por sobrecompensação sustentada. No segundo, o transtorno mascara o talento: a desatenção, a desorganização ou a sobrecarga sensorial rebaixam a entrega objetiva e escondem o potencial real, fazendo o avaliador subestimar a capacidade. Quem só procura um dos lados encontra um dos lados.',
+    armadilha: 'Avaliar com uma hipótese só. Se a entrevista começa decidida entre AHSD ou TDAH, o mascaramento garante que metade do quadro fique invisível.'
+  },
+  {
+    n: 3,
+    titulo: 'Reconstruir a trajetória com fontes colaterais',
+    aplicacao: 'O adulto 2e compensou por anos, então o presente engana. Reconstrua a linha do tempo: marcos precoces de aprendizado, momentos de tédio e abandono de tarefas fáceis, episódios de desorganização, esgotamentos cíclicos, relações sociais. Sempre que possível, some fontes colaterais (familiares, registros escolares, avaliações anteriores). O Censo Demográfico 2022 do IBGE, ao mapear 2,4 milhões de autistas no Brasil (1,2% da população), apontou parcela expressiva com altas habilidades, lembrete de que a coexistência é frequente e merece ser buscada de forma ativa.',
+    armadilha: 'Confiar apenas no relato atual de quem aprendeu a se descrever pelo padrão socialmente aceitável. Sem histórico, o perfil 2e desaparece.'
+  },
+  {
+    n: 4,
+    titulo: 'Medir potencial e funcionamento em planos separados',
+    aplicacao: 'Avalie capacidade cognitiva com instrumentos como o WAIS, lendo os índices fatoriais separadamente, não só o escore total: em 2e é comum um perfil em dente de serra, com índices verbais ou de raciocínio muito altos e velocidade de processamento ou memória de trabalho rebaixadas. Some avaliação de produção criativa e realização concreta (modelo dos três anéis de Renzulli) e, em outro plano, medida de funcionamento executivo, atenção e perfil autista. Cruzar os planos revela a discrepância que o escore global esconde.',
+    armadilha: 'Olhar só o escore total. A média achata o dente de serra e apaga exatamente a assinatura da dupla excepcionalidade.'
+  },
+  {
+    n: 5,
+    titulo: 'Conduzir o diferencial sem fechar prematuramente',
+    aplicacao: 'Distinga tédio por falta de estímulo (AHSD) de desatenção por déficit executivo (TDAH); paixão intelectual intensa (AHSD) de interesse circunscrito (TEA); sensibilidade emocional alta (frequente em AHSD) de sobrecarga sensorial autista. O ponto não é eleger um vencedor, é descrever o perfil completo. Quando AHSD e uma condição neurodivergente estão ambas presentes, registre as duas, com a evidência de cada. O diagnóstico 2e é, por definição, uma soma, e a soma precisa estar documentada com critério.',
+    armadilha: 'Encerrar no primeiro achado robusto. Confirmar AHSD não exclui TDAH; confirmar TEA não exclui alto potencial.'
+  },
+  {
+    n: 6,
+    titulo: 'Dimensionar o custo da sobrecompensação',
+    aplicacao: 'A sobrecompensação sustentada cobra preço: depressão, ansiedade, perfeccionismo desadaptativo e burnout são desfechos comuns em adultos 2e identificados tardiamente. O adulto chega quase sempre por esse sofrimento, não pela suspeita de talento. Rastreie esses quadros de forma explícita e relacione-os ao esforço crônico de manter aparência de funcionamento. Esse mapeamento orienta a prioridade do plano: muitas vezes o cuidado começa pelo sofrimento atual, não pela caracterização do potencial.',
+    armadilha: 'Tratar o laudo de 2e como troféu cognitivo. Sem nomear o custo psíquico, o documento não toca o motivo real da procura.'
+  },
+  {
+    n: 7,
+    titulo: 'Devolver com plano que reduz fricção em vez de exigir força de vontade',
+    aplicacao: 'A devolutiva 2e mais útil substitui a exortação ("esforce-se mais") por engenharia de ambiente: reduzir fricção nas tarefas em que o transtorno cobra caro e abrir espaço para o domínio em que o potencial rende. Estruture psicoterapia para o sofrimento, acompanhamento neuropsicológico para a condição associada, adaptações de trabalho e estudo, e expectativa realista sobre o que muda. Documente conforme as resoluções do CFP sobre elaboração de documentos. O adulto 2e já tentou força de vontade por décadas; o plano que funciona muda o ambiente, não a vontade.',
+    armadilha: 'Recomendar mais disciplina. Em 2e, mais força de vontade costuma significar mais sobrecompensação e mais colapso.'
+  }
+];
+
+const erros = [
+  {
+    titulo: 'Avaliar com uma hipótese única',
+    texto: 'O mascaramento bidirecional garante que, se a avaliação começa decidida por AHSD ou por TDAH/TEA, metade do quadro fica invisível. O diferencial 2e precisa investigar potencial e condição neurodivergente em paralelo, não em sequência excludente.'
+  },
+  {
+    titulo: 'Ler só o escore total do teste cognitivo',
+    texto: 'Em 2e o perfil é em dente de serra: índices muito altos convivem com índices rebaixados. A média achata essa assinatura. Sem leitura fatorial do WAIS e dos índices separados, a discrepância que define a dupla excepcionalidade desaparece.'
+  },
+  {
+    titulo: 'Interpretar a discrepância como falha moral',
+    texto: 'Brilhante numa área e travado no básico não é "preguiça de quem poderia mais". É o padrão clínico descrito na literatura de adultos 2e. Tratar a discrepância como caráter, e não como dado, reproduz o estigma que adoeceu o avaliando.'
+  },
+  {
+    titulo: 'Encerrar a avaliação no primeiro diagnóstico robusto',
+    texto: 'Confirmar AHSD não exclui TDAH; confirmar TEA não exclui alto potencial. Fechar cedo é o erro mais comum, justamente porque cada perfil mascara o outro. Em 2e, registrar os dois lados com evidência é a regra.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'O que é dupla excepcionalidade (2e) no adulto?',
+    a: 'Dupla excepcionalidade, ou 2e, é a coexistência de altas habilidades/superdotação (AHSD) com uma condição neurodivergente, mais comumente TDAH ou TEA, na mesma pessoa. No adulto, manifesta-se de forma típica como discrepância intra-individual extrema: desempenho brilhante e original em um domínio, ao lado de dificuldade marcante em tarefas básicas. A literatura clínica descreve adultos 2e que chegam à terapia esgotados após anos de sobrecompensação, frequentemente sêniores na carreira e ao mesmo tempo atrasados no funcionamento cotidiano.'
+  },
+  {
+    q: '"Sempre fui o aluno nota 10 e hoje vivo exausto" pode ser dupla excepcionalidade?',
+    a: 'Pode, e é um dos relatos mais característicos. O alto potencial cognitivo permite compensar déficits executivos por muito tempo, mascarando o transtorno até o ponto de exaustão por sobrecompensação sustentada. Quando o esforço crônico de manter o desempenho cobra um preço de depressão, ansiedade ou burnout, vale investigar a hipótese 2e com avaliação que olhe potencial e funcionamento em planos separados, não apenas o sintoma atual.'
+  },
+  {
+    q: 'Por que tantos adultos 2e nunca foram diagnosticados na infância?',
+    a: 'Porque o talento esconde o transtorno e o transtorno esconde o talento. Na criança 2e, o alto desempenho em algumas áreas faz a escola não enxergar a dificuldade, e a dificuldade faz alguns adultos subestimarem o potencial. O resultado é subdiagnóstico nos dois sentidos. O Censo Demográfico 2022 do IBGE, ao mapear pela primeira vez a população autista brasileira, apontou parcela expressiva com altas habilidades, evidência de quanto a coexistência passa despercebida quando não é buscada de forma ativa.'
+  },
+  {
+    q: 'Como a avaliação evita o erro de só ver um lado?',
+    a: 'Avaliando potencial e condição neurodivergente em planos separados e cruzando os resultados. Na prática: leitura fatorial do teste cognitivo (índices do WAIS, não só o escore total) para captar o perfil em dente de serra; avaliação criativo-produtiva (modelo de Renzulli) para o potencial; medida de funcionamento executivo, atenção e perfil autista para a condição associada; e reconstrução do histórico com fontes colaterais. Quando os dois perfis aparecem, registram-se os dois, com a evidência de cada.'
+  },
+  {
+    q: 'Que formação ajuda o psicólogo a conduzir avaliação 2e?',
+    a: 'A avaliação 2e exige base em avaliação psicológica e em neuropsicologia, porque o diferencial entre potencial e déficit depende de leitura de funções cognitivas. No IPOG, o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo trabalha funções cognitivas, neurodesenvolvimento e planos de intervenção, conteúdos úteis para quem conduz esse tipo de avaliação combinada. Consulte o site do IPOG para a grade vigente.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Dupla excepcionalidade (2e) no adulto: avaliar AHSD com TDAH ou TEA sem ver só um lado',
+  description: 'Guia clínico para avaliar dupla excepcionalidade (2e) no adulto: como o talento mascara o transtorno e o transtorno mascara o talento, leitura fatorial do WAIS, diferencial sem fechamento prematuro e plano que reduz fricção.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.tldr-resposta', '.faq-answer-text'] },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Dupla excepcionalidade (2e) no adulto', item: `${SITE.url}/guias/dupla-excepcionalidade-2e-adulto-avaliacao` }
+  ]
+};
+---
+
+<Base
+  title="Dupla excepcionalidade (2e) no adulto: guia de avaliação · AHSD com TDAH ou TEA sem ver só um lado"
+  description="Como avaliar dupla excepcionalidade (2e) no adulto: o talento mascara o transtorno e o transtorno mascara o talento. Leitura fatorial do WAIS, diferencial sem fechamento prematuro, custo da sobrecompensação e plano que reduz fricção em vez de exigir força de vontade.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Dupla excepcionalidade (2e) no adulto' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Avaliação · 7 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Dupla excepcionalidade (2e) no adulto: avaliar sem ver só um lado</h1>
+          <TLDR
+            resposta="Dupla excepcionalidade (2e) é a coexistência de altas habilidades com TDAH ou TEA. O erro central da avaliação é ver só um lado: o talento mascara o transtorno (sobrecompensação até o colapso) e o transtorno mascara o talento (subestima o potencial). A avaliação evita o erro medindo potencial e funcionamento em planos separados, lendo os índices fatoriais do WAIS (perfil em dente de serra), e nunca fechando no primeiro diagnóstico robusto."
+            fontes={["IBGE, Censo Demográfico 2022 (divulgação 2025)", "Literatura clínica de adultos 2e (sobrecompensação sustentada)", "Modelo dos três anéis de Renzulli"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto clínico para avaliar 2e no adulto: suspeitar diante da discrepância, reconhecer o mascaramento bidirecional, reconstruir a trajetória, medir potencial e funcionamento em planos separados, conduzir o diferencial sem fechar cedo, dimensionar o custo da sobrecompensação e devolver com plano que reduz fricção.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~18 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos e neuropsicólogos</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> avaliar dupla excepcionalidade no adulto sem cair no erro de ver só um lado, medindo potencial e funcionamento em planos separados e documentando os dois perfis quando coexistem.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, formação em avaliação psicológica, leitura fatorial de instrumentos cognitivos e familiaridade com TDAH e TEA no adulto.</li>
+          <li><strong>Resultado esperado:</strong> caracterização do perfil completo (AHSD e condição associada quando presentes), com leitura do custo psíquico e plano que reduz fricção em vez de exigir mais disciplina.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A maior fonte de erro na avaliação de dupla excepcionalidade não é a falta de instrumento, é a hipótese única. O talento mascara o transtorno e o transtorno mascara o talento. Quando a avaliação parte decidida entre altas habilidades ou TDAH/TEA, o mascaramento bidirecional garante que metade do quadro fique invisível. A literatura clínica de adultos 2e descreve com precisão o resultado: pessoas que chegam exaustas, não curiosas sobre o talento, sêniores na carreira e ao mesmo tempo atrasadas no básico, depois de anos de sobrecompensação sustentada.
+        </p>
+        <p>
+          A inversão prática para o psicólogo: avalie potencial e funcionamento em planos separados e só então cruze. Leia os índices fatoriais do teste cognitivo, não a média, porque o perfil 2e costuma ser em dente de serra. O Censo Demográfico 2022 do IBGE, ao apontar parcela expressiva de altas habilidades entre os 2,4 milhões de autistas mapeados, mostra que a coexistência é frequente e precisa ser buscada de forma ativa. Quem procura os dois lados encontra os dois lados.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 7 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Como cada lado mascara o outro</h2>
+        <p class="text-ink-700 mt-2">O quadro 2e tem dois sentidos de erro. Reconhecer os dois é o que evita o fechamento prematuro.</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Sentido do mascaramento</th>
+                <th class="text-left px-4 py-3">O que acontece</th>
+                <th class="text-left px-4 py-3">Sinal observável</th>
+                <th class="text-left px-4 py-3">Como a avaliação corrige</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Talento mascara o transtorno</td>
+                <td class="px-4 py-3 text-ink-700">O potencial compensa o déficit até o colapso por sobrecompensação</td>
+                <td class="px-4 py-3 text-ink-700">Entrega o esperado, mas exausto e a um custo desproporcional</td>
+                <td class="px-4 py-3 text-ink-700">Medir funcionamento executivo e atenção, não só potencial</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Transtorno mascara o talento</td>
+                <td class="px-4 py-3 text-ink-700">A desatenção ou sobrecarga rebaixa a entrega objetiva</td>
+                <td class="px-4 py-3 text-ink-700">Subrealização que esconde capacidade real</td>
+                <td class="px-4 py-3 text-ink-700">Ler índices fatoriais altos e produção criativa, não a média</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Ambos ao mesmo tempo (2e)</td>
+                <td class="px-4 py-3 text-ink-700">Discrepância intra-individual extrema na mesma pessoa</td>
+                <td class="px-4 py-3 text-ink-700">Brilhante em um domínio, travado em tarefas básicas</td>
+                <td class="px-4 py-3 text-ink-700">Registrar os dois perfis com a evidência de cada</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Advogada, 42 anos, "brilho nas teses e afundo na rotina do escritório"</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Caso fictício composto, sem correspondência com pessoa real. Advogada, 42 anos, sócia de banca, procura avaliação por exaustão e medo de "ser descoberta como fraude". Queixa: produz teses jurídicas originais e elogiadas, mas perde prazos administrativos, esquece compromissos e precisa de esforço imenso para o trabalho repetitivo. Histórico: leitora precoce, sempre adiantada na escola, mas com cadernos desorganizados e atrasos crônicos que eram lidos como descuido.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Avaliação: WAIS com índices verbal e de raciocínio muito altos e memória de trabalho e velocidade de processamento abaixo do esperado para o perfil, configurando dente de serra. Avaliação criativo-produtiva expressiva. Em outro plano, medida de funcionamento executivo e escalas de TDAH adulto apontaram déficit atencional compatível. Conclusão: hipótese de dupla excepcionalidade (AHSD com TDAH), com rastreio positivo para ansiedade e perfeccionismo desadaptativo. Devolutiva: nomeou os dois perfis e o custo da sobrecompensação. Plano: psicoterapia, encaminhamento neuropsicológico para confirmar o TDAH, delegação das tarefas administrativas de alto atrito e expectativa realista. O alívio relatado foi parar de tentar resolver com mais disciplina o que era questão de ambiente.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos principais</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.gov.br/mec/pt-br/assuntos/noticias/2025/dezembro/governo-do-brasil-aprimora-a-politica-de-educacao-inclusiva" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC: Política de educação inclusiva e Cadastro Nacional de AHSD</a></li>
+          <li><a href="https://repositorio.unesp.br/entities/publication/e520fdc9-a34a-48c0-9a6b-1dbbe0fe92fb" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Repositório UNESP: identificação tardia de AHSD em adultos</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI / CFP: testes psicológicos com parecer favorável</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-altas-habilidades-superdotacao-adulto-2026/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliar altas habilidades/superdotação (AHSD) em adultos</a></li>
+          <li><a href="/guias/avaliacao-tea-adulto/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Conduzir avaliação de TEA em adulto</a></li>
+          <li><a href="/guias/avaliacao-tdah-adulto/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Conduzir avaliação de TDAH em adulto</a></li>
+          <li><a href="/areas/neuropsicologia/" class="text-brand-700 hover:text-brand-800 font-medium">Área · Neuropsicologia</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Em 2e, o erro não é o instrumento, é a hipótese única.</h3>
+        <ul class="mt-3 text-white/90 leading-relaxed space-y-2 list-disc pl-5">
+          <li>O talento mascara o transtorno (sobrecompensação até o colapso) e o transtorno mascara o talento (subrealização).</li>
+          <li>Suspeite de 2e diante de discrepância intra-individual extrema, não de escore alto isolado.</li>
+          <li>Meça potencial e funcionamento em planos separados e leia os índices fatoriais do WAIS (dente de serra), não a média.</li>
+          <li>Não feche no primeiro diagnóstico robusto: confirmar um perfil não exclui o outro.</li>
+          <li>O plano útil reduz fricção de ambiente; não pede mais força de vontade a quem já compensou por décadas.</li>
+        </ul>
+        <p class="mt-3 text-white/90 leading-relaxed">Para o psicólogo que conduz avaliação combinada, o MBA em Reabilitação Neuropsicológica do IPOG aprofunda funções cognitivas e neurodesenvolvimento, base do diferencial entre potencial e déficit.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho correlato</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fonte principal</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://repositorio.unesp.br/entities/publication/e520fdc9-a34a-48c0-9a6b-1dbbe0fe92fb" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">UNESP: identificação tardia</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI / CFP</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~18 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

@@ -1,0 +1,358 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Entender o que o código QD85 é e o que não é',
+    aplicacao: 'O burnout entrou na CID-11 como QD85, e a CID-11 passou a valer no Brasil em janeiro de 2025. A definição da OMS é precisa: burnout é um fenômeno ocupacional resultante de estresse crônico no trabalho que não foi gerenciado com sucesso, classificado no capítulo de fatores que influenciam o estado de saúde, não como doença ou transtorno mental. Essa distinção é o eixo de toda documentação de nexo: o burnout, por definição, está ligado ao trabalho, mas não é, na taxonomia da OMS, uma condição médica autônoma. Quem documenta precisa partir dessa leitura.',
+    armadilha: 'Tratar QD85 como se fosse um diagnóstico de doença equivalente a F32. A própria OMS classifica burnout como fenômeno ocupacional, não como transtorno, e isso muda o que o documento pode afirmar.'
+  },
+  {
+    n: 2,
+    titulo: 'Caracterizar as três dimensões com evidência clínica',
+    aplicacao: 'A definição da OMS para burnout descreve três dimensões: exaustão ou esgotamento de energia, distanciamento mental do trabalho com sentimentos de negativismo ou cinismo, e redução da eficácia profissional. O documento técnico deve descrever cada dimensão com base na avaliação, e não apenas afirmar que há burnout. Instrumentos validados de avaliação de burnout ajudam a sustentar a caracterização, mas não substituem a entrevista clínica e a história ocupacional. A força do documento está em mostrar como cada dimensão se manifesta no caso concreto.',
+    armadilha: 'Afirmar burnout sem descrever as três dimensões. Um documento que só rotula, sem caracterizar exaustão, distanciamento e queda de eficácia, é frágil diante de avaliação previdenciária.'
+  },
+  {
+    n: 3,
+    titulo: 'Construir o nexo entre o quadro e o trabalho',
+    aplicacao: 'O que distingue o burnout de outros quadros é justamente o nexo ocupacional. O documento precisa demonstrar a relação entre as condições de trabalho e o adoecimento: sobrecarga, jornada, metas, assédio, ausência de controle sobre o próprio trabalho, conflito de papéis. Descreva a cronologia (como o quadro se instalou ao longo da exposição) e a coerência entre os fatores de risco psicossociais presentes e os sintomas. A escalada dos afastamentos por burnout no Brasil, de 823 em 2021 para 7.595 em 2025, tornou esse tipo de documentação cada vez mais frequente e mais escrutinado.',
+    armadilha: 'Descrever sintomas sem ancorar no trabalho. Sem o nexo ocupacional explícito e cronológico, o quadro perde o que o caracteriza como burnout.'
+  },
+  {
+    n: 4,
+    titulo: 'Fazer o diferencial com depressão (F32/F33)',
+    aplicacao: 'Burnout e depressão se sobrepõem, e a literatura mostra que compartilham fatores causais, o que cria risco real de confundir os dois. A distinção importa: a depressão maior (F32) e recorrente (F33) são transtornos do humor com critérios próprios e curso que não se restringe ao contexto de trabalho; o burnout é fenômeno ocupacional centrado na relação com o trabalho. No documento, registre o diferencial de forma honesta: se o quadro preenche critérios de depressão, isso deve constar, porque tem implicação clínica e previdenciária diferente. Não force o rótulo de burnout para evitar o de depressão, nem o contrário.',
+    armadilha: 'Escolher o rótulo pela conveniência do afastamento, não pela avaliação. Confundir burnout com depressão (ou vice-versa) compromete o cuidado e a integridade do documento.'
+  },
+  {
+    n: 5,
+    titulo: 'Conhecer os limites do papel do psicólogo no fluxo do INSS',
+    aplicacao: 'A concessão de benefício por incapacidade e a definição do nexo previdenciário são atos da perícia médica do INSS, não do psicólogo. O psicólogo contribui com avaliação psicológica, descrição do quadro, caracterização das dimensões do burnout, do nexo ocupacional e do impacto funcional, em documento elaborado conforme as resoluções do CFP. O documento do psicólogo é peça técnica de subsídio, não decisão de afastamento. Reconhecer esse limite é o que mantém o documento dentro do escopo ético e profissional, e o torna mais, não menos, útil.',
+    armadilha: 'Redigir o documento como se concedesse o afastamento. O psicólogo subsidia; a decisão de incapacidade e nexo é da perícia médica. Ultrapassar isso fragiliza o documento.'
+  },
+  {
+    n: 6,
+    titulo: 'Estruturar o conteúdo mínimo do documento técnico',
+    aplicacao: 'O documento técnico que subsidia o nexo de burnout deve conter, no mínimo: identificação e finalidade, história ocupacional e clínica, descrição das três dimensões do burnout com base na avaliação, instrumentos utilizados, caracterização do nexo entre trabalho e quadro, diferencial com depressão e outros quadros, impacto funcional e a indicação técnica. A elaboração segue as resoluções do CFP sobre documentos psicológicos. Clareza, fundamentação e honestidade de escopo são o que tornam o documento defensável.',
+    armadilha: 'Entregar um documento genérico, sem história ocupacional nem instrumentos. A peça que não fundamenta perde força exatamente onde mais precisa dela.'
+  },
+  {
+    n: 7,
+    titulo: 'Articular com a NR-1 e o cuidado de retorno ao trabalho',
+    aplicacao: 'O nexo de burnout não termina no afastamento. A NR-1, com a inclusão dos riscos psicossociais na gestão de riscos ocupacionais, conecta o caso individual ao ambiente que o produziu: um afastamento por burnout é também sinal de risco psicossocial na organização. O psicólogo pode articular o cuidado de retorno ao trabalho com a prevenção, evitando que o trabalhador volte ao mesmo ambiente adoecedor. Documentar o nexo e pensar o retorno são partes do mesmo cuidado, não etapas separadas.',
+    armadilha: 'Tratar o afastamento como fim do processo. Sem cuidar do retorno e do ambiente, o ciclo de adoecimento se repete e o afastamento vira porta giratória.'
+  }
+];
+
+const erros = [
+  {
+    titulo: 'Tratar QD85 como diagnóstico de doença',
+    texto: 'A OMS classifica burnout (QD85 na CID-11) como fenômeno ocupacional, no capítulo de fatores que influenciam o estado de saúde, não como transtorno mental. Documentar como se fosse uma doença autônoma ignora a própria taxonomia que dá base ao código.'
+  },
+  {
+    titulo: 'Afirmar burnout sem caracterizar as três dimensões',
+    texto: 'A definição da OMS exige exaustão, distanciamento mental com cinismo e redução de eficácia. Um documento que apenas rotula, sem descrever como cada dimensão aparece no caso, é frágil diante da avaliação previdenciária.'
+  },
+  {
+    titulo: 'Não fazer o diferencial com depressão',
+    texto: 'Burnout e depressão compartilham fatores causais e se sobrepõem. Sem diferencial explícito com F32 e F33, há risco de rotular como burnout um quadro depressivo (ou o contrário), o que tem implicação clínica e previdenciária distinta.'
+  },
+  {
+    titulo: 'Ultrapassar o papel do psicólogo no fluxo do INSS',
+    texto: 'A concessão de benefício e a definição do nexo previdenciário são da perícia médica do INSS. O documento do psicólogo subsidia, não decide. Redigi-lo como se concedesse o afastamento extrapola o escopo e fragiliza a peça.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Burnout é doença reconhecida pela OMS? Dá direito a afastamento pelo INSS?',
+    a: 'A OMS classifica burnout na CID-11 como QD85, um fenômeno ocupacional resultante de estresse crônico no trabalho não gerenciado com sucesso, no capítulo de fatores que influenciam o estado de saúde, e não como doença ou transtorno mental. A CID-11 passou a valer no Brasil em janeiro de 2025. O afastamento e a concessão de benefício por incapacidade são decididos pela perícia médica do INSS, com base em avaliação própria; documentos técnicos de psicólogos e médicos subsidiam, mas não substituem essa decisão.'
+  },
+  {
+    q: 'O que o documento técnico precisa conter para subsidiar o nexo de burnout?',
+    a: 'No mínimo: identificação e finalidade, história ocupacional e clínica, descrição das três dimensões do burnout (exaustão, distanciamento mental com cinismo e redução de eficácia profissional) com base na avaliação, instrumentos utilizados, caracterização do nexo entre as condições de trabalho e o quadro, diferencial com depressão e outros quadros, impacto funcional e indicação técnica. A elaboração segue as resoluções do CFP sobre documentos psicológicos. O documento subsidia a perícia, não concede o afastamento.'
+  },
+  {
+    q: 'Qual a diferença entre burnout (QD85) e depressão (F32/F33) na documentação?',
+    a: 'O burnout é, na CID-11, um fenômeno ocupacional centrado na relação com o trabalho; a depressão maior (F32) e recorrente (F33) são transtornos do humor com critérios próprios, cujo curso não se restringe ao trabalho. Os dois se sobrepõem e compartilham fatores causais, o que torna o diferencial obrigatório. Na prática, o documento deve registrar com honestidade qual quadro a avaliação sustenta: se preenche critérios de depressão, isso precisa constar, porque a implicação clínica e previdenciária é distinta.'
+  },
+  {
+    q: 'Quais são os limites éticos do psicólogo ao documentar burnout para o INSS?',
+    a: 'O psicólogo elabora avaliação e documento técnico conforme as resoluções do CFP, descrevendo o quadro, o nexo ocupacional e o impacto funcional. Não cabe ao psicólogo conceder benefício nem definir nexo previdenciário, atos da perícia médica do INSS, nem prescrever medicação. O documento deve ser honesto quanto ao escopo, evitar forçar rótulo por conveniência do afastamento e respeitar o sigilo e a finalidade. Reconhecer esses limites torna o documento mais defensável, não menos.'
+  },
+  {
+    q: 'Que formação prepara o psicólogo organizacional para esse tipo de documentação e prevenção?',
+    a: 'A documentação de nexo e a prevenção de riscos psicossociais exigem base em psicologia organizacional, saúde mental no trabalho e avaliação psicológica, com domínio da NR-1 e dos instrumentos de avaliação de burnout. No IPOG, o MBA em Psicologia Organizacional e do Trabalho cobre riscos psicossociais, NR-1 e saúde mental no trabalho, conteúdos diretamente ligados a esse tipo de atuação. Consulte o site do IPOG para a grade vigente.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Documentar o nexo de burnout (CID-11 QD85) para afastamento no INSS em 2026: o que o documento precisa conter',
+  description: 'Guia para documentar o nexo de burnout (QD85) com vistas a afastamento no INSS: as três dimensões da OMS, construção do nexo ocupacional, diferencial com depressão (F32/F33), limites éticos do psicólogo e conexão com a NR-1.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.tldr-resposta', '.faq-answer-text'] },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Nexo de burnout (QD85) e afastamento INSS', item: `${SITE.url}/guias/afastamento-inss-burnout-nexo-qd85-2026` }
+  ]
+};
+---
+
+<Base
+  title="Documentar nexo de burnout (CID-11 QD85) para afastamento no INSS 2026: o que o laudo precisa conter"
+  description="Como documentar o nexo de burnout (QD85) para afastamento no INSS em 2026: as três dimensões da OMS, construção do nexo ocupacional, diferencial com depressão (F32/F33), limites éticos do psicólogo e conexão com a NR-1. Afastamentos por burnout saltaram de 823 (2021) para 7.595 (2025).">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Nexo de burnout (QD85) e afastamento INSS' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Documentação clínica · 7 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Documentar o nexo de burnout (QD85) para afastamento no INSS</h1>
+          <TLDR
+            resposta="O burnout é, na CID-11, o código QD85, classificado pela OMS como fenômeno ocupacional (não doença), em vigor no Brasil desde janeiro de 2025. O documento técnico que subsidia o nexo precisa caracterizar as três dimensões (exaustão, distanciamento com cinismo, queda de eficácia), construir o nexo com as condições de trabalho e fazer o diferencial com depressão (F32/F33). A concessão do afastamento é ato da perícia médica do INSS; o psicólogo subsidia, não decide. Os afastamentos por burnout no Brasil saltaram de 823 em 2021 para 7.595 em 2025."
+            fontes={["OMS, burnout como fenômeno ocupacional (CID-11 QD85)", "Ministério da Previdência Social (série de afastamentos 2021-2025)", "Resoluções do CFP sobre documentos psicológicos"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto técnico para documentar o nexo de burnout: entender o que o QD85 é e não é, caracterizar as três dimensões, construir o nexo ocupacional, fazer o diferencial com depressão, respeitar os limites do papel no fluxo do INSS, estruturar o conteúdo mínimo do documento e articular com a NR-1 e o retorno ao trabalho.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~18 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos e organizacionais</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> estruturar um documento técnico que subsidie o nexo de burnout, com as três dimensões, o nexo ocupacional, o diferencial com depressão e o respeito ao escopo do psicólogo.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, domínio das resoluções do CFP sobre documentos, conhecimento da CID-11 e da NR-1, e instrumentos de avaliação de burnout.</li>
+          <li><strong>Resultado esperado:</strong> documento defensável, honesto quanto ao escopo, que subsidia a perícia médica do INSS sem ultrapassar o papel do psicólogo.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          O documento mais forte sobre burnout é o que reconhece que o burnout não é, na taxonomia da OMS, uma doença. A CID-11 classifica burnout como QD85, um fenômeno ocupacional resultante de estresse crônico no trabalho não gerenciado com sucesso, no capítulo de fatores que influenciam o estado de saúde. A CID-11 passou a valer no Brasil em janeiro de 2025. No mesmo período, os afastamentos por burnout saltaram de 823 em 2021 para 7.595 em 2025, segundo dados da Previdência, tornando a documentação cada vez mais frequente e mais escrutinada.
+        </p>
+        <p>
+          A inversão prática para o psicólogo: a força do documento não vem de afirmar uma doença, vem de caracterizar com precisão as três dimensões do burnout, ancorá-las no trabalho por meio do nexo e fazer o diferencial honesto com depressão. E vem, sobretudo, de respeitar o escopo. A concessão do benefício e a definição do nexo previdenciário são da perícia médica do INSS; o documento do psicólogo subsidia. Reconhecer esse limite torna a peça mais defensável, não menos.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 7 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Burnout (QD85) x depressão (F32/F33) na documentação</h2>
+        <p class="text-ink-700 mt-2">O diferencial é obrigatório: os quadros se sobrepõem, mas têm classificação, nexo e implicação distintos.</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Eixo</th>
+                <th class="text-left px-4 py-3">Burnout (CID-11 QD85)</th>
+                <th class="text-left px-4 py-3">Depressão (F32/F33)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Classificação OMS</td>
+                <td class="px-4 py-3 text-ink-700">Fenômeno ocupacional, não doença</td>
+                <td class="px-4 py-3 text-ink-700">Transtorno do humor com critérios próprios</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Relação com o trabalho</td>
+                <td class="px-4 py-3 text-ink-700">Centrado na relação com o trabalho, por definição</td>
+                <td class="px-4 py-3 text-ink-700">Curso não se restringe ao contexto de trabalho</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Marca clínica</td>
+                <td class="px-4 py-3 text-ink-700">Exaustão, distanciamento com cinismo, queda de eficácia</td>
+                <td class="px-4 py-3 text-ink-700">Humor deprimido, anedonia, sintomas pervasivos</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Papel no documento</td>
+                <td class="px-4 py-3 text-ink-700">Caracterizar dimensões e nexo ocupacional</td>
+                <td class="px-4 py-3 text-ink-700">Registrar se os critérios estão preenchidos</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Analista de suporte, 41 anos, exaustão crônica após dois anos de metas crescentes</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Caso fictício composto, sem correspondência com pessoa real. Analista de suporte, 41 anos, procura atendimento por exaustão que não melhora com o fim de semana, cinismo crescente em relação ao trabalho que antes valorizava e queda perceptível de desempenho. História ocupacional: dois anos de aumento de metas, redução de equipe, plantões e cobranças por indicadores em tempo real, sem controle sobre o próprio ritmo.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Avaliação: as três dimensões do burnout aparecem com clareza, ancoradas em fatores de risco psicossociais documentados na cronologia. O diferencial com depressão foi feito de forma explícita: humor deprimido presente apenas em contexto de trabalho, sem os critérios pervasivos de um episódio depressivo maior. O documento técnico descreveu identificação e finalidade, história ocupacional e clínica, as três dimensões, os instrumentos usados, o nexo com as condições de trabalho, o diferencial e o impacto funcional, conforme as resoluções do CFP. Ficou explícito que a peça subsidia a perícia médica do INSS, sem conceder afastamento. Em paralelo, o caso foi sinalizado como indicador de risco psicossocial para a frente de NR-1 e o plano de retorno foi pensado para não devolver o trabalhador ao mesmo ambiente.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos principais</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.who.int/news/item/28-05-2019-burn-out-an-occupational-phenomenon-international-classification-of-diseases" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS: burnout como fenômeno ocupacional na CID-11</a></li>
+          <li><a href="https://agenciagov.ebc.com.br/noticias/202501/reporter-sus-classificacao-da-oms-para-sindrome-de-burnout-passa-a-valer-no-brasil" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Agência Gov: CID-11 e burnout passam a valer no Brasil (2025)</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP: resoluções sobre documentos psicológicos</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/implementar-nr1-em-empresa/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Implementar a NR-1 na empresa</a></li>
+          <li><a href="/guias/retorno-ao-trabalho-pos-burnout/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Retorno ao trabalho pós-burnout</a></li>
+          <li><a href="/areas/saude-mental-organizacoes/" class="text-brand-700 hover:text-brand-800 font-medium">Área · Saúde Mental nas Organizações</a></li>
+          <li><a href="/areas/avaliacao-psicologica/" class="text-brand-700 hover:text-brand-800 font-medium">Área · Avaliação Psicológica</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">O documento mais forte de burnout reconhece que o burnout não é doença, e ancora tudo no trabalho.</h3>
+        <ul class="mt-3 text-white/90 leading-relaxed space-y-2 list-disc pl-5">
+          <li>QD85 é fenômeno ocupacional na CID-11, em vigor no Brasil desde janeiro de 2025.</li>
+          <li>Caracterize as três dimensões: exaustão, distanciamento com cinismo e queda de eficácia.</li>
+          <li>Construa o nexo ocupacional com cronologia e fatores de risco psicossociais.</li>
+          <li>Faça o diferencial honesto com depressão (F32/F33); não force o rótulo por conveniência.</li>
+          <li>O psicólogo subsidia; a concessão e o nexo previdenciário são da perícia médica do INSS.</li>
+          <li>Articule com a NR-1 e com o retorno ao trabalho para não repetir o ciclo de adoecimento.</li>
+        </ul>
+        <p class="mt-3 text-white/90 leading-relaxed">Para o psicólogo organizacional que atua nessa frente, o MBA em Psicologia Organizacional e do Trabalho do IPOG aprofunda riscos psicossociais, NR-1 e saúde mental no trabalho. Consulte a grade vigente.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho correlato</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPot.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fonte principal</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.who.int/news/item/28-05-2019-burn-out-an-occupational-phenomenon-international-classification-of-diseases" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS: burnout (CID-11 QD85)</a></li>
+          <li><a href="https://agenciagov.ebc.com.br/noticias/202501/reporter-sus-classificacao-da-oms-para-sindrome-de-burnout-passa-a-valer-no-brasil" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Agência Gov: CID-11 no Brasil</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~18 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

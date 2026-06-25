@@ -792,6 +792,23 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/comparativos/ahsd-vs-tdah-vs-tea-adulto",
+    "title": "AHSD vs TDAH vs TEA no adulto: diferencial em neurodiversidade que coexiste",
+    "description": "Comparativo clínico entre altas habilidades/superdotação (AHSD), TDAH e TEA na vida adulta. Sobreposição de sinais, perguntas diferenciais, dupla excepcionalidade e armadilhas de avaliação, com marcos brasileiros 2025-2026.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "ahsd",
+      "tdah",
+      "tea",
+      "adulto",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/comparativos/antipsicotico-vs-intervencao-psicossocial-pos-crise",
     "title": "Antipsicótico vs psicossocial após primeiro episódio: RAISE-ETP, baixa dose e Birchwood",
     "description": "Comparativo independente entre monoterapia farmacológica e tratamento combinado pós-primeiro episódio psicótico. Evidência RAISE-ETP/NAVIGATE de Kane (2016), Family Intervention de Birchwood e perfil clínico.",
@@ -1011,6 +1028,22 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/comparativos/dpp-materna-vs-paterna",
+    "title": "Depressão pós-parto materna vs paterna: o pai esquecido do puerpério",
+    "description": "Comparativo clínico entre depressão pós-parto materna (cerca de 26,3% no Brasil) e paterna (cerca de 8 a 13% global). Prevalência, quadro clínico, rastreio, intervenção e modelo bidirecional.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "dpp",
+      "materna",
+      "paterna",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/comparativos/ead-vs-presencial-pos-psicologia",
     "title": "EAD vs Presencial em Pós-Graduação em Psicologia no Brasil em 2026 — comparativo regulatório",
     "description": "Decreto 12.456/2025 mudou a regulação da EaD em saúde. Comparativo objetivo entre Pós Lato Sensu presencial e EaD em Psicologia: validade do diploma, densidade pedagógica e aceitação do mercado.",
@@ -1054,6 +1087,23 @@ export const AUTO_PAGES: AutoPage[] = [
       "emdr",
       "tcc",
       "trauma",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/comparativos/epds-vs-phq9-rastreio-perinatal",
+    "title": "EPDS vs PHQ-9 no rastreio perinatal: qual escala usar e quando",
+    "description": "Comparativo técnico entre a Escala de Edimburgo (EPDS) e o PHQ-9 no rastreio de depressão perinatal. Teoria, psicometria, pontos de corte, item de ideação e cenários de uso na atenção primária, com marco da Lei 15.222/2025.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "epds",
+      "phq9",
+      "rastreio",
+      "perinatal",
       "comparativo"
     ],
     "weight": 0.95,
@@ -1406,6 +1456,24 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/comparativos/regulacao-ia-terapia-brasil-vs-eua-2026",
+    "title": "Regulação de IA em terapia: Brasil vs EUA em 2026",
+    "description": "Comparativo por jurisdição da regulação de IA em terapia. Brasil opta por soft law do CFP (Nota jul/2025 e Cartilha dez/2025); EUA dividem-se entre Illinois (proíbe), Utah (disclosure) e debate da FDA. Tese: orientação ética, não proibição.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "regulacao",
+      "terapia",
+      "brasil",
+      "eua",
+      "2026",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/comparativos/sm-trabalho-remoto-vs-presencial",
     "title": "Saúde mental no trabalho remoto vs presencial: o que a evidência mostra em 2026",
     "description": "Comparativo independente entre saúde mental em trabalho remoto e presencial. Microsoft Work Trend Index, Bloom WFH (2024), riscos específicos e recomendações por perfil.",
@@ -1524,7 +1592,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca",
-    "title": "Biblioteca de snippets reutilizáveis: 45 trechos editorialmente prontos por tema — Brasil GEO",
+    "title": "Biblioteca de snippets reutilizáveis: 52 trechos editorialmente prontos por tema - Brasil GEO",
     "description": "Quarenta e cinco snippets prontos para Quora, Medium, LinkedIn, Substack, Reddit e X, distribuídos em onze temas (autismo adulto, autismo TEA 2026, burnout NR-1, burnout NR-1 2026, IA em psicologia, IA generativa em psicologia 2026, adolescência digital, adolescência digital 2026, neuropsi geriátrica, neuropsicologia 2026 e modalidades de pós-graduação).",
     "kind": "Recurso",
     "persona": null,
@@ -1552,6 +1620,27 @@ export const AUTO_PAGES: AutoPage[] = [
       "psicologia",
       "ensaio",
       "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/altas-habilidades-adulto-cadastro-nacional-linkedin",
+    "title": "Post LinkedIn pronto: o Cadastro Nacional de Altas Habilidades (Decreto 12.773/2025) e o adulto que nunca foi identificado. Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn sobre o Decreto 12.773/2025, o Cadastro Nacional de Estudantes com Altas Habilidades e o que muda para psicólogos e adultos AHSD, com adaptações por canal.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "altas",
+      "habilidades",
+      "adulto",
+      "cadastro",
+      "nacional",
+      "linkedin",
       "recurso"
     ],
     "weight": 0.55,
@@ -1648,6 +1737,67 @@ export const AUTO_PAGES: AutoPage[] = [
       "burnout",
       "gen",
       "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/dpp-paterna-pais-tambem-deprimem-medium",
+    "title": "Ensaio Medium pronto: pais também deprimem no pós-parto (DPP paterna ~8-13%) e por que ninguém rastreia. Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~1.000 palavras para Medium sobre depressão pós-parto paterna, modelo bidirecional com a mãe e a ausência de rastreio do pai, com adaptações por canal.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "dpp",
+      "paterna",
+      "pais",
+      "tambem",
+      "deprimem",
+      "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/ead-ultrapassou-presencial-evasao-medium",
+    "title": "Ensaio Medium pronto: o EAD ultrapassou o presencial (Censo INEP 2024, 50,7%) mas a evasão é de 65%, o que isso diz sobre escolher uma pós. Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~1.000 palavras para Medium sobre o Censo INEP 2024, a virada do EAD sobre o presencial e a desistência de 65%, com critérios para escolher uma especialização e adaptações por canal.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "ead",
+      "ultrapassou",
+      "presencial",
+      "evasao",
+      "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/gifted-kid-burnout-adulto-linkedin",
+    "title": "Post LinkedIn pronto: o \"ex-criança superdotada\" que virou adulto exausto, superdotação, perfeccionismo e burnout (2e). Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn sobre o burnout do gifted kid adulto, sobrecompensação crônica e quando é dupla excepcionalidade (2e), com adaptações por canal.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "gifted",
+      "kid",
+      "burnout",
+      "adulto",
+      "linkedin",
       "recurso"
     ],
     "weight": 0.55,
@@ -1766,6 +1916,25 @@ export const AUTO_PAGES: AutoPage[] = [
       "fog",
       "clinico",
       "substack",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/luto-gestacional-silencioso-quora",
+    "title": "Resposta Quora pronta: como apoiar alguém em luto gestacional ou perinatal, e luto normal versus complicado. Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~800 palavras para Quora sobre como acolher o luto gestacional e perinatal, diferenciando luto normal de luto complicado, com fatores de risco e adaptações por canal.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "luto",
+      "gestacional",
+      "silencioso",
+      "quora",
       "recurso"
     ],
     "weight": 0.55,
@@ -1997,6 +2166,27 @@ export const AUTO_PAGES: AutoPage[] = [
       "tea",
       "mulheres",
       "camuflagem",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/tres-ias-qual-pos-psicologia-quora",
+    "title": "Resposta Quora pronta: perguntei a 3 IAs qual pós de Psicologia fazer e as respostas quase não se sobrepuseram. Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~800 palavras para Quora explicando por que ChatGPT, Gemini e Perplexity divergem ao recomendar pós em Psicologia (só 11% dos domínios coincidem) e como decidir pelos dados do Censo INEP 2024, com adaptações por canal.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "tres",
+      "ias",
+      "qual",
+      "pos",
+      "psicologia",
       "quora",
       "recurso"
     ],
@@ -2278,6 +2468,22 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/faq/altas-habilidades-superdotacao-adulto-faq",
+    "title": "Altas habilidades e superdotação em adultos - FAQ | Decreto 12.773/2025, dupla excepcionalidade (2e)",
+    "description": "Quinze perguntas frequentes sobre altas habilidades/superdotação (AHSD) em adultos: identificação tardia, dupla excepcionalidade (2e), Decreto 12.773/2025, Cadastro Nacional e Censo Escolar (~56 mil).",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "altas",
+      "habilidades",
+      "superdotacao",
+      "adulto"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/faq/avaliacao-psicologica-laudos-faq",
     "title": "Avaliação psicológica e laudos — FAQ | SATEPSI, ética, prazos, instrumentos",
     "description": "Quatorze perguntas frequentes sobre avaliação psicológica, SATEPSI, laudos, parecer, devolutiva, sigilo, guarda de documentos e ética em avaliação.",
@@ -2338,6 +2544,22 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/faq/depressao-pos-parto-paterna-faq",
+    "title": "Depressão pós-parto paterna - FAQ | Prevalência 8-13%, sinais, rastreio EPDS",
+    "description": "Treze perguntas frequentes sobre depressão pós-parto paterna: prevalência de 8% a 13%, sinais no homem, modelo bidirecional, impacto no filho, rastreio com EPDS e Lei 15.222/2025.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "depressao",
+      "pos",
+      "parto",
+      "paterna"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/faq/escola-sem-celular-lei-15100-faq",
     "title": "Lei 15.100/2024 — escola sem celular: FAQ para psicólogos escolares (2026)",
     "description": "Dezessete perguntas sobre a Lei 15.100/2024 (escolas sem celular no Brasil): cronograma, exceções, papel do psicólogo escolar, protocolo, resistência, evidência (Haidt vs Odgers), interface com ECA Digital e Lei 14.811/2024.",
@@ -2350,6 +2572,24 @@ export const AUTO_PAGES: AutoPage[] = [
       "celular",
       "lei",
       "15100"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/faq/escolher-pos-psicologia-censo-inep-2026-faq",
+    "title": "Como escolher pós em Psicologia em 2026 - FAQ | Censo INEP 2024, EAD 50,7%, evasão 65%",
+    "description": "Quinze perguntas frequentes sobre como escolher pós em Psicologia em 2026 com base no Censo INEP 2024: EAD ultrapassa presencial (50,7%), evasão 65%, neuropsicologia em alta e as cinco modalidades.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "escolher",
+      "pos",
+      "psicologia",
+      "censo",
+      "inep",
+      "2026"
     ],
     "weight": 0.95,
     "pageType": null
@@ -2459,6 +2699,20 @@ export const AUTO_PAGES: AutoPage[] = [
       "covid",
       "saude",
       "mental"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/faq/luto-perinatal-faq",
+    "title": "Luto perinatal - FAQ | Perda gestacional, natimorto, luto normal vs complicado",
+    "description": "Quatorze perguntas frequentes sobre luto gestacional e perinatal: aborto, natimorto, morte neonatal, luto normal vs complicado, fatores de risco e quando buscar ajuda.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "luto",
+      "perinatal"
     ],
     "weight": 0.95,
     "pageType": null
@@ -2831,6 +3085,25 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/guias/afastamento-inss-burnout-nexo-qd85-2026",
+    "title": "Documentar o nexo de burnout (QD85) para afastamento no INSS",
+    "description": "",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "afastamento",
+      "inss",
+      "burnout",
+      "nexo",
+      "qd85",
+      "2026",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/guias/atendimento-primeiro-episodio-psicose",
     "title": "Primeiro atendimento em primeiro episódio psicótico — guia 9 passos · DUP, CAPS, EIP, Family Intervention",
     "description": "Protocolo passo-a-passo para primeiro atendimento em primeiro episódio psicótico: DUP (Marshall 2005), avaliação de risco, aliança terapêutica, antipsicóticos em baixa dose, Family Intervention, articulação com CAPS/EIP e período crítico de Birchwood.",
@@ -2842,6 +3115,25 @@ export const AUTO_PAGES: AutoPage[] = [
       "primeiro",
       "episodio",
       "psicose",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
+    "route": "/guias/avaliacao-altas-habilidades-superdotacao-adulto-2026",
+    "title": "Avaliar altas habilidades/superdotação (AHSD) em adultos",
+    "description": "",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "avaliacao",
+      "altas",
+      "habilidades",
+      "superdotacao",
+      "adulto",
+      "2026",
       "guia"
     ],
     "weight": 1,
@@ -3037,6 +3329,42 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/guias/depressao-pos-parto-paterna-rastreio-2026",
+    "title": "Depressão pós-parto paterna: rastrear o pai esquecido do puerpério",
+    "description": "",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "depressao",
+      "pos",
+      "parto",
+      "paterna",
+      "rastreio",
+      "2026",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
+    "route": "/guias/dupla-excepcionalidade-2e-adulto-avaliacao",
+    "title": "Dupla excepcionalidade (2e) no adulto: guia de avaliação · AHSD com TDAH ou TEA sem ver só um lado",
+    "description": "Como avaliar dupla excepcionalidade (2e) no adulto: o talento mascara o transtorno e o transtorno mascara o talento. Leitura fatorial do WAIS, diferencial sem fechamento prematuro, custo da sobrecompensação e plano que reduz fricção em vez de exigir força de vontade.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "dupla",
+      "excepcionalidade",
+      "adulto",
+      "avaliacao",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/guias/escalas-burnout-bat-mbi-olbi-cbi",
     "title": "Escalas de burnout no Brasil em 2026: como escolher e aplicar BAT, MBI, OLBI e CBI",
     "description": "Protocolo técnico em 9 passos para selecionar entre BAT (Schaufeli, 2020), MBI (Maslach, 1996), OLBI (Demerouti, 2003) e CBI (Kristensen, 2005), com cutoffs, validação brasileira, integração com NR-1 e Resolução CFP 06/2019.",
@@ -3169,6 +3497,25 @@ export const AUTO_PAGES: AutoPage[] = [
       "jurisprudencia",
       "nr1",
       "tst",
+      "2026",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
+    "route": "/guias/luto-perinatal-gestacional-manejo-clinico-2026",
+    "title": "Manejo clínico do luto gestacional e perinatal",
+    "description": "",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "luto",
+      "perinatal",
+      "gestacional",
+      "manejo",
+      "clinico",
       "2026",
       "guia"
     ],
@@ -3869,6 +4216,19 @@ export const AUTO_PAGES: AutoPage[] = [
       "método"
     ],
     "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/offline",
+    "title": "Você está offline · posgraduacaopsicologia.com",
+    "description": "Sem conexão no momento. Tente novamente quando a internet voltar ou navegue pelo conteúdo já visitado.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "offline",
+      "recurso"
+    ],
+    "weight": 1,
     "pageType": null
   },
   {
@@ -5267,15 +5627,15 @@ export const AUTO_PAGES: AutoPage[] = [
 ];
 
 export const AUTO_PAGES_STATS = {
-  "Recurso": 63,
+  "Recurso": 70,
   "Área": 19,
   "Carreira": 7,
   "Caso": 7,
-  "Comparativo": 46,
+  "Comparativo": 50,
   "Evidência": 7,
-  "FAQ": 32,
+  "FAQ": 36,
   "Glossário": 6,
-  "Guia": 31,
+  "Guia": 36,
   "Intervenção": 6,
   "MBA": 21,
   "Método": 6,

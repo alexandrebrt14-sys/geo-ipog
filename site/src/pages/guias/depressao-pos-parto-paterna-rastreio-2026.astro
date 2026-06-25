@@ -1,0 +1,357 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+const areaHospitalar = AREAS.find(a => a.id === 'psicologia-hospitalar')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Incluir o pai no rastreio do puerpério, não só a mãe',
+    aplicacao: 'A depressão pós-parto paterna existe e é prevalente. Meta-análises estimam prevalência global de depressão paterna no período perinatal em torno de 8 a 13%, e um estudo prospectivo de 2025 encontrou incidência de cerca de 5% no primeiro mês após o nascimento, medida por escala de rastreio. O primeiro passo é mudar a pergunta padrão: o puerpério não é evento exclusivo da mãe. Inclua o pai ou parceiro no rastreio sempre que possível, em vez de presumir que o sofrimento perinatal é só materno.',
+    armadilha: 'Tratar o pai apenas como rede de apoio da mãe. Quem só rastreia a mãe não enxerga o pai que está adoecendo ao lado dela.'
+  },
+  {
+    n: 2,
+    titulo: 'Reconhecer a apresentação masculina, que muitas vezes não parece tristeza',
+    aplicacao: 'A depressão pós-parto paterna passa despercebida em parte porque sua apresentação foge do estereótipo de tristeza e choro. No homem, a depressão perinatal frequentemente se expressa por irritabilidade, retraimento, aumento do consumo de álcool, sobrecarga de trabalho como fuga, queixas somáticas e distanciamento do bebê e da parceira. Esses sinais costumam ser lidos como estresse normal de quem virou pai, e não como possível quadro depressivo. Reconhecer essa apresentação é condição para rastrear bem.',
+    armadilha: 'Esperar o quadro feminino clássico. Se o critério mental do avaliador é tristeza visível, a DPP paterna em forma de irritabilidade e retraimento escapa.'
+  },
+  {
+    n: 3,
+    titulo: 'Aplicar instrumento de rastreio adaptado e entrevista',
+    aplicacao: 'A Escala de Edimburgo (EPDS, 10 itens) é o instrumento de rastreio mais usado no período perinatal e tem sido aplicada também ao pai. O rastreio do homem pede atenção aos itens e à entrevista que captem irritabilidade e retraimento, não só humor deprimido explícito. O rastreio positivo não fecha diagnóstico: ele sinaliza necessidade de avaliação clínica completa. Combine a escala com entrevista que explore sono, consumo de álcool, relação com o bebê e com a parceira, e ideação de morte.',
+    armadilha: 'Tomar o escore de rastreio como diagnóstico. Rastreio detecta risco; o diagnóstico depende de avaliação clínica e diferencial.'
+  },
+  {
+    n: 4,
+    titulo: 'Compreender o modelo bidirecional entre os pais',
+    aplicacao: 'A depressão paterna e a materna se influenciam de forma recíproca. A literatura descreve um modelo bidirecional: a depressão de um dos pais aumenta o risco e a gravidade no outro, e a presença simultânea agrava o ambiente afetivo do casal. Por isso, ao identificar depressão pós-parto na mãe, vale rastrear o pai, e vice-versa. Cuidar de um lado isolado, ignorando o outro, deixa ativo um fator que mantém o quadro. O rastreio do casal, quando viável, é mais protetor do que o rastreio de um único cuidador.',
+    armadilha: 'Cuidar de um dos pais e ignorar o outro. A depressão não tratada de um parceiro alimenta a do outro e o ciclo se mantém.'
+  },
+  {
+    n: 5,
+    titulo: 'Dimensionar o impacto no desenvolvimento infantil',
+    aplicacao: 'A depressão pós-parto paterna não tratada associa-se a desfechos no desenvolvimento dos filhos, incluindo maior risco de problemas internalizantes e externalizantes ao longo da infância. Esse dado tem duplo uso clínico: justifica o investimento em rastreio e tratamento do pai como medida de proteção da criança, e ajuda a motivar o próprio pai para o cuidado, ao mostrar que cuidar de si é também cuidar do filho. O foco não é culpabilizar o pai, é situar o tratamento como parte do cuidado familiar.',
+    armadilha: 'Usar o impacto na criança para culpar o pai. O dado serve para motivar e justificar o cuidado, não para responsabilizar quem já está em sofrimento.'
+  },
+  {
+    n: 6,
+    titulo: 'Situar o cuidado no marco regulatório recente',
+    aplicacao: 'A Lei 15.222/2025, que ampliou a licença, foi justificada como medida de saúde mental no período perinatal, em linha com convenções internacionais sobre proteção à parentalidade. Embora o debate público de licença concentre-se na mãe, o marco reforça o reconhecimento do puerpério como janela de saúde mental que envolve a família. Some-se a isso a Lei federal de 2023 que garante assistência psicológica a gestantes e puérperas, base para inserir o cuidado perinatal no fluxo de saúde, no qual o pai também pode ser acolhido.',
+    armadilha: 'Ler a legislação perinatal como assunto exclusivamente materno. O marco organiza o cuidado da família no puerpério, e o pai faz parte dela.'
+  },
+  {
+    n: 7,
+    titulo: 'Definir o papel do psicólogo e encaminhar',
+    aplicacao: 'O psicólogo faz: normaliza a busca de ajuda pelo pai (contra o estigma de que homem não adoece no puerpério), conduz rastreio e avaliação, oferece psicoterapia, orienta o casal sobre o modelo bidirecional e articula encaminhamento quando há indicação de avaliação psiquiátrica. O psicólogo não prescreve medicação e não substitui o cuidado da mãe pelo do pai, soma os dois. Documente conforme as resoluções do CFP, com avaliação de risco quando houver ideação de morte. O objetivo é tornar visível e tratável um quadro que costuma ser silenciado.',
+    armadilha: 'Reforçar o silêncio masculino ao não perguntar diretamente. Sem abrir espaço explícito, o pai tende a não relatar o próprio sofrimento.'
+  }
+];
+
+const erros = [
+  {
+    titulo: 'Rastrear só a mãe no puerpério',
+    texto: 'A depressão pós-parto paterna tem prevalência estimada em torno de 8 a 13% (meta-análises). Quem só rastreia a mãe deixa de fora um dos cuidadores em sofrimento e ignora o fator bidirecional que mantém o quadro do casal.'
+  },
+  {
+    titulo: 'Esperar a apresentação feminina clássica',
+    texto: 'No homem, a DPP costuma aparecer como irritabilidade, retraimento, aumento do consumo de álcool e sobrecarga de trabalho, não como tristeza visível. Se o critério do avaliador é o quadro feminino, a apresentação masculina escapa.'
+  },
+  {
+    titulo: 'Tratar o escore de rastreio como diagnóstico',
+    texto: 'A Escala de Edimburgo (EPDS) detecta risco; não fecha diagnóstico. Um rastreio positivo indica necessidade de avaliação clínica completa, com entrevista e diferencial, não o início automático de tratamento como se a doença estivesse confirmada.'
+  },
+  {
+    titulo: 'Usar o impacto na criança para culpar o pai',
+    texto: 'A DPP paterna não tratada associa-se a desfechos no desenvolvimento infantil, mas esse dado existe para justificar e motivar o cuidado, não para responsabilizar quem está doente. Culpabilizar afasta o pai do tratamento.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Pai também tem depressão pós-parto? É real ou exagero?',
+    a: 'É real e mensurável. Meta-análises estimam a prevalência global de depressão paterna no período perinatal em torno de 8 a 13%, e um estudo prospectivo de 2025 encontrou incidência de cerca de 5% no primeiro mês após o nascimento. A depressão pós-parto paterna passa despercebida em parte porque sua apresentação no homem foge do estereótipo de tristeza, manifestando-se com frequência por irritabilidade, retraimento, aumento do consumo de álcool e sobrecarga de trabalho. Reconhecê-la é o primeiro passo para tratá-la.'
+  },
+  {
+    q: 'Quais sinais distinguem a depressão pós-parto no homem?',
+    a: 'A apresentação masculina muitas vezes não parece tristeza. Os sinais mais comuns incluem irritabilidade, retraimento social e afetivo, aumento do consumo de álcool, sobrecarga de trabalho usada como fuga, queixas somáticas e distanciamento do bebê e da parceira. Esses sinais costumam ser interpretados como estresse normal de quem virou pai, e não como possível quadro depressivo. Por isso o rastreio precisa perguntar de forma explícita e usar instrumento adaptado, como a Escala de Edimburgo.'
+  },
+  {
+    q: 'Por que rastrear o pai se a mãe é quem deu à luz?',
+    a: 'Porque a depressão dos dois pais se influencia de forma recíproca. A literatura descreve um modelo bidirecional: a depressão de um aumenta o risco e a gravidade no outro, e a presença simultânea agrava o ambiente afetivo do casal e o desenvolvimento da criança. Cuidar apenas da mãe, deixando o pai sem rastreio, mantém ativo um fator que sustenta o quadro. Quando viável, o rastreio do casal é mais protetor do que o de um cuidador isolado.'
+  },
+  {
+    q: 'A Lei 15.222/2025 tem a ver com a saúde mental dos pais?',
+    a: 'A Lei 15.222/2025, que ampliou a licença, foi justificada como medida de saúde mental no período perinatal, alinhada a convenções internacionais de proteção à parentalidade. Embora o debate de licença concentre-se na figura materna, o marco reforça o reconhecimento do puerpério como janela de saúde mental da família. Somada à Lei federal de 2023 que garante assistência psicológica a gestantes e puérperas, dá base para inserir o cuidado perinatal no fluxo de saúde, no qual o pai também pode ser acolhido.'
+  },
+  {
+    q: 'Que formação prepara o psicólogo para o cuidado perinatal do pai?',
+    a: 'O cuidado perinatal, incluindo o do pai, exige base em psicologia clínica e em saúde mental, com domínio de rastreio, manejo de depressão e trabalho com o casal e a família. No IPOG, há trilhas correlatas em saúde mental e bem-estar que aprofundam esse repertório. Consulte o site do IPOG para a grade vigente das pós-graduações relacionadas.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Depressão pós-parto paterna: rastreio e manejo do pai esquecido do puerpério',
+  description: 'Guia de rastreio e manejo da depressão pós-parto paterna (prevalência em torno de 8 a 13%): por que passa despercebida, sinais distintos no homem, Escala de Edimburgo adaptada, modelo bidirecional, impacto no desenvolvimento infantil e Lei 15.222/2025.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.tldr-resposta', '.faq-answer-text'] },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Depressão pós-parto paterna', item: `${SITE.url}/guias/depressao-pos-parto-paterna-rastreio-2026` }
+  ]
+};
+---
+
+<Base
+  title="Depressão pós-parto paterna: rastreio e manejo 2026 · sinais no homem, EPDS e modelo bidirecional"
+  description="Rastreio e manejo da depressão pós-parto paterna (prevalência em torno de 8 a 13%): por que passa despercebida, sinais distintos no homem (irritabilidade, retraimento), Escala de Edimburgo adaptada, modelo bidirecional com a mãe, impacto no desenvolvimento infantil e Lei 15.222/2025.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Depressão pós-parto paterna' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Rastreio e manejo · 7 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Depressão pós-parto paterna: rastrear o pai esquecido do puerpério</h1>
+          <TLDR
+            resposta="A depressão pós-parto paterna tem prevalência estimada em torno de 8 a 13% (meta-análises), mas passa despercebida porque sua apresentação no homem foge do estereótipo de tristeza: aparece como irritabilidade, retraimento, aumento do consumo de álcool e sobrecarga de trabalho. O rastreio do pai usa a Escala de Edimburgo adaptada, reconhece o modelo bidirecional entre os pais e protege o desenvolvimento da criança. Rastreio detecta risco; o diagnóstico depende de avaliação clínica."
+            fontes={["Meta-análises de depressão paterna perinatal (8 a 13%)", "Estudo prospectivo 2025 (incidência ~5% a 1 mês, EPDS)", "Lei 15.222/2025 (saúde mental perinatal)"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto clínico para a DPP paterna: incluir o pai no rastreio, reconhecer a apresentação masculina, aplicar instrumento adaptado, compreender o modelo bidirecional, dimensionar o impacto no desenvolvimento infantil, situar o marco regulatório e definir o papel do psicólogo.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~18 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos e perinatais</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> incluir o pai no rastreio do puerpério, reconhecer a apresentação masculina da depressão, aplicar instrumento adaptado e tratar dentro de um modelo de cuidado do casal e da família.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, base em rastreio e manejo de depressão e familiaridade com o período perinatal.</li>
+          <li><strong>Resultado esperado:</strong> tornar visível e tratável um quadro silenciado, com rastreio do pai, leitura bidirecional com a mãe e encaminhamento adequado.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          O puerpério não é evento exclusivo da mãe. A depressão pós-parto paterna tem prevalência estimada em torno de 8 a 13% segundo meta-análises, e um estudo prospectivo de 2025 encontrou incidência de cerca de 5% já no primeiro mês após o nascimento. O problema não é a raridade do quadro, é a invisibilidade dele. A apresentação masculina foge do estereótipo de tristeza e choro, aparecendo como irritabilidade, retraimento, aumento do consumo de álcool e sobrecarga de trabalho, sinais lidos como estresse normal de quem virou pai.
+        </p>
+        <p>
+          A inversão prática para o psicólogo: mude a pergunta padrão do puerpério e rastreie também o pai. Reconheça a apresentação masculina, use a Escala de Edimburgo de forma adaptada e leia o quadro dentro do modelo bidirecional, no qual a depressão de um dos pais alimenta a do outro e afeta o desenvolvimento da criança. Cuidar do pai não disputa atenção com a mãe; soma proteção à família inteira.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 7 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">DPP materna x DPP paterna: o que muda no rastreio</h2>
+        <p class="text-ink-700 mt-2">A comparação ajuda a não aplicar ao pai o critério mental construído para a mãe.</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Eixo</th>
+                <th class="text-left px-4 py-3">DPP materna</th>
+                <th class="text-left px-4 py-3">DPP paterna</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Prevalência de referência</td>
+                <td class="px-4 py-3 text-ink-700">Em torno de 1 em cada 10 (OMS, países desenvolvidos)</td>
+                <td class="px-4 py-3 text-ink-700">Cerca de 8 a 13% no período perinatal (meta-análises)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Apresentação típica</td>
+                <td class="px-4 py-3 text-ink-700">Humor deprimido, choro, culpa, ansiedade</td>
+                <td class="px-4 py-3 text-ink-700">Irritabilidade, retraimento, álcool, sobrecarga de trabalho</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Instrumento de rastreio</td>
+                <td class="px-4 py-3 text-ink-700">Escala de Edimburgo (EPDS), uso consolidado</td>
+                <td class="px-4 py-3 text-ink-700">EPDS adaptada ao pai, com entrevista de apoio</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Interação entre os pais</td>
+                <td class="px-4 py-3 text-ink-700">Influencia e é influenciada pela DPP do parceiro</td>
+                <td class="px-4 py-3 text-ink-700">Agrava-se com a DPP materna (modelo bidirecional)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Pai de primeiro filho, 33 anos, "estou só estressado, é só cansaço"</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Caso fictício composto, sem correspondência com pessoa real. Pai de primeiro filho, 33 anos, chega ao acompanhamento porque a parceira, em tratamento de depressão pós-parto, pediu que ele também conversasse com alguém. Relato inicial: "estou só estressado, é cansaço". Ao longo da escuta, surgem irritabilidade crescente, noites trabalhando até tarde para "não pensar", aumento do consumo de álcool e afastamento do bebê, que ele justifica como "deixar a mãe cuidar".
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Avaliação: rastreio com Escala de Edimburgo adaptada veio positivo; a entrevista confirmou retraimento, anedonia e ideação passiva de morte sem plano. Como a parceira já estava em tratamento, o quadro foi lido pelo modelo bidirecional: as duas depressões se retroalimentavam. Plano: validar que homem também adoece no puerpério, psicoterapia, orientação ao casal sobre a interação entre os quadros, avaliação psiquiátrica encaminhada pela ideação, e redução do uso de álcool como meta de cuidado. O ponto de virada foi nomear como depressão o que ele chamava de cansaço, o que abriu espaço para o tratamento.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos principais</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.sciencedirect.com/science/article/abs/pii/S016503271931496X" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Meta-análise: prevalência de depressão paterna perinatal</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/39921328/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Estudo prospectivo 2025: incidência de DPP paterna a 1 mês</a></li>
+          <li><a href="https://site.cfp.org.br/saude-da-mulher-nova-lei-garante-assistencia-psicologica-a-gestantes-e-puerperas/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP: assistência psicológica no período perinatal</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-saude-mental-perinatal/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliar saúde mental perinatal com método</a></li>
+          <li><a href="/guias/luto-perinatal-gestacional-manejo-clinico-2026/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Manejo clínico do luto gestacional e perinatal</a></li>
+          <li><a href="/faq/saude-mental-perinatal-faq/" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Saúde mental perinatal</a></li>
+          <li><a href="/areas/psicologia-saude/" class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia em Saúde</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A DPP paterna não é rara; é invisível, porque não parece tristeza.</h3>
+        <ul class="mt-3 text-white/90 leading-relaxed space-y-2 list-disc pl-5">
+          <li>Prevalência estimada em torno de 8 a 13% no período perinatal (meta-análises).</li>
+          <li>No homem, aparece como irritabilidade, retraimento, álcool e sobrecarga de trabalho, não como choro.</li>
+          <li>O rastreio usa a Escala de Edimburgo adaptada, com entrevista; rastreio detecta risco, não fecha diagnóstico.</li>
+          <li>O modelo bidirecional liga as depressões do casal e afeta o desenvolvimento da criança.</li>
+          <li>Marcos como a Lei 15.222/2025 situam o puerpério como saúde mental da família, e o pai faz parte dela.</li>
+        </ul>
+        <p class="mt-3 text-white/90 leading-relaxed">Para o psicólogo que atua no cuidado perinatal, as pós-graduações correlatas do IPOG em saúde mental e bem-estar ampliam o repertório de rastreio e manejo. Consulte a grade vigente.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho correlato</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/areas/${areaHospitalar.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaHospitalar.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fonte principal</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.sciencedirect.com/science/article/abs/pii/S016503271931496X" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Meta-análise: DPP paterna</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/39921328/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Estudo prospectivo 2025</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~18 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

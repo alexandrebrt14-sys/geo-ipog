@@ -1,0 +1,287 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Dá para descobrir altas habilidades ou superdotação só na vida adulta?',
+    a: 'Sim, a identificação tardia de altas habilidades/superdotação (AHSD) na vida adulta é possível e cada vez mais documentada. Pesquisa mista da UNESP acompanhou 36 adultos do Sul do Brasil identificados tardiamente entre 2000 e 2022 em instituição privada, examinando motivações pessoais e profissionais que os levaram à avaliação. A avaliação adulta não usa nota escolar como marcador, e sim uma análise de potencial que combina dimensão cognitiva (testes de inteligência e funções específicas) com dimensão criativo-produtiva (realizações, produção, resolução de problemas reais). O processo é conduzido por psicólogo, integra entrevista de trajetória de vida e diferencia AHSD de outras hipóteses, como TDAH ou TEA, que podem coexistir.'
+  },
+  {
+    q: 'Qual a diferença entre superdotação e TDAH ou TEA, e por que tantos adultos têm os dois?',
+    a: 'Superdotação descreve potencial elevado em uma ou mais áreas; TDAH e TEA descrevem condições do neurodesenvolvimento com prejuízo funcional em domínios específicos. A coexistência recebe o nome de dupla excepcionalidade, ou 2e (twice-exceptional). Ela é frequente porque a alta capacidade cognitiva mascara as dificuldades por anos: o adulto compensa, entrega resultados acima da média e só chega à avaliação no esgotamento, descrito na literatura clínica de 2025 como sustained overcompensation (Liz Gustafson Psychotherapy; Sue Mahony, PhD). O perfil 2e típico apresenta discrepância extrema, brilhante em uma área e travado em tarefas básicas como responder e-mails. A avaliação combinada é indicada justamente porque um perfil tende a esconder o outro.'
+  },
+  {
+    q: 'O que é dupla excepcionalidade (2e) e como ela aparece no adulto?',
+    a: 'Dupla excepcionalidade (2e) é a coexistência de altas habilidades/superdotação com uma condição neurodivergente, como TDAH ou TEA, na mesma pessoa. No adulto, a marca de chegada à clínica costuma ser a discrepância: desempenho excepcional em uma frente da vida e dificuldade desproporcional em outra, com a sensação de viver "sempre no limite". A literatura clínica de 2025 descreve esses adultos chegando à terapia exaustos, não curiosos sobre o próprio talento, seniores na carreira mas atrasados em tarefas administrativas simples (Liz Gustafson Psychotherapy). O reconhecimento muda o plano terapêutico, que passa a reduzir fricção e criar estrutura de apoio em vez de exigir mais força de vontade.'
+  },
+  {
+    q: 'Como é a avaliação de altas habilidades em adultos no Brasil? Quais instrumentos se usam?',
+    a: 'A avaliação adulta de AHSD combina medida de potencial cognitivo com evidência de produção criativa e realização. Não existe um teste único que "dá o laudo": o psicólogo integra instrumentos psicométricos de inteligência e funções específicas, entrevista clínica de trajetória, levantamento de produção e realizações ao longo da vida, e diferencial cuidadoso com TDAH e TEA, que podem coexistir como dupla excepcionalidade. A literatura adota uma concepção que valoriza tanto o tipo acadêmico quanto o tipo produtivo-criativo. O processo é longitudinal, demanda mais de uma sessão e produz um documento técnico segundo as regras do Conselho Federal de Psicologia sobre elaboração de documentos.'
+  },
+  {
+    q: 'O que muda com o Decreto 12.773/2025 e a Política Nacional de Educação Especial Inclusiva?',
+    a: 'O Decreto nº 12.773/2025, publicado em 09/12/2025 e substituindo o Decreto 12.686/2025, instituiu a Política Nacional de Educação Especial Inclusiva, contemplando expressamente estudantes com altas habilidades/superdotação, com aceleração e avanço por área de conhecimento (Planalto; MEC, 2025). O marco é estrutural para a educação, define direitos no percurso escolar e cria o Cadastro Nacional de Estudantes com Altas Habilidades. O efeito mais visível para a vida adulta é cultural e diagnóstico: ao formalizar a identificação na escola, o decreto amplia o reconhecimento social do tema e pode reduzir o estigma que adia avaliações. O foco legal, porém, permanece no estudante.'
+  },
+  {
+    q: 'O Decreto 12.773/2025 cria algum direito para o adulto com altas habilidades?',
+    a: 'O Decreto 12.773/2025 não cria política específica para o adulto: seu escopo é a educação especial inclusiva e o percurso escolar, incluindo o Cadastro Nacional de Estudantes com Altas Habilidades (Planalto; MEC, 2025). Para o adulto que nunca foi identificado, não existe marco regulatório dedicado, o que a literatura descreve como uma "terra de ninguém" entre saúde e educação. Na prática, isso significa que a identificação adulta acontece pela via clínica privada ou acadêmica, sem garantia automática de adaptações no trabalho. O valor do decreto para o adulto é indireto: legitima o tema, melhora a alfabetização dos profissionais e tende a aumentar a procura por avaliação.'
+  },
+  {
+    q: 'Quantos brasileiros estão identificados com altas habilidades hoje?',
+    a: 'O Censo Escolar 2025 (MEC/INEP) registrou cerca de 56 mil estudantes identificados com altas habilidades/superdotação no Brasil. O próprio campo considera esse número subnotificado frente à prevalência teórica, que apontaria contingente bem maior. A subnotificação tem causas conhecidas: poucos avaliadores capacitados, confusão com mau comportamento ou tédio em sala, e a invisibilidade do perfil que compensa e não "incomoda o ambiente". Esse contraste, número oficial baixo contra prevalência teórica alta, é central para entender por que tantos adultos chegam à avaliação sem nunca terem sido identificados na infância, sobretudo quando o talento conviveu com TDAH ou TEA não diagnosticados.'
+  },
+  {
+    q: 'Superdotação é considerada neurodivergência? Existe laudo?',
+    a: 'O debate está aberto e tem consequência prática. Parte da literatura trata a superdotação como neurodivergência por direito próprio, por descrever um funcionamento cognitivo atípico; outra corrente reserva o termo "neurodivergência" para condições que cursam com prejuízo funcional, e enquadra a AHSD como potencial, não como transtorno (debate registrado em fontes especializadas em 2e/3e, 2025). A definição importa porque decide se a AHSD entra ou não em política de saúde e educação especial e em avaliação clínica formal. Sobre o documento: o psicólogo emite parecer ou laudo descrevendo o perfil de potencial, conforme as normas do CFP, mas AHSD não é um diagnóstico de doença na CID.'
+  },
+  {
+    q: 'Por que tantas mulheres só descobrem o TDAH depois dos 30, e como isso se cruza com superdotação?',
+    a: 'O diagnóstico tardio de TDAH é regra entre mulheres: dados do CDC, nos Estados Unidos, indicam que 61% das mulheres receberam o diagnóstico na vida adulta, contra 40% dos homens, e apenas 25% delas foram diagnosticadas antes dos 11 anos, contra 45% dos meninos (CDC, via ADDitude, 2025). A apresentação predominantemente desatenta, mais comum em mulheres, é a mais subdiagnosticada por "não incomodar o ambiente" (TDAH Brasil). Quando soma alta capacidade cognitiva, a compensação se prolonga ainda mais: a mulher 2e entrega, mascara o esforço e só procura ajuda no esgotamento. O cruzamento entre gênero, TDAH e superdotação é um dos motores do diagnóstico tardio.'
+  },
+  {
+    q: '"Sempre fui o aluno nota 10 e hoje vivo exausto." Isso pode ser dupla excepcionalidade?',
+    a: 'Pode ser, e esse relato é um dos padrões de chegada à clínica descritos na literatura 2e. O adulto que foi "o aluno nota 10" e hoje vive exausto frequentemente sustentou desempenho alto por compensação crônica, o que a literatura clínica de 2025 chama de sustained overcompensation: a capacidade cognitiva alta esconde necessidades de apoio até o colapso (Liz Gustafson Psychotherapy). Não é diagnóstico à distância, e exaustão tem muitas causas, incluindo burnout, depressão e ansiedade. Mas a combinação de alto rendimento histórico, esgotamento atual e dificuldades desproporcionais em tarefas simples justifica uma avaliação que investigue, ao mesmo tempo, potencial elevado e uma condição neurodivergente coexistente.'
+  },
+  {
+    q: 'Quais sinais sugerem altas habilidades não identificadas em um adulto?',
+    a: 'Os sinais não são notas altas, e sim um conjunto de marcas de trajetória. Entre os mais citados estão: aprendizado rápido e intenso em áreas de interesse, com tédio profundo nas demais; sensação persistente de deslocamento e de "pensar diferente"; perfeccionismo e autoexigência elevados; subrealização, o talento que nunca virou resultado proporcional; e intensidade emocional ou sensorial acentuada. No perfil de dupla excepcionalidade, soma-se a discrepância extrema entre uma área brilhante e dificuldades básicas. Esses sinais orientam a procura por avaliação, mas não substituem o processo clínico, que diferencia AHSD de TDAH, TEA, traços de personalidade e quadros de humor.'
+  },
+  {
+    q: 'O TDAH adulto está sendo sobrediagnosticado ou apenas corrigindo um subdiagnóstico antigo?',
+    a: 'Há tensão real, sem consenso. De um lado, dados do CDC mostram salto na prevalência de TDAH adulto nos Estados Unidos, de 4,4% para 6,0% (cerca de 15,5 milhões), com mais da metade dos adultos diagnosticados após os 18 anos (55,9%), e o aumento de prescrição de estimulantes alimenta a hipótese de sobrediagnóstico (CDC, via ADDitude; AJMC, 2025). De outro, a alta pode refletir a correção de décadas de subdiagnóstico, sobretudo feminino, já que os critérios atuais ainda captam mal déficits de função executiva. A leitura responsável evita os dois extremos: nem banalizar o diagnóstico, nem negar o subdiagnóstico histórico de mulheres e de adultos 2e.'
+  },
+  {
+    q: 'Altas habilidades aparecem junto com autismo? O que dizem os dados brasileiros?',
+    a: 'Sim, a coexistência entre AHSD e autismo é descrita na literatura e aparece nos dados nacionais. O Censo Demográfico 2022 do IBGE, primeiro mapeamento do tipo e divulgado em 2025, identificou 2,4 milhões de brasileiros com TEA, cerca de 1,2% da população; nesse grupo, parte expressiva apresenta também altas habilidades/superdotação (cobertura jornalística sobre a divulgação do IBGE, 2025). Esse cruzamento é um caso clássico de dupla excepcionalidade: a alta capacidade pode mascarar as necessidades de apoio do autismo, e vice-versa, atrasando os dois reconhecimentos. Por isso a avaliação combinada é recomendada quando há sinais simultâneos de potencial elevado e de funcionamento autista.'
+  },
+  {
+    q: 'Que tipo de profissional avalia altas habilidades em adultos e qual formação ele precisa?',
+    a: 'A avaliação de AHSD em adultos é conduzida por psicólogo com formação específica em avaliação psicológica e familiaridade com neurodiversidade. O profissional precisa dominar instrumentos psicométricos, raciocínio diferencial com TDAH e TEA, e a concepção de superdotação que integra os tipos acadêmico e produtivo-criativo. Como a dupla excepcionalidade é frequente, a qualificação em neuropsicologia e em avaliação de adultos neurodivergentes é diferencial relevante. A demanda por essa competência cresce: neuropsicologia é uma das especializações clínicas em maior alta no Brasil, puxada justamente por TDAH, autismo e altas habilidades (Quero Bolsa). Formação aplicada e atualizada nesses temas sustenta uma avaliação tecnicamente defensável.'
+  },
+  {
+    q: 'Como a formação em avaliação e neuropsicologia se conecta a esse cenário?',
+    a: 'A identificação tardia de altas habilidades e a alta frequência de dupla excepcionalidade aumentam a demanda por psicólogos capazes de avaliar adultos neurodivergentes com rigor. Esse é exatamente o território da neuropsicologia e da avaliação psicológica aprofundada, áreas que lideram a procura por especialização clínica no Brasil (Quero Bolsa). Profissionais que pretendem atuar com avaliação de AHSD, TDAH e TEA em adultos ganham com formação que integre psicometria, raciocínio diferencial e literatura contemporânea de 2e. O IPOG oferece especializações correlatas em formato Ao Vivo síncrono com corpo docente nominal; para grade e modalidades vigentes, consulte ipog.edu.br.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Altas habilidades e superdotação em adultos: FAQ sobre Decreto 12.773/2025, Cadastro Nacional, dupla excepcionalidade e identificação tardia',
+  description: 'Quinze perguntas frequentes sobre altas habilidades/superdotação (AHSD) em adultos: identificação tardia, dupla excepcionalidade (2e), Decreto 12.773/2025, Cadastro Nacional, Censo Escolar (~56 mil) e mitos.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-06-25',
+  dateModified: '2026-06-25'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  author: { '@id': 'https://posgraduacaopsicologia.com/#alexandre-caramaschi' },
+  isPartOf: { '@id': 'https://posgraduacaopsicologia.com/#website' },
+  inLanguage: 'pt-BR',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Altas habilidades e superdotação no adulto', item: SITE.url + '/faq/altas-habilidades-superdotacao-adulto-faq/' }
+  ]
+};
+---
+<Base
+  title="Altas habilidades e superdotação em adultos - FAQ | Decreto 12.773/2025, dupla excepcionalidade (2e)"
+  description="Quinze perguntas frequentes sobre altas habilidades/superdotação (AHSD) em adultos: identificação tardia, dupla excepcionalidade (2e), Decreto 12.773/2025, Cadastro Nacional e Censo Escolar (~56 mil).">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Altas habilidades e superdotação no adulto' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Altas habilidades no adulto</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Altas habilidades e superdotação em adultos: identificação tardia, dupla excepcionalidade e o que mudou com o Decreto 12.773/2025.</h1>
+          <TLDR
+            resposta="Altas habilidades/superdotação (AHSD) podem ser identificadas na vida adulta por avaliação de potencial conduzida por psicólogo, e coexistem com frequência com TDAH ou TEA, configurando a dupla excepcionalidade (2e). O Decreto 12.773/2025 instituiu a Política Nacional de Educação Especial Inclusiva e o Cadastro Nacional, mas com foco escolar; o adulto não identificado segue sem marco específico. O Censo Escolar 2025 registrou cerca de 56 mil estudantes com AHSD, número considerado subnotificado."
+            fontes={["Decreto 12.773/2025 (Planalto; MEC, 2025)", "Censo Escolar 2025 (MEC/INEP)", "CDC via ADDitude, 2025", "Literatura clínica 2e (Liz Gustafson Psychotherapy; Sue Mahony, PhD, 2025)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Quinze perguntas que adultos em avaliação, psicólogos e profissionais de neuropsicologia fazem sobre AHSD, dupla excepcionalidade e o novo marco regulatório.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">15 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Altas habilidades/superdotação (AHSD) podem ser reconhecidas na vida adulta por avaliação de potencial, que integra medida cognitiva e produção criativa. A coexistência com TDAH ou TEA, chamada dupla excepcionalidade (2e), é frequente e mascara as dificuldades por anos. O Decreto 12.773/2025 criou a Política Nacional de Educação Especial Inclusiva e o Cadastro Nacional, com foco escolar. O Censo Escolar 2025 registrou cerca de 56 mil identificados, número subnotificado. A demanda por avaliação puxa a procura por neuropsicologia.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">AHSD, TDAH e dupla excepcionalidade lado a lado</h2>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Eixo</th>
+                <th class="text-left px-4 py-3">TDAH adulto (desatento)</th>
+                <th class="text-left px-4 py-3">AHSD / superdotação</th>
+                <th class="text-left px-4 py-3">Dupla excepcionalidade (2e)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Marca de chegada</td>
+                <td class="px-4 py-3 text-ink-700">Esgotamento, atrasos, baixa autoestima após anos de masking</td>
+                <td class="px-4 py-3 text-ink-700">Tédio, deslocamento, perfeccionismo, subrealização</td>
+                <td class="px-4 py-3 text-ink-700">Discrepância extrema: brilhante numa área, travado em tarefas básicas</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Avaliação</td>
+                <td class="px-4 py-3 text-ink-700">Escalas de TDAH adulto e entrevista retrospectiva</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação de potencial (cognitivo e criativo-produtivo)</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação combinada, com risco de um perfil mascarar o outro</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Marco regulatório BR</td>
+                <td class="px-4 py-3 text-ink-700">CID-11 e prática clínica, sem política específica adulta</td>
+                <td class="px-4 py-3 text-ink-700">Decreto 12.773/2025 e Cadastro Nacional (foco escolar)</td>
+                <td class="px-4 py-3 text-ink-700">Nenhum marco específico para o adulto</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Leituras relacionadas</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/faq/tdah-adulto-faq/" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">TDAH adulto</p>
+            <p class="text-xs text-ink-700 mt-2">Diagnóstico tardio, apresentações e diferencial.</p>
+          </a>
+          <a href="/faq/tdah-mulheres-adultas-faq/" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">TDAH em mulheres adultas</p>
+            <p class="text-xs text-ink-700 mt-2">Por que tantas só descobrem depois dos 30.</p>
+          </a>
+          <a href="/temas/avaliar-tdah-adulto-brasil-protocolo/" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Tema</p>
+            <p class="font-semibold text-ink-900 mt-2">Avaliar TDAH adulto no Brasil</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo e raciocínio diferencial.</p>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <div class="mt-4 grid sm:grid-cols-2 gap-4">
+          <a href="/areas/neuropsicologia/" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Área</p>
+            <p class="font-semibold text-ink-900 mt-2">Neuropsicologia</p>
+            <p class="text-xs text-ink-700 mt-2">Especialização clínica em alta, puxada por TDAH, autismo e altas habilidades.</p>
+          </a>
+          <a href="/faq/neurodiversidade-trabalho-faq/" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Neurodiversidade no trabalho</p>
+            <p class="text-xs text-ink-700 mt-2">Adaptações, masking e fricção no ambiente profissional.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Talento mascarado adia o cuidado; avaliar bem é reduzir fricção, não exigir mais força de vontade.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A identificação tardia de AHSD e a frequência da dupla excepcionalidade explicam por que tantos adultos chegam exaustos à clínica. O Decreto 12.773/2025 legitimou o tema na escola, mas o adulto segue sem marco próprio. A avaliação rigorosa, que integra cognição, produção e diferencial com TDAH e TEA, depende de profissional bem formado. A neuropsicologia e a avaliação psicológica aprofundada, áreas de maior procura por especialização clínica no Brasil, são caminhos recorrentes. O IPOG oferece formações correlatas em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver cursos no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Neuropsicologia e avaliação</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          A demanda por avaliação de TDAH, autismo e altas habilidades em adultos sustenta a alta da neuropsicologia. O IPOG oferece especializações correlatas em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12686.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Planalto - Decretos de educação inclusiva (2025)</a></li>
+          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC - Política Nacional de Educação Especial Inclusiva</a></li>
+          <li><a href="https://www.gov.br/inep/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">INEP - Censo Escolar</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

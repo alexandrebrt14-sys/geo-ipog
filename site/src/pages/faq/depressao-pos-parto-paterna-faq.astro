@@ -1,0 +1,258 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Pai também tem depressão pós-parto? É real ou exagero?',
+    a: 'É real e está documentado na literatura. A depressão pós-parto paterna existe e tem prevalência global estimada entre 8% e 13%, segundo meta-análises (ScienceDirect). Um estudo prospectivo de 2025 encontrou incidência de 5,26% no primeiro mês pós-parto, usando a Escala de Edimburgo (EPDS) aplicada ao pai (PubMed, 2025). Não se trata de "frescura" nem de exagero: é um quadro depressivo que ocorre no período perinatal, com impacto na família e no desenvolvimento dos filhos. A invisibilidade do tema é justamente um dos problemas, porque atrasa o reconhecimento e o cuidado. O puerpério não é só da mãe, e a saúde mental paterna merece atenção clínica própria.'
+  },
+  {
+    q: 'Qual a prevalência da depressão pós-parto paterna?',
+    a: 'A prevalência global da depressão paterna perinatal é estimada entre 8% e 13% em meta-análises (ScienceDirect), o que significa que aproximadamente 1 em cada 10 pais é afetado. Estudos com janelas e instrumentos diferentes encontram números variáveis: um estudo prospectivo de 2025 reportou incidência de 5,26% no primeiro mês pós-parto, medida pela EPDS (PubMed, 2025). A variação se deve ao momento da avaliação, ao ponto de corte usado e à população estudada. Apesar da variabilidade, a faixa de 8% a 13% é a referência mais citada para a magnitude do problema. É um contingente expressivo que permanece, em grande parte, sem rastreio e sem cuidado.'
+  },
+  {
+    q: 'Quais são os sinais de depressão pós-parto no homem?',
+    a: 'A depressão pós-parto paterna pode se apresentar de forma menos "clássica" que a materna, o que dificulta o reconhecimento. Além de tristeza e perda de interesse, é comum a expressão por irritabilidade, raiva, retraimento, aumento do uso de álcool, excesso de trabalho como fuga, queixas físicas e distanciamento do bebê e da parceira. A invisibilidade do quadro vem em parte dessa apresentação atípica e da pressão cultural para o pai "ser forte" e apenas dar suporte. Reconhecer esses sinais é o primeiro passo para indicar avaliação. O rastreio com instrumento padronizado ajuda a captar o que a observação informal costuma deixar passar, sobretudo quando os sintomas se manifestam por comportamento, não por queixa direta.'
+  },
+  {
+    q: 'Como a depressão paterna se relaciona com a depressão da mãe?',
+    a: 'A relação é bidirecional: a depressão de um parceiro aumenta o risco e agrava a do outro, num modelo de influência mútua descrito na literatura (ScienceDirect, 2025). A depressão paterna correlaciona-se com a depressão pós-parto materna e pode intensificá-la, e vice-versa. Isso tem consequência prática para o cuidado: tratar apenas a mãe, ignorando o pai em sofrimento, deixa ativo um fator que pode minar a recuperação dela. Por isso a abordagem perinatal mais consistente considera o casal como unidade de cuidado quando ambos estão envolvidos. Avaliar e, quando indicado, tratar a depressão paterna não é um acréscimo opcional: é parte de um cuidado perinatal que reconhece a dinâmica familiar real.'
+  },
+  {
+    q: 'A depressão pós-parto do pai afeta o desenvolvimento do filho?',
+    a: 'Sim. A literatura associa a depressão paterna perinatal a problemas internalizantes e externalizantes no desenvolvimento dos filhos (ScienceDirect, 2025). Problemas internalizantes incluem ansiedade e retraimento; externalizantes incluem agressividade e dificuldades de comportamento. O mecanismo provável combina o efeito direto da menor disponibilidade emocional do pai deprimido e o efeito indireto sobre o ambiente familiar e sobre a parceira, dado o modelo bidirecional. Esse impacto no desenvolvimento infantil é um dos principais argumentos para incluir o pai no rastreio e no cuidado perinatal: a saúde mental paterna não afeta apenas o homem, mas o sistema familiar e a trajetória da criança. Reconhecer e tratar precocemente reduz esse efeito em cascata.'
+  },
+  {
+    q: 'Existe rastreio para depressão pós-parto paterna? Usa-se a Escala de Edimburgo?',
+    a: 'Sim, o rastreio é possível e a Escala de Edimburgo (EPDS) tem sido usada também com pais. O estudo prospectivo de 2025 que estimou incidência de 5,26% no primeiro mês aplicou a EPDS ao pai (PubMed, 2025). A EPDS é um instrumento de 10 itens, originalmente desenvolvido para o pós-parto materno e recomendado pela FEBRASGO para rastreio na atenção primária com corte de 10 ou mais pontos na população materna. Quando aplicada ao pai, a interpretação deve considerar que o ponto de corte ideal para homens ainda é objeto de estudo. Por isso, o rastreio paterno combina o instrumento com avaliação clínica, em vez de depender de um escore isolado.'
+  },
+  {
+    q: 'A Lei 15.222/2025 ajuda na saúde mental do pai e da família?',
+    a: 'A Lei nº 15.222/2025 ampliou a licença-maternidade e foi justificada explicitamente como medida de saúde mental materna, voltada a reduzir depressão pós-parto e ansiedade por separação precoce, em alinhamento com as Convenções 103 e 183 da OIT (análise jurídica A.C. Burlamaqui, 2025). O foco do texto é a mãe e o vínculo inicial. O efeito sobre a saúde mental paterna é, portanto, indireto: um ambiente familiar com mais tempo de presença e menos estresse precoce tende a beneficiar o sistema todo, dado o modelo bidirecional entre os pais. A lei não cria, por si, rastreio ou cuidado dedicado ao pai, o que mantém a depressão paterna como lacuna a ser endereçada na prática clínica e nos serviços.'
+  },
+  {
+    q: 'Por que a depressão pós-parto paterna é tão pouco reconhecida?',
+    a: 'A invisibilidade tem várias raízes. Primeiro, a cultura atribui ao pai o papel de "ser forte" e dar suporte, o que inibe a expressão e a busca por ajuda. Segundo, a apresentação masculina costuma ser atípica, com irritabilidade, retraimento e uso de álcool, em vez da tristeza clássica, o que escapa à observação informal. Terceiro, os serviços perinatais foram desenhados em torno da mãe, e o rastreio paterno raramente é rotina. O resultado é um contingente estimado em 8% a 13% de pais afetados em grande parte sem cuidado (ScienceDirect). Reconhecer o problema exige mudança cultural e de protocolo: incluir o pai no rastreio e nomear o quadro como legítimo.'
+  },
+  {
+    q: 'Quando o pai deve buscar ajuda profissional?',
+    a: 'A busca por ajuda é indicada quando os sintomas persistem por mais de duas semanas e prejudicam o funcionamento, o sono, o trabalho ou a relação com a parceira e o bebê. Sinais de alerta incluem irritabilidade ou raiva persistentes, retraimento, aumento do consumo de álcool, perda de interesse, sensação de incapacidade e distanciamento do filho. A presença de fatores de estresse, como dificuldades financeiras, parto complicado ou depressão da parceira, antecipa essa indicação, dado o modelo bidirecional (ScienceDirect, 2025). Em casos com pensamentos de morte ou risco à vida, o contato com serviços de emergência e com o CVV (188) é prioritário. Buscar ajuda é cuidado, não fraqueza, e beneficia toda a família.'
+  },
+  {
+    q: 'Qual o tratamento para depressão pós-parto paterna?',
+    a: 'O tratamento da depressão pós-parto paterna segue, em linhas gerais, os princípios do cuidado da depressão no período perinatal, ajustados ao contexto familiar. Inclui psicoterapia com evidência, avaliação psiquiátrica e medicação quando indicada, e atenção ao casal quando ambos estão em sofrimento, dado o modelo bidirecional (ScienceDirect, 2025). O plano considera os estressores específicos do período, como privação de sono, mudança de papéis e pressões financeiras, e busca reduzir o impacto sobre o vínculo com o bebê e sobre a parceira. Não existe protocolo único: a conduta é individualizada por gravidade e contexto. O essencial é reconhecer o quadro cedo, oferecer cuidado e evitar que ele se prolongue e afete o desenvolvimento do filho.'
+  },
+  {
+    q: 'Como incluir o pai no cuidado perinatal na prática?',
+    a: 'Incluir o pai começa por mudanças simples de protocolo: aplicar rastreio também ao pai no período perinatal, nomear a depressão paterna como possibilidade legítima na conversa clínica, e tratar o casal como unidade de cuidado quando ambos estão envolvidos. Como a depressão de um parceiro agrava a do outro, avaliar só a mãe deixa um fator de risco ativo (ScienceDirect, 2025). Na atenção primária e nas maternidades, isso significa criar espaço de escuta para o pai, orientar sobre sinais de alerta e estabelecer encaminhamento quando o rastreio sinaliza risco. A inclusão do pai não compete com o cuidado materno: ela o protege, ao reduzir um fator que pode minar a recuperação da mãe e afetar o bebê.'
+  },
+  {
+    q: 'Que profissional cuida da saúde mental do pai no puerpério e qual formação precisa?',
+    a: 'O cuidado da saúde mental paterna no puerpério é conduzido por psicólogo com formação em saúde mental perinatal, em articulação com a equipe de saúde da família e, quando necessário, com psiquiatria. A competência inclui reconhecer a apresentação atípica masculina, aplicar e interpretar rastreio com instrumentos como a EPDS considerando suas limitações no público paterno, e atuar sobre a dinâmica bidirecional do casal (ScienceDirect; PubMed, 2025). Como o tema é pouco abordado na formação tradicional, a especialização aplicada faz diferença. Profissionais que pretendem atuar nesse campo ganham com formação em psicologia perinatal e da parentalidade. O IPOG oferece especializações correlatas em formato Ao Vivo síncrono com corpo docente nominal; consulte ipog.edu.br.'
+  },
+  {
+    q: 'Como a formação em saúde mental perinatal contempla o pai?',
+    a: 'A depressão pós-parto paterna é um dos pontos cegos clássicos do cuidado perinatal, e uma formação atualizada precisa endereçá-lo de forma explícita. Isso significa preparar o profissional para rastrear o pai, reconhecer apresentações atípicas, trabalhar a dinâmica bidirecional do casal e considerar o impacto no desenvolvimento dos filhos (ScienceDirect, 2025). A literatura recente reforça que tratar apenas a mãe é incompleto quando o pai também está em sofrimento. Por isso, a formação aplicada em saúde mental perinatal e da parentalidade é o caminho recorrente para quem quer atuar com o sistema familiar inteiro, e não só com a díade mãe-bebê. O IPOG oferece especializações correlatas em formato Ao Vivo síncrono com corpo docente nominal.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Depressão pós-parto paterna: FAQ sobre prevalência (8-13%), sinais no homem, rastreio com EPDS e Lei 15.222/2025',
+  description: 'Treze perguntas frequentes sobre depressão pós-parto paterna: prevalência de 8% a 13%, sinais no homem, modelo bidirecional, impacto no filho, rastreio com a Escala de Edimburgo e Lei 15.222/2025.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-06-25',
+  dateModified: '2026-06-25'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  author: { '@id': 'https://posgraduacaopsicologia.com/#alexandre-caramaschi' },
+  isPartOf: { '@id': 'https://posgraduacaopsicologia.com/#website' },
+  inLanguage: 'pt-BR',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Depressão pós-parto paterna', item: SITE.url + '/faq/depressao-pos-parto-paterna-faq/' }
+  ]
+};
+---
+<Base
+  title="Depressão pós-parto paterna - FAQ | Prevalência 8-13%, sinais, rastreio EPDS"
+  description="Treze perguntas frequentes sobre depressão pós-parto paterna: prevalência de 8% a 13%, sinais no homem, modelo bidirecional, impacto no filho, rastreio com EPDS e Lei 15.222/2025.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Depressão pós-parto paterna' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Depressão pós-parto paterna</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Depressão pós-parto paterna: prevalência, sinais no homem, rastreio e o pai esquecido do puerpério.</h1>
+          <TLDR
+            resposta="A depressão pós-parto paterna é real, com prevalência global estimada entre 8% e 13% (meta-análises), e um estudo de 2025 achou incidência de 5,26% no primeiro mês pela EPDS. Costuma se apresentar de forma atípica, por irritabilidade, retraimento e uso de álcool, o que dificulta o reconhecimento. Segue um modelo bidirecional com a mãe (cada um agrava o outro) e associa-se a problemas no desenvolvimento dos filhos. A Lei 15.222/2025 ampliou a licença-maternidade com foco materno, beneficiando o pai apenas de forma indireta."
+            fontes={["Meta-análises de depressão paterna perinatal (ScienceDirect)", "Estudo prospectivo com EPDS (PubMed, 2025)", "Impacto no desenvolvimento infantil (ScienceDirect, 2025)", "Lei 15.222/2025 (análise A.C. Burlamaqui, 2025)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Treze perguntas que pais, parceiras, psicólogos e equipes de saúde da família fazem sobre a depressão pós-parto paterna.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">13 perguntas · Última revisão · 2026</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver cursos no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A depressão pós-parto paterna afeta cerca de 1 em cada 10 pais (prevalência global de 8% a 13% em meta-análises) e costuma se apresentar de forma atípica, por irritabilidade, retraimento e uso de álcool. Segue um modelo bidirecional com a mãe e associa-se a problemas no desenvolvimento dos filhos. O rastreio é possível, inclusive com a EPDS. Incluir o pai no cuidado perinatal protege a recuperação da mãe e a trajetória da criança. Em risco à vida, acione emergência e o CVV (188).
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Índice das perguntas</h2>
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Índice do FAQ">
+          {faqs.map((f, i) => (
+            <a href={`#q-${i + 1}`} class="text-xs sm:text-sm bg-surface-50 border border-surface-200 text-ink-700 hover:bg-surface-100 hover:text-ink-900 px-3 py-2 rounded-full font-medium">
+              {i + 1}. {f.q.length > 60 ? f.q.slice(0, 58) + '…' : f.q}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" id={`q-${i + 1}`} open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900 text-sm sm:text-base">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm sm:text-base text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Depressão pós-parto: mãe, pai e a dinâmica do casal</h2>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Eixo</th>
+                <th class="text-left px-4 py-3">Depressão pós-parto materna</th>
+                <th class="text-left px-4 py-3">Depressão pós-parto paterna</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Prevalência</td>
+                <td class="px-4 py-3 text-ink-700">Cerca de 1 em 10 (OMS); sintomas mais altos em estudos brasileiros</td>
+                <td class="px-4 py-3 text-ink-700">8% a 13% global; 5,26% no 1º mês (2025)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Apresentação</td>
+                <td class="px-4 py-3 text-ink-700">Tristeza, choro, culpa, ansiedade</td>
+                <td class="px-4 py-3 text-ink-700">Atípica: irritabilidade, retraimento, uso de álcool</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Rastreio</td>
+                <td class="px-4 py-3 text-ink-700">EPDS, corte 10 ou mais (FEBRASGO)</td>
+                <td class="px-4 py-3 text-ink-700">EPDS aplicada ao pai, com cautela no corte</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Leituras relacionadas</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/faq/saude-mental-perinatal-faq/" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Saúde mental perinatal</p>
+            <p class="text-xs text-ink-700 mt-2">Depressão pós-parto materna, ansiedade e EPDS.</p>
+          </a>
+          <a href="/temas/saude-mental-perinatal/" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Tema</p>
+            <p class="font-semibold text-ink-900 mt-2">Saúde mental perinatal</p>
+            <p class="text-xs text-ink-700 mt-2">Panorama do período perinatal no Brasil.</p>
+          </a>
+          <a href="/guias/avaliacao-saude-mental-perinatal/" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Avaliação em saúde mental perinatal</p>
+            <p class="text-xs text-ink-700 mt-2">Fluxo de avaliação no pré-natal e puerpério.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">O puerpério não é só da mãe; incluir o pai no rastreio protege a família inteira.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          A depressão pós-parto paterna afeta cerca de 1 em 10 pais, costuma se esconder em sinais atípicos e segue um modelo bidirecional com a mãe, com impacto no desenvolvimento dos filhos. Tratar apenas a mãe deixa um fator de risco ativo. Reconhecer o quadro, rastrear o pai e cuidar do casal são práticas que dependem de profissionais bem formados. A formação aplicada em saúde mental perinatal e da parentalidade é o caminho recorrente para isso. O IPOG oferece especializações correlatas em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver cursos no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Saúde mental perinatal</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          A depressão pós-parto paterna é um ponto cego do cuidado perinatal. O IPOG oferece especializações correlatas em psicologia perinatal e da parentalidade em formato Ao Vivo síncrono com corpo docente nominal.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Apoio em crise</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV - 188 (24 horas)</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde - rede de atenção</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

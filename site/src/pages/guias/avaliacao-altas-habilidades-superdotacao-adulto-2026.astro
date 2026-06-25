@@ -1,0 +1,358 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+
+const passos = [
+  {
+    n: 1,
+    titulo: 'Acolher o motivo real da procura, que raramente é "descobrir se sou superdotado"',
+    aplicacao: 'O adulto que busca avaliação de altas habilidades/superdotação (AHSD) quase nunca chega dizendo que é superdotado. Chega com queixa de inadequação, tédio crônico, sensação de estar deslocado, perfeccionismo paralisante ou subrealização (alto potencial percebido, baixa entrega objetiva). A pesquisa brasileira de identificação tardia de AHSD em adultos (UNESP, trajetórias de adultos do Sul do Brasil identificados entre 2000 e 2022) mostra que a procura vem motivada por sofrimento pessoal e profissional, não por curiosidade sobre o talento. Acolha a queixa antes de partir para qualquer instrumento.',
+    armadilha: 'Tratar a avaliação como caça ao QI alto. A pergunta clínica útil não é "ele é gênio?", é "que perfil de potencial explica a inadequação que ele relata?".'
+  },
+  {
+    n: 2,
+    titulo: 'Mapear a trajetória de desenvolvimento de forma retrospectiva',
+    aplicacao: 'Em AHSD adulta, o dado mais rico está no passado: aprendizado precoce, intensidade emocional desde a infância, sede de complexidade, leitura voraz, perguntas que incomodavam, abandono de tarefas fáceis por tédio. Reconstrua a linha do tempo escolar e ocupacional com o avaliando e, quando possível, com fontes colaterais (familiares, registros escolares). A literatura sobre identificação tardia descreve dois grandes perfis: o acadêmico (alta capacidade de aprendizagem formal) e o produtivo-criativo (geração de ideias e produtos originais), que pedem leituras diferentes.',
+    armadilha: 'Confiar só no relato do presente. O adulto compensou por décadas. Sem o histórico, a avaliação perde o eixo principal.'
+  },
+  {
+    n: 3,
+    titulo: 'Selecionar instrumentos de potencial cognitivo e criativo-produtivo',
+    aplicacao: 'A avaliação de AHSD no adulto combina medida de capacidade cognitiva (escalas Wechsler como o WAIS, índices fatoriais e não só o escore total) com avaliação de produção criativa e realização em domínios concretos. O modelo dos três anéis de Renzulli (habilidade acima da média, criatividade e comprometimento com a tarefa) e a concepção de domínios de Gardner ajudam a organizar a leitura: superdotação se expressa por área, não como um número único. No Brasil, o desenho de instrumentos válidos deve respeitar o SATEPSI e os limites de uso de cada teste pelo psicólogo.',
+    armadilha: 'Reduzir AHSD a um ponto de corte de QI. Talento criativo-produtivo e comprometimento com a tarefa não aparecem no escore global.'
+  },
+  {
+    n: 4,
+    titulo: 'Conduzir diagnóstico diferencial e investigar dupla excepcionalidade',
+    aplicacao: 'AHSD coexiste com frequência com TDAH e TEA, configurando a chamada dupla excepcionalidade (2e). O Censo Demográfico 2022 do IBGE, ao mapear pela primeira vez a população autista brasileira (2,4 milhões de pessoas, 1,2% da população), apontou parcela expressiva com altas habilidades entre os autistas, sinalizando sobreposição clínica real. Diferencie: tédio e desatenção por falta de estímulo (AHSD) versus desatenção por déficit executivo (TDAH); intensidade e foco restrito por paixão intelectual (AHSD) versus interesse circunscrito autista (TEA). Quando ambos os perfis estão presentes, registre os dois.',
+    armadilha: 'Ver só um lado. O talento mascara o transtorno e o transtorno mascara o talento. Fechar em um único diagnóstico é o erro central da avaliação 2e.'
+  },
+  {
+    n: 5,
+    titulo: 'Avaliar o custo psíquico da sobrecompensação e o sofrimento associado',
+    aplicacao: 'Adultos com AHSD identificados tardiamente costumam chegar exaustos depois de anos de sobrecompensação: entregaram o esperado às custas de esforço desproporcional, sem nunca terem sido reconhecidos como de alto potencial. A literatura clínica de adultos 2e descreve o padrão de chegar à terapia esgotado, não curioso sobre o talento, sênior na carreira e ao mesmo tempo atrasado em tarefas básicas. Rastreie depressão, ansiedade, perfeccionismo desadaptativo e burnout, que são desfechos comuns e o motivo prático da maioria das procuras.',
+    armadilha: 'Celebrar o talento e ignorar o sofrimento. O laudo de AHSD que não nomeia o custo psíquico não ajuda o adulto que está adoecendo.'
+  },
+  {
+    n: 6,
+    titulo: 'Situar o achado no marco regulatório de 2025 com honestidade de escopo',
+    aplicacao: 'O Decreto 12.773/2025 instituiu a Política Nacional de Educação Especial Inclusiva, contemplando expressamente estudantes com altas habilidades/superdotação, com previsão de aceleração e avanço por área de conhecimento e a criação de um Cadastro Nacional de Estudantes com Altas Habilidades. O Censo Escolar 2025 (MEC/INEP) identificou dezenas de milhares de estudantes com AHSD, número considerado subnotificado frente à prevalência teórica. O ponto que o adulto precisa ouvir com clareza: esse marco é escolar. Não existe, até o momento, política equivalente de saúde ou de cadastro para o adulto identificado tardiamente.',
+    armadilha: 'Prometer ao adulto direitos ou cadastro que o decreto não cria para ele. O Cadastro Nacional é de estudantes, não de adultos fora do sistema escolar.'
+  },
+  {
+    n: 7,
+    titulo: 'Devolver o resultado e encaminhar para suporte concreto',
+    aplicacao: 'A devolutiva de uma avaliação de AHSD no adulto tem efeito terapêutico próprio: nomear décadas de inadequação com um marco compreensível reduz a interpretação de "preguiça" ou "fracasso moral". Estruture a devolutiva com o perfil de potencial, eventuais condições associadas (2e), o custo psíquico identificado e um plano: psicoterapia para o sofrimento, ajustes de ambiente e carreira, grupos de pares quando disponíveis, acompanhamento neuropsicológico quando há condição associada. Documente em registro técnico conforme as resoluções do CFP sobre elaboração de documentos.',
+    armadilha: 'Entregar um número e encerrar. O escore sem plano de cuidado transforma a avaliação em rótulo, não em porta de entrada para suporte.'
+  }
+];
+
+const erros = [
+  {
+    titulo: 'Esperar o "gênio óbvio"',
+    texto: 'A imagem do prodígio confunde a clínica. A pesquisa de identificação tardia (UNESP) mostra que o adulto com AHSD chega por sofrimento e inadequação, não por façanha visível. Esperar genialidade evidente faz o avaliador descartar quem mais precisa de avaliação.'
+  },
+  {
+    titulo: 'Confundir AHSD com TDAH ou TEA sem investigar os três',
+    texto: 'Tédio por falta de estímulo parece desatenção. Foco intenso por paixão intelectual parece interesse circunscrito. Sem diferencial estruturado, o avaliador fecha em um diagnóstico e perde a dupla excepcionalidade, padrão frequente segundo a sobreposição apontada pelo Censo 2022 do IBGE.'
+  },
+  {
+    titulo: 'Reduzir superdotação a um ponto de corte de QI',
+    texto: 'O modelo de Renzulli articula habilidade acima da média, criatividade e comprometimento com a tarefa. Criatividade e produção em domínios concretos não aparecem no escore global. Avaliar só o número deixa de fora o perfil produtivo-criativo.'
+  },
+  {
+    titulo: 'Prometer ao adulto os direitos escolares do Decreto 12.773/2025',
+    texto: 'O Decreto 12.773/2025 e o Cadastro Nacional de Estudantes com Altas Habilidades organizam a educação especial inclusiva no sistema escolar. Para o adulto identificado fora da escola, não há política equivalente. Honestidade de escopo evita expectativa frustrada.'
+  }
+];
+
+const faqs = [
+  {
+    q: 'Dá para descobrir superdotação só na vida adulta? Como é a avaliação?',
+    a: 'Sim. A identificação tardia de altas habilidades/superdotação é documentada na literatura brasileira (pesquisa UNESP com adultos do Sul do Brasil identificados entre 2000 e 2022). A avaliação combina entrevista clínica detalhada, reconstrução retrospectiva da trajetória de desenvolvimento, medida de capacidade cognitiva (como o WAIS, lendo índices fatoriais e não só o escore total) e avaliação de produção criativa e realização em domínios concretos, organizada por modelos como o dos três anéis de Renzulli. No adulto, o histórico de desenvolvimento pesa tanto quanto o teste.'
+  },
+  {
+    q: 'Qual a diferença entre superdotação e TDAH ou TEA, e por que tantos adultos têm os dois?',
+    a: 'Superdotação descreve potencial elevado em uma ou mais áreas; TDAH e TEA são condições do neurodesenvolvimento. A coexistência (dupla excepcionalidade, ou 2e) é frequente: o Censo Demográfico 2022 do IBGE apontou parcela expressiva de altas habilidades entre os 2,4 milhões de autistas mapeados. O risco clínico é confundir tédio por falta de estímulo com desatenção por déficit executivo, ou paixão intelectual com interesse circunscrito. Por isso o diferencial precisa investigar os três perfis, não escolher um.'
+  },
+  {
+    q: 'O Decreto 12.773/2025 muda alguma coisa para o adulto com altas habilidades ou só para a escola?',
+    a: 'O Decreto 12.773/2025 instituiu a Política Nacional de Educação Especial Inclusiva, contemplando estudantes com altas habilidades/superdotação, com aceleração por área de conhecimento e a criação do Cadastro Nacional de Estudantes com Altas Habilidades. O alcance é escolar. Para o adulto identificado tardiamente fora do sistema de ensino não existe, até o momento, política de saúde ou cadastro equivalente. O marco é relevante como sinal cultural, mas não cria direitos automáticos para esse adulto.'
+  },
+  {
+    q: 'Superdotação é considerada neurodivergência? Tem laudo?',
+    a: 'Há debate conceitual aberto. Parte da literatura trata altas habilidades como neurodivergência por direito próprio; outra corrente reserva o termo para condições com prejuízo funcional. Na prática brasileira, a avaliação psicológica de AHSD gera um documento técnico (laudo ou parecer) elaborado conforme as resoluções do CFP, com instrumentos respeitando o SATEPSI. O documento descreve perfil de potencial e eventuais condições associadas; não é um diagnóstico de doença, e sim a caracterização de um perfil.'
+  },
+  {
+    q: 'Que pós-graduação prepara o psicólogo para avaliar altas habilidades em adultos?',
+    a: 'A avaliação de AHSD e de dupla excepcionalidade exige base sólida em avaliação psicológica e em neuropsicologia, já que o diferencial com TDAH e TEA depende de leitura de funções cognitivas. No IPOG, o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo cobre funções cognitivas, neurodesenvolvimento e planos de intervenção, fundamentos úteis para quem conduz esse tipo de avaliação. Consulte o site do IPOG para grade vigente.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliar altas habilidades/superdotação (AHSD) em adultos no Brasil: protocolo, instrumentos e o Decreto 12.773/2025',
+  description: 'Guia clínico para avaliação de AHSD em adultos: identificação tardia, instrumentos de potencial cognitivo e criativo, diferencial com TDAH/TEA, dupla excepcionalidade e o que o Decreto 12.773/2025 muda (e não muda) para o adulto.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.tldr-resposta', '.faq-answer-text'] },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação de altas habilidades em adultos', item: `${SITE.url}/guias/avaliacao-altas-habilidades-superdotacao-adulto-2026` }
+  ]
+};
+---
+
+<Base
+  title="Avaliar altas habilidades/superdotação (AHSD) em adultos: guia 2026 · instrumentos, diferencial e Decreto 12.773/2025"
+  description="Protocolo de avaliação de AHSD em adultos no Brasil: identificação tardia, instrumentos de potencial cognitivo e criativo, diferencial com TDAH/TEA, dupla excepcionalidade e o que o Decreto 12.773/2025 e o Cadastro Nacional mudam para a escola, não para o adulto.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação de altas habilidades em adultos' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Avaliação · 7 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliar altas habilidades/superdotação (AHSD) em adultos</h1>
+          <TLDR
+            resposta="No adulto, a superdotação raramente chega como gênio óbvio: chega como sofrimento, tédio crônico e sensação de inadequação após anos de sobrecompensação. A avaliação combina histórico retrospectivo, medida cognitiva (WAIS, índices fatoriais) e avaliação criativo-produtiva (modelo de Renzulli), com diferencial obrigatório para TDAH e TEA. O Decreto 12.773/2025 criou o Cadastro Nacional de Estudantes com Altas Habilidades, mas o marco é escolar e não cria política equivalente para o adulto."
+            fontes={["Decreto 12.773/2025 (MEC/Planalto)", "IBGE, Censo Demográfico 2022 (divulgação 2025)", "Pesquisa UNESP, identificação tardia de AHSD em adultos"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto clínico para avaliar AHSD no adulto: acolher o motivo real da procura, reconstruir a trajetória, selecionar instrumentos de potencial cognitivo e criativo, conduzir diferencial com TDAH e TEA, dimensionar o custo psíquico, situar o marco regulatório de 2025 e encaminhar para suporte concreto.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~18 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos e neuropsicólogos</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir a avaliação de AHSD em adultos a partir da queixa real, com instrumentos de potencial cognitivo e criativo, diferencial estruturado com TDAH e TEA, leitura do custo psíquico e devolutiva com plano de cuidado.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, formação em avaliação psicológica, domínio de instrumentos respeitando o SATEPSI e familiaridade com neurodesenvolvimento.</li>
+          <li><strong>Resultado esperado:</strong> caracterização honesta do perfil de potencial e de eventuais condições associadas, com plano de suporte e escopo regulatório descrito sem promessa indevida.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
+        <p>
+          A superdotação no adulto raramente chega como gênio óbvio. Chega como sofrimento. O adulto que procura avaliação de altas habilidades/superdotação costuma relatar inadequação, tédio crônico, perfeccionismo paralisante e subrealização, não façanhas visíveis. A pesquisa brasileira de identificação tardia (UNESP, trajetórias de adultos do Sul do Brasil identificados entre 2000 e 2022) é consistente: a procura nasce de motivações pessoais e profissionais ligadas ao mal-estar, não de curiosidade sobre o próprio talento.
+        </p>
+        <p>
+          A inversão prática para o psicólogo: a pergunta clínica útil não é "ele é gênio?", é "que perfil de potencial explica a inadequação que ele descreve, e o que vem junto?". O Censo Demográfico 2022 do IBGE, primeiro mapeamento oficial da população autista (2,4 milhões de pessoas, 1,2% da população), apontou sobreposição entre autismo e altas habilidades, lembrete de que dupla excepcionalidade é regra, não exceção rara. Avaliar AHSD no adulto é, antes de tudo, ler potencial e sofrimento ao mesmo tempo.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os 7 passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Diferencial: AHSD, TDAH desatento e dupla excepcionalidade</h2>
+        <p class="text-ink-700 mt-2">O eixo da avaliação é distinguir potencial de transtorno, e reconhecer quando os dois coexistem.</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0 mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Eixo</th>
+                <th class="text-left px-4 py-3">AHSD (potencial)</th>
+                <th class="text-left px-4 py-3">TDAH apresentação desatenta</th>
+                <th class="text-left px-4 py-3">Dupla excepcionalidade (2e)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Marca de chegada</td>
+                <td class="px-4 py-3 text-ink-700">Tédio, deslocamento, perfeccionismo, subrealização</td>
+                <td class="px-4 py-3 text-ink-700">Esgotamento, atrasos, baixa autoestima após anos de masking</td>
+                <td class="px-4 py-3 text-ink-700">Discrepância extrema: brilhante numa área, travado em tarefas básicas</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Eixo do instrumento</td>
+                <td class="px-4 py-3 text-ink-700">Potencial cognitivo (WAIS, índices) e criativo-produtivo (Renzulli)</td>
+                <td class="px-4 py-3 text-ink-700">Escalas de TDAH adulto e entrevista retrospectiva</td>
+                <td class="px-4 py-3 text-ink-700">Avaliação combinada, com risco de um perfil mascarar o outro</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Marco regulatório BR</td>
+                <td class="px-4 py-3 text-ink-700">Decreto 12.773/2025 e Cadastro Nacional (foco escolar)</td>
+                <td class="px-4 py-3 text-ink-700">CID-11 e prática clínica, sem política específica para adulto</td>
+                <td class="px-4 py-3 text-ink-700">Sem marco específico para o adulto</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Analista de dados, 38 anos, "sempre fui esperto e nunca cheguei a lugar nenhum"</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Caso fictício composto, sem correspondência com pessoa real. Analista de dados, 38 anos, procura avaliação por iniciativa própria depois de ler sobre superdotação adulta nas redes. Queixa central: sensação de potencial desperdiçado, tédio em quase todo emprego, projetos pessoais inacabados e episódios recorrentes de exaustão. Histórico: aprendeu a ler sozinho aos 4 anos, abandonava tarefas fáceis na escola, era visto como "preguiçoso que poderia mais". Nunca foi avaliado.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Avaliação: WAIS com índices verbal e de raciocínio perceptivo elevados e velocidade de processamento média; produção criativa rica, porém com baixa finalização. O diferencial revelou traços compatíveis com apresentação desatenta de TDAH, configurando hipótese de dupla excepcionalidade. A devolutiva nomeou perfil de altas habilidades com provável TDAH associado e custo psíquico de décadas de sobrecompensação. Plano: psicoterapia para o perfeccionismo e a subrealização, encaminhamento neuropsicológico para confirmar o TDAH, ajustes de ambiente de trabalho e grupo de pares. O efeito imediato relatado foi alívio: a inadequação ganhou nome, sem virar sentença.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos principais</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12686.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Planalto: Decreto da Política Nacional de Educação Especial Inclusiva (2025)</a></li>
+          <li><a href="https://www.gov.br/mec/pt-br/assuntos/noticias/2025/dezembro/governo-do-brasil-aprimora-a-politica-de-educacao-inclusiva" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC: Política de educação inclusiva e Cadastro Nacional de AHSD</a></li>
+          <li><a href="https://repositorio.unesp.br/entities/publication/e520fdc9-a34a-48c0-9a6b-1dbbe0fe92fb" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Repositório UNESP: identificação tardia de AHSD em adultos</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI / CFP: testes psicológicos com parecer favorável</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/dupla-excepcionalidade-2e-adulto-avaliacao/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Dupla excepcionalidade (2e) no adulto: avaliação que vê os dois lados</a></li>
+          <li><a href="/guias/avaliacao-tdah-adulto/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Conduzir avaliação de TDAH em adulto</a></li>
+          <li><a href="/areas/neuropsicologia/" class="text-brand-700 hover:text-brand-800 font-medium">Área · Neuropsicologia</a></li>
+          <li><a href="/areas/avaliacao-psicologica/" class="text-brand-700 hover:text-brand-800 font-medium">Área · Avaliação Psicológica</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">No adulto, superdotação se avalia pelo sofrimento que ela explica, não pelo brilho que ela exibe.</h3>
+        <ul class="mt-3 text-white/90 leading-relaxed space-y-2 list-disc pl-5">
+          <li>AHSD adulta chega como inadequação e exaustão, não como gênio óbvio (pesquisa UNESP de identificação tardia).</li>
+          <li>A avaliação combina histórico retrospectivo, medida cognitiva (WAIS, índices) e avaliação criativo-produtiva (Renzulli).</li>
+          <li>Diferencial obrigatório com TDAH e TEA, com atenção à dupla excepcionalidade, sobreposição sinalizada pelo Censo 2022 do IBGE.</li>
+          <li>O Decreto 12.773/2025 e o Cadastro Nacional são escolares; não criam política equivalente para o adulto.</li>
+          <li>A devolutiva tem efeito terapêutico próprio quando nomeia o custo psíquico e abre plano de cuidado.</li>
+        </ul>
+        <p class="mt-3 text-white/90 leading-relaxed">Para o psicólogo que conduz esse tipo de avaliação, o MBA em Reabilitação Neuropsicológica do IPOG consolida fundamento em funções cognitivas e neurodesenvolvimento, base do diferencial com TDAH e TEA.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho correlato</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fonte principal</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.gov.br/mec/pt-br/assuntos/noticias/2025/dezembro/governo-do-brasil-aprimora-a-politica-de-educacao-inclusiva" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC: Decreto 12.773/2025</a></li>
+          <li><a href="https://repositorio.unesp.br/entities/publication/e520fdc9-a34a-48c0-9a6b-1dbbe0fe92fb" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">UNESP: identificação tardia</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI / CFP</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~18 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

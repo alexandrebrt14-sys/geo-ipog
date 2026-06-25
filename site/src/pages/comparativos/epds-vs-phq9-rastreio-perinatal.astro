@@ -1,0 +1,410 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'EPDS ou PHQ-9 para rastrear depressão pós-parto na atenção primária?',
+    a: 'Para o rastreio perinatal especificamente, a EPDS (Escala de Edimburgo) é o instrumento de referência no Brasil. A FEBRASGO recomenda a EPDS, com 10 itens e ponto de corte habitual igual ou maior que 10 para rastreio, justamente porque foi desenhada para o período perinatal e exclui sintomas somáticos que se confundem com o puerpério normal, como alteração de sono e apetite. O PHQ-9 é uma escala genérica de depressão, validada e amplamente usada na atenção primária para a população geral, com a vantagem de mapear diretamente os critérios diagnósticos e incluir item de ideação suicida. No perinatal, a EPDS tende a ter melhor desempenho porque não penaliza a mulher por sintomas físicos esperados após o parto. Muitos serviços usam EPDS no rastreio gestacional e puerperal e o PHQ-9 como instrumento de apoio na população geral.'
+  },
+  {
+    q: 'O que é a Escala de Edimburgo e a partir de quando ela é aplicada?',
+    a: 'A Edinburgh Postnatal Depression Scale (EPDS) é uma escala de autorrelato com 10 itens, criada para rastrear sintomas depressivos no período perinatal. No Brasil, a recomendação habitual é aplicá-la no rastreio perinatal, incluindo a janela puerperal, com leitura cuidadosa do item de ideação. O ponto de corte mais usado para rastreio é igual ou maior que 10, embora cortes variem conforme a finalidade e a população. Rastreio não é diagnóstico: um escore elevado indica necessidade de avaliação clínica aprofundada, não fecha depressão pós-parto. A escala é de domínio amplo e gratuita, o que facilita a implantação em larga escala na atenção primária.'
+  },
+  {
+    q: 'A EPDS detecta ansiedade ou só depressão?',
+    a: 'A EPDS foi construída para sintomas depressivos perinatais, mas alguns de seus itens captam ansiedade, e há literatura usando subescalas de ansiedade derivadas da própria EPDS. Ainda assim, ela não é um instrumento de ansiedade. O período perinatal cursa com depressão, ansiedade e TEPT relacionado ao parto de forma inter-relacionada, como mostrou a série Nascer no Brasil II (Revista de Saúde Pública, 2025). Por isso o rastreio com EPDS frequentemente compõe-se com instrumentos específicos quando há suspeita de ansiedade ou trauma de parto. Tratar a EPDS como rastreio de tudo é erro de uso; ela rastreia o eixo depressivo com bom desempenho na janela perinatal.'
+  },
+  {
+    q: 'A nova licença-maternidade de 2025 muda o rastreio de depressão pós-parto?',
+    a: 'A Lei nº 15.222/2025 ampliou a licença-maternidade com justificativa explícita de saúde mental materna, reduzir depressão pós-parto e ansiedade por separação precoce, alinhada às convenções da OIT. Ela não cria um protocolo de rastreio, mas reforça o ambiente regulatório que sustenta o cuidado perinatal, somando-se à lei federal anterior que garante assistência psicológica a gestantes e puérperas após avaliação no pré-natal e puerpério. Na prática, isso fortalece o argumento para implantar rastreio rotineiro com EPDS na atenção primária, com fluxo claro de encaminhamento. Sem retaguarda de encaminhamento, rastrear gera demanda que o serviço não absorve, o que é uma das críticas ao rastreio universal sem rede.'
+  }
+];
+
+const tabelaTeoria = [
+  { dimensao: 'Finalidade de origem', epds: 'Rastreio de sintomas depressivos no período perinatal', phq9: 'Rastreio e monitoramento de depressão na população geral' },
+  { dimensao: 'Número de itens', epds: '10 itens', phq9: '9 itens' },
+  { dimensao: 'Tratamento de sintomas somáticos', epds: 'Evita sintomas físicos que se confundem com o puerpério (sono, apetite, fadiga)', phq9: 'Inclui sintomas somáticos (sono, apetite, energia), que se sobrepõem ao puerpério normal' },
+  { dimensao: 'Mapeamento de critérios diagnósticos', epds: 'Não mapeia 1 para 1 os critérios; foco em humor, anedonia, ansiedade e ideação', phq9: 'Mapeia diretamente os critérios de episódio depressivo' },
+  { dimensao: 'Item de ideação/autolesão', epds: 'Sim, item específico que exige leitura clínica imediata', phq9: 'Sim, item 9 sobre ideação de morte ou autolesão' },
+  { dimensao: 'Janela de aplicação', epds: 'Rastreio perinatal, incluindo janela puerperal', phq9: 'Qualquer momento; sem desenho específico para o puerpério' },
+  { dimensao: 'Adequação ao contexto perinatal', epds: 'Alta, desenhada para gestantes e puérperas', phq9: 'Moderada, genérica, pode superestimar por sintomas físicos do puerpério' }
+];
+
+const tabelaPsicometria = [
+  { dimensao: 'Tipo de instrumento', epds: 'Autorrelato, escala de 10 itens', phq9: 'Autorrelato, escala de 9 itens' },
+  { dimensao: 'Escala de resposta', epds: 'Likert de 4 pontos (0 a 3) por item', phq9: 'Likert de 4 pontos (0 a 3) por item, frequência nas últimas 2 semanas' },
+  { dimensao: 'Faixa de escore', epds: '0 a 30', phq9: '0 a 27' },
+  { dimensao: 'Ponto de corte para rastreio', epds: 'Habitualmente igual ou maior que 10 (FEBRASGO); cortes variam por finalidade', phq9: 'Habitualmente igual ou maior que 10 para depressão clinicamente relevante' },
+  { dimensao: 'Validação brasileira', epds: 'Instrumento adaptado e usado no Brasil; recomendado pela FEBRASGO e usado em inquéritos como o Nascer no Brasil', phq9: 'Amplamente validado e usado na atenção primária brasileira para população geral' },
+  { dimensao: 'Vantagem psicométrica no perinatal', epds: 'Menor inflação por sintomas físicos do puerpério; melhor especificidade na janela perinatal', phq9: 'Boa correspondência com critérios diagnósticos; risco de falso-positivo por sintomas somáticos do puerpério' },
+  { dimensao: 'Item de risco', epds: 'Item de ideação exige protocolo de manejo imediato', phq9: 'Item 9 exige protocolo de manejo imediato' },
+  { dimensao: 'Custo e acesso', epds: 'Domínio amplo, gratuita, fácil implantação em escala', phq9: 'Domínio amplo, gratuita, fácil implantação em escala' },
+  { dimensao: 'Tempo de aplicação', epds: 'Cerca de 5 minutos', phq9: 'Cerca de 3 a 5 minutos' }
+];
+
+const tabelaCenarios = [
+  { cenario: 'Rastreio na atenção primária perinatal', epds: 'Primeira escolha, desenhada para gestantes e puérperas', phq9: 'Alternativa quando o serviço já padronizou PHQ-9 para toda a população; ler com cautela o componente somático' },
+  { cenario: 'Pré-natal de gestante sem queixa', epds: 'Recomendada para rastreio rotineiro com corte igual ou maior que 10', phq9: 'Aplicável, mas sem o ajuste perinatal da EPDS' },
+  { cenario: 'Puerpério recente com sono e apetite alterados', epds: 'Vantagem clara, evita inflar escore por sintomas físicos esperados', phq9: 'Risco de falso-positivo por sintomas somáticos do puerpério normal' },
+  { cenario: 'Monitoramento de resposta ao tratamento', epds: 'Útil para acompanhar curso no perinatal', phq9: 'Forte para monitorar resposta por mapear critérios diagnósticos' },
+  { cenario: 'Triagem de depressão na população geral do serviço', epds: 'Restrita ao perinatal', phq9: 'Primeira escolha, instrumento genérico consolidado' },
+  { cenario: 'Suspeita de ansiedade ou trauma de parto', epds: 'Rastreia eixo depressivo; compor com instrumentos específicos de ansiedade e TEPT', phq9: 'Foco depressivo; compor com instrumentos específicos' },
+  { cenario: 'Detecção de ideação suicida no perinatal', epds: 'Item específico de ideação com leitura clínica obrigatória', phq9: 'Item 9 de ideação com leitura clínica obrigatória' },
+  { cenario: 'Inquérito populacional de saúde perinatal', epds: 'Tradicional em inquéritos brasileiros do tipo Nascer no Brasil', phq9: 'Usado em inquéritos gerais; menos específico ao perinatal' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'EPDS vs PHQ-9 no rastreio perinatal: qual escala usar e quando',
+  description: 'Comparativo técnico entre a Escala de Edimburgo (EPDS) e o PHQ-9 no rastreio de depressão perinatal. Teoria, psicometria, pontos de corte e cenários de uso na atenção primária.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'EPDS vs PHQ-9 no rastreio perinatal' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+---
+
+<Base
+  title="EPDS vs PHQ-9 no rastreio perinatal: qual escala usar e quando"
+  description="Comparativo técnico entre a Escala de Edimburgo (EPDS) e o PHQ-9 no rastreio de depressão perinatal. Teoria, psicometria, pontos de corte, item de ideação e cenários de uso na atenção primária, com marco da Lei 15.222/2025.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'EPDS vs PHQ-9 no rastreio perinatal' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Rastreio perinatal</span>
+          <h1 class="section-h text-3xl sm:text-4xl">EPDS vs PHQ-9 no rastreio perinatal: a escala certa depende do que ela penaliza</h1>
+          <TLDR
+            resposta="A EPDS (Escala de Edimburgo, 10 itens) é a referência para rastreio de depressão perinatal no Brasil, recomendada pela FEBRASGO com corte habitual igual ou maior que 10, porque evita sintomas somáticos que se confundem com o puerpério. O PHQ-9 (9 itens) é a escala genérica consolidada na atenção primária, com mapeamento direto de critérios diagnósticos. No perinatal, a EPDS tende a ter melhor especificidade; o PHQ-9 brilha na população geral e no monitoramento. Rastreio não é diagnóstico."
+            fontes={["FEBRASGO (recomendação EPDS, corte igual ou maior que 10)", "Nascer no Brasil II, Revista de Saúde Pública, 2025", "Lei nº 15.222/2025 (ampliação da licença-maternidade)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">A diferença decisiva entre as duas escalas não é o número de itens, é o que cada uma penaliza. O puerpério altera sono, apetite e energia por razões fisiológicas. O PHQ-9 conta esses sintomas; a EPDS, desenhada para o perinatal, evita-os. A escolha responde ao contexto, não a uma rivalidade entre instrumentos.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A EPDS (Edinburgh Postnatal Depression Scale) é o instrumento de referência para rastreio de depressão perinatal no Brasil, com 10 itens e ponto de corte habitual igual ou maior que 10 para rastreio, conforme recomendação da FEBRASGO. Sua vantagem central é não penalizar a mulher por sintomas físicos esperados no puerpério, como alteração de sono e apetite. O PHQ-9 é a escala genérica de depressão consolidada na atenção primária, com 9 itens que mapeiam diretamente os critérios diagnósticos e incluem item de ideação. No perinatal, o PHQ-9 corre risco de falso-positivo por contar sintomas somáticos do puerpério normal; na população geral e no monitoramento de resposta, é forte. Ambas exigem protocolo imediato para o item de ideação. Rastreio positivo aponta para avaliação clínica, não fecha diagnóstico.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Duas escalas, dois propósitos de origem</h2>
+        <p>
+          A EPDS nasceu para um problema específico: rastrear sintomas depressivos no período perinatal sem confundir a depressão com as mudanças fisiológicas do puerpério. O puerpério normal cursa com privação de sono, alteração de apetite e fadiga intensa. Uma escala de depressão genérica que pontua esses sintomas inflaria o escore de quase toda puérpera. Por isso a EPDS, com 10 itens, foca humor, anedonia, ansiedade, culpa e ideação, e evita o componente somático. É essa decisão de desenho que a torna adequada à janela perinatal.
+        </p>
+        <p>
+          O PHQ-9 tem genealogia diferente. Foi construído como instrumento de rastreio e monitoramento de depressão na população geral, com 9 itens que correspondem aos critérios de episódio depressivo. Sua força é o mapeamento direto: cada item espelha um critério diagnóstico, o que facilita acompanhar resposta ao tratamento ao longo do tempo. Na atenção primária brasileira, o PHQ-9 é amplamente usado para a população adulta em geral. Aplicado ao puerpério, porém, ele conta sono, apetite e energia, justamente os sintomas que o período altera por razões não depressivas.
+        </p>
+        <p>
+          No Brasil, a recomendação para o rastreio perinatal converge para a EPDS. A FEBRASGO recomenda a Escala de Edimburgo com ponto de corte habitual igual ou maior que 10 para rastreio na atenção primária, e inquéritos nacionais de saúde perinatal, como a série Nascer no Brasil, consolidaram seu uso. A série Nascer no Brasil II, publicada na Revista de Saúde Pública em 2025, mostrou que depressão, ansiedade e TEPT relacionado ao parto se inter-relacionam no pós-parto, o que reforça tratar a EPDS como rastreio do eixo depressivo e não como instrumento único de todo o sofrimento perinatal.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1: Base teórica e desenho dos instrumentos</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">EPDS</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">PHQ-9</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaTeoria.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.epds}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.phq9}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2: Propriedades psicométricas e acesso</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Propriedade</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">EPDS</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">PHQ-9</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaPsicometria.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.epds}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.phq9}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Mecanismo: por que o componente somático decide</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O mecanismo que separa as duas escalas é a especificidade na presença de sintomas somáticos esperados. Considere duas puérperas com seis semanas de pós-parto. A primeira dorme mal porque o bebê acorda à noite, come de forma irregular pela rotina, e está cansada, mas com humor preservado, prazer nas interações e sem culpa patológica. A segunda tem o mesmo padrão de sono e apetite, mas com humor deprimido na maior parte do dia, anedonia, autocrítica intensa e pensamentos de inadequação. No PHQ-9, ambas pontuam alto nos itens de sono, apetite e energia. A primeira pode cruzar o corte sem ter depressão, gerando falso-positivo. Na EPDS, que não conta esses itens somáticos, a primeira pontua baixo e a segunda alto, separando-as melhor.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Essa diferença tem custo operacional direto. Falso-positivo no rastreio gera encaminhamento desnecessário, sobrecarrega a rede e expõe a mulher a uma rotulação que não corresponde ao quadro. Em um sistema com retaguarda limitada de encaminhamento, cada falso-positivo consome a capacidade que deveria ir para os casos reais. Por isso, no perinatal, a escolha pela EPDS não é preferência teórica, é decisão de eficiência clínica e de respeito à experiência da puérpera.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O PHQ-9, por sua vez, tem uma vantagem que a EPDS não oferece com a mesma força: o monitoramento de resposta. Como cada item mapeia um critério diagnóstico, a variação do escore ao longo do tratamento informa diretamente a evolução do episódio. Em um serviço que já tratou a depressão perinatal e quer acompanhar a resposta, o PHQ-9 pode entrar como instrumento de seguimento, enquanto a EPDS cumpre a etapa de rastreio. As duas escalas não competem; ocupam momentos diferentes do cuidado.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O item de ideação é o ponto onde as duas escalas se igualam em gravidade. Tanto a EPDS quanto o PHQ-9 incluem um item sobre ideação ou pensamento de morte e autolesão. Qualquer resposta positiva nesse item exige leitura clínica imediata, independentemente do escore total. Aqui não há diferença de instrumento que importe: o protocolo de manejo de risco é obrigatório nas duas escalas, e nenhuma delas substitui a avaliação direta de segurança.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3: Cenários de uso e recomendação</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Cenário</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">EPDS</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">PHQ-9</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaCenarios.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.cenario}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.epds}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.phq9}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher EPDS</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Rastreio perinatal na atenção primária</p>
+              <p class="text-sm text-ink-700 mt-1">Recomendação FEBRASGO, corte igual ou maior que 10, com leitura obrigatória do item de ideação.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Puerpério com sono e apetite alterados</p>
+              <p class="text-sm text-ink-700 mt-1">Evita falso-positivo por não contar sintomas físicos esperados do puerpério.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Inquérito de saúde perinatal</p>
+              <p class="text-sm text-ink-700 mt-1">Tradicional em estudos brasileiros do tipo Nascer no Brasil, com comparabilidade consolidada.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando escolher PHQ-9</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Triagem na população geral do serviço</p>
+              <p class="text-sm text-ink-700 mt-1">Instrumento genérico consolidado, padronizável para toda a clientela adulta.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Monitoramento de resposta ao tratamento</p>
+              <p class="text-sm text-ink-700 mt-1">Mapeamento direto de critérios facilita acompanhar a evolução do episódio.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Serviço que já padronizou PHQ-9</p>
+              <p class="text-sm text-ink-700 mt-1">Pode ser usado no perinatal com leitura cautelosa do componente somático.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando combinar</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">EPDS para rastrear, PHQ-9 para seguir</p>
+            <p class="text-sm text-ink-700 mt-1">Rastreio perinatal com EPDS e, em casos confirmados em tratamento, PHQ-9 para monitorar resposta por mapear critérios diagnósticos.</p>
+          </div>
+          <div class="card p-5 border-l-4 border-ink-500">
+            <p class="text-sm font-semibold text-ink-900">EPDS com instrumentos de ansiedade e TEPT</p>
+            <p class="text-sm text-ink-700 mt-1">Como depressão, ansiedade e TEPT de parto se inter-relacionam (Nascer no Brasil II, 2025), compor a EPDS com escalas específicas quando há suspeita.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">UBS implanta rastreio perinatal e decide entre EPDS e PHQ-9</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Uma unidade básica de saúde decidiu implantar rastreio rotineiro de depressão perinatal após a discussão pública sobre saúde mental materna que cercou a ampliação da licença-maternidade pela Lei 15.222/2025. A equipe já usava PHQ-9 para a população adulta geral e cogitou estendê-lo às puérperas para padronizar. Uma psicóloga da equipe levantou o problema do componente somático: muitas puérperas cruzariam o corte do PHQ-9 por sono e apetite alterados pela rotina do bebê, gerando encaminhamentos que a rede não absorveria.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A equipe optou por EPDS no rastreio perinatal, com corte igual ou maior que 10, mantendo o PHQ-9 para a população geral. Definiu fluxo: aplicação no pré-natal e no puerpério, leitura imediata do item de ideação com protocolo de manejo de risco, e encaminhamento estruturado para os casos positivos. Para as puérperas já em tratamento, a unidade passou a usar o PHQ-9 como instrumento de seguimento, aproveitando o mapeamento de critérios para acompanhar resposta.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          O resultado prático foi reduzir falso-positivo no rastreio e proteger a capacidade da rede para os casos reais. A psicóloga registrou no protocolo da unidade que rastreio não é diagnóstico, que escore positivo exige avaliação clínica, e que o item de ideação aciona manejo de risco independentemente do escore total. A decisão de instrumento foi documentada com a justificativa do componente somático, tornando o protocolo auditável.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de recomendações da FEBRASGO sobre EPDS e do debate sobre rastreio universal versus seletivo descrito em revisão de escalas (SciELO). A escolha pela EPDS no perinatal reflete sua especificidade na presença de sintomas somáticos do puerpério.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Cinco precauções. Primeiro, ambas as escalas são de rastreio e autorrelato; nenhuma fecha diagnóstico, que exige avaliação clínica. Segundo, pontos de corte variam conforme finalidade, população e equilíbrio desejado entre sensibilidade e especificidade; o corte igual ou maior que 10 é referência comum para rastreio, não regra universal. Terceiro, há debate legítimo entre rastreio universal e seletivo: rastrear sem retaguarda de encaminhamento gera demanda que o serviço não absorve e risco de medicalização. Quarto, a EPDS rastreia o eixo depressivo e capta parte da ansiedade, mas não substitui instrumentos específicos de ansiedade ou de TEPT relacionado ao parto. Quinto, o item de ideação em qualquer das escalas exige protocolo de manejo de risco imediato, sem exceção.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No Brasil de 2026, com a Lei 15.222/2025 reforçando a saúde mental materna no debate público e a lei anterior que garante assistência psicológica a gestantes e puérperas, a implantação de rastreio rotineiro ganhou base regulatória mais firme. O que decide a qualidade do programa não é a escala isolada, e sim o fluxo completo: instrumento adequado ao perinatal, corte definido, leitura do item de ideação, encaminhamento estruturado e seguimento. Escala sem fluxo é número sem cuidado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A escala certa no perinatal é a que não penaliza o puerpério normal.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>EPDS é a referência para rastreio perinatal (FEBRASGO), corte habitual igual ou maior que 10, por evitar sintomas somáticos do puerpério.</li>
+          <li>PHQ-9 é forte na população geral e no monitoramento de resposta por mapear critérios diagnósticos.</li>
+          <li>No perinatal, o PHQ-9 corre risco de falso-positivo por contar sono, apetite e energia.</li>
+          <li>O item de ideação em qualquer escala exige manejo de risco imediato; rastreio não é diagnóstico.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogas e psicólogos que pretendem atuar em saúde mental perinatal e em rastreio na atenção primária, o IPOG mantém MBAs correlatos em saúde mental, bem-estar e desenvolvimento humano.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/guias/avaliacao-saude-mental-perinatal/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de saúde mental perinatal</a></li>
+          <li><a href="/faq/saude-mental-perinatal-faq/" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Saúde mental perinatal</a></li>
+          <li><a href="/areas/avaliacao-psicologica/" class="text-brand-700 hover:text-brand-800 font-medium">Área · Avaliação Psicológica</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs correlatos à saúde mental, ao bem-estar e ao desenvolvimento humano, com corpo docente nominal e estrutura multicampus.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/avaliacao-psicologica/" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação Psicológica</strong></a></li>
+          <li><a href="/temas/saude-mental-perinatal/" class="mega-link"><strong class="text-ink-900 text-sm">Saúde mental perinatal</strong></a></li>
+          <li><a href="/temas/burnout-mae-trabalhadora-2026/" class="mega-link"><strong class="text-ink-900 text-sm">Burnout da mãe trabalhadora</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>FEBRASGO. Recomendação de uso da Escala de Edimburgo (EPDS) no rastreio perinatal, ponto de corte igual ou maior que 10.</li>
+          <li>Fiocruz. Instrumento EPDS, Escala de Depressão Pós-parto de Edimburgo.</li>
+          <li>Nascer no Brasil II (2025). Transtornos mentais no pós-parto. Revista de Saúde Pública (USP).</li>
+          <li>Revisão de escalas de rastreio de depressão pós-parto (SciELO): debate sobre rastreio universal versus seletivo.</li>
+          <li>Brasil. Lei nº 15.222/2025: ampliação da licença-maternidade com justificativa de saúde mental materna.</li>
+          <li>CFP. Lei federal que garante assistência psicológica a gestantes e puérperas.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

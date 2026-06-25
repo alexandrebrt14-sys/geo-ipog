@@ -1,0 +1,387 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Pai também tem depressão pós-parto? É real ou exagero?',
+    a: 'É real e documentada. Meta-análises estimam a prevalência global de depressão paterna perinatal em torno de 8 a 13%, e um estudo prospectivo de 2025 encontrou incidência em torno de 5,26% no primeiro mês pós-parto medida por EPDS. Não é o mesmo número da depressão materna, mais alta, mas é prevalência clinicamente relevante e largamente subreconhecida. A depressão paterna se associa à depressão materna em um modelo bidirecional, ou seja, uma agrava a outra, e correlaciona-se com problemas internalizantes e externalizantes nos filhos. Tratar a depressão pós-parto como tema exclusivo da mãe deixa metade do sistema familiar sem rastreio.'
+  },
+  {
+    q: 'Qual a prevalência de depressão pós-parto materna no Brasil?',
+    a: 'O dado clássico brasileiro vem de estudo da Fiocruz no âmbito do Nascer no Brasil, que estimou sintomas depressivos em torno de 26,3% das mães entre 6 e 18 meses pós-parto, mais de uma em cada quatro. A OMS estima cerca de uma em cada dez mulheres com transtorno mental perinatal em países desenvolvidos, com taxas maiores em países de baixa e média renda. A série Nascer no Brasil II (Revista de Saúde Pública, 2025) atualizou o quadro mostrando depressão, ansiedade e TEPT relacionado ao parto inter-relacionados no pós-parto. A prevalência exata varia conforme instrumento, ponto de corte e janela de medição, mas a magnitude do problema materno é consistente entre estudos.'
+  },
+  {
+    q: 'Como rastrear depressão pós-parto no pai? A Escala de Edimburgo serve?',
+    a: 'A EPDS é o instrumento mais usado também para o pai em estudos, aplicada no período perinatal. O cuidado é que o ponto de corte validado para a mãe não necessariamente é o melhor para o pai, e há discussão sobre cortes específicos paternos. Além disso, a depressão paterna pode se manifestar mais por irritabilidade, retraimento, uso de álcool e aumento de horas de trabalho do que por tristeza explícita, o que escapa de uma escala focada em humor deprimido clássico. Por isso, o rastreio paterno combina a EPDS com atenção clínica a essas manifestações externalizantes. Rastrear o pai junto com a mãe no puerpério é a forma prática de não deixá-lo invisível.'
+  },
+  {
+    q: 'Por que a depressão pós-parto do pai é tão pouco reconhecida?',
+    a: 'A invisibilidade tem várias camadas. O puerpério é culturalmente lido como evento materno, então o rastreio e a rede de cuidado se organizam em torno da mãe. A manifestação paterna costuma ser externalizante, irritabilidade, distanciamento, trabalho excessivo, álcool, que raramente é nomeada como depressão. O próprio pai tende a não procurar ajuda por estigma de gênero. E o ponto de corte de rastreio foi calibrado para mulheres. O resultado é um quadro prevalente que quase ninguém mede. Como a depressão paterna agrava a materna e impacta o desenvolvimento infantil, a invisibilidade tem custo para todo o sistema familiar, não só para o pai.'
+  }
+];
+
+const tabelaClinica = [
+  { eixo: 'Prevalência', materna: 'Cerca de 26,3% (sintomas, Fiocruz/Nascer no Brasil); cerca de 1 em 10 (OMS, países desenvolvidos)', paterna: 'Cerca de 8 a 13% (meta-análises globais); cerca de 5,26% no 1º mês (estudo prospectivo 2025, EPDS)' },
+  { eixo: 'Quadro clínico predominante', materna: 'Humor deprimido, anedonia, culpa, ansiedade, ideação; pode haver dificuldade de vínculo', paterna: 'Frequentemente externalizante: irritabilidade, retraimento, trabalho excessivo, uso de álcool' },
+  { eixo: 'Janela de risco', materna: 'Rastreio até 8 semanas; curso descrito de 6 a 18 meses', paterna: 'Período pré e pós-natal; agrava-se quando a mãe também está deprimida' },
+  { eixo: 'Reconhecimento social', materna: 'Reconhecida, ainda que subdiagnosticada; rede organizada em torno da mãe', paterna: 'Largamente subreconhecida; raramente nomeada como depressão' },
+  { eixo: 'Relação entre os pais', materna: 'Depressão materna agrava a paterna', paterna: 'Depressão paterna agrava a materna (modelo bidirecional)' },
+  { eixo: 'Impacto no filho', materna: 'Associada a desfechos no desenvolvimento infantil', paterna: 'Associada a problemas internalizantes e externalizantes na criança' }
+];
+
+const tabelaRastreio = [
+  { eixo: 'Instrumento usual', materna: 'EPDS, corte habitual igual ou maior que 10 (FEBRASGO)', paterna: 'EPDS também usada; ponto de corte ideal para o pai ainda em discussão' },
+  { eixo: 'Onde acontece', materna: 'Pré-natal e puerpério, atenção primária', paterna: 'Raramente rotineiro; oportunidade no puerpério da parceira' },
+  { eixo: 'O que pode escapar', materna: 'Ansiedade e TEPT de parto exigem instrumentos próprios', paterna: 'Manifestação externalizante escapa de escala focada em humor deprimido' },
+  { eixo: 'Janela de aplicação', materna: 'Pré-natal e até semanas pós-parto', paterna: 'Pré e pós-natal, idealmente acoplado ao acompanhamento da mãe' },
+  { eixo: 'Sinal de alerta prioritário', materna: 'Item de ideação exige manejo de risco imediato', paterna: 'Item de ideação, uso de álcool e irritabilidade intensa exigem atenção' }
+];
+
+const tabelaIntervencao = [
+  { eixo: 'Foco inicial', materna: 'Estabilizar humor, fortalecer vínculo e suporte; avaliar risco', paterna: 'Nomear o quadro, reduzir estigma, abordar manifestação externalizante' },
+  { eixo: 'Abordagem do casal', materna: 'Incluir o parceiro como suporte e como possível caso', paterna: 'Tratar como parte do sistema; o modelo bidirecional pede olhar conjunto' },
+  { eixo: 'Encaminhamento', materna: 'Rede de saúde mental perinatal e suporte social', paterna: 'Rede que acolhe o pai, ainda escassa e a construir' },
+  { eixo: 'Prevenção familiar', materna: 'Reduzir desfechos no desenvolvimento infantil', paterna: 'Reduzir impacto na criança e na coparentalidade' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Depressão pós-parto materna vs paterna: o pai esquecido do puerpério',
+  description: 'Comparativo clínico entre depressão pós-parto materna e paterna. Prevalência, quadro clínico, rastreio, intervenção, modelo bidirecional e a invisibilidade da DPP paterna.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'Depressão pós-parto materna vs paterna' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+---
+
+<Base
+  title="Depressão pós-parto materna vs paterna: o pai esquecido do puerpério"
+  description="Comparativo clínico entre depressão pós-parto materna (cerca de 26,3% no Brasil) e paterna (cerca de 8 a 13% global). Prevalência, quadro clínico, rastreio, intervenção e modelo bidirecional.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Depressão pós-parto materna vs paterna' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Saúde mental perinatal</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Depressão pós-parto materna vs paterna: o puerpério não é só da mãe</h1>
+          <TLDR
+            resposta="A depressão pós-parto materna afeta cerca de 26,3% das mães no Brasil (sintomas, Fiocruz/Nascer no Brasil) e a paterna cerca de 8 a 13% globalmente (meta-análises), com cerca de 5,26% no primeiro mês em estudo de 2025. As duas se relacionam por um modelo bidirecional: uma agrava a outra. A paterna costuma ser externalizante (irritabilidade, retraimento, álcool, trabalho excessivo) e é largamente subreconhecida. Rastrear só a mãe deixa metade do sistema familiar sem cuidado, com impacto documentado no desenvolvimento da criança."
+            fontes={["Fiocruz / Nascer no Brasil (DPP materna ~26,3%)", "Meta-análises de depressão paterna perinatal (~8 a 13%)", "Estudo prospectivo 2025 (incidência ~5,26% no 1º mês, EPDS)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">A depressão pós-parto é tratada como tema materno, e em parte com razão: a prevalência na mãe é mais alta. Mas o pai também adoece no puerpério, em prevalência clinicamente relevante, com quadro diferente e quase nenhum rastreio. Como uma depressão agrava a outra, ignorar o pai prejudica também a mãe e a criança.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A depressão pós-parto materna afeta cerca de 26,3% das mães no Brasil em termos de sintomas, segundo estudo da Fiocruz no âmbito do Nascer no Brasil, mais de uma em cada quatro. A OMS estima cerca de uma em cada dez mulheres com transtorno mental perinatal em países desenvolvidos. A depressão pós-parto paterna, embora menos prevalente, é clinicamente relevante: meta-análises globais estimam de 8 a 13%, e um estudo prospectivo de 2025 encontrou incidência em torno de 5,26% no primeiro mês pós-parto medida por EPDS. As duas se conectam por um modelo bidirecional, em que a depressão de um dos pais agrava a do outro, e ambas se associam a desfechos no desenvolvimento da criança. A paterna se manifesta com frequência de forma externalizante (irritabilidade, retraimento, uso de álcool, trabalho excessivo) e raramente é rastreada, o que a torna o ponto cego do cuidado perinatal.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Dois quadros no mesmo puerpério</h2>
+        <p>
+          A depressão pós-parto materna é a face conhecida do sofrimento perinatal. O estudo da Fiocruz no âmbito do Nascer no Brasil, com grande amostra de mães entre 6 e 18 meses pós-parto, estimou sintomas depressivos em torno de 26,3%, magnitude que coloca o tema entre os principais problemas de saúde da mulher no puerpério. A OMS, em escala global, estima cerca de uma em cada dez mulheres com transtorno mental perinatal em países desenvolvidos, com taxas maiores em países de baixa e média renda. A série Nascer no Brasil II, publicada na Revista de Saúde Pública em 2025, mostrou que depressão, ansiedade e TEPT relacionado ao parto se inter-relacionam no pós-parto materno.
+        </p>
+        <p>
+          A depressão pós-parto paterna é a face esquecida. Meta-análises estimam prevalência global de depressão paterna perinatal entre 8 e 13%, e um estudo prospectivo de 2025 encontrou incidência em torno de 5,26% no primeiro mês pós-parto medida por EPDS. São números menores que os maternos, mas longe de desprezíveis: significam que uma parcela expressiva dos pais adoece no período, sem que o sistema de cuidado os enxergue. A diferença de magnitude entre mãe e pai não justifica a ausência quase total de rastreio paterno.
+        </p>
+        <p>
+          A tese central deste comparativo é que tratar a depressão pós-parto como tema exclusivamente materno é um erro de sistema, não só de sensibilidade. A depressão paterna se associa à materna em um modelo bidirecional, ou seja, a doença de um dos pais aumenta o risco e a gravidade da do outro. E a depressão paterna correlaciona-se com problemas internalizantes e externalizantes nos filhos. Ignorar o pai não é apenas deixá-lo sem cuidado; é enfraquecer o cuidado da mãe e expor a criança a risco evitável.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1: Prevalência e quadro clínico</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Eixo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">DPP materna</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">DPP paterna</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaClinica.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.materna}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.paterna}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2: Rastreio</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Eixo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">DPP materna</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">DPP paterna</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaRastreio.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.materna}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.paterna}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O mecanismo bidirecional e a invisibilidade paterna</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O modelo bidirecional é o mecanismo que torna a depressão paterna um problema clínico, e não apenas humano. Quando a mãe está deprimida, o pai assume mais carga, perde suporte emocional e tem risco aumentado de adoecer; quando o pai está deprimido, retrai-se, irrita-se e oferece menos suporte, agravando o quadro materno. A doença de um realimenta a do outro. Isso significa que tratar só a mãe, com o pai deprimido em casa, opera contra a corrente: o ambiente que deveria sustentar a recuperação materna está, ele próprio, adoecido.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A invisibilidade paterna tem causas que se reforçam. A primeira é cultural: o puerpério é lido como evento materno, e a rede de cuidado se organiza em torno da mãe, com o pai como acompanhante, não como possível paciente. A segunda é fenomenológica: a depressão paterna costuma ser externalizante, manifestando-se por irritabilidade, distanciamento, aumento de horas de trabalho e uso de álcool, em vez da tristeza explícita que as escalas de humor capturam melhor. A terceira é instrumental: os pontos de corte de rastreio foram calibrados para mulheres, e o melhor corte para o pai ainda é discutido. A quarta é o estigma de gênero, que reduz a busca de ajuda pelo próprio pai.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O efeito combinado dessas causas é um quadro prevalente que quase ninguém mede. A oportunidade prática mais simples de corrigir isso é acoplar o rastreio paterno ao acompanhamento puerperal da parceira. O pai já está presente nas consultas; aplicar a EPDS nele, com atenção clínica às manifestações externalizantes que a escala não captura bem, transforma um momento existente em porta de entrada. Não exige criar um serviço novo, exige incluir quem já está na sala.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O impacto na criança fecha o argumento de saúde pública. A depressão paterna associa-se a problemas internalizantes e externalizantes nos filhos, somando-se ao efeito da depressão materna. O puerpério é uma janela de desenvolvimento sensível, e a saúde mental dos dois pais é parte do ambiente que a criança habita. Cuidar do pai, nesse enquadre, é também uma intervenção de prevenção no desenvolvimento infantil.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3: Intervenção</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Eixo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">DPP materna</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">DPP paterna</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaIntervencao.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.materna}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.paterna}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Sinais de alerta na mãe</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Humor deprimido persistente e anedonia</p>
+              <p class="text-sm text-ink-700 mt-1">Tristeza ou perda de prazer na maior parte do dia, além da tristeza passageira do puerpério.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Culpa intensa e dificuldade de vínculo</p>
+              <p class="text-sm text-ink-700 mt-1">Autocrítica desproporcional e dificuldade de conexão com o bebê pedem avaliação.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Ideação</p>
+              <p class="text-sm text-ink-700 mt-1">Qualquer pensamento de morte ou autolesão exige manejo de risco imediato.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Sinais de alerta no pai</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Irritabilidade e retraimento</p>
+              <p class="text-sm text-ink-700 mt-1">Manifestação externalizante que raramente é lida como depressão.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Trabalho excessivo e uso de álcool</p>
+              <p class="text-sm text-ink-700 mt-1">Fuga da casa e do vínculo pode mascarar sofrimento depressivo.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Ideação</p>
+              <p class="text-sm text-ink-700 mt-1">Pensamento de morte ou autolesão no pai exige a mesma atenção que na mãe.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Bruno, 34 anos, deprimido no puerpério da parceira sem ninguém perceber</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A parceira de Bruno, 34 anos, foi rastreada no puerpério com EPDS e identificada com sintomas depressivos, entrando em acompanhamento. Bruno aparecia nas consultas como acompanhante. Nos três meses seguintes, ficou cada vez mais irritado em casa, passou a trabalhar até tarde quase todos os dias e aumentou o consumo de álcool no fim de semana. Ninguém aplicou nenhum rastreio nele, e ele próprio descrevia o estado como cansaço e pressão financeira, não como depressão.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A psicóloga que acompanhava a mãe notou que a recuperação dela estagnara e perguntou sobre o ambiente em casa. Identificou o padrão paterno: irritabilidade, distanciamento e uso de álcool, manifestações externalizantes compatíveis com depressão paterna que a leitura centrada na mãe deixava passar. Aplicou a EPDS em Bruno em uma consulta conjunta, com atenção a esses sinais que a escala de humor não captura bem, e o escore, somado ao quadro externalizante, sustentou a hipótese de depressão pós-parto paterna.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A intervenção passou a tratar o casal como sistema, coerente com o modelo bidirecional. Nomear o quadro reduziu o estigma de Bruno, que não se via como alguém que poderia ter depressão pós-parto. O encaminhamento dele a cuidado próprio aliviou a carga sobre a parceira, cuja recuperação voltou a avançar. O caso ilustra a tese: o pai invisível não estava só sofrendo em silêncio, estava interferindo na recuperação da mãe e no ambiente da criança.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de descrições da literatura sobre depressão paterna perinatal, manifestação externalizante e modelo bidirecional. Rastrear apenas a mãe deixaria o sistema familiar parcialmente tratado.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Quatro precauções. Primeiro, as prevalências variam conforme instrumento, ponto de corte, janela de medição e população; os números aqui são ordens de grandeza consolidadas, não valores fixos. Segundo, a EPDS foi calibrada para a mãe, e seu melhor ponto de corte para o pai ainda é discutido na literatura, além de a escala captar mal a manifestação externalizante paterna. Terceiro, rastreio não é diagnóstico, em nenhum dos pais; escore positivo aponta para avaliação clínica. Quarto, o item de ideação em qualquer um dos pais exige manejo de risco imediato, sem exceção.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No Brasil, o ambiente regulatório que sustenta o cuidado perinatal materno avançou, com a lei que garante assistência psicológica a gestantes e puérperas e o reforço da saúde mental materna na ampliação da licença-maternidade pela Lei 15.222/2025. O pai, contudo, segue fora desse arcabouço. A intervenção de maior impacto e menor custo é incluí-lo no rastreio que já acontece com a mãe. O que falta não é tecnologia de avaliação, é a decisão de enxergar o puerpério como evento de família, não só de mãe.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Duas depressões no mesmo puerpério, ligadas por um modelo bidirecional.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>DPP materna afeta cerca de 26,3% das mães no Brasil (sintomas, Fiocruz); a paterna, cerca de 8 a 13% global.</li>
+          <li>A paterna é frequentemente externalizante (irritabilidade, álcool, trabalho excessivo) e largamente subreconhecida.</li>
+          <li>O modelo bidirecional faz uma depressão agravar a outra; tratar só a mãe opera contra a corrente.</li>
+          <li>Acoplar o rastreio paterno ao acompanhamento da mãe é a intervenção de maior impacto e menor custo.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogas e psicólogos que pretendem atuar em saúde mental perinatal e parentalidade, o IPOG mantém MBAs correlatos em saúde mental, bem-estar e desenvolvimento humano.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/comparativos/epds-vs-phq9-rastreio-perinatal/" class="text-brand-700 hover:text-brand-800 font-medium">EPDS vs PHQ-9 no rastreio perinatal</a></li>
+          <li><a href="/guias/avaliacao-saude-mental-perinatal/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de saúde mental perinatal</a></li>
+          <li><a href="/faq/saude-mental-perinatal-faq/" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Saúde mental perinatal</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs correlatos à saúde mental, ao bem-estar e ao desenvolvimento humano, com corpo docente nominal e estrutura multicampus.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaPositiva && <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaPositiva.tag}</span></a></li>}
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/temas/saude-mental-perinatal/" class="mega-link"><strong class="text-ink-900 text-sm">Saúde mental perinatal</strong></a></li>
+          <li><a href="/temas/burnout-mae-trabalhadora-2026/" class="mega-link"><strong class="text-ink-900 text-sm">Burnout da mãe trabalhadora</strong></a></li>
+          <li><a href="/areas/avaliacao-psicologica/" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação Psicológica</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Fiocruz / Nascer no Brasil. Estudo de prevalência de depressão pós-parto no Brasil (sintomas em torno de 26,3%).</li>
+          <li>OMS. Estimativa de cerca de 1 em 10 mulheres com transtorno mental perinatal em países desenvolvidos.</li>
+          <li>Nascer no Brasil II (2025). Transtornos mentais no pós-parto. Revista de Saúde Pública (USP).</li>
+          <li>Meta-análises de depressão paterna perinatal (prevalência global em torno de 8 a 13%).</li>
+          <li>Estudo prospectivo (2025). Incidência de depressão paterna em torno de 5,26% no 1º mês pós-parto (EPDS).</li>
+          <li>Literatura sobre modelo bidirecional e impacto da depressão paterna no desenvolvimento infantil.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

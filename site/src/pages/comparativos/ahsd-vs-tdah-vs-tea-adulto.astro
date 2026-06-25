@@ -1,0 +1,387 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const faqs = [
+  {
+    q: 'Altas habilidades, TDAH e TEA podem coexistir no mesmo adulto?',
+    a: 'Sim, e coexistem com frequência maior do que o rótulo único sugere. A dupla excepcionalidade (2e) descreve justamente a combinação de superdotação com uma condição neurodivergente como TDAH ou TEA. No Brasil, o Censo Demográfico 2022 do IBGE (divulgado em maio de 2025) indicou que parcela expressiva das pessoas autistas também apresenta altas habilidades. O erro clínico recorrente é fechar um único diagnóstico cedo demais. O adulto que chega exausto após anos de sobrecompensação pode ter as três camadas operando ao mesmo tempo: a desatenção do TDAH, o padrão de processamento do TEA e a alta capacidade cognitiva que mascara as duas primeiras. Avaliação que busca um rótulo só erra por definição.'
+  },
+  {
+    q: 'Por que tantas mulheres só descobrem o TDAH depois dos 30?',
+    a: 'A apresentação predominantemente desatenta, mais comum em mulheres, é a menos perceptível porque não desorganiza o ambiente. A criança que sonha acordada, perde prazos e se cobra em silêncio não gera o mesmo encaminhamento que a criança hiperativa. Dados do CDC nos Estados Unidos (via ADDitude, 2025) mostram que 61% das mulheres receberam o diagnóstico de TDAH na vida adulta, contra 40% dos homens, e apenas 25% das mulheres foram diagnosticadas antes dos 11 anos. Na vida adulta a razão entre homens e mulheres se aproxima, o que sinaliza subdiagnóstico feminino na infância, não ausência do quadro. O custo de décadas de masking aparece como esgotamento, ansiedade e baixa autoestima.'
+  },
+  {
+    q: 'O Decreto 12.773/2025 muda algo para o adulto com altas habilidades?',
+    a: 'O Decreto nº 12.773/2025 instituiu a Política Nacional de Educação Especial Inclusiva e criou o Cadastro Nacional de Estudantes com Altas Habilidades, com aceleração e avanço por área de conhecimento. O foco é escolar. Para o adulto que nunca foi identificado, não há marco específico equivalente: a avaliação de altas habilidades em adultos permanece prática clínica sem política pública dedicada. O Censo Escolar 2025 identificou cerca de 56 mil estudantes com altas habilidades, número considerado subnotificado frente à prevalência teórica. O decreto é um avanço importante, mas a dupla excepcionalidade no adulto segue, na expressão da literatura, terra de ninguém regulatória.'
+  },
+  {
+    q: 'Superdotação é considerada neurodivergência? Existe laudo?',
+    a: 'O debate é aberto. Parte da literatura trata altas habilidades como neurodivergência por direito próprio; outra corrente reserva o termo para condições que cursam com prejuízo funcional. A implicação é prática: define se o tema entra em política de saúde e educação especial e como é tratado na avaliação clínica. A avaliação de altas habilidades em adultos combina medida de potencial cognitivo com avaliação criativo-produtiva, e não se resume a um teste de QI. Quando há suspeita de dupla excepcionalidade, a avaliação precisa rastrear ativamente TDAH e TEA, porque um perfil pode mascarar o outro. Documentar o raciocínio diferencial é parte do trabalho responsável.'
+  }
+];
+
+const tabelaSobreposicao = [
+  { eixo: 'Marca de chegada à clínica', ahsd: 'Tédio, deslocamento social, perfeccionismo, subrealização apesar de alta capacidade', tdah: 'Esgotamento, atrasos crônicos, baixa autoestima após anos de masking', tea: 'Exaustão por mascaramento social, sobrecarga sensorial, dificuldade em ambientes não estruturados' },
+  { eixo: 'Atenção e foco', ahsd: 'Hiperfoco em interesses, distração quando subestimulado', tdah: 'Desatenção persistente, dificuldade de sustentar tarefa monótona', tea: 'Foco intenso em interesses restritos, dificuldade de mudar de tarefa' },
+  { eixo: 'Relações sociais', ahsd: 'Sensação de não pertencer por assincronia intelectual', tdah: 'Impulsividade verbal, interrupções, dificuldade de timing', tea: 'Dificuldade de reciprocidade, leitura de subtexto e contato visual' },
+  { eixo: 'Regulação emocional', ahsd: 'Intensidade emocional (sobre-excitabilidade), autocrítica elevada', tdah: 'Reatividade, frustração rápida, disregulação por sobrecarga', tea: 'Disregulação por previsibilidade quebrada, meltdown ou shutdown' },
+  { eixo: 'Padrão de chegada típico', ahsd: 'Busca explicação para sensação de inadequação de longa data', tdah: 'Chega após colapso de produtividade ou diagnóstico de filho', tea: 'Chega via autodiagnóstico, redes ou após esgotamento adulto' }
+];
+
+const tabelaDiferencial = [
+  { eixo: 'Pergunta diferencial central', ahsd: 'Há alta capacidade com subrealização e assincronia, sem prejuízo nuclear de atenção ou comunicação?', tdah: 'O déficit de atenção e a impulsividade são pervasivos, presentes desde a infância e em múltiplos contextos?', tea: 'Há padrão estável de diferenças em comunicação social e interesses, presente desde cedo, não explicado por outro quadro?' },
+  { eixo: 'Instrumentação', ahsd: 'Avaliação de potencial cognitivo e criativo-produtivo; entrevista de trajetória', tdah: 'Escalas de TDAH adulto, entrevista retrospectiva estruturada, evidência de cronicidade', tea: 'Instrumentos de TEA adulto, anamnese de desenvolvimento, observação clínica' },
+  { eixo: 'Sinal que sugere coexistência', ahsd: 'Alta capacidade que esconde lapsos executivos até o colapso', tdah: 'Função executiva frágil que persiste mesmo com QI elevado', tea: 'Mascaramento que custa energia e produz exaustão crônica' },
+  { eixo: 'Curso ao longo da vida', ahsd: 'Identificação tardia frequente; estudo da UNESP analisou trajetórias de adultos identificados entre 2000 e 2022', tdah: 'Mais da metade dos adultos diagnosticados nos EUA recebeu o diagnóstico após os 18 anos (CDC, 2025)', tea: 'Inversão de gênero na vida adulta: mulheres passaram a representar parcela maior dos diagnósticos (Medicina S/A, 2026)' }
+];
+
+const tabelaArmadilhas = [
+  { eixo: 'Fechar diagnóstico único', risco: 'Atribuir tudo a um rótulo e perder as camadas coexistentes', conduta: 'Manter hipótese de dupla ou tripla excepcionalidade aberta até evidência suficiente' },
+  { eixo: 'Confundir hiperfoco e desatenção', risco: 'Ler hiperfoco de altas habilidades como ausência de TDAH', conduta: 'Avaliar atenção em tarefas não interessantes e função executiva em múltiplos contextos' },
+  { eixo: 'Mascaramento como ausência de quadro', risco: 'A alta capacidade ou o masking ocultam o prejuízo até o colapso', conduta: 'Investigar custo energético do desempenho, não só o desempenho observável' },
+  { eixo: 'Tratar superdotação como QI alto', risco: 'Reduzir altas habilidades a um número e ignorar criatividade e produtividade', conduta: 'Avaliar potencial acadêmico e criativo-produtivo separadamente' },
+  { eixo: 'Ignorar viés de gênero', risco: 'Subdiagnosticar mulheres com apresentação desatenta ou camuflada', conduta: 'Aplicar anamnese sensível a apresentações menos disruptivas' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AHSD vs TDAH vs TEA no adulto: diferencial em neurodiversidade que coexiste',
+  description: 'Comparativo clínico entre altas habilidades/superdotação, TDAH e TEA na vida adulta. Sobreposição de sinais, diferencial, dupla excepcionalidade e armadilhas de avaliação.',
+  author: alexandrePersonBase,
+  publisher: brasilGeoOrganization,
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text']
+  },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: SITE.url + '/comparativos' },
+    { '@type': 'ListItem', position: 3, name: 'AHSD vs TDAH vs TEA no adulto' }
+  ]
+};
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
+---
+
+<Base
+  title="AHSD vs TDAH vs TEA no adulto: diferencial em neurodiversidade que coexiste"
+  description="Comparativo clínico entre altas habilidades/superdotação (AHSD), TDAH e TEA na vida adulta. Sobreposição de sinais, perguntas diferenciais, dupla excepcionalidade e armadilhas de avaliação, com marcos brasileiros 2025-2026.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'AHSD vs TDAH vs TEA no adulto' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Neurodiversidade adulta</span>
+          <h1 class="section-h text-3xl sm:text-4xl">AHSD vs TDAH vs TEA no adulto: três perfis que coexistem, um rótulo único que erra</h1>
+          <TLDR
+            resposta="Altas habilidades/superdotação (AHSD), TDAH e TEA no adulto compartilham sinais de chegada (esgotamento, deslocamento, sobrecompensação) e se confundem com frequência. A dupla excepcionalidade (2e) é a regra, não a exceção: a alta capacidade pode mascarar TDAH e TEA até o colapso. Avaliação que busca um único diagnóstico erra por desenho. O diferencial está em separar potencial, função executiva e comunicação social, mantendo a hipótese de coexistência aberta."
+            fontes={["IBGE, Censo 2022 (divulgação 2025)", "CDC via ADDitude, 2025 (TDAH adulto)", "Decreto 12.773/2025 (Política Nacional de Educação Especial Inclusiva)"]}
+          />
+          <p class="mt-3 text-ink-700 text-lg">Não são três caixas excludentes. A literatura clínica de 2025 descreve adultos que chegam à terapia exaustos, não curiosos sobre o próprio talento, com alta capacidade cognitiva que esconde necessidades de apoio. Diferenciar AHSD, TDAH e TEA exige avaliar potencial, função executiva e comunicação social em separado, e aceitar que os três podem operar juntos.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Altas habilidades/superdotação (AHSD), TDAH e TEA são três construtos distintos que, na vida adulta, se sobrepõem em sintomas de chegada e coexistem com frequência clínica relevante. A dupla excepcionalidade (2e) descreve a combinação de superdotação com TDAH ou TEA, e a tripla camada não é rara. O erro recorrente é fechar um único rótulo: a alta capacidade cognitiva tende a mascarar lapsos executivos do TDAH e o custo do mascaramento social do TEA até o ponto de colapso. O diferencial responsável separa três eixos, avaliação de potencial (acadêmico e criativo-produtivo), função executiva e atenção em contextos variados, e comunicação social com curso desde a infância, mantendo a hipótese de coexistência aberta até evidência suficiente.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que os três se confundem no adulto</h2>
+        <p>
+          O adulto neurodivergente não identificado na infância chega ao consultório por um motivo comum a AHSD, TDAH e TEA: o esgotamento. A literatura clínica de 2025 descreve adultos com dupla excepcionalidade que chegam exaustos, não curiosos sobre o próprio talento, seniores na carreira mas atrasados em tarefas básicas como responder e-mails. A alta capacidade sustenta o desempenho por anos à custa de sobrecompensação crônica, até que o sistema cede. Esse padrão de sustained overcompensation produz a queixa de entrada que parece igual nos três perfis.
+        </p>
+        <p>
+          A confusão se intensifica porque cada perfil pode imitar o outro. O tédio e a distração de quem tem altas habilidades subestimuladas parecem desatenção de TDAH. O hiperfoco em interesses restritos do TEA parece o hiperfoco do TDAH. A intensidade emocional descrita na literatura de superdotação (sobre-excitabilidade) parece a reatividade do TDAH ou a disregulação do TEA. Sem separar os eixos, o avaliador escolhe o rótulo mais visível e perde as camadas embaixo.
+        </p>
+        <p>
+          O contexto brasileiro tornou o tema mais urgente. O Censo Demográfico 2022 do IBGE, divulgado em maio de 2025, foi o primeiro a contar pessoas autistas no país, e indicou parcela expressiva com altas habilidades entre elas, sinalizando coexistência. O Decreto nº 12.773/2025 instituiu a Política Nacional de Educação Especial Inclusiva com Cadastro Nacional de Estudantes com Altas Habilidades, mas com foco escolar. O adulto que nunca foi identificado segue sem política pública dedicada, dependendo da avaliação clínica para nomear o que sentiu a vida inteira.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1: Sobreposição de sinais na vida adulta</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Eixo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">AHSD</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">TDAH</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">TEA</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaSobreposicao.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.ahsd}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.tdah}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.tea}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2: Diferencial, o que separa cada perfil</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Eixo</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">AHSD</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">TDAH</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">TEA</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaDiferencial.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.ahsd}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.tdah}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.tea}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O mecanismo da dupla excepcionalidade</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A dupla excepcionalidade (2e) é o conceito que organiza essa confusão. Refere-se à coexistência de superdotação com uma condição neurodivergente como TDAH ou TEA. O mecanismo central é a discrepância: o adulto 2e é brilhante em uma área e parece atrasado em tarefas básicas. A alta capacidade compensa o déficit executivo ou social por anos, o que produz dois efeitos colaterais. Primeiro, o diagnóstico chega tarde, porque o desempenho mascara o prejuízo. Segundo, o custo dessa compensação acumula como exaustão, ansiedade e autocrítica, até o colapso.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Esse mecanismo explica por que a avaliação precisa separar potencial de função. Um teste de potencial cognitivo elevado não exclui TDAH, porque os critérios atuais de TDAH não medem função executiva diretamente, e um QI alto pode conviver com função executiva frágil. Da mesma forma, alta capacidade não exclui TEA: o adulto pode ter aprendido a mascarar diferenças de comunicação social com inteligência, pagando em energia. Avaliar só o desempenho observável esconde o quadro. Avaliar o custo energético do desempenho revela.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O viés de gênero é a terceira força que distorce o diferencial. A apresentação predominantemente desatenta do TDAH, mais comum em mulheres, é a menos detectada na infância porque não desorganiza o ambiente. Dados do CDC nos Estados Unidos (via ADDitude, 2025) mostram que 61% das mulheres receberam o diagnóstico de TDAH na vida adulta, contra 40% dos homens. No TEA, a camuflagem feminina também atrasa a identificação, e o Brasil registrou em 2025 uma inversão de gênero nos diagnósticos adultos (Medicina S/A, 2026). O mesmo mecanismo de mascaramento opera nas três condições.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3: Armadilhas de avaliação e conduta recomendada</p>
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Armadilha</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Risco</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Conduta</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tabelaArmadilhas.map(row => (
+                <tr class="border-b border-surface-200 hover:bg-surface-50">
+                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.eixo}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.risco}</td>
+                  <td class="px-4 py-3 align-top text-ink-700">{row.conduta}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">O que sugere coexistência</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Discrepância extrema de desempenho</p>
+              <p class="text-sm text-ink-700 mt-1">Brilhante em uma área e visivelmente atrasado em tarefas simples sugere 2e, não preguiça.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Colapso após anos de alto desempenho</p>
+              <p class="text-sm text-ink-700 mt-1">Sobrecompensação crônica que cede de uma vez indica capacidade mascarando déficit.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-brand-700">
+              <p class="text-sm font-semibold text-ink-900">Custo energético desproporcional</p>
+              <p class="text-sm text-ink-700 mt-1">Desempenho normal que exige esforço extremo aponta mascaramento social ou executivo.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">O que pede cautela diagnóstica</h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Autodiagnóstico via redes</p>
+              <p class="text-sm text-ink-700 mt-1">A porta de entrada por redes sociais merece acolhimento, sem validar nem invalidar antes da avaliação.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Traço versus transtorno</p>
+              <p class="text-sm text-ink-700 mt-1">Diferença em comunicação ou atenção sem prejuízo funcional não fecha diagnóstico.</p>
+            </div>
+            <div class="card p-5 border-l-4 border-sun-600">
+              <p class="text-sm font-semibold text-ink-900">Sintoma melhor explicado por outro quadro</p>
+              <p class="text-sm text-ink-700 mt-1">Depressão, ansiedade e sono ruim mimetizam desatenção e retraimento social.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Renata, 41 anos, arquiteta, três camadas sob um único pedido de avaliação</h3>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          Renata, arquiteta sênior, 41 anos, procurou avaliação depois de ler relatos de TDAH adulto em redes sociais. Sempre foi a aluna de notas altas, premiada em desenho desde a adolescência, mas vivia exausta, atrasava entregas administrativas e se descrevia como fraude apesar do reconhecimento profissional. Queixa de irritabilidade em casa, lapsos de memória de trabalho e sensação de não pertencer em grupos desde a escola. Sem histórico psiquiátrico formal.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          A psicóloga resistiu a fechar TDAH de imediato. Separou os eixos. A avaliação de potencial revelou capacidade cognitiva e criativo-produtiva elevada, compatível com altas habilidades nunca identificadas. Escalas e entrevista retrospectiva de TDAH apontaram apresentação desatenta com cronicidade desde a infância, coerente com subdiagnóstico feminino. A anamnese de desenvolvimento e a observação clínica levantaram diferenças sutis de comunicação social e necessidade intensa de previsibilidade, sugerindo investigar TEA com instrumentos específicos. O custo energético do desempenho, não o desempenho em si, organizou a leitura.
+        </p>
+        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
+          O plano evitou a lógica de força de vontade. Em vez de cobrar mais disciplina, reduziu fricção: reorganização de carga administrativa com apoio externo, estratégias de função executiva, psicoeducação sobre dupla excepcionalidade para reescrever a narrativa de fraude, e encaminhamento para avaliação complementar de TEA. O laudo documentou as três hipóteses, o raciocínio diferencial e os limites de cada instrumento, em vez de comprimir tudo em um rótulo único.
+        </p>
+        <p class="mt-3 text-ink-500 text-xs italic">
+          Caso fictício composto a partir de padrões descritos na literatura de dupla excepcionalidade adulta (2025) e de dados sobre diagnóstico tardio de TDAH em mulheres (CDC via ADDitude, 2025). Fechar um diagnóstico só teria perdido as camadas que organizaram o plano.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Quatro precauções. Primeiro, este comparativo organiza o raciocínio diferencial, não substitui avaliação clínica formal com instrumentos validados e anamnese de desenvolvimento. Nenhum dos três quadros se fecha por uma tabela ou por autorrelato isolado. Segundo, o debate sobre se altas habilidades são neurodivergência por direito próprio segue aberto na literatura, e a posição adotada influencia tanto a avaliação quanto a política pública. Terceiro, há tensão real entre sobrediagnóstico e correção de subdiagnóstico histórico, sobretudo no TDAH adulto, sem consenso fechado. Quarto, o diferencial precisa sempre considerar quadros que mimetizam os três, como depressão, ansiedade e transtornos do sono.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          No Brasil de 2026, a demanda por avaliação de neurodiversidade adulta cresce mais rápido que a oferta de profissionais com formação específica. O Decreto 12.773/2025 estruturou a frente escolar, mas o adulto não identificado depende da maturidade técnica de quem avalia. A competência que faz diferença não é decorar critérios, e sim sustentar a hipótese de coexistência aberta tempo suficiente para que as camadas apareçam.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">Três perfis que coexistem, avaliação que separa eixos em vez de buscar rótulo único.</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>AHSD, TDAH e TEA compartilham sinais de chegada (esgotamento, deslocamento, sobrecompensação) e se confundem no adulto.</li>
+          <li>A dupla excepcionalidade (2e) é frequente: alta capacidade mascara TDAH e TEA até o colapso.</li>
+          <li>O diferencial separa potencial, função executiva e comunicação social, considerando viés de gênero.</li>
+          <li>O Decreto 12.773/2025 estruturou a frente escolar; o adulto não identificado depende da avaliação clínica.</li>
+        </ul>
+        <p class="mt-4 text-white/85 text-sm">
+          Para psicólogas e psicólogos que pretendem aprofundar avaliação de neurodiversidade adulta e reabilitação cognitiva, o IPOG mantém MBAs em Reabilitação Neuropsicológica e em Neurociência aplicada ao desenvolvimento humano.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-ink-700">
+          <li><a href="/guias/avaliacao-tdah-adulto/" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Avaliação de TDAH no adulto</a></li>
+          <li><a href="/comparativos/transicao-tea-adolescente-vs-adulto/" class="text-brand-700 hover:text-brand-800 font-medium">Transição TEA adolescente vs adulto</a></li>
+          <li><a href="/areas/avaliacao-psicologica/" class="text-brand-700 hover:text-brand-800 font-medium">Área · Avaliação Psicológica</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          O IPOG oferece MBAs em Reabilitação Neuropsicológica e em Neurociência e Psicologia Positiva, com corpo docente nominal e estrutura multicampus.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
+          Ver no IPOG
+        </a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
+          Home IPOG
+        </a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
+          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
+        <ul class="space-y-1">
+          <li><a href="/areas/avaliacao-psicologica/" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação Psicológica</strong></a></li>
+          <li><a href="/temas/adhd-adulto-brasil/" class="mega-link"><strong class="text-ink-900 text-sm">TDAH adulto no Brasil</strong></a></li>
+          <li><a href="/temas/tea-adulto-trabalho/" class="mega-link"><strong class="text-ink-900 text-sm">TEA adulto e trabalho</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>IBGE. Censo Demográfico 2022, primeiro mapeamento de pessoas autistas no Brasil (divulgação 2025).</li>
+          <li>CDC, via ADDitude Magazine (2025). Diagnóstico de TDAH em adultos nos Estados Unidos.</li>
+          <li>Brasil. Decreto nº 12.773/2025: Política Nacional de Educação Especial Inclusiva e Cadastro Nacional de Estudantes com Altas Habilidades.</li>
+          <li>MEC/INEP. Censo Escolar 2025: estudantes identificados com altas habilidades/superdotação.</li>
+          <li>UNESP. Estudo sobre identificação tardia de altas habilidades em adultos (2000-2022).</li>
+          <li>Medicina S/A (2026). Inversão de gênero nos diagnósticos de TEA em adultos no Brasil.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

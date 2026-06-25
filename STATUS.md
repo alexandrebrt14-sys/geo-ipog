@@ -6,6 +6,35 @@
 
 ---
 
+## W24 — Sessão 25/06/2026 — 5 waves complementares 2026 (19 páginas inéditas) + reforço do menu social
+
+### Páginas no ar
+**352 páginas** (era ~332; +19 páginas de conteúdo + regeneração de search-pages/sitemaps). Deploy Cloudflare verificado live (HTTP 200 nas novas URLs). Commit `311e23f` em `main`.
+
+### Contexto
+Demanda do CEO Alexandre Caramaschi: soltar mais 5 waves complementares com agentes especialistas em paralelo para popular guias, tabelas comparativas e FAQs com profundidade, bom UX/mobile, técnicas GEO e referência sutil ao IPOG, no tom do curso-factory. Forçar os 5 LLMs orquestrados; pesquisar recência 2026 (autismo, burnout, IA etc.); foco em conteúdo reaproveitável para Quora/Medium/LinkedIn.
+
+### Método
+- Orchestrator `board` (5 LLMs) FOI forçado (pedido explícito), mas confirmou o anti-padrão #2/#3: chave Anthropic morta (400), GPT-5.5 vazio, Gemini recusou ("estamos em 2024"), Perplexity ReadTimeout, só Groq respondeu com citações de confabulação. Pesquisa real ancorada via WebSearch ao vivo (2 agentes de pesquisa) com spot-check, fontes BR e globais reais.
+- 4 agentes escritores Opus em paralelo (arquivos distintos, sem git no working tree — evitou o hazard de stash/reset). Cânone editorial (Voice Guard, HBR/HSM, deny-lists, anti-padrão 26, em-dash banido, slugs ASCII) injetado via WRITER_CONTEXT.
+
+### Entregues (todas inéditas, dedup contra ~150 páginas existentes)
+- **Wave 1 — Guias (5):** avaliação AHSD adulto (Decreto 12.773/2025), dupla excepcionalidade 2e, luto perinatal/gestacional, depressão pós-parto paterna, nexo burnout QD85 para afastamento INSS.
+- **Wave 2 — Comparativos (4):** AHSD vs TDAH vs TEA adulto, EPDS vs PHQ-9, DPP materna vs paterna, regulação de IA em terapia Brasil vs EUA.
+- **Wave 3 — FAQs (4):** AHSD adulto, luto perinatal, DPP paterna, escolher pós pelo Censo INEP 2024. FAQPage + speakable.
+- **Wave 4 — Conteúdo social (6):** snippets reaproveitáveis Quora/Medium/LinkedIn com adaptações por canal (regra 9:1).
+- **Wave 5 — Integração:** registro nos hubs (guias/comparativos/faqsHub/biblioteca), reforço do menu "Conteúdo e social" com Destaques 2026, sitemaps + auto-pages regenerados.
+
+### Territórios NET-NEW abertos
+Altas habilidades/superdotação adulta + dupla excepcionalidade 2e (zero antes); luto perinatal e depressão pós-parto paterna (zero antes); decisão de pós pelos dados do Censo INEP 2024.
+
+### Quality gate
+`astro check` 0 erros / 0 warnings (1005 hints pré-existentes de is:inline). `npm run build` 352 páginas OK. Scan: 0 em-dash, 0 aspas curvas delimitadoras, 0 [VERIFICAR], 0 deny-list, 0 anti-padrão 26. IndexNow 3 engines (api 200, Bing 200, Yandex 202).
+
+### Pendências
+- Spot-check humano recomendado em: Lei 15.222/2025 (texto exato no Planalto), ponto de corte EPDS paterno (omitido por falta de fonte), números do Censo Escolar AHSD (~56 mil) e "Psicologia 2ª pós mais procurada".
+- Wiki ingest formal dos 2 dossiês de pesquisa (dossie-A/B) ainda no scratchpad; criar `sources/` quando promover.
+
 ## W23 — Sessão 26/05/2026 — Adoção do padrão LLM Wiki Karpathy
 
 ### Páginas no ar

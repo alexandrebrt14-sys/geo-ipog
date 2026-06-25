@@ -16,3 +16,5 @@
 2026-05-26 | maintain | claude-opus-4-7 | Catalogadas 7 entidades canonicas do programa (IPOG, Brasil GEO, Alexandre, Larissa, Ronan, Bruno, NAIA). | entities/*.md
 2026-05-26 | lint | claude-opus-4-7 | Primeiro lint do grafo. Resultado salvo em reviews/2026-05-26-baseline.md. | reviews/2026-05-26-baseline.md
 2026-05-26 | lint | scripts/wiki/lint.py | orfaos=0 broken=0 stale=0 conflitos=0 | wiki/log.md
+2026-06-25 | ingest | claude-opus-4-8 | Pesquisa viva 2026 (WebSearch) para 5 waves de conteudo: TEA, burnout/INSS, IA clinica/regulacao, neurodiversidade adulta/AHSD, perinatal, mercado/GEO. Fontes BR e globais reais, spot-check. | docs/research(scratchpad dossie-A/B)
+2026-06-25 | maintain | claude-opus-4-8 | W24: 19 paginas ineditas publicadas (5 guias, 4 comparativos, 4 FAQs, 6 snippets sociais) + reforco do menu Conteudo e social. astro check 0 erros, build 352 paginas, IndexNow 3 engines. | site/src/pages/{guias,comparativos,faq,conteudo-social}

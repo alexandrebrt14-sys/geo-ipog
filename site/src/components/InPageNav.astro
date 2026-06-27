@@ -146,15 +146,24 @@ const navId = 'inpage-nav-' + nonce;
         function clearActive() {
           links.forEach(function (l) {
             l.classList.remove('text-brand-800', 'border-brand-500', 'bg-brand-50');
+            l.removeAttribute('aria-current');
           });
         }
 
+        let lastActive = '';
         function setActive(id) {
           clearActive();
           const arr = linkByTarget.get(id) || [];
           arr.forEach(function (l) {
             l.classList.add('text-brand-800', 'border-brand-500');
+            l.setAttribute('aria-current', 'location');
           });
+          // Espelha a seção ativa no hash da URL (sem poluir o histórico),
+          // para que recarregar ou compartilhar caia na seção certa.
+          if (id && id !== lastActive) {
+            lastActive = id;
+            try { history.replaceState(null, '', '#' + id); } catch (e) { /* ignora */ }
+          }
         }
 
         const visible = new Set();

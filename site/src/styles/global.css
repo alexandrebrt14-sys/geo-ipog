@@ -888,6 +888,65 @@ nav p {
 }
 
 /* ============================================================
+   ONDA 37 — Navegabilidade: painel de mega-menu nunca transborda
+   a viewport em telas estreitas (largura inline fixa no componente).
+   ============================================================ */
+[data-mega-panel] {
+  max-width: calc(100vw - 1.5rem);
+}
+
+/* ============================================================
+   ONDA 40 — Motion: microinteracoes aditivas, CSS-first, atras de
+   prefers-reduced-motion; estado base sempre visivel e funcional.
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Seta de CTA desliza no hover/focus do link ou do grupo que a contem. */
+  .cta-arrow { transition: transform .2s cubic-bezier(.2, .8, .2, 1); will-change: transform; }
+  a:hover > .cta-arrow,
+  a:focus-visible > .cta-arrow,
+  .group:hover .cta-arrow,
+  .group:focus-within .cta-arrow { transform: translateX(4px); }
+
+  /* Icone "respira" no hover do cartao/link que o marca com .icon-nudge. */
+  .icon-nudge { transition: transform .2s ease; }
+  a:hover > .icon-nudge,
+  .group:hover .icon-nudge { transform: scale(1.12); }
+
+  /* Stagger declarativo para o caminho IntersectionObserver (navegadores
+     sem view-timeline): cada filho revela com um atraso por indice, batendo
+     com a cascata scroll-driven ja existente. O JS seta --reveal-i. */
+  .reveal-stagger > .reveal { transition-delay: calc(var(--reveal-i, 0) * 65ms); }
+}
+
+/* ============================================================
+   ONDA 41 — Layout: tabelas de conteudo nao quebram o mobile;
+   utilitarios opt-in de container query e subgrid para cards.
+   ============================================================ */
+/* Tabelas hand-authored dentro de .prose ganham rolagem horizontal
+   no mobile, sem precisar editar dezenas de paginas. So abaixo de 640px. */
+@media (max-width: 640px) {
+  .prose table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+/* Container query opt-in: cartoes marcados com .cq-card adaptam o
+   tamanho ao ESPACO disponivel (sidebar vs grid), nao a viewport. */
+@supports (container-type: inline-size) {
+  .cq-card { container-type: inline-size; container-name: cqcard; }
+  @container cqcard (min-width: 26rem) {
+    .cq-card h3 { font-size: 1.2rem; line-height: 1.4; }
+  }
+}
+/* Subgrid opt-in: filhos de .cq-grid alinham linhas internas (titulo,
+   texto, CTA) entre cards de alturas diferentes. */
+@supports (grid-template-rows: subgrid) {
+  .cq-grid > * { display: grid; grid-template-rows: subgrid; grid-row: span 3; }
+}
+
+/* ============================================================
    ONDA 32 — Acessibilidade WCAG 2.2 AA
    Derivada do Modulo 9 do curso "Frontends com Vibecoding".
    Foco nos criterios novos/reforcados da WCAG 2.2: alvo de toque

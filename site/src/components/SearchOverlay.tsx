@@ -918,6 +918,7 @@ export default function SearchOverlay() {
             <div className="relative w-full">
               <input
                 ref={inputRef}
+                data-search-input
                 type="text"
                 value={q}
                 onChange={e => setQ(e.target.value)}

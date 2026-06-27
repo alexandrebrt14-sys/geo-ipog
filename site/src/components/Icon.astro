@@ -1,0 +1,65 @@
+---
+/**
+ * Icon.astro — componente central de ícones do portal.
+ *
+ * Família única, traçado coerente (estilo Lucide, grade 24x24, stroke
+ * currentColor, cantos arredondados). Herda a cor do texto via currentColor e
+ * é decorativo por padrão (aria-hidden). Para um ícone com significado próprio,
+ * passe `label` (vira role="img" + aria-label).
+ *
+ * Aditivo: os ~400 SVGs inline existentes continuam válidos; novos usos
+ * importam este componente e migram incrementalmente.
+ *
+ * Uso: <Icon name="arrow-right" /> · <Icon name="search" size={18} />
+ *      <Icon name="external-link" label="abre em nova aba" />
+ */
+interface Props {
+  name: keyof typeof PATHS;
+  size?: number;
+  strokeWidth?: number;
+  class?: string;
+  label?: string;
+}
+
+// Dicionário de paths (d/elements) — todos na viewBox 0 0 24 24, sem fill,
+// desenhados como traçado. Mantenha a família coesa ao adicionar novos.
+const PATHS = {
+  'arrow-right': '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  'arrow-up': '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>',
+  'chevron-down': '<path d="m6 9 6 6 6-6"/>',
+  'chevron-right': '<path d="m9 18 6-6-6-6"/>',
+  'search': '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  'external-link': '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  'check': '<path d="M20 6 9 17l-5-5"/>',
+  'sparkles': '<path d="m12 3 1.9 5.8L19.5 11l-5.6 2.2L12 19l-1.9-5.8L4.5 11l5.6-2.2L12 3Z"/>',
+  'compass': '<circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6 6-2Z"/>',
+  'calendar': '<rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v3"/><path d="M16 3v3"/>',
+  'layers': '<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/>',
+  'book-open': '<path d="M12 7v13"/><path d="M3 5.5A2 2 0 0 1 5 5h7v13H5a2 2 0 0 0-2 2V5.5Z"/><path d="M21 5.5A2 2 0 0 0 19 5h-7v13h7a2 2 0 0 1 2 2V5.5Z"/>',
+  'play': '<path d="M7 4.5v15l13-7.5-13-7.5Z"/>',
+  'file-text': '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/>',
+  'list': '<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>',
+  'target': '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+  'megaphone': '<path d="m3 11 14-7v16L3 13v-2Z"/><path d="M17 8a3 3 0 0 1 0 6"/><path d="M7 13v4a2 2 0 0 0 2 2"/>',
+} as const;
+
+const { name, size = 20, strokeWidth = 2, class: className = '', label } = Astro.props;
+const body = PATHS[name];
+const a11y = label
+  ? { role: 'img', 'aria-label': label }
+  : { 'aria-hidden': 'true', focusable: 'false' };
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  set:html={body}
+  {...a11y}
+/>

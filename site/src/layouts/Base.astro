@@ -6,6 +6,7 @@ import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import MobileBottomNav from '@components/MobileBottomNav.tsx';
 import SearchOverlay from '@components/SearchOverlay.tsx';
+import Icon from '@components/Icon.astro';
 import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
@@ -286,9 +287,7 @@ if (emitWebPage) {
 
   <!-- Voltar ao topo (aparece após rolar) -->
   <button id="back-to-top" type="button" aria-label="Voltar ao topo da página">
-    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-      <path d="M12 19V5" /><path d="m5 12 7-7 7 7" />
-    </svg>
+    <Icon name="arrow-up" size={20} strokeWidth={2.2} class="w-5 h-5" />
   </button>
 
   <!-- Ajuda de atalhos de teclado (tecla ?) -->
@@ -306,6 +305,18 @@ if (emitWebPage) {
         <li class="flex items-center justify-between gap-4">
           <span>Ir para a página de busca</span>
           <span class="shrink-0"><span class="kbd">G</span> <span class="kbd">S</span></span>
+        </li>
+        <li class="flex items-center justify-between gap-4">
+          <span>Ir para o início</span>
+          <span class="shrink-0"><span class="kbd">G</span> <span class="kbd">H</span></span>
+        </li>
+        <li class="flex items-center justify-between gap-4">
+          <span>Mapa do site</span>
+          <span class="shrink-0"><span class="kbd">G</span> <span class="kbd">M</span></span>
+        </li>
+        <li class="flex items-center justify-between gap-4">
+          <span>Conteúdo &amp; Social</span>
+          <span class="shrink-0"><span class="kbd">G</span> <span class="kbd">I</span></span>
         </li>
         <li class="flex items-center justify-between gap-4">
           <span>Voltar ao topo</span>
@@ -351,11 +362,18 @@ if (emitWebPage) {
         gPressedAt = Date.now();
         return;
       }
-      if ((event.key === 's' || event.key === 'S') && Date.now() - gPressedAt < 1200) {
-        event.preventDefault();
-        gPressedAt = 0;
-        if (window.location.pathname === '/busca') return;
-        window.location.assign('/busca');
+      // Sequência "g" + destino (estilo command palette por teclado).
+      if (Date.now() - gPressedAt < 1200) {
+        const goMap: Record<string, string> = {
+          s: '/busca', m: '/mapa-do-site', h: '/', i: '/conteudo-social'
+        };
+        const dest = goMap[event.key.toLowerCase()];
+        if (dest) {
+          event.preventDefault();
+          gPressedAt = 0;
+          if (window.location.pathname === dest) return;
+          window.location.assign(dest);
+        }
       }
     });
 
@@ -413,6 +431,15 @@ if (emitWebPage) {
       if (supportsViewTimeline && !prefersReducedMotion) return;
       const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal:not(.reveal-in)'));
       if (!els.length) return;
+      // Stagger declarativo (Onda 40): índice por filho do grupo .reveal-stagger,
+      // consumido por transition-delay no CSS. Só importa no caminho JS (sem view-timeline).
+      document.querySelectorAll<HTMLElement>('.reveal-stagger').forEach(group => {
+        Array.from(group.children).forEach((child, i) => {
+          if (child instanceof HTMLElement && child.classList.contains('reveal')) {
+            child.style.setProperty('--reveal-i', String(i % 6));
+          }
+        });
+      });
       if (prefersReducedMotion || !('IntersectionObserver' in window)) {
         els.forEach(el => el.classList.add('reveal-in'));
         return;

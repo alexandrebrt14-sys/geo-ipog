@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const SITE = 'https://posgraduacaopsicologia.com';
 const today = new Date().toISOString().slice(0, 10);
@@ -7,6 +8,25 @@ const today = new Date().toISOString().slice(0, 10);
 const distDir = path.resolve('dist');
 const srcPagesDir = path.resolve('src/pages');
 const out = [];
+
+// Data do ultimo commit que tocou o arquivo (YYYY-MM-DD). Estavel no CI: o clone
+// do GitHub Actions carimba todos os arquivos com a data do checkout, entao o mtime
+// colapsaria todos os lastmod na mesma data. O git log preserva a data editorial real.
+// Retorna null quando o git nao resolve (arquivo novo nao commitado, ou git ausente).
+function gitLastmod(file) {
+  try {
+    // execFileSync (sem shell) evita injecao e lida com paths com metacaracteres.
+    const out = execFileSync('git', ['log', '-1', '--format=%cI', '--', file], {
+      cwd: srcPagesDir,
+      stdio: ['ignore', 'pipe', 'ignore'],
+      encoding: 'utf-8',
+    }).trim();
+    if (out) return out.slice(0, 10);
+  } catch {
+    // git ausente, fora de repositorio, ou arquivo sem historico de commit
+  }
+  return null;
+}
 
 // Heuristica de prioridade canonica (mais alto = mais critico).
 // Tunada para sinalizar a Google e LLMs a hierarquia editorial.
@@ -48,6 +68,15 @@ function lastmodForRoute(route, htmlPath) {
     candidates.push(path.join(srcPagesDir, 'index.astro'));
   }
   for (const p of candidates) {
+    try {
+      fs.statSync(p); // garante que o candidato existe antes de consultar o git
+    } catch {
+      continue;
+    }
+    // Preferencia: data do ultimo commit (estavel no CI).
+    const g = gitLastmod(p);
+    if (g) return g;
+    // Fallback: arquivo novo ainda nao commitado -> mtime local.
     try {
       const st = fs.statSync(p);
       return st.mtime.toISOString().slice(0, 10);

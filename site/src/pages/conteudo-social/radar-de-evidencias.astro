@@ -1,0 +1,203 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const title = 'Radar de evidências: papers recentes virando pauta editorial por canal — Brasil GEO';
+const description = 'Motor editorial do portal: estudos e marcos de 2025-2026 sobre IA, saúde mental e regulação convertidos em ângulos prontos para Quora, Medium e LinkedIn, com a fonte datada e o limite de cada achado.';
+
+const datePublished = '2026-06-27';
+
+// Cada item tem fonte datada VERIFICADA (WebSearch/WebFetch). Achado, angulos por canal,
+// limite e link interno. Nao usar para fabricar; cada fonte foi conferida antes de entrar.
+const evidencias = [
+  {
+    fonte: 'Therabot RCT — NEJM AI (Dartmouth), março de 2025',
+    achado: 'Primeiro ensaio clínico randomizado de um chatbot de IA generativa em saúde mental: reduções significativas de sintomas de depressão, ansiedade e risco alimentar em 210 adultos, com aliança terapêutica comparável à terapia ambulatorial.',
+    limite: 'Testou IA supervisionada contra lista de espera, não contra terapeuta humano. Houve 15 intervenções de equipe por ideação suicida.',
+    quora: '"A IA pode tratar depressão?" — responda com a distinção acesso vs. substituição.',
+    medium: 'Ensaio de leitura crítica do desenho do estudo e do que ele não prova.',
+    linkedin: 'Gancho nas 15 intervenções de segurança: por que supervisão humana é o ponto.',
+    href: '/conteudo-social/biblioteca/ia-trata-depressao-primeiro-rct-medium/'
+  },
+  {
+    fonte: 'Prática simulada por IA + feedback — estudo randomizado, 2025',
+    achado: 'Com 94 conselheiros iniciantes, o grupo que praticou com pacientes simulados por IA e recebeu feedback estruturado melhorou microhabilidades clínicas; o grupo que só praticou não melhorou e perdeu empatia.',
+    limite: 'O efeito vem do feedback, não do simulador. Prática sem retorno qualificado pode estagnar a empatia.',
+    quora: 'Vire "a IA vai substituir o psicólogo?" em "a IA pode treinar o psicólogo?".',
+    medium: 'Ensaio sobre IA como bancada de ensaio na formação clínica.',
+    linkedin: 'Contraste prática-só vs. prática-com-feedback para coordenadores de curso.',
+    href: '/conteudo-social/biblioteca/ia-treina-terapeuta-nao-substitui-medium/'
+  },
+  {
+    fonte: 'Posicionamento e cartilha do CFP sobre IA na Psicologia, 2025',
+    achado: 'O Conselho Federal de Psicologia firmou que a atuação do psicólogo é insubstituível e que ferramentas de IA (transcrição, análise de linguagem, registro assistido) operam sob supervisão crítica e discernimento ético.',
+    limite: 'Conteúdo público apoiado por IA não pode virar diagnóstico ou conduta individual.',
+    quora: '"O que o CFP definiu sobre IA na clínica em 2025?" com marco e data.',
+    medium: 'Linha do tempo 2024-2025 do debate do CFP e exemplos de uso com/sem supervisão.',
+    linkedin: 'Recado "insubstituível": como clínicas documentam o uso de IA.',
+    href: '/conteudo-social/biblioteca/cfp-ia-na-clinica-o-que-mudou-quora/'
+  },
+  {
+    fonte: 'Estudos de citação por IA — Universidade de Toronto (set/2025) e análises de mercado 2025-2026',
+    achado: 'Mecanismos generativos exibem viés sistemático a favor de mídia conquistada (terceiros) sobre conteúdo próprio e social; a sobreposição de domínios citados entre ChatGPT e Perplexity é de cerca de 11%.',
+    limite: 'Padrões variam por motor e por consulta; nenhum método garante citação.',
+    quora: '"Por que a IA não cita meu site?" com a tese da mídia conquistada.',
+    medium: 'Tabela própria vs. conquistada vs. social e onde publicar com integridade.',
+    linkedin: 'Tese: a IA prefere citar quem fala de você, não você mesmo.',
+    href: '/conteudo-social/biblioteca/ia-cita-terceiros-nao-seu-site-linkedin/'
+  },
+  {
+    fonte: 'YouTube Citation Study 2026 (estudo independente de citação por IA)',
+    achado: 'O YouTube é o domínio mais citado por AI Overviews, e mais ainda em saúde; a citação vai para vídeo longo (10-20 min), e os preditores são tamanho da descrição e capítulos/timestamps, não views.',
+    limite: 'Shorts e vídeo curto vertical quase não são citados; servem para descoberta.',
+    quora: '"Shorts ajudam a aparecer na IA?" com a distinção descoberta vs. citação.',
+    medium: 'Checklist de descrição e modelo de capítulos para vídeo citável.',
+    linkedin: 'Achado contraintuitivo: seus Shorts não te citam, vídeo longo sim.',
+    href: '/conteudo-social/biblioteca/shorts-nao-te-citam-video-longo-sim-linkedin/'
+  },
+  {
+    fonte: 'Decreto 12.773/2025 — Cadastro Nacional de pessoas com altas habilidades',
+    achado: 'A política criou o cadastro nacional, mas com foco na criança na escola; o adulto nunca identificado segue sem amparo e chega ao consultório por sofrimento, não por excelência óbvia.',
+    limite: 'Superdotação adulta raramente aparece como genialidade; exige avaliação que enxergue dupla excepcionalidade.',
+    quora: '"Como saber se sou superdotado adulto?" sem virar checklist de blog.',
+    medium: 'O aluno nota 10 que virou adulto exausto: burnout e 2e.',
+    linkedin: 'O que muda para o RH com o Cadastro Nacional de altas habilidades.',
+    href: '/conteudo-social/biblioteca/altas-habilidades-adulto-cadastro-nacional-linkedin/'
+  },
+  {
+    fonte: 'NR-1 e riscos psicossociais — atualização regulatória 2025',
+    achado: 'A inclusão dos riscos psicossociais na gestão de segurança e saúde no trabalho criou obrigação prática para empresas e abriu campo de atuação para a Psicologia organizacional.',
+    limite: 'A norma trata de gestão de risco coletivo, não de diagnóstico individual de trabalhadores.',
+    quora: '"O que mudou na NR-1 em 2025?" com o marco e a consequência prática.',
+    medium: 'O que o RH deveria saber sobre riscos psicossociais e a nova obrigação.',
+    linkedin: 'Jurisprudência e primeiros casos: o que vem depois da norma.',
+    href: '/conteudo-social/biblioteca/nr-1-psicossocial-rh-deveria-saber-linkedin/'
+  }
+];
+
+const passos = [
+  'Escolha um achado com fonte datada e verificável na tabela acima.',
+  'Separe achado, interpretação e opinião antes de escrever uma linha.',
+  'Defina a tese editorial em uma frase, com o escopo e o limite explícitos.',
+  'Produza a peça no canal primário e adapte voz e formato para os secundários.',
+  'Publique a versão canônica no portal e distribua com link para a fonte.'
+];
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': `${SITE.url}/conteudo-social/radar-de-evidencias/#webpage`,
+      url: `${SITE.url}/conteudo-social/radar-de-evidencias/`,
+      name: title,
+      description,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      about: 'Evidência científica recente convertida em pauta editorial; Generative Engine Optimization',
+      datePublished,
+      dateModified: datePublished,
+      author: { '@id': `${SITE.url}/#alexandre-caramaschi` },
+      publisher: { '@id': `${SITE.url}/#brasil-geo` },
+      mainEntity: {
+        '@type': 'ItemList',
+        name: 'Evidências recentes com ângulos editoriais',
+        numberOfItems: evidencias.length,
+        itemListElement: evidencias.map((e, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: e.fonte
+        }))
+      }
+    },
+    alexandrePersonBase,
+    brasilGeoOrganization
+  ]
+};
+
+const breadcrumbs = [
+  { label: 'Início', href: '/' },
+  { label: 'Conteúdo & Social', href: '/conteudo-social' },
+  { label: 'Radar de evidências' }
+];
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={breadcrumbs} />
+      <span class="section-eyebrow mt-3">Conteúdo & Social · Motor editorial</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Radar de evidências: do paper à pauta, por canal</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        O conteúdo que a IA cita nasce de evidência, não de opinião solta. Este radar converte estudos e marcos recentes de 2025-2026 em ângulos prontos para Quora, Medium e LinkedIn, sempre com a fonte datada e o limite de cada achado à vista.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <TLDR
+      resposta="Cada linha do radar é uma evidência verificada de 2025-2026 traduzida em três ângulos editoriais — um para Quora, um para Medium, um para LinkedIn — com o achado, o limite e o link para a peça pronta. A regra é constante: se a afirmação não está na fonte, não vira conclusão da fonte."
+      fontes={['NEJM AI (2025)', 'CFP (2025)', 'Universidade de Toronto (2025)', 'YouTube Citation Study (2026)', 'Decreto 12.773/2025', 'Caramaschi (2026), Brasil GEO']}
+    />
+
+    <div class="prose prose-ink max-w-3xl">
+      <p>
+        A diferença entre um conteúdo que vira referência e um que evapora não está no volume, e sim na <strong>rastreabilidade</strong>. Mecanismos generativos recuperam melhor o material que separa achado de interpretação, nomeia entidades com consistência e ancora cada número numa fonte datada. O radar é a bancada onde essa disciplina começa: antes de escolher o canal, escolhe-se a evidência.
+      </p>
+      <p>
+        Use a tabela como ponto de partida e o Kit de repurposing como linha de produção. O destino final de cada peça é duplo: <strong>servir o leitor humano</strong> e ser recuperável por ChatGPT, Gemini e Perplexity sem distorção.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-6">Evidências e ângulos prontos</h2>
+    <div class="space-y-5">
+      {evidencias.map(e => (
+        <article class="rounded-2xl border border-surface-200 bg-white p-6 sm:p-7">
+          <p class="text-xs uppercase tracking-wider font-semibold text-brand-700">{e.fonte}</p>
+          <p class="mt-2 text-ink-800 leading-relaxed"><strong class="text-ink-900">Achado.</strong> {e.achado}</p>
+          <p class="mt-1 text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Limite.</strong> {e.limite}</p>
+          <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
+            <div class="rounded-xl bg-red-50/60 border border-red-100 p-3"><p class="font-semibold text-red-900 text-xs uppercase tracking-wider mb-1">Quora</p><p class="text-ink-700">{e.quora}</p></div>
+            <div class="rounded-xl bg-emerald-50/60 border border-emerald-100 p-3"><p class="font-semibold text-emerald-900 text-xs uppercase tracking-wider mb-1">Medium</p><p class="text-ink-700">{e.medium}</p></div>
+            <div class="rounded-xl bg-sky-50/60 border border-sky-100 p-3"><p class="font-semibold text-sky-900 text-xs uppercase tracking-wider mb-1">LinkedIn</p><p class="text-ink-700">{e.linkedin}</p></div>
+          </div>
+          <a href={e.href} class="inline-flex items-center gap-1.5 mt-4 text-brand-700 font-semibold text-sm hover:text-brand-900">Ver peça pronta <span aria-hidden="true">→</span></a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-4">Da evidência à publicação, em cinco passos</h2>
+    <ol class="space-y-3 max-w-3xl list-none counter-reset">
+      {passos.map((p, i) => (
+        <li class="flex gap-3 text-ink-800 leading-relaxed">
+          <span class="shrink-0 w-7 h-7 rounded-full bg-brand-100 text-brand-800 font-bold text-sm grid place-items-center">{i + 1}</span>
+          <span>{p}</span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="container-page py-10">
+    <div class="rounded-2xl bg-brand-900 text-white p-8">
+      <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Próximo passo</p>
+      <h2 class="font-display font-semibold text-2xl">Transforme a evidência em peça</h2>
+      <p class="mt-3 text-white/90 leading-relaxed max-w-3xl">
+        O Kit de repurposing leva você do paper escolhido às versões para Quora, Medium e LinkedIn sem perder rastreabilidade. A biblioteca já traz dezenas de peças prontas para adaptar.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/conteudo-social/kit-de-repurposing" class="btn btn-primary">Ver o Kit de repurposing</a>
+        <a href="/conteudo-social/biblioteca" class="btn btn-ghost-dark">Biblioteca de snippets</a>
+        <a href="/conteudo-social" class="btn btn-ghost-dark">Central editorial</a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

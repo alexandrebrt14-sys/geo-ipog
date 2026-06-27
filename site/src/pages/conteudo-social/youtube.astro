@@ -1,0 +1,245 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import SnippetCard from '@components/SnippetCard.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const title = 'Estratégia GEO para YouTube em Psicologia: vídeo longo estruturado é o que a IA cita — Brasil GEO';
+const description = 'Por que o YouTube é o domínio mais citado por AI Overviews e Perplexity em saúde, por que vídeo longo com capítulos vence Shorts na citação e como estruturar descrição e timestamps para ser recuperado por mecanismos generativos em 2026.';
+
+const datePublished = '2026-06-27';
+
+// Achados ancorados em estudo independente de citacao (OtterlyAI, YouTube Citation Study 2026;
+// SearchEngineLand, 2026) verificados via WebSearch antes de canonizar.
+const dados = [
+  {
+    numero: '29,5%',
+    rotulo: 'das AI Overviews do Google citam o YouTube',
+    nota: 'Domínio mais citado no geral, à frente da Mayo Clinic (12,5%). YouTube Citation Study 2026.'
+  },
+  {
+    numero: '94%',
+    rotulo: 'das citações de IA vão para vídeo longo, não Shorts',
+    nota: 'O maior cluster de citação fica entre 10 e 20 minutos (32,1%). Shorts quase não é citado.'
+  },
+  {
+    numero: '≈0',
+    rotulo: 'correlação entre views/likes/inscritos e ser citado',
+    nota: 'Os preditores fortes são tamanho da descrição e estrutura de capítulos/timestamps.'
+  },
+  {
+    numero: '73%',
+    rotulo: 'das citações com timestamp aparecem no Google AI Overviews',
+    nota: 'Marcar capítulos faz o trecho exato ser recuperável pela resposta gerada.'
+  }
+];
+
+const formatos = [
+  {
+    tipo: 'Aula explicativa estruturada (10-18 min)',
+    estrutura: 'Pergunta no título → resposta em 30s → capítulos por subtema → fonte na tela → resumo final → descrição longa com referências',
+    porque: 'É o formato que a IA recupera para temas instrucionais de saúde. Capítulos viram âncoras de citação.'
+  },
+  {
+    tipo: 'Estudo de caso clínico desidentificado',
+    estrutura: 'Vinheta composta → hipótese → conduta baseada em evidência → desfecho → limites e quando encaminhar',
+    porque: 'Conteúdo de verificação e exemplo é preferido por AI Overviews. Exige disclaimer YMYL e ética CFP.'
+  },
+  {
+    tipo: 'Explicador de regulação datado',
+    estrutura: 'O que mudou → marco legal com número e data → consequência prática → o que fazer agora',
+    porque: 'Atualidade datada é citável. NR-1, Decreto de altas habilidades, posicionamento do CFP sobre IA.'
+  },
+  {
+    tipo: 'Comparativo de formação',
+    estrutura: 'As 5 modalidades de pós → critério de escolha por objetivo → trade-offs honestos → próximo passo',
+    porque: 'Pergunta de decisão de alto valor; reaproveita a matriz do portal e ancora no caminho IPOG.'
+  }
+];
+
+const erros = [
+  {
+    titulo: 'Apostar tudo em Shorts esperando citação',
+    detalhe: 'Shorts gera descoberta e inscrição, não citação por IA. Use Shorts como chamariz que leva ao vídeo longo, não como peça de autoridade.'
+  },
+  {
+    titulo: 'Descrição de duas linhas',
+    detalhe: 'A descrição é um dos preditores mais fortes de citação. Escreva 150-300 palavras com a tese, as fontes citadas e os timestamps em texto.'
+  },
+  {
+    titulo: 'Vídeo sem capítulos',
+    detalhe: 'Sem timestamps/capítulos, o mecanismo não isola o trecho que responde à pergunta. Marque cada subtema com tempo e rótulo descritivo.'
+  },
+  {
+    titulo: 'Afirmação clínica sem fonte na tela',
+    detalhe: 'Em tema YMYL, citar a diretriz ou o estudo na imagem aumenta a confiança do mecanismo e protege o espectador. Sem fonte, o trecho não vira referência.'
+  },
+  {
+    titulo: 'Título genérico de SEO antigo',
+    detalhe: 'Prefira a pergunta literal que a pessoa faz à IA. O título é o casamento entre a query conversacional e o capítulo que a responde.'
+  }
+];
+
+const snippets = [
+  {
+    title: 'Roteiro: as 5 modalidades de pós em Psicologia em 12 minutos',
+    channel: 'Multi-canal' as const,
+    snippetMd: '**Gancho (0:00-0:30).** Existem cinco modalidades de pós-graduação em Psicologia no Brasil, e a maioria das pessoas só conhece duas. Escolher errado custa anos.\n\n**Capítulos.** 1) MBA (Lato Sensu de gestão) · 2) Especialização Lato Sensu · 3) Especialização clínica certificada · 4) Mestrado profissional · 5) Mestrado acadêmico. Para cada uma: natureza regulatória, para quem serve, o que NÃO entrega.\n\n**Descrição (cole abaixo do vídeo).** Comparativo das cinco modalidades com critério de escolha por objetivo. Fontes: Resolução CNE/CES 1/2018; Censo da Educação Superior INEP. Matriz completa em posgraduacaopsicologia.com/tipos-de-pos-graduacao. Caminho de especialização no IPOG: ipog.edu.br.',
+    sourceHref: '/tipos-de-pos-graduacao',
+    sourceLabel: 'Matriz de modalidades',
+    tags: ['youtube', 'roteiro', 'modalidades']
+  },
+  {
+    title: 'Roteiro: o que o CFP definiu sobre IA na clínica',
+    channel: 'Multi-canal' as const,
+    snippetMd: '**Gancho.** O Conselho Federal de Psicologia publicou em julho de 2025 seu primeiro posicionamento sobre inteligência artificial, e em dezembro de 2025 lançou a cartilha de prática ética. A mensagem central: a atuação do psicólogo é insubstituível.\n\n**Capítulos.** O que já é realidade (transcrição automática, análise de linguagem, registro assistido) · o que o CFP exige (supervisão crítica e discernimento ético) · o que continua vedado · como isso muda a formação.\n\n**Descrição.** Resumo do posicionamento do CFP sobre IA na prática psicológica (2025) com link para a fonte oficial. Cobertura completa em posgraduacaopsicologia.com/regulacao.',
+    sourceHref: '/regulacao',
+    sourceLabel: 'Regulação no portal',
+    tags: ['youtube', 'roteiro', 'CFP', 'IA']
+  }
+];
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': `${SITE.url}/conteudo-social/youtube/#webpage`,
+      url: `${SITE.url}/conteudo-social/youtube/`,
+      name: title,
+      description,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      about: 'Generative Engine Optimization, YouTube, citação por IA, vídeo em saúde mental',
+      datePublished,
+      dateModified: datePublished,
+      author: { '@id': `${SITE.url}/#alexandre-caramaschi` },
+      publisher: { '@id': `${SITE.url}/#brasil-geo` }
+    },
+    alexandrePersonBase,
+    brasilGeoOrganization
+  ]
+};
+
+const breadcrumbs = [
+  { label: 'Início', href: '/' },
+  { label: 'Conteúdo & Social', href: '/conteudo-social' },
+  { label: 'YouTube' }
+];
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={breadcrumbs} />
+      <span class="section-eyebrow mt-3">Conteúdo & Social · Canal de vídeo</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">YouTube: o vídeo que a IA cita é o longo e estruturado, não o Short</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        O YouTube é o domínio que mecanismos generativos mais citam, e cita ainda mais em temas de saúde. Mas a citação não vai para o vídeo viral de 40 segundos: vai para a aula longa, com capítulos, descrição densa e fonte na tela. Esta página mostra como produzir vídeo de Psicologia que vira referência recuperável.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <TLDR
+      resposta="Para ser citado por IA no YouTube, priorize vídeo longo (10-20 min) com capítulos/timestamps, descrição de 150-300 palavras e fontes na tela. Views e inscritos quase não influenciam a citação; estrutura e metadados, sim. Shorts e Reels servem para descoberta, não para autoridade."
+      fontes={['YouTube Citation Study 2026 (OtterlyAI)', 'SearchEngineLand (2026): AI Overviews citam YouTube mais em saúde', 'Caramaschi (2026), Brasil GEO playbook editorial']}
+    />
+
+    <div class="prose prose-ink max-w-3xl">
+      <p>
+        O ponto de chegada de uma dúvida de saúde mudou. Antes era uma página de texto no topo da busca; hoje é uma resposta gerada por <strong>ChatGPT, Gemini ou Perplexity</strong> que cita fontes. Em vídeo, essa fonte é, na esmagadora maioria das vezes, o YouTube — e mais ainda quando o tema é saúde, onde as AI Overviews do Google recorrem ao YouTube com frequência maior do que a sites clínicos consagrados.
+      </p>
+      <p>
+        A consequência editorial é contraintuitiva. O formato que domina o feed humano — o <strong>vídeo curto vertical</strong> — quase não é citado por mecanismos generativos. A citação se concentra no vídeo longo, instrucional, com estrutura clara. Não porque a IA "prefira" duração, e sim porque o vídeo longo costuma carregar o que ela precisa para recuperar e atribuir: capítulos que isolam o trecho, descrição que explicita a tese e as fontes, e demonstração verificável.
+      </p>
+      <p>
+        Para o portal posgraduacaopsicologia.com, isso desenha uma divisão de trabalho honesta: <strong>Shorts e Reels para descoberta</strong>, vídeo longo estruturado para autoridade citável. A mesma pesquisa que vira resposta no Quora e ensaio no Medium também vira aula de 12 minutos com capítulos — e é essa aula, não o corte viral, que aparece quando alguém pergunta a uma IA qual pós de Psicologia fazer.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-2">O que os dados de citação mostram</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">Quatro números que reorganizam a prioridade de produção. Cada um foi verificado em estudo independente de citação por IA antes de entrar aqui.</p>
+    <div class="grid sm:grid-cols-2 gap-5">
+      {dados.map(d => (
+        <div class="rounded-2xl border border-surface-200 bg-white p-6">
+          <p class="font-display font-bold text-3xl text-brand-800">{d.numero}</p>
+          <p class="mt-1 text-ink-900 font-semibold">{d.rotulo}</p>
+          <p class="mt-2 text-ink-600 text-sm leading-relaxed">{d.nota}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-2">Quatro formatos que viram referência</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">Estruturas de roteiro pensadas para a recuperação por mecanismos generativos, não só para retenção humana.</p>
+    <div class="space-y-4 max-w-3xl">
+      {formatos.map(f => (
+        <div class="rounded-2xl border border-surface-200 bg-white p-6">
+          <h3 class="font-display font-semibold text-lg text-ink-900">{f.tipo}</h3>
+          <p class="mt-2 text-ink-700 text-sm leading-relaxed"><strong class="text-ink-900">Estrutura:</strong> {f.estrutura}</p>
+          <p class="mt-1 text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Por que funciona:</strong> {f.porque}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-4">Roteiros prontos para reaproveitar</h2>
+    <div class="grid sm:grid-cols-2 gap-5">
+      {snippets.map(s => (
+        <SnippetCard
+          title={s.title}
+          channel={s.channel}
+          charCount={s.snippetMd.length}
+          snippetMd={s.snippetMd}
+          sourceHref={s.sourceHref}
+          sourceLabel={s.sourceLabel}
+          tags={s.tags}
+        />
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-4">Cinco erros que apagam a citação</h2>
+    <ul class="space-y-3 max-w-3xl">
+      {erros.map(e => (
+        <li class="rounded-xl border border-surface-200 bg-surface-50 p-4">
+          <p class="font-semibold text-ink-900">{e.titulo}</p>
+          <p class="mt-1 text-ink-700 text-sm leading-relaxed">{e.detalhe}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="container-page py-6">
+    <div class="rounded-2xl border border-surface-200 bg-white p-6 sm:p-8">
+      <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Author box</p>
+      <p class="text-ink-900 font-display font-semibold text-lg">Alexandre Caramaschi</p>
+      <p class="text-ink-700 text-sm mt-1">CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Edita o portal posgraduacaopsicologia.com.</p>
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <div class="rounded-2xl bg-brand-900 text-white p-8">
+      <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Próximo passo</p>
+      <h2 class="font-display font-semibold text-2xl">Da pesquisa ao roteiro em minutos</h2>
+      <p class="mt-3 text-white/90 leading-relaxed max-w-3xl">
+        Use o Kit de repurposing para transformar uma evidência do portal em roteiro de vídeo longo, resposta de Quora e carrossel de LinkedIn de uma vez. Para uma especialização clínica que sustente a autoridade na frente da câmera, o caminho é o IPOG.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/conteudo-social/kit-de-repurposing" class="btn btn-primary">Ver o Kit de repurposing</a>
+        <a href="/conteudo-social" class="btn btn-ghost-dark">Voltar à central</a>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-ghost-dark">Ver no IPOG →</a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

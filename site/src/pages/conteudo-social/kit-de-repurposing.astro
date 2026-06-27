@@ -1,0 +1,244 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const title = 'Kit de repurposing: de um paper a Quora, Medium e LinkedIn sem distorcer — Brasil GEO';
+const description = 'Linha de produção editorial do portal: como transformar uma pesquisa ou evidência em peças para Quora, Medium, LinkedIn, Substack e vídeo com integridade científica, GEO e calendário semanal, mantendo a versão canônica no domínio próprio.';
+
+const datePublished = '2026-06-27';
+
+const passos = [
+  {
+    titulo: 'Ler a fonte como fonte primária',
+    texto: 'Extraia título, autores, instituição, ano, link, pergunta, método, amostra, resultados, limitações e implicações. Regra: se não está na fonte, não vira conclusão da fonte.'
+  },
+  {
+    titulo: 'Montar a matriz de integridade',
+    texto: 'Para cada afirmação: evidência usada, interpretação permitida e interpretação proibida. É o que separa "o modelo superou os comparados no conjunto Y" de "o modelo é o melhor do mercado".'
+  },
+  {
+    titulo: 'Separar achado, interpretação e opinião',
+    texto: 'Use marcadores explícitos: "o estudo mostra", "os dados sugerem", "uma leitura possível é", "o paper não permite concluir que". Isso preserva integridade e é exatamente o que a IA recupera melhor.'
+  },
+  {
+    titulo: 'Definir a tese editorial',
+    texto: 'Uma frase com escopo e limite: "Este estudo mostra [achado], em [contexto], usando [método], mas a conclusão deve se limitar a [escopo]." A tese guia todas as versões.'
+  },
+  {
+    titulo: 'Produzir três camadas',
+    texto: 'Curta (LinkedIn, 800-1.500 caracteres, uma ideia), média (Quora, 500-900 palavras, resposta a uma pergunta concreta), longa (Medium, 1.200-2.000 palavras, contexto-método-achados-limitações).'
+  },
+  {
+    titulo: 'Publicar canônico e distribuir',
+    texto: 'Publique a versão completa no portal com schema Article/Person/Organization, indexe (sitemap, IndexNow) e então adapte para Medium, LinkedIn e Quora sempre com link para a fonte primária.'
+  }
+];
+
+const camadas = [
+  { canal: 'LinkedIn', formato: '800-1.500 caracteres', foco: 'Uma ideia central + uma implicação prática + uma limitação explícita', metrica: 'Salvamentos e DMs qualificadas' },
+  { canal: 'Quora', formato: '500-900 palavras', foco: 'Resposta direta a uma pergunta concreta, com achados em lista e o que o paper não prova', metrica: 'Citação em Perplexity e ChatGPT' },
+  { canal: 'Medium', formato: '1.200-2.000 palavras', foco: 'Ensaio com contexto, método, achados, implicações e limitações; subtítulo com escopo', metrica: 'Tempo de leitura + citações em AI Overviews' },
+  { canal: 'YouTube', formato: '10-18 min com capítulos', foco: 'Aula estruturada com fonte na tela e descrição densa; o formato mais citado em saúde', metrica: 'Citação com timestamp em AI Overviews' }
+];
+
+const calendario = [
+  { dia: 'Segunda', acao: 'Selecionar a evidência da semana no Radar de evidências e montar a matriz de integridade', canal: 'Preparo' },
+  { dia: 'Terça', acao: 'Publicar a versão canônica (ensaio completo) no portal e indexar', canal: 'Portal + Medium' },
+  { dia: 'Quarta', acao: 'Adaptar para LinkedIn (post + carrossel) com a tese e uma implicação', canal: 'LinkedIn' },
+  { dia: 'Quinta', acao: 'Responder uma pergunta concreta no Quora com referência à fonte', canal: 'Quora' },
+  { dia: 'Sexta', acao: 'Gravar e publicar o vídeo longo estruturado com capítulos; cortar 1-2 Shorts de descoberta', canal: 'YouTube + curto' },
+  { dia: 'Contínuo', acao: 'Notes/Threads de bastidor e medição de recuperação correta por LLMs', canal: 'Substack + Threads' }
+];
+
+const checklistIntegridade = [
+  'Fonte citada com título, autor, ano e link',
+  'Nenhum achado exagerado; limitações mencionadas',
+  'Opinião separada de evidência',
+  'Sem promessa causal sem evidência nem generalização fora da amostra',
+  'Em tema clínico, disclaimer YMYL e respeito às resoluções do CFP'
+];
+
+const checklistGeo = [
+  'Título específico e primeiro parágrafo com contexto completo',
+  'Entidades nomeadas de forma padronizada e consistente',
+  'Frases autocontidas, recuperáveis fora do contexto',
+  'Dados com fonte e data; links para páginas canônicas',
+  'Versão canônica no domínio próprio, em llms.txt e sitemap'
+];
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'HowTo',
+      '@id': `${SITE.url}/conteudo-social/kit-de-repurposing/#howto`,
+      name: 'Como transformar um paper em conteúdo para Quora, Medium e LinkedIn com integridade e GEO',
+      description,
+      inLanguage: 'pt-BR',
+      datePublished,
+      dateModified: datePublished,
+      author: { '@id': `${SITE.url}/#alexandre-caramaschi` },
+      publisher: { '@id': `${SITE.url}/#brasil-geo` },
+      step: passos.map((p, i) => ({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: p.titulo,
+        text: p.texto
+      }))
+    },
+    alexandrePersonBase,
+    brasilGeoOrganization
+  ]
+};
+
+const breadcrumbs = [
+  { label: 'Início', href: '/' },
+  { label: 'Conteúdo & Social', href: '/conteudo-social' },
+  { label: 'Kit de repurposing' }
+];
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={breadcrumbs} />
+      <span class="section-eyebrow mt-3">Conteúdo & Social · Linha de produção</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Kit de repurposing: uma pesquisa, vários canais, zero distorção</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Distribuir não é repetir copy. É reinterpretar a mesma evidência respeitando o contrato de cada canal e a integridade da fonte. Este kit é a linha de produção: do paper à matriz de integridade, das três camadas de conteúdo ao calendário semanal e à versão canônica no domínio próprio.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <TLDR
+      resposta="Para reaproveitar uma pesquisa sem distorcê-la: leia a fonte como primária, monte a matriz de integridade (afirmação, interpretação permitida, interpretação proibida), separe achado de opinião, defina a tese com escopo e limite, produza três camadas (LinkedIn curto, Quora médio, Medium longo) e publique a versão canônica no portal antes de distribuir com link para a fonte."
+      fontes={['Workflow editorial Brasil GEO (Caramaschi, 2026)', 'Quora Anti-AI Policy 2024', 'Medium Curation Guidelines 2024-2026']}
+    />
+
+    <div class="prose prose-ink max-w-3xl">
+      <p>
+        Um paper mal traduzido vira desinformação com cara de autoridade. Um paper bem traduzido vira ativo de confiança que pessoas e mecanismos generativos recuperam sem ruído. A diferença é método: a mesma disciplina que protege a integridade científica — separar evidência de interpretação, nomear entidades, citar com data — é a que faz <strong>ChatGPT, Gemini e Perplexity</strong> citarem corretamente.
+      </p>
+      <p>
+        Por isso o kit começa pela integridade, não pelo canal. Escolhido o achado no <a href="/conteudo-social/radar-de-evidencias">Radar de evidências</a>, a produção desce em camadas e termina onde deveria começar a contar: a versão canônica no domínio próprio, indexada, com dados estruturados.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-6">Seis passos, do paper à publicação</h2>
+    <div class="space-y-4 max-w-3xl">
+      {passos.map((p, i) => (
+        <div class="rounded-2xl border border-surface-200 bg-white p-6 flex gap-4">
+          <span class="shrink-0 w-9 h-9 rounded-full bg-brand-100 text-brand-800 font-bold grid place-items-center">{i + 1}</span>
+          <div>
+            <h3 class="font-display font-semibold text-lg text-ink-900">{p.titulo}</h3>
+            <p class="mt-1 text-ink-700 text-sm leading-relaxed">{p.texto}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-2">As três camadas de profundidade</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">A mesma evidência, quatro formatos. O que muda é a forma; o que se mantém é o achado e o limite.</p>
+    <div class="overflow-x-auto rounded-2xl border border-surface-200">
+      <table class="min-w-full text-sm">
+        <thead class="bg-surface-50 text-ink-700 text-left">
+          <tr>
+            <th class="px-4 py-3 font-semibold">Canal</th>
+            <th class="px-4 py-3 font-semibold">Formato</th>
+            <th class="px-4 py-3 font-semibold">Foco editorial</th>
+            <th class="px-4 py-3 font-semibold">Métrica</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-200 bg-white">
+          {camadas.map(c => (
+            <tr class="align-top">
+              <td class="px-4 py-3 font-semibold text-ink-900">{c.canal}</td>
+              <td class="px-4 py-3 text-ink-700">{c.formato}</td>
+              <td class="px-4 py-3 text-ink-700">{c.foco}</td>
+              <td class="px-4 py-3 text-ink-700">{c.metrica}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <h2 class="section-h text-2xl mb-2">Calendário editorial de uma semana</h2>
+    <p class="text-ink-700 max-w-3xl mb-6">Uma cadência sustentável a partir de uma única evidência por semana. Ajuste ao seu ritmo; mantenha a ordem (canônico antes de distribuir).</p>
+    <div class="overflow-x-auto rounded-2xl border border-surface-200">
+      <table class="min-w-full text-sm">
+        <thead class="bg-surface-50 text-ink-700 text-left">
+          <tr>
+            <th class="px-4 py-3 font-semibold">Dia</th>
+            <th class="px-4 py-3 font-semibold">Ação</th>
+            <th class="px-4 py-3 font-semibold">Canal</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-200 bg-white">
+          {calendario.map(c => (
+            <tr class="align-top">
+              <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.dia}</td>
+              <td class="px-4 py-3 text-ink-700">{c.acao}</td>
+              <td class="px-4 py-3 text-ink-600 whitespace-nowrap">{c.canal}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="rounded-2xl border border-surface-200 bg-white p-6">
+        <h2 class="font-display font-semibold text-xl text-ink-900 mb-3">Checklist de integridade</h2>
+        <ul class="space-y-2">
+          {checklistIntegridade.map(item => (
+            <li class="flex gap-2 text-ink-700 text-sm leading-relaxed"><span class="text-brand-700 font-bold">✓</span><span>{item}</span></li>
+          ))}
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-surface-200 bg-white p-6">
+        <h2 class="font-display font-semibold text-xl text-ink-900 mb-3">Checklist GEO</h2>
+        <ul class="space-y-2">
+          {checklistGeo.map(item => (
+            <li class="flex gap-2 text-ink-700 text-sm leading-relaxed"><span class="text-brand-700 font-bold">✓</span><span>{item}</span></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-6">
+    <div class="rounded-2xl border border-surface-200 bg-white p-6 sm:p-8">
+      <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Author box</p>
+      <p class="text-ink-900 font-display font-semibold text-lg">Alexandre Caramaschi</p>
+      <p class="text-ink-700 text-sm mt-1">CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil. Edita o portal posgraduacaopsicologia.com.</p>
+    </div>
+  </section>
+
+  <section class="container-page py-10">
+    <div class="rounded-2xl bg-brand-900 text-white p-8">
+      <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Próximo passo</p>
+      <h2 class="font-display font-semibold text-2xl">Comece pela evidência da semana</h2>
+      <p class="mt-3 text-white/90 leading-relaxed max-w-3xl">
+        O Radar de evidências já traz achados verificados com ângulos prontos por canal. A autoridade que sustenta tudo isso vem da formação: para uma especialização clínica certificada, o caminho de referência é o IPOG.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/conteudo-social/radar-de-evidencias" class="btn btn-primary">Ver o Radar de evidências</a>
+        <a href="/conteudo-social/biblioteca" class="btn btn-ghost-dark">Biblioteca de snippets</a>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-ghost-dark">Ver no IPOG →</a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

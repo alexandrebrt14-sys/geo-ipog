@@ -1,0 +1,30 @@
+# Rascunho Automatico — Relatorio Semanal IPOG — 2026-W27
+
+**Periodo:** 2026-06-29 a 2026-07-03
+**Gerado em:** 2026-07-03 (sexta-feira, 17h BRT)
+**Gerado por:** Brasil GEO / workflow automatico
+**Destinatario do relatorio oficial:** Bruno Azambuja (IPOG) — entrega segunda 09h BRT
+
+> Este arquivo e um rascunho automatico. Revisar,
+> complementar com contexto qualitativo, KPIs cross-LLM e decisoes pendentes,
+> e incorporar no relatorio semanal oficial (`_TEMPLATE.md`).
+
+---
+
+## Issues Fechadas na Semana
+
+
+---
+
+## PRs Mergeados na Semana
+
+
+---
+
+## Lembretes operacionais
+
+- Atualizar `dashboards/KPI-DASHBOARD.md` com a leitura semanal antes do envio.
+- Verificar `docs/05-risk-register.md` — algum risco mudou de status?
+- Verificar `docs/06-marcos-criticos-2026.md` — algum marco da semana seguinte precisa de gatilho?
+- Aplicar Voice Guard ao sumario executivo se for assinado por Alexandre.
+

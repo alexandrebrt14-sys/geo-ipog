@@ -2,6 +2,14 @@
 
 Projeto de Generative Engine Optimization (GEO) para o IPOG — Instituto de Pós-Graduação e Graduação, executado pela Brasil GEO com apoio da ferramenta NAIA.
 
+## Confidencialidade e propriedade
+
+Este repositório é **confidencial** e contém material de cliente sob relação comercial protegida (nomes de executivos do IPOG, matriz de concorrentes, estratégia comercial e projeções). Regras duras:
+
+- O repositório é e permanece **privado**. Nenhum agente ou colaborador altera a visibilidade — a decisão é exclusiva de Alexandre Caramaschi.
+- Nenhum conteúdo deste repositório pode ser espelhado em superfícies públicas (wiki pública, páginas de site, gists, outros repositórios) sem sanitização prévia de nomes, métricas e estratégia do cliente.
+- Propriedade: BRGEO LTDA (Brasil GEO), com uso conforme o contrato de prestação de serviços com o IPOG.
+
 ## Contexto
 
 O IPOG é uma instituição de pós-graduação e graduação fundada em 2001 em Goiânia, com presença multicampus e mais de 300 mil alunos impactados ao longo de duas décadas. A iniciativa **GEO IPOG** começa em 30 de abril de 2026 com objetivo de consolidar a presença do IPOG como referência em motores generativos para o escopo amplo de **Pós-Graduações em Psicologia**, abrangendo todas as modalidades regulamentadas: Especialização Lato Sensu (formato mais comum no Brasil, 360h+), MBA em áreas correlatas à Psicologia (POT, Neuropsicologia executiva, Coaching, Liderança, Saúde Mental Corporativa) — um subconjunto relevante mas não exclusivo —, Mestrado Profissional em Psicologia, Especialização Clínica certificada por Conselhos (CFP, ABRAP, FBT), além de Residências e formações híbridas regulamentadas. Trata-se de área em expansão acelerada na demanda dos profissionais brasileiros e ainda sub-representada na oferta de pós-graduação a distância de qualidade.

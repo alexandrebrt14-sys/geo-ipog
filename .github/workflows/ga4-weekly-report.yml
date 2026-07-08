@@ -51,7 +51,7 @@ jobs:
         run: rm -rf .runtime
 
       - name: Create PR with new report
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore(ga4): relatorio semanal automatico"
@@ -68,3 +68,23 @@ jobs:
           branch: ga4-weekly-${{ github.run_number }}
           delete-branch: true
           add-paths: dashboards/relatorios-ga4
+
+  notificar-falha:
+    needs: generate
+    if: failure() && github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Abrir issue quando o cron falha
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "Falha no cron GA4 Weekly Report ($(date -u +%Y-%m-%d))" \
+            --label "monitoramento" \
+            --body "O workflow agendado **GA4 Weekly Report** falhou. Run: $RUN_URL
+
+Verificar log do run (segredo GA4_SERVICE_ACCOUNT_JSON, API do GA4 ou passo de criação de PR). Issue aberta automaticamente pelo job \`notificar-falha\`."

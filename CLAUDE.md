@@ -70,6 +70,7 @@ A KB de 17/05 (item 2) é mais recente e tem prioridade quando houver conflito f
 4. **NUNCA usar CTAs IPOG agressivos.** Sempre sutil, máximo 1 menção por FAQ + 1 CTA secundário por página.
 5. **NUNCA escrever "GEO Brasil".** Sempre **"Brasil GEO"**.
 6. **NUNCA usar slug com acento.** Caminhos sempre ASCII; acento mora no `<h1>` e `<title>`, nunca em `href` ou filename.
+7. **NUNCA tornar este repositório público nem espelhar seu conteúdo em superfícies públicas sem sanitização.** Contém dados de cliente sob relação comercial protegida (executivos IPOG, matriz de concorrentes, estratégia comercial). Mudança de visibilidade é decisão exclusiva de Alexandre Caramaschi. Ver seção "Confidencialidade e propriedade" do README.
 
 ## Fluxo padrão de onda de conteúdo
 

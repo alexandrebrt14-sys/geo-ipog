@@ -162,3 +162,36 @@ const ldArticle = {
 - `feedback_geo_ipog_5_modalidades_canonicas` — escopo amplo, MBA é 1 das 5
 
 Última revisão deste arquivo: 2026-05-26 (adição do bloco "Wiki workflow obrigatório" e do passo 1 + passo 7 no fluxo padrão de onda).
+
+## Padrão editorial — escrita humanizada (17/07/2026)
+
+Todo conteúdo de leitura humana produzido neste repo (artigo, curso, página, post,
+e-mail, relatório, parecer, resposta ao usuário) segue o padrão editorial global do
+Alexandre. Qualidade vence velocidade; profundidade proporcional ao problema;
+escrever como especialista sênior conversando com outro profissional experiente.
+Fonte de verdade completa: `docs/ESTILO_EDITORIAL.md` do repo GEO-Pesquisador
+(clone local em `C:/Sandyboxclaude/GEO-Pesquisador`).
+
+Proibidos como padrão recorrente (uso pontual e consciente é tolerado):
+
+- Antítese em série: "não se trata de X, trata-se de Y", "não é apenas X, é Y",
+  "não basta X, é preciso Y", "mais do que X, Y". Afirmar direto o que a evidência
+  sustenta.
+- Conectivos batidos repetidos: "além disso", "por outro lado", "nesse contexto",
+  "vale destacar", "é importante ressaltar", "nesse sentido", "por fim".
+- Parágrafos vizinhos abrindo com a mesma construção sintática; blocos com ritmo
+  idêntico; excesso de paralelismo; perguntas retóricas em série; conclusões
+  idênticas fechando tópicos sucessivos.
+- Travessão e hífen como recurso estilístico no conteúdo final: preferir vírgula,
+  dois-pontos ou ponto.
+- Clichês, frases genéricas que serviriam para qualquer assunto, tom promocional,
+  superlativo sem número ao lado, adjetivo decorativo, negrito por hábito.
+
+Obrigatório: linha de raciocínio lógica; cada parágrafo acrescenta uma ideia nova;
+alternar períodos curtos, médios e longos; recomendação sempre acompanhada do
+porquê; conceito técnico coberto com contexto, motivação, funcionamento,
+limitações e critérios de decisão quando relevantes; material educacional abre
+pelo problema e fecha com síntese prática. Antes de entregar, reler procurando
+esses padrões e reescrever o que soar texto de máquina. Sub-agentes que geram
+copy recebem o bloco de `C:/Sandyboxclaude/scripts/prompts/COPY_PROMPT_PREFIX.md`
+carimbado no prompt.

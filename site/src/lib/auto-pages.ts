@@ -24,8 +24,8 @@ export interface AutoPage {
 export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/",
-    "title": "Pós-graduação em Psicologia, guia editorial independente para escolher MBA, Especialização Lato Sensu, Mestrado Profissional, Especialização Clínica e Residência",
-    "description": "Portal editorial independente sobre pós-graduação em Psicologia no Brasil, com foco nas ofertas e na curadoria do IPOG (Instituto de Pós-Graduação e Graduação). Cobre as cinco modalidades canônicas (Especialização Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica certificada e Residência Multiprofissional), os cinco MBAs do IPOG em Psicologia, 18 áreas mapeadas (CFP e correlatas), comparativos regulatórios CFP, MEC, CAPES, NR-1, SATEPSI, LBI, LGPD.",
+    "title": "Pós-graduação em Psicologia: guia técnico independente",
+    "description": "Guia editorial independente para escolher pós-graduação em Psicologia: Especialização Lato Sensu, MBA, Mestrado Profissional, Clínica e Residência.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -37,7 +37,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/areas",
     "title": "Áreas da Psicologia — 18 áreas mapeadas (CFP + correlatas)",
-    "description": "Explore as 13 especialidades reconhecidas pelo CFP e áreas correlatas estrategicas para carreira em Psicologia.",
+    "description": "Explore as 13 especialidades reconhecidas pelo CFP e áreas correlatas estratégicas para carreira em Psicologia.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -97,8 +97,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/areas/neuropsicologia",
-    "title": "Neuropsicologia: o que é, escopo profissional e formação especializada",
-    "description": "Guia para psicólogos sobre o escopo da neuropsicologia, avaliação de funções cognitivas, regulamentação do CFP e como escolher uma especialização densa e reconhecida.",
+    "title": "Neuropsicologia: escopo, formação e regulamentação",
+    "description": "Guia para psicólogos sobre o escopo da neuropsicologia, avaliação de funções cognitivas, regulamentação do CFP e como escolher a especialização.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -324,8 +324,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/autismo",
-    "title": "Autismo nível 1 de suporte em adultos: portal clínico independente com Larissa Caramaschi",
-    "description": "Conteúdo de profundidade clínica sobre autismo nível 1 de suporte em adultos, com foco em identidade, relacionamentos amorosos neurodivergentes e vida cotidiana. Voz da psicóloga clínica Larissa Caramaschi, com vocabulário identity-first, respeito à comunidade autista adulta e rigor de evidência.",
+    "title": "Autismo nível 1 em adultos: portal clínico independente",
+    "description": "Conteúdo clínico sobre autismo nível 1 de suporte em adultos: identidade, relacionamentos e vida cotidiana, com a psicóloga Larissa Caramaschi.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -778,7 +778,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/act-vs-tcc",
-    "title": "ACT vs TCC: comparativo entre Aceitação e Compromisso e Cognitivo-Comportamental",
+    "title": "ACT ou TCC: comparativo clínico para decidir",
     "description": "Comparativo independente entre ACT e TCC em Psicologia clínica. Mecanismo de ação, evidência por condição, perfil ideal de paciente, decisão clínica.",
     "kind": "Comparativo",
     "persona": null,
@@ -2619,8 +2619,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/faq/adolescencia-digital-saude-mental-faq",
-    "title": "Adolescência digital e saúde mental — FAQ | Haidt 2024, CETIC.br, escolas sem celular, AAP",
-    "description": "Dezessete perguntas frequentes sobre adolescência digital: tese de Haidt em Anxious Generation, Twenge, Orben, dados CETIC.br e Fiocruz, escolas sem celular, AAP Family Media Plan, IA companions.",
+    "title": "Adolescência digital e saúde mental: FAQ para a clínica",
+    "description": "Dezessete respostas sobre smartphones, redes sociais e saúde mental adolescente, com base em Haidt, Twenge, Orben e nos dados CETIC.br e Fiocruz.",
     "kind": "FAQ",
     "persona": null,
     "tags": [
@@ -3252,8 +3252,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/afastamento-inss-burnout-nexo-qd85-2026",
-    "title": "Documentar o nexo de burnout (QD85) para afastamento no INSS",
-    "description": "",
+    "title": "Burnout no INSS: como documentar o nexo QD85 no laudo",
+    "description": "O que o laudo precisa conter para sustentar o nexo ocupacional do burnout (CID-11 QD85) no INSS: dimensões da OMS, diferencial com depressão e NR-1.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -3967,8 +3967,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/mbas",
-    "title": "MBAs em Psicologia · uma das cinco modalidades de pós-graduação — guia independente IPOG",
-    "description": "Os 5 MBAs em destaque do IPOG (POT, Positiva, Reabilitação Neuro, Neurociência, Liderança) com perfis recomendados, competências desenvolvidas e páginas detalhe. MBA é uma das cinco modalidades principais de pós-graduação em Psicologia cobertas pelo portal.",
+    "title": "MBAs em Psicologia: guia independente dos 5 MBAs IPOG",
+    "description": "Os cinco MBAs do IPOG em Psicologia comparados por perfil recomendado, competências desenvolvidas e retorno de carreira esperado.",
     "kind": "MBA",
     "persona": null,
     "tags": [
@@ -4485,7 +4485,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/ac",
-    "title": "Pós-graduação em Psicologia no Acre (AC): mercado, salário e formato",
+    "title": "Pós em Psicologia no Acre: mercado, salário e formato",
     "description": "Psicologia aplicada no Acre: Rio Branco, Cruzeiro do Sul, SUS, justiça, fronteira e por que ficar e construir mercado local vale mais do que migrar.",
     "kind": "Estado",
     "persona": null,
@@ -4498,7 +4498,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/al",
-    "title": "Pós-graduação em Psicologia em Alagoas (AL): mercado, salário e formato",
+    "title": "Pós em Psicologia em Alagoas: mercado, salário e formato",
     "description": "Psicologia aplicada em Alagoas: Maceió, Arapiraca, Marechal Deodoro. Turismo de alto padrão, saúde, sucroalcooleiro, reparação socioambiental Braskem e formato Ao Vivo síncrono.",
     "kind": "Estado",
     "persona": null,
@@ -4511,7 +4511,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/am",
-    "title": "Pós-graduação em Psicologia no Amazonas (AM): mercado, salário e formato",
+    "title": "Pós em Psicologia no Amazonas: mercado, salário e formato",
     "description": "Psicologia aplicada no Amazonas: Manaus, PIM, interior amazônico, fronteira. POT corporativo, NR-1, saúde pública e por que o formato Ao Vivo síncrono é o melhor encaixe.",
     "kind": "Estado",
     "persona": null,
@@ -4524,7 +4524,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/ap",
-    "title": "Pós-graduação em Psicologia no Amapá (AP): mercado, salário e formato",
+    "title": "Pós em Psicologia no Amapá: mercado, salário e formato",
     "description": "Psicologia aplicada no Amapá: Macapá, Santana, Oiapoque, SUS, fronteira, mineração e por que construir mercado local vale mais do que migrar.",
     "kind": "Estado",
     "persona": null,
@@ -4537,7 +4537,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/ba",
-    "title": "Pós-graduação em Psicologia na Bahia (BA): mercado, salário e formato",
+    "title": "Pós em Psicologia na Bahia: mercado, salário e formato",
     "description": "Psicologia aplicada na Bahia: Salvador, Camaçari, Feira, Barreiras, Juazeiro. Petroquímico, agro irrigado, saúde regional e POT corporativo em escala.",
     "kind": "Estado",
     "persona": null,
@@ -4550,7 +4550,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/ce",
-    "title": "Pós-graduação em Psicologia no Ceará (CE): mercado, salário e formato",
+    "title": "Pós em Psicologia no Ceará: mercado, salário e formato",
     "description": "Psicologia aplicada no Ceará: Fortaleza, Sobral, Cariri. Hapvida, tech, indústria, saúde regional e por que o formato Ao Vivo síncrono é o melhor encaixe.",
     "kind": "Estado",
     "persona": null,
@@ -4563,7 +4563,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/df",
-    "title": "Pós-graduação em Psicologia no Distrito Federal (DF): mercado, salário e formato",
+    "title": "Pós em Psicologia no Distrito Federal: mercado, salário e formato",
     "description": "Mercado do Distrito Federal para Psicologia aplicada: servidor público, tribunais, mediana mais alta do país e formato Ao Vivo síncrono ideal para a agenda do servidor.",
     "kind": "Estado",
     "persona": null,
@@ -4576,7 +4576,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/es",
-    "title": "Pós-graduação em Psicologia no Espírito Santo (ES): mercado, salário e formato",
+    "title": "Pós em Psicologia no Espírito Santo: mercado, salário e formato",
     "description": "Mercado capixaba de Psicologia: Vitória, Serra, Vila Velha, Cachoeiro do Itapemirim, mediana salarial e formato Ao Vivo síncrono ideal para o profissional do estado.",
     "kind": "Estado",
     "persona": null,
@@ -4589,7 +4589,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/go",
-    "title": "Pós-graduação em Psicologia em Goiás (GO): agro, saúde e a sede do IPOG",
+    "title": "Pós em Psicologia em Goiás: agro, saúde e a sede do IPOG",
     "description": "Mercado goiano de Psicologia: Goiânia, Anápolis, Aparecida e Rio Verde. Agroindústria, saúde, governo e educação como bases de demanda. IPOG nasceu aqui.",
     "kind": "Estado",
     "persona": null,
@@ -4602,7 +4602,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/ma",
-    "title": "Pós-graduação em Psicologia no Maranhão (MA): mercado, salário e formato",
+    "title": "Pós em Psicologia no Maranhão: mercado, salário e formato",
     "description": "Psicologia aplicada no Maranhão: São Luís, Imperatriz, Açailândia, Balsas. Vale, siderurgia, Matopiba, saúde regional e por que o formato Ao Vivo síncrono é o melhor encaixe.",
     "kind": "Estado",
     "persona": null,
@@ -4615,7 +4615,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/mg",
-    "title": "Pós-graduação em Psicologia em Minas Gerais (MG): corporativo clássico e indústria",
+    "title": "Pós em Psicologia em Minas Gerais: corporativo e indústria",
     "description": "Mercado mineiro de Psicologia: BH, Contagem, Juiz de Fora, Uberlândia e Uberaba. Indústria, mineração, automotivo e agro como bases de demanda em POT.",
     "kind": "Estado",
     "persona": null,
@@ -4628,7 +4628,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/ms",
-    "title": "Pós-graduação em Psicologia em Mato Grosso do Sul (MS): mercado, salário e formato",
+    "title": "Pós em Psicologia em Mato Grosso do Sul: mercado, salário e formato",
     "description": "Mercado sul-mato-grossense de Psicologia: Campo Grande, Dourados, Três Lagoas, Corumbá, mediana salarial e formato Ao Vivo síncrono ideal para o profissional do estado.",
     "kind": "Estado",
     "persona": null,
@@ -4641,7 +4641,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/mt",
-    "title": "Pós-graduação em Psicologia em Mato Grosso (MT): mercado, salário e formato",
+    "title": "Pós em Psicologia em Mato Grosso: mercado, salário e formato",
     "description": "Mercado mato-grossense de Psicologia: Cuiabá, Rondonópolis, Sorriso, Sinop, Lucas do Rio Verde, mediana salarial e formato Ao Vivo síncrono ideal para o profissional do MT.",
     "kind": "Estado",
     "persona": null,
@@ -4654,7 +4654,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/pa",
-    "title": "Pós-graduação em Psicologia no Pará (PA): mercado, salário e formato",
+    "title": "Pós em Psicologia no Pará: mercado, salário e formato",
     "description": "Psicologia aplicada no Pará: Belém, Marabá, Parauapebas, Santarém. Mineração, agro, saúde regional, NR-1 industrial e por que o formato Ao Vivo síncrono é o melhor encaixe.",
     "kind": "Estado",
     "persona": null,
@@ -4667,7 +4667,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/pb",
-    "title": "Pós-graduação em Psicologia na Paraíba (PB): mercado, salário e formato",
+    "title": "Pós em Psicologia na Paraíba: mercado, salário e formato",
     "description": "Mercado paraibano de Psicologia aplicada: João Pessoa, Campina Grande, setores que demandam, mediana salarial e por que online ao vivo combina com o profissional da PB.",
     "kind": "Estado",
     "persona": null,
@@ -4680,7 +4680,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/pe",
-    "title": "Pós-graduação em Psicologia em Pernambuco (PE): mercado, salário e formato",
+    "title": "Pós em Psicologia em Pernambuco: mercado, salário e formato",
     "description": "Mercado pernambucano de Psicologia: Recife como polo médico e tech, Caruaru e Petrolina, mediana salarial e formato Ao Vivo síncrono ideal para o profissional do estado.",
     "kind": "Estado",
     "persona": null,
@@ -4693,7 +4693,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/pi",
-    "title": "Pós-graduação em Psicologia no Piauí (PI): mercado, salário e formato",
+    "title": "Pós em Psicologia no Piauí: mercado, salário e formato",
     "description": "Mercado piauiense de Psicologia: Teresina, Parnaíba e Picos, mediana salarial e formato Ao Vivo síncrono ideal para o profissional do estado.",
     "kind": "Estado",
     "persona": null,
@@ -4706,7 +4706,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/pr",
-    "title": "Pós-graduação em Psicologia no Paraná (PR): saúde mental corporativa e cooperativismo",
+    "title": "Pós em Psicologia no Paraná: saúde mental e cooperativismo",
     "description": "Mercado paranaense de Psicologia: Curitiba, Maringá, Londrina, Cascavel e Foz do Iguaçu. Saúde mental corporativa, cooperativismo, agro e tech como bases de demanda.",
     "kind": "Estado",
     "persona": null,
@@ -4719,7 +4719,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/rj",
-    "title": "Pós-graduação em Psicologia no Rio de Janeiro (RJ): hospitalar, forense e POT",
+    "title": "Pós em Psicologia no RJ: hospitalar, forense e POT",
     "description": "Mercado fluminense de Psicologia: hubs, hospitais, sistema de justiça, óleo e gás e mediana salarial. Por que recortes especializados ganham no RJ.",
     "kind": "Estado",
     "persona": null,
@@ -4732,7 +4732,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/rn",
-    "title": "Pós-graduação em Psicologia no Rio Grande do Norte (RN): mercado, salário e formato",
+    "title": "Pós em Psicologia no Rio Grande do Norte: mercado, salário e formato",
     "description": "Mercado potiguar de Psicologia: Natal, Mossoró, Bacia Potiguar e Vale do Açu, mediana salarial e formato Ao Vivo síncrono ideal para o profissional do estado.",
     "kind": "Estado",
     "persona": null,
@@ -4745,7 +4745,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/ro",
-    "title": "Pós-graduação em Psicologia em Rondônia (RO): mercado, salário e formato",
+    "title": "Pós em Psicologia em Rondônia: mercado, salário e formato",
     "description": "Psicologia aplicada em Rondônia: Porto Velho, Ji-Paraná, Vilhena. Frigoríficos, hidrelétricas do Madeira, agro de fronteira e POT industrial em escala.",
     "kind": "Estado",
     "persona": null,
@@ -4758,7 +4758,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/rr",
-    "title": "Pós-graduação em Psicologia em Roraima (RR): mercado, salário e formato",
+    "title": "Pós em Psicologia em Roraima: mercado, salário e formato",
     "description": "Psicologia aplicada em Roraima: Boa Vista, Pacaraima, fronteira, migração, povos indígenas. Operação Acolhida, agências internacionais e nicho humanitário.",
     "kind": "Estado",
     "persona": null,
@@ -4771,7 +4771,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/rs",
-    "title": "Pós-graduação em Psicologia no Rio Grande do Sul (RS): mercado, salário e formato",
+    "title": "Pós em Psicologia no Rio Grande do Sul: mercado, salário e formato",
     "description": "Mercado gaúcho de Psicologia: Porto Alegre, Caxias do Sul, Pelotas, Novo Hamburgo, mediana salarial e formato Ao Vivo síncrono ideal para o profissional do estado.",
     "kind": "Estado",
     "persona": null,
@@ -4784,7 +4784,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/sc",
-    "title": "Pós-graduação em Psicologia em Santa Catarina (SC): mercado, salário e formato",
+    "title": "Pós em Psicologia em Santa Catarina: mercado, salário e formato",
     "description": "Mercado catarinense de Psicologia: Florianópolis, Joinville, Blumenau, Chapecó, mediana salarial e formato Ao Vivo síncrono ideal para o profissional do estado.",
     "kind": "Estado",
     "persona": null,
@@ -4797,7 +4797,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/se",
-    "title": "Pós-graduação em Psicologia em Sergipe (SE): mercado, salário e formato",
+    "title": "Pós em Psicologia em Sergipe: mercado, salário e formato",
     "description": "Mercado sergipano de Psicologia: Aracaju, Itabaiana e Lagarto, mediana salarial e formato Ao Vivo síncrono ideal para o profissional do estado.",
     "kind": "Estado",
     "persona": null,
@@ -4810,7 +4810,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/sp",
-    "title": "Pós-graduação em Psicologia em São Paulo (SP): mercado, salário e formato",
+    "title": "Pós em Psicologia em São Paulo: mercado, salário e formato",
     "description": "Mercado paulista de Psicologia aplicada: cidades-hub, setores que demandam, mediana salarial pelo Catho e por que online ao vivo combina com agenda densa em SP.",
     "kind": "Estado",
     "persona": null,
@@ -4823,7 +4823,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/por-estado/to",
-    "title": "Pós-graduação em Psicologia no Tocantins (TO): mercado, salário e formato",
+    "title": "Pós em Psicologia no Tocantins: mercado, salário e formato",
     "description": "Psicologia aplicada no Tocantins: Palmas, Araguaína, Gurupi, Matopiba. Agro de larga escala, serviço público, POT em expansão e formato Ao Vivo síncrono.",
     "kind": "Estado",
     "persona": null,
@@ -5016,8 +5016,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/adhd-adulto-brasil",
-    "title": "TDAH adulto no Brasil: subdiagnóstico, tratamento e o que mudou em 2024-2026",
-    "description": "TDAH adulto continua subdiagnosticado no Brasil. Polanczyk, Mattos, Rohde, Faraone e Tripp & Wickens consolidaram a literatura. O que muda para a clínica, o RH e a regulação CFM/ABDA.",
+    "title": "TDAH adulto no Brasil: subdiagnóstico e tratamento",
+    "description": "TDAH adulto segue subdiagnosticado no Brasil. O que a literatura de Polanczyk, Mattos e Faraone muda para a clínica, o RH e a regulação CFM.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -5763,8 +5763,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/tipos-de-pos-graduacao",
-    "title": "Tipos de Pós-Graduação em Psicologia · cinco modalidades principais · guia independente",
-    "description": "Mapa principal das cinco modalidades de pós-graduação em Psicologia no Brasil: Especialização Lato Sensu (CFP/MEC), MBA aplicado, Mestrado Profissional (CAPES), Especialização Clínica certificada (ACT, EMDR, DBT) e Residência Multiprofissional. Comparativo de carga horária, público, regulador e exemplos.",
+    "title": "Tipos de pós-graduação em Psicologia: as 5 modalidades",
+    "description": "Mapa das cinco modalidades no Brasil: Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica e Residência, com carga horária e regulador.",
     "kind": "Recurso",
     "persona": null,
     "tags": [

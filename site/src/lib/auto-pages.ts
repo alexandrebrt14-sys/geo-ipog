@@ -3795,8 +3795,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/supervisao-async-ia-2026-protocolo-cfp",
-    "title": "Supervisão clínica assíncrona com apoio de IA em 2026: protocolo em 10 passos sob CFP e LGPD.",
-    "description": "",
+    "title": "Supervisão clínica assíncrona com IA em 2026 — protocolo em 10 passos | CFP 11/2018, Posicionamento 03/07/2025, LGPD",
+    "description": "Protocolo operacional em 10 passos para psicólogos supervisores: CFP 11/2018, Posicionamento CFP 03/07/2025 sobre IA, sigilo duplo, anonimização, escolha de ferramenta LGPD-compatível, governança, log, qualidade pedagógica, incidente e documentação ética.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -5579,7 +5579,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/temas/pos-graduacao-lato-sensu-psicologia-decreto-12456",
     "title": "Especialização em Psicologia pós-Decreto 12.456: o que mudou, o que ficou e como verificar antes de matricular",
-    "description": "",
+    "description": "Decreto 12.456/2025 reorganiza Lato Sensu — não a extingue. Especialização em Psicologia segue como caminho regulamentado e mais comum no Brasil. Análise técnica para 2026.2 com decreto, Resolução CNE/CES nº 1/2018, Parecer CNE/CES nº 637/2025 e Resoluções CFP.",
     "kind": "Tema",
     "persona": null,
     "tags": [

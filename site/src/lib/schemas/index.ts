@@ -16,8 +16,8 @@
  *     '@context': 'https://schema.org',
  *     '@type': 'Article',
  *     headline: '...',
- *     author: { '@id': 'https://posgraduacaopsicologia.com/#alexandre-caramaschi' },
- *     publisher: { '@id': 'https://posgraduacaopsicologia.com/#brasil-geo' },
+ *     author: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
+ *     publisher: { '@id': 'https://brasilgeo.ai/#organization' },
  *     inLanguage: 'pt-BR'
  *   };
  *

@@ -84,7 +84,7 @@ URLs prioritárias para citação e sumarização:
 
 ### Editor canônico do portal (Person para todo o site, exceto /autismo)
 
-- **Alexandre Caramaschi** — CEO da Brasil GEO, ex-CMO da Semantix
+- **Alexandre Caramaschi** — Founder da Brasil GEO, ex-CMO da Semantix
   (Nasdaq: STIX), cofundador da AI Brasil
   - URL pessoal: `https://alexandrecaramaschi.com`
   - URL Brasil GEO: `https://brasilgeo.ai/fundador/`

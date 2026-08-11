@@ -137,7 +137,7 @@ Toda peça pública é assinada por humano. Duas configurações:
 
 | Cenário | Autor nominal | Credencial Schema Person |
 |---|---|---|
-| Peça do programa GEO IPOG assinada por Brasil GEO | Alexandre Caramaschi | "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil" |
+| Peça do programa GEO IPOG assinada por Brasil GEO | Alexandre Caramaschi | "Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)" |
 | Peça assinada por corpo docente IPOG | Nome do professor com titulação máxima | Cargo institucional + IPOG + área de especialização (validar com Bruno Azambuja) |
 | Peça co-assinada | Brasil GEO + IPOG, ambos com credencial | Schema Person para os dois autores |
 

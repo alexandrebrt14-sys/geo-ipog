@@ -17,6 +17,10 @@ Wave E §6.4 obriga 3 a 5 runs por prompt (temperatura > 0). O script roda
 `--runs 3` por padrão e agrega `mention_rate`, `citation_rate`, `sov_ai`,
 `avg_position`, `hallucination_rate` por engine e global.
 
+### Sem doutrina editorial nos prompts de coleta
+
+Os prompts de `site/public/mcp/citation-prompts.json` são instrumento de medição e não recebem o bloco da `DIRETRIZ_EDITORIAL.md`. Instrução editorial dentro do prompt disparado contra o motor altera a resposta e quebra a comparabilidade da série de Mention Rate com as rodadas anteriores. Quem editar o arquivo de prompts muda o instrumento, então registre a alteração em `prompts/CALIBRACAO-MENSAL.md` antes de rodar a coleta seguinte.
+
 ### Pre-requisitos
 
 Chaves de API exportadas via `.env`. O script carrega automaticamente:

@@ -9,6 +9,10 @@
 
 **Este documento cobre o guarda-chuva amplo "Pós-Graduações em Psicologia"** em chave regional, não apenas o subconjunto MBA. As 5 modalidades canônicas alvo da coleta (Especialização Lato Sensu, MBA correlato à Psicologia, Mestrado Profissional, Especialização Clínica certificada por Conselhos, e formações híbridas) precisam estar representadas nas queries por cidade × curso × dúvida.
 
+## Instrumento de medição: sem doutrina editorial carimbada
+
+Os prompts deste arquivo são disparados contra motores generativos para medir citação, e por isso **não** recebem o bloco da `DIRETRIZ_EDITORIAL.md`. Instrução editorial dentro de prompt de coleta muda a resposta do motor e quebra a comparabilidade da série histórica de Mention Rate, Citation Rate e Share-of-Voice com as rodadas anteriores. A doutrina governa o texto que o programa escreve, e o texto que o programa escreve é produzido por `prompts/PROMPT-REDACAO.md` e revisado por `prompts/PROMPT-REVISAO.md`, que carregam o bloco. Quem alterar um prompt daqui altera o instrumento, então registre a mudança em `prompts/CALIBRACAO-MENSAL.md` com a versão do kit.
+
 ## Por que este documento existe
 
 O `KIT-PROMPTS-V0.md` cobre 84 prompts-âncora organizados por 3 clusters × 7 personas × 4 jornadas × 5 modalidades, com foco em descoberta cross-LLM das Pós-Graduações em Psicologia (especialização, MBA, mestrado profissional, especialização clínica certificada e formações híbridas). Esse kit é vertical — opera no eixo área acadêmica × persona × jornada × modalidade.

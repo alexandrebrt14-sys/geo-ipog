@@ -163,39 +163,23 @@ const ldArticle = {
 
 Última revisão deste arquivo: 2026-05-26 (adição do bloco "Wiki workflow obrigatório" e do passo 1 + passo 7 no fluxo padrão de onda).
 
-## Padrão editorial — escrita humanizada (17/07/2026)
-
-Todo conteúdo de leitura humana produzido neste repo (artigo, curso, página, post,
-e-mail, relatório, parecer, resposta ao usuário) segue o padrão editorial global do
-Alexandre. Qualidade vence velocidade; profundidade proporcional ao problema;
-escrever como especialista sênior conversando com outro profissional experiente.
-Fonte de verdade completa: `docs/ESTILO_EDITORIAL.md` do repo GEO-Pesquisador
-(clone local em `C:/Sandyboxclaude/GEO-Pesquisador`).
-
-Proibidos como padrão recorrente (uso pontual e consciente é tolerado):
-
-- Antítese em série: "não se trata de X, trata-se de Y", "não é apenas X, é Y",
-  "não basta X, é preciso Y", "mais do que X, Y". Afirmar direto o que a evidência
-  sustenta.
-- Conectivos batidos repetidos: "além disso", "por outro lado", "nesse contexto",
-  "vale destacar", "é importante ressaltar", "nesse sentido", "por fim".
-- Parágrafos vizinhos abrindo com a mesma construção sintática; blocos com ritmo
-  idêntico; excesso de paralelismo; perguntas retóricas em série; conclusões
-  idênticas fechando tópicos sucessivos.
-- Travessão e hífen como recurso estilístico no conteúdo final: preferir vírgula,
-  dois-pontos ou ponto.
-- Clichês, frases genéricas que serviriam para qualquer assunto, tom promocional,
-  superlativo sem número ao lado, adjetivo decorativo, negrito por hábito.
-
-Obrigatório: linha de raciocínio lógica; cada parágrafo acrescenta uma ideia nova;
-alternar períodos curtos, médios e longos; recomendação sempre acompanhada do
-porquê; conceito técnico coberto com contexto, motivação, funcionamento,
-limitações e critérios de decisão quando relevantes; material educacional abre
-pelo problema e fecha com síntese prática. Antes de entregar, reler procurando
-esses padrões e reescrever o que soar texto de máquina. Sub-agentes que geram
-copy recebem o bloco de `C:/Sandyboxclaude/scripts/prompts/COPY_PROMPT_PREFIX.md`
-carimbado no prompt.
-
 ## Padrão editorial obrigatório
 
-Antes de produzir qualquer texto de leitura humana neste repositório (documentação, cursos, páginas, relatórios, descrições de PR, mensagens longas de commit), leia e aplique `DIRETRIZ_EDITORIAL.md` na raiz do repositório (versão 2, 23/07/2026) e consulte o anexo prático `GUIA_ESCRITA_HUMANIZADA.md`, que traz exemplos antes e depois, heurísticas mensuráveis e fontes. O essencial: escrita de especialista sênior em português do Brasil com acentuação completa e tipografia brasileira (sem title case, numerais à brasileira); conclusão antes da sustentação e cada parágrafo acrescentando uma ideia nova; ritmo variado de verdade (num bloco de dez frases, amplitude acima de 30 palavras entre a mais longa e a mais curta); proibido travessão como recurso estilístico; proibidas como padrão as construções que negam para afirmar ("não é X, é Y"), a regra de três mecânica, as conclusões-espelho e a atribuição vaga sem fonte nomeada; conectivos cortados por subtração, sem clichês nem vícios de português de LLM (gerundismo, "endereçar", "suportar", "eventualmente" como eventually); dado sem fonte e data não entra, e o que só o autor humano sabe vira marcador `[PREENCHER-HUMANO]`, nunca invenção; em superfícies HTML ou PDF, parágrafos com alinhamento justificado (`text-align: justify`); revisão final em três passadas (substância, estrutura, linguagem) com leitura em voz alta. Os documentos completos prevalecem sobre este resumo, e as convenções específicas deste repositório prevalecem sobre convenções genéricas, exceto quando comprometerem segurança ou corretude.
+Antes de produzir qualquer texto de leitura humana neste repositório (peça editorial, página do portal, guia, FAQ, material didático, auditoria, relatório, descrição de PR, mensagem longa de commit), leia e aplique `DIRETRIZ_EDITORIAL.md` na raiz, versão 4 de 11/08/2026, com o anexo prático `GUIA_ESCRITA_HUMANIZADA.md`. A seção 14 da diretriz traz a aplicação ao escopo deste repositório: gênero por tipo de peça, portão da promessa educacional, nomenclatura das cinco modalidades canônicas e tratamento da prova quando o dado pertence ao IPOG.
+
+Inegociável, em resumo:
+
+- **Piso de substância (seção 2.1).** Toda peça tem tese identificável, evidência ligada à tese, ganho de informação, critério de decisão quando há alternativas, arco de leitura e consequência executável para o leitor. Aprovação em gate automático nunca equivale a aprovação editorial.
+- **Prova antes da escrita (2.2).** O número de blocos que afirmam resultado é menor ou igual ao número de provas datadas disponíveis. Faltando prova: pesquisar a origem, reduzir a afirmação, restringir o uso, segurar a publicação. Só depois entram `[FALTA EVIDÊNCIA: o que buscar]` ou `[PREENCHER-HUMANO: o que falta]`, no lugar do dado e nunca da seção, com teto de cinco abertos por documento.
+- **Narrativa (3).** Abertura em situação, tensão antes da solução, caso condutor com rótulo de tipo, promessa cumprida no corpo, fechamento com callback e um pedido por peça, contado por destino. Escassez fabricada ("últimas vagas", "turma fechando") está proibida.
+- **Ritmo (4).** Nenhuma cota mecânica de cadência, em nenhuma direção. A amplitude do bloco de dez frases é diagnóstico do texto pronto, nunca alvo durante a escrita. A regra da v2 que mandava perseguir amplitude acima de 30 palavras está revogada.
+- **Forma.** Português do Brasil com acentuação completa e tipografia brasileira, zero travessão em prosa, zero emoji, atribuição sempre nomeada, conectivo batido cortado por subtração e antítese "não é X, é Y" fora do padrão recorrente.
+- **Revisão em três passadas (13).** Substância, estrutura e linguagem, nessa ordem. Todo símbolo de porcentagem dispara origem, data, método e denominador dentro da mesma frase.
+
+Sub-agente que gera copy recebe o bloco de `C:/Sandyboxclaude/scripts/prompts/COPY_PROMPT_PREFIX.md` carimbado no início do prompt. Prompt de medição de citação em motor generativo (`prompts/KIT-PROMPTS-V0.md`, `prompts/QUERIES-REGIONAIS-CANONICAS.md`, `site/public/mcp/citation-prompts.json`) não recebe doutrina, porque instrução editorial dentro do prompt de coleta altera a resposta do motor e quebra a comparabilidade da série de Mention Rate.
+
+Os documentos completos prevalecem sobre este resumo, e as convenções específicas deste repositório prevalecem sobre convenções genéricas, exceto quando comprometerem segurança ou corretude.
+
+Fonte adicional para a voz do Alexandre: `docs/ESTILO_EDITORIAL.md` do repo GEO-Pesquisador (clone local em `C:/Sandyboxclaude/GEO-Pesquisador`). Quando ele divergir da `DIRETRIZ_EDITORIAL.md`, prevalece a v4, cuja sede é `C:/Sandyboxclaude/curso-factory`.
+
+Nota de migração (11/08/2026): o bloco de padrão editorial de escrita humanizada datado de 17/07/2026, que ficava aqui, foi absorvido pela v4 e removido. Ele prescrevia "alternar períodos curtos, médios e longos", cota mecânica de ritmo hoje vetada pela seção 4, item 8, da diretriz. Camada de orientação duplicada e contraditória foi a causa diagnosticada do problema que a v4 corrigiu, então este arquivo mantém um bloco editorial só.

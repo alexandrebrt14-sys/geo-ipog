@@ -38,9 +38,24 @@ DIMENSÕES OBRIGATÓRIAS (7):
    - Tese é contraintuitiva ou apenas óbvia?
    - Evidência sustenta as afirmações?
    - Próximo passo é concreto?
+   - PISO DE SUBSTÂNCIA da DIRETRIZ_EDITORIAL.md v4, seção 2.1 (falha em qualquer um destes seis derruba o score editorial para menos de 7, porque forma limpa em texto vazio continua sendo texto vazio):
+     a) tese identificável com a qual seria possível discordar;
+     b) evidência ligada à tese, e não número avulso decorando o texto (a frase seguinte ao número mostra se ele trabalha);
+     c) ganho de informação: ao menos um dado, caso ou comparação que o leitor não acharia nas primeiras páginas de uma busca;
+     d) critério de decisão explícito quando há alternativas, com recomendação justificada;
+     e) arco de leitura: abertura em situação, tensão, promessa paga, fechamento com callback em vez de recap;
+     f) consequência executável para o leitor.
+   - Caso condutor único atravessando a peça, com rótulo de tipo quando inventado? Três casos diferentes, um por seção, contam como zero caso condutor.
+   - Atribuição nomeada em toda fonte? "Especialistas apontam" e "estudos mostram" são ocorrência de gap.
+   - Todo símbolo de porcentagem com origem, data, método e denominador na mesma frase?
+   - Promessa educacional com experiência reconhecível, medida que a representa e rota de reparação (seção 3.1)? Promessa de resultado de carreira sem denominador é gap crítico.
+   - Escassez fabricada presente ("últimas vagas", "turma fechando", "garanta já")? Cada ocorrência é gap crítico.
+   - Estruturas proibidas da seção 5 como padrão recorrente (antítese que nega para afirmar, tríade mecânica, inflação de significância, conclusão-espelho, fuga da cópula, gerúndio analítico vago, pergunta retórica em série)? Reduz 1 ponto por padrão recorrente.
 
 3. formatacao (0-10)
-   - Parágrafos <= 5 linhas?
+   - NÃO avalie comprimento de parágrafo nem cadência de frase. A regra "parágrafos <= 5 linhas" foi revogada em 11/08/2026 pela seção 4, item 8, da diretriz, por ser cota mecânica de ritmo; texto correto pode ter parágrafo longo.
+   - Aberturas de parágrafos vizinhos são distintas entre si?
+   - Zero travessão em prosa (tolerado apenas em título e cabeçalho)?
    - Subtítulos H2 espaçados a cada 250-350 palavras?
    - Tabela Markdown presente?
    - Listas usadas com parcimônia?
@@ -83,9 +98,10 @@ NAMING CANÔNICO (verificação cruzada):
 - Modalidade declarada coerente com a oferta IPOG citada (não tratar lato sensu como MBA ou vice-versa)?
 
 CLICHÉS PROIBIDOS (verificação cruzada):
-Procure ocorrências dos clichés listados em content/CLICHES-PROIBIDOS.md. Cada ocorrência reduz score editorial em 1 ponto.
+Procure ocorrências dos clichés listados em content/CLICHES-PROIBIDOS.md e dos conectivos batidos da seção 4, item 4, da diretriz ("além disso", "por outro lado", "nesse contexto", "nesse sentido", "vale destacar", "é importante ressaltar", "em suma", "por fim"). Cada ocorrência reduz score editorial em 1 ponto. Registre também os vícios de calque da seção 7 (gerundismo, "endereçar", software que "suporta", "eventualmente" no sentido de eventually, "assumir" no sentido de supor, passiva nominalizada) e os adjetivos vazios usados sem o dado que os justificaria.
 
 VEREDITO FINAL:
+- "rejeitar" se faltar qualquer um dos seis itens do piso de substância, independentemente dos demais scores. Peça que passa em todas as verificações de forma e não tem tese, evidência ou consequência para o leitor está reprovada.
 - "aprovado-revisao" se todos os scores >= 7 e nenhuma dimensão < 5.
 - "reescrever" se 2+ dimensões < 7 ou 1 dimensão < 5.
 - "rejeitar" se 3+ dimensões < 5 ou se há fato canônico errado (modalidade, MEC, credencial).

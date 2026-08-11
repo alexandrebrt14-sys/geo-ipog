@@ -90,7 +90,7 @@ A voz editorial varia conforme o emissor da peça. As duas configurações abaix
 
 - Tom direto, com afirmação de tese contraintuitiva já no primeiro parágrafo.
 - Primeira pessoa quando contar experiência profissional ("Quando eu liderei marketing na Semantix..."), terceira pessoa para análise.
-- Paragrafação curta (3-5 linhas).
+- Paragrafação do tamanho que a ideia exige. A cota "3-5 linhas" foi revogada em 11/08/2026 pela seção 4, item 8, da `DIRETRIZ_EDITORIAL.md`, por ser cota mecânica de ritmo.
 - Cita estudos com formato (Autor, Ano).
 - Evita anglicismos quando há termo PT-BR equivalente.
 - Pode mencionar Brasil GEO como autoridade ("Na Brasil GEO, observamos que...").

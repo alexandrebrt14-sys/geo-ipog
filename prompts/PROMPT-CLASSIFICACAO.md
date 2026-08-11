@@ -9,6 +9,10 @@
 
 **O Classificador opera sobre o guarda-chuva amplo "Pós-Graduações em Psicologia"** — 5 modalidades canônicas (Especialização Lato Sensu, MBA correlato, Mestrado Profissional, Especialização Clínica certificada por Conselhos, formações híbridas). A metadata precisa registrar a modalidade dominante da peça.
 
+## Sem doutrina editorial carimbada
+
+Este prompt devolve metadata estruturada e nenhum texto que alguém leia, então ele **não** recebe o bloco da `DIRETRIZ_EDITORIAL.md`. Doutrina de escrita dentro de prompt de classificação degrada a classificação, porque desloca a atenção do modelo do rótulo para o estilo. A doutrina roda em `prompts/PROMPT-REDACAO.md`, `prompts/PROMPT-REVISAO.md` e `prompts/PROMPT-ANALISE.md`.
+
 ## Função do papel
 
 O Classificador recebe `draft.md` (do Redator) e devolve um JSON de metadata com nível Bloom dominante, tags 5-10, pré-requisitos, duração estimada de leitura, categoria/cluster, persona-alvo principal, modalidade canônica e keywords SEO. Roda em paralelo ao Analisador.

@@ -23,6 +23,10 @@ O MBA Online em Psicologia é **uma das modalidades-âncora** e segue como produ
 - 5% prompts específicos de Mestrado Profissional.
 - 5% prompts específicos de Especialização Clínica certificada pelos Conselhos.
 
+## Instrumento de medição: sem doutrina editorial carimbada
+
+Os prompts deste arquivo são disparados contra motores generativos para medir citação, e por isso **não** recebem o bloco da `DIRETRIZ_EDITORIAL.md`. Instrução editorial dentro de prompt de coleta muda a resposta do motor e quebra a comparabilidade da série histórica de Mention Rate, Citation Rate e Share-of-Voice com as rodadas anteriores. A doutrina governa o texto que o programa escreve, e o texto que o programa escreve é produzido por `prompts/PROMPT-REDACAO.md` e revisado por `prompts/PROMPT-REVISAO.md`, que carregam o bloco. Quem alterar um prompt daqui altera o instrumento, então registre a mudança em `prompts/CALIBRACAO-MENSAL.md` com a versão do kit.
+
 ## Por que este kit existe
 
 O KIT-PROMPTS-V0 é a bateria canônica de prompts que executamos diariamente em cohort cross-LLM (ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot) para medir a presença, qualidade e formato da citação do IPOG nas Pós-Graduações em Psicologia (especialização, MBA, mestrado profissional, especialização clínica certificada e formações híbridas). É o instrumento principal do dashboard de Mention Rate, Share-of-Voice e Citation Quality Score.

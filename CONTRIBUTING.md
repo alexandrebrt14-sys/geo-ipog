@@ -10,6 +10,23 @@ Este documento estabelece as diretrizes de colaboração para a equipe Brasil GE
 
 ---
 
+## Padrão editorial obrigatório
+
+Antes de produzir qualquer texto de leitura humana neste repositório (peça editorial, página do portal, guia, FAQ, material didático, auditoria, relatório, descrição de PR), leia e aplique `DIRETRIZ_EDITORIAL.md` na raiz, versão 4 de 11/08/2026, com o anexo prático `GUIA_ESCRITA_HUMANIZADA.md`. A seção 14 da diretriz traz a aplicação ao escopo deste projeto: gênero por tipo de peça, portão da promessa educacional, nomenclatura das cinco modalidades canônicas e tratamento da prova quando o dado pertence ao IPOG.
+
+O que a revisão de PR checa antes do merge:
+
+- **Piso de substância (seção 2.1).** Tese identificável, evidência ligada à tese, ganho de informação, critério de decisão quando há alternativas, arco de leitura e consequência executável para o leitor.
+- **Prova antes da escrita (2.2).** Blocos que afirmam resultado em número menor ou igual ao de provas datadas. Faltando prova: pesquisar a origem, reduzir a afirmação, restringir o uso, segurar a publicação. Só depois entram `[FALTA EVIDÊNCIA: o que buscar]` ou `[PREENCHER-HUMANO: o que falta]`, com teto de cinco abertos por documento.
+- **Promessa educacional (3.1 e seção 14.2).** Publica-se apenas com experiência que o aluno reconhece, medida que a representa e rota de reparação quando ela falha. Resultado de carreira exige origem, data, método e denominador na mesma frase.
+- **Narrativa (3).** Abertura em situação, tensão antes da solução, caso condutor com rótulo de tipo, fechamento com callback e um pedido por peça, contado por destino. Escassez fabricada ("últimas vagas", "turma fechando") está proibida.
+- **Ritmo (4).** Nenhuma cota mecânica de cadência. A amplitude do bloco de dez frases é diagnóstico do texto pronto, nunca alvo durante a escrita. A regra da v2 que mandava perseguir amplitude acima de 30 palavras está revogada.
+- **Revisão em três passadas (13).** Substância, estrutura e linguagem, nessa ordem, com leitura em voz alta.
+
+O CI deste repositório relata e não bloqueia: `quality.yml` roda lychee com `fail: false` e markdownlint com `continue-on-error: true`. A revisão editorial humana é o gate real, e aprovação de CI não diz nada sobre qualidade de texto.
+
+---
+
 ## Idioma e estilo
 
 - Todo o conteúdo visível ao usuário final deve ser escrito em **Português do Brasil com acentuação completa**.
@@ -121,7 +138,7 @@ Todo o conteúdo deste repositório é confidencial entre Brasil GEO e IPOG.
 
 ## Qualidade de conteúdo
 
-Peças editoriais (artigos, páginas pilar, FAQs) devem seguir o padrão HBR:
+Peças editoriais (artigos, páginas pilar, FAQs) devem seguir o padrão HBR, que é o gênero "artigo ou relatório" da seção 3.2 da `DIRETRIZ_EDITORIAL.md` descrito com outro vocabulário. Os seis elementos abaixo continuam valendo, com a abertura de impacto redigida conforme a seção 3.3 (cena curta, banal e datada, com o erro atribuído ao processo) e o próximo passo conforme a seção 3.6 (um pedido por peça, com verbo de ação, valor concreto, tempo ou esforço e risco removido):
 
 1. Abertura de impacto — dado ou situação que para o leitor
 2. Tese contraintuitiva — o insight não-óbvio central

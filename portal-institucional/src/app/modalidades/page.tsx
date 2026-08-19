@@ -13,6 +13,7 @@ import type { PerguntaFrequente } from "@/data/faq";
 import { breadcrumbSchema, webPageSchema, faqSchema } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
+import { IndiceDaPagina } from "@/components/IndiceDaPagina";
 import { FaqList } from "@/components/FaqList";
 import {
   Container,
@@ -124,6 +125,15 @@ export default function PaginaModalidades() {
         destaque={`${modalidades.length} modalidades`}
         titulo="Modalidades de ensino"
         resumo={descricao}
+      />
+
+      <IndiceDaPagina
+        itens={[
+          { href: "#cada-modalidade", rotulo: "Cada modalidade" },
+          { href: "#comparacao", rotulo: "Comparação" },
+          { href: "#horario", rotulo: "Horário" },
+          { href: "#perguntas", rotulo: "Perguntas" },
+        ]}
       />
 
       {/* Retrato numérico: quantos cursos existem em cada modalidade. */}

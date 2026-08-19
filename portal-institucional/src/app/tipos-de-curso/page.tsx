@@ -7,6 +7,7 @@ import type { PerguntaFrequente } from "@/data/faq";
 import { breadcrumbSchema, webPageSchema, faqSchema } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
+import { IndiceDaPagina } from "@/components/IndiceDaPagina";
 import { FaqList } from "@/components/FaqList";
 import {
   Container,
@@ -117,6 +118,15 @@ export default function PaginaTiposDeCurso() {
         destaque={`${tiposDeFormacao.length} tipos de formação`}
         titulo="Tipos de curso"
         resumo={descricao}
+      />
+
+      <IndiceDaPagina
+        itens={[
+          { href: "#comparacao", rotulo: "Comparação" },
+          { href: "#cada-tipo", rotulo: "Cada tipo" },
+          { href: "#regras-da-pos", rotulo: "Regras da pós" },
+          { href: "#perguntas", rotulo: "Perguntas" },
+        ]}
       />
 
       {/* Comparação lado a lado: é o bloco que responde a pergunta de decisão. */}

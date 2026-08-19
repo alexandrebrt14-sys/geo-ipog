@@ -13,6 +13,7 @@ import { observacaoSobreOferta } from "@/data/graduacao";
 import { breadcrumbSchema, webPageSchema } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
+import { IndiceDaPagina } from "@/components/IndiceDaPagina";
 import { Section, PageHeader, DataTable, Callout } from "@/components/Layout";
 
 /**
@@ -56,6 +57,13 @@ export default function PaginaUnidades() {
         destaque={`${totalDeCidades} cidades, ${ufsAtendidas.length} UFs`}
         titulo="Unidades e cobertura nacional"
         resumo={descricao}
+      />
+
+      <IndiceDaPagina
+        itens={[
+          { href: "#cidades", rotulo: "Cidades" },
+          { href: "#cobertura", rotulo: "Cobertura por UF" },
+        ]}
       />
 
       <Section

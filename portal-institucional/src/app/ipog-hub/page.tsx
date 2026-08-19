@@ -16,6 +16,7 @@ import {
 } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
+import { IndiceDaPagina } from "@/components/IndiceDaPagina";
 import { Section, PageHeader, DataTable, Card, Callout } from "@/components/Layout";
 
 /**
@@ -72,6 +73,15 @@ export default function PaginaHub() {
         destaque={`${totalDeCidadesDoHub} cidades, auditório para ${maiorCapacidade}`}
         titulo="IPOG HUB"
         resumo={descricao}
+      />
+
+      <IndiceDaPagina
+        itens={[
+          { href: "#o-que-e", rotulo: "O que é" },
+          { href: "#espacos", rotulo: "Espaços" },
+          { href: "#infraestrutura", rotulo: "O que inclui" },
+          { href: "#onde", rotulo: "Onde fica" },
+        ]}
       />
 
       <Section id="o-que-e" titulo="O que é o IPOG HUB">

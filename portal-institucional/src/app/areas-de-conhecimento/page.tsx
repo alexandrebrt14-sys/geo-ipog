@@ -21,7 +21,6 @@ import {
   Section,
   PageHeader,
   DataTable,
-  Tag,
   Callout,
 } from "@/components/Layout";
 import { AreaCard } from "@/components/Cards";
@@ -50,7 +49,7 @@ export default function PaginaAreasDeConhecimento() {
             description: descricao,
           }),
           breadcrumbSchema(trilha),
-          catalogoDeCursosSchema(cursos),
+          catalogoDeCursosSchema(cursos, { compacto: true }),
         ]}
       />
 
@@ -88,98 +87,35 @@ export default function PaginaAreasDeConhecimento() {
         </Container>
       </div>
 
+      {/* Esta rota é um índice, não o catálogo.
+
+          Ela chegou a listar as doze tabelas completas, o que somava 295 linhas
+          e 49 telas de rolagem em quase 1 MB de HTML. Depois que cada área
+          ganhou página própria, isso virou repetição pura: o mesmo curso
+          aparecia aqui e lá. O catálogo completo continua declarado no JSON-LD
+          desta página, então nada se perdeu para quem lê por máquina. */}
       <Section
         id="panorama"
         titulo="Panorama das áreas"
-        descricao={`As ${areasDeConhecimento.length} áreas do portfólio, com resumo, público indicado e cursos em destaque. Um mesmo curso pode aparecer em mais de uma área, como o próprio site do IPOG classifica.`}
+        descricao={`As ${areasDeConhecimento.length} áreas do portfólio, com resumo, público indicado e cursos em destaque. Cada cartão leva à página da área, onde ficam o catálogo completo, as perguntas frequentes e os artigos do blog sobre o tema.`}
       >
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {areasDeConhecimento.map((area) => (
             <AreaCard key={area.slug} area={area} />
           ))}
         </div>
+
+        <div className="mt-10">
+          <Callout titulo="Onde fica o catálogo completo">
+            Os {totalCursosCatalogados} cursos do catálogo,{" "}
+            {totaisPorNivel["Pós-graduação"]} de pós-graduação,{" "}
+            {totaisPorNivel["Extensão"]} de extensão e{" "}
+            {totaisPorNivel["Graduação"]} de graduação, ficam listados na página
+            de cada área, com duração e modalidades. Um mesmo curso pode aparecer
+            em mais de uma área, como o próprio site do IPOG classifica.
+          </Callout>
+        </div>
       </Section>
-
-      {/* Catálogo completo, uma tabela por área. */}
-      <section
-        aria-labelledby="catalogo-titulo"
-        className="bg-[var(--surface-muted)] py-14 sm:py-20"
-      >
-        <Container>
-          <header className="max-w-3xl">
-            <h2
-              id="catalogo-titulo"
-              className="text-fluid-2xl font-light uppercase"
-            >
-              Catálogo completo por área
-            </h2>
-            <p className="mt-4 text-fluid-lg leading-relaxed text-conexao-700">
-              Todos os {totalCursosCatalogados} cursos do catálogo, sendo{" "}
-              {totaisPorNivel["Pós-graduação"]} de pós-graduação,{" "}
-              {totaisPorNivel["Extensão"]} de extensão e{" "}
-              {totaisPorNivel["Graduação"]} de graduação. Cada linha traz o
-              nível, a duração e as modalidades em que o curso é ofertado.
-            </p>
-          </header>
-
-          <div className="mt-10 space-y-12">
-            {areasDeConhecimento.map((area) => (
-              <article
-                key={area.slug}
-                id={`${area.slug}-cursos`}
-                aria-labelledby={`${area.slug}-cursos-titulo`}
-                className="scroll-mt-24"
-              >
-                <header className="mb-5">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span
-                      aria-hidden="true"
-                      className="h-8 w-1.5 rounded-full"
-                      style={{ backgroundColor: area.cor }}
-                    />
-                    <h3
-                      id={`${area.slug}-cursos-titulo`}
-                      className="text-fluid-xl font-semibold normal-case text-conexao-900"
-                    >
-                      {area.nome}
-                    </h3>
-                    <Tag cor={area.cor}>
-                      {cursosDaArea(area.slug).length}{" "}
-                      {cursosDaArea(area.slug).length === 1 ? "curso" : "cursos"}
-                    </Tag>
-                  </div>
-                  <p className="mt-3 max-w-3xl text-fluid-base leading-relaxed text-conexao-700">
-                    {area.paraQuem}
-                  </p>
-                  {area.rotuloOficial !== area.nome && (
-                    <p className="mt-2 text-fluid-sm text-conexao-600">
-                      No filtro de cursos de ipog.edu.br, esta área aparece sob o
-                      rótulo <strong>{area.rotuloOficial}</strong>.
-                    </p>
-                  )}
-                </header>
-
-                <DataTable
-                  legenda={`Cursos do IPOG na área de ${area.nome}, com nível, duração e modalidades disponíveis.`}
-                  cabecalhos={["Curso", "Nível", "Duração", "Modalidades"]}
-                  linhas={cursosDaArea(area.slug).map((curso) => [
-                    curso.nome,
-                    curso.nivel,
-                    curso.duracao ?? "Não informada",
-                    <span key={curso.nome} className="flex flex-wrap gap-1.5">
-                      {curso.modalidades.map((modalidade) => (
-                        <Tag key={modalidade} cor={area.cor}>
-                          {modalidade}
-                        </Tag>
-                      ))}
-                    </span>,
-                  ])}
-                />
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
 
       <Section
         id="modalidades-detalhe"

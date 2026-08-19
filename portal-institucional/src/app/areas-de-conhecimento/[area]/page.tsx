@@ -11,6 +11,8 @@ import {
   type AreaConhecimento,
 } from "@/data/areas";
 import { perguntasDaArea } from "@/lib/perguntas-da-area";
+import { blocosDaArea } from "@/lib/resumos-da-area";
+import { artigosDaArea, enderecoDoBlog } from "@/data/blog";
 import {
   breadcrumbSchema,
   catalogoDeCursosSchema,
@@ -87,6 +89,8 @@ export default async function PaginaDaArea({ params }: Props) {
   const stats = estatisticasDaArea(area.slug);
   const interdisciplinares = cursosInterdisciplinares(area.slug);
   const perguntas = perguntasDaArea(area);
+  const blocos = blocosDaArea(area);
+  const artigos = artigosDaArea(area.slug);
   const descricao = descreverArea(area);
   const rota = `/areas-de-conhecimento/${area.slug}`;
 
@@ -119,6 +123,7 @@ export default async function PaginaDaArea({ params }: Props) {
             path: rota,
             name: `${area.nome}: cursos do IPOG na área`,
             description: descricao,
+            relacionados: artigos.map((artigo) => artigo.url),
           }),
           breadcrumbSchema(trilha),
           faqSchema(perguntas, rota),
@@ -176,59 +181,82 @@ export default async function PaginaDaArea({ params }: Props) {
         </Container>
       </div>
 
-      <Section id="sobre-a-area" titulo={`Sobre a área de ${area.nome}`}>
-        <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
-          <div>
-            <p className="max-w-3xl text-fluid-lg leading-relaxed text-conexao-700">
-              {area.paraQuem}
-            </p>
+      {/* Respostas diretas.
 
-            {area.temas.length > 0 && (
-              <>
-                <h3 className="mt-8 text-fluid-lg">O que a área cobre</h3>
-                <p className="mt-2 max-w-3xl text-fluid-sm leading-relaxed text-conexao-600">
-                  Temas recorrentes no catálogo de {area.nome} do IPOG.
-                </p>
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {area.temas.map((tema) => (
-                    <li key={tema}>
-                      <Tag cor={area.cor}>{tema}</Tag>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
+          Cada título é a pergunta como o público a formula, e a resposta vem
+          imediatamente abaixo, começando pela informação e não por rodeio. Os
+          parágrafos têm entre 40 e 60 palavras, tamanho conferido no build por
+          `scripts/verificar-paragrafos.mjs`, para que um motor generativo possa
+          citar o trecho inteiro sem cortar a resposta pela metade. */}
+      <section aria-labelledby={`${blocos[0].id}`} className="py-14 sm:py-20">
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr]">
+            <div className="space-y-9">
+              {blocos.map((bloco) => (
+                <article key={bloco.id} id={bloco.id} className="scroll-mt-24">
+                  <h2 className="text-fluid-xl font-light uppercase">
+                    {bloco.pergunta}
+                  </h2>
+                  <p
+                    data-resposta={bloco.id}
+                    className="mt-3 max-w-3xl text-fluid-base leading-relaxed text-conexao-700"
+                  >
+                    {bloco.resposta}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <div className="space-y-6">
+              <Card>
+                <h2 className="text-fluid-lg">Em números</h2>
+                <dl className="mt-4 space-y-3 text-fluid-sm">
+                  <div className="flex justify-between gap-4 border-b border-[var(--line)] pb-3">
+                    <dt className="text-conexao-600">Modalidades</dt>
+                    <dd className="text-right font-medium text-conexao-900">
+                      {modalidadesDisponiveis.length > 0
+                        ? modalidadesDisponiveis.join(", ")
+                        : "Não informadas"}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-4 border-b border-[var(--line)] pb-3">
+                    <dt className="text-conexao-600">Durações praticadas</dt>
+                    <dd className="text-right font-medium text-conexao-900">
+                      {stats.duracoes.length > 0
+                        ? stats.duracoes.join(", ")
+                        : "Não informadas"}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-conexao-600">Rótulo no site oficial</dt>
+                    <dd className="text-right font-medium text-conexao-900">
+                      {area.rotuloOficial}
+                    </dd>
+                  </div>
+                </dl>
+              </Card>
+
+              {area.temas.length > 0 && (
+                <Card>
+                  <h2 className="text-fluid-lg">
+                    Quais temas a área cobre?
+                  </h2>
+                  <p className="mt-2 text-fluid-sm leading-relaxed text-conexao-600">
+                    Assuntos recorrentes no catálogo de {area.nome} do IPOG.
+                  </p>
+                  <ul className="mt-4 flex flex-wrap gap-2">
+                    {area.temas.map((tema) => (
+                      <li key={tema}>
+                        <Tag cor={area.cor}>{tema}</Tag>
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              )}
+            </div>
           </div>
-
-          <Card>
-            <h3 className="text-fluid-lg">Em números</h3>
-            <dl className="mt-4 space-y-3 text-fluid-sm">
-              <div className="flex justify-between gap-4 border-b border-[var(--line)] pb-3">
-                <dt className="text-conexao-600">Modalidades</dt>
-                <dd className="text-right font-medium text-conexao-900">
-                  {modalidadesDisponiveis.length > 0
-                    ? modalidadesDisponiveis.join(", ")
-                    : "Não informadas"}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4 border-b border-[var(--line)] pb-3">
-                <dt className="text-conexao-600">Durações praticadas</dt>
-                <dd className="text-right font-medium text-conexao-900">
-                  {stats.duracoes.length > 0
-                    ? stats.duracoes.join(", ")
-                    : "Não informadas"}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-conexao-600">Rótulo no site oficial</dt>
-                <dd className="text-right font-medium text-conexao-900">
-                  {area.rotuloOficial}
-                </dd>
-              </div>
-            </dl>
-          </Card>
-        </div>
-      </Section>
+        </Container>
+      </section>
 
       {/* FAQ da área: responde direto as perguntas mais prováveis sobre ela. */}
       <Section
@@ -325,6 +353,67 @@ export default async function PaginaDaArea({ params }: Props) {
               </span>,
             ])}
           />
+        </Section>
+      )}
+
+      {/* Ligação com o blog.
+
+          O blog é onde o IPOG publica conteúdo com profundidade editorial, e
+          este portal é onde publica dado estruturado. Ligar os dois faz um
+          motor generativo enxergar uma fonte só, com autoridade em duas
+          camadas, em vez de dois sites soltos tratando do mesmo assunto. */}
+      {artigos.length > 0 && (
+        <Section
+          id="no-blog"
+          titulo={`O que ler sobre ${area.nome} no blog do IPOG`}
+          descricao={`Artigos publicados pelo IPOG na categoria ${artigos[0].categoria} do blog, selecionados pela relação com esta área.`}
+        >
+          <ul className="grid gap-4 md:grid-cols-2">
+            {artigos.map((artigo) => (
+              <li key={artigo.url}>
+                <a
+                  href={artigo.url}
+                  target="_blank"
+                  rel="noopener"
+                  className="flex h-full flex-col rounded-card border border-[var(--line)] bg-white p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-conexao-200 hover:shadow-card-hover sm:p-6"
+                >
+                  <span
+                    className="font-apoio text-xs font-semibold uppercase tracking-[0.14em]"
+                    style={{ color: area.cor }}
+                  >
+                    {artigo.categoria}
+                  </span>
+                  <span className="mt-2 text-fluid-base font-semibold leading-snug text-conexao-900">
+                    {artigo.titulo}
+                  </span>
+                  {artigo.publicado && (
+                    <time
+                      dateTime={artigo.publicado}
+                      className="mt-3 text-fluid-sm text-conexao-600"
+                    >
+                      {new Date(`${artigo.publicado}T12:00:00`).toLocaleDateString(
+                        "pt-BR",
+                        { day: "2-digit", month: "long", year: "numeric" },
+                      )}
+                    </time>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-8 text-fluid-base leading-relaxed text-conexao-700">
+            O blog do IPOG reúne mais de mil artigos em doze categorias.{" "}
+            <a
+              href={enderecoDoBlog}
+              target="_blank"
+              rel="noopener"
+              className="font-semibold text-protagonismo-600 underline underline-offset-4"
+            >
+              Ver o blog completo
+            </a>
+            .
+          </p>
         </Section>
       )}
 

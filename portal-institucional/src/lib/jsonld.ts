@@ -326,11 +326,20 @@ export function locaisDeEventoSchema(params: {
   };
 }
 
-/** Schema.org/WebPage genérico, para rotas de conteúdo institucional. */
+/**
+ * Schema.org/WebPage genérico, para rotas de conteúdo institucional.
+ *
+ * `relacionados` declara endereços de outra propriedade do IPOG que tratam do
+ * mesmo assunto, hoje os artigos do blog. É por `relatedLink` que um motor
+ * associa portal e blog como a mesma fonte, em vez de dois sites soltos, e o
+ * campo é o correto aqui: o conteúdo do artigo não está nesta página, então
+ * declarar `Article` seria mentir sobre o que a rota contém.
+ */
 export function webPageSchema(params: {
   path: string;
   name: string;
   description: string;
+  relacionados?: readonly string[];
 }): JsonLdObject {
   return {
     "@context": "https://schema.org",
@@ -342,5 +351,8 @@ export function webPageSchema(params: {
     inLanguage: site.locale,
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": ORGANIZATION_ID },
+    ...(params.relacionados && params.relacionados.length > 0
+      ? { relatedLink: [...params.relacionados] }
+      : {}),
   };
 }

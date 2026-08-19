@@ -105,17 +105,27 @@ export function breadcrumbSchema(
   };
 }
 
-/** Schema.org/FAQPage — cada par pergunta e resposta vira uma Question. */
-export function faqSchema(perguntas: ReadonlyArray<PerguntaFrequente>): JsonLdObject {
+/**
+ * Schema.org/FAQPage — cada par pergunta e resposta vira uma Question.
+ *
+ * `basePath` existe porque o portal tem mais de um bloco de perguntas: o FAQ
+ * geral em `/faq` e um FAQ próprio em cada página de área. Os identificadores
+ * precisam acompanhar a rota, senão duas perguntas diferentes compartilhariam
+ * o mesmo `@id` e os motores fundiriam as duas em uma só entidade.
+ */
+export function faqSchema(
+  perguntas: ReadonlyArray<PerguntaFrequente>,
+  basePath = "/faq",
+): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": absoluteUrl("/faq#faqpage"),
+    "@id": absoluteUrl(`${basePath}#faqpage`),
     inLanguage: site.locale,
     about: { "@id": ORGANIZATION_ID },
     mainEntity: perguntas.map((item) => ({
       "@type": "Question",
-      "@id": absoluteUrl(`/faq#${item.id}`),
+      "@id": absoluteUrl(`${basePath}#${item.id}`),
       name: item.pergunta,
       acceptedAnswer: {
         "@type": "Answer",

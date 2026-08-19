@@ -60,6 +60,12 @@ export type AreaConhecimento = {
    * tratados como cor oficial da área.
    */
   corDocumentada: boolean;
+  /**
+   * Temas recorrentes da área, lidos do catálogo real de cursos.
+   * Respondem "o que o IPOG ensina nesta área" sem obrigar o leitor, humano ou
+   * máquina, a inferir o assunto a partir da lista inteira de cursos.
+   */
+  temas: string[];
   resumo: string;
   /** Frase objetiva, escrita para ser extraída e citada por motores generativos. */
   paraQuem: string;
@@ -73,6 +79,13 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#e8871a",
     corSuave: "#fdf3e8",
     corDocumentada: false,
+    temas: [
+      "Marketing digital e performance",
+      "Growth e inteligência artificial aplicada",
+      "Marketing estratégico e gestão de marca",
+      "Comunicação de liderança e atendimento",
+      "Privacidade de dados e LGPD na comunicação",
+    ],
     resumo:
       "Formações em marketing estratégico, growth, marketing digital e comunicação corporativa, com inteligência artificial aplicada à performance.",
     paraQuem:
@@ -85,6 +98,15 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#8a212e",
     corSuave: "#f9edee",
     corDocumentada: true,
+    temas: [
+      "Direito digital e proteção de dados",
+      "Direito tributário e compliance fiscal",
+      "Legislação trabalhista e previdenciária",
+      "Direito empresarial e societário",
+      "Licitações e contratos públicos",
+      "Gestão de escritórios de advocacia",
+      "Mediação e conciliação extrajudicial",
+    ],
     resumo:
       "Pós-graduações em direito digital, tributário, empresarial e trabalhista, além da graduação em Direito e de formações em compliance e mediação.",
     paraQuem:
@@ -97,6 +119,11 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#5c1a22",
     corSuave: "#f4ecee",
     corDocumentada: false,
+    temas: [
+      "Produção de prova técnica",
+      "Atuação pericial judicial e extrajudicial",
+      "Elaboração de laudos",
+    ],
     resumo:
       "Especialização em perícias forenses, voltada à produção de prova técnica e à atuação pericial em processos judiciais e extrajudiciais.",
     paraQuem:
@@ -109,6 +136,11 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#8c5a3c",
     corSuave: "#f8f1ec",
     corDocumentada: false,
+    temas: [
+      "Neuropsicopedagogia clínica e institucional",
+      "Orientação educacional",
+      "Docência na era digital",
+    ],
     resumo:
       "Formações em neuropsicopedagogia, orientação educacional e docência na era digital, na fronteira entre educação e desenvolvimento humano.",
     paraQuem:
@@ -121,6 +153,20 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#363636",
     corSuave: "#f2f2f3",
     corDocumentada: true,
+    temas: [
+      "Estruturas e fundações",
+      "Modelagem BIM e projeto",
+      "Gerenciamento, planejamento e orçamento de obras",
+      "Patologia das construções e engenharia diagnóstica",
+      "Energia elétrica, hidrogênio verde e transição energética",
+      "Saneamento e sistemas de água e esgoto",
+      "Infraestrutura ferroviária e rodoviária",
+      "Geotecnia e obras de solo",
+      "Manutenção industrial e gestão da produção",
+      "Engenharia de segurança do trabalho",
+      "Avaliações e perícias de engenharia",
+      "Instalações prediais",
+    ],
     resumo:
       "A maior frente técnica do IPOG: estruturas, obras, BIM, energia, saneamento, manutenção, segurança do trabalho e perícias de engenharia.",
     paraQuem:
@@ -133,6 +179,14 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#7d6b58",
     corSuave: "#f5f2ee",
     corDocumentada: false,
+    temas: [
+      "Modelagem BIM e coordenação de projeto",
+      "Arquitetura comercial e práticas projetuais",
+      "Design de interiores e neurodesign",
+      "Neuroarquitetura",
+      "Lighting design e projeto de iluminação",
+      "Gestão de escritórios de arquitetura",
+    ],
     resumo:
       "Especializações em arquitetura comercial, design de interiores, neuroarquitetura, iluminação e modelagem BIM aplicada ao projeto.",
     paraQuem:
@@ -145,6 +199,18 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#f3ad39",
     corSuave: "#fef6e8",
     corDocumentada: true,
+    temas: [
+      "Liderança e gestão de pessoas",
+      "Finanças corporativas e controladoria",
+      "Gestão de projetos e processos",
+      "Vendas, gestão comercial e negociação",
+      "Recursos humanos e desenvolvimento de times",
+      "Qualidade, produtividade e engenharia de produção",
+      "Governança corporativa e compliance",
+      "Marketing e inteligência de mercado",
+      "Gestão em saúde e gestão hospitalar",
+      "Análise de dados e Power BI aplicados ao negócio",
+    ],
     resumo:
       "A área com maior oferta do portfólio, cobrindo liderança, finanças, projetos, gestão de pessoas, vendas, qualidade e governança.",
     paraQuem:
@@ -157,6 +223,12 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#2f7d32",
     corSuave: "#eaf4ea",
     corDocumentada: false,
+    temas: [
+      "Auditoria e consultoria ambiental",
+      "Saneamento e recursos hídricos",
+      "Hidrogênio verde e transição energética",
+      "Sustentabilidade na gestão de pessoas",
+    ],
     resumo:
       "Formações em auditoria e consultoria ambiental, saneamento, hidrogênio verde, transição energética e sustentabilidade na gestão de pessoas.",
     paraQuem:
@@ -169,6 +241,18 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#113a78",
     corSuave: "#eaf0f9",
     corDocumentada: true,
+    temas: [
+      "Farmácia clínica, hospitalar e oncológica",
+      "Nutrição clínica, estética e esportiva",
+      "Qualidade assistencial e segurança do paciente",
+      "Auditoria em sistemas de saúde",
+      "Genética médica e diagnóstico molecular",
+      "Fisioterapia e manejo da dor",
+      "Saúde estética e cosmetologia",
+      "Gestão de clínicas e consultórios",
+      "Assuntos regulatórios e segurança de alimentos",
+      "Saúde mental no trabalho e riscos psicossociais",
+    ],
     resumo:
       "Especializações clínicas e de gestão em saúde, cobrindo farmácia, nutrição, fisioterapia, genética, qualidade assistencial e auditoria.",
     paraQuem:
@@ -181,6 +265,14 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#05a48c",
     corSuave: "#e6f7f4",
     corDocumentada: true,
+    temas: [
+      "Inteligência artificial aplicada a negócios",
+      "Ciência de dados e inteligência empresarial",
+      "Computação forense e segurança da informação",
+      "Segurança cibernética",
+      "Banco de dados e desenvolvimento de sistemas",
+      "Gestão estratégica de TI",
+    ],
     resumo:
       "Formações em inteligência artificial, ciência de dados, computação forense, segurança cibernética e banco de dados, com aplicação a negócio.",
     paraQuem:
@@ -193,6 +285,14 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#1f5f8b",
     corSuave: "#eaf1f6",
     corDocumentada: false,
+    temas: [
+      "Contabilidade tributária e inteligência fiscal",
+      "Controladoria, auditoria e perícia contábil",
+      "Reforma tributária e obrigações acessórias",
+      "ICMS e escrituração fiscal",
+      "Planejamento financeiro empresarial",
+      "Inteligência artificial aplicada à contabilidade",
+    ],
     resumo:
       "Formações em contabilidade tributária, reforma tributária, controladoria, ICMS, auditoria e inteligência fiscal com apoio de IA.",
     paraQuem:
@@ -205,6 +305,16 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     cor: "#7a2f4a",
     corSuave: "#f7edf1",
     corDocumentada: false,
+    temas: [
+      "Avaliação psicológica",
+      "Neuropsicologia e reabilitação cognitiva",
+      "ABA e neurodivergências",
+      "Terapia cognitivo-comportamental e terapia do esquema",
+      "Gestalt-terapia e psicanálise",
+      "Psicologia jurídica e perícia psicológica",
+      "Psicologia organizacional e do trabalho",
+      "Psicologia positiva e bem-estar nas organizações",
+    ],
     resumo:
       "Especializações em avaliação psicológica, neuropsicologia, ABA, terapias cognitivas, psicologia jurídica e saúde mental no trabalho.",
     paraQuem:
@@ -444,6 +554,73 @@ export const cursosDaAreaPorNivel = (
     }))
     .filter((grupo) => grupo.cursos.length > 0);
 };
+
+/**
+ * Retrato numérico de uma área, calculado a partir do catálogo.
+ *
+ * Existe para que as respostas do portal a perguntas do tipo "quantos cursos de
+ * engenharia o IPOG tem?" ou "tem EaD nessa área?" venham do dado, e não de
+ * texto escrito à mão que envelhece assim que o catálogo muda.
+ */
+export type EstatisticasDaArea = {
+  total: number;
+  porNivel: Record<Nivel, number>;
+  porModalidade: Record<Modalidade, number>;
+  /** Durações praticadas na área, da mais curta para a mais longa. */
+  duracoes: string[];
+  /** Cursos que também pertencem a outra área. */
+  interdisciplinares: number;
+};
+
+/** Converte "12 meses" ou "2,5 anos" em meses, para ordenar durações. */
+const emMeses = (duracao: string): number => {
+  const meses = /^(\d+)\s+meses$/.exec(duracao);
+  if (meses) return Number(meses[1]);
+  const anos = /^(\d+(?:[.,]\d+)?)\s+anos?$/.exec(duracao);
+  if (anos) return Number(anos[1].replace(",", ".")) * 12;
+  return Number.POSITIVE_INFINITY;
+};
+
+export const estatisticasDaArea = (slug: SlugArea): EstatisticasDaArea => {
+  const daArea = cursosDaArea(slug);
+  const niveis: Nivel[] = ["Pós-graduação", "Extensão", "Graduação"];
+  const mods: Modalidade[] = ["Presencial", "Ao vivo", "EaD"];
+
+  return {
+    total: daArea.length,
+    porNivel: Object.fromEntries(
+      niveis.map((nivel) => [
+        nivel,
+        daArea.filter((curso) => curso.nivel === nivel).length,
+      ]),
+    ) as Record<Nivel, number>,
+    porModalidade: Object.fromEntries(
+      mods.map((modalidade) => [
+        modalidade,
+        daArea.filter((curso) => curso.modalidades.includes(modalidade)).length,
+      ]),
+    ) as Record<Modalidade, number>,
+    duracoes: [
+      ...new Set(
+        daArea.map((curso) => curso.duracao).filter((d): d is string => d !== null),
+      ),
+    ].sort((a, b) => emMeses(a) - emMeses(b)),
+    interdisciplinares: daArea.filter((curso) => curso.areas.length > 1).length,
+  };
+};
+
+/** Cursos de uma área que também pertencem a outra, com as áreas vizinhas. */
+export const cursosInterdisciplinares = (
+  slug: SlugArea,
+): { curso: Curso; outrasAreas: AreaConhecimento[] }[] =>
+  cursosDaArea(slug)
+    .filter((curso) => curso.areas.length > 1)
+    .map((curso) => ({
+      curso,
+      outrasAreas: areasDeConhecimento.filter(
+        (area) => area.slug !== slug && curso.areas.includes(area.slug),
+      ),
+    }));
 
 /** Total de cursos distintos no catálogo. */
 export const totalCursosCatalogados = cursos.length;

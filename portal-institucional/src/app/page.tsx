@@ -59,34 +59,37 @@ export default function PaginaInicial() {
       {/* ---------------------------------------------------------------- */}
       <section
         aria-labelledby="abertura-titulo"
-        className="relative overflow-hidden bg-digital-950 text-white"
+        className="relative overflow-hidden bg-[var(--surface-inverse)] text-white"
       >
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
+          /* Gradiente Vinho Determinação → Vermelho Protagonismo, posição 50%,
+             descrito no guia como "intenso e marcante". É um dos três
+             gradientes oficiais, e o único composto só por cores principais. */
           style={{
             background:
-              "radial-gradient(1200px 500px at 8% -12%, rgba(215,28,55,0.34), transparent 60%), radial-gradient(1000px 460px at 95% 8%, rgba(17,58,120,0.60), transparent 58%)",
+              "linear-gradient(135deg, #481a1f 0%, #481a1f 50%, #d71c37 100%)",
           }}
         />
         <Container className="relative py-16 sm:py-24 lg:py-28">
-          <p className="inline-flex rounded-pill border border-protagonismo-500/40 bg-protagonismo-600/15 px-4 py-1.5 font-display text-xs font-semibold uppercase tracking-[0.16em] text-protagonismo-200">
+          <p className="inline-flex rounded-pill border border-protagonismo-500/40 bg-protagonismo-600/15 px-4 py-1.5 font-apoio text-xs font-semibold uppercase tracking-[0.16em] text-protagonismo-200">
             Base de conhecimento oficial
           </p>
 
           <h1
             id="abertura-titulo"
-            className="mt-6 max-w-4xl text-fluid-4xl font-bold uppercase text-white"
+            className="mt-6 max-w-4xl text-fluid-4xl font-light uppercase text-white"
           >
             O IPOG em dados estruturados
           </h1>
 
           {/* Parágrafo escrito para ser citado isoladamente por um LLM. */}
-          <p className="mt-6 max-w-3xl text-fluid-lg leading-relaxed text-digital-100">
+          <p className="mt-6 max-w-3xl text-fluid-lg leading-relaxed text-white/85">
             {instituicao.descricaoCurta}
           </p>
 
-          <p className="mt-4 max-w-3xl text-fluid-base leading-relaxed text-digital-300">
+          <p className="mt-4 max-w-3xl text-fluid-base leading-relaxed text-white/70">
             Este portal reúne as informações institucionais do IPOG em formato
             semântico, com dados estruturados Schema.org, tabelas objetivas e
             respostas autossuficientes, para consulta de pessoas e de motores de
@@ -96,13 +99,13 @@ export default function PaginaInicial() {
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/areas-de-conhecimento"
-              className="inline-flex items-center justify-center rounded-pill bg-protagonismo-600 px-7 py-3.5 font-display text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-protagonismo-700"
+              className="inline-flex items-center justify-center rounded-pill bg-protagonismo-600 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-protagonismo-700"
             >
               Conhecer as áreas de conhecimento
             </Link>
             <Link
               href="/faq"
-              className="inline-flex items-center justify-center rounded-pill border border-white/25 px-7 py-3.5 font-display text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
+              className="inline-flex items-center justify-center rounded-pill border border-white/25 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
             >
               Ver perguntas frequentes
             </Link>
@@ -111,10 +114,10 @@ export default function PaginaInicial() {
           <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-white/15 pt-10 sm:grid-cols-4">
             {indicadores.slice(0, 4).map((indicador) => (
               <div key={indicador.rotulo}>
-                <dd className="font-display text-fluid-2xl font-bold leading-none text-white">
+                <dd className="font-apoio text-fluid-2xl font-bold leading-none text-white">
                   {indicador.valor}
                 </dd>
-                <dt className="mt-2 text-fluid-sm text-digital-300">
+                <dt className="mt-2 text-fluid-sm text-white/70">
                   {indicador.rotulo}
                 </dt>
               </div>
@@ -263,7 +266,7 @@ export default function PaginaInicial() {
         <div className="grid gap-5 md:grid-cols-2">
           {perguntasEmDestaque.map((item) => (
             <Card key={item.id} comHover className="flex h-full flex-col">
-              <h3 className="text-fluid-lg font-semibold normal-case tracking-normal text-digital-900">
+              <h3 className="text-fluid-lg font-semibold normal-case tracking-normal text-conexao-900">
                 {item.pergunta}
               </h3>
               <p className="mt-3 flex-1 text-fluid-sm leading-relaxed text-conexao-700">
@@ -275,7 +278,7 @@ export default function PaginaInicial() {
 
         <Link
           href="/faq"
-          className="mt-8 inline-flex items-center gap-2 font-display text-base font-semibold uppercase tracking-wide text-protagonismo-600 underline-offset-4 transition-colors hover:text-protagonismo-800 hover:underline"
+          className="mt-8 inline-flex items-center gap-2 font-apoio text-base font-semibold uppercase tracking-wide text-protagonismo-600 underline-offset-4 transition-colors hover:text-protagonismo-800 hover:underline"
         >
           Ver todas as {perguntasFrequentes.length} perguntas
           <span aria-hidden="true">→</span>
@@ -297,13 +300,13 @@ export default function PaginaInicial() {
               key={principio.titulo}
               className="rounded-card border border-white/10 bg-white/[0.04] p-6"
             >
-              <h3 className="text-fluid-lg font-bold uppercase text-white">
+              <h3 className="text-fluid-lg font-semibold normal-case text-white">
                 {principio.titulo}
               </h3>
-              <p className="mt-3 text-fluid-sm leading-relaxed text-digital-300">
+              <p className="mt-3 text-fluid-sm leading-relaxed text-white/70">
                 {principio.descricao}
               </p>
-              <p className="mt-4 border-t border-white/10 pt-4 text-fluid-sm leading-relaxed text-digital-200">
+              <p className="mt-4 border-t border-white/10 pt-4 text-fluid-sm leading-relaxed text-white/80">
                 <span className="font-semibold text-white">
                   Como aplicamos:{" "}
                 </span>
@@ -315,7 +318,7 @@ export default function PaginaInicial() {
 
         <Link
           href="/autoridade"
-          className="mt-9 inline-flex items-center justify-center rounded-pill bg-protagonismo-600 px-7 py-3.5 font-display text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-protagonismo-700"
+          className="mt-9 inline-flex items-center justify-center rounded-pill bg-protagonismo-600 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-protagonismo-700"
         >
           Ver o hub de autoridade
         </Link>

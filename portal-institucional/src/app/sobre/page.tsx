@@ -124,36 +124,36 @@ export default function PaginaSobre() {
       >
         <div className="grid gap-6 lg:grid-cols-3">
           <Card comHover className="flex flex-col border-l-4 border-l-protagonismo-600">
-            <h3 className="font-display text-sm font-semibold uppercase tracking-[0.16em] text-conexao-600">
+            <h3 className="font-apoio text-sm font-semibold normal-case tracking-[0.16em] text-conexao-600">
               Propósito
             </h3>
-            <p className="mt-3 text-fluid-lg font-medium leading-relaxed text-digital-900">
+            <p className="mt-3 text-fluid-lg font-medium leading-relaxed text-conexao-900">
               {instituicao.proposito}
             </p>
           </Card>
-          <Card comHover className="flex flex-col border-l-4 border-l-digital-700">
-            <h3 className="font-display text-sm font-semibold uppercase tracking-[0.16em] text-conexao-600">
+          <Card comHover className="flex flex-col border-l-4 border-l-protagonismo-600">
+            <h3 className="font-apoio text-sm font-semibold normal-case tracking-[0.16em] text-conexao-600">
               Visão
             </h3>
-            <p className="mt-3 text-fluid-lg font-medium leading-relaxed text-digital-900">
+            <p className="mt-3 text-fluid-lg font-medium leading-relaxed text-conexao-900">
               {instituicao.visao}
             </p>
           </Card>
           <Card comHover className="flex flex-col border-l-4 border-l-protagonismo-950">
-            <h3 className="font-display text-sm font-semibold uppercase tracking-[0.16em] text-conexao-600">
+            <h3 className="font-apoio text-sm font-semibold normal-case tracking-[0.16em] text-conexao-600">
               Promessa
             </h3>
-            <p className="mt-3 text-fluid-base leading-relaxed text-digital-900">
+            <p className="mt-3 text-fluid-base leading-relaxed text-conexao-900">
               {instituicao.promessa}
             </p>
           </Card>
         </div>
 
-        <div className="mt-8 rounded-card bg-digital-950 p-8 text-center sm:p-12">
-          <p className="font-display text-sm font-semibold uppercase tracking-[0.16em] text-digital-400">
+        <div className="mt-8 rounded-card bg-[var(--surface-inverse)] p-8 text-center sm:p-12">
+          <p className="font-apoio text-sm font-semibold uppercase tracking-[0.16em] text-white/60">
             Tagline
           </p>
-          <p className="mt-4 font-display text-fluid-2xl font-bold uppercase text-white">
+          <p className="mt-4 font-apoio text-fluid-2xl font-bold uppercase text-white">
             {instituicao.tagline}
           </p>
         </div>
@@ -169,12 +169,12 @@ export default function PaginaSobre() {
           {valores.map((valor) => (
             <li
               key={valor.numero}
-              className="flex items-start gap-4 rounded-card border border-digital-100 bg-white p-6 shadow-card"
+              className="flex items-start gap-4 rounded-card border border-[var(--line)] bg-white p-6 shadow-card"
             >
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-protagonismo-50 font-display text-base font-bold text-protagonismo-600">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-protagonismo-50 font-apoio text-base font-bold text-protagonismo-600">
                 {String(valor.numero).padStart(2, "0")}
               </span>
-              <p className="text-fluid-base font-medium leading-snug text-digital-900">
+              <p className="text-fluid-base font-medium leading-snug text-conexao-900">
                 {valor.titulo}
               </p>
             </li>
@@ -190,7 +190,7 @@ export default function PaginaSobre() {
         <div className="grid gap-6 md:grid-cols-2">
           {arquetipos.map((arquetipo) => (
             <Card key={arquetipo.nome} comHover>
-              <h3 className="text-fluid-xl font-bold uppercase text-protagonismo-600">
+              <h3 className="text-fluid-xl font-semibold normal-case text-protagonismo-600">
                 {arquetipo.nome}
               </h3>
               <p className="mt-3 text-fluid-base leading-relaxed text-conexao-700">
@@ -226,7 +226,7 @@ export default function PaginaSobre() {
         <div className="grid gap-6 md:grid-cols-2">
           {canaisAtendimento.map((canal) => (
             <Card key={canal.area} comHover>
-              <h3 className="text-fluid-lg font-bold uppercase text-digital-900">
+              <h3 className="text-fluid-lg font-semibold normal-case text-conexao-900">
                 {canal.area}
               </h3>
               <dl className="mt-4 space-y-3 text-fluid-sm">
@@ -237,7 +237,7 @@ export default function PaginaSobre() {
                       <a
                         key={telefone}
                         href={`tel:+55${telefone.replace(/\D/g, "")}`}
-                        className="mr-3 inline-block text-digital-800 underline-offset-4 hover:underline"
+                        className="mr-3 inline-block text-conexao-800 underline-offset-4 hover:underline"
                       >
                         {telefone}
                       </a>
@@ -249,7 +249,7 @@ export default function PaginaSobre() {
                   <dd className="mt-0.5">
                     <a
                       href={`mailto:${canal.email}`}
-                      className="text-digital-800 underline-offset-4 hover:underline"
+                      className="text-conexao-800 underline-offset-4 hover:underline"
                     >
                       {canal.email}
                     </a>

@@ -53,15 +53,16 @@ export function Header() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-digital-800/60 bg-digital-950/95 backdrop-blur supports-[backdrop-filter]:bg-digital-950/85">
+    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-3 rounded-md text-white transition-opacity hover:opacity-80"
+          className="flex shrink-0 items-center gap-3 rounded-md transition-opacity hover:opacity-80"
           aria-label="Portal GEO IPOG, página inicial"
         >
-          <Logo className="h-8 w-auto sm:h-9" />
-          <span className="hidden font-display text-sm font-semibold uppercase tracking-[0.18em] text-digital-200 sm:block">
+          {/* Fundo claro, então a aplicação preferencial do guia é a positiva. */}
+          <Logo className="h-7 w-auto sm:h-8" decorativo />
+          <span className="hidden border-l border-[var(--line)] pl-3 font-apoio text-xs font-semibold uppercase tracking-[0.18em] text-conexao-700 sm:block">
             Portal GEO
           </span>
         </Link>
@@ -76,10 +77,10 @@ export function Header() {
               key={item.href}
               href={item.href}
               aria-current={rotaAtiva(item.href) ? "page" : undefined}
-              className={`rounded-lg px-3 py-2 font-display text-sm font-medium uppercase tracking-wide transition-colors ${
+              className={`whitespace-nowrap rounded-lg px-3 py-2 font-apoio text-sm font-medium uppercase transition-colors ${
                 rotaAtiva(item.href)
                   ? "bg-protagonismo-600 text-white"
-                  : "text-digital-200 hover:bg-white/10 hover:text-white"
+                  : "text-conexao-700 hover:bg-protagonismo-50 hover:text-protagonismo-800"
               }`}
             >
               {item.label}
@@ -91,7 +92,7 @@ export function Header() {
           href="https://www.ipog.edu.br"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden shrink-0 rounded-pill bg-protagonismo-600 px-5 py-2.5 font-display text-sm font-semibold uppercase tracking-wide text-white shadow-sm transition-colors hover:bg-protagonismo-700 lg:inline-flex"
+          className="hidden shrink-0 whitespace-nowrap rounded-pill bg-protagonismo-600 px-5 py-2.5 font-apoio text-sm font-bold uppercase text-white shadow-sm transition-colors hover:bg-protagonismo-700 lg:inline-flex"
         >
           Site do IPOG
         </a>
@@ -103,7 +104,7 @@ export function Header() {
           onClick={() => setMenuAberto((aberto) => !aberto)}
           aria-expanded={menuAberto}
           aria-controls="menu-mobile"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10 lg:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-conexao-800 transition-colors hover:bg-protagonismo-50 lg:hidden"
         >
           <span className="sr-only">
             {menuAberto ? "Fechar menu de navegação" : "Abrir menu de navegação"}
@@ -130,7 +131,7 @@ export function Header() {
       <div
         id="menu-mobile"
         hidden={!menuAberto}
-        className="border-t border-digital-800 bg-digital-950 lg:hidden"
+        className="border-t border-[var(--line)] bg-white lg:hidden"
       >
         <nav
           aria-label="Navegação principal, versão compacta"
@@ -145,17 +146,17 @@ export function Header() {
                   className={`block rounded-xl px-4 py-3 transition-colors ${
                     rotaAtiva(item.href)
                       ? "bg-protagonismo-600 text-white"
-                      : "text-white hover:bg-white/10"
+                      : "text-conexao-800 hover:bg-protagonismo-50"
                   }`}
                 >
-                  <span className="block font-display text-base font-semibold uppercase tracking-wide">
+                  <span className="block font-apoio text-base font-bold uppercase tracking-wide">
                     {item.label}
                   </span>
                   <span
                     className={`mt-0.5 block text-sm ${
                       rotaAtiva(item.href)
                         ? "text-protagonismo-100"
-                        : "text-digital-300"
+                        : "text-conexao-600"
                     }`}
                   >
                     {item.description}
@@ -168,7 +169,7 @@ export function Header() {
             href="https://www.ipog.edu.br"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 flex items-center justify-center rounded-pill bg-protagonismo-600 px-5 py-3.5 font-display text-base font-semibold uppercase tracking-wide text-white"
+            className="mt-4 flex items-center justify-center rounded-pill bg-protagonismo-600 px-5 py-3.5 font-apoio text-base font-bold uppercase tracking-wide text-white"
           >
             Acessar o site do IPOG
           </a>

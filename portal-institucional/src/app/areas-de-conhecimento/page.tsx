@@ -62,15 +62,15 @@ export default function PaginaAreasDeConhecimento() {
       />
 
       {/* Índice das áreas, com âncoras estáveis para citação direta. */}
-      <div className="border-b border-digital-100 bg-[var(--surface-muted)]">
+      <div className="border-b border-[var(--line)] bg-[var(--surface-muted)]">
         <Container className="py-6">
-          <h2 className="sr-only">Índice das áreas de conhecimento</h2>
+          <h2 className="sr-only font-light">Índice das áreas de conhecimento</h2>
           <ul className="flex flex-wrap gap-2">
             {areasDeConhecimento.map((area) => (
               <li key={area.slug}>
                 <Link
                   href={`/areas-de-conhecimento/${area.slug}`}
-                  className="inline-flex items-center gap-2 rounded-pill border border-digital-200 bg-white px-4 py-2 text-fluid-sm font-medium text-digital-800 transition-colors hover:border-digital-300 hover:bg-digital-50"
+                  className="inline-flex items-center gap-2 rounded-pill border border-conexao-200 bg-white px-4 py-2 text-fluid-sm font-medium text-conexao-800 transition-colors hover:border-conexao-300 hover:bg-conexao-50"
                 >
                   <span
                     aria-hidden="true"
@@ -109,7 +109,7 @@ export default function PaginaAreasDeConhecimento() {
           <header className="max-w-3xl">
             <h2
               id="catalogo-titulo"
-              className="text-fluid-2xl font-bold uppercase"
+              className="text-fluid-2xl font-light uppercase"
             >
               Catálogo completo por área
             </h2>
@@ -139,12 +139,13 @@ export default function PaginaAreasDeConhecimento() {
                     />
                     <h3
                       id={`${area.slug}-cursos-titulo`}
-                      className="text-fluid-xl font-bold uppercase text-digital-900"
+                      className="text-fluid-xl font-semibold normal-case text-conexao-900"
                     >
                       {area.nome}
                     </h3>
                     <Tag cor={area.cor}>
-                      {cursosDaArea(area.slug).length} cursos
+                      {cursosDaArea(area.slug).length}{" "}
+                      {cursosDaArea(area.slug).length === 1 ? "curso" : "cursos"}
                     </Tag>
                   </div>
                   <p className="mt-3 max-w-3xl text-fluid-base leading-relaxed text-conexao-700">

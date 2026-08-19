@@ -68,7 +68,7 @@ export default function PaginaUnidades() {
             const daRegiao = unidadesDaRegiao(regiao);
             return (
               <article key={regiao} id={`regiao-${regiao.toLowerCase()}`}>
-                <h3 className="text-fluid-xl font-bold uppercase text-digital-900">
+                <h3 className="text-fluid-xl font-semibold normal-case text-conexao-900">
                   {regiao}
                 </h3>
                 <p className="mt-2 text-fluid-sm text-conexao-600">

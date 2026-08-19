@@ -123,7 +123,7 @@ export default function PaginaAutoridade() {
           {credenciaisDeAutoridade.map((credencial) => (
             <Card key={credencial.titulo} comHover className="flex flex-col">
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-fluid-lg font-bold uppercase text-digital-900">
+                <h3 className="text-fluid-lg font-semibold normal-case text-conexao-900">
                   {credencial.titulo}
                 </h3>
                 <Tag cor={corPorNatureza[credencial.natureza]}>
@@ -158,7 +158,7 @@ export default function PaginaAutoridade() {
 
         <div className="mt-8 grid gap-5 sm:grid-cols-3">
           <Card>
-            <p className="font-display text-fluid-2xl font-bold text-protagonismo-600">
+            <p className="font-apoio text-fluid-2xl font-bold text-protagonismo-600">
               {areasDeConhecimento.length}
             </p>
             <p className="mt-1 text-fluid-sm text-conexao-700">
@@ -166,7 +166,7 @@ export default function PaginaAutoridade() {
             </p>
           </Card>
           <Card>
-            <p className="font-display text-fluid-2xl font-bold text-protagonismo-600">
+            <p className="font-apoio text-fluid-2xl font-bold text-protagonismo-600">
               {totalCursosCatalogados}
             </p>
             <p className="mt-1 text-fluid-sm text-conexao-700">
@@ -174,7 +174,7 @@ export default function PaginaAutoridade() {
             </p>
           </Card>
           <Card>
-            <p className="font-display text-fluid-2xl font-bold text-protagonismo-600">
+            <p className="font-apoio text-fluid-2xl font-bold text-protagonismo-600">
               {perguntasFrequentes.length}
             </p>
             <p className="mt-1 text-fluid-sm text-conexao-700">
@@ -192,7 +192,7 @@ export default function PaginaAutoridade() {
       >
         <div className="grid gap-8 lg:grid-cols-2">
           <div>
-            <h3 className="text-fluid-lg font-bold uppercase text-digital-900">
+            <h3 className="text-fluid-lg font-semibold normal-case text-conexao-900">
               Notas do MEC por curso
             </h3>
             <DataTable
@@ -208,7 +208,7 @@ export default function PaginaAutoridade() {
           </div>
 
           <div>
-            <h3 className="text-fluid-lg font-bold uppercase text-digital-900">
+            <h3 className="text-fluid-lg font-semibold normal-case text-conexao-900">
               Coordenação de curso
             </h3>
             <DataTable
@@ -245,7 +245,7 @@ export default function PaginaAutoridade() {
             fonte.descricao,
             <code
               key={fonte.caminho}
-              className="rounded bg-digital-50 px-2 py-1 text-xs text-digital-800"
+              className="rounded bg-conexao-50 px-2 py-1 text-xs text-conexao-800"
             >
               {fonte.caminho}
             </code>,
@@ -275,7 +275,7 @@ export default function PaginaAutoridade() {
           linhas={schemasImplementados.map((item) => [
             <code
               key={item.schema}
-              className="rounded bg-digital-100 px-2 py-1 text-xs font-semibold text-digital-900"
+              className="rounded bg-conexao-100 px-2 py-1 text-xs font-semibold text-conexao-900"
             >
               {item.schema}
             </code>,
@@ -345,13 +345,13 @@ export default function PaginaAutoridade() {
               href={item.href}
               className="group rounded-card border border-white/10 bg-white/[0.04] p-6 transition-colors hover:border-white/25 hover:bg-white/[0.08]"
             >
-              <h3 className="text-fluid-lg font-bold uppercase text-white">
+              <h3 className="text-fluid-lg font-semibold normal-case text-white">
                 {item.titulo}
               </h3>
-              <p className="mt-3 text-fluid-sm leading-relaxed text-digital-300">
+              <p className="mt-3 text-fluid-sm leading-relaxed text-white/70">
                 {item.texto}
               </p>
-              <span className="mt-4 inline-flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-wide text-protagonismo-300">
+              <span className="mt-4 inline-flex items-center gap-2 font-apoio text-sm font-semibold uppercase tracking-wide text-protagonismo-300">
                 Acessar
                 <span
                   aria-hidden="true"

@@ -137,7 +137,7 @@ export default async function PaginaDaArea({ params }: Props) {
       >
         <Container>
           <header className="max-w-3xl">
-            <h2 id="cursos-titulo" className="text-fluid-2xl font-bold uppercase">
+            <h2 id="cursos-titulo" className="text-fluid-2xl font-light uppercase">
               Cursos de {area.nome}
             </h2>
             <p className="mt-4 text-fluid-lg leading-relaxed text-conexao-700">
@@ -158,10 +158,13 @@ export default async function PaginaDaArea({ params }: Props) {
                     className="h-8 w-1.5 rounded-full"
                     style={{ backgroundColor: area.cor }}
                   />
-                  <h3 className="text-fluid-xl font-bold uppercase text-digital-900">
+                  <h3 className="text-fluid-xl font-semibold normal-case text-conexao-900">
                     {grupo.nivel}
                   </h3>
-                  <Tag cor={area.cor}>{grupo.cursos.length} cursos</Tag>
+                  <Tag cor={area.cor}>
+                    {grupo.cursos.length}{" "}
+                    {grupo.cursos.length === 1 ? "curso" : "cursos"}
+                  </Tag>
                 </div>
 
                 <DataTable
@@ -196,7 +199,7 @@ export default async function PaginaDaArea({ params }: Props) {
               <li key={outra.slug}>
                 <Link
                   href={`/areas-de-conhecimento/${outra.slug}`}
-                  className="inline-flex items-center gap-2 rounded-pill border border-digital-200 bg-white px-4 py-2 text-fluid-sm font-medium text-digital-800 transition-colors hover:border-digital-300 hover:bg-digital-50"
+                  className="inline-flex items-center gap-2 rounded-pill border border-conexao-200 bg-white px-4 py-2 text-fluid-sm font-medium text-conexao-800 transition-colors hover:border-conexao-300 hover:bg-conexao-50"
                 >
                   <span
                     aria-hidden="true"

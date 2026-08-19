@@ -64,16 +64,16 @@ export default function PaginaMetodo() {
         <div className="grid gap-6 lg:grid-cols-2">
           {dimensoesDoMetodo.map((dimensao) => (
             <Card key={dimensao.numero} comHover className="flex flex-col">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-protagonismo-50 font-display text-lg font-bold text-protagonismo-600">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-protagonismo-50 font-apoio text-lg font-bold text-protagonismo-600">
                 {dimensao.numero}
               </span>
-              <h3 className="mt-4 text-fluid-xl font-bold uppercase text-digital-900">
+              <h3 className="mt-4 text-fluid-xl font-semibold normal-case text-conexao-900">
                 {dimensao.titulo}
               </h3>
               <p className="mt-3 text-fluid-base leading-relaxed text-conexao-700">
                 {dimensao.descricao}
               </p>
-              <ul className="mt-5 space-y-2.5 border-t border-digital-100 pt-5">
+              <ul className="mt-5 space-y-2.5 border-t border-[var(--line)] pt-5">
                 {dimensao.praticas.map((pratica) => (
                   <li
                     key={pratica}
@@ -112,18 +112,18 @@ export default function PaginaMetodo() {
           {cicloDeAprendizagem.map((etapa, indice) => (
             <li
               key={etapa.etapa}
-              className="relative rounded-card border border-digital-100 bg-white p-6 shadow-card"
+              className="relative rounded-card border border-[var(--line)] bg-white p-6 shadow-card"
             >
-              <span className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-conexao-600">
+              <span className="font-apoio text-sm font-semibold uppercase tracking-[0.14em] text-conexao-600">
                 Etapa {indice + 1}
               </span>
-              <h3 className="mt-2 text-fluid-xl font-bold uppercase text-protagonismo-600">
+              <h3 className="mt-2 text-fluid-xl font-semibold normal-case text-protagonismo-600">
                 {etapa.etapa}
               </h3>
               <p className="mt-3 text-fluid-sm text-conexao-600">
                 Foco em {etapa.foco.toLowerCase()}
               </p>
-              <p className="mt-3 border-t border-digital-100 pt-3 text-fluid-base font-medium text-digital-800">
+              <p className="mt-3 border-t border-[var(--line)] pt-3 text-fluid-base font-medium text-conexao-800">
                 {etapa.pergunta}
               </p>
             </li>
@@ -203,14 +203,14 @@ export default function PaginaMetodo() {
         />
 
         <div className="mt-8">
-          <h3 className="font-display text-fluid-lg font-bold uppercase text-digital-900">
+          <h3 className="font-apoio text-fluid-lg font-semibold normal-case text-conexao-900">
             Condições do benefício
           </h3>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {condicoesIpogmais.map((condicao) => (
               <li
                 key={condicao}
-                className="flex items-start gap-3 rounded-lg border border-digital-100 bg-white p-4 text-fluid-sm leading-relaxed text-conexao-700"
+                className="flex items-start gap-3 rounded-lg border border-[var(--line)] bg-white p-4 text-fluid-sm leading-relaxed text-conexao-700"
               >
                 <span
                   aria-hidden="true"

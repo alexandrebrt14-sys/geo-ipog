@@ -17,12 +17,12 @@ import { Card, Tag } from "@/components/Layout";
  */
 export function IndicadorCard({ indicador }: { indicador: Indicador }) {
   return (
-    <div className="rounded-card border border-digital-100 bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">
+    <div className="rounded-card border border-[var(--line)] bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">
       <dl>
-        <dd className="font-display text-fluid-2xl font-bold leading-none text-protagonismo-600">
+        <dd className="font-apoio text-fluid-2xl font-bold leading-none text-protagonismo-600">
           {indicador.valor}
         </dd>
-        <dt className="mt-2 font-display text-sm font-semibold uppercase tracking-[0.12em] text-digital-800">
+        <dt className="mt-2 font-apoio text-sm font-semibold uppercase tracking-[0.12em] text-conexao-800">
           {indicador.rotulo}
         </dt>
       </dl>
@@ -42,7 +42,7 @@ export function AreaCard({ area }: { area: AreaConhecimento }) {
   return (
     <article
       id={area.slug}
-      className="group flex scroll-mt-24 flex-col overflow-hidden rounded-card border border-digital-100 bg-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover"
+      className="group flex scroll-mt-24 flex-col overflow-hidden rounded-card border border-[var(--line)] bg-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover"
     >
       <div
         aria-hidden="true"
@@ -51,10 +51,13 @@ export function AreaCard({ area }: { area: AreaConhecimento }) {
       />
       <div className="flex flex-1 flex-col p-6 sm:p-7">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-fluid-xl font-bold uppercase text-digital-900">
+          <h3 className="text-fluid-xl font-semibold normal-case text-conexao-900">
             {area.nome}
           </h3>
-          <Tag cor={area.cor}>{cursosDestaArea.length} cursos</Tag>
+          <Tag cor={area.cor}>
+            {cursosDestaArea.length}{" "}
+            {cursosDestaArea.length === 1 ? "curso" : "cursos"}
+          </Tag>
         </div>
 
         <p className="mt-3 text-fluid-sm leading-relaxed text-conexao-700">
@@ -62,12 +65,12 @@ export function AreaCard({ area }: { area: AreaConhecimento }) {
         </p>
 
         <p className="mt-4 rounded-lg bg-[var(--surface-muted)] p-3 text-fluid-sm leading-relaxed text-conexao-700">
-          <span className="font-semibold text-digital-800">Para quem é: </span>
+          <span className="font-semibold text-conexao-800">Para quem é: </span>
           {area.paraQuem}
         </p>
 
         <div className="mt-5 flex-1">
-          <h4 className="font-display text-xs font-semibold uppercase tracking-[0.14em] text-conexao-600">
+          <h4 className="font-apoio text-xs font-semibold normal-case tracking-[0.14em] text-conexao-600">
             Cursos em destaque
           </h4>
           <ul className="mt-3 space-y-2">
@@ -95,7 +98,7 @@ export function AreaCard({ area }: { area: AreaConhecimento }) {
 
         <Link
           href={`/areas-de-conhecimento/${area.slug}`}
-          className="mt-6 inline-flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-wide text-protagonismo-600 underline-offset-4 transition-colors hover:text-protagonismo-800 hover:underline"
+          className="mt-6 inline-flex items-center gap-2 font-apoio text-sm font-semibold uppercase tracking-wide text-protagonismo-600 underline-offset-4 transition-colors hover:text-protagonismo-800 hover:underline"
         >
           Ver todos os cursos
           <span aria-hidden="true">→</span>
@@ -120,18 +123,18 @@ export function ConteudoCard({
   return (
     <Card comHover className="flex h-full flex-col">
       {numero !== undefined ? (
-        <span className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-protagonismo-50 font-display text-base font-bold text-protagonismo-600">
+        <span className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-protagonismo-50 font-apoio text-base font-bold text-protagonismo-600">
           {String(numero).padStart(2, "0")}
         </span>
       ) : null}
-      <h3 className="text-fluid-lg font-bold uppercase text-digital-900">
+      <h3 className="text-fluid-lg font-semibold normal-case text-conexao-900">
         {titulo}
       </h3>
       <p className="mt-3 flex-1 text-fluid-sm leading-relaxed text-conexao-700">
         {descricao}
       </p>
       {complemento ? (
-        <p className="mt-4 border-t border-digital-100 pt-4 text-fluid-sm leading-relaxed text-digital-700">
+        <p className="mt-4 border-t border-[var(--line)] pt-4 text-fluid-sm leading-relaxed text-conexao-700">
           <span className="font-semibold">Como aplicamos: </span>
           {complemento}
         </p>

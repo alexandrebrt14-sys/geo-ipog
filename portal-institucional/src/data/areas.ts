@@ -54,6 +54,12 @@ export type AreaConhecimento = {
   rotuloOficial: string;
   cor: string;
   corSuave: string;
+  /**
+   * `true` quando a cor está nomeada no Guia de Expressão da Marca 2025.
+   * As demais são tons derivados, harmonizados com a paleta, e não devem ser
+   * tratados como cor oficial da área.
+   */
+  corDocumentada: boolean;
   resumo: string;
   /** Frase objetiva, escrita para ser extraída e citada por motores generativos. */
   paraQuem: string;
@@ -64,8 +70,9 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     slug: "comunicacao",
     nome: "Comunicação",
     rotuloOficial: "Comunicação",
-    cor: "#c8102e",
-    corSuave: "#fbecee",
+    cor: "#e8871a",
+    corSuave: "#fdf3e8",
+    corDocumentada: false,
     resumo:
       "Formações em marketing estratégico, growth, marketing digital e comunicação corporativa, com inteligência artificial aplicada à performance.",
     paraQuem:
@@ -77,6 +84,7 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     rotuloOficial: "Direito e Perícias Forenses",
     cor: "#8a212e",
     corSuave: "#f9edee",
+    corDocumentada: true,
     resumo:
       "Pós-graduações em direito digital, tributário, empresarial e trabalhista, além da graduação em Direito e de formações em compliance e mediação.",
     paraQuem:
@@ -88,6 +96,7 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     rotuloOficial: "Direito e Perícias Forenses",
     cor: "#5c1a22",
     corSuave: "#f4ecee",
+    corDocumentada: false,
     resumo:
       "Especialização em perícias forenses, voltada à produção de prova técnica e à atuação pericial em processos judiciais e extrajudiciais.",
     paraQuem:
@@ -97,8 +106,9 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     slug: "educacao",
     nome: "Educação",
     rotuloOficial: "Educação",
-    cor: "#f3ad39",
-    corSuave: "#fef6e8",
+    cor: "#8c5a3c",
+    corSuave: "#f8f1ec",
+    corDocumentada: false,
     resumo:
       "Formações em neuropsicopedagogia, orientação educacional e docência na era digital, na fronteira entre educação e desenvolvimento humano.",
     paraQuem:
@@ -110,6 +120,7 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     rotuloOficial: "Engenharia e Arquitetura",
     cor: "#363636",
     corSuave: "#f2f2f3",
+    corDocumentada: true,
     resumo:
       "A maior frente técnica do IPOG: estruturas, obras, BIM, energia, saneamento, manutenção, segurança do trabalho e perícias de engenharia.",
     paraQuem:
@@ -121,6 +132,7 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     rotuloOficial: "Engenharia e Arquitetura",
     cor: "#7d6b58",
     corSuave: "#f5f2ee",
+    corDocumentada: false,
     resumo:
       "Especializações em arquitetura comercial, design de interiores, neuroarquitetura, iluminação e modelagem BIM aplicada ao projeto.",
     paraQuem:
@@ -130,8 +142,9 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     slug: "gestao-e-negocios",
     nome: "Gestão e Negócios",
     rotuloOficial: "Gestão e Negócios",
-    cor: "#e8871a",
-    corSuave: "#fdf1e5",
+    cor: "#f3ad39",
+    corSuave: "#fef6e8",
+    corDocumentada: true,
     resumo:
       "A área com maior oferta do portfólio, cobrindo liderança, finanças, projetos, gestão de pessoas, vendas, qualidade e governança.",
     paraQuem:
@@ -143,6 +156,7 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     rotuloOficial: "Meio Ambiente",
     cor: "#2f7d32",
     corSuave: "#eaf4ea",
+    corDocumentada: false,
     resumo:
       "Formações em auditoria e consultoria ambiental, saneamento, hidrogênio verde, transição energética e sustentabilidade na gestão de pessoas.",
     paraQuem:
@@ -154,6 +168,7 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     rotuloOficial: "Saúde",
     cor: "#113a78",
     corSuave: "#eaf0f9",
+    corDocumentada: true,
     resumo:
       "Especializações clínicas e de gestão em saúde, cobrindo farmácia, nutrição, fisioterapia, genética, qualidade assistencial e auditoria.",
     paraQuem:
@@ -165,6 +180,7 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     rotuloOficial: "Tecnologia da Informação",
     cor: "#05a48c",
     corSuave: "#e6f7f4",
+    corDocumentada: true,
     resumo:
       "Formações em inteligência artificial, ciência de dados, computação forense, segurança cibernética e banco de dados, com aplicação a negócio.",
     paraQuem:
@@ -176,6 +192,7 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     rotuloOficial: "Contabilidade",
     cor: "#1f5f8b",
     corSuave: "#eaf1f6",
+    corDocumentada: false,
     resumo:
       "Formações em contabilidade tributária, reforma tributária, controladoria, ICMS, auditoria e inteligência fiscal com apoio de IA.",
     paraQuem:
@@ -185,8 +202,9 @@ export const areasDeConhecimento: AreaConhecimento[] = [
     slug: "psicologia",
     nome: "Psicologia",
     rotuloOficial: "Psicologia",
-    cor: "#481a1f",
-    corSuave: "#f6eeef",
+    cor: "#7a2f4a",
+    corSuave: "#f7edf1",
+    corDocumentada: false,
     resumo:
       "Especializações em avaliação psicológica, neuropsicologia, ABA, terapias cognitivas, psicologia jurídica e saúde mental no trabalho.",
     paraQuem:

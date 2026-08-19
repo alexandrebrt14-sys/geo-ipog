@@ -165,7 +165,17 @@ export default function PaginaInicial() {
           legenda="Frentes de atuação do IPOG, com descrição e público-alvo de cada uma."
           cabecalhos={["Frente", "O que é", "Para quem"]}
           linhas={frentesDeAtuacao.map((frente) => [
-            frente.nome,
+            frente.rota ? (
+              <Link
+                key={frente.nome}
+                href={frente.rota}
+                className="font-semibold text-protagonismo-600 underline underline-offset-4"
+              >
+                {frente.nome}
+              </Link>
+            ) : (
+              frente.nome
+            ),
             frente.descricao,
             frente.publico,
           ])}

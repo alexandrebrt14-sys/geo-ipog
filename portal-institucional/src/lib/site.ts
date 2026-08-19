@@ -42,6 +42,16 @@ export const navigation: NavItem[] = [
     description: "Portfólio de pós-graduação e extensão por área",
   },
   {
+    href: "/enterprise",
+    label: "Enterprise",
+    description: "Educação corporativa e trilhas de capacitação para empresas",
+  },
+  {
+    href: "/ipog-hub",
+    label: "HUB",
+    description: "Locação de espaços para eventos, treinamentos e reuniões",
+  },
+  {
     href: "/unidades",
     label: "Unidades",
     description: "Cidades e estados atendidos pelo IPOG",
@@ -79,6 +89,8 @@ export const navigation: NavItem[] = [
 export const routes = [
   "/",
   "/areas-de-conhecimento",
+  "/enterprise",
+  "/ipog-hub",
   "/unidades",
   "/metodo",
   "/autoridade",

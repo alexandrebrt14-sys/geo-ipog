@@ -48,7 +48,7 @@ export function Section({
   const fundos = {
     claro: "bg-white",
     suave: "bg-[var(--surface-muted)]",
-    escuro: "bg-digital-950 text-white",
+    escuro: "bg-[var(--surface-inverse)] text-white",
   } as const;
 
   const Titulo = nivel === 2 ? "h2" : "h3";
@@ -61,18 +61,20 @@ export function Section({
     >
       <Container>
         <header className="max-w-3xl">
+          {/* Nível 2 é "título e chamada" no guia: caixa alta, peso Light.
+              Nível 3 é "subtítulo": caixa alta e baixa, peso SemiBold. */}
           <Titulo
             id={`${id}-titulo`}
-            className={`text-fluid-2xl font-bold uppercase ${
-              tom === "escuro" ? "text-white" : ""
-            }`}
+            className={`text-fluid-2xl ${
+              nivel === 2 ? "font-light uppercase" : "font-semibold normal-case"
+            } ${tom === "escuro" ? "text-white" : ""}`}
           >
             {titulo}
           </Titulo>
           {descricao ? (
             <div
               className={`mt-4 text-fluid-lg leading-relaxed ${
-                tom === "escuro" ? "text-digital-200" : "text-conexao-700"
+                tom === "escuro" ? "text-white/80" : "text-conexao-700"
               }`}
             >
               {descricao}
@@ -98,26 +100,28 @@ export function PageHeader({
   destaque?: string;
 }) {
   return (
-    <div className="relative overflow-hidden bg-digital-950 text-white">
+    <div className="relative overflow-hidden bg-[var(--surface-inverse)] text-white">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-70"
+        className="pointer-events-none absolute inset-0"
+        /* Mesmo gradiente oficial do herói da home, em ângulo mais raso para o
+           cabeçalho de rota, que é mais baixo. */
         style={{
           background:
-            "radial-gradient(1100px 420px at 12% -10%, rgba(215,28,55,0.30), transparent 62%), radial-gradient(900px 380px at 92% 0%, rgba(17,58,120,0.55), transparent 60%)",
+            "linear-gradient(120deg, #481a1f 0%, #481a1f 55%, #b41630 100%)",
         }}
       />
       <Container className="relative py-12 sm:py-16 lg:py-20">
         <Breadcrumbs trilha={trilha} />
         {destaque ? (
-          <p className="mt-6 inline-flex rounded-pill border border-protagonismo-500/40 bg-protagonismo-600/15 px-4 py-1.5 font-display text-xs font-semibold uppercase tracking-[0.16em] text-protagonismo-200">
+          <p className="mt-6 inline-flex rounded-pill border border-protagonismo-500/40 bg-protagonismo-600/15 px-4 py-1.5 font-apoio text-xs font-semibold uppercase tracking-[0.16em] text-protagonismo-200">
             {destaque}
           </p>
         ) : null}
-        <h1 className="mt-5 max-w-4xl text-fluid-3xl font-bold uppercase text-white">
+        <h1 className="mt-5 max-w-4xl text-fluid-3xl font-light uppercase text-white">
           {titulo}
         </h1>
-        <p className="mt-5 max-w-3xl text-fluid-lg leading-relaxed text-digital-200">
+        <p className="mt-5 max-w-3xl text-fluid-lg leading-relaxed text-white/80">
           {resumo}
         </p>
       </Container>
@@ -133,7 +137,7 @@ export function Breadcrumbs({
 }) {
   return (
     <nav aria-label="Trilha de navegação">
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-digital-300">
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white/70">
         {trilha.map((item, indice) => {
           const ultimo = indice === trilha.length - 1;
           return (
@@ -150,7 +154,7 @@ export function Breadcrumbs({
                   >
                     {item.nome}
                   </Link>
-                  <span aria-hidden="true" className="text-digital-500">
+                  <span aria-hidden="true" className="text-conexao-400">
                     /
                   </span>
                 </>
@@ -175,9 +179,9 @@ export function Card({
 }) {
   return (
     <div
-      className={`rounded-card border border-digital-100 bg-white p-6 shadow-card sm:p-7 ${
+      className={`rounded-card border border-[var(--line)] bg-white p-6 shadow-card sm:p-7 ${
         comHover
-          ? "transition-all duration-200 hover:-translate-y-0.5 hover:border-digital-200 hover:shadow-card-hover"
+          ? "transition-all duration-200 hover:-translate-y-0.5 hover:border-conexao-200 hover:shadow-card-hover"
           : ""
       } ${className}`}
     >
@@ -197,12 +201,12 @@ export function Callout({
   tom?: "informativo" | "atencao";
 }) {
   const estilos = {
-    informativo: "border-digital-200 bg-digital-50",
+    informativo: "border-conexao-200 bg-conexao-50",
     atencao: "border-protagonismo-200 bg-protagonismo-50",
   } as const;
 
   const cores = {
-    informativo: "text-digital-700",
+    informativo: "text-conexao-700",
     atencao: "text-protagonismo-800",
   } as const;
 
@@ -212,7 +216,7 @@ export function Callout({
       role="note"
     >
       <p
-        className={`font-display text-base font-semibold uppercase tracking-wide ${cores[tom]}`}
+        className={`font-apoio text-base font-semibold uppercase tracking-wide ${cores[tom]}`}
       >
         {titulo}
       </p>
@@ -240,7 +244,7 @@ export function DataTable({
   linhas: ReadonlyArray<ReadonlyArray<ReactNode>>;
 }) {
   return (
-    <div className="overflow-hidden rounded-card border border-digital-100 bg-white shadow-card">
+    <div className="overflow-hidden rounded-card border border-[var(--line)] bg-white shadow-card">
       <div className="table-scroll">
         <table className="geo-table">
           <caption className="px-4 pt-5 sm:px-6">{legenda}</caption>

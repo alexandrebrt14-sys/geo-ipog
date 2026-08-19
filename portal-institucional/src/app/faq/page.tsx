@@ -62,15 +62,15 @@ export default function PaginaFaq() {
       />
 
       {/* Índice por categoria */}
-      <div className="border-b border-digital-100 bg-[var(--surface-muted)]">
+      <div className="border-b border-[var(--line)] bg-[var(--surface-muted)]">
         <Container className="py-6">
-          <h2 className="sr-only">Índice das categorias de perguntas</h2>
+          <h2 className="sr-only font-light">Índice das categorias de perguntas</h2>
           <ul className="flex flex-wrap gap-2">
             {categoriasFaq.map((categoria) => (
               <li key={categoria}>
                 <a
                   href={`#${idDaCategoria(categoria)}`}
-                  className="inline-flex items-center gap-2 rounded-pill border border-digital-200 bg-white px-4 py-2 text-fluid-sm font-medium text-digital-800 transition-colors hover:border-digital-300 hover:bg-digital-50"
+                  className="inline-flex items-center gap-2 rounded-pill border border-conexao-200 bg-white px-4 py-2 text-fluid-sm font-medium text-conexao-800 transition-colors hover:border-conexao-300 hover:bg-conexao-50"
                 >
                   {categoria}
                   <span className="text-conexao-600">
@@ -104,13 +104,13 @@ export default function PaginaFaq() {
         <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
           <a
             href="tel:+556239455050"
-            className="inline-flex items-center justify-center rounded-pill bg-protagonismo-600 px-7 py-3.5 font-display text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-protagonismo-700"
+            className="inline-flex items-center justify-center rounded-pill bg-protagonismo-600 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-protagonismo-700"
           >
             (62) 3945-5050
           </a>
           <a
             href="mailto:relacionamento@ipog.edu.br"
-            className="inline-flex items-center justify-center rounded-pill border border-white/25 px-7 py-3.5 font-display text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
+            className="inline-flex items-center justify-center rounded-pill border border-white/25 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
           >
             relacionamento@ipog.edu.br
           </a>
@@ -118,7 +118,7 @@ export default function PaginaFaq() {
             href="https://www.ipog.edu.br/contato"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-pill border border-white/25 px-7 py-3.5 font-display text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
+            className="inline-flex items-center justify-center rounded-pill border border-white/25 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
           >
             Formulário de contato
           </a>

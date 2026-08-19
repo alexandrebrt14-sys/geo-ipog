@@ -58,9 +58,19 @@
   --color-area-direito: #8a212e;    /* Vermelho Excelência */
   --color-area-educacao: #481a1f;   /* Vinho Determinação */
 
-  /* --- Tipografia ------------------------------------------------------ */
-  --font-display: var(--font-barlow-condensed), "Barlow Condensed", "Arial Narrow", sans-serif;
-  --font-sans: var(--font-barlow), "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* --- Tipografia ------------------------------------------------------
+     Vertical Institucional do guia (Módulo 03):
+       títulos e chamadas .... Degular Display, CAIXA ALTA, Light ou Thin
+       subtítulos e textos ... Degular Normal, caixa alta e baixa, SemiBold
+       apoio e CTA ........... Barlow, caixa alta e baixa, Regular e Bold
+
+     Degular é licenciada e não pode ser carregada sem os arquivos da licença,
+     mas fica declarada como primeira opção: bastará adicionar um `@font-face`
+     quando o Marketing entregar os arquivos, sem tocar em mais nada. Até lá a
+     pilha cai em Barlow, que também é fonte oficial da marca. */
+  --font-display: "Degular Display", var(--font-barlow), "Barlow", system-ui, sans-serif;
+  --font-sans: "Degular", "Degular Text", var(--font-barlow), "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-apoio: var(--font-barlow), "Barlow", system-ui, sans-serif;
 
   /* --- Escala tipográfica fluida (mobile-first) ------------------------ */
   --text-fluid-sm: clamp(0.875rem, 0.85rem + 0.15vw, 0.9375rem);
@@ -89,13 +99,23 @@
    uma camada posterior, consigam sobrescrever estes seletores de elemento.
    Sem a camada, regras como `h1 { color }` venceriam `.text-white`. */
 @layer base {
+  /* Superfícies.
+
+     O guia é explícito: o vermelho é a cor principal, o branco "está sempre
+     presente" e o cinza "aparece apenas quando necessário". O Azul Digital
+     pertence à paleta complementar, que "sempre deve ser usada em conjunto com
+     alguma cor da principal" — ou seja, é apoio, não pode dominar o layout.
+
+     Por isso a superfície escura do portal passou de Azul Digital para Vinho
+     Determinação, que é cor da paleta principal, e o azul ficou reservado à
+     área de Saúde e a detalhes pontuais. */
   :root {
     --surface: #ffffff;         /* Branco Essencial — sempre presente */
-    --surface-muted: #f7f8fb;
-    --surface-inverse: #0c1a36; /* Azul Digital */
-    --ink: #14284f;
+    --surface-muted: #faf7f7;   /* Branco levemente aquecido pelo vermelho */
+    --surface-inverse: #481a1f; /* Vinho Determinação — PMS 4102 C */
+    --ink: #232325;
     --ink-muted: #4d4d50;
-    --line: #e3e9f4;
+    --line: #e8e2e3;
     --focus-ring: #d71c37;
   }
 
@@ -127,22 +147,45 @@
     color: var(--ink);
     font-family: var(--font-sans);
     font-size: var(--text-fluid-base);
-    line-height: 1.65;
+    /* O guia especifica entrelinhas = corpo + 2pt, que em texto de 17px daria
+       cerca de 1,16. Essa é uma medida pensada para peça impressa: na tela ela
+       fica abaixo do que a WCAG 1.4.12 exige suportar em texto corrido, então
+       aqui o corpo mantém 1,6. A regra de entreletras 0pt do guia é seguida. */
+    line-height: 1.6;
+    letter-spacing: 0;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
 
-  /* Títulos: Barlow Condensed em caixa alta, conforme vertical Pós-Graduação */
+  /* Títulos da vertical Institucional: caixa alta, peso Light.
+     O guia pede entreletras 0pt, então não há `letter-spacing` negativo aqui.
+     Como Degular Display é mais larga que a condensada usada antes, o peso
+     Light é o que mantém o ar institucional pedido pelo guia em vez do tom
+     esportivo que o negrito condensado produzia. */
   h1,
   h2,
   h3,
   h4 {
-    font-family: var(--font-display);
-    line-height: 1.08;
-    letter-spacing: -0.01em;
+    line-height: 1.1;
+    letter-spacing: 0;
     text-wrap: balance;
     color: var(--ink);
+  }
+
+  /* Títulos e chamadas: Degular Display, peso Light. */
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 300;
+  }
+
+  /* Subtítulos: Degular Normal, peso SemiBold, caixa alta e baixa. */
+  h3,
+  h4 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    line-height: 1.25;
   }
 
   p {
@@ -183,7 +226,8 @@
 
   .geo-table thead th {
     background: var(--surface-muted);
-    font-family: var(--font-display);
+    /* Cabeçalho de tabela é elemento de apoio, e o guia atribui Barlow a apoio. */
+    font-family: var(--font-apoio);
     text-transform: uppercase;
     letter-spacing: 0.04em;
     font-weight: 600;

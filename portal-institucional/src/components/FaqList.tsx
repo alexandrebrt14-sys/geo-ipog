@@ -15,22 +15,22 @@ export function FaqList({
   perguntas: ReadonlyArray<PerguntaFrequente>;
 }) {
   return (
-    <div className="divide-y divide-digital-100 overflow-hidden rounded-card border border-digital-100 bg-white shadow-card">
+    <div className="divide-y divide-[var(--line)] overflow-hidden rounded-card border border-[var(--line)] bg-white shadow-card">
       {perguntas.map((item) => (
         <details
           key={item.id}
           id={item.id}
-          className="group scroll-mt-28 open:bg-digital-50/40"
+          className="group scroll-mt-28 open:bg-protagonismo-50/40"
         >
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-4 p-5 transition-colors hover:bg-digital-50 sm:p-6 [&::-webkit-details-marker]:hidden">
+          <summary className="flex cursor-pointer list-none items-start justify-between gap-4 p-5 transition-colors hover:bg-conexao-50 sm:p-6 [&::-webkit-details-marker]:hidden">
             {/* A pergunta é texto corrido, não chamada: usa a família de corpo
                 (Barlow) em vez da condensada reservada a títulos. */}
-            <h3 className="font-sans text-fluid-lg font-semibold normal-case tracking-normal text-digital-800">
+            <h3 className="font-sans text-fluid-lg font-semibold normal-case tracking-normal text-conexao-800">
               {item.pergunta}
             </h3>
             <span
               aria-hidden="true"
-              className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-digital-200 text-digital-600 transition-transform duration-200 group-open:rotate-45 group-open:border-protagonismo-300 group-open:bg-protagonismo-50 group-open:text-protagonismo-600"
+              className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-conexao-200 text-conexao-600 transition-transform duration-200 group-open:rotate-45 group-open:border-protagonismo-300 group-open:bg-protagonismo-50 group-open:text-protagonismo-600"
             >
               <svg
                 viewBox="0 0 24 24"

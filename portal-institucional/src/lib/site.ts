@@ -38,7 +38,7 @@ export const navigation: NavItem[] = [
   },
   {
     href: "/areas-de-conhecimento",
-    label: "Áreas de conhecimento",
+    label: "Áreas",
     description: "Portfólio de pós-graduação e extensão por área",
   },
   {
@@ -48,22 +48,22 @@ export const navigation: NavItem[] = [
   },
   {
     href: "/metodo",
-    label: "Método IPOG",
+    label: "Método",
     description: "Metodologia de ensino, formato e critérios acadêmicos",
   },
   {
     href: "/autoridade",
-    label: "Hub de autoridade",
+    label: "Autoridade",
     description: "Credenciais, indicadores e fontes verificáveis",
   },
   {
     href: "/faq",
-    label: "Perguntas frequentes",
+    label: "Perguntas",
     description: "Respostas diretas às dúvidas mais comuns",
   },
   {
     href: "/sobre",
-    label: "Sobre o IPOG",
+    label: "Sobre",
     description: "História, propósito, valores e contatos",
   },
 ];

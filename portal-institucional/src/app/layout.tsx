@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Barlow } from "next/font/google";
 import "./globals.css";
 
 import { site } from "@/lib/site";
@@ -9,26 +9,30 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
 /**
- * Tipografia da marca.
+ * Tipografia da marca, conforme o Guia de Expressão da Marca 2025 (Módulo 03).
  *
- * O Guia de Expressão da Marca define Degular e Barlow. Degular é uma fonte
- * licenciada da Oh No Type, não distribuída pelo Google Fonts, então o portal usa
- * Barlow e Barlow Condensed, que são as outras famílias oficiais do guia e
- * atendem à combinação da vertical Pós-Graduação: Barlow Condensed em caixa alta
- * para títulos e Barlow para corpo de texto. Ao integrar ao site novo do IPOG,
- * basta adicionar Degular aqui via `next/font/local`.
+ * O portal é material **institucional**, e o guia define para essa vertical:
+ *
+ * | Uso | Fonte |
+ * |---|---|
+ * | Títulos e chamadas | Degular Display, CAIXA ALTA, Light ou Thin |
+ * | Subtítulos e textos | Degular Normal, caixa alta e baixa, SemiBold |
+ * | Apoio e CTA | Barlow, caixa alta e baixa, Regular e Bold |
+ *
+ * Degular é licenciada da Oh No Type e não é distribuída pelo Google Fonts, então
+ * não há como carregá-la sem os arquivos da licença. Ela permanece declarada como
+ * primeira opção na pilha de fontes em `globals.css`: assim que o Marketing
+ * fornecer os arquivos e um `@font-face` for adicionado, o portal passa a
+ * renderizar em Degular sem nenhuma outra mudança.
+ *
+ * Até lá, a pilha cai em **Barlow**, que também é fonte oficial da marca. Barlow
+ * Condensed foi removida: ela pertence às verticais Faculdade e Pós-Graduação, e
+ * não à Institucional, que é a deste portal.
  */
 const barlow = Barlow({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-barlow",
-  display: "swap",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-barlow-condensed",
   display: "swap",
 });
 
@@ -113,7 +117,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${barlow.variable} ${barlowCondensed.variable}`}
+      className={barlow.variable}
     >
       <body className="flex min-h-dvh flex-col antialiased">
         {/* Entidades declaradas uma única vez para todo o portal. As rotas as

@@ -7,8 +7,8 @@ import {
   cursosDaArea,
   totalCursosCatalogados,
   totaisPorNivel,
-  modalidades,
 } from "@/data/areas";
+import { modalidades } from "@/data/modalidades";
 import {
   breadcrumbSchema,
   catalogoDeCursosSchema,

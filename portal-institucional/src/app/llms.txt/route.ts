@@ -69,6 +69,12 @@ function montar(): string {
     `- [Áreas de conhecimento](${absoluteUrl("/areas-de-conhecimento")}): catálogo completo, com nível, duração e modalidade de cada curso.`,
   );
   linhas.push(
+    `- [Tipos de curso](${absoluteUrl("/tipos-de-curso")}): o que distingue pós-graduação, graduação, extensão e educação corporativa, com duração, carga horária, pré-requisito e certificação de cada um.`,
+  );
+  linhas.push(
+    `- [Modalidades de ensino](${absoluteUrl("/modalidades")}): presencial, ao vivo e EaD, com horário das aulas, frequência mínima e composição da nota em cada uma.`,
+  );
+  linhas.push(
     `- [IPOG Enterprise](${absoluteUrl("/enterprise")}): educação corporativa, com ${trilhasDeCapacitacao.length} trilhas de capacitação, formatos de entrega e modalidades.`,
   );
   linhas.push(

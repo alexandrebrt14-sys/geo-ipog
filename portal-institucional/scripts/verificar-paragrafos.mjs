@@ -48,14 +48,31 @@ const semTags = (html) =>
 
 const contar = (texto) => texto.split(/\s+/).filter(Boolean).length;
 
+/**
+ * Outras rotas que também abrem com resposta direta.
+ * Os caminhos são relativos a `out/`.
+ */
+const OUTRAS_ROTAS = ["tipos-de-curso", "modalidades"];
+
 const falhas = [];
 const avisos = [];
 let conferidos = 0;
 
-for (const slug of AREAS) {
+const paginas = [
+  ...AREAS.map((slug) => ({
+    rotulo: slug,
+    caminho: `out/areas-de-conhecimento/${slug}/index.html`,
+  })),
+  ...OUTRAS_ROTAS.map((slug) => ({
+    rotulo: slug,
+    caminho: `out/${slug}/index.html`,
+  })),
+];
+
+for (const { rotulo: slug, caminho } of paginas) {
   let html;
   try {
-    html = await readFile(`out/areas-de-conhecimento/${slug}/index.html`, "utf8");
+    html = await readFile(caminho, "utf8");
   } catch {
     falhas.push(`${slug}: página não encontrada no export`);
     continue;

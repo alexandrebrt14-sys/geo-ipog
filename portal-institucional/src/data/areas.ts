@@ -632,39 +632,10 @@ export const totaisPorNivel = {
   Graduação: cursos.filter((c) => c.nivel === "Graduação").length,
 } as const;
 
-export type DescricaoModalidade = {
-  nome: Modalidade;
-  comoFunciona: string;
-  frequenciaMinima: string;
-  composicaoNota: string;
-};
-
 /**
- * Modalidades de ensino e critérios de avaliação.
- * Fonte: docs/aluno/manual-do-aluno-pos-graduacao.md
+ * As modalidades de ensino ficam em `src/data/modalidades.ts`.
+ *
+ * Elas saíram deste arquivo porque o conteúdo é redigido, e não derivado do
+ * catálogo: manter texto autoral dentro de arquivo gerado significa perdê-lo na
+ * próxima regeneração.
  */
-export const modalidades: DescricaoModalidade[] = [
-  {
-    nome: "Presencial",
-    comoFunciona:
-      "Alunos reunidos fisicamente em sala de aula, com o professor presente, em unidades próprias ou espaços parceiros na cidade de matrícula.",
-    frequenciaMinima: "75%",
-    composicaoNota:
-      "Atividade prática online prévia: 3,0 pontos. Atividades no fim de semana de aula: 7,0 pontos.",
-  },
-  {
-    nome: "Ao vivo",
-    comoFunciona:
-      "Aulas síncronas em tempo real por plataforma online, com interação. O acesso é liberado 30 minutos antes do horário, pelo Portal do Aluno.",
-    frequenciaMinima: "75%",
-    composicaoNota:
-      "Atividade prática online prévia: 3,0 pontos. Atividades durante a aula: 7,0 pontos.",
-  },
-  {
-    nome: "EaD",
-    comoFunciona:
-      "Videoaulas gravadas, disponíveis em plataforma online, cursadas no ritmo do aluno.",
-    frequenciaMinima: "Não se aplica",
-    composicaoNota: "Quiz de múltipla escolha, com nota mínima 7,0.",
-  },
-];

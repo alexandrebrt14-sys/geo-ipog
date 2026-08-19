@@ -6,6 +6,7 @@
 import Link from "next/link";
 import type { Indicador } from "@/data/institucional";
 import type { AreaConhecimento } from "@/data/areas";
+import { cursosDaArea } from "@/data/areas";
 import { Card, Tag } from "@/components/Layout";
 
 /**
@@ -34,8 +35,9 @@ export function IndicadorCard({ indicador }: { indicador: Indicador }) {
 
 /** Cartão de área de conhecimento, com prévia dos cursos e cor da área. */
 export function AreaCard({ area }: { area: AreaConhecimento }) {
-  const cursosEmDestaque = area.cursos.slice(0, 4);
-  const restantes = area.cursos.length - cursosEmDestaque.length;
+  const cursosDestaArea = cursosDaArea(area.slug);
+  const cursosEmDestaque = cursosDestaArea.slice(0, 4);
+  const restantes = cursosDestaArea.length - cursosEmDestaque.length;
 
   return (
     <article
@@ -52,7 +54,7 @@ export function AreaCard({ area }: { area: AreaConhecimento }) {
           <h3 className="text-fluid-xl font-bold uppercase text-digital-900">
             {area.nome}
           </h3>
-          <Tag cor={area.cor}>{area.cursos.length} cursos</Tag>
+          <Tag cor={area.cor}>{cursosDestaArea.length} cursos</Tag>
         </div>
 
         <p className="mt-3 text-fluid-sm leading-relaxed text-conexao-700">

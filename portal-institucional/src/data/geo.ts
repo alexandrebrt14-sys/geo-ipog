@@ -101,10 +101,10 @@ export const fontesDeConhecimento: FonteConhecimento[] = [
     caminho: "docs/marca/identidade-visual.md",
   },
   {
-    documento: "Projetos de curso",
+    documento: "Catálogo de cursos do site oficial",
     descricao:
-      "Projetos pedagógicos em PDF dos cursos de pós-graduação, MBA e extensão.",
-    caminho: "documentos-ipog/projetos-de-curso/",
+      "Nome, nível, duração, modalidades e área de atuação de cada curso, na classificação declarada pelo próprio IPOG. Extraído em 19 de agosto de 2026.",
+    caminho: "ipog.edu.br/cursos",
   },
 ];
 

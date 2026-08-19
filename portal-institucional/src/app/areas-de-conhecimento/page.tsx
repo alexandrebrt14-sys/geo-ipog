@@ -3,7 +3,10 @@ import Link from "next/link";
 
 import {
   areasDeConhecimento,
+  cursos,
+  cursosDaArea,
   totalCursosCatalogados,
+  totaisPorNivel,
   modalidades,
 } from "@/data/areas";
 import {
@@ -23,8 +26,7 @@ import {
 } from "@/components/Layout";
 import { AreaCard } from "@/components/Cards";
 
-const descricao =
-  "Portfólio de pós-graduação, MBA e extensão do IPOG organizado em seis áreas de conhecimento, com modalidades presencial, ao vivo e EaD disponíveis em cada curso.";
+const descricao = `Catálogo de ${totalCursosCatalogados} cursos do IPOG organizado nas ${areasDeConhecimento.length} áreas de conhecimento da instituição, com nível, duração e modalidades presencial, ao vivo e EaD declaradas em cada curso.`;
 
 export const metadata: Metadata = criarMetadata({
   titulo: "Áreas de conhecimento e cursos do IPOG",
@@ -48,7 +50,7 @@ export default function PaginaAreasDeConhecimento() {
             description: descricao,
           }),
           breadcrumbSchema(trilha),
-          catalogoDeCursosSchema(areasDeConhecimento),
+          catalogoDeCursosSchema(cursos),
         ]}
       />
 
@@ -76,7 +78,9 @@ export default function PaginaAreasDeConhecimento() {
                     style={{ backgroundColor: area.cor }}
                   />
                   {area.nome}
-                  <span className="text-conexao-600">{area.cursos.length}</span>
+                  <span className="text-conexao-600">
+                    {cursosDaArea(area.slug).length}
+                  </span>
                 </Link>
               </li>
             ))}
@@ -87,7 +91,7 @@ export default function PaginaAreasDeConhecimento() {
       <Section
         id="panorama"
         titulo="Panorama das áreas"
-        descricao={`As ${areasDeConhecimento.length} áreas do portfólio, com resumo, público indicado e cursos em destaque. Cada área usa a cor que o Guia de Expressão da Marca 2025 atribui a ela.`}
+        descricao={`As ${areasDeConhecimento.length} áreas do portfólio, com resumo, público indicado e cursos em destaque. Um mesmo curso pode aparecer em mais de uma área, como o próprio site do IPOG classifica.`}
       >
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {areasDeConhecimento.map((area) => (
@@ -110,9 +114,11 @@ export default function PaginaAreasDeConhecimento() {
               Catálogo completo por área
             </h2>
             <p className="mt-4 text-fluid-lg leading-relaxed text-conexao-700">
-              Todos os {totalCursosCatalogados} cursos catalogados, com nível e
-              modalidades disponíveis. As modalidades indicam em quais formatos o
-              curso é ofertado.
+              Todos os {totalCursosCatalogados} cursos do catálogo, sendo{" "}
+              {totaisPorNivel["Pós-graduação"]} de pós-graduação,{" "}
+              {totaisPorNivel["Extensão"]} de extensão e{" "}
+              {totaisPorNivel["Graduação"]} de graduação. Cada linha traz o
+              nível, a duração e as modalidades em que o curso é ofertado.
             </p>
           </header>
 
@@ -137,19 +143,28 @@ export default function PaginaAreasDeConhecimento() {
                     >
                       {area.nome}
                     </h3>
-                    <Tag cor={area.cor}>{area.cursos.length} cursos</Tag>
+                    <Tag cor={area.cor}>
+                      {cursosDaArea(area.slug).length} cursos
+                    </Tag>
                   </div>
                   <p className="mt-3 max-w-3xl text-fluid-base leading-relaxed text-conexao-700">
                     {area.paraQuem}
                   </p>
+                  {area.rotuloOficial !== area.nome && (
+                    <p className="mt-2 text-fluid-sm text-conexao-600">
+                      No filtro de cursos de ipog.edu.br, esta área aparece sob o
+                      rótulo <strong>{area.rotuloOficial}</strong>.
+                    </p>
+                  )}
                 </header>
 
                 <DataTable
-                  legenda={`Cursos do IPOG na área de ${area.nome}, com nível e modalidades disponíveis.`}
-                  cabecalhos={["Curso", "Nível", "Modalidades"]}
-                  linhas={area.cursos.map((curso) => [
+                  legenda={`Cursos do IPOG na área de ${area.nome}, com nível, duração e modalidades disponíveis.`}
+                  cabecalhos={["Curso", "Nível", "Duração", "Modalidades"]}
+                  linhas={cursosDaArea(area.slug).map((curso) => [
                     curso.nome,
                     curso.nivel,
+                    curso.duracao ?? "Não informada",
                     <span key={curso.nome} className="flex flex-wrap gap-1.5">
                       {curso.modalidades.map((modalidade) => (
                         <Tag key={modalidade} cor={area.cor}>
@@ -188,10 +203,11 @@ export default function PaginaAreasDeConhecimento() {
 
         <div className="mt-8">
           <Callout titulo="Sobre este catálogo">
-            A relação de cursos deste portal é derivada dos projetos pedagógicos
-            arquivados no repositório institucional do IPOG e representa uma
-            fotografia daquele acervo. O portfólio completo e as turmas com
-            matrícula aberta ficam em{" "}
+            Este catálogo foi extraído das páginas de cursos de ipog.edu.br em
+            19 de agosto de 2026, e a área de atuação de cada curso é a que o
+            próprio site declara. Quando um curso é ofertado em mais de uma
+            modalidade, ele aparece aqui uma única vez, com todas as modalidades
+            reunidas. Preços, calendário e turmas com matrícula aberta ficam em{" "}
             <a
               href="https://www.ipog.edu.br"
               target="_blank"

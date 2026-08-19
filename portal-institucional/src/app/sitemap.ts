@@ -20,6 +20,8 @@ const prioridades: Record<string, number> = {
   "/metodo": 0.8,
   "/autoridade": 0.8,
   "/unidades": 0.8,
+  "/enterprise": 0.9,
+  "/ipog-hub": 0.8,
   "/sobre": 0.7,
 };
 

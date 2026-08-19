@@ -233,6 +233,89 @@ export function catalogoDeCursosSchema(
   };
 }
 
+/**
+ * Schema.org/Service para uma frente de atuação do IPOG.
+ *
+ * `Service` é o tipo certo para educação corporativa: não é um curso com turma
+ * e calendário, e sim um serviço prestado sob medida. O catálogo entra em
+ * `hasOfferCatalog`, que é onde um motor procura "o que essa empresa oferece".
+ */
+export function servicoSchema(params: {
+  path: string;
+  nome: string;
+  descricao: string;
+  tipoServico: string;
+  catalogo: ReadonlyArray<{ nome: string; descricao: string }>;
+}): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": absoluteUrl(`${params.path}#servico`),
+    url: absoluteUrl(params.path),
+    name: params.nome,
+    description: params.descricao,
+    serviceType: params.tipoServico,
+    provider: { "@id": ORGANIZATION_ID },
+    areaServed: { "@type": "Country", name: "Brasil" },
+    inLanguage: site.locale,
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: `Catálogo do ${params.nome}`,
+      itemListElement: params.catalogo.map((item, indice) => ({
+        "@type": "Offer",
+        position: indice + 1,
+        itemOffered: {
+          "@type": "Service",
+          name: item.nome,
+          description: item.descricao,
+        },
+      })),
+    },
+  };
+}
+
+/**
+ * Schema.org/EventVenue para espaço locável.
+ *
+ * `maximumAttendeeCapacity` e `amenityFeature` são os campos que respondem
+ * "cabe quanta gente?" e "tem projetor?" sem que o motor precise inferir do
+ * texto corrido.
+ */
+export function locaisDeEventoSchema(params: {
+  path: string;
+  nome: string;
+  descricao: string;
+  endereco: string;
+  cidade: string;
+  uf: string;
+  capacidadeMaxima: number;
+  comodidades: readonly string[];
+}): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "EventVenue",
+    "@id": absoluteUrl(`${params.path}#local`),
+    url: absoluteUrl(params.path),
+    name: params.nome,
+    description: params.descricao,
+    maximumAttendeeCapacity: params.capacidadeMaxima,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: params.endereco,
+      addressLocality: params.cidade,
+      addressRegion: params.uf,
+      addressCountry: "BR",
+    },
+    amenityFeature: params.comodidades.map((comodidade) => ({
+      "@type": "LocationFeatureSpecification",
+      name: comodidade,
+      value: true,
+    })),
+    isAccessibleForFree: false,
+    parentOrganization: { "@id": ORGANIZATION_ID },
+  };
+}
+
 /** Schema.org/WebPage genérico, para rotas de conteúdo institucional. */
 export function webPageSchema(params: {
   path: string;

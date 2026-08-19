@@ -93,6 +93,8 @@ export type Frente = {
   nome: string;
   descricao: string;
   publico: string;
+  /** Rota do portal que detalha a frente, quando existe uma. */
+  rota?: string;
 };
 
 /** Frentes de atuação — o que o IPOG oferece, por linha de produto. */
@@ -118,8 +120,17 @@ export const frentesDeAtuacao: Frente[] = [
   {
     nome: "IPOG Enterprise",
     descricao:
-      "Educação corporativa, levando a metodologia aplicada do IPOG para dentro das empresas.",
+      "Educação corporativa, levando a metodologia aplicada do IPOG para dentro das empresas, em 12 trilhas de capacitação e quatro formatos de entrega.",
     publico: "Empresas e equipes que buscam desenvolvimento sob medida.",
+    rota: "/enterprise",
+  },
+  {
+    nome: "IPOG HUB",
+    descricao:
+      "Locação de espaços para eventos, treinamentos e reuniões, com auditório, salas de aula e laboratório de informática.",
+    publico:
+      "Empresas, organizadores de eventos e equipes que precisam de estrutura pronta.",
+    rota: "/ipog-hub",
   },
 ];
 

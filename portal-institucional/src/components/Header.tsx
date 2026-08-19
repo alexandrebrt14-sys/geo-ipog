@@ -68,31 +68,36 @@ export function Header() {
         </Link>
 
         {/* Navegação desktop */}
+        {/* O item "Início" não entra na barra desktop: o logotipo já leva à
+            home e tem rótulo acessível próprio. Ele continua no painel mobile
+            e no rodapé, onde não há esse atalho visual. */}
         <nav
           aria-label="Navegação principal"
-          className="hidden items-center gap-1 lg:flex"
+          className="hidden items-center gap-0.5 xl:flex"
         >
-          {navigation.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={rotaAtiva(item.href) ? "page" : undefined}
-              className={`whitespace-nowrap rounded-lg px-3 py-2 font-apoio text-sm font-medium uppercase transition-colors ${
-                rotaAtiva(item.href)
-                  ? "bg-protagonismo-600 text-white"
-                  : "text-conexao-700 hover:bg-protagonismo-50 hover:text-protagonismo-800"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {navigation
+            .filter((item) => item.href !== "/")
+            .map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={rotaAtiva(item.href) ? "page" : undefined}
+                className={`whitespace-nowrap rounded-lg px-2.5 py-2 font-apoio text-xs font-semibold uppercase transition-colors xl:text-sm ${
+                  rotaAtiva(item.href)
+                    ? "bg-protagonismo-600 text-white"
+                    : "text-conexao-700 hover:bg-protagonismo-50 hover:text-protagonismo-800"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
         </nav>
 
         <a
           href="https://www.ipog.edu.br"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden shrink-0 whitespace-nowrap rounded-pill bg-protagonismo-600 px-5 py-2.5 font-apoio text-sm font-bold uppercase text-white shadow-sm transition-colors hover:bg-protagonismo-700 lg:inline-flex"
+          className="hidden shrink-0 whitespace-nowrap rounded-pill bg-protagonismo-600 px-5 py-2.5 font-apoio text-sm font-bold uppercase text-white shadow-sm transition-colors hover:bg-protagonismo-700 xl:inline-flex"
         >
           Site do IPOG
         </a>
@@ -104,7 +109,7 @@ export function Header() {
           onClick={() => setMenuAberto((aberto) => !aberto)}
           aria-expanded={menuAberto}
           aria-controls="menu-mobile"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-conexao-800 transition-colors hover:bg-protagonismo-50 lg:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-conexao-800 transition-colors hover:bg-protagonismo-50 xl:hidden"
         >
           <span className="sr-only">
             {menuAberto ? "Fechar menu de navegação" : "Abrir menu de navegação"}
@@ -131,7 +136,7 @@ export function Header() {
       <div
         id="menu-mobile"
         hidden={!menuAberto}
-        className="border-t border-[var(--line)] bg-white lg:hidden"
+        className="border-t border-[var(--line)] bg-white xl:hidden"
       >
         <nav
           aria-label="Navegação principal, versão compacta"

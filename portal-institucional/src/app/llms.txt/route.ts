@@ -7,6 +7,8 @@ import {
   totaisPorNivel,
 } from "@/data/areas";
 import { totalDeCidades, ufsAtendidas } from "@/data/unidades";
+import { trilhasDeCapacitacao, totalDeModulos } from "@/data/enterprise";
+import { espacosDoHub, totalDeCidadesDoHub } from "@/data/hub";
 
 /**
  * /llms.txt — mapa do portal escrito para motores generativos.
@@ -50,6 +52,12 @@ function montar(): string {
   linhas.push(
     `- Presença: ${totalDeCidades} cidades com unidade, em ${ufsAtendidas.length} unidades federativas.`,
   );
+  linhas.push(
+    `- Educação corporativa: ${trilhasDeCapacitacao.length} trilhas de capacitação do IPOG Enterprise, com ${totalDeModulos} módulos.`,
+  );
+  linhas.push(
+    `- Locação de espaços: ${espacosDoHub.length} tipos de espaço do IPOG HUB, em ${totalDeCidadesDoHub} cidades, com auditório para até ${Math.max(...espacosDoHub.map((e) => e.capacidade))} pessoas.`,
+  );
   linhas.push("");
 
   linhas.push("## Páginas principais");
@@ -59,6 +67,12 @@ function montar(): string {
   );
   linhas.push(
     `- [Áreas de conhecimento](${absoluteUrl("/areas-de-conhecimento")}): catálogo completo, com nível, duração e modalidade de cada curso.`,
+  );
+  linhas.push(
+    `- [IPOG Enterprise](${absoluteUrl("/enterprise")}): educação corporativa, com ${trilhasDeCapacitacao.length} trilhas de capacitação, formatos de entrega e modalidades.`,
+  );
+  linhas.push(
+    `- [IPOG HUB](${absoluteUrl("/ipog-hub")}): locação de espaços para eventos e treinamentos, com capacidade de cada sala e o que está incluso.`,
   );
   linhas.push(
     `- [Unidades](${absoluteUrl("/unidades")}): cidades e estados atendidos, por região.`,

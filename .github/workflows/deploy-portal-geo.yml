@@ -111,12 +111,21 @@ jobs:
 
       - name: "Smoke test pos-deploy"
         run: |
-          sleep 10
+          # Um projeto recem-criado leva algumas dezenas de segundos para
+          # propagar em toda a borda da Cloudflare, e nesse intervalo parte das
+          # rotas responde 522. Cada rota e tentada ate 6 vezes, com 10s entre
+          # as tentativas, antes de ser considerada falha de verdade.
           ROTAS=("/" "/areas-de-conhecimento/" "/metodo/" "/autoridade/" "/faq/" "/sobre/")
+          TENTATIVAS=6
           FALHOU=0
           for ROTA in "${ROTAS[@]}"; do
             URL="https://${PROJETO_CF}.pages.dev${ROTA}"
-            CODE=$(curl -sIL -o /dev/null -w "%{http_code}" "$URL")
+            CODE=000
+            for N in $(seq 1 "$TENTATIVAS"); do
+              CODE=$(curl -sIL --max-time 20 -o /dev/null -w "%{http_code}" "$URL")
+              if [ "$CODE" = "200" ]; then break; fi
+              sleep 10
+            done
             echo "$CODE $URL"
             if [ "$CODE" != "200" ]; then FALHOU=1; fi
           done

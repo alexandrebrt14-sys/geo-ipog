@@ -9,7 +9,7 @@ import {
   planoIpogmais,
   condicoesIpogmais,
 } from "@/data/metodo";
-import { modalidades } from "@/data/areas";
+import { modalidades } from "@/data/modalidades";
 import { breadcrumbSchema, webPageSchema } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";

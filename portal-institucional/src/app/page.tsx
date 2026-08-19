@@ -11,8 +11,8 @@ import {
   areasDeConhecimento,
   totalCursosCatalogados,
   totaisPorNivel,
-  modalidades,
 } from "@/data/areas";
+import { modalidades } from "@/data/modalidades";
 import { perguntasFrequentes } from "@/data/faq";
 import { principiosGeo } from "@/data/geo";
 import { breadcrumbSchema, webPageSchema } from "@/lib/jsonld";

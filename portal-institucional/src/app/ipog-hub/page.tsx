@@ -140,7 +140,7 @@ export default function PaginaHub() {
         <div className="grid gap-6 lg:grid-cols-2">
           <Card>
             <h3 className="text-fluid-lg">
-              IPOG {unidadeSede.cidade}, {unidadeSede.uf}
+              {`IPOG ${unidadeSede.cidade}, ${unidadeSede.uf}`}
             </h3>
             <address className="mt-3 not-italic text-fluid-base leading-relaxed text-conexao-700">
               {unidadeSede.endereco}

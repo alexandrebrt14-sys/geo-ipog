@@ -32,6 +32,8 @@ const AREAS = [
 const ROTAS = [
   { arquivo: "index.html", nome: "/" },
   { arquivo: "areas-de-conhecimento/index.html", nome: "/areas-de-conhecimento" },
+  { arquivo: "tipos-de-curso/index.html", nome: "/tipos-de-curso" },
+  { arquivo: "modalidades/index.html", nome: "/modalidades" },
   { arquivo: "enterprise/index.html", nome: "/enterprise" },
   { arquivo: "ipog-hub/index.html", nome: "/ipog-hub" },
   { arquivo: "unidades/index.html", nome: "/unidades" },

@@ -42,6 +42,17 @@ export const navigation: NavItem[] = [
     description: "Portfólio de pós-graduação e extensão por área",
   },
   {
+    href: "/tipos-de-curso",
+    label: "Formações",
+    description:
+      "Pós-graduação, graduação, extensão e educação corporativa, lado a lado",
+  },
+  {
+    href: "/modalidades",
+    label: "Modalidades",
+    description: "Presencial, ao vivo e EaD: como cada uma funciona",
+  },
+  {
     href: "/enterprise",
     label: "Enterprise",
     description: "Educação corporativa e trilhas de capacitação para empresas",
@@ -89,6 +100,8 @@ export const navigation: NavItem[] = [
 export const routes = [
   "/",
   "/areas-de-conhecimento",
+  "/tipos-de-curso",
+  "/modalidades",
   "/enterprise",
   "/ipog-hub",
   "/unidades",

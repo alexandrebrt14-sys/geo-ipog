@@ -62,7 +62,9 @@ export function Header() {
         >
           {/* Fundo claro, então a aplicação preferencial do guia é a positiva. */}
           <Logo className="h-7 w-auto sm:h-8" decorativo />
-          <span className="hidden border-l border-[var(--line)] pl-3 font-apoio text-xs font-semibold uppercase tracking-[0.18em] text-conexao-700 sm:block">
+          {/* O rótulo some entre 1280px e 1536px: nessa faixa a barra precisa
+              do espaço para os dez itens de navegação sem transbordar. */}
+          <span className="hidden border-l border-[var(--line)] pl-3 font-apoio text-xs font-semibold uppercase tracking-[0.18em] text-conexao-700 sm:block xl:hidden 2xl:block">
             Portal GEO
           </span>
         </Link>

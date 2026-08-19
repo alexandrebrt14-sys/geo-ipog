@@ -141,7 +141,7 @@ export default async function PaginaDaArea({ params }: Props) {
       {/* Retrato numérico: o bloco mais fácil de extrair da rota inteira. */}
       <div className="border-b border-[var(--line)] bg-[var(--surface-muted)]">
         <Container className="py-8">
-          <h2 className="sr-only">Resumo numérico da área de {area.nome}</h2>
+          <h2 className="sr-only">{`Resumo numérico da área de ${area.nome}`}</h2>
           <dl className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
             <div>
               <dd className="font-apoio text-fluid-2xl font-bold leading-none text-protagonismo-600">
@@ -276,7 +276,7 @@ export default async function PaginaDaArea({ params }: Props) {
         <Container>
           <header className="max-w-3xl">
             <h2 id="cursos-titulo" className="text-fluid-2xl font-light uppercase">
-              Cursos de {area.nome}
+              {`Cursos de ${area.nome}`}
             </h2>
             <p className="mt-4 text-fluid-lg leading-relaxed text-conexao-700">
               {porNivel

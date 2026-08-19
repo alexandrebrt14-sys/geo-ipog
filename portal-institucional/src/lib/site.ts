@@ -90,6 +90,41 @@ export const navigation: NavItem[] = [
 ];
 
 /** Todas as rotas estáticas do portal, usadas pelo sitemap. */
+export type GrupoDeMenu = {
+  /** Rótulo do grupo na barra. */
+  label: string;
+  /** Rotas do grupo, na ordem em que aparecem. */
+  rotas: string[];
+};
+
+/**
+ * Agrupamento do menu principal.
+ *
+ * A barra chegou a dez itens soltos e passou a exigir 1247px de largura, o que
+ * a fazia sumir por completo em qualquer tela menor que 1280px: quem estava num
+ * notebook, ou com a escala do Windows em 125%, só via o menu recolhido. Quatro
+ * grupos resolvem isso e ainda deixam espaço para o portal crescer.
+ *
+ * Os grupos referenciam rotas em vez de repetir rótulo e descrição, então
+ * `navigation` continua sendo a fonte única para rodapé, painel do celular e
+ * llms.txt.
+ */
+export const menuPrincipal: GrupoDeMenu[] = [
+  {
+    label: "Cursos",
+    rotas: ["/areas-de-conhecimento", "/tipos-de-curso", "/modalidades"],
+  },
+  { label: "Para empresas", rotas: ["/enterprise", "/ipog-hub"] },
+  { label: "Sobre o IPOG", rotas: ["/metodo", "/autoridade", "/unidades", "/sobre"] },
+  { label: "Perguntas", rotas: ["/faq"] },
+];
+
+/** Itens de navegação de um grupo, resolvidos a partir de `navigation`. */
+export const itensDoGrupo = (grupo: GrupoDeMenu): NavItem[] =>
+  grupo.rotas
+    .map((rota) => navigation.find((item) => item.href === rota))
+    .filter((item): item is NavItem => item !== undefined);
+
 /**
  * Rotas estáticas do portal, usadas pelo sitemap e pelo llms.txt.
  *

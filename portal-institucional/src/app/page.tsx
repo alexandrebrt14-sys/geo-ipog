@@ -140,12 +140,12 @@ export default function PaginaInicial() {
 
         <div className="mt-8">
           <Callout titulo="Sobre o uso destes números" tom="atencao">
-            O texto institucional mais recente registra mais de 350 mil
-            profissionais formados, enquanto o Guia de Expressão da Marca 2025
-            traz mais de 300 mil. Este portal adota o dado mais recente. Antes de
-            usar qualquer indicador em peça pública, confirme com a área
-            responsável, porque dado de instituição de ensino tem implicação
-            regulatória e publicitária.
+            Formados, satisfação, unidades e número de cursos são os mesmos
+            valores publicados em ipog.edu.br, conferidos em 19 de agosto de
+            2026. Conceito MEC e NPS vêm de fonte interna e não constam do site
+            público. Antes de usar qualquer indicador em peça publicitária,
+            confirme com a área responsável, porque dado de instituição de ensino
+            tem implicação regulatória.
           </Callout>
         </div>
       </Section>

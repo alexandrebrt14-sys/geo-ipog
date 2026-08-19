@@ -80,7 +80,8 @@ jobs:
           test -f portal-institucional/out/index.html || (echo "Build falhou: index.html ausente" && exit 1)
           PAGINAS=$(find portal-institucional/out -name "index.html" | wc -l)
           echo "Paginas HTML construidas: $PAGINAS"
-          test "$PAGINAS" -ge 6 || (echo "Build com poucas paginas (esperado >=6)" && exit 1)
+          # 7 rotas institucionais + 12 paginas de area de conhecimento.
+          test "$PAGINAS" -ge 19 || (echo "Build com poucas paginas (esperado >=19)" && exit 1)
 
       - name: "Garantir que o projeto existe no Cloudflare Pages"
         continue-on-error: true
@@ -115,7 +116,18 @@ jobs:
           # propagar em toda a borda da Cloudflare, e nesse intervalo parte das
           # rotas responde 522. Cada rota e tentada ate 6 vezes, com 10s entre
           # as tentativas, antes de ser considerada falha de verdade.
-          ROTAS=("/" "/areas-de-conhecimento/" "/metodo/" "/autoridade/" "/faq/" "/sobre/")
+          ROTAS=(
+            "/"
+            "/areas-de-conhecimento/"
+            "/areas-de-conhecimento/engenharia/"
+            "/unidades/"
+            "/metodo/"
+            "/autoridade/"
+            "/faq/"
+            "/sobre/"
+            "/llms.txt"
+            "/sitemap.xml"
+          )
           TENTATIVAS=6
           FALHOU=0
           for ROTA in "${ROTAS[@]}"; do

@@ -39,7 +39,7 @@ export const perguntasFrequentes: PerguntaFrequente[] = [
     categoria: "Institucional",
     pergunta: "O que é o IPOG?",
     resposta:
-      "O IPOG, Instituto de Pós-Graduação e Graduação, é uma instituição de ensino superior brasileira fundada em 2001 em Goiânia, Goiás. O IPOG atua em pós-graduação lato sensu, graduação pela Faculdade IPOG, cursos de extensão e educação corporativa pelo IPOG Enterprise. A instituição está presente em todos os 26 estados brasileiros e no Distrito Federal e já formou mais de 350 mil profissionais.",
+      "O IPOG, Instituto de Pós-Graduação e Graduação, é uma instituição de ensino superior brasileira fundada em 2001 em Goiânia, Goiás. O IPOG atua em pós-graduação lato sensu, graduação pela Faculdade IPOG, cursos de extensão e educação corporativa pelo IPOG Enterprise. A instituição está presente em todos os 26 estados brasileiros e no Distrito Federal e já formou 300 mil profissionais.",
   },
   {
     id: "ipog-e-reconhecido-pelo-mec",
@@ -60,7 +60,7 @@ export const perguntasFrequentes: PerguntaFrequente[] = [
     categoria: "Institucional",
     pergunta: "Quais são os principais indicadores de qualidade do IPOG?",
     resposta:
-      "O IPOG registra 98% de satisfação dos alunos, NPS de 85 e conceito 5 no MEC. Além disso, 90% dos alunos apontam alta probabilidade de aplicar o que aprenderam nos primeiros 90 dias após o curso. O portfólio reúne mais de 120 opções de pós-graduação.",
+      "O IPOG registra 98% de satisfação dos alunos, NPS 98 e conceito 5 no MEC. A instituição soma 300 mil profissionais formados e 52 unidades no país, presentes em todos os 26 estados brasileiros e no Distrito Federal. O portfólio reúne mais de 120 opções de pós-graduação.",
   },
   {
     id: "quais-modalidades",

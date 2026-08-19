@@ -6,9 +6,15 @@
  *  - docs/institucional/canais-de-atendimento.md
  *  - docs/marca/plataforma-de-marca.md
  *
- * Nota sobre números: o texto institucional (mais recente) traz "mais de 350 mil
- * profissionais formados"; o Guia de Expressão da Marca 2025 traz "mais de 300 mil".
- * Prevalece o dado mais recente, conforme orientação do próprio repositório.
+ * Nota sobre números: os indicadores foram conferidos contra ipog.edu.br em
+ * 19 de agosto de 2026. O portal publica o mesmo valor que o site institucional
+ * sempre que o site declara um, porque número divergente entre duas fontes da
+ * mesma instituição faz o motor generativo desconfiar das duas.
+ *
+ * O bloco "Nossos números", em ipog.edu.br/institucional/quem-somos, declara
+ * 300 mil especialistas formados, 98% de satisfação, 52 unidades e mais de 120
+ * cursos. Conceito MEC e NPS não aparecem no site público e vêm de fonte
+ * interna, confirmados pela área de marketing.
  */
 
 export const instituicao = {
@@ -28,7 +34,7 @@ export const instituicao = {
   promessa:
     "Construir o futuro através de experiências de ensino com alta qualidade, criando protagonismo profissional para a carreira de seus alunos e gerando líderes que impactam positivamente o mundo.",
   descricaoCurta:
-    "Fundado em 2001 em Goiânia, o IPOG é uma das principais referências em pós-graduação e educação corporativa do Brasil, com presença em todos os 26 estados e no Distrito Federal, conceito 5 no MEC e mais de 350 mil profissionais formados.",
+    "Fundado em 2001 em Goiânia, o IPOG é uma das principais referências em pós-graduação e educação corporativa do Brasil, com presença em todos os 26 estados e no Distrito Federal, conceito 5 no MEC e 300 mil profissionais formados.",
 } as const;
 
 export type Indicador = {
@@ -51,8 +57,9 @@ export const indicadores: Indicador[] = [
   },
   {
     rotulo: "Profissionais formados",
-    valor: "+350 mil",
-    detalhe: "Alunos que já passaram pelos cursos do IPOG em todo o Brasil.",
+    valor: "300 mil",
+    detalhe:
+      "Especialistas formados pelo IPOG em todo o Brasil, conforme o bloco Nossos Números do site institucional.",
   },
   {
     rotulo: "Satisfação dos alunos",
@@ -61,7 +68,7 @@ export const indicadores: Indicador[] = [
   },
   {
     rotulo: "NPS",
-    valor: "85",
+    valor: "98",
     detalhe: "Net Promoter Score, na faixa classificada como zona de excelência.",
   },
   {
@@ -70,15 +77,15 @@ export const indicadores: Indicador[] = [
     detalhe: "Especializações e MBAs nas modalidades presencial, ao vivo e EaD.",
   },
   {
+    rotulo: "Unidades no país",
+    valor: "52",
+    detalhe:
+      "Unidades próprias e espaços parceiros, distribuídos por 50 cidades com página própria no site do IPOG.",
+  },
+  {
     rotulo: "Abrangência nacional",
     valor: "27 UFs",
     detalhe: "Presença em todos os 26 estados brasileiros e no Distrito Federal.",
-  },
-  {
-    rotulo: "Aplicabilidade em 90 dias",
-    valor: "90%",
-    detalhe:
-      "Dos alunos apontam alta probabilidade de aplicar o aprendizado nos primeiros 90 dias.",
   },
 ];
 
@@ -125,7 +132,7 @@ export const diferenciais: Diferencial[] = [
   {
     titulo: "Metodologia aplicada",
     descricao:
-      "O conteúdo é pensado para uso imediato no trabalho. 90% dos alunos apontam alta probabilidade de aplicar o que aprenderam nos primeiros 90 dias.",
+      "O conteúdo é pensado para uso imediato no trabalho, com cases reais discutidos em aula e entregas aplicadas ao contexto profissional de cada aluno.",
   },
   {
     titulo: "Formato intensivo",

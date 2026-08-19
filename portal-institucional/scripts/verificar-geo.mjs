@@ -13,13 +13,34 @@ import { join } from "node:path";
 
 const RAIZ_EXPORT = "out";
 
+/** Áreas de conhecimento, na mesma ordem em que o portal as declara. */
+const AREAS = [
+  "comunicacao",
+  "direito",
+  "pericias-forenses",
+  "educacao",
+  "engenharia",
+  "arquitetura",
+  "gestao-e-negocios",
+  "meio-ambiente",
+  "saude",
+  "tecnologia-da-informacao",
+  "contabilidade",
+  "psicologia",
+];
+
 const ROTAS = [
   { arquivo: "index.html", nome: "/" },
   { arquivo: "areas-de-conhecimento/index.html", nome: "/areas-de-conhecimento" },
+  { arquivo: "unidades/index.html", nome: "/unidades" },
   { arquivo: "metodo/index.html", nome: "/metodo" },
   { arquivo: "autoridade/index.html", nome: "/autoridade" },
   { arquivo: "faq/index.html", nome: "/faq" },
   { arquivo: "sobre/index.html", nome: "/sobre" },
+  ...AREAS.map((slug) => ({
+    arquivo: `areas-de-conhecimento/${slug}/index.html`,
+    nome: `/areas-de-conhecimento/${slug}`,
+  })),
 ];
 
 const falhas = [];

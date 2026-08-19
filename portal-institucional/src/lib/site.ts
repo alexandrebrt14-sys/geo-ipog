@@ -3,12 +3,18 @@
  *
  * Ponto único de verdade para domínio, rotas e identidade da instituição.
  * Ao plugar o portal no site novo do IPOG, basta ajustar `url`.
+ *
+ * `url` precisa apontar para o endereço onde o portal está publicado de fato.
+ * Ele alimenta a URL canônica, o sitemap, o robots e os identificadores JSON-LD.
+ * Enquanto apontava para geo.ipog.edu.br, um subdomínio que ainda não existe,
+ * cada página declarava como canônico um endereço que não resolvia, o que leva
+ * o rastreador a descartar o conteúdo ou a não saber a quem atribuí-lo.
  */
 
 export const site = {
   name: "Portal GEO IPOG",
   shortName: "GEO IPOG",
-  url: "https://geo.ipog.edu.br",
+  url: "https://geo-ipog.pages.dev",
   locale: "pt-BR",
   title: "Portal GEO IPOG — Base de conhecimento estruturada do IPOG",
   description:
@@ -36,6 +42,11 @@ export const navigation: NavItem[] = [
     description: "Portfólio de pós-graduação e extensão por área",
   },
   {
+    href: "/unidades",
+    label: "Unidades",
+    description: "Cidades e estados atendidos pelo IPOG",
+  },
+  {
     href: "/metodo",
     label: "Método IPOG",
     description: "Metodologia de ensino, formato e critérios acadêmicos",
@@ -58,9 +69,17 @@ export const navigation: NavItem[] = [
 ];
 
 /** Todas as rotas estáticas do portal, usadas pelo sitemap. */
+/**
+ * Rotas estáticas do portal, usadas pelo sitemap e pelo llms.txt.
+ *
+ * As páginas de cada área de conhecimento não entram aqui: elas são derivadas
+ * de `areasDeConhecimento` e acrescentadas no sitemap, para que uma área nova
+ * apareça sem precisar de edição manual em dois lugares.
+ */
 export const routes = [
   "/",
   "/areas-de-conhecimento",
+  "/unidades",
   "/metodo",
   "/autoridade",
   "/faq",

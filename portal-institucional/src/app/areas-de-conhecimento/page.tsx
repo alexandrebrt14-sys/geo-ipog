@@ -69,7 +69,7 @@ export default function PaginaAreasDeConhecimento() {
             {areasDeConhecimento.map((area) => (
               <li key={area.slug}>
                 <Link
-                  href={`#${area.slug}-cursos`}
+                  href={`/areas-de-conhecimento/${area.slug}`}
                   className="inline-flex items-center gap-2 rounded-pill border border-digital-200 bg-white px-4 py-2 text-fluid-sm font-medium text-digital-800 transition-colors hover:border-digital-300 hover:bg-digital-50"
                 >
                   <span

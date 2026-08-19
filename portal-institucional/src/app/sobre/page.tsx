@@ -68,17 +68,17 @@ export default function PaginaSobre() {
             educação corporativa do país.
           </p>
           <p>
-            Hoje, a instituição está presente em todos os estados brasileiros e
-            no Distrito Federal, e já colocou a sua chancela no currículo de mais
-            de 350 mil profissionais. A satisfação dos alunos chega a 98%, com NPS
-            de 85, e a instituição detém a nota máxima do MEC, conceito 5.
+            Hoje, a instituição opera 52 unidades e está presente em todos os 26
+            estados brasileiros e no Distrito Federal, e já colocou a sua chancela
+            no currículo de 300 mil profissionais. A satisfação dos alunos chega a
+            98%, com NPS 98, e a instituição detém a nota máxima do MEC, conceito
+            5.
           </p>
           <p>
             O portfólio reúne mais de 120 opções de pós-graduação, além de cursos
             de extensão e graduação pela Faculdade IPOG. O diferencial está na
-            metodologia aplicada: o conteúdo é pensado para uso imediato, e 90%
-            dos alunos apontam alta probabilidade de colocar em prática o que
-            aprenderam nos primeiros 90 dias. As especializações seguem formato
+            metodologia aplicada: o conteúdo é pensado para uso imediato, com
+            cases reais discutidos em aula. As especializações seguem formato
             intensivo, com módulos mensais concentrados em três dias
             consecutivos, o que permite conciliar estudo e rotina profissional.
           </p>

@@ -8,6 +8,12 @@ import {
   principiosGeo,
 } from "@/data/geo";
 import { areasDeConhecimento, totalCursosCatalogados } from "@/data/areas";
+import {
+  notasMecGraduacao,
+  coordenacaoDeCursos,
+  formasDeIngresso,
+  observacaoSobreOferta,
+} from "@/data/graduacao";
 import { perguntasFrequentes } from "@/data/faq";
 import { breadcrumbSchema, webPageSchema } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
@@ -175,6 +181,54 @@ export default function PaginaAutoridade() {
               perguntas respondidas em formato extraível
             </p>
           </Card>
+        </div>
+      </Section>
+
+      {/* Avaliação externa e responsáveis nomeados pelos cursos de graduação. */}
+      <Section
+        id="faculdade"
+        titulo="Faculdade IPOG: avaliação e responsáveis"
+        descricao="Nota de avaliação externa e nome de quem responde por cada curso são as evidências de autoridade mais fáceis de conferir que uma instituição de ensino pode publicar. Ambas vêm da página de graduação do site oficial."
+      >
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div>
+            <h3 className="text-fluid-lg font-bold uppercase text-digital-900">
+              Notas do MEC por curso
+            </h3>
+            <DataTable
+              legenda="Notas do MEC declaradas pelo IPOG para os cursos de graduação."
+              cabecalhos={["Curso de graduação", "Nota do MEC"]}
+              linhas={notasMecGraduacao.map((item) => [
+                item.curso,
+                <strong key={item.curso} className="text-protagonismo-700">
+                  {item.nota}
+                </strong>,
+              ])}
+            />
+          </div>
+
+          <div>
+            <h3 className="text-fluid-lg font-bold uppercase text-digital-900">
+              Coordenação de curso
+            </h3>
+            <DataTable
+              legenda="Coordenadores dos cursos de graduação da Faculdade IPOG."
+              cabecalhos={["Coordenação", "Cursos"]}
+              linhas={coordenacaoDeCursos.map((pessoa) => [
+                pessoa.nome,
+                pessoa.cursos.join(", "),
+              ])}
+            />
+          </div>
+        </div>
+
+        <div className="mt-8 space-y-4">
+          <Callout titulo="Formas de ingresso na graduação">
+            {formasDeIngresso.join(", ")}.
+          </Callout>
+          <Callout titulo="Onde a graduação é ofertada" tom="atencao">
+            {observacaoSobreOferta}
+          </Callout>
         </div>
       </Section>
 

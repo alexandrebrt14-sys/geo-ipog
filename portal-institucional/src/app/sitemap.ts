@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { routes, absoluteUrl } from "@/lib/site";
+import { areasDeConhecimento } from "@/data/areas";
 
 /**
  * Gera o /sitemap.xml a partir da lista de rotas declarada em `@/lib/site`.
@@ -18,11 +19,17 @@ const prioridades: Record<string, number> = {
   "/faq": 0.9,
   "/metodo": 0.8,
   "/autoridade": 0.8,
+  "/unidades": 0.8,
   "/sobre": 0.7,
 };
 
+/** Rotas das páginas de área, derivadas do catálogo. */
+const rotasDeArea = areasDeConhecimento.map(
+  (area) => `/areas-de-conhecimento/${area.slug}`,
+);
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  return routes.map((rota) => ({
+  return [...routes, ...rotasDeArea].map((rota) => ({
     url: absoluteUrl(rota),
     lastModified: ultimaAtualizacao,
     changeFrequency: "monthly" as const,

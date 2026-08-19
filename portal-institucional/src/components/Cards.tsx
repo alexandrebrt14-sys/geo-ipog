@@ -94,7 +94,7 @@ export function AreaCard({ area }: { area: AreaConhecimento }) {
         </div>
 
         <Link
-          href={`/areas-de-conhecimento#${area.slug}-cursos`}
+          href={`/areas-de-conhecimento/${area.slug}`}
           className="mt-6 inline-flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-wide text-protagonismo-600 underline-offset-4 transition-colors hover:text-protagonismo-800 hover:underline"
         >
           Ver todos os cursos

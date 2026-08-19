@@ -1,0 +1,126 @@
+# Publicacao do portal GEO IPOG (Next.js em portal-institucional/) no
+# Cloudflare Pages, projeto `geo-ipog`.
+#
+# Fica separado de deploy-cloudflare-pages.yml, que atende o site Astro em
+# `site/` e o dominio posgraduacaopsicologia.com. Os dois usam a mesma conta
+# Cloudflare, mas projetos e filtros de caminho distintos, entao um deploy
+# nunca dispara o outro.
+#
+# Pre-requisitos (ja configurados no repositorio):
+# - Secret CLOUDFLARE_API_TOKEN com permissao Account Pages: Edit.
+# - Secret CLOUDFLARE_ACCOUNT_ID da conta brasilgeo.
+#
+# O passo de criacao do projeto e idempotente: falha silenciosamente quando o
+# projeto ja existe, o que permite rodar o workflow do zero ou repetidas vezes.
+#
+# Trigger:
+# - push para main que toque portal-institucional/ ou este arquivo
+# - workflow_dispatch manual
+
+name: "Deploy — Portal GEO IPOG (Cloudflare Pages)"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "portal-institucional/**"
+      - ".github/workflows/deploy-portal-geo.yml"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch alvo no Cloudflare Pages (main = alias de producao)"
+        required: false
+        default: "main"
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: "cloudflare-pages-portal-geo"
+  cancel-in-progress: false
+
+env:
+  PROJETO_CF: "geo-ipog"
+
+jobs:
+  build-and-deploy:
+    name: "Build Next.js + Deploy CF Pages"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: "Checkout do repositorio"
+        uses: actions/checkout@v4
+
+      - name: "Setup Node 22"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "portal-institucional/package-lock.json"
+
+      - name: "Instalar dependencias"
+        working-directory: portal-institucional
+        run: npm ci
+
+      - name: "Checagem de tipos"
+        working-directory: portal-institucional
+        run: npm run typecheck
+
+      - name: "Build com export estatico"
+        working-directory: portal-institucional
+        run: npm run build
+
+      - name: "Verificacao de GEO sobre o HTML exportado"
+        working-directory: portal-institucional
+        run: npm run verificar:geo
+
+      - name: "Conferir artefato"
+        run: |
+          test -f portal-institucional/out/index.html || (echo "Build falhou: index.html ausente" && exit 1)
+          PAGINAS=$(find portal-institucional/out -name "index.html" | wc -l)
+          echo "Paginas HTML construidas: $PAGINAS"
+          test "$PAGINAS" -ge 6 || (echo "Build com poucas paginas (esperado >=6)" && exit 1)
+
+      - name: "Garantir que o projeto existe no Cloudflare Pages"
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create ${{ env.PROJETO_CF }} --production-branch=main
+
+      - name: "Deploy para Cloudflare Pages"
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy portal-institucional/out --project-name=${{ env.PROJETO_CF }} --branch=${{ github.event.inputs.branch || 'main' }}
+
+      - name: "Publicar a URL no resumo do job"
+        run: |
+          URL_ALIAS="https://${PROJETO_CF}.pages.dev"
+          {
+            echo "## Portal GEO IPOG publicado"
+            echo ""
+            echo "- URL de producao: ${URL_ALIAS}"
+            echo "- URL deste deploy: ${{ steps.deploy.outputs.deployment-url }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Producao: ${URL_ALIAS}"
+
+      - name: "Smoke test pos-deploy"
+        run: |
+          sleep 10
+          ROTAS=("/" "/areas-de-conhecimento/" "/metodo/" "/autoridade/" "/faq/" "/sobre/")
+          FALHOU=0
+          for ROTA in "${ROTAS[@]}"; do
+            URL="https://${PROJETO_CF}.pages.dev${ROTA}"
+            CODE=$(curl -sIL -o /dev/null -w "%{http_code}" "$URL")
+            echo "$CODE $URL"
+            if [ "$CODE" != "200" ]; then FALHOU=1; fi
+          done
+          if [ "$FALHOU" -ne 0 ]; then
+            echo "Smoke test falhou em pelo menos 1 rota"
+            exit 1
+          fi

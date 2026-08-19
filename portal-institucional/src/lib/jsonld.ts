@@ -9,7 +9,8 @@
 
 import { site, absoluteUrl } from "@/lib/site";
 import { instituicao, canaisAtendimento } from "@/data/institucional";
-import type { AreaConhecimento } from "@/data/areas";
+import type { Curso } from "@/data/areas";
+import { areasDeConhecimento } from "@/data/areas";
 import type { PerguntaFrequente } from "@/data/faq";
 
 /** Identificador canônico da entidade IPOG, reutilizado por referência. */
@@ -135,73 +136,100 @@ function slugificar(texto: string): string {
 }
 
 /**
+ * Converte a duração declarada pelo site em duração ISO 8601.
+ *
+ * O campo `timeRequired` do Schema.org espera duração de máquina, não o texto
+ * exibido ao leitor. "12 meses" vira "P12M" e "2,5 anos" vira "P30M", já que a
+ * notação ISO não admite fração de ano.
+ */
+function duracaoIso(duracao: string | null): string | undefined {
+  if (!duracao) return undefined;
+
+  const meses = /^(\d+)\s+meses$/.exec(duracao);
+  if (meses) return `P${meses[1]}M`;
+
+  const anos = /^(\d+(?:[.,]\d+)?)\s+anos?$/.exec(duracao);
+  if (anos) return `P${Math.round(Number(anos[1].replace(",", ".")) * 12)}M`;
+
+  return undefined;
+}
+
+/**
  * Schema.org/Course para um curso do portfólio.
  *
  * `hasCourseInstance` declara as modalidades disponíveis usando o vocabulário
  * `courseMode`, que é o campo que os motores leem para responder perguntas do
  * tipo "esse curso tem versão online?".
  *
- * O `@id` combina a área e o nome do curso porque um identificador repetido
- * levaria os consumidores a fundir cursos distintos em uma única entidade.
+ * O `@id` é derivado apenas do nome e do nível, e não da área. Um mesmo curso
+ * pode pertencer a várias áreas, como o site do IPOG declara, e repetir a
+ * entidade por área faria os motores contarem o mesmo curso mais de uma vez.
+ * As áreas entram em `about`, que é o campo próprio para assunto.
  */
-export function courseSchema(
-  curso: { nome: string; nivel: string; modalidades: readonly string[] },
-  area: Pick<AreaConhecimento, "nome" | "slug">,
-): JsonLdObject {
+export function courseSchema(curso: Curso): JsonLdObject {
   const modoPorModalidade: Record<string, string> = {
     Presencial: "onsite",
     "Ao vivo": "online",
     EaD: "online",
   };
 
+  const areas = areasDeConhecimento.filter((area) =>
+    curso.areas.includes(area.slug),
+  );
+  const nomesDasAreas = areas.map((area) => area.nome);
+  const tempo = duracaoIso(curso.duracao);
+
   return {
     "@type": "Course",
     "@id": absoluteUrl(
-      `/areas-de-conhecimento#curso-${area.slug}-${slugificar(curso.nome)}`,
+      `/areas-de-conhecimento#curso-${slugificar(curso.nivel)}-${slugificar(curso.nome)}`,
     ),
-    url: absoluteUrl(`/areas-de-conhecimento#${area.slug}-cursos`),
+    url: absoluteUrl(
+      `/areas-de-conhecimento#${areas[0]?.slug ?? "catalogo"}-cursos`,
+    ),
     name: curso.nome,
-    description: `${curso.nivel} do IPOG na área de ${area.nome}, disponível nas modalidades ${curso.modalidades.join(", ")}.`,
+    description: `${curso.nivel} do IPOG ${
+      nomesDasAreas.length > 1 ? "nas áreas de" : "na área de"
+    } ${nomesDasAreas.join(", ")}, ${
+      curso.duracao ? `com duração de ${curso.duracao}, ` : ""
+    }disponível nas modalidades ${curso.modalidades.join(", ")}.`,
     educationalLevel: curso.nivel,
     inLanguage: site.locale,
     provider: { "@id": ORGANIZATION_ID },
+    about: nomesDasAreas.map((nome) => ({ "@type": "Thing", name: nome })),
+    ...(tempo ? { timeRequired: tempo } : {}),
     hasCourseInstance: curso.modalidades.map((modalidade) => ({
       "@type": "CourseInstance",
       courseMode: modoPorModalidade[modalidade] ?? "blended",
       name: `${curso.nome} — ${modalidade}`,
       availableLanguage: site.locale,
+      ...(tempo ? { courseSchedule: { "@type": "Schedule", duration: tempo } } : {}),
     })),
   };
 }
 
 /**
- * Agrupa os cursos de todas as áreas em um ItemList navegável por máquina.
+ * Reúne o catálogo inteiro em um ItemList navegável por máquina.
  *
- * A posição é contada de forma corrida sobre a lista achatada, e não reiniciada
- * a cada área, porque `position` identifica o item dentro do ItemList inteiro.
+ * A lista percorre os cursos, e não as áreas, para que um curso que pertence a
+ * mais de uma área apareça uma única vez. `numberOfItems` passa então a
+ * refletir o número real de formações distintas.
  */
 export function catalogoDeCursosSchema(
-  areas: ReadonlyArray<AreaConhecimento>,
+  cursos: ReadonlyArray<Curso>,
 ): JsonLdObject {
-  let posicao = 0;
-
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "@id": absoluteUrl("/areas-de-conhecimento#catalogo"),
     name: "Catálogo de cursos do IPOG por área de conhecimento",
     itemListOrder: "https://schema.org/ItemListUnordered",
-    numberOfItems: areas.reduce((total, area) => total + area.cursos.length, 0),
-    itemListElement: areas.flatMap((area) =>
-      area.cursos.map((curso) => {
-        posicao += 1;
-        return {
-          "@type": "ListItem",
-          position: posicao,
-          item: courseSchema(curso, area),
-        };
-      }),
-    ),
+    numberOfItems: cursos.length,
+    itemListElement: cursos.map((curso, indice) => ({
+      "@type": "ListItem",
+      position: indice + 1,
+      item: courseSchema(curso),
+    })),
   };
 }
 

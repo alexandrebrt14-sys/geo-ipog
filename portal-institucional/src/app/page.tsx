@@ -7,7 +7,12 @@ import {
   diferenciais,
   frentesDeAtuacao,
 } from "@/data/institucional";
-import { areasDeConhecimento, totalCursosCatalogados, modalidades } from "@/data/areas";
+import {
+  areasDeConhecimento,
+  totalCursosCatalogados,
+  totaisPorNivel,
+  modalidades,
+} from "@/data/areas";
 import { perguntasFrequentes } from "@/data/faq";
 import { principiosGeo } from "@/data/geo";
 import { breadcrumbSchema, webPageSchema } from "@/lib/jsonld";
@@ -173,9 +178,11 @@ export default function PaginaInicial() {
         titulo="Áreas de conhecimento"
         descricao={
           <>
-            O portfólio está organizado em {areasDeConhecimento.length} áreas, com{" "}
-            {totalCursosCatalogados} cursos catalogados entre MBAs,
-            especializações e cursos de extensão.
+            O portfólio está organizado em {areasDeConhecimento.length} áreas de
+            conhecimento, com {totalCursosCatalogados} cursos:{" "}
+            {totaisPorNivel["Pós-graduação"]} de pós-graduação, incluindo MBAs e
+            especializações, {totaisPorNivel["Extensão"]} de extensão e{" "}
+            {totaisPorNivel["Graduação"]} de graduação.
           </>
         }
       >

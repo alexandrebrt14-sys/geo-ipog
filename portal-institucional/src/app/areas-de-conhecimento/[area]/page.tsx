@@ -22,6 +22,7 @@ import {
 import { criarMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
 import { FaqList } from "@/components/FaqList";
+import { IndiceDaPagina } from "@/components/IndiceDaPagina";
 import {
   Container,
   Section,
@@ -127,7 +128,7 @@ export default async function PaginaDaArea({ params }: Props) {
           }),
           breadcrumbSchema(trilha),
           faqSchema(perguntas, rota),
-          catalogoDeCursosSchema(cursos),
+          catalogoDeCursosSchema(cursos, { path: rota }),
         ]}
       />
 
@@ -136,6 +137,23 @@ export default async function PaginaDaArea({ params }: Props) {
         destaque={`${cursos.length} ${cursos.length === 1 ? "curso" : "cursos"}`}
         titulo={area.nome}
         resumo={descricao}
+      />
+
+      <IndiceDaPagina
+        itens={[
+          { href: "#o-que-e", rotulo: "O que é" },
+          { href: "#que-cursos", rotulo: "Que cursos" },
+          { href: "#para-quem", rotulo: "Para quem" },
+          { href: "#como-estudar", rotulo: "Como estudar" },
+          { href: "#perguntas", rotulo: "Perguntas" },
+          { href: "#catalogo", rotulo: "Catálogo" },
+          ...(interdisciplinares.length > 0
+            ? [{ href: "#interdisciplinares", rotulo: "Outras áreas" }]
+            : []),
+          ...(artigos.length > 0
+            ? [{ href: "#no-blog", rotulo: "No blog" }]
+            : []),
+        ]}
       />
 
       {/* Retrato numérico: o bloco mais fácil de extrair da rota inteira. */}
@@ -270,8 +288,9 @@ export default async function PaginaDaArea({ params }: Props) {
 
       {/* Catálogo da área, separado por nível de formação. */}
       <section
+        id="catalogo"
         aria-labelledby="cursos-titulo"
-        className="border-t border-[var(--line)] py-14 sm:py-20"
+        className="scroll-mt-32 border-t border-[var(--line)] py-14 sm:py-20"
       >
         <Container>
           <header className="max-w-3xl">

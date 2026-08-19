@@ -13,6 +13,7 @@ import { areasDeConhecimento } from "@/data/areas";
 import { breadcrumbSchema, webPageSchema, servicoSchema } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
+import { IndiceDaPagina } from "@/components/IndiceDaPagina";
 import {
   Section,
   PageHeader,
@@ -73,6 +74,15 @@ export default function PaginaEnterprise() {
         destaque={`${trilhasDeCapacitacao.length} trilhas, ${totalDeModulos} módulos`}
         titulo="IPOG Enterprise"
         resumo={descricao}
+      />
+
+      <IndiceDaPagina
+        itens={[
+          { href: "#o-que-e", rotulo: "O que é" },
+          { href: "#formatos", rotulo: "Formatos" },
+          { href: "#trilhas", rotulo: "Trilhas" },
+          { href: "#para-quem", rotulo: "Para quem" },
+        ]}
       />
 
       <Section id="o-que-e" titulo="O que é o IPOG Enterprise">

@@ -227,19 +227,44 @@ export function courseSchema(curso: Curso): JsonLdObject {
  */
 export function catalogoDeCursosSchema(
   cursos: ReadonlyArray<Curso>,
+  opcoes: { compacto?: boolean; path?: string } = {},
 ): JsonLdObject {
+  const { compacto = false, path = "/areas-de-conhecimento" } = opcoes;
+
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "@id": absoluteUrl("/areas-de-conhecimento#catalogo"),
+    "@id": absoluteUrl(`${path}#catalogo`),
     name: "Catálogo de cursos do IPOG por área de conhecimento",
     itemListOrder: "https://schema.org/ItemListUnordered",
     numberOfItems: cursos.length,
     itemListElement: cursos.map((curso, indice) => ({
       "@type": "ListItem",
       position: indice + 1,
-      item: courseSchema(curso),
+      item: compacto ? referenciaDeCurso(curso) : courseSchema(curso),
     })),
+  };
+}
+
+/**
+ * Referência enxuta a um curso, para a lista do índice de áreas.
+ *
+ * O índice precisa continuar declarando os 213 cursos, senão a lista completa
+ * deixa de existir em um endereço só. Mas repetir ali a definição inteira de
+ * cada curso, que já está na página da área, custava centenas de kilobytes de
+ * JSON duplicado. A referência por `@id` resolve os dois lados: a lista fica
+ * completa e o motor encontra a definição rica na rota da área, sob o mesmo
+ * identificador.
+ */
+function referenciaDeCurso(curso: Curso): JsonLdObject {
+  return {
+    "@type": "Course",
+    "@id": absoluteUrl(
+      `/areas-de-conhecimento#curso-${slugificar(curso.nivel)}-${slugificar(curso.nome)}`,
+    ),
+    name: curso.nome,
+    educationalLevel: curso.nivel,
+    provider: { "@id": ORGANIZATION_ID },
   };
 }
 

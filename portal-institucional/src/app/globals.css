@@ -126,7 +126,10 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
-    scroll-padding-top: 5.5rem;
+    /* Acomoda as duas barras fixas somadas: o cabeçalho principal, de 4rem no
+       mobile e 5rem a partir de sm, e o índice da página, de cerca de 2,75rem.
+       Sem essa folga, o título da seção fica escondido atrás delas ao pular. */
+    scroll-padding-top: 7rem;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -243,11 +246,29 @@
     background: var(--surface-muted);
   }
 
-  /* Contêiner de rolagem horizontal para tabelas largas no mobile */
+  /* Contêiner de rolagem horizontal para tabelas largas no mobile.
+
+     No celular não aparece barra de rolagem, então nada indicava que a tabela
+     continuava para o lado: o leitor via a coluna cortada e concluía que aquilo
+     era tudo. As sombras laterais abaixo resolvem sem JavaScript. Elas usam
+     `background-attachment`: as camadas brancas rolam junto com o conteúdo
+     (`local`) e cobrem a sombra quando se chega ao fim, enquanto as sombras
+     ficam fixas (`scroll`). O resultado é uma sombra que só aparece do lado em
+     que ainda há conteúdo. */
   .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
+
+    background-image:
+      linear-gradient(to right, var(--surface) 30%, rgb(255 255 255 / 0)),
+      linear-gradient(to left, var(--surface) 30%, rgb(255 255 255 / 0)),
+      radial-gradient(farthest-side at 0 50%, rgb(35 35 37 / 0.14), rgb(35 35 37 / 0)),
+      radial-gradient(farthest-side at 100% 50%, rgb(35 35 37 / 0.14), rgb(35 35 37 / 0));
+    background-position: left center, right center, left center, right center;
+    background-repeat: no-repeat;
+    background-size: 44px 100%, 44px 100%, 16px 100%, 16px 100%;
+    background-attachment: local, local, scroll, scroll;
   }
 
   /* Link de pular para o conteúdo (acessibilidade) */

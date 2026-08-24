@@ -1,10 +1,21 @@
-# Publicacao do portal GEO IPOG (Next.js em portal-institucional/) no
+# Publicacao ESPELHO do portal GEO IPOG (Next.js em portal-institucional/) no
 # Cloudflare Pages, projeto `geo-ipog`.
 #
-# Fica separado de deploy-cloudflare-pages.yml, que atende o site Astro em
-# `site/` e o dominio posgraduacaopsicologia.com. Os dois usam a mesma conta
-# Cloudflare, mas projetos e filtros de caminho distintos, entao um deploy
-# nunca dispara o outro.
+# Producao do portal e https://posgraduacaopsicologia.com/ipog/, montada pelo
+# workflow deploy-cloudflare-pages.yml, que copia o export do Next para dentro
+# do artefato do site Astro. Este workflow continua existindo como ambiente de
+# conferencia: publica o mesmo codigo em https://geo-ipog.pages.dev, servido na
+# raiz, sem basePath.
+#
+# As duas copias declaram a MESMA canonica, a de producao, porque `site.url` em
+# src/lib/site.ts aponta para posgraduacaopsicologia.com/ipog em qualquer build.
+# Sem isso os dois enderecos competiriam pelo mesmo conteudo e dividiriam a
+# autoridade. Se algum dia o pages.dev precisar ser a producao de novo, e
+# `site.url` que muda, nao este arquivo.
+#
+# Os dois workflows usam a mesma conta Cloudflare, mas projetos distintos. Um
+# push que toque portal-institucional/ dispara os DOIS, o que e intencional:
+# producao e espelho nunca ficam em versoes diferentes.
 #
 # Pre-requisitos (ja configurados no repositorio):
 # - Secret CLOUDFLARE_API_TOKEN com permissao Account Pages: Edit.
@@ -17,7 +28,7 @@
 # - push para main que toque portal-institucional/ ou este arquivo
 # - workflow_dispatch manual
 
-name: "Deploy — Portal GEO IPOG (Cloudflare Pages)"
+name: "Deploy — Portal GEO IPOG (espelho em geo-ipog.pages.dev)"
 
 on:
   push:

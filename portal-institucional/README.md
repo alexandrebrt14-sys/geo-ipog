@@ -1,8 +1,24 @@
 # Portal GEO IPOG
 
-> Este portal vive em `portal-institucional/` e é independente do projeto em
-> `site/`. Ele tem o próprio `package.json` e o próprio ciclo de build, então não
-> interfere no deploy Cloudflare Pages, que observa apenas `site/**`.
+> Este portal vive em `portal-institucional/`, com `package.json` e ciclo de
+> build próprios, separados do projeto Astro em `site/`.
+>
+> **Onde ele é publicado.** A produção é
+> <https://posgraduacaopsicologia.com/ipog/>. O workflow
+> `deploy-cloudflare-pages.yml` constrói este portal com
+> `NEXT_PUBLIC_BASE_PATH=/ipog` e copia o `out/` para dentro do artefato do site
+> Astro, então os dois saem no mesmo projeto Cloudflare e no mesmo domínio.
+>
+> O workflow `deploy-portal-geo.yml` continua publicando em
+> <https://geo-ipog.pages.dev>, agora como **espelho** de conferência, servido na
+> raiz e sem `basePath`. As duas cópias declaram a mesma URL canônica, a de
+> produção, porque `site.url` em `src/lib/site.ts` é fixo. Um push que toque
+> `portal-institucional/` dispara os dois workflows.
+>
+> **Ao mexer em arquivo de `public/`:** o `basePath` do Next reescreve `<Link>` e
+> rotas, mas não caminho escrito como string, e `next/image` também não reescreve
+> porque o otimizador está desligado. Use o helper `assetPath` de
+> `@/lib/site`, senão o arquivo sai apontando para a raiz do site anfitrião.
 
 Portal de conhecimento e otimização GEO do IPOG. Reúne os dados institucionais da
 instituição em uma base estruturada para consulta humana e, principalmente, para

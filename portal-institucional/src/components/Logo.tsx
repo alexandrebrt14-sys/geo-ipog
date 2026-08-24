@@ -19,6 +19,8 @@
 
 import Image from "next/image";
 
+import { assetPath } from "@/lib/site";
+
 /** Proporção do arquivo oficial, usada para reservar espaço e evitar salto de layout. */
 const LARGURA_ORIGINAL = 200;
 const ALTURA_ORIGINAL = 28;
@@ -40,10 +42,11 @@ export function Logo({
   variante = "positiva",
   decorativo = false,
 }: LogoProps) {
-  const arquivo =
+  const arquivo = assetPath(
     variante === "negativa"
       ? "/marca/logo-ipog-branca.svg"
-      : "/marca/logo-ipog.svg";
+      : "/marca/logo-ipog.svg",
+  );
 
   return (
     <Image

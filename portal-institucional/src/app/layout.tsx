@@ -71,20 +71,11 @@ export const metadata: Metadata = {
     siteName: site.name,
     title: site.title,
     description: site.description,
-    images: [
-      {
-        url: site.ogImage,
-        width: 1200,
-        height: 630,
-        alt: "Portal GEO IPOG — base de conhecimento estruturada",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: site.title,
     description: site.description,
-    images: [site.ogImage],
   },
   robots: {
     index: true,

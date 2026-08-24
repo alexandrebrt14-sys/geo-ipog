@@ -13,7 +13,9 @@ export function Footer() {
 
   return (
     <footer className="mt-auto border-t border-white/15 bg-[var(--surface-inverse)] text-white/80">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      {/* O rodapé é o único bloco que encosta no fim da tela, então é onde a
+          barra de gestos do celular cobriria conteúdo. */}
+      <div className="respiro-lateral respiro-inferior mx-auto max-w-7xl py-12 sm:py-16">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
             {/* Fundo Vinho Determinação, então usa-se a aplicação negativa. */}

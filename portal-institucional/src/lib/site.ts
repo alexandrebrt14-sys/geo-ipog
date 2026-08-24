@@ -30,8 +30,20 @@ export const site = {
   description:
     "Base de conhecimento oficial do IPOG estruturada para motores de busca generativos: dados institucionais, áreas de pós-graduação, metodologia de ensino e perguntas frequentes em formato extraível por IA.",
   themeColor: "#0c1a36",
-  ogImage: "/og/portal-geo-ipog.svg",
 } as const;
+
+/*
+ * `ogImage` foi removido daqui de propósito.
+ *
+ * Ele apontava para `/og/portal-geo-ipog.svg`, um SVG, e as redes que consomem
+ * Open Graph descartam SVG: Facebook, LinkedIn, WhatsApp e X mostravam o link
+ * sem prévia nenhuma. Além disso era uma imagem só para as 23 rotas.
+ *
+ * A imagem passou a ser gerada em PNG no build, uma por rota, pelos arquivos
+ * `opengraph-image.tsx` que ficam ao lado de cada `page.tsx`. O desenho comum
+ * vive em `@/lib/og`. O SVG antigo continua em `public/og/` porque ainda serve
+ * como peça de apresentação, mas não é mais referenciado por metadata.
+ */
 
 /**
  * Prefixo de caminho em que o portal é entregue, espelhando o `basePath` de

@@ -91,7 +91,7 @@ export function Header() {
       ref={barraRef}
       className="sticky top-0 z-50 border-b border-[var(--line)] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85"
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:px-8">
+      <div className="respiro-lateral mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 sm:h-20">
         <Link
           href="/"
           className="flex shrink-0 items-center gap-3 rounded-md transition-opacity hover:opacity-80"
@@ -236,7 +236,11 @@ export function Header() {
       >
         <nav
           aria-label="Navegação principal, versão compacta"
-          className="max-h-[calc(100dvh-4rem)] overflow-y-auto px-4 py-4 sm:px-6"
+          /* `dvh` porque a barra do navegador móvel some ao rolar e o `vh`
+             clássico continuaria contando a altura antiga, deixando o último
+             item do menu abaixo da dobra. `respiro-inferior` afasta esse mesmo
+             item da barra de gestos. */
+          className="respiro-lateral respiro-inferior max-h-[calc(100dvh-4rem)] overflow-y-auto py-4"
         >
           {menuPrincipal.map((grupo) => (
             <section key={grupo.label} className="mb-4 last:mb-0">

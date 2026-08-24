@@ -8,6 +8,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { corDeTextoAcessivel, sobrepor } from "@/lib/cor";
+
 /** Contêiner com largura máxima e respiro lateral responsivo. */
 export function Container({
   children,
@@ -17,7 +19,9 @@ export function Container({
   className?: string;
 }) {
   return (
-    <div className={`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${className}`}>
+    /* `respiro-lateral` substitui `px-4 sm:px-6 lg:px-8`: mesmo respiro, mas
+       crescendo onde o entalhe do aparelho invade a lateral. Ver globals.css. */
+    <div className={`respiro-lateral mx-auto w-full max-w-7xl ${className}`}>
       {children}
     </div>
   );
@@ -181,7 +185,7 @@ export function Card({
     <div
       className={`rounded-card border border-[var(--line)] bg-white p-6 shadow-card sm:p-7 ${
         comHover
-          ? "transition-all duration-200 hover:-translate-y-0.5 hover:border-conexao-200 hover:shadow-card-hover"
+          ? "transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-conexao-200 hover:shadow-card-hover"
           : ""
       } ${className}`}
     >
@@ -278,7 +282,19 @@ export function DataTable({
   );
 }
 
-/** Etiqueta compacta para modalidades, níveis e categorias. */
+/**
+ * Etiqueta compacta para modalidades, níveis e categorias.
+ *
+ * A cor recebida é a cor da marca ou da área, e ela continua governando o
+ * aspecto da etiqueta: entra na borda a 20% e no preenchimento a 8%. O que
+ * mudou é o texto, que passou a usar um tom derivado dessa mesma cor, escuro o
+ * suficiente para alcançar os 4,5:1 da WCAG 2.2 AA sobre o preenchimento real.
+ *
+ * Antes, o texto usava a cor da marca crua, e as cores claras da paleta ficavam
+ * ilegíveis: Amarelo Estratégico marcava 1,83:1 e Verde Vital 2,88:1. A conta
+ * fica em `@/lib/cor`, num ponto só, então uma área nova nasce legível sem que
+ * ninguém precise lembrar de conferir.
+ */
 export function Tag({
   children,
   cor,
@@ -286,14 +302,24 @@ export function Tag({
   children: ReactNode;
   cor?: string;
 }) {
+  if (!cor) {
+    return (
+      <span className="inline-flex items-center rounded-pill border px-2.5 py-1 text-xs font-medium">
+        {children}
+      </span>
+    );
+  }
+
+  const preenchimento = sobrepor(cor, 0.08, "#ffffff");
+
   return (
     <span
       className="inline-flex items-center rounded-pill border px-2.5 py-1 text-xs font-medium"
-      style={
-        cor
-          ? { borderColor: `${cor}33`, backgroundColor: `${cor}14`, color: cor }
-          : undefined
-      }
+      style={{
+        borderColor: `${cor}33`,
+        backgroundColor: `${cor}14`,
+        color: corDeTextoAcessivel(cor, preenchimento),
+      }}
     >
       {children}
     </span>

@@ -62,13 +62,23 @@
 # `application/octet-stream`. Como o site envia `X-Content-Type-Options:
 # nosniff`, nem o navegador nem o rastreador podem corrigir isso por conta
 # própria, e a prévia do link volta a não aparecer.
+#
+# Sem `Cache-Control` aqui, de propósito. Nestes dois caminhos o Cloudflare
+# concatenou a declaração à da regra `/*` em vez de substituir a diretiva, e o
+# cabeçalho saiu como `max-age=300, s-maxage=3600, public, max-age=86400`, com
+# `max-age` repetido. Não quebra cache nenhum, porque o primeiro valor é o que
+# prevalece, mas era cabeçalho malformado e o valor efetivo já era o da regra
+# geral. Imagem de compartilhamento é buscada por rastreador de rede social, e
+# raramente, então os 5 minutos herdados bastam.
+#
+# A regra de `_next/static/` acima não tem esse problema: ali o Cloudflare
+# substitui `max-age` corretamente, e o cabeçalho servido é
+# `public, max-age=31536000, s-maxage=3600, immutable`.
 /ipog/opengraph-image
   Content-Type: image/png
-  Cache-Control: public, max-age=86400
 
 /ipog/*/opengraph-image
   Content-Type: image/png
-  Cache-Control: public, max-age=86400
 
 # Política de segurança de conteúdo do portal.
 #

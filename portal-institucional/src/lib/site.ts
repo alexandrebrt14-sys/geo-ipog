@@ -9,12 +9,22 @@
  * Enquanto apontava para geo.ipog.edu.br, um subdomínio que ainda não existe,
  * cada página declarava como canônico um endereço que não resolvia, o que leva
  * o rastreador a descartar o conteúdo ou a não saber a quem atribuí-lo.
+ *
+ * Desde a mudança para subpasta, o endereço de produção é
+ * posgraduacaopsicologia.com/ipog, um domínio que já tem histórico de
+ * indexação. O portal continua saindo também em geo-ipog.pages.dev, mas ali ele
+ * é espelho: as duas cópias declaram a mesma canônica, a de produção, então o
+ * rastreador atribui o conteúdo a um endereço só e o pages.dev fica valendo
+ * como ambiente de conferência.
+ *
+ * `url` tem caminho, e não só domínio. Toda montagem de endereço absoluto passa
+ * por `absoluteUrl`, que preserva esse caminho.
  */
 
 export const site = {
   name: "Portal GEO IPOG",
   shortName: "GEO IPOG",
-  url: "https://geo-ipog.pages.dev",
+  url: "https://posgraduacaopsicologia.com/ipog",
   locale: "pt-BR",
   title: "Portal GEO IPOG — Base de conhecimento estruturada do IPOG",
   description:
@@ -22,6 +32,28 @@ export const site = {
   themeColor: "#0c1a36",
   ogImage: "/og/portal-geo-ipog.svg",
 } as const;
+
+/**
+ * Prefixo de caminho em que o portal é entregue, espelhando o `basePath` de
+ * `next.config.ts`. Vazio no espelho servido na raiz, "/ipog" em produção.
+ *
+ * O nome da variável começa com NEXT_PUBLIC_ porque o valor é substituído no
+ * código durante o build, então componentes de cliente também o enxergam.
+ */
+export const caminhoBase = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+/**
+ * Caminho de um arquivo estático de `public/`, já com o prefixo da subpasta.
+ *
+ * Existe porque o `basePath` do Next reescreve `<Link>` e as rotas, mas não
+ * strings soltas de caminho. E `next/image` também não reescreve quando o
+ * otimizador está desligado por `images.unoptimized`, que é o caso aqui: sem
+ * este helper, a logo do cabeçalho sairia apontando para
+ * `/marca/logo-ipog.svg`, um endereço que na produção pertence ao site
+ * anfitrião e responde 404.
+ */
+export const assetPath = (path: string): string =>
+  `${caminhoBase}${path.startsWith("/") ? path : `/${path}`}`;
 
 export type NavItem = {
   href: string;
@@ -155,6 +187,13 @@ export const routes = [
  * `/faq` e `/faq/` como dois endereços distintos.
  *
  * Arquivos com extensão, como `sitemap.xml`, e fragmentos são preservados.
+ *
+ * A concatenação é literal, e não `new URL(rota, site.url)`, porque o construtor
+ * de URL trata um caminho iniciado por barra como absoluto e descarta o caminho
+ * da base. Com `site.url` terminando em `/ipog`, resolver "/faq/" pela base
+ * devolveria `https://posgraduacaopsicologia.com/faq/`, uma canônica apontando
+ * para fora do portal e para uma rota que pertence ao site anfitrião. Montar a
+ * string e só então validar pelo construtor mantém a subpasta.
  */
 export const absoluteUrl = (path: string): string => {
   const [rota, fragmento] = path.split("#");
@@ -162,6 +201,11 @@ export const absoluteUrl = (path: string): string => {
   const normalizada =
     temExtensao || rota.endsWith("/") ? rota : `${rota}/`;
 
-  const url = new URL(normalizada, site.url).toString();
+  const base = site.url.replace(/\/+$/, "");
+  const comBarra = normalizada.startsWith("/")
+    ? normalizada
+    : `/${normalizada}`;
+
+  const url = new URL(`${base}${comBarra}`).toString();
   return fragmento ? `${url}#${fragmento}` : url;
 };

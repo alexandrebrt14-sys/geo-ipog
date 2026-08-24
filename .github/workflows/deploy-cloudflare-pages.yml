@@ -11,8 +11,21 @@
 # incremental para Cloudflare Pages (Pages reaproveita arquivos com hash
 # identico).
 #
+# Este job publica DOIS artefatos no mesmo projeto Cloudflare:
+# 1. o site Astro em `site/`, que ocupa a raiz do dominio;
+# 2. o Portal GEO IPOG (Next.js em `portal-institucional/`), montado com
+#    basePath=/ipog e copiado para `site/dist/ipog`, servido em
+#    https://posgraduacaopsicologia.com/ipog/.
+#
+# A ordem importa: o portal so e copiado DEPOIS de `npm run build` do site. O
+# `astro build` limpa `dist/` antes de escrever, e o `gen-sitemap.mjs` varre
+# `dist/` inteiro. Copiar antes faria o portal ser apagado pelo build e, se
+# sobrevivesse, colocaria as 23 paginas do portal dentro do sitemap do site,
+# com prioridade e changefreq calculadas por regras que nao valem para elas. O
+# portal publica o proprio sitemap em /ipog/sitemap.xml.
+#
 # Trigger:
-# - push para branch main que toque site/, .github/workflows/, ou docs/research/
+# - push para branch main que toque site/, portal-institucional/, ou este arquivo
 # - workflow_dispatch manual
 
 name: "Deploy — Cloudflare Pages posgraduacaopsicologia"
@@ -22,6 +35,7 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "portal-institucional/**"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
     inputs:
@@ -40,7 +54,7 @@ concurrency:
 
 jobs:
   build-and-deploy:
-    name: "Build Astro + Deploy CF Pages"
+    name: "Build Astro + Portal GEO em /ipog + Deploy CF Pages"
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -62,7 +76,7 @@ jobs:
         working-directory: site
         run: npm run build
 
-      - name: "Verificar artefato"
+      - name: "Verificar artefato do site"
         run: |
           test -f site/dist/index.html || (echo "Build falhou: index.html ausente" && exit 1)
           test -f site/dist/sitemap.xml || (echo "Sitemap nao gerado" && exit 1)
@@ -71,6 +85,86 @@ jobs:
           PAGE_COUNT=$(find site/dist -name "index.html" | wc -l)
           echo "Paginas HTML construidas: $PAGE_COUNT"
           test "$PAGE_COUNT" -ge 150 || (echo "Build com poucas paginas (esperado >=150)" && exit 1)
+          # O sitemap do site nao pode conter rotas do portal: o portal tem o
+          # dele em /ipog/sitemap.xml. Se esta linha falhar, a copia do portal
+          # foi movida para antes do gen-sitemap.
+          if grep -q "posgraduacaopsicologia.com/ipog/" site/dist/sitemap.xml; then
+            echo "Sitemap do site contaminado com rotas do portal /ipog"
+            exit 1
+          fi
+
+      # ---------------------------------------------------------------------
+      # Portal GEO IPOG em /ipog
+      # ---------------------------------------------------------------------
+
+      - name: "Setup Node 22 para o portal"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "portal-institucional/package-lock.json"
+
+      - name: "Instalar dependencias do portal"
+        working-directory: portal-institucional
+        run: npm ci
+
+      - name: "Checagem de tipos do portal"
+        working-directory: portal-institucional
+        run: npm run typecheck
+
+      - name: "Build do portal com basePath /ipog"
+        working-directory: portal-institucional
+        env:
+          NEXT_PUBLIC_BASE_PATH: "/ipog"
+        run: npm run build
+
+      - name: "Verificacao de GEO sobre o HTML do portal"
+        working-directory: portal-institucional
+        run: npm run verificar:geo
+
+      - name: "Tamanho dos paragrafos do portal"
+        working-directory: portal-institucional
+        run: npm run verificar:paragrafos
+
+      - name: "Montar o portal em site/dist/ipog"
+        run: |
+          # O export do Next nao aninha as rotas sob /ipog: `basePath` muda os
+          # enderecos escritos no HTML, nao a arvore de arquivos. Entao out/
+          # inteiro vira a pasta ipog/, e out/_next vira ipog/_next, que e
+          # exatamente o que o assetPrefix passou a referenciar.
+          rm -rf site/dist/ipog
+          mkdir -p site/dist/ipog
+          cp -R portal-institucional/out/. site/dist/ipog/
+
+          test -f site/dist/ipog/index.html || (echo "Portal ausente em dist/ipog" && exit 1)
+          test -f site/dist/ipog/sitemap.xml || (echo "Sitemap do portal ausente" && exit 1)
+          test -d site/dist/ipog/_next || (echo "Assets do portal ausentes" && exit 1)
+
+          PAGINAS_PORTAL=$(find site/dist/ipog -name "index.html" | wc -l)
+          echo "Paginas do portal montadas em /ipog: $PAGINAS_PORTAL"
+          # 11 rotas institucionais + 12 paginas de area de conhecimento.
+          test "$PAGINAS_PORTAL" -ge 23 || (echo "Portal com poucas paginas (esperado >=23)" && exit 1)
+
+          # Os assets precisam sair prefixados, senao o portal carrega o CSS de
+          # /_next/ e colide com a raiz do site anfitriao.
+          grep -q '"/ipog/_next/' site/dist/ipog/index.html \
+            || grep -q "'/ipog/_next/" site/dist/ipog/index.html \
+            || grep -q "/ipog/_next/" site/dist/ipog/index.html \
+            || (echo "assetPrefix nao aplicado: HTML nao referencia /ipog/_next/" && exit 1)
+
+          # A canonica precisa apontar para a subpasta, e nao para a raiz.
+          grep -q 'rel="canonical" href="https://posgraduacaopsicologia.com/ipog/"' site/dist/ipog/index.html \
+            || (echo "Canonica do portal nao aponta para /ipog/" && exit 1)
+
+          # Arquivos de public/ referenciados por string solta nao ganham o
+          # prefixo automaticamente. A logo ja quebrou por isso uma vez: sem o
+          # prefixo ela aponta para /marca/, que pertence ao site anfitriao.
+          if grep -q '"/marca/logo-ipog' site/dist/ipog/index.html; then
+            echo "Logo do portal referenciada sem o prefixo /ipog"
+            exit 1
+          fi
+          grep -q '"/ipog/marca/logo-ipog' site/dist/ipog/index.html \
+            || (echo "Logo do portal ausente do HTML" && exit 1)
 
       - name: "Deploy para Cloudflare Pages"
         uses: cloudflare/wrangler-action@v3
@@ -91,6 +185,15 @@ jobs:
             "https://posgraduacaopsicologia.com/mbas/"
             "https://posgraduacaopsicologia.com/guias/"
             "https://posgraduacaopsicologia.com/faq/"
+            "https://posgraduacaopsicologia.com/ipog/"
+            "https://posgraduacaopsicologia.com/ipog/areas-de-conhecimento/"
+            "https://posgraduacaopsicologia.com/ipog/areas-de-conhecimento/psicologia/"
+            "https://posgraduacaopsicologia.com/ipog/tipos-de-curso/"
+            "https://posgraduacaopsicologia.com/ipog/modalidades/"
+            "https://posgraduacaopsicologia.com/ipog/metodo/"
+            "https://posgraduacaopsicologia.com/ipog/faq/"
+            "https://posgraduacaopsicologia.com/ipog/sitemap.xml"
+            "https://posgraduacaopsicologia.com/ipog/llms.txt"
           )
           FAIL=0
           for URL in "${URLS[@]}"; do
@@ -115,7 +218,9 @@ jobs:
               "keyLocation": "https://posgraduacaopsicologia.com/d2b9ebce0365f8fc565be54671f9fae8.txt",
               "urlList": [
                 "https://posgraduacaopsicologia.com/",
-                "https://posgraduacaopsicologia.com/sitemap.xml"
+                "https://posgraduacaopsicologia.com/sitemap.xml",
+                "https://posgraduacaopsicologia.com/ipog/",
+                "https://posgraduacaopsicologia.com/ipog/sitemap.xml"
               ]
             }' \
             -o /dev/null -w "indexnow: %{http_code}\n"

@@ -6,9 +6,15 @@ import { site, absoluteUrl } from "@/lib/site";
  *
  * Existe porque, no Next, declarar `openGraph` em uma página substitui o objeto
  * herdado do layout em vez de mesclá-lo campo a campo. Uma rota que só queira
- * trocar o título acabaria, sem perceber, publicando sem `og:image`. Centralizar
- * a construção aqui garante que toda rota saia com o conjunto completo de
- * metadados sociais e com a URL canônica na mesma forma servida pelo export.
+ * trocar o título acabaria, sem perceber, publicando sem parte dos metadados
+ * sociais. Centralizar a construção aqui garante que toda rota saia com o
+ * conjunto completo e com a URL canônica na mesma forma servida pelo export.
+ *
+ * **A imagem não é declarada aqui.** Cada rota tem um `opengraph-image.tsx` ao
+ * lado do seu `page.tsx`, e o Next mescla essa imagem na metadata da rota
+ * sozinho, com largura, altura, tipo e texto alternativo. Declarar `images`
+ * neste objeto sobrescreveria a imagem da rota e devolveria o portal ao estado
+ * anterior, em que as 23 páginas compartilhavam a mesma figura.
  */
 export function criarMetadata(params: {
   titulo: string;
@@ -28,20 +34,11 @@ export function criarMetadata(params: {
       title: params.titulo,
       description: params.descricao,
       url: canonica,
-      images: [
-        {
-          url: site.ogImage,
-          width: 1200,
-          height: 630,
-          alt: `${params.titulo} — ${site.name}`,
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title: params.titulo,
       description: params.descricao,
-      images: [site.ogImage],
     },
   };
 }

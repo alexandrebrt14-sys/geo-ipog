@@ -19,6 +19,17 @@
 > rotas, mas não caminho escrito como string, e `next/image` também não reescreve
 > porque o otimizador está desligado. Use o helper `assetPath` de
 > `@/lib/site`, senão o arquivo sai apontando para a raiz do site anfitrião.
+>
+> **Ao usar cor de marca como cor de texto:** passe por `corDeTextoAcessivel`,
+> de `@/lib/cor`. As cores claras da paleta não alcançam os 4,5:1 que a WCAG 2.2
+> AA exige, e o helper escurece o tom sem trocar o matiz, deixando a cor original
+> na borda e no preenchimento. `npm run verificar:contraste` mede o HTML
+> exportado e falha o build se alguma combinação ficar abaixo do mínimo.
+>
+> **Ao criar uma rota nova:** crie também um `opengraph-image.tsx` ao lado do
+> `page.tsx`, copiando o de qualquer rota existente e trocando título e etiqueta.
+> Sem ele a rota herda a imagem do segmento acima e o link compartilhado mostra
+> o assunto errado. O desenho comum fica em `@/lib/og`.
 
 Portal de conhecimento e otimização GEO do IPOG. Reúne os dados institucionais da
 instituição em uma base estruturada para consulta humana e, principalmente, para

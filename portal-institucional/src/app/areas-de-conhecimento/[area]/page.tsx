@@ -20,6 +20,7 @@ import {
   webPageSchema,
 } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
+import { corDeTextoAcessivel } from "@/lib/cor";
 import { JsonLd } from "@/components/JsonLd";
 import { FaqList } from "@/components/FaqList";
 import { IndiceDaPagina } from "@/components/IndiceDaPagina";
@@ -364,7 +365,11 @@ export default async function PaginaDaArea({ params }: Props) {
                     key={outra.slug}
                     href={`/areas-de-conhecimento/${outra.slug}`}
                     className="underline underline-offset-4"
-                    style={{ color: outra.cor }}
+                    /* A cor da área identifica o destino, mas as cores claras
+                       da paleta não alcançam 4,5:1 sobre a linha branca da
+                       tabela. O tom é derivado para o texto e a identidade da
+                       área se mantém. */
+                    style={{ color: corDeTextoAcessivel(outra.cor, "#ffffff") }}
                   >
                     {outra.nome}
                   </Link>
@@ -394,11 +399,14 @@ export default async function PaginaDaArea({ params }: Props) {
                   href={artigo.url}
                   target="_blank"
                   rel="noopener"
-                  className="flex h-full flex-col rounded-card border border-[var(--line)] bg-white p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-conexao-200 hover:shadow-card-hover sm:p-6"
+                  className="flex h-full flex-col rounded-card border border-[var(--line)] bg-white p-5 shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-conexao-200 hover:shadow-card-hover sm:p-6"
                 >
                   <span
                     className="font-apoio text-xs font-semibold uppercase tracking-[0.14em]"
-                    style={{ color: area.cor }}
+                    /* Rótulo pequeno em caixa alta sobre o cartão branco: é o
+                       pior caso de legibilidade da página, então o tom vem
+                       derivado em vez da cor crua da área. */
+                    style={{ color: corDeTextoAcessivel(area.cor, "#ffffff") }}
                   >
                     {artigo.categoria}
                   </span>

@@ -126,6 +126,10 @@ jobs:
         working-directory: portal-institucional
         run: npm run verificar:paragrafos
 
+      - name: "Contraste WCAG 2.2 AA sobre o HTML do portal"
+        working-directory: portal-institucional
+        run: npm run verificar:contraste
+
       - name: "Montar o portal em site/dist/ipog"
         run: |
           # O export do Next nao aninha as rotas sob /ipog: `basePath` muda os
@@ -165,6 +169,31 @@ jobs:
           fi
           grep -q '"/ipog/marca/logo-ipog' site/dist/ipog/index.html \
             || (echo "Logo do portal ausente do HTML" && exit 1)
+
+          # Imagens de compartilhamento: uma por rota, em PNG.
+          #
+          # O portal ja publicou com uma unica imagem, em SVG, formato que
+          # nenhuma rede social renderiza: todo link saia sem previa. As duas
+          # conferencias abaixo cobrem as duas metades desse defeito.
+          OG=$(find site/dist/ipog -name "opengraph-image" | wc -l)
+          echo "Imagens de compartilhamento geradas: $OG"
+          test "$OG" -ge 23 || (echo "Esperado >=23 imagens de compartilhamento" && exit 1)
+
+          if head -c 8 site/dist/ipog/opengraph-image | od -An -tx1 | grep -q "89 50 4e 47"; then
+            echo "Imagem de compartilhamento e PNG de verdade"
+          else
+            echo "Imagem de compartilhamento nao tem assinatura PNG"
+            exit 1
+          fi
+
+          # Rotas distintas precisam apontar para imagens distintas, senao a
+          # geracao por rota existe no build e nao chega ao HTML.
+          OG_HOME=$(grep -o 'property="og:image" content="[^"]*"' site/dist/ipog/index.html | head -1)
+          OG_FAQ=$(grep -o 'property="og:image" content="[^"]*"' site/dist/ipog/faq/index.html | head -1)
+          if [ "$OG_HOME" = "$OG_FAQ" ]; then
+            echo "Home e FAQ compartilham a mesma og:image"
+            exit 1
+          fi
 
       - name: "Deploy para Cloudflare Pages"
         uses: cloudflare/wrangler-action@v3

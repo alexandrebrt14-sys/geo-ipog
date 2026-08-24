@@ -42,7 +42,7 @@ export function AreaCard({ area }: { area: AreaConhecimento }) {
   return (
     <article
       id={area.slug}
-      className="group flex scroll-mt-24 flex-col overflow-hidden rounded-card border border-[var(--line)] bg-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover"
+      className="group flex scroll-mt-24 flex-col overflow-hidden rounded-card border border-[var(--line)] bg-white shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:shadow-card-hover"
     >
       <div
         aria-hidden="true"

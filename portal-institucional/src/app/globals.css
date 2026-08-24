@@ -126,6 +126,13 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    /* O portal declara `viewport-fit: cover`, que estende a página para baixo
+       do entalhe e da barra de gestos. Sem declarar o esquema de cor, o
+       navegador pinta essas faixas com a cor padrão dele, que em aparelho no
+       modo escuro é preta, e a emenda com o fundo branco da página fica
+       visível. */
+    color-scheme: light;
+    background: var(--surface);
     /* Acomoda as duas barras fixas somadas: o cabeçalho principal, de 4rem no
        mobile e 5rem a partir de sm, e o índice da página, de cerca de 2,75rem.
        Sem essa folga, o título da seção fica escondido atrás delas ao pular. */
@@ -204,6 +211,44 @@
 }
 
 @layer components {
+  /* Respiro lateral que respeita o recorte da tela.
+
+     O portal declara `viewport-fit: cover`, então em aparelho com entalhe a
+     página ocupa a largura inteira, inclusive a faixa sob a câmera. Deitado, o
+     entalhe fica na lateral e come o começo das linhas: sem esta regra, a
+     primeira letra de cada parágrafo desaparece atrás dele.
+
+     `max()` mantém o respiro de projeto quando não há recorte, que é o caso do
+     computador e da maioria dos celulares, e só cresce onde o aparelho pede.
+
+     São propriedades lógicas (`inline-start` / `inline-end`) em vez de left e
+     right, então a regra continua correta se o portal um dia for publicado em
+     idioma escrito da direita para a esquerda. */
+  .respiro-lateral {
+    padding-inline-start: max(1rem, env(safe-area-inset-left));
+    padding-inline-end: max(1rem, env(safe-area-inset-right));
+  }
+
+  @media (min-width: 40rem) {
+    .respiro-lateral {
+      padding-inline-start: max(1.5rem, env(safe-area-inset-left));
+      padding-inline-end: max(1.5rem, env(safe-area-inset-right));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .respiro-lateral {
+      padding-inline-start: max(2rem, env(safe-area-inset-left));
+      padding-inline-end: max(2rem, env(safe-area-inset-right));
+    }
+  }
+
+  /* Folga inferior para a barra de gestos do celular, aplicada ao rodapé e ao
+     painel de navegação, que são os dois blocos que encostam no fim da tela. */
+  .respiro-inferior {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
   /* Tabelas explicativas: legíveis por humanos e extraíveis por LLMs */
   .geo-table {
     width: 100%;

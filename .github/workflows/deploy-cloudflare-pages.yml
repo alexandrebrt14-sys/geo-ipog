@@ -147,6 +147,14 @@ jobs:
           mkdir -p site/dist/ipog
           cp -R portal-institucional/out/. site/dist/ipog/
 
+          # O `_headers` do portal pertence ao ESPELHO, onde ele fica na raiz do
+          # artefato e marca o pages.dev como noindex. Aqui ele nao vale, porque
+          # o Cloudflare so le o `_headers` da raiz, que e o do site anfitriao.
+          # Fica de fora para nao ser servido como arquivo em /ipog/_headers, e
+          # sobretudo para nunca haver a chance de um noindex vazar para a
+          # producao.
+          rm -f site/dist/ipog/_headers
+
           test -f site/dist/ipog/index.html || (echo "Portal ausente em dist/ipog" && exit 1)
           test -f site/dist/ipog/sitemap.xml || (echo "Sitemap do portal ausente" && exit 1)
           test -d site/dist/ipog/_next || (echo "Assets do portal ausentes" && exit 1)
@@ -176,6 +184,14 @@ jobs:
           fi
           grep -q '"/ipog/marca/logo-ipog' site/dist/ipog/index.html \
             || (echo "Logo do portal ausente do HTML" && exit 1)
+
+          # A producao precisa continuar indexavel. O espelho e que leva noindex.
+          if grep -rq "X-Robots-Tag" site/dist/ipog/ 2>/dev/null; then
+            echo "noindex vazou do espelho para a producao em /ipog"
+            exit 1
+          fi
+          grep -q 'name="robots" content="index' site/dist/ipog/index.html \
+            || (echo "Home do portal nao declara index" && exit 1)
 
           # Imagens de compartilhamento: uma por rota, em PNG.
           #

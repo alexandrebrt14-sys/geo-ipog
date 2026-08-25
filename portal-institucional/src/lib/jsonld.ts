@@ -8,7 +8,11 @@
  */
 
 import { site, absoluteUrl } from "@/lib/site";
-import { instituicao, canaisAtendimento } from "@/data/institucional";
+import {
+  instituicao,
+  canaisAtendimento,
+  perfisOficiais,
+} from "@/data/institucional";
 import type { Curso } from "@/data/areas";
 import { areasDeConhecimento } from "@/data/areas";
 import type { PerguntaFrequente } from "@/data/faq";
@@ -16,6 +20,21 @@ import type { PerguntaFrequente } from "@/data/faq";
 /** Identificador canônico da entidade IPOG, reutilizado por referência. */
 export const ORGANIZATION_ID = absoluteUrl("/#organizacao");
 export const WEBSITE_ID = absoluteUrl("/#site");
+
+/**
+ * Datas do conteúdo institucional do portal.
+ *
+ * Conteúdo sem data compete em desvantagem: perguntado sobre como algo é
+ * "hoje", o motor prefere a fonte que diz quando foi revista. As duas datas são
+ * do conteúdo, e não do build, de propósito. Carimbar a data do build a cada
+ * publicação diria que tudo mudou toda vez, que é falso e, repetido, ensina o
+ * motor a ignorar o campo.
+ *
+ * `PRIMEIRA_PUBLICACAO` é quando o portal foi ao ar. `ULTIMA_REVISAO` sobe
+ * quando o conteúdo institucional é de fato revisto, não quando o código muda.
+ */
+export const PRIMEIRA_PUBLICACAO = "2026-08-18";
+export const ULTIMA_REVISAO = "2026-08-25";
 
 type JsonLdObject = Record<string, unknown>;
 
@@ -32,6 +51,10 @@ export function organizationSchema(): JsonLdObject {
     legalName: instituicao.nomeCompleto,
     alternateName: "Instituto de Pós-Graduação e Graduação",
     url: instituicao.site,
+    /* Amarra esta descrição do IPOG aos perfis que o IPOG declara como seus.
+       É o que permite ao motor tratar tudo como uma entidade só, em vez de
+       vários candidatos parecidos. Ver `perfisOficiais`. */
+    sameAs: [...perfisOficiais],
     foundingDate: instituicao.fundacao,
     slogan: instituicao.tagline,
     description: instituicao.descricaoCurta,
@@ -376,6 +399,8 @@ export function webPageSchema(params: {
     inLanguage: site.locale,
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": ORGANIZATION_ID },
+    datePublished: PRIMEIRA_PUBLICACAO,
+    dateModified: ULTIMA_REVISAO,
     ...(params.relacionados && params.relacionados.length > 0
       ? { relatedLink: [...params.relacionados] }
       : {}),

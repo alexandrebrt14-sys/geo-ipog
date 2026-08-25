@@ -35,9 +35,11 @@ import {
 const descricao = `${enterprise.definicao} O catálogo reúne ${trilhasDeCapacitacao.length} trilhas de capacitação com ${totalDeModulos} módulos, além de palestras, cursos de aperfeiçoamento e pós-graduação para turmas fechadas.`;
 
 export const metadata: Metadata = criarMetadata({
-  titulo: "IPOG Enterprise: educação corporativa para empresas",
+  titulo: "IPOG Enterprise: educação corporativa",
   descricao,
   path: "/enterprise",
+  descricaoMeta:
+    "Educação corporativa do IPOG para empresas: trilhas de capacitação, formatos de turma fechada e como uma proposta in company é montada.",
 });
 
 const trilha = [

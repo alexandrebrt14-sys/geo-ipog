@@ -37,6 +37,34 @@ export const instituicao = {
     "Fundado em 2001 em Goiânia, o IPOG é uma das principais referências em pós-graduação e educação corporativa do Brasil, com presença em todos os 26 estados e no Distrito Federal, conceito 5 no MEC e 300 mil profissionais formados.",
 } as const;
 
+/**
+ * Perfis oficiais do IPOG, para o `sameAs` do schema da organização.
+ *
+ * `sameAs` é como se diz a um motor de busca, e a um motor generativo, que
+ * todos estes endereços são a **mesma entidade**. Sem isso o portal fala de um
+ * IPOG que o motor não consegue amarrar ao IPOG do Instagram, do LinkedIn e do
+ * site: são candidatos soltos, e o motor fica menos seguro de a quem atribuir o
+ * que lê aqui. Em um portal que existe para ser citado, essa amarração é o
+ * próprio produto.
+ *
+ * Fonte: links publicados no rodapé de ipog.edu.br, conferidos em 25 de agosto
+ * de 2026. O LinkedIn responde 999 a requisição automatizada, que é a resposta
+ * anti-robô da plataforma e não ausência de perfil; foi conferido no navegador.
+ *
+ * Só entra aqui perfil que o próprio IPOG declara como seu. Perfil parecido,
+ * encontrado por busca, não serve: `sameAs` errado ensina o motor a confundir
+ * a instituição com outra coisa.
+ */
+export const perfisOficiais = [
+  "https://www.ipog.edu.br",
+  "https://blog.ipog.edu.br",
+  "https://www.instagram.com/ipogbrasil",
+  "https://www.linkedin.com/school/ipogbrasil",
+  "https://www.facebook.com/IPOGBrasil/",
+  "https://www.youtube.com/user/IPOGBRASIL",
+  "https://twitter.com/IPOGBrasil",
+] as const;
+
 export type Indicador = {
   rotulo: string;
   valor: string;

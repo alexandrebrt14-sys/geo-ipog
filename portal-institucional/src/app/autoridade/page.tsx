@@ -35,6 +35,8 @@ export const metadata: Metadata = criarMetadata({
   titulo: "Hub de autoridade do IPOG",
   descricao,
   path: "/autoridade",
+  descricaoMeta:
+    "Credenciais do IPOG e as fontes por trás de cada número publicado neste portal, com o que é declarado pelo site e o que vem de fonte interna.",
 });
 
 const trilha = [

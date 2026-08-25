@@ -70,6 +70,26 @@ function descreverArea(area: AreaConhecimento): string {
   } na área de ${area.nome}. ${area.resumo}`;
 }
 
+/**
+ * Linha curta para a `meta description`, que é o que o buscador exibe.
+ *
+ * O resumo da área é denso de propósito, para ser extraído por motor
+ * generativo, e passa dos 180 caracteres. Como vitrine de resultado de busca
+ * ele aparecia cortado no meio da frase nas doze áreas. Esta versão é montada
+ * dos números reais do catálogo, então diz algo diferente em cada área em vez
+ * de repetir um molde, e cabe no que é mostrado.
+ */
+function descreverAreaParaBusca(area: AreaConhecimento): string {
+  const stats = estatisticasDaArea(area.slug);
+  const pos = stats.porNivel["Pós-graduação"];
+
+  const composicao = pos > 0
+    ? `${stats.total} ${stats.total === 1 ? "curso" : "cursos"}, ${pos} de pós-graduação`
+    : `${stats.total} ${stats.total === 1 ? "curso" : "cursos"}`;
+
+  return `${area.nome} no IPOG: ${composicao}. Nível, duração e modalidade de cada um, e as perguntas mais comuns de quem escolhe a área.`;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { area: slug } = await params;
   const area = acharArea(slug);
@@ -78,6 +98,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return criarMetadata({
     titulo: `${area.nome}: cursos do IPOG na área`,
     descricao: descreverArea(area),
+    descricaoMeta: descreverAreaParaBusca(area),
     path: `/areas-de-conhecimento/${area.slug}`,
   });
 }

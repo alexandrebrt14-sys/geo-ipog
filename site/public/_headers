@@ -92,5 +92,13 @@
 # requisição. O ganho real está no resto: nenhuma origem externa pode executar
 # script, `object-src none` elimina plugin, e `base-uri` impede que uma injeção
 # reescreva a resolução dos caminhos relativos da página.
+# `static.cloudflareinsights.com` e `cloudflareinsights.com` estão liberados
+# porque o próprio Cloudflare injeta o beacon do Web Analytics na resposta, e
+# só para requisição de navegador: por `curl` ele não aparece, e foi por isso
+# que a primeira versão desta política passou despercebida. Sem essas duas
+# origens o portal registrava violação de CSP em todo carregamento e o Web
+# Analytics ficava cego em /ipog, enquanto seguia funcionando no resto do site,
+# que não tem política. O script é servido e medido pela mesma infraestrutura
+# que hospeda a página, então liberá-lo não amplia a superfície de ataque.
 /ipog/*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests

@@ -142,15 +142,21 @@ export default function PaginaModalidades() {
       <div className="border-b border-[var(--line)] bg-[var(--surface-muted)]">
         <Container className="py-8">
           <h2 className="sr-only">Cursos por modalidade</h2>
+          {/* `dt` antes de `dd` no HTML: o rótulo é o termo e o número é a
+              definição dele. O número aparece em cima por `flex-col-reverse`,
+              então quem inverte é o CSS, não a marcação. */}
           <dl className="grid grid-cols-3 gap-6">
             {modalidades.map((modalidade) => (
-              <div key={modalidade.nome}>
+              <div
+                key={modalidade.nome}
+                className="flex flex-col-reverse gap-2"
+              >
+                <dt className="text-fluid-sm text-conexao-700">
+                  cursos em {modalidade.nome}
+                </dt>
                 <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
                   {cursosPorModalidade[modalidade.nome]}
                 </dd>
-                <dt className="mt-2 text-fluid-sm text-conexao-700">
-                  cursos em {modalidade.nome}
-                </dt>
               </div>
             ))}
           </dl>

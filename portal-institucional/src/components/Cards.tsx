@@ -18,13 +18,17 @@ import { Card, Tag } from "@/components/Layout";
 export function IndicadorCard({ indicador }: { indicador: Indicador }) {
   return (
     <div className="rounded-card border border-[var(--line)] bg-[var(--surface)] p-6 shadow-card transition-shadow hover:shadow-card-hover">
-      <dl>
+      {/* `dt` antes de `dd` no HTML, sempre: o rótulo é o termo e o número é a
+          definição dele, e é essa ordem que o leitor de tela usa para dizer
+          "Ano de fundação: 2001". O desenho quer o número em cima, então quem
+          inverte é o `flex-col-reverse`, não a marcação. */}
+      <dl className="flex flex-col-reverse gap-2">
+        <dt className="font-apoio text-sm font-semibold uppercase tracking-[0.12em] text-conexao-800">
+          {indicador.rotulo}
+        </dt>
         <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
           {indicador.valor}
         </dd>
-        <dt className="mt-2 font-apoio text-sm font-semibold uppercase tracking-[0.12em] text-conexao-800">
-          {indicador.rotulo}
-        </dt>
       </dl>
       <p className="mt-3 text-fluid-sm leading-relaxed text-conexao-600">
         {indicador.detalhe}

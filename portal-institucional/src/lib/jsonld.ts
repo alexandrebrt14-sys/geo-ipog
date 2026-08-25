@@ -203,6 +203,34 @@ function duracaoIso(duracao: string | null): string | undefined {
 }
 
 /**
+ * Credencial e pré-requisito por nível de formação.
+ *
+ * Fonte: Manual do Aluno de Pós-Graduação 2026, p. 5, item 1, que define quem
+ * pode cursar lato sensu, e a Resolução MEC/CNE/CES nº 1 de 06/04/2018, que o
+ * manual cita como norma seguida pelos cursos.
+ *
+ * Extensão não aparece aqui de propósito: não outorga diploma nem título de
+ * especialista, e o mesmo manual prevê, no item 3, que quem não cumpre a carga
+ * de pós pode requerer certificação de extensão. Declará-la como programa que
+ * concede credencial seria afirmar o que ela não é.
+ */
+const COMO_PROGRAMA: Record<
+  string,
+  { credencial: string; prerequisito: string } | undefined
+> = {
+  "Pós-graduação": {
+    credencial:
+      "Certificado de especialista em pós-graduação lato sensu, conforme a Resolução MEC/CNE/CES nº 1/2018",
+    prerequisito:
+      "Diploma de curso superior reconhecido e registrado, emitido por instituição credenciada pelo MEC",
+  },
+  Graduação: {
+    credencial: "Diploma de graduação emitido pela Faculdade IPOG",
+    prerequisito: "Conclusão do ensino médio e processo seletivo do IPOG",
+  },
+};
+
+/**
  * Schema.org/Course para um curso do portfólio.
  *
  * `hasCourseInstance` declara as modalidades disponíveis usando o vocabulário
@@ -226,9 +254,25 @@ export function courseSchema(curso: Curso): JsonLdObject {
   );
   const nomesDasAreas = areas.map((area) => area.nome);
   const tempo = duracaoIso(curso.duracao);
+  const programa = COMO_PROGRAMA[curso.nivel];
 
   return {
-    "@type": "Course",
+    /*
+     * Dois tipos na mesma entidade, e não duas entidades.
+     *
+     * `Course` descreve uma sequência de ensino; `EducationalOccupationalProgram`
+     * descreve uma formação que leva a uma credencial. Uma pós-graduação é as
+     * duas coisas, e é por `EducationalOccupationalProgram` que um motor
+     * responde "que programa me dá um certificado de especialista".
+     *
+     * Declarar duas entidades separadas para o mesmo curso faria o motor contar
+     * o catálogo em dobro. O Schema.org admite lista em `@type`, então o mesmo
+     * `@id` carrega os dois papéis.
+     *
+     * Extensão fica só como `Course`: não concede diploma nem título, então
+     * declará-la como programa que outorga credencial seria afirmar o que não é.
+     */
+    "@type": programa ? ["Course", "EducationalOccupationalProgram"] : "Course",
     "@id": absoluteUrl(
       `/areas-de-conhecimento#curso-${slugificar(curso.nivel)}-${slugificar(curso.nome)}`,
     ),
@@ -246,6 +290,21 @@ export function courseSchema(curso: Curso): JsonLdObject {
     provider: { "@id": ORGANIZATION_ID },
     about: nomesDasAreas.map((nome) => ({ "@type": "Thing", name: nome })),
     ...(tempo ? { timeRequired: tempo } : {}),
+    /* Campos que só fazem sentido em formação que outorga credencial. */
+    ...(programa
+      ? {
+          educationalCredentialAwarded: programa.credencial,
+          programPrerequisites: programa.prerequisito,
+          educationalProgramMode: [
+            ...new Set(
+              curso.modalidades.map(
+                (modalidade) => modoPorModalidade[modalidade] ?? "blended",
+              ),
+            ),
+          ],
+          ...(tempo ? { timeToComplete: tempo } : {}),
+        }
+      : {}),
     hasCourseInstance: curso.modalidades.map((modalidade) => ({
       "@type": "CourseInstance",
       courseMode: modoPorModalidade[modalidade] ?? "blended",

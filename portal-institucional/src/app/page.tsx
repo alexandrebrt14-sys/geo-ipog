@@ -110,15 +110,21 @@ export default function PaginaInicial() {
             </Link>
           </div>
 
+          {/* `dt` antes de `dd` no HTML: o rótulo é o termo e o número é a
+              definição dele. O número aparece em cima por `flex-col-reverse`,
+              então quem inverte é o CSS, não a marcação. */}
           <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-white/15 pt-10 sm:grid-cols-4">
             {indicadores.slice(0, 4).map((indicador) => (
-              <div key={indicador.rotulo}>
+              <div
+                key={indicador.rotulo}
+                className="flex flex-col-reverse gap-2"
+              >
+                <dt className="text-fluid-sm text-white/70">
+                  {indicador.rotulo}
+                </dt>
                 <dd className="font-apoio text-fluid-2xl font-bold leading-none text-white">
                   {indicador.valor}
                 </dd>
-                <dt className="mt-2 text-fluid-sm text-white/70">
-                  {indicador.rotulo}
-                </dt>
               </div>
             ))}
           </dl>

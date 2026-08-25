@@ -185,39 +185,47 @@ export default async function PaginaDaArea({ params }: Props) {
         <Container className="py-8">
           <h2 className="sr-only">{`Resumo numérico da área de ${area.nome}`}</h2>
           <dl className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
-            <div>
+            {/* `dt` antes de `dd`: o rótulo é o termo, o número é a definição.
+                O número aparece em cima por `flex-col-reverse`. */}
+            <div className="flex flex-col-reverse gap-2">
+              <dt className="text-fluid-sm text-conexao-700">
+                cursos na área
+              </dt>
               <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
                 {stats.total}
               </dd>
-              <dt className="mt-2 text-fluid-sm text-conexao-700">
-                cursos na área
-              </dt>
             </div>
-            <div>
+            {/* `dt` antes de `dd`: o rótulo é o termo, o número é a definição.
+                O número aparece em cima por `flex-col-reverse`. */}
+            <div className="flex flex-col-reverse gap-2">
+              <dt className="text-fluid-sm text-conexao-700">
+                de pós-graduação
+              </dt>
               <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
                 {stats.porNivel["Pós-graduação"]}
               </dd>
-              <dt className="mt-2 text-fluid-sm text-conexao-700">
-                de pós-graduação
-              </dt>
             </div>
-            <div>
-              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
-                {modalidadesDisponiveis.length}
-              </dd>
-              <dt className="mt-2 text-fluid-sm text-conexao-700">
+            {/* `dt` antes de `dd`: o rótulo é o termo, o número é a definição.
+                O número aparece em cima por `flex-col-reverse`. */}
+            <div className="flex flex-col-reverse gap-2">
+              <dt className="text-fluid-sm text-conexao-700">
                 {modalidadesDisponiveis.length === 1
                   ? "modalidade disponível"
                   : "modalidades disponíveis"}
               </dt>
+              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
+                {modalidadesDisponiveis.length}
+              </dd>
             </div>
-            <div>
+            {/* `dt` antes de `dd`: o rótulo é o termo, o número é a definição.
+                O número aparece em cima por `flex-col-reverse`. */}
+            <div className="flex flex-col-reverse gap-2">
+              <dt className="text-fluid-sm text-conexao-700">
+                também em outra área
+              </dt>
               <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
                 {stats.interdisciplinares}
               </dd>
-              <dt className="mt-2 text-fluid-sm text-conexao-700">
-                também em outra área
-              </dt>
             </div>
           </dl>
         </Container>

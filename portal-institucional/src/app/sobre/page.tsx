@@ -6,6 +6,7 @@ import {
   frentesDeAtuacao,
   valores,
   arquetipos,
+  atendimento,
   canaisAtendimento,
   portais,
 } from "@/data/institucional";
@@ -223,47 +224,89 @@ export default function PaginaSobre() {
       <Section
         id="contato"
         titulo="Canais de atendimento"
-        descricao="Telefones, e-mails e horários por área, além dos portais digitais da instituição."
+        descricao={
+          <>
+            Telefones, e-mails por segmento e horário, como a{" "}
+            <a
+              href={atendimento.fonte}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--acento)] underline underline-offset-4"
+            >
+              Central de Atendimento do IPOG
+            </a>{" "}
+            publica, além dos portais digitais da instituição.
+          </>
+        }
       >
-        <div className="grid gap-6 md:grid-cols-2">
-          {canaisAtendimento.map((canal) => (
-            <Card key={canal.area} comHover>
-              <h3 className="text-fluid-lg font-semibold normal-case text-conexao-900">
-                {canal.area}
-              </h3>
-              <dl className="mt-4 space-y-3 text-fluid-sm">
-                <div>
-                  <dt className="font-semibold text-conexao-600">Telefone</dt>
-                  <dd className="mt-0.5">
-                    {canal.telefones.map((telefone) => (
-                      <a
-                        key={telefone}
-                        href={`tel:+55${telefone.replace(/\D/g, "")}`}
-                        className="mr-3 inline-block text-conexao-800 underline-offset-4 hover:underline"
-                      >
-                        {telefone}
-                      </a>
-                    ))}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="font-semibold text-conexao-600">E-mail</dt>
-                  <dd className="mt-0.5">
-                    <a
-                      href={`mailto:${canal.email}`}
-                      className="text-conexao-800 underline-offset-4 hover:underline"
-                    >
-                      {canal.email}
-                    </a>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="font-semibold text-conexao-600">Horário</dt>
-                  <dd className="mt-0.5 text-conexao-700">{canal.horario}</dd>
-                </div>
-              </dl>
-            </Card>
-          ))}
+        {/* O telefone e o horário valem para todos os segmentos, então aparecem
+            uma vez. Repeti-los em cada cartão sugeriria linhas diferentes por
+            assunto, que é justamente o que não existe. */}
+        <Card>
+          <h3 className="text-fluid-lg font-semibold normal-case text-conexao-900">
+            Telefone e horário
+          </h3>
+          <dl className="mt-4 grid gap-4 text-fluid-sm sm:grid-cols-3">
+            <div>
+              <dt className="font-semibold text-conexao-600">Central</dt>
+              <dd className="mt-0.5">
+                <a
+                  href={`tel:+55${atendimento.central.replace(/\D/g, "")}`}
+                  className="text-conexao-800 underline-offset-4 hover:underline"
+                >
+                  {atendimento.central}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-conexao-600">
+                Ajuda para se matricular
+              </dt>
+              <dd className="mt-0.5">
+                <a
+                  href={`tel:+55${atendimento.matricula.replace(/\D/g, "")}`}
+                  className="text-conexao-800 underline-offset-4 hover:underline"
+                >
+                  {atendimento.matricula}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-conexao-600">
+                WhatsApp, com a Vic
+              </dt>
+              <dd className="mt-0.5">
+                <a
+                  href={atendimento.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-conexao-800 underline-offset-4 hover:underline"
+                >
+                  {atendimento.whatsapp}
+                </a>
+              </dd>
+            </div>
+          </dl>
+          <p className="mt-4 text-fluid-sm text-conexao-700">
+            {atendimento.horario}
+          </p>
+        </Card>
+
+        <div className="mt-6">
+          <DataTable
+            legenda="E-mail de atendimento do IPOG por segmento."
+            cabecalhos={["Segmento", "E-mail"]}
+            linhas={canaisAtendimento.map((canal) => [
+              canal.area,
+              <a
+                key={canal.email}
+                href={`mailto:${canal.email}`}
+                className="text-[var(--acento)] underline underline-offset-4"
+              >
+                {canal.email}
+              </a>,
+            ])}
+          />
         </div>
 
         <div className="mt-8">

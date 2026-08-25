@@ -24,6 +24,18 @@ export const instituicao = {
   cidadeOrigem: "Goiânia",
   estadoOrigem: "GO",
   pais: "BR",
+  /*
+   * O nome vai para a tela em /sobre e, sobretudo, para o `employee` do schema
+   * da organização, que é onde um motor generativo lê "quem dirige o IPOG" como
+   * fato. Nome errado ali não é um deslize de texto: vira resposta.
+   *
+   * Não aparece em nenhuma página pública do IPOG nem no Guia de Expressão da
+   * Marca 2025, então não dá para conferir sozinho. Vem de
+   * `documentos-ipog/SOBRE O IPOG - TEXTO INSTITUCIONAL.docx`, do Marketing, e
+   * foi **confirmado como atual pela área de Marketing em 25 de agosto de
+   * 2026**. Trocar de CEO é o tipo de mudança que não avisa o repositório:
+   * reconferir antes de reafirmar em peça nova.
+   */
   ceo: "Ronan Maia",
   ceoDesde: "março de 2024",
   site: "https://www.ipog.edu.br",
@@ -228,26 +240,55 @@ export const arquetipos = [
   },
 ] as const;
 
+/**
+ * Atendimento do IPOG.
+ *
+ * **Fonte: <https://ipog.edu.br/central-atendimento>**, a Central de
+ * Atendimento, confirmada pela área de Marketing em 25 de agosto de 2026 como a
+ * fonte oficial. Conferida na mesma data.
+ *
+ * **O portal publicava outra coisa, e vale registrar por quê.** Vinha do Manual
+ * do Aluno de Pós-Graduação 2026, p. 4, que traz `relacionamento@ipog.edu.br`,
+ * `cr.matriz@ipog.edu.br` e horário de 8h às 21h com sábado. Nada disso foi
+ * inventado: está literalmente no manual. Só que o manual e a Central de
+ * Atendimento discordavam, e a Central é a que vale.
+ *
+ * A diferença não é de detalhe. Quem procurasse o financeiro pelo endereço
+ * antigo escreveria para uma caixa que a instituição não divulga mais, e quem
+ * confiasse no horário apareceria num sábado em que não há atendimento.
+ *
+ * **Regra que fica:** para canal de atendimento, a fonte é a Central, não o
+ * manual. O manual descreve o curso; a Central publica quem atende hoje.
+ */
+export const atendimento = {
+  central: "(62) 3945-5050",
+  /** Linha dedicada a quem ainda vai se matricular. */
+  matricula: "(62) 99660-0711",
+  /** "Fale com a Vic", a assistente virtual do IPOG. */
+  whatsapp: "(62) 9626-6786",
+  whatsappUrl: "https://api.whatsapp.com/send?phone=556296266786",
+  horario: "Segunda a sexta, das 8h às 18h, exceto feriados.",
+  fonte: "https://ipog.edu.br/central-atendimento",
+} as const;
+
 export type CanalAtendimento = {
+  /** Segmento atendido, como a Central de Atendimento o nomeia. */
   area: string;
-  telefones: string[];
   email: string;
-  horario: string;
 };
 
+/**
+ * E-mails por segmento.
+ *
+ * O telefone e o horário não se repetem por segmento porque são os mesmos para
+ * todos: são os de `atendimento`. Repetir o número quatro vezes na tela sugere
+ * quatro linhas diferentes, que é justamente o que não existe.
+ */
 export const canaisAtendimento: CanalAtendimento[] = [
-  {
-    area: "Relacionamento com o aluno",
-    telefones: ["(62) 3945-5050", "(62) 99626-6786"],
-    email: "relacionamento@ipog.edu.br",
-    horario: "Segunda a sexta, das 8h às 21h. Sábado, das 8h às 12h.",
-  },
-  {
-    area: "Financeiro",
-    telefones: ["(62) 3945-5050"],
-    email: "cr.matriz@ipog.edu.br",
-    horario: "Segunda a sexta, das 8h às 18h. Sábado, das 8h às 12h.",
-  },
+  { area: "Pós-graduação", email: "atendimentopos@ipog.edu.br" },
+  { area: "Graduação", email: "atendimentograduacao@ipog.edu.br" },
+  { area: "Extensão (CEU)", email: "atendimentoceu@ipog.edu.br" },
+  { area: "Ouvidoria", email: "ouvidoria@ipog.edu.br" },
 ];
 
 export type Portal = {

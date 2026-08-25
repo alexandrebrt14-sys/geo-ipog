@@ -5,7 +5,12 @@
 
 import Link from "next/link";
 import { navigation } from "@/lib/site";
-import { instituicao, canaisAtendimento, portais } from "@/data/institucional";
+import {
+  instituicao,
+  atendimento,
+  canaisAtendimento,
+  portais,
+} from "@/data/institucional";
 import { Logo } from "@/components/Logo";
 
 export function Footer() {
@@ -57,20 +62,57 @@ export function Footer() {
             >
               Atendimento
             </h2>
-            <ul className="mt-4 space-y-4 text-sm">
+            {/* Telefone e horário vêm primeiro e uma vez só: são os mesmos
+                para todos os segmentos. O que muda por segmento é o e-mail. */}
+            <dl className="mt-4 space-y-1.5 text-sm">
+              <div className="flex flex-wrap gap-x-2">
+                <dt className="text-white/60">Central</dt>
+                <dd>
+                  <a
+                    href={`tel:+55${atendimento.central.replace(/\D/g, "")}`}
+                    className="text-white/85 underline-offset-4 transition-colors hover:text-white hover:underline"
+                  >
+                    {atendimento.central}
+                  </a>
+                </dd>
+              </div>
+              <div className="flex flex-wrap gap-x-2">
+                <dt className="text-white/60">Matrícula</dt>
+                <dd>
+                  <a
+                    href={`tel:+55${atendimento.matricula.replace(/\D/g, "")}`}
+                    className="text-white/85 underline-offset-4 transition-colors hover:text-white hover:underline"
+                  >
+                    {atendimento.matricula}
+                  </a>
+                </dd>
+              </div>
+              <div className="flex flex-wrap gap-x-2">
+                <dt className="text-white/60">WhatsApp</dt>
+                <dd>
+                  <a
+                    href={atendimento.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/85 underline-offset-4 transition-colors hover:text-white hover:underline"
+                  >
+                    {atendimento.whatsapp}
+                  </a>
+                </dd>
+              </div>
+            </dl>
+            <p className="mt-2 text-xs text-white/60">{atendimento.horario}</p>
+
+            <ul className="mt-4 space-y-2 text-sm">
               {canaisAtendimento.map((canal) => (
                 <li key={canal.area}>
-                  <p className="font-semibold text-white">{canal.area}</p>
-                  <p className="text-white/70">
-                    {canal.telefones.join(" · ")}
-                  </p>
+                  <p className="text-white/60">{canal.area}</p>
                   <a
                     href={`mailto:${canal.email}`}
-                    className="text-white/70 underline-offset-4 transition-colors hover:text-white hover:underline"
+                    className="text-white/85 underline-offset-4 transition-colors hover:text-white hover:underline"
                   >
                     {canal.email}
                   </a>
-                  <p className="mt-1 text-xs text-white/60">{canal.horario}</p>
                 </li>
               ))}
             </ul>

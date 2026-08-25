@@ -10,6 +10,7 @@
 import { site, absoluteUrl } from "@/lib/site";
 import {
   instituicao,
+  atendimento,
   canaisAtendimento,
   perfisOficiais,
 } from "@/data/institucional";
@@ -77,14 +78,28 @@ export function organizationSchema(): JsonLdObject {
       name: instituicao.ceo,
       jobTitle: "CEO",
     },
-    contactPoint: canaisAtendimento.map((canal) => ({
-      "@type": "ContactPoint",
-      contactType: canal.area,
-      telephone: canal.telefones[0],
-      email: canal.email,
-      areaServed: "BR",
-      availableLanguage: "Portuguese",
-    })),
+    /* Um ponto de contato por segmento, mais um para quem ainda vai se
+       matricular. O telefone é o mesmo em todos porque a Central é uma só: o
+       que distingue o segmento é o e-mail. */
+    contactPoint: [
+      ...canaisAtendimento.map((canal) => ({
+        "@type": "ContactPoint",
+        contactType: canal.area,
+        telephone: atendimento.central,
+        email: canal.email,
+        areaServed: "BR",
+        availableLanguage: "Portuguese",
+        hoursAvailable: atendimento.horario,
+      })),
+      {
+        "@type": "ContactPoint",
+        contactType: "Matrícula",
+        telephone: atendimento.matricula,
+        areaServed: "BR",
+        availableLanguage: "Portuguese",
+        hoursAvailable: atendimento.horario,
+      },
+    ],
     hasCredential: {
       "@type": "EducationalOccupationalCredential",
       credentialCategory: "Conceito MEC",

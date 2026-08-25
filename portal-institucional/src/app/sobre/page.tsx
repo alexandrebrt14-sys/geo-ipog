@@ -270,7 +270,15 @@ export default function PaginaSobre() {
             cabecalhos={["Portal", "Endereço", "Para quê"]}
             linhas={portais.map((portal) => [
               portal.nome,
-              portal.endereco,
+              <a
+                key={portal.url}
+                href={portal.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--acento)] underline underline-offset-4"
+              >
+                {portal.endereco}
+              </a>,
               portal.finalidade,
             ])}
           />

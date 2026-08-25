@@ -87,7 +87,17 @@ export function Footer() {
               {portais.map((portal) => (
                 <li key={portal.nome}>
                   <p className="font-semibold text-white">{portal.nome}</p>
-                  <p className="text-white/70">{portal.endereco}</p>
+                  {/* O endereço vira link. Publicar um portal e deixar a pessoa
+                      digitar o endereço à mão foi como o endereço morto passou
+                      tanto tempo despercebido: link quebrado alguém percebe. */}
+                  <a
+                    href={portal.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/70 underline-offset-4 transition-colors hover:text-white hover:underline"
+                  >
+                    {portal.endereco}
+                  </a>
                 </li>
               ))}
             </ul>

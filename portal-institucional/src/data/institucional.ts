@@ -224,26 +224,58 @@ export const canaisAtendimento: CanalAtendimento[] = [
 
 export type Portal = {
   nome: string;
+  /** Endereço como se lê na tela, sem protocolo. */
   endereco: string;
+  /** Endereço completo, que é o que vira link e o que o verificador testa. */
+  url: string;
   finalidade: string;
 };
 
+/**
+ * Portais digitais do IPOG.
+ *
+ * Fonte: os links publicados em ipog.edu.br, conferidos em 25 de agosto de 2026,
+ * um a um, contra o endereço que responde de fato.
+ *
+ * **Esta lista já esteve errada, e vale registrar como, para não voltar.** Ela
+ * vinha de `docs/institucional/canais-de-atendimento.md`, que por sua vez lê o
+ * Manual do Aluno de Pós-Graduação 2026. O manual diz, na p. 11, que os boletos
+ * ficam "no Portal do Aluno – Financeiro www.ipogmais.ipog.edu.br". A leitura
+ * quebrou essa frase em dois portais e trocou os endereços:
+ *
+ * - "Portal do Aluno" ficou com `www.ipog.edu.br`, que é o site comercial e não
+ *   o portal;
+ * - "Portal Financeiro" virou um portal separado, quando Financeiro é uma área
+ *   **dentro** do Portal do Aluno.
+ *
+ * E o endereço do manual tem um `www.` que não resolve: o host que responde é
+ * `ipogmais.ipog.edu.br`, sem prefixo. O erro está no manual do próprio IPOG,
+ * não só na leitura dele.
+ *
+ * Por isso a fonte aqui passou a ser o site, e não o manual: o site publica o
+ * link que funciona. `scripts/verificar-enderecos.mjs` confere no build que todo
+ * endereço publicado responde, para um endereço morto nunca mais chegar ao ar.
+ */
 export const portais: Portal[] = [
   {
     nome: "Portal do Aluno",
-    endereco: "www.ipog.edu.br",
+    endereco: "ipogmais.ipog.edu.br",
+    url: "https://ipogmais.ipog.edu.br/ipogmais/#/",
     finalidade:
-      "Requerimentos, notas, frequência, boletos e acesso à Secretaria Digital.",
+      "Requerimentos pela Secretaria Digital, notas, frequência, boletos, acesso às aulas ao vivo e ao AVA. É o IPOGMais, e a área Financeiro fica dentro dele.",
   },
   {
-    nome: "Portal Financeiro",
-    endereco: "www.ipogmais.ipog.edu.br",
-    finalidade: "Consulta e emissão de boletos.",
+    nome: "Portal da Graduação",
+    endereco: "sei.ipog.edu.br",
+    url: "https://sei.ipog.edu.br/index.xhtml",
+    finalidade:
+      "Portal acadêmico dos cursos de graduação, no sistema SEI. É também por onde professores e coordenadores acessam.",
   },
   {
-    nome: "AVA",
-    endereco: "Acesso pelo Portal do Aluno",
+    nome: "Validação de diploma e certificado",
+    endereco: "sei.ipog.edu.br",
+    url: "https://sei.ipog.edu.br/visaoAdministrativo/academico/documentoAssinado.xhtml",
     finalidade:
-      "Ambiente Virtual de Aprendizagem, com atividades e aulas gravadas.",
+      "Confere a autenticidade de um documento emitido pelo IPOG a partir do código impresso nele.",
   },
 ];

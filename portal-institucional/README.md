@@ -37,6 +37,14 @@
 > chave `pp-theme` no `localStorage`, mesmo atributo `data-theme`. Quem escolhe
 > escuro no site chega ao portal já no escuro.
 >
+> **Ao publicar endereço de terceiro,** a fonte é o site que publica o link, e
+> não o documento que descreve o serviço. O portal já publicou por meses
+> `www.ipogmais.ipog.edu.br` como "Portal Financeiro": esse host não resolve, e
+> o endereço veio do Manual do Aluno 2026, que traz o `www.` indevido e chama de
+> "Portal do Aluno – Financeiro" o que a leitura quebrou em dois portais. Quem
+> publica o link que funciona é o ipog.edu.br. `npm run verificar:enderecos`
+> agora reprova o build se algum endereço publicado não responder.
+>
 > **Ao criar uma rota nova:** crie também um `opengraph-image.tsx` ao lado do
 > `page.tsx`, copiando o de qualquer rota existente e trocando título e etiqueta.
 > Sem ele a rota herda a imagem do segmento acima e o link compartilhado mostra
@@ -73,6 +81,7 @@ npm run typecheck       # checagem de tipos do TypeScript
 npm run lint            # ESLint com as regras do Next
 npm run verificar:geo   # auditoria de GEO e SEO sobre o HTML já exportado
 npm run verificar:contraste  # contraste WCAG 2.2 AA nos temas claro e escuro
+npm run verificar:enderecos  # todo endereco externo publicado responde
 npm run validar         # roda tudo na ordem: tipos, lint, build e auditoria
 ```
 

@@ -24,7 +24,7 @@ export function Footer() {
               {instituicao.nomeCompleto}. Portal de conhecimento estruturado para
               consulta humana e para motores de busca generativos.
             </p>
-            <p className="mt-4 font-apoio text-base uppercase tracking-wide text-protagonismo-400">
+            <p className="mt-4 font-apoio text-base uppercase tracking-wide text-protagonismo-300">
               {instituicao.tagline}
             </p>
           </div>

@@ -123,7 +123,7 @@ export default function PaginaHub() {
           {infraestruturaDoHub.map((item) => (
             <li
               key={item}
-              className="flex items-start gap-3 rounded-card border border-[var(--line)] bg-white p-4 text-fluid-sm leading-relaxed text-conexao-700 shadow-card"
+              className="flex items-start gap-3 rounded-card border border-[var(--line)] bg-[var(--surface)] p-4 text-fluid-sm leading-relaxed text-conexao-700 shadow-card"
             >
               <span
                 aria-hidden="true"
@@ -191,7 +191,7 @@ export default function PaginaHub() {
                   href={hub.plataformaDeReserva}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-protagonismo-600 underline underline-offset-4"
+                  className="font-semibold text-[var(--acento)] underline underline-offset-4"
                 >
                   ipog-hub.agendaopen.com
                 </a>

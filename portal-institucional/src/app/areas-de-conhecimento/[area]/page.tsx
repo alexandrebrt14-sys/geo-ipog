@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -20,7 +21,7 @@ import {
   webPageSchema,
 } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
-import { corDeTextoAcessivel } from "@/lib/cor";
+import { tonsDeTextoPorTema } from "@/lib/cor";
 import { JsonLd } from "@/components/JsonLd";
 import { FaqList } from "@/components/FaqList";
 import { IndiceDaPagina } from "@/components/IndiceDaPagina";
@@ -95,6 +96,7 @@ export default async function PaginaDaArea({ params }: Props) {
   const artigos = artigosDaArea(area.slug);
   const descricao = descreverArea(area);
   const rota = `/areas-de-conhecimento/${area.slug}`;
+  const tonsDaArea = tonsDeTextoPorTema(area.cor);
 
   const trilha = [
     { nome: "Início", href: "/" },
@@ -163,7 +165,7 @@ export default async function PaginaDaArea({ params }: Props) {
           <h2 className="sr-only">{`Resumo numérico da área de ${area.nome}`}</h2>
           <dl className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
             <div>
-              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-protagonismo-600">
+              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
                 {stats.total}
               </dd>
               <dt className="mt-2 text-fluid-sm text-conexao-700">
@@ -171,7 +173,7 @@ export default async function PaginaDaArea({ params }: Props) {
               </dt>
             </div>
             <div>
-              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-protagonismo-600">
+              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
                 {stats.porNivel["Pós-graduação"]}
               </dd>
               <dt className="mt-2 text-fluid-sm text-conexao-700">
@@ -179,7 +181,7 @@ export default async function PaginaDaArea({ params }: Props) {
               </dt>
             </div>
             <div>
-              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-protagonismo-600">
+              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
                 {modalidadesDisponiveis.length}
               </dd>
               <dt className="mt-2 text-fluid-sm text-conexao-700">
@@ -189,7 +191,7 @@ export default async function PaginaDaArea({ params }: Props) {
               </dt>
             </div>
             <div>
-              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-protagonismo-600">
+              <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
                 {stats.interdisciplinares}
               </dd>
               <dt className="mt-2 text-fluid-sm text-conexao-700">
@@ -364,12 +366,17 @@ export default async function PaginaDaArea({ params }: Props) {
                   <Link
                     key={outra.slug}
                     href={`/areas-de-conhecimento/${outra.slug}`}
-                    className="underline underline-offset-4"
+                    className="texto-da-area underline underline-offset-4"
                     /* A cor da área identifica o destino, mas as cores claras
-                       da paleta não alcançam 4,5:1 sobre a linha branca da
-                       tabela. O tom é derivado para o texto e a identidade da
-                       área se mantém. */
-                    style={{ color: corDeTextoAcessivel(outra.cor, "#ffffff") }}
+                       da paleta não alcançam 4,5:1 sobre a superfície. Os dois
+                       tons derivados vão no elemento e o navegador escolhe o do
+                       tema corrente. A identidade da área se mantém. */
+                    style={
+                      {
+                        "--area-texto-claro": tonsDeTextoPorTema(outra.cor).claro,
+                        "--area-texto-escuro": tonsDeTextoPorTema(outra.cor).escuro,
+                      } as CSSProperties
+                    }
                   >
                     {outra.nome}
                   </Link>
@@ -399,14 +406,19 @@ export default async function PaginaDaArea({ params }: Props) {
                   href={artigo.url}
                   target="_blank"
                   rel="noopener"
-                  className="flex h-full flex-col rounded-card border border-[var(--line)] bg-white p-5 shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-conexao-200 hover:shadow-card-hover sm:p-6"
+                  className="flex h-full flex-col rounded-card border border-[var(--line)] bg-[var(--surface)] p-5 shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-conexao-200 hover:shadow-card-hover sm:p-6"
                 >
                   <span
-                    className="font-apoio text-xs font-semibold uppercase tracking-[0.14em]"
-                    /* Rótulo pequeno em caixa alta sobre o cartão branco: é o
-                       pior caso de legibilidade da página, então o tom vem
-                       derivado em vez da cor crua da área. */
-                    style={{ color: corDeTextoAcessivel(area.cor, "#ffffff") }}
+                    className="texto-da-area font-apoio text-xs font-semibold uppercase tracking-[0.14em]"
+                    /* Rótulo pequeno em caixa alta sobre o cartão: é o pior
+                       caso de legibilidade da página, então os tons vêm
+                       derivados em vez da cor crua da área. */
+                    style={
+                      {
+                        "--area-texto-claro": tonsDaArea.claro,
+                        "--area-texto-escuro": tonsDaArea.escuro,
+                      } as CSSProperties
+                    }
                   >
                     {artigo.categoria}
                   </span>
@@ -435,7 +447,7 @@ export default async function PaginaDaArea({ params }: Props) {
               href={enderecoDoBlog}
               target="_blank"
               rel="noopener"
-              className="font-semibold text-protagonismo-600 underline underline-offset-4"
+              className="font-semibold text-[var(--acento)] underline underline-offset-4"
             >
               Ver o blog completo
             </a>
@@ -455,7 +467,7 @@ export default async function PaginaDaArea({ params }: Props) {
               <li key={outra.slug}>
                 <Link
                   href={`/areas-de-conhecimento/${outra.slug}`}
-                  className="inline-flex items-center gap-2 rounded-pill border border-conexao-200 bg-white px-4 py-2 text-fluid-sm font-medium text-conexao-800 transition-colors hover:border-conexao-300 hover:bg-conexao-50"
+                  className="inline-flex items-center gap-2 rounded-pill border border-conexao-200 bg-[var(--surface)] px-4 py-2 text-fluid-sm font-medium text-conexao-800 transition-colors hover:border-conexao-300 hover:bg-conexao-50"
                 >
                   <span
                     aria-hidden="true"
@@ -474,19 +486,19 @@ export default async function PaginaDaArea({ params }: Props) {
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
             <Link
               href="/areas-de-conhecimento"
-              className="font-semibold text-protagonismo-600 underline underline-offset-4"
+              className="font-semibold text-[var(--acento)] underline underline-offset-4"
             >
               Ver as {areasDeConhecimento.length} áreas de conhecimento
             </Link>
             <Link
               href="/metodo"
-              className="font-semibold text-protagonismo-600 underline underline-offset-4"
+              className="font-semibold text-[var(--acento)] underline underline-offset-4"
             >
               Como funciona o Método IPOG
             </Link>
             <Link
               href="/unidades"
-              className="font-semibold text-protagonismo-600 underline underline-offset-4"
+              className="font-semibold text-[var(--acento)] underline underline-offset-4"
             >
               Onde o IPOG tem unidade
             </Link>

@@ -99,7 +99,7 @@ export default function PaginaEnterprise() {
             pronto, e não o limite do que a instituição entrega.{" "}
             <Link
               href="/areas-de-conhecimento"
-              className="font-semibold text-protagonismo-600 underline underline-offset-4"
+              className="font-semibold text-[var(--acento)] underline underline-offset-4"
             >
               Ver as {areasDeConhecimento.length} áreas de conhecimento
             </Link>
@@ -215,7 +215,7 @@ export default function PaginaEnterprise() {
               href="https://ipog.edu.br/enterprise"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-protagonismo-600 underline underline-offset-4"
+              className="font-semibold text-[var(--acento)] underline underline-offset-4"
             >
               ipog.edu.br/enterprise
             </a>

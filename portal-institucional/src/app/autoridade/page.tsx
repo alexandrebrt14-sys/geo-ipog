@@ -149,7 +149,7 @@ export default function PaginaAutoridade() {
           cabecalhos={["Indicador", "Valor", "Observação"]}
           linhas={indicadores.map((indicador) => [
             indicador.rotulo,
-            <strong key={indicador.rotulo} className="text-protagonismo-700">
+            <strong key={indicador.rotulo} className="text-[var(--acento-forte)]">
               {indicador.valor}
             </strong>,
             indicador.detalhe,
@@ -158,7 +158,7 @@ export default function PaginaAutoridade() {
 
         <div className="mt-8 grid gap-5 sm:grid-cols-3">
           <Card>
-            <p className="font-apoio text-fluid-2xl font-bold text-protagonismo-600">
+            <p className="font-apoio text-fluid-2xl font-bold text-[var(--acento)]">
               {areasDeConhecimento.length}
             </p>
             <p className="mt-1 text-fluid-sm text-conexao-700">
@@ -166,7 +166,7 @@ export default function PaginaAutoridade() {
             </p>
           </Card>
           <Card>
-            <p className="font-apoio text-fluid-2xl font-bold text-protagonismo-600">
+            <p className="font-apoio text-fluid-2xl font-bold text-[var(--acento)]">
               {totalCursosCatalogados}
             </p>
             <p className="mt-1 text-fluid-sm text-conexao-700">
@@ -174,7 +174,7 @@ export default function PaginaAutoridade() {
             </p>
           </Card>
           <Card>
-            <p className="font-apoio text-fluid-2xl font-bold text-protagonismo-600">
+            <p className="font-apoio text-fluid-2xl font-bold text-[var(--acento)]">
               {perguntasFrequentes.length}
             </p>
             <p className="mt-1 text-fluid-sm text-conexao-700">
@@ -200,7 +200,7 @@ export default function PaginaAutoridade() {
               cabecalhos={["Curso de graduação", "Nota do MEC"]}
               linhas={notasMecGraduacao.map((item) => [
                 item.curso,
-                <strong key={item.curso} className="text-protagonismo-700">
+                <strong key={item.curso} className="text-[var(--acento-forte)]">
                   {item.nota}
                 </strong>,
               ])}

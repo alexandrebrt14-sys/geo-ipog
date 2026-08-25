@@ -69,7 +69,7 @@ export default function PaginaAreasDeConhecimento() {
               <li key={area.slug}>
                 <Link
                   href={`/areas-de-conhecimento/${area.slug}`}
-                  className="inline-flex items-center gap-2 rounded-pill border border-conexao-200 bg-white px-4 py-2 text-fluid-sm font-medium text-conexao-800 transition-colors hover:border-conexao-300 hover:bg-conexao-50"
+                  className="inline-flex items-center gap-2 rounded-pill border border-conexao-200 bg-[var(--surface)] px-4 py-2 text-fluid-sm font-medium text-conexao-800 transition-colors hover:border-conexao-300 hover:bg-conexao-50"
                 >
                   <span
                     aria-hidden="true"
@@ -149,7 +149,7 @@ export default function PaginaAreasDeConhecimento() {
               href="https://www.ipog.edu.br"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-protagonismo-600 underline underline-offset-4"
+              className="font-semibold text-[var(--acento)] underline underline-offset-4"
             >
               ipog.edu.br
             </a>

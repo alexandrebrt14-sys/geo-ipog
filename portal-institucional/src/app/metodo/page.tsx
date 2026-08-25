@@ -64,7 +64,7 @@ export default function PaginaMetodo() {
         <div className="grid gap-6 lg:grid-cols-2">
           {dimensoesDoMetodo.map((dimensao) => (
             <Card key={dimensao.numero} comHover className="flex flex-col">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-protagonismo-50 font-apoio text-lg font-bold text-protagonismo-600">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--acento-tenue)] font-apoio text-lg font-bold text-[var(--acento)]">
                 {dimensao.numero}
               </span>
               <h3 className="mt-4 text-fluid-xl font-semibold normal-case text-conexao-900">
@@ -112,12 +112,12 @@ export default function PaginaMetodo() {
           {cicloDeAprendizagem.map((etapa, indice) => (
             <li
               key={etapa.etapa}
-              className="relative rounded-card border border-[var(--line)] bg-white p-6 shadow-card"
+              className="relative rounded-card border border-[var(--line)] bg-[var(--surface)] p-6 shadow-card"
             >
               <span className="font-apoio text-sm font-semibold uppercase tracking-[0.14em] text-conexao-600">
                 Etapa {indice + 1}
               </span>
-              <h3 className="mt-2 text-fluid-xl font-semibold normal-case text-protagonismo-600">
+              <h3 className="mt-2 text-fluid-xl font-semibold normal-case text-[var(--acento)]">
                 {etapa.etapa}
               </h3>
               <p className="mt-3 text-fluid-sm text-conexao-600">
@@ -169,7 +169,7 @@ export default function PaginaMetodo() {
           cabecalhos={["Tema", "Regra", "Detalhamento"]}
           linhas={regrasAcademicas.map((regra) => [
             regra.tema,
-            <strong key={regra.tema} className="text-protagonismo-700">
+            <strong key={regra.tema} className="text-[var(--acento-forte)]">
               {regra.regra}
             </strong>,
             regra.detalhe,
@@ -196,7 +196,7 @@ export default function PaginaMetodo() {
           linhas={planoIpogmais.map((beneficio) => [
             beneficio.posGraduacao,
             String(beneficio.modulosAproveitados),
-            <strong key={beneficio.posGraduacao} className="text-protagonismo-700">
+            <strong key={beneficio.posGraduacao} className="text-[var(--acento-forte)]">
               {beneficio.desconto}
             </strong>,
           ])}
@@ -210,7 +210,7 @@ export default function PaginaMetodo() {
             {condicoesIpogmais.map((condicao) => (
               <li
                 key={condicao}
-                className="flex items-start gap-3 rounded-lg border border-[var(--line)] bg-white p-4 text-fluid-sm leading-relaxed text-conexao-700"
+                className="flex items-start gap-3 rounded-lg border border-[var(--line)] bg-[var(--surface)] p-4 text-fluid-sm leading-relaxed text-conexao-700"
               >
                 <span
                   aria-hidden="true"

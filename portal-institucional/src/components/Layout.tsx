@@ -6,9 +6,9 @@
  */
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
-import { corDeTextoAcessivel, sobrepor } from "@/lib/cor";
+import { tonsDeTextoPorTema } from "@/lib/cor";
 
 /** Contêiner com largura máxima e respiro lateral responsivo. */
 export function Container({
@@ -50,7 +50,7 @@ export function Section({
   nivel?: 2 | 3;
 }) {
   const fundos = {
-    claro: "bg-white",
+    claro: "bg-[var(--surface)]",
     suave: "bg-[var(--surface-muted)]",
     escuro: "bg-[var(--surface-inverse)] text-white",
   } as const;
@@ -109,11 +109,10 @@ export function PageHeader({
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         /* Mesmo gradiente oficial do herói da home, em ângulo mais raso para o
-           cabeçalho de rota, que é mais baixo. */
-        style={{
-          background:
-            "linear-gradient(120deg, #481a1f 0%, #481a1f 55%, #b41630 100%)",
-        }}
+           cabeçalho de rota, que é mais baixo. O valor vive em token porque o
+           tema escuro usa uma versão menos luminosa, para a faixa não brigar
+           com o texto branco por cima. */
+        style={{ background: "var(--gradiente-heroi)" }}
       />
       <Container className="relative py-12 sm:py-16 lg:py-20">
         <Breadcrumbs trilha={trilha} />
@@ -158,7 +157,16 @@ export function Breadcrumbs({
                   >
                     {item.nome}
                   </Link>
-                  <span aria-hidden="true" className="text-conexao-400">
+                  {/* Separador decorativo sobre a faixa escura, que é escura
+                      nos dois temas: por isso branco com opacidade, e não um
+                      degrau da rampa neutra, que se inverte no tema escuro.
+
+                      55% e não 40%: a faixa clareia no tema escuro, e a 40% o
+                      separador caía para 3,15:1 ali. Ele é aria-hidden, então
+                      a regra de contraste não o alcança, mas quem enxerga
+                      pouco também lê a trilha, e subir a opacidade não custa
+                      nada. */}
+                  <span aria-hidden="true" className="text-white/55">
                     /
                   </span>
                 </>
@@ -183,7 +191,7 @@ export function Card({
 }) {
   return (
     <div
-      className={`rounded-card border border-[var(--line)] bg-white p-6 shadow-card sm:p-7 ${
+      className={`rounded-card border border-[var(--line)] bg-[var(--surface)] p-6 shadow-card sm:p-7 ${
         comHover
           ? "transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-conexao-200 hover:shadow-card-hover"
           : ""
@@ -206,12 +214,12 @@ export function Callout({
 }) {
   const estilos = {
     informativo: "border-conexao-200 bg-conexao-50",
-    atencao: "border-protagonismo-200 bg-protagonismo-50",
+    atencao: "border-[var(--acento-tenue-borda)] bg-[var(--acento-tenue)]",
   } as const;
 
   const cores = {
     informativo: "text-conexao-700",
-    atencao: "text-protagonismo-800",
+    atencao: "text-[var(--acento-tenue-texto)]",
   } as const;
 
   return (
@@ -248,7 +256,7 @@ export function DataTable({
   linhas: ReadonlyArray<ReadonlyArray<ReactNode>>;
 }) {
   return (
-    <div className="overflow-hidden rounded-card border border-[var(--line)] bg-white shadow-card">
+    <div className="overflow-hidden rounded-card border border-[var(--line)] bg-[var(--surface)] shadow-card">
       <div className="table-scroll">
         <table className="geo-table">
           <caption className="px-4 pt-5 sm:px-6">{legenda}</caption>
@@ -287,13 +295,19 @@ export function DataTable({
  *
  * A cor recebida é a cor da marca ou da área, e ela continua governando o
  * aspecto da etiqueta: entra na borda a 20% e no preenchimento a 8%. O que
- * mudou é o texto, que passou a usar um tom derivado dessa mesma cor, escuro o
- * suficiente para alcançar os 4,5:1 da WCAG 2.2 AA sobre o preenchimento real.
+ * mudou é o texto, que passou a usar um tom derivado dessa mesma cor, com
+ * contraste suficiente para os 4,5:1 da WCAG 2.2 AA sobre o preenchimento real.
  *
  * Antes, o texto usava a cor da marca crua, e as cores claras da paleta ficavam
  * ilegíveis: Amarelo Estratégico marcava 1,83:1 e Verde Vital 2,88:1. A conta
  * fica em `@/lib/cor`, num ponto só, então uma área nova nasce legível sem que
  * ninguém precise lembrar de conferir.
+ *
+ * São **dois** tons, entregues como propriedades no elemento. O portal é HTML
+ * estático: a cor é decidida no build e não sabe em que tema a página vai ser
+ * lida. Quem escolhe é o navegador, pelo `light-dark()` da classe `.etiqueta`
+ * em `globals.css`. Um tom só ficaria certo em um tema e errado no outro,
+ * porque cor que passa sobre branco reprova sobre preto.
  */
 export function Tag({
   children,
@@ -310,16 +324,19 @@ export function Tag({
     );
   }
 
-  const preenchimento = sobrepor(cor, 0.08, "#ffffff");
+  const tons = tonsDeTextoPorTema(cor, 0.08);
 
   return (
     <span
-      className="inline-flex items-center rounded-pill border px-2.5 py-1 text-xs font-medium"
-      style={{
-        borderColor: `${cor}33`,
-        backgroundColor: `${cor}14`,
-        color: corDeTextoAcessivel(cor, preenchimento),
-      }}
+      className="etiqueta inline-flex items-center rounded-pill border px-2.5 py-1 text-xs font-medium"
+      style={
+        {
+          "--etiqueta-borda": `${cor}33`,
+          "--etiqueta-fundo": `${cor}14`,
+          "--etiqueta-texto-claro": tons.claro,
+          "--etiqueta-texto-escuro": tons.escuro,
+        } as CSSProperties
+      }
     >
       {children}
     </span>

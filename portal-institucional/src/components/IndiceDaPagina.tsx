@@ -31,7 +31,7 @@ export function IndiceDaPagina({ itens }: { itens: readonly ItemDoIndice[] }) {
   return (
     <nav
       aria-label="Índice desta página"
-      className="sticky top-16 z-40 border-b border-[var(--line)] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85 sm:top-20"
+      className="sticky top-16 z-40 border-b border-[var(--line)] bg-[var(--barra)] backdrop-blur supports-[backdrop-filter]:bg-[var(--barra-translucida)] sm:top-20"
     >
       <Container className="py-2.5">
         {/* A rolagem horizontal usa `-mx-4 px-4` para que o primeiro e o último
@@ -44,7 +44,7 @@ export function IndiceDaPagina({ itens }: { itens: readonly ItemDoIndice[] }) {
                 /* `min-h-11` garante os 44px de alvo de toque no celular, onde
                    a barra é a principal forma de navegar pela página. No
                    desktop, com cursor, a altura pode encolher. */
-                className="inline-flex min-h-11 items-center whitespace-nowrap rounded-pill px-3.5 py-1.5 font-apoio text-xs font-semibold uppercase tracking-wide text-conexao-700 transition-colors hover:bg-protagonismo-50 hover:text-protagonismo-800 sm:min-h-9"
+                className="inline-flex min-h-11 items-center whitespace-nowrap rounded-pill px-3.5 py-1.5 font-apoio text-xs font-semibold uppercase tracking-wide text-conexao-700 transition-colors hover:bg-[var(--acento-tenue)] hover:text-[var(--acento-tenue-texto)] sm:min-h-9"
               >
                 {item.rotulo}
               </Link>

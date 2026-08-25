@@ -109,7 +109,7 @@ export default function PaginaSobre() {
           cabecalhos={["Indicador", "Valor", "Detalhamento"]}
           linhas={indicadores.map((indicador) => [
             indicador.rotulo,
-            <strong key={indicador.rotulo} className="text-protagonismo-700">
+            <strong key={indicador.rotulo} className="text-[var(--acento-forte)]">
               {indicador.valor}
             </strong>,
             indicador.detalhe,
@@ -169,9 +169,9 @@ export default function PaginaSobre() {
           {valores.map((valor) => (
             <li
               key={valor.numero}
-              className="flex items-start gap-4 rounded-card border border-[var(--line)] bg-white p-6 shadow-card"
+              className="flex items-start gap-4 rounded-card border border-[var(--line)] bg-[var(--surface)] p-6 shadow-card"
             >
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-protagonismo-50 font-apoio text-base font-bold text-protagonismo-600">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--acento-tenue)] font-apoio text-base font-bold text-[var(--acento)]">
                 {String(valor.numero).padStart(2, "0")}
               </span>
               <p className="text-fluid-base font-medium leading-snug text-conexao-900">
@@ -190,7 +190,7 @@ export default function PaginaSobre() {
         <div className="grid gap-6 md:grid-cols-2">
           {arquetipos.map((arquetipo) => (
             <Card key={arquetipo.nome} comHover>
-              <h3 className="text-fluid-xl font-semibold normal-case text-protagonismo-600">
+              <h3 className="text-fluid-xl font-semibold normal-case text-[var(--acento)]">
                 {arquetipo.nome}
               </h3>
               <p className="mt-3 text-fluid-base leading-relaxed text-conexao-700">

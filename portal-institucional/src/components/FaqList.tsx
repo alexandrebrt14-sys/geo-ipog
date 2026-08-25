@@ -15,12 +15,12 @@ export function FaqList({
   perguntas: ReadonlyArray<PerguntaFrequente>;
 }) {
   return (
-    <div className="divide-y divide-[var(--line)] overflow-hidden rounded-card border border-[var(--line)] bg-white shadow-card">
+    <div className="divide-y divide-[var(--line)] overflow-hidden rounded-card border border-[var(--line)] bg-[var(--surface)] shadow-card">
       {perguntas.map((item) => (
         <details
           key={item.id}
           id={item.id}
-          className="group scroll-mt-28 open:bg-protagonismo-50/40"
+          className="group scroll-mt-28 open:bg-[var(--acento-tenue)]"
         >
           <summary className="flex cursor-pointer list-none items-start justify-between gap-4 p-5 transition-colors hover:bg-conexao-50 sm:p-6 [&::-webkit-details-marker]:hidden">
             {/* A pergunta é texto corrido, não chamada: usa a família de corpo
@@ -30,7 +30,7 @@ export function FaqList({
             </h3>
             <span
               aria-hidden="true"
-              className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-conexao-200 text-conexao-600 transition-transform duration-200 group-open:rotate-45 group-open:border-protagonismo-300 group-open:bg-protagonismo-50 group-open:text-protagonismo-600"
+              className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-conexao-200 text-conexao-600 transition-transform duration-200 group-open:rotate-45 group-open:border-[var(--acento-tenue-borda)] group-open:bg-[var(--acento-tenue)] group-open:text-[var(--acento)]"
             >
               <svg
                 viewBox="0 0 24 24"

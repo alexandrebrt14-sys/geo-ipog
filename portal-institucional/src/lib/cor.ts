@@ -94,6 +94,22 @@ export function sobrepor(hex: string, opacidade: number, fundo: string): string 
 export const CONTRASTE_MINIMO_AA = 4.5;
 
 /**
+ * Superfícies de referência dos dois temas.
+ *
+ * São os valores de `--surface` em `globals.css`, resolvidos para hexadecimal
+ * porque a conta de contraste roda no build, em JavaScript, e não tem acesso ao
+ * CSS. O tom claro é o Branco Essencial; o escuro é `oklch(16.5% 0.012 16)`,
+ * o vinho da marca rebaixado a superfície.
+ *
+ * Se `--surface` mudar em `globals.css`, estes valores mudam junto. É o único
+ * ponto de duplicação da mudança de tema, e `scripts/verificar-contraste.mjs`
+ * confere o resultado no HTML entregue, então uma divergência aparece no build
+ * em vez de aparecer na tela de quem lê.
+ */
+export const SUPERFICIE_CLARA = "#ffffff";
+export const SUPERFICIE_ESCURA = "#130c0d";
+
+/**
  * Escurece a cor da marca o mínimo necessário para alcançar `alvo` sobre
  * `fundo`, preservando o matiz.
  *
@@ -126,4 +142,63 @@ export function corDeTextoAcessivel(
   }
 
   return "#000000";
+}
+
+/**
+ * O mesmo, para fundo escuro: clareia em vez de escurecer.
+ *
+ * Clarear multiplicando os canais não funciona, porque a proporção entre eles
+ * se mantém e a cor satura até estourar em um dos canais antes de ficar clara o
+ * bastante. Aqui a cor caminha em direção ao branco, que preserva o matiz e
+ * baixa a saturação aos poucos, que é como um tom claro da mesma família se
+ * comporta.
+ */
+export function corDeTextoAcessivelEmFundoEscuro(
+  corDaMarca: string,
+  fundo: string,
+  alvo: number = CONTRASTE_MINIMO_AA,
+): string {
+  const base = lerHex(corDaMarca);
+  if (!base) return "inherit";
+  if (contraste(corDaMarca, fundo) >= alvo) return corDaMarca;
+
+  for (let mistura = 0.05; mistura <= 1; mistura += 0.05) {
+    const candidato = paraHex({
+      r: base.r + (255 - base.r) * mistura,
+      g: base.g + (255 - base.g) * mistura,
+      b: base.b + (255 - base.b) * mistura,
+    });
+    if (contraste(candidato, fundo) >= alvo) return candidato;
+  }
+
+  return "#ffffff";
+}
+
+/**
+ * Par de tons de texto para a mesma cor de marca, um por tema.
+ *
+ * O portal é exportado como HTML estático, então a cor é decidida uma vez, no
+ * build, e não pode consultar o tema de quem lê. A saída é entregar os dois
+ * tons e deixar o navegador escolher com `light-dark()`, que responde ao
+ * `color-scheme` do tema corrente.
+ *
+ * `opacidadeDoFundo` cobre o caso da etiqueta, cujo fundo é a própria cor da
+ * marca com transparência sobre a superfície: o contraste tem de ser medido
+ * contra essa mistura, e não contra a superfície pura.
+ */
+export function tonsDeTextoPorTema(
+  corDaMarca: string,
+  opacidadeDoFundo = 0,
+): { claro: string; escuro: string } {
+  const fundoClaro = opacidadeDoFundo
+    ? sobrepor(corDaMarca, opacidadeDoFundo, SUPERFICIE_CLARA)
+    : SUPERFICIE_CLARA;
+  const fundoEscuro = opacidadeDoFundo
+    ? sobrepor(corDaMarca, opacidadeDoFundo, SUPERFICIE_ESCURA)
+    : SUPERFICIE_ESCURA;
+
+  return {
+    claro: corDeTextoAcessivel(corDaMarca, fundoClaro),
+    escuro: corDeTextoAcessivelEmFundoEscuro(corDaMarca, fundoEscuro),
+  };
 }

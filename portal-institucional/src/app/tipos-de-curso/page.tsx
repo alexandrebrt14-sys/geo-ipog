@@ -161,7 +161,7 @@ export default function PaginaTiposDeCurso() {
             {totaisPorNivel["Graduação"]} de graduação.{" "}
             <Link
               href="/areas-de-conhecimento"
-              className="font-semibold text-protagonismo-600 underline underline-offset-4"
+              className="font-semibold text-[var(--acento)] underline underline-offset-4"
             >
               Ver o catálogo por área de conhecimento
             </Link>
@@ -185,7 +185,7 @@ export default function PaginaTiposDeCurso() {
               <article
                 key={tipo.slug}
                 id={tipo.slug}
-                className="scroll-mt-24 rounded-card border border-[var(--line)] bg-white p-6 shadow-card sm:p-8"
+                className="scroll-mt-24 rounded-card border border-[var(--line)] bg-[var(--surface)] p-6 shadow-card sm:p-8"
               >
                 {/* O título é montado como uma string só. Interpolar no meio
                     do JSX faria o React separar os trechos com comentários
@@ -274,19 +274,19 @@ export default function PaginaTiposDeCurso() {
         <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
           <Link
             href="/modalidades"
-            className="font-semibold text-protagonismo-600 underline underline-offset-4"
+            className="font-semibold text-[var(--acento)] underline underline-offset-4"
           >
             Ver as modalidades de ensino
           </Link>
           <Link
             href="/metodo"
-            className="font-semibold text-protagonismo-600 underline underline-offset-4"
+            className="font-semibold text-[var(--acento)] underline underline-offset-4"
           >
             Como funciona o Método IPOG
           </Link>
           <Link
             href="/faq"
-            className="font-semibold text-protagonismo-600 underline underline-offset-4"
+            className="font-semibold text-[var(--acento)] underline underline-offset-4"
           >
             Todas as perguntas frequentes
           </Link>

@@ -143,7 +143,7 @@ export default function PaginaModalidades() {
           <dl className="grid grid-cols-3 gap-6">
             {modalidades.map((modalidade) => (
               <div key={modalidade.nome}>
-                <dd className="font-apoio text-fluid-2xl font-bold leading-none text-protagonismo-600">
+                <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
                   {cursosPorModalidade[modalidade.nome]}
                 </dd>
                 <dt className="mt-2 text-fluid-sm text-conexao-700">
@@ -171,7 +171,7 @@ export default function PaginaModalidades() {
               <article
                 key={modalidade.nome}
                 id={modalidade.nome.toLowerCase().replace(/\s+/g, "-")}
-                className="scroll-mt-24 rounded-card border border-[var(--line)] bg-white p-6 shadow-card sm:p-8"
+                className="scroll-mt-24 rounded-card border border-[var(--line)] bg-[var(--surface)] p-6 shadow-card sm:p-8"
               >
                 {/* "EaD" é sigla e mantém a caixa. O título é montado como uma
                     string só, porque interpolar no meio do JSX faria o React
@@ -287,19 +287,19 @@ export default function PaginaModalidades() {
         <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
           <Link
             href="/tipos-de-curso"
-            className="font-semibold text-protagonismo-600 underline underline-offset-4"
+            className="font-semibold text-[var(--acento)] underline underline-offset-4"
           >
             Ver os tipos de curso
           </Link>
           <Link
             href="/areas-de-conhecimento"
-            className="font-semibold text-protagonismo-600 underline underline-offset-4"
+            className="font-semibold text-[var(--acento)] underline underline-offset-4"
           >
             Ver o catálogo por área
           </Link>
           <Link
             href="/unidades"
-            className="font-semibold text-protagonismo-600 underline underline-offset-4"
+            className="font-semibold text-[var(--acento)] underline underline-offset-4"
           >
             Onde o IPOG tem unidade
           </Link>

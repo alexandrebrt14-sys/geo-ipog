@@ -26,6 +26,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { navigation, menuPrincipal, itensDoGrupo } from "@/lib/site";
 import { Logo } from "@/components/Logo";
+import { AlternadorDeTema } from "@/components/AlternadorDeTema";
 
 export function Header() {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -89,7 +90,7 @@ export function Header() {
   return (
     <header
       ref={barraRef}
-      className="sticky top-0 z-50 border-b border-[var(--line)] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85"
+      className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--barra)] backdrop-blur supports-[backdrop-filter]:bg-[var(--barra-translucida)]"
     >
       <div className="respiro-lateral mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 sm:h-20">
         <Link
@@ -97,8 +98,9 @@ export function Header() {
           className="flex shrink-0 items-center gap-3 rounded-md transition-opacity hover:opacity-80"
           aria-label="Portal GEO IPOG, página inicial"
         >
-          {/* Fundo claro, então a aplicação preferencial do guia é a positiva. */}
-          <Logo className="h-7 w-auto sm:h-8" decorativo />
+          {/* A barra muda de cor com o tema, então a aplicação da marca muda
+              junto: positiva no claro, negativa no escuro, como manda o guia. */}
+          <Logo className="h-7 w-auto sm:h-8" variante="automatica" decorativo />
           <span className="hidden border-l border-[var(--line)] pl-3 font-apoio text-xs font-semibold uppercase tracking-[0.18em] text-conexao-700 sm:block">
             Portal GEO
           </span>
@@ -160,7 +162,7 @@ export function Header() {
                   <ul
                     id={idSubmenu}
                     hidden={!aberto}
-                    className="absolute left-0 top-full z-50 mt-1 w-72 overflow-hidden rounded-card border border-[var(--line)] bg-white py-1.5 shadow-card-hover"
+                    className="absolute left-0 top-full z-50 mt-1 w-72 overflow-hidden rounded-card border border-[var(--line)] bg-[var(--surface)] py-1.5 shadow-card-hover"
                   >
                     {itens.map((item) => (
                       <li key={item.href}>
@@ -169,7 +171,7 @@ export function Header() {
                           aria-current={rotaAtiva(item.href) ? "page" : undefined}
                           className={`block px-4 py-2.5 transition-colors ${
                             rotaAtiva(item.href)
-                              ? "bg-protagonismo-50 text-protagonismo-800"
+                              ? "bg-[var(--acento-tenue)] text-[var(--acento-tenue-texto)]"
                               : "text-conexao-800 hover:bg-conexao-50"
                           }`}
                         >
@@ -189,50 +191,54 @@ export function Header() {
           </ul>
         </nav>
 
-        <a
-          href="https://www.ipog.edu.br"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden shrink-0 whitespace-nowrap rounded-pill bg-protagonismo-600 px-5 py-2.5 font-apoio text-sm font-bold uppercase text-white shadow-sm transition-colors hover:bg-protagonismo-700 lg:inline-flex"
-        >
-          Site do IPOG
-        </a>
+        <div className="flex shrink-0 items-center gap-1">
+          <AlternadorDeTema />
 
-        {/* Botão do painel mobile */}
-        <button
-          ref={botaoRef}
-          type="button"
-          onClick={() => setMenuAberto((aberto) => !aberto)}
-          aria-expanded={menuAberto}
-          aria-controls="menu-mobile"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-conexao-800 transition-colors hover:bg-protagonismo-50 lg:hidden"
-        >
-          <span className="sr-only">
-            {menuAberto ? "Fechar menu de navegação" : "Abrir menu de navegação"}
-          </span>
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            className="h-6 w-6"
+          <a
+            href="https://www.ipog.edu.br"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden shrink-0 whitespace-nowrap rounded-pill bg-protagonismo-600 px-5 py-2.5 font-apoio text-sm font-bold uppercase text-white shadow-sm transition-colors hover:bg-protagonismo-700 lg:inline-flex"
           >
-            {menuAberto ? (
-              <path d="M6 6l12 12M18 6L6 18" />
-            ) : (
-              <path d="M4 7h16M4 12h16M4 17h16" />
-            )}
-          </svg>
-        </button>
+            Site do IPOG
+          </a>
+
+          {/* Botão do painel mobile */}
+          <button
+            ref={botaoRef}
+            type="button"
+            onClick={() => setMenuAberto((aberto) => !aberto)}
+            aria-expanded={menuAberto}
+            aria-controls="menu-mobile"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-conexao-800 transition-colors hover:bg-[var(--acento-tenue)] lg:hidden"
+          >
+            <span className="sr-only">
+              {menuAberto ? "Fechar menu de navegação" : "Abrir menu de navegação"}
+            </span>
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              className="h-6 w-6"
+            >
+              {menuAberto ? (
+                <path d="M6 6l12 12M18 6L6 18" />
+              ) : (
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Painel de navegação mobile, com os mesmos grupos. */}
       <div
         id="menu-mobile"
         hidden={!menuAberto}
-        className="border-t border-[var(--line)] bg-white lg:hidden"
+        className="border-t border-[var(--line)] bg-[var(--surface)] lg:hidden"
       >
         <nav
           aria-label="Navegação principal, versão compacta"
@@ -256,7 +262,7 @@ export function Header() {
                       className={`block rounded-xl px-4 py-3 transition-colors ${
                         rotaAtiva(item.href)
                           ? "bg-protagonismo-600 text-white"
-                          : "text-conexao-800 hover:bg-protagonismo-50"
+                          : "text-conexao-800 hover:bg-[var(--acento-tenue)]"
                       }`}
                     >
                       <span className="block font-apoio text-base font-bold uppercase tracking-wide">
@@ -283,7 +289,7 @@ export function Header() {
           <Link
             href="/"
             aria-current={pathname === "/" ? "page" : undefined}
-            className="mt-2 block rounded-xl px-4 py-3 font-apoio text-base font-bold uppercase tracking-wide text-conexao-800 transition-colors hover:bg-protagonismo-50"
+            className="mt-2 block rounded-xl px-4 py-3 font-apoio text-base font-bold uppercase tracking-wide text-conexao-800 transition-colors hover:bg-[var(--acento-tenue)]"
           >
             {navigation.find((item) => item.href === "/")?.label ?? "Início"}
           </Link>
@@ -307,7 +313,7 @@ function classesDoGatilho(ativo: boolean): string {
   return `whitespace-nowrap rounded-lg px-3 py-2 font-apoio text-sm font-semibold uppercase transition-colors ${
     ativo
       ? "bg-protagonismo-600 text-white"
-      : "text-conexao-700 hover:bg-protagonismo-50 hover:text-protagonismo-800"
+      : "text-conexao-700 hover:bg-[var(--acento-tenue)] hover:text-[var(--acento-tenue-texto)]"
   }`;
 }
 

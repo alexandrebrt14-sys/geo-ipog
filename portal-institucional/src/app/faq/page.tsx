@@ -70,7 +70,7 @@ export default function PaginaFaq() {
               <li key={categoria}>
                 <a
                   href={`#${idDaCategoria(categoria)}`}
-                  className="inline-flex items-center gap-2 rounded-pill border border-conexao-200 bg-white px-4 py-2 text-fluid-sm font-medium text-conexao-800 transition-colors hover:border-conexao-300 hover:bg-conexao-50"
+                  className="inline-flex items-center gap-2 rounded-pill border border-conexao-200 bg-[var(--surface)] px-4 py-2 text-fluid-sm font-medium text-conexao-800 transition-colors hover:border-conexao-300 hover:bg-conexao-50"
                 >
                   {categoria}
                   <span className="text-conexao-600">

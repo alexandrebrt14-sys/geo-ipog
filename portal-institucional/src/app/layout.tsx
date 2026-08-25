@@ -109,7 +109,41 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       className={barlow.variable}
+      /* `suppressHydrationWarning` porque o script abaixo escreve `data-theme`
+         no elemento raiz antes do React assumir. Sem ele, o React acusaria
+         diferença entre o HTML gerado no build, que não tem o atributo, e o
+         documento já corrigido no navegador. O aviso é legítimo e o silêncio
+         aqui é deliberado: é o único atributo que muda, e quem o muda é a
+         linha logo abaixo. */
+      suppressHydrationWarning
     >
+      <head>
+        {/*
+          Resolve o tema antes da primeira pintura.
+
+          Precisa ser script embutido e síncrono no `head`. Qualquer coisa que
+          espere a hidratação pintaria a página clara primeiro e escura depois,
+          e esse clarão é justamente o que o tema escuro existe para evitar.
+
+          A chave `pp-theme` é a mesma do site anfitrião em
+          posgraduacaopsicologia.com: mesma origem, então a escolha atravessa do
+          site para o portal e de volta, sem a pessoa precisar escolher duas
+          vezes.
+
+          Ao contrário do script do site, este marca `data-theme` também quando
+          o tema é claro. É o que permite uma escolha explícita por claro vencer
+          um sistema configurado no escuro, através da guarda
+          `:root:not([data-theme="light"])` em `globals.css`.
+
+          Sem JavaScript não há atributo, e aí quem decide é a media query
+          `prefers-color-scheme`: o tema continua correto, só não é escolhível.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("pp-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="flex min-h-dvh flex-col antialiased">
         {/* Entidades declaradas uma única vez para todo o portal. As rotas as
             referenciam por @id, em vez de redeclarar a organização. */}

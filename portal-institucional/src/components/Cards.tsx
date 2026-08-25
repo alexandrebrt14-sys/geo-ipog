@@ -17,9 +17,9 @@ import { Card, Tag } from "@/components/Layout";
  */
 export function IndicadorCard({ indicador }: { indicador: Indicador }) {
   return (
-    <div className="rounded-card border border-[var(--line)] bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">
+    <div className="rounded-card border border-[var(--line)] bg-[var(--surface)] p-6 shadow-card transition-shadow hover:shadow-card-hover">
       <dl>
-        <dd className="font-apoio text-fluid-2xl font-bold leading-none text-protagonismo-600">
+        <dd className="font-apoio text-fluid-2xl font-bold leading-none text-[var(--acento)]">
           {indicador.valor}
         </dd>
         <dt className="mt-2 font-apoio text-sm font-semibold uppercase tracking-[0.12em] text-conexao-800">
@@ -42,7 +42,7 @@ export function AreaCard({ area }: { area: AreaConhecimento }) {
   return (
     <article
       id={area.slug}
-      className="group flex scroll-mt-24 flex-col overflow-hidden rounded-card border border-[var(--line)] bg-white shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:shadow-card-hover"
+      className="group flex scroll-mt-24 flex-col overflow-hidden rounded-card border border-[var(--line)] bg-[var(--surface)] shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:shadow-card-hover"
     >
       <div
         aria-hidden="true"
@@ -98,7 +98,7 @@ export function AreaCard({ area }: { area: AreaConhecimento }) {
 
         <Link
           href={`/areas-de-conhecimento/${area.slug}`}
-          className="mt-6 inline-flex items-center gap-2 font-apoio text-sm font-semibold uppercase tracking-wide text-protagonismo-600 underline-offset-4 transition-colors hover:text-protagonismo-800 hover:underline"
+          className="mt-6 inline-flex items-center gap-2 font-apoio text-sm font-semibold uppercase tracking-wide text-[var(--acento)] underline-offset-4 transition-colors hover:text-[var(--acento-forte)] hover:underline"
         >
           Ver todos os cursos
           <span aria-hidden="true">→</span>
@@ -123,7 +123,7 @@ export function ConteudoCard({
   return (
     <Card comHover className="flex h-full flex-col">
       {numero !== undefined ? (
-        <span className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-protagonismo-50 font-apoio text-base font-bold text-protagonismo-600">
+        <span className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--acento-tenue)] font-apoio text-base font-bold text-[var(--acento)]">
           {String(numero).padStart(2, "0")}
         </span>
       ) : null}

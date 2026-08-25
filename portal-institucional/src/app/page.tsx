@@ -67,10 +67,7 @@ export default function PaginaInicial() {
           /* Gradiente Vinho Determinação → Vermelho Protagonismo, posição 50%,
              descrito no guia como "intenso e marcante". É um dos três
              gradientes oficiais, e o único composto só por cores principais. */
-          style={{
-            background:
-              "linear-gradient(135deg, #481a1f 0%, #481a1f 50%, #d71c37 100%)",
-          }}
+          style={{ background: "var(--gradiente-abertura)" }}
         />
         <Container className="relative py-16 sm:py-24 lg:py-28">
           <p className="inline-flex rounded-pill border border-protagonismo-500/40 bg-protagonismo-600/15 px-4 py-1.5 font-apoio text-xs font-semibold uppercase tracking-[0.16em] text-protagonismo-200">
@@ -169,7 +166,7 @@ export default function PaginaInicial() {
               <Link
                 key={frente.nome}
                 href={frente.rota}
-                className="font-semibold text-protagonismo-600 underline underline-offset-4"
+                className="font-semibold text-[var(--acento)] underline underline-offset-4"
               >
                 {frente.nome}
               </Link>
@@ -257,7 +254,7 @@ export default function PaginaInicial() {
           nota mínima 7,0.{" "}
           <Link
             href="/metodo"
-            className="font-semibold text-protagonismo-600 underline-offset-4 hover:underline"
+            className="font-semibold text-[var(--acento)] underline-offset-4 hover:underline"
           >
             Ver o Método IPOG e as regras acadêmicas completas
           </Link>
@@ -288,7 +285,7 @@ export default function PaginaInicial() {
 
         <Link
           href="/faq"
-          className="mt-8 inline-flex items-center gap-2 font-apoio text-base font-semibold uppercase tracking-wide text-protagonismo-600 underline-offset-4 transition-colors hover:text-protagonismo-800 hover:underline"
+          className="mt-8 inline-flex items-center gap-2 font-apoio text-base font-semibold uppercase tracking-wide text-[var(--acento)] underline-offset-4 transition-colors hover:text-[var(--acento-forte)] hover:underline"
         >
           Ver todas as {perguntasFrequentes.length} perguntas
           <span aria-hidden="true">→</span>

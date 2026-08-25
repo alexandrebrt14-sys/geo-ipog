@@ -27,8 +27,12 @@ const ALTURA_ORIGINAL = 28;
 
 type LogoProps = {
   className?: string;
-  /** `negativa` para fundo escuro. Padrão `positiva`, a aplicação preferencial. */
-  variante?: "positiva" | "negativa";
+  /**
+   * `negativa` para fundo escuro e `positiva` para fundo claro, que é o padrão
+   * e a aplicação preferencial do guia. `automatica` entrega as duas e deixa o
+   * CSS escolher, para superfície que muda de cor conforme o tema.
+   */
+  variante?: "positiva" | "negativa" | "automatica";
   /**
    * Marca o logo como decorativo. Use quando o link ou o contêiner que envolve
    * o logo já tiver um rótulo acessível, para o leitor de tela não anunciar
@@ -42,6 +46,47 @@ export function Logo({
   variante = "positiva",
   decorativo = false,
 }: LogoProps) {
+  const alt = decorativo
+    ? ""
+    : "IPOG — Instituto de Pós-Graduação e Graduação";
+
+  /**
+   * Superfície que muda de cor conforme o tema, como o cabeçalho.
+   *
+   * Os arquivos oficiais são dois SVGs de cor fixa, e o guia proíbe recolorir a
+   * marca por CSS, então não há como derivar um do outro. A saída é entregar os
+   * dois no HTML e deixar o CSS mostrar o que corresponde ao tema, o que
+   * funciona antes da hidratação e continua funcionando sem JavaScript.
+   *
+   * O custo é baixar 23 KB a mais, o dos dois arquivos em vez de um. É o preço
+   * de trocar a aplicação da marca sem depender de script, e os dois ficam em
+   * cache por um ano.
+   */
+  if (variante === "automatica") {
+    return (
+      <>
+        <Image
+          src={assetPath("/marca/logo-ipog.svg")}
+          alt={alt}
+          aria-hidden={decorativo || undefined}
+          width={LARGURA_ORIGINAL}
+          height={ALTURA_ORIGINAL}
+          className={`logo-no-claro ${className ?? ""}`}
+        />
+        <Image
+          src={assetPath("/marca/logo-ipog-branca.svg")}
+          /* O texto alternativo fica só no primeiro: os dois representam a
+             mesma marca, e anunciar duas vezes seria ruído no leitor de tela. */
+          alt=""
+          aria-hidden
+          width={LARGURA_ORIGINAL}
+          height={ALTURA_ORIGINAL}
+          className={`logo-no-escuro ${className ?? ""}`}
+        />
+      </>
+    );
+  }
+
   const arquivo = assetPath(
     variante === "negativa"
       ? "/marca/logo-ipog-branca.svg"
@@ -51,7 +96,7 @@ export function Logo({
   return (
     <Image
       src={arquivo}
-      alt={decorativo ? "" : "IPOG — Instituto de Pós-Graduação e Graduação"}
+      alt={alt}
       aria-hidden={decorativo || undefined}
       width={LARGURA_ORIGINAL}
       height={ALTURA_ORIGINAL}

@@ -26,6 +26,17 @@
 > na borda e no preenchimento. `npm run verificar:contraste` mede o HTML
 > exportado e falha o build se alguma combinação ficar abaixo do mínimo.
 >
+> **Tema claro e escuro.** As cores vivem em OKLCH, e o tema escuro reescreve só
+> os tokens semânticos e a rampa neutra em `globals.css`, num bloco só. As
+> rampas da marca não se movem: vermelho da marca é vermelho da marca nos dois
+> temas. Ao acrescentar cor nova, use os tokens de papel (`--surface`, `--ink`,
+> `--acento`, `--acento-tenue`) em vez de `bg-white` ou de um degrau fixo da
+> rampa, senão a tela fica presa em um tema.
+>
+> A escolha de tema é compartilhada com o site anfitrião: mesma origem, mesma
+> chave `pp-theme` no `localStorage`, mesmo atributo `data-theme`. Quem escolhe
+> escuro no site chega ao portal já no escuro.
+>
 > **Ao criar uma rota nova:** crie também um `opengraph-image.tsx` ao lado do
 > `page.tsx`, copiando o de qualquer rota existente e trocando título e etiqueta.
 > Sem ele a rota herda a imagem do segmento acima e o link compartilhado mostra
@@ -61,6 +72,7 @@ npm start       # serve o build de out/ para conferência local
 npm run typecheck       # checagem de tipos do TypeScript
 npm run lint            # ESLint com as regras do Next
 npm run verificar:geo   # auditoria de GEO e SEO sobre o HTML já exportado
+npm run verificar:contraste  # contraste WCAG 2.2 AA nos temas claro e escuro
 npm run validar         # roda tudo na ordem: tipos, lint, build e auditoria
 ```
 

@@ -34,9 +34,11 @@ import {
 const descricao = `O IPOG oferece quatro tipos de formação: pós-graduação lato sensu, graduação pela Faculdade IPOG, cursos de extensão universitária e educação corporativa. Esta página explica a duração, a carga horária, o pré-requisito e a certificação de cada um, para você escolher com base no que muda entre eles.`;
 
 export const metadata: Metadata = criarMetadata({
-  titulo: "Tipos de curso do IPOG: pós-graduação, graduação e extensão",
+  titulo: "Tipos de curso do IPOG, lado a lado",
   descricao,
   path: "/tipos-de-curso",
+  descricaoMeta:
+    "Pós-graduação, graduação, extensão e educação corporativa no IPOG: duração, carga horária, pré-requisito e certificação de cada formação.",
 });
 
 const trilha = [

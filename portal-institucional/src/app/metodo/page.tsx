@@ -28,6 +28,8 @@ export const metadata: Metadata = criarMetadata({
   titulo: "Método IPOG e regras acadêmicas",
   descricao,
   path: "/metodo",
+  descricaoMeta:
+    "O Método IPOG e as regras acadêmicas: formato das aulas, frequência mínima, critério de aprovação, TCC e emissão do certificado.",
 });
 
 const trilha = [

@@ -31,6 +31,8 @@ export const metadata: Metadata = criarMetadata({
   titulo: "Unidades do IPOG: cidades e estados atendidos",
   descricao,
   path: "/unidades",
+  descricaoMeta:
+    "As 50 cidades com unidade do IPOG, nos 26 estados e no Distrito Federal, organizadas por região, para conferir se há unidade na sua.",
 });
 
 const trilha = [

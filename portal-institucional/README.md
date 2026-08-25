@@ -45,6 +45,13 @@
 > publica o link que funciona é o ipog.edu.br. `npm run verificar:enderecos`
 > agora reprova o build se algum endereço publicado não responder.
 >
+> **Ao escrever metadados de rota,** o resumo visível e a `meta description`
+> são coisas diferentes. O resumo é o parágrafo de resposta direta, denso de
+> propósito porque existe para ser extraído por motor generativo. A descrição é
+> vitrine de resultado de busca e é cortada por volta de 160 caracteres. Passe
+> `descricaoMeta` em `criarMetadata` quando o resumo não couber, e mantenha o
+> título até 60. `npm run verificar:geo` reprova o build acima de 160.
+>
 > **Ao criar uma rota nova:** crie também um `opengraph-image.tsx` ao lado do
 > `page.tsx`, copiando o de qualquer rota existente e trocando título e etiqueta.
 > Sem ele a rota herda a imagem do segmento acima e o link compartilhado mostra

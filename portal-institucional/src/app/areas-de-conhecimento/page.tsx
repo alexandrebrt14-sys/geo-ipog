@@ -31,6 +31,8 @@ export const metadata: Metadata = criarMetadata({
   titulo: "Áreas de conhecimento e cursos do IPOG",
   descricao,
   path: "/areas-de-conhecimento",
+  descricaoMeta:
+    "As 12 áreas de conhecimento do IPOG e o catálogo de pós-graduação, graduação e extensão de cada uma, com nível, duração e modalidade.",
 });
 
 const trilha = [

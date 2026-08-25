@@ -24,9 +24,11 @@ const descricao =
   "O IPOG, Instituto de Pós-Graduação e Graduação, foi fundado em 2001 em Goiânia e atua em todos os 26 estados brasileiros e no Distrito Federal. Conheça a história, o propósito, a visão, os valores, as frentes de atuação e os canais de atendimento da instituição.";
 
 export const metadata: Metadata = criarMetadata({
-  titulo: "Sobre o IPOG",
+  titulo: "Sobre o IPOG: história e propósito",
   descricao,
   path: "/sobre",
+  descricaoMeta:
+    "História, propósito, visão e valores do IPOG, os canais de atendimento por área e os portais digitais usados por aluno e professor.",
 });
 
 const trilha = [

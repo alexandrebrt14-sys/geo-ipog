@@ -151,6 +151,41 @@ for (const rota of ROTAS) {
     if (!html.includes(agulha)) registrar(rota.nome, `${rotulo} ausente`);
   }
 
+  // --- Tamanho do que o buscador exibe ---------------------------------
+  //
+  // Título e descrição são cortados no resultado de busca, e o corte cai no
+  // meio da frase. O portal já publicou descrição de 364 caracteres, mais do
+  // que o dobro do que aparece, porque a `meta description` reaproveitava o
+  // parágrafo de resposta direta, que é denso por outro motivo. Para separar os
+  // dois papéis existe `descricaoMeta`, em `@/lib/seo`.
+  //
+  // Os limites são de exibição, não de indexação: passar deles não derruba
+  // posição, mas entrega ao leitor uma frase truncada no lugar de uma chamada.
+  const titulo = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "";
+  const descricao =
+    html.match(/name="description" content="([^"]*)"/)?.[1] ?? "";
+
+  if (titulo.length > 60) {
+    registrar(
+      rota.nome,
+      `título com ${titulo.length} caracteres, acima dos 60 exibidos`,
+      false,
+    );
+  }
+  if (descricao.length > 160) {
+    registrar(
+      rota.nome,
+      `meta description com ${descricao.length} caracteres, acima dos 160 exibidos. Use \`descricaoMeta\` em criarMetadata`,
+    );
+  }
+  if (descricao.length > 0 && descricao.length < 110) {
+    registrar(
+      rota.nome,
+      `meta description com só ${descricao.length} caracteres, desperdiçando espaço de exibição`,
+      false,
+    );
+  }
+
   // --- Conteúdo sem JavaScript -----------------------------------------
   const textoVisivel = html
     .replace(/<script[\s\S]*?<\/script>/g, "")

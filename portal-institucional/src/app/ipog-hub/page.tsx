@@ -34,9 +34,11 @@ const maiorCapacidade = Math.max(...espacosDoHub.map((e) => e.capacidade));
 const descricao = `${hub.definicao} A unidade de ${unidadeSede.cidade} tem auditório para até ${maiorCapacidade} pessoas, e há espaços para locação em ${totalDeCidadesDoHub} cidades.`;
 
 export const metadata: Metadata = criarMetadata({
-  titulo: "IPOG HUB: locação de espaços para eventos e treinamentos",
+  titulo: "IPOG HUB: locação de espaços",
   descricao,
   path: "/ipog-hub",
+  descricaoMeta:
+    "Locação de espaços do IPOG para evento, treinamento e reunião: cidades atendidas, tipos de sala, capacidade e estrutura disponível.",
 });
 
 const trilha = [

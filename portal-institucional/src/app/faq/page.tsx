@@ -18,6 +18,8 @@ export const metadata: Metadata = criarMetadata({
   titulo: "Perguntas frequentes sobre o IPOG",
   descricao,
   path: "/faq",
+  descricaoMeta:
+    "20 respostas diretas sobre o IPOG: reconhecimento pelo MEC, modalidades, formato das aulas, aprovação, matrícula, TCC e certificação.",
 });
 
 const trilha = [

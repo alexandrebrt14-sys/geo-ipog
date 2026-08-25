@@ -20,25 +20,42 @@ export function criarMetadata(params: {
   titulo: string;
   descricao: string;
   path: string;
+  /**
+   * Texto da `meta description`, quando ele precisa ser diferente do resumo
+   * exibido na página.
+   *
+   * Os dois nasceram iguais e isso ficou apertado. O resumo visível é o
+   * parágrafo de resposta direta, que existe para ser extraído por motor
+   * generativo e por isso é denso de propósito. A `meta description` é uma
+   * linha de vitrine no resultado de busca, cortada por volta de 160
+   * caracteres. Servir o mesmo texto aos dois papéis publicava descrição
+   * cortada no meio da frase em todas as 23 rotas, uma delas com 364
+   * caracteres, mais do que o dobro do que aparece.
+   *
+   * Quando ausente, cai no resumo, que continua sendo o comportamento certo
+   * para rota cujo resumo já cabe.
+   */
+  descricaoMeta?: string;
 }): Metadata {
   const canonica = absoluteUrl(params.path);
+  const descricaoParaBusca = params.descricaoMeta ?? params.descricao;
 
   return {
     title: params.titulo,
-    description: params.descricao,
+    description: descricaoParaBusca,
     alternates: { canonical: canonica },
     openGraph: {
       type: "website",
       locale: "pt_BR",
       siteName: site.name,
       title: params.titulo,
-      description: params.descricao,
+      description: descricaoParaBusca,
       url: canonica,
     },
     twitter: {
       card: "summary_large_image",
       title: params.titulo,
-      description: params.descricao,
+      description: descricaoParaBusca,
     },
   };
 }

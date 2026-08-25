@@ -29,6 +29,8 @@ export const metadata: Metadata = {
     titulo: "Portal GEO IPOG — Base de conhecimento estruturada do IPOG",
     descricao,
     path: "/",
+    descricaoMeta:
+      "Base de conhecimento do IPOG em dados estruturados: 12 áreas, método de ensino, unidades e perguntas frequentes, em formato extraível.",
   }),
   // A raiz usa o título absoluto, sem o sufixo aplicado às demais rotas.
   title: {

@@ -45,9 +45,11 @@ const cursosPorModalidade = Object.fromEntries(
 const descricao = `O IPOG oferece aulas em três modalidades: presencial, ao vivo e EaD. Presencial e ao vivo seguem o mesmo calendário, com módulos mensais de sexta a domingo e frequência mínima de 75%. O EaD é assíncrono, sem horário fixo, com avaliação por quiz.`;
 
 export const metadata: Metadata = criarMetadata({
-  titulo: "Modalidades de ensino do IPOG: presencial, ao vivo e EaD",
+  titulo: "Modalidades de ensino do IPOG",
   descricao,
   path: "/modalidades",
+  descricaoMeta:
+    "Presencial, ao vivo e EaD no IPOG: onde a aula acontece, em que horário, com que frequência mínima e como cada modalidade é avaliada.",
 });
 
 const trilha = [

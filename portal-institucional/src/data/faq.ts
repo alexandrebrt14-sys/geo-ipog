@@ -109,7 +109,7 @@ export const perguntasFrequentes: PerguntaFrequente[] = [
     categoria: "Matrícula e financeiro",
     pergunta: "Como funcionam as parcelas e o reajuste no IPOG?",
     resposta:
-      "No IPOG, as 12 primeiras parcelas são fixas. As demais são atualizadas monetariamente a cada 12 meses pelo IPCA/IBGE, ou pelo IGPM caso o IPCA seja extinto. Os boletos ficam disponíveis no Portal do Aluno, e quem estiver sem acesso deve entrar em contato pelo e-mail cr.matriz@ipog.edu.br.",
+      "No IPOG, as 12 primeiras parcelas são fixas. As demais são atualizadas monetariamente a cada 12 meses pelo IPCA/IBGE, ou pelo IGPM caso o IPCA seja extinto. Os boletos ficam disponíveis na área Financeiro do Portal do Aluno, o IPOGMais, e quem estiver sem acesso deve procurar a Central de Atendimento pelo telefone (62) 3945-5050 ou pelo e-mail do seu segmento.",
   },
   {
     id: "o-que-e-ipogmais",

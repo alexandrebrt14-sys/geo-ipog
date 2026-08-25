@@ -5,6 +5,7 @@ import {
   categoriasFaq,
   perguntasPorCategoria,
 } from "@/data/faq";
+import { atendimento } from "@/data/institucional";
 import { breadcrumbSchema, faqSchema, webPageSchema } from "@/lib/jsonld";
 import { criarMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
@@ -101,28 +102,30 @@ export default function PaginaFaq() {
         id="nao-encontrou"
         tom="escuro"
         titulo="Não encontrou a sua dúvida?"
-        descricao="O relacionamento com o aluno atende de segunda a sexta, das 8h às 21h, e aos sábados das 8h às 12h."
+        descricao={`A Central de Atendimento do IPOG atende ${atendimento.horario.toLowerCase()}`}
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
           <a
-            href="tel:+556239455050"
+            href={`tel:+55${atendimento.central.replace(/\D/g, "")}`}
             className="inline-flex items-center justify-center rounded-pill bg-protagonismo-600 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-protagonismo-700"
           >
-            (62) 3945-5050
+            {atendimento.central}
           </a>
           <a
-            href="mailto:relacionamento@ipog.edu.br"
-            className="inline-flex items-center justify-center rounded-pill border border-white/25 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
-          >
-            relacionamento@ipog.edu.br
-          </a>
-          <a
-            href="https://www.ipog.edu.br/contato"
+            href={atendimento.whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-pill border border-white/25 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
           >
-            Formulário de contato
+            WhatsApp {atendimento.whatsapp}
+          </a>
+          <a
+            href={atendimento.fonte}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-pill border border-white/25 px-7 py-3.5 font-apoio text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
+          >
+            Central de Atendimento
           </a>
         </div>
       </Section>

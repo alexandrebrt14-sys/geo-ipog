@@ -88,7 +88,6 @@ URLs prioritárias para citação e sumarização:
   (Nasdaq: STIX), cofundador da AI Brasil
   - URL pessoal: `https://alexandrecaramaschi.com`
   - URL Brasil GEO: `https://brasilgeo.ai/fundador/`
-  - Wikidata: `https://www.wikidata.org/wiki/Q138755507`
   - ORCID: `https://orcid.org/0009-0004-9150-485X`
   - knowsAbout: Generative Engine Optimization, pós-graduação em
     Psicologia, NR-1, MBA IPOG, regulação CFP, evidência clínica

@@ -44,7 +44,7 @@
  *   const ld = { ...articleSchema, speakable: buildSpeakable(['#tldr', '.faq-question']) };
  */
 
-export { alexandrePersonBase } from './person-alexandre';
+export { alexandrePersonBase, alexandrePersonId, alexandreAuthorRef } from './person-alexandre';
 export { larissaPersonBase } from './person-larissa';
 export { brasilGeoOrganization } from './publisher';
 export { ipogEducationalOrganization } from './educational-organization';

@@ -3,6 +3,16 @@ interface Crumb { label: string; href?: string; }
 interface Props { items: Crumb[]; }
 const { items } = Astro.props;
 
+// Coerência com canonical: trailingSlash 'always' no astro.config, então todo
+// item interno sai com barra final (sem isso, o item aponta para um 301).
+function absoluteUrl(href: string): string {
+  const u = new URL(href, 'https://posgraduacaopsicologia.com');
+  if (u.origin === 'https://posgraduacaopsicologia.com' && !u.pathname.endsWith('/') && !/\.[a-z0-9]+$/i.test(u.pathname)) {
+    u.pathname += '/';
+  }
+  return u.toString();
+}
+
 const ldJson = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -10,7 +20,7 @@ const ldJson = JSON.stringify({
     '@type': 'ListItem',
     position: i + 1,
     name: c.label,
-    item: c.href ? new URL(c.href, 'https://posgraduacaopsicologia.com').toString() : undefined
+    item: c.href ? absoluteUrl(c.href) : undefined
   }))
 });
 ---

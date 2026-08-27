@@ -73,3 +73,16 @@ Não é reatribuição, mas o mesmo bloqueio se aplica: assinar por Organization
 
 As 5 FAQs de TEA/TDAH em `site/src/pages/faq/` e os artigos de `/autismo/` já têm `author: larissaPersonBase` (com `reviewedBy` = Alexandre em parte delas). Continuam dependentes dos itens 1 a 3 acima para a credencial ficar verificável, mas não estão pendentes de reatribuição.
 
+## Achados de 27/08/2026 (fontes públicas, sessão logada)
+
+O que foi possível apurar sem a Larissa, e o que continua dependendo dela:
+
+| Item | Resultado | Fonte |
+|---|---|---|
+| ORCID | Nenhum registro para "Larissa Caramaschi" (busca expandida da API pública: 0 resultados). Não criar ORCID em nome dela; se ela abrir um, entra em `sameAs`. | `pub.orcid.org/v3.0/expanded-search` |
+| Lattes | Existe currículo de **Larissa Seixlack Caramaschi** (id de busca `K4700994P8`). A URL pública `lattes.cnpq.br/<16 dígitos>` só aparece no CV completo, que exige reCAPTCHA; pedir o link a ela ou abrir o CV manualmente na busca textual. | `buscatextual.cnpq.br` (busca simples por nome) |
+| Formação no Lattes | Graduação em Psicologia pela **Universidade Católica de Goiás (1996–2001)**; especialização em Terapia de Família e de Casal (Holon, 2000); mestrado em Psicologia na **USP Ribeirão Preto** iniciado em 2002 (o CV coletado em 15/09/2025 ainda o marca "em andamento"). **Diverge do `person-larissa.ts`**, que declara bacharelado pela USP em `alumniOf`/`hasCredential`. Confirmar com ela antes de qualquer reatribuição: a credencial declarada tem de bater com o Lattes, senão o extrator lê contradição. | Escavador (espelho do Lattes) `escavador.com/sobre/1030598/larissa-seixlack-caramaschi` |
+| CRP | O Cadastro Nacional de Profissionais de Psicologia (`cadastro.cfp.org.br`) exige reCAPTCHA na consulta; não foi consultado por automação. O site `larissacaramaschi.com` publica apenas "CRP 09 (Goiás), em ratificação". O número tem de vir dela. | `cadastro.cfp.org.br`, `larissacaramaschi.com/sobre` |
+| Regime (assina ou revisa) | Decisão do dono do repositório, guia a guia. Sugestão operacional: `reviewedBy` = Larissa com `dateModified` da revisão nos 35 guias (Alexandre e a Organization continuam como `author`), porque ela não escreveu os textos; `author` = Larissa só nos guias que ela reescrever. | esta onda |
+
+Enquanto CRP e Lattes (URL) não chegam, nada muda em `author`/`reviewedBy`: continua valendo o bloqueio da seção anterior.

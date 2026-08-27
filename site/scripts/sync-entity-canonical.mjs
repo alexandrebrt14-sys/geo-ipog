@@ -1,107 +1,73 @@
 #!/usr/bin/env node
 /**
  * sync-entity-canonical.mjs — regenera src/data/entity-canonical.json a partir da
- * FONTE ÚNICA de entidade (repo landing-page-geo, domínio alexandrecaramaschi.com).
+ * FONTE ÚNICA de entidade exportada pelo landing-page-geo
+ * (public/.well-known/entity-canonical.json: @graph com a Person de Alexandre
+ * Caramaschi e a Organization Brasil GEO, mesmos @id canônicos).
  *
- * Fonte hoje (derivação local, Onda 2):
- *   - Person:       landing-page-geo/src/lib/schemas/person-alexandre.ts (alexandrePersonBase)
- *                   + credenciais de formação do nó Person de JsonLdFull.tsx (mesmo @id;
- *                   os dois nós se fundem na extração, então a união é o canônico efetivo).
- *   - Organization: nó "https://brasilgeo.ai/#organization" de JsonLd.tsx (conjunto mínimo,
- *                   subconjunto literal do grafo completo).
+ * Ordem de leitura:
+ *   1. URL servida https://alexandrecaramaschi.com/.well-known/entity-canonical.json
+ *      (TODO(entidade): passa a ser a única origem quando estiver publicada e o
+ *      clone local deixar de ser necessário; hoje pode devolver 404 e cai no item 2).
+ *   2. Arquivo local do clone do landing-page-geo (--source-file <caminho> ou
+ *      ENTITY_CANONICAL_FILE; padrão ../../_wt-onda2-lpg/public/.well-known/entity-canonical.json,
+ *      com fallback para ../../landing-page-geo/public/.well-known/entity-canonical.json).
  *
- * TODO(entidade): quando https://alexandrecaramaschi.com/.well-known/entity-canonical.json
- * estiver publicado, trocar a derivação local pela leitura desse arquivo (bloco
- * `fetchRemote` abaixo já tenta primeiro; hoje devolve 404 e cai na derivação local).
- *
- * Uso: node scripts/sync-entity-canonical.mjs [--source-repo <caminho do landing-page-geo>]
+ * Uso: node scripts/sync-entity-canonical.mjs [--source-file <caminho>] [--offline]
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
-import { transform } from 'esbuild';
+import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(here, '../src/data/entity-canonical.json');
 const REMOTE = 'https://alexandrecaramaschi.com/.well-known/entity-canonical.json';
-const argIdx = process.argv.indexOf('--source-repo');
-const SOURCE_REPO = resolve(
-  argIdx > -1 ? process.argv[argIdx + 1] : process.env.ENTITY_SOURCE_REPO || resolve(here, '../../../landing-page-geo')
-);
+const PERSON_ID = 'https://alexandrecaramaschi.com/#alexandre-caramaschi';
+const ORG_ID = 'https://brasilgeo.ai/#organization';
+const argIdx = process.argv.indexOf('--source-file');
+const OFFLINE = process.argv.includes('--offline');
+const candidates = [
+  argIdx > -1 ? process.argv[argIdx + 1] : null,
+  process.env.ENTITY_CANONICAL_FILE,
+  resolve(here, '../../../_wt-onda2-lpg/public/.well-known/entity-canonical.json'),
+  resolve(here, '../../../landing-page-geo/public/.well-known/entity-canonical.json')
+].filter(Boolean).map((p) => resolve(p));
 
 async function fetchRemote() {
+  if (OFFLINE) return null;
   try {
-    const r = await fetch(REMOTE, { headers: { accept: 'application/json' } });
+    const r = await fetch(REMOTE, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(10000) });
     if (!r.ok) return null;
-    const j = await r.json();
-    if (j && j.person && j.organization) return j;
-  } catch {}
-  return null;
-}
-
-/** Avalia um trecho de literal JS (array/objeto) extraído por regex de um .tsx. */
-function evalLiteral(src, DOMAIN = 'https://alexandrecaramaschi.com') {
-  // eslint-disable-next-line no-new-func
-  return new Function('DOMAIN', `return (${src});`)(DOMAIN);
-}
-
-/** Extrai o bloco `hasCredential: [ ... ]` (com colchetes balanceados) a partir de um índice. */
-function sliceBalanced(text, start, open, close) {
-  let depth = 0;
-  for (let i = start; i < text.length; i++) {
-    if (text[i] === open) depth++;
-    else if (text[i] === close) {
-      depth--;
-      if (depth === 0) return text.slice(start, i + 1);
-    }
+    return { doc: await r.json(), origin: REMOTE };
+  } catch {
+    return null;
   }
-  throw new Error('bloco não balanceado');
 }
 
-async function deriveLocal() {
-  const personTs = resolve(SOURCE_REPO, 'src/lib/schemas/person-alexandre.ts');
-  const fullTsx = resolve(SOURCE_REPO, 'src/components/JsonLdFull.tsx');
-  const minTsx = resolve(SOURCE_REPO, 'src/components/JsonLd.tsx');
-  for (const p of [personTs, fullTsx, minTsx]) {
-    if (!existsSync(p)) throw new Error(`fonte única ausente: ${p}`);
+function readLocal() {
+  for (const p of candidates) {
+    if (existsSync(p)) return { doc: JSON.parse(readFileSync(p, 'utf8')), origin: p };
   }
-
-  // 1) Person canônica: transpila o .ts e importa como módulo em memória.
-  const { code } = await transform(readFileSync(personTs, 'utf8'), { loader: 'ts', format: 'esm' });
-  const mod = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`);
-  const person = JSON.parse(JSON.stringify(mod.alexandrePersonBase));
-
-  // 2) Credenciais de formação declaradas no segundo nó Person (JsonLdFull.tsx, mesmo @id).
-  const full = readFileSync(fullTsx, 'utf8');
-  const idx = full.indexOf('hasCredential: [');
-  if (idx < 0) throw new Error('hasCredential não encontrado em JsonLdFull.tsx');
-  const eduCreds = evalLiteral(sliceBalanced(full, full.indexOf('[', idx), '[', ']'));
-  const seen = new Set(person.hasCredential.map((c) => c.name));
-  for (const c of eduCreds) if (!seen.has(c.name)) { person.hasCredential.push(c); seen.add(c.name); }
-
-  // 3) Organization Brasil GEO: nó mínimo de JsonLd.tsx.
-  const min = readFileSync(minTsx, 'utf8');
-  const oidx = min.indexOf('"@id": "https://brasilgeo.ai/#organization"');
-  if (oidx < 0) throw new Error('Organization Brasil GEO não encontrada em JsonLd.tsx');
-  const ostart = min.lastIndexOf('{', oidx);
-  const organization = evalLiteral(sliceBalanced(min, ostart, '{', '}'));
-
-  return {
-    _meta: {
-      description: 'Entidades canônicas (Person Alexandre Caramaschi e Organization Brasil GEO). NÃO editar à mão: regenerar com `node scripts/sync-entity-canonical.mjs`.',
-      source: {
-        person: 'landing-page-geo/src/lib/schemas/person-alexandre.ts + hasCredential de src/components/JsonLdFull.tsx',
-        organization: 'landing-page-geo/src/components/JsonLd.tsx (nó https://brasilgeo.ai/#organization)',
-        todo: `trocar a derivação local por ${REMOTE} quando publicado`
-      },
-      syncedAt: new Date().toISOString().slice(0, 10)
-    },
-    person,
-    organization
-  };
+  throw new Error(`fonte única ausente. Tentado: ${REMOTE} e ${candidates.join(', ')}`);
 }
 
-const data = (await fetchRemote()) || (await deriveLocal());
-// QIDs mortos são barrados pelo gate scripts/check-external-ids.mjs (raiz do repo), que também cobre este JSON.
+const { doc, origin } = (await fetchRemote()) || readLocal();
+const graph = Array.isArray(doc['@graph']) ? doc['@graph'] : [];
+const person = graph.find((n) => n['@id'] === PERSON_ID);
+const organization = graph.find((n) => n['@id'] === ORG_ID);
+if (!person || !organization) throw new Error(`@graph sem Person ${PERSON_ID} ou Organization ${ORG_ID} em ${origin}`);
+
+const data = {
+  _meta: {
+    description: 'Entidades canônicas (Person Alexandre Caramaschi e Organization Brasil GEO). NÃO editar à mão: regenerar com `node scripts/sync-entity-canonical.mjs`.',
+    source: origin.split(String.fromCharCode(92)).join('/').replace(/^.*?(_wt-onda2-lpg|landing-page-geo)\//, '$1/'),
+    version: doc.version || null,
+    generatedAt: doc.generatedAt || null,
+    todo: `usar somente ${REMOTE} quando publicado`,
+    syncedAt: new Date().toISOString().slice(0, 10)
+  },
+  person,
+  organization
+};
 writeFileSync(OUT, JSON.stringify(data, null, 2) + '\n');
-console.log(`entity-canonical.json: Person sameAs=${data.person.sameAs.length} hasCredential=${data.person.hasCredential.length}; Organization sameAs=${data.organization.sameAs.length}`);
+console.log(`entity-canonical.json <- ${origin} (version ${doc.version || '?'}): Person sameAs=${person.sameAs.length} hasCredential=${(person.hasCredential || []).length}; Organization sameAs=${organization.sameAs.length}`);

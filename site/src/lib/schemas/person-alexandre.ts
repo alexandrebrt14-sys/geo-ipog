@@ -52,7 +52,7 @@ export const alexandrePersonId = canonicalPerson['@id'];
 
 export const alexandrePersonBase = {
   ...canonicalPerson,
-  knowsAbout: Array.from(new Set([...canonicalPerson.knowsAbout, ...SITE_VERTICAL_KNOWS_ABOUT]))
+  knowsAbout: Array.from(new Set([...((canonicalPerson as { knowsAbout?: readonly string[] }).knowsAbout ?? []), ...SITE_VERTICAL_KNOWS_ABOUT]))
 };
 
 /**

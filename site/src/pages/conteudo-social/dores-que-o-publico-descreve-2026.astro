@@ -1,0 +1,341 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const title = 'Dores que o público descreve em 2026: mapa da conversa sobre saúde mental, trabalho e terapia — Brasil GEO';
+const description = 'As dez dores que o público brasileiro descreve nas redes sobre saúde mental, trabalho e terapia, em padrão agregado e sem exposição de ninguém, traduzidas em pauta editorial por canal com a regra vigente de cada plataforma em 2026.';
+
+const datePublished = '2026-08-27';
+
+// Trava ética desta página: nada aqui reproduz fala literal, apelido, perfil ou
+// endereço de post individual. O material de origem traz pessoas identificáveis
+// descrevendo sofrimento psíquico. O que entra na página é o padrão recorrente,
+// em terceira pessoa, com a plataforma e a frequência relativa em que aparece.
+const dores = [
+  { dor: 'A empresa trata o adoecimento como falha individual e mantém a mesma meta que produziu o quadro.', quem: 'Trabalhador em operação pressionada e psicólogo clínico que recebe o caso', plataforma: 'X, recorrência alta', formato: 'Explicação de risco psicossocial no plural, com o que a norma passou a exigir da empresa', href: '/faq/nr1-faq', linkLabel: 'Perguntas frequentes sobre a NR-1' },
+  { dor: 'Pedir afastamento custa a vaga, então o silêncio dura até o corpo parar.', quem: 'Trabalhador com quadro instalado e sem reserva financeira', plataforma: 'X e fóruns de desabafo, recorrência alta', formato: 'Passo a passo do que o documento técnico precisa conter e de quem decide o quê', href: '/guias/afastamento-inss-burnout-nexo-qd85-2026', linkLabel: 'Documentar o nexo de burnout no INSS' },
+  { dor: 'A sessão não cabe no orçamento do mês e o assistente de IA está aberto de madrugada.', quem: 'Pessoa sem acesso a serviço público nem a plano com cobertura', plataforma: 'X e fóruns de desabafo, recorrência alta', formato: 'Comparativo de escopo, dizendo o que cada opção resolve e onde ela para', href: '/comparativos/chatbots-terapeuticos-vs-terapeuta-humano-2026', linkLabel: 'Chatbots terapêuticos e terapeuta humano' },
+  { dor: 'A IA substitui o psicólogo, ou o que ela substitui é a ausência de qualquer atendimento?', quem: 'Público geral e estudante de Psicologia', plataforma: 'X, recorrência alta e polarizada', formato: 'Comparativo com critério de decisão explícito, sem defender categoria', href: '/comparativos/ia-vs-terapeuta-humano', linkLabel: 'IA e terapeuta humano, o que cada um faz' },
+  { dor: 'A máquina pode concordar com tudo e devolver a angústia amplificada em vez de interromper a crise.', quem: 'Familiar de pessoa em sofrimento e profissional que teme o desfecho', plataforma: 'X e fóruns de desabafo, recorrência média', formato: 'Protocolo de cuidado por intensidade, com o ponto em que a pessoa deixa de ser cuidada por texto', href: '/intervencoes/stepped-care', linkLabel: 'Cuidado escalonado por intensidade' },
+  { dor: 'Plataformas de prontuário escutam a sessão e escrevem o registro, e a categoria discute o que sobra da escuta.', quem: 'Psicólogo clínico em consultório e em serviço', plataforma: 'X, recorrência média e crescente', formato: 'Regra de uso com consentimento específico, minimização de dados e revisão integral', href: '/guias/uso-etico-ia-clinica', linkLabel: 'Uso ético de IA na clínica' },
+  { dor: 'Investir em pós-graduação sem que a conta do retorno apareça no material de divulgação.', quem: 'Recém-formado e psicólogo em transição de área', plataforma: 'Reddit e X, recorrência alta', formato: 'Conta aberta de custo, carga horária e o que cada formato destrava', href: '/pos-graduacao-psicologia/como-escolher', linkLabel: 'Como escolher a pós em Psicologia' },
+  { dor: 'Especialização, MBA, mestrado ou residência: o público pede tabela, e recebe inspiração.', quem: 'Psicólogo em decisão de carreira', plataforma: 'Reddit, recorrência alta em fóruns de Psicologia', formato: 'Tabela comparativa com finalidade, duração e reconhecimento de cada título', href: '/comparativos/mba-vs-especializacao', linkLabel: 'MBA e especialização lado a lado' },
+  { dor: 'A clínica se precariza, a consulta é tabelada por plataforma e a profissão não tem piso.', quem: 'Psicólogo em início de carreira e profissional em plataforma de atendimento', plataforma: 'Reddit e X, recorrência média', formato: 'Leitura de mercado com valores datados e o caminho de posicionamento possível', href: '/carreira', linkLabel: 'Caminhos de carreira em Psicologia' },
+  { dor: 'A empresa fala de saúde mental em campanha e mantém a jornada que adoece.', quem: 'Profissional de RH, gestor de segurança e trabalhador', plataforma: 'LinkedIn pelo lado de quem decide, X pelo lado de quem sofre', formato: 'Roteiro de implantação com prazo, responsável e o que muda na gestão', href: '/guias/implementar-nr1-em-empresa', linkLabel: 'Implantar a NR-1 na empresa' }
+];
+
+const canais = [
+  { canal: 'Quora', dor: 'A IA substitui o psicólogo, e o prontuário escrito por máquina', regra: 'A política do Quora exige que o essencial da resposta seja compreensível sem sair da plataforma, proíbe link autopromocional que não faça parte de uma resposta útil e exige declaração explícita de afiliação. Resposta em teaser com link é passível de recolhimento.', pratica: 'Publique a resposta inteira dentro do Quora e deixe o link como leitura adicional, nunca como condição para entender o texto.' },
+  { canal: 'Medium', dor: 'Custo da terapia e o que a ferramenta entrega de fato', regra: 'A política de IA do Medium trata como plágio o uso de IA para reformular, resumir ou remixar conteúdo existente quando o resultado se parece com o original em conceito, estrutura ou elementos essenciais. Texto assistido por IA exige rótulo claro nos dois primeiros parágrafos, e texto gerado por IA fica fora do paywall do Partner Program.', pratica: 'Escreva um ensaio próprio a partir do mesmo material de origem, com tese e estrutura diferentes, e declare a assistência quando ela existir.' },
+  { canal: 'LinkedIn', dor: 'Obrigação da empresa depois da NR-1 e o passivo que já corre', regra: 'As Professional Community Policies do LinkedIn proíbem conteúdo promocional não solicitado e mensagens repetitivas, vedam combinar curtidas e recompartilhamentos com terceiros e pedem esforço de originalidade.', pratica: 'Entre pelo lado de quem assina a decisão, com o número de afastamentos e a obrigação vigente, e deixe o pedido em uma linha só.' },
+  { canal: 'Substack', dor: 'Precarização da clínica e posição do autor sobre o mercado', regra: 'O Substack não proíbe conteúdo gerado por IA. Desde 22 de julho de 2026 existe varredura opcional de texto por IA, em parceria com a Pangram, acionada pelo próprio leitor em posts e comentários, além de uma declaração opcional de processo criativo.', pratica: 'É o canal mais permissivo do conjunto e por isso o de maior exposição reputacional, já que qualquer leitor pode auditar o texto quando quiser.' },
+  { canal: 'Reddit', dor: 'Conta de custo e retorno da formação, com números na mesa', regra: 'O guia de autopromoção do Reddit publica a régua de 10%: no máximo um décimo das suas publicações e conversas deve apontar para conteúdo próprio. Votar apenas no próprio domínio e pedir voto são manipulação de votos, e a autoria precisa ser declarada de forma transparente.', pratica: 'Chegue com número aberto e responda nos comentários. Post sem conta explícita é desmontado ali mesmo.' },
+  { canal: 'X', dor: 'Adoecimento tratado como falha individual, em frase seca', regra: 'Não há régua de autopromoção com efeito de trava. O que muda o jogo é o mecanismo: o corpus do X é fechado a rastreadores externos, e a busca do Grok lê e cita os posts de origem. Estar nessa base depende de publicar ali.', pratica: 'Assuma a posição no primeiro post e deixe a nuance para o terceiro em diante.' }
+];
+
+const faqs = [
+  { q: 'Por que uma página de pauta não reproduz as falas que mapeou?', a: 'Porque o material de origem é composto por relatos de pessoas identificáveis descrevendo sofrimento psíquico, adoecimento e uso de IA no lugar de terapia. Reproduzir a frase, o apelido ou o endereço do post expõe quem escreveu, sem ganho editorial. O padrão agregado, com a plataforma e a frequência relativa, entrega a mesma informação de pauta sem custo para ninguém.' },
+  { q: 'Qual é o número que ancora o tamanho do problema no Brasil?', a: 'A Previdência Social concedeu 546.254 benefícios por incapacidade temporária por transtornos mentais e comportamentais em 2025, alta de 15,66% sobre 2024, conforme divulgado pela Agência Brasil em 20 de agosto de 2026. O dado mede afastamento concedido, ou seja, o ponto em que o adoecimento já parou o trabalho.' },
+  { q: 'O que a pessoa resolve ao conversar com um assistente de IA no lugar da terapia?', a: 'Três coisas concretas: disponibilidade imediata na hora em que a angústia aparece, custo zero por interação e ausência de julgamento percebido. Nenhuma delas é a terapia em si, e todas são condições de acesso que o serviço formal falha em oferecer. Tratar a escolha como ignorância do público erra o diagnóstico e perde o leitor.' },
+  { q: 'O que o assistente de IA deixa de fazer em situação de risco?', a: 'Ele não sustenta vínculo ao longo do tempo, não observa o que a pessoa deixa de escrever, não aciona rede de apoio, não conduz avaliação de risco e não interrompe uma crise. Em sofrimento agudo ou risco de vida, o caminho é o CVV pelo telefone 188, gratuito e 24 horas, ou o pronto-socorro mais próximo.' },
+  { q: 'Qual dor rende em qual canal?', a: 'A obrigação regulatória da empresa rende no LinkedIn, porque lá está quem assina a decisão. A conta de custo e retorno da formação rende no Reddit, que pede número. A pergunta sobre IA e terapia rende no Quora, que premia resposta completa dentro da plataforma. A posição sobre precarização rende no Substack, lido por quem já escolheu o autor. O X entra com a frase seca que abre a conversa.' },
+  { q: 'Republicar o mesmo texto do portal no Medium com ajuda de IA é seguro?', a: 'Não. A política de IA do Medium classifica como plágio o uso de IA para reformular, resumir ou remixar conteúdo existente quando o resultado se parece com o original em conceito, estrutura ou elementos essenciais. Republicação canônica declarada é outra coisa; reescrita automática do próprio texto cai na cláusula.' },
+  { q: 'Que formação prepara quem vai produzir esse conteúdo com respaldo técnico?', a: 'Quem escreve sobre saúde mental no trabalho precisa dominar risco psicossocial, avaliação e desenho de programas, terreno da Psicologia Organizacional e do Trabalho e da Psicologia Positiva. O IPOG mantém MBAs nessas duas frentes; a grade vigente e as condições estão no site da instituição.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Dores que o público descreve em 2026: o mapa da conversa sobre saúde mental, trabalho e terapia',
+  description,
+  datePublished,
+  dateModified: datePublished,
+  inLanguage: 'pt-BR',
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  about: 'Escuta social sobre saúde mental, trabalho e terapia no Brasil convertida em pauta editorial por canal'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.tldr-resposta', '.faq-answer-text'] },
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Conteúdo e Social', item: `${SITE.url}/conteudo-social` },
+    { '@type': 'ListItem', position: 3, name: 'Dores que o público descreve em 2026', item: `${SITE.url}/conteudo-social/dores-que-o-publico-descreve-2026` }
+  ]
+};
+---
+
+<Base title="Dores que o público descreve em 2026: mapa de pauta por canal" description={description}>
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Conteúdo & Social', href: '/conteudo-social' },
+        { label: 'Dores que o público descreve em 2026' }
+      ]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Conteúdo & Social · Escuta agregada · 10 dores</span>
+        <h1 class="section-h text-3xl sm:text-4xl mt-2">Dores que o público descreve em 2026, e a pauta que elas pedem</h1>
+        <p class="mt-3 text-ink-700 text-base sm:text-lg">
+          O que o público brasileiro descreve nas redes sobre saúde mental, trabalho e terapia, em padrão agregado, com a plataforma onde cada dor aparece e o formato de conteúdo que responde a ela.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="O que chega às redes é pedido de tradução prática: o que fazer diante de um ambiente que adoece e de um custo que não cabe no mês. Conteúdo que responde ao diagnóstico e ignora a decisão prática erra o público inteiro. A Previdência Social concedeu 546.254 benefícios por incapacidade temporária por transtornos mentais e comportamentais em 2025, alta de 15,66% sobre 2024 (Agência Brasil, 20 de agosto de 2026). As dez dores mapeadas se dividem em três blocos: ambiente de trabalho que adoece, acesso que não cabe no orçamento e decisão de formação sem conta aberta."
+        fontes={['Agência Brasil (20/08/2026), dados da Previdência Social', 'Escuta agregada de X, Reddit e Quora (Brasil GEO, agosto de 2026)', 'Políticas públicas de Quora, Medium, LinkedIn, Substack e Reddit (2026)']}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <p>
+          Quem produz conteúdo sobre saúde mental costuma escrever a partir do que a instituição gostaria de responder. A conversa real segue outro roteiro. As perguntas que se repetem nas redes brasileiras raramente pedem definição de transtorno: pedem instrução para uma decisão que já está marcada na agenda da semana, com data e consequência. Pedir afastamento e arriscar a vaga. Cortar a sessão de terapia para fechar o mês. Assinar uma pós-graduação sem saber se a conta fecha.
+        </p>
+        <p>
+          O tamanho disso tem número institucional. A Previdência Social concedeu 546.254 benefícios por incapacidade temporária por transtornos mentais e comportamentais em 2025, alta de 15,66% sobre 2024, conforme divulgado pela Agência Brasil em 20 de agosto de 2026. Esse dado mede o ponto em que o adoecimento já parou o trabalho, e é por isso que ele importa para pauta: quando a pessoa chega às redes perguntando o que fazer, ela está antes desse ponto, no intervalo em que conteúdo ainda muda alguma coisa.
+        </p>
+        <p>
+          Este mapa foi montado a partir de escuta agregada em X, Reddit e Quora. Nenhuma fala aparece aqui em forma literal, nenhum perfil é nomeado e nenhum endereço de post individual é publicado. O que a página entrega é o padrão: a dor em uma frase, quem a descreve, a plataforma em que ela aparece e a frequência relativa dela no recorte de agosto de 2026.
+        </p>
+      </div>
+
+      <YMYLDisclaimer domain="saude-mental" reviewerName="Larissa Caramaschi" reviewerHref="/autismo/sobre-larissa/" lastReviewed="2026-08-27" />
+
+      <div>
+        <h2 class="section-h text-2xl">Qual é a distância entre a pergunta e a resposta publicada?</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A pergunta que circula é operacional e datada. A resposta que o setor publica costuma ser conceitual e atemporal. As duas tratam do mesmo assunto e não se encontram, e é nesse vão que o conteúdo perde o leitor.
+        </p>
+
+        <figure class="rounded-2xl border border-surface-200 bg-surface-50 p-5 mt-5">
+          <div class="overflow-x-auto">
+            <svg viewBox="0 0 640 300" class="w-full text-ink-700" style="min-width:640px" role="img" aria-labelledby="dores-2026-figura-titulo dores-2026-figura-desc">
+              <title id="dores-2026-figura-titulo">Distância entre a pergunta do público e a resposta publicada pelo setor</title>
+              <desc id="dores-2026-figura-desc">Duas colunas pareadas. À esquerda, quatro perguntas operacionais que se repetem nas redes: perder a vaga ao pedir afastamento, pagar a terapia do mês, recorrer à IA de madrugada e saber a que a empresa está obrigada. À direita, as quatro respostas conceituais que o setor costuma publicar: o que é burnout na classificação, a importância de buscar ajuda, o aviso de que a IA não substitui terapia e a semana de bem-estar. Cada seta liga uma pergunta à resposta que ela recebe.</desc>
+
+              <g fill="currentColor" font-size="15" font-weight="700" class="text-ink-900">
+                <text x="8" y="26">O que o público pergunta</text>
+                <text x="360" y="26">O que o setor publica</text>
+              </g>
+
+              <g stroke="currentColor" stroke-width="1" class="text-ink-500">
+                <line x1="8" y1="38" x2="310" y2="38"></line>
+                <line x1="360" y1="38" x2="632" y2="38"></line>
+              </g>
+
+              <g fill="currentColor" font-size="14" class="text-ink-900">
+                <text x="8" y="80">Pedir afastamento custa a vaga?</text>
+                <text x="8" y="130">Como pago a terapia deste mês?</text>
+                <text x="8" y="180">Uso a IA porque são duas da manhã</text>
+                <text x="8" y="230">A empresa é obrigada a quê?</text>
+              </g>
+
+              <g fill="currentColor" font-size="14" class="text-ink-700">
+                <text x="360" y="80">O que é burnout na classificação</text>
+                <text x="360" y="130">A importância de buscar ajuda</text>
+                <text x="360" y="180">A IA não substitui a terapia</text>
+                <text x="360" y="230">Semana de bem-estar na empresa</text>
+              </g>
+
+              <g stroke="currentColor" stroke-width="2" class="text-brand-700" fill="none">
+                <path d="M318 76 h28 l-8 -5 m8 5 l-8 5"></path>
+                <path d="M318 126 h28 l-8 -5 m8 5 l-8 5"></path>
+                <path d="M318 176 h28 l-8 -5 m8 5 l-8 5"></path>
+                <path d="M318 226 h28 l-8 -5 m8 5 l-8 5"></path>
+              </g>
+
+              <g stroke="currentColor" stroke-width="1" class="text-ink-500">
+                <line x1="332" y1="46" x2="332" y2="252"></line>
+              </g>
+
+              <text x="8" y="284" font-size="14" fill="currentColor" class="text-ink-700">Escuta agregada de X, Reddit e Quora, recorte de agosto de 2026.</text>
+            </svg>
+          </div>
+          <figcaption class="text-sm text-ink-700 mt-4 leading-relaxed">
+            As quatro linhas são pares reais: cada pergunta da esquerda encontra, na direita, a resposta que o setor publica com mais frequência. Nenhuma delas responde à decisão que a pessoa precisa tomar naquela semana, e a distância é editorial, não clínica.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Quais são as dez dores e o que responde cada uma?</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Cada linha é um padrão recorrente, descrito em terceira pessoa. A coluna de plataforma indica onde a dor aparece e com que frequência relativa no recorte de agosto de 2026. A última coluna aponta a página do portal que já responde àquela dor.
+        </p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 mt-4">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50">
+              <tr>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Dor descrita</th>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Quem descreve</th>
+                <th class="text-left p-3 font-display font-semibold text-brand-700">Plataforma</th>
+                <th class="text-left p-3 font-display font-semibold text-sun-600">Formato que responde</th>
+                <th class="text-left p-3 font-display font-semibold text-ink-500">Página que já responde</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {dores.map(d => (
+                <tr>
+                  <td class="p-3 font-medium text-ink-900">{d.dor}</td>
+                  <td class="p-3 text-ink-700">{d.quem}</td>
+                  <td class="p-3 text-ink-700">{d.plataforma}</td>
+                  <td class="p-3 text-ink-700">{d.formato}</td>
+                  <td class="p-3"><a href={d.href} class="text-brand-700 font-semibold hover:text-brand-800">{d.linkLabel}</a></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-ink-700 leading-relaxed">
+          Os dez padrões se agrupam em três blocos. O primeiro é o ambiente de trabalho que adoece, com quatro dores. O segundo é o acesso ao cuidado, com três. O terceiro é a decisão de formação e a renda da categoria, com três. Quem planeja calendário editorial rende mais cobrindo os três blocos em vez de aprofundar só o primeiro, porque a pergunta de acesso é a que traz volume novo de leitor.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Por que tanta gente conversa com IA em vez de fazer terapia?</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Essa é a dor que mais cresce no recorte e a mais delicada de tratar. O padrão que se repete tem três elementos constantes: a sessão custa o que a pessoa não tem naquele mês, a angústia chega em horário sem atendimento e o assistente responde sem que ela precise administrar a reação de quem escuta. A escolha descrita raramente está entre terapia e assistente de IA. Ela está entre o assistente e passar a madrugada sozinha.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Vale nomear o que a ferramenta entrega de fato, porque negar isso derruba a credibilidade do texto inteiro. Ela está disponível, organiza pensamento disperso em linguagem ordenada, aceita repetição sem cansaço aparente e cobra zero por interação. Essas são condições de acesso, e o serviço formal falha nelas com regularidade. Levantamento da Outras Palavras publicado em 6 de agosto de 2026 registrou consulta tabelada a R$ 30 em plataforma de atendimento e relatos de planos de saúde remunerando R$ 15 por sessão, o que explica parte da fila e da rotatividade de profissionais.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O que a ferramenta deixa de entregar também precisa ser dito sem rodeio. Ela não sustenta vínculo ao longo do tempo, não percebe o que a pessoa deixa de escrever, não aciona rede de apoio, não conduz avaliação de risco e não interrompe uma crise. Estudo da Cornell University, relatado pela Veja em 23 de janeiro de 2026, descreveu efeito de câmara de eco em modelos comerciais, com a angústia do interlocutor voltando amplificada. Em quadro agudo, amplificar é o desfecho mais perigoso possível.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A consequência para quem atende e para quem gere serviço é operacional. Se a pessoa procura a ferramenta pelo horário, pelo custo e pela ausência de julgamento, o serviço que quiser disputar essa escolha precisa mexer nessas três variáveis: porta de entrada fora do horário comercial, faixa de preço declarada antes do primeiro contato e acolhimento que devolva orientação em vez de sermão. O desenho de cuidado por intensidade organiza essa oferta sem transformar todo caso em psicoterapia semanal, e o portal descreve o modelo em <a href="/intervencoes/stepped-care" class="text-brand-700 font-semibold hover:text-brand-800">cuidado escalonado</a>.
+        </p>
+        <div class="rounded-2xl border-l-4 border-sun-500 bg-sun-50 p-5 mt-5">
+          <p class="text-sm text-ink-800 leading-relaxed">
+            Em sofrimento agudo ou risco de vida, o Centro de Valorização da Vida atende pelo telefone 188, gratuito e 24 horas, e o pronto-socorro mais próximo é caminho imediato. Conteúdo educacional não conduz crise, e nenhuma ferramenta de conversa substitui avaliação clínica.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Qual dor rende em qual canal, sob a regra vigente de 2026?</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Cada plataforma publica a própria régua, e ignorá-la custa distribuição antes de custar audiência. O quadro abaixo emparelha a dor que rende em cada canal com a regra que governa a publicação ali.
+        </p>
+        <div class="space-y-4 mt-5">
+          {canais.map(c => (
+            <div class="rounded-2xl border border-surface-200 bg-white p-6">
+              <p class="text-xs uppercase tracking-wider font-semibold text-brand-700">{c.canal}</p>
+              <p class="mt-2 text-ink-900 font-semibold leading-relaxed">{c.dor}</p>
+              <p class="mt-2 text-sm text-ink-700 leading-relaxed"><strong class="text-ink-900">Regra vigente.</strong> {c.regra}</p>
+              <p class="mt-1 text-sm text-ink-700 leading-relaxed"><strong class="text-ink-900">Como publicar.</strong> {c.pratica}</p>
+            </div>
+          ))}
+        </div>
+        <p class="mt-4 text-ink-700 leading-relaxed">
+          Duas regras merecem destaque porque quebram estratégias inteiras de reaproveitamento. A régua de 10% publicada pelo Reddit limita a um décimo a parcela das suas publicações e conversas que aponta para conteúdo próprio, o que obriga a participar antes de divulgar. E a política de IA do Medium trata como plágio a reescrita automática de conteúdo já publicado, o que inviabiliza pegar o texto do portal, passá-lo por um modelo e republicá-lo lá, além de exigir rótulo de assistência nos dois primeiros parágrafos. A rota permitida é escrever peça original a partir do mesmo material de origem.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Como transformar uma dor mapeada em peça publicada?</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O caminho tem cinco decisões, e todas antecedem a escrita. Primeiro, escolha a dor pela decisão que o leitor precisa tomar, e não pelo tema. Segundo, defina o canal por quem decide aquilo, e não pelo alcance médio da plataforma. Terceiro, separe o dado institucional datado do padrão de escuta, porque o primeiro sustenta a afirmação e o segundo justifica a pauta. Quarto, escreva a resposta completa dentro do canal quando a regra dele exigir isso. Quinto, mantenha a versão canônica no portal e aponte para ela sem transformar o link em condição de leitura.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A trava ética que vale para este mapa vale para a peça: padrão agregado, terceira pessoa, sem fala literal, sem apelido e sem endereço de post. A conversa das redes é matéria-prima de pauta, e as pessoas que a produziram não pediram para ilustrar argumento de ninguém. A <a href="/conteudo-social/biblioteca" class="text-brand-700 font-semibold hover:text-brand-800">biblioteca de peças</a> traz modelos já escritos nesse formato, e o quadro de obrigações da empresa está em <a href="/regulacao" class="text-brand-700 font-semibold hover:text-brand-800">regulação</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="faq-question font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-8">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A pauta que funciona responde à decisão da semana, e não à definição do transtorno.</h3>
+        <ul class="mt-3 text-white/90 leading-relaxed space-y-2 list-disc pl-5">
+          <li>546.254 benefícios por incapacidade temporária por transtornos mentais em 2025, alta de 15,66% (Agência Brasil, 20 de agosto de 2026).</li>
+          <li>As dez dores se agrupam em ambiente que adoece, acesso ao cuidado e decisão de formação.</li>
+          <li>A dor que mais cresce é o uso de IA por custo e horário; nomeie o que ela resolve antes de dizer o que ela deixa de fazer.</li>
+          <li>O Reddit publica régua de 10% para conteúdo próprio; o Medium veta remix derivativo e exige rótulo de assistência.</li>
+          <li>Padrão agregado e terceira pessoa: a conversa vira pauta sem expor quem a escreveu.</li>
+        </ul>
+        <p class="mt-3 text-white/90 leading-relaxed">Para quem vai atuar na frente de saúde mental no trabalho, o IPOG mantém MBAs em Psicologia Organizacional e do Trabalho e em Psicologia Positiva. Consulte a grade vigente na instituição.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Como usar este mapa</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Da dor à peça</h3>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700 list-disc pl-5">
+          <li>Escolha a dor pela decisão do leitor.</li>
+          <li>Escolha o canal por quem decide, e não por alcance.</li>
+          <li>Cole fonte e data ao número institucional.</li>
+          <li>Publique a resposta completa dentro do canal.</li>
+          <li>Mantenha a versão canônica no portal.</li>
+        </ul>
+        <a href="/conteudo-social/kit-de-repurposing" class="btn btn-primary mt-4 w-full h-11">Ver o Kit de repurposing</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Páginas correlatas</p>
+        <ul class="space-y-2">
+          <li><a href="/conteudo-social/radar-de-evidencias" class="mega-link"><strong class="text-ink-900 text-sm">Radar de evidências</strong></a></li>
+          <li><a href="/conteudo-social/perguntas-que-a-ia-responde" class="mega-link"><strong class="text-ink-900 text-sm">Perguntas que a IA responde</strong></a></li>
+          <li><a href="/temas/saude-mental-trabalho" class="mega-link"><strong class="text-ink-900 text-sm">Saúde mental no trabalho</strong></a></li>
+          <li><a href="/guias/uso-etico-ia-clinica" class="mega-link"><strong class="text-ink-900 text-sm">Uso ético de IA na clínica</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes do dado institucional</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2026-08/saude-mental-ganha-destaque-em-seminario-sobre-riscos-no-trabalho-0" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Agência Brasil, 20/08/2026: benefícios por transtornos mentais em 2025</a></li>
+          <li><a href="https://outraspalavras.net/trabalhoeprecariado/psicologos-por-que-a-categoria-se-uberiza/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Outras Palavras, 06/08/2026: remuneração da clínica em plataforma</a></li>
+          <li><a href="https://www.reddit.com/wiki/selfpromotion/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Reddit: guia de autopromoção e a régua de 10%</a></li>
+          <li><a href="https://help.medium.com/hc/en-us/articles/22576852947223-Artificial-Intelligence-AI-content-policy" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Medium: política de conteúdo com IA</a></li>
+          <li><a href="https://help.quora.com/hc/en-us/articles/9456583756180-Question-and-Answer-Policies" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Quora: políticas de pergunta e resposta</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~12 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

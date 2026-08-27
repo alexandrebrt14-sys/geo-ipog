@@ -1,0 +1,338 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+const areaHospitalar = AREAS.find(a => a.id === 'psicologia-hospitalar')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+
+const passos = [
+  { n: 1, titulo: 'Entender por que o encaminhamento chega tarde', aplicacao: 'O paciente com dor crônica costuma chegar ao psicólogo depois de anos de investigação, exames repetidos e trocas de medicação, e o desenho institucional brasileiro ajuda a explicar isso. O Protocolo Clínico e Diretrizes Terapêuticas da Dor Crônica, aprovado pela Portaria Conjunta SAES/SAPS/SECTICS nº 1, de 22 de agosto de 2024 (Ministério da Saúde, 2024), tem 298 páginas e nenhuma ocorrência da palavra psicoterapia. O radical psicolog aparece uma única vez no documento inteiro, dentro de uma referência bibliográfica. A abordagem multiprofissional entra principalmente pela porta das Práticas Integrativas e Complementares em Saúde. Ou seja: o encaminhamento não está desenhado no protocolo nacional, ele depende da iniciativa do prescritor. Quando você recebe o caso, a demora já é parte da história clínica e precisa ser nomeada na primeira sessão.', armadilha: 'Ler o atraso como desinteresse ou resistência do paciente. Na maior parte das vezes o caminho até a sala não existia formalmente, e o paciente percorreu o que havia.' },
+  { n: 2, titulo: 'Desfazer a leitura de acusação na primeira sessão', aplicacao: 'A frase que o paciente ouviu antes de chegar costuma ser alguma variação de que a dor tem componente emocional, e o que ele entendeu foi que ninguém achou nada e agora dizem que ele inventa. A resposta técnica está na classificação vigente. Barke, Korwisi e Rief (2022, Clinical Psychology in Europe) descrevem a virada da CID-11: a dor crônica primária deixa de ser diagnóstico residual de exclusão e passa a ser condição por direito próprio, com critérios positivos explícitos, dor em uma ou mais regiões anatômicas com sofrimento emocional significativo ou incapacidade funcional, não melhor explicada por outra condição. Os mesmos autores registram que a CID-11 traz códigos de extensão para registrar formalmente fatores psicossociais ao lado do diagnóstico de dor, e não no lugar dele. Traduzido para a sala: o registro psicológico é adicional ao diagnóstico, nunca substituto. Diga isso com essas palavras antes de qualquer anamnese.', armadilha: 'Responder à acusação percebida com uma aula longa de neurofisiologia. O paciente não pediu explicação de mecanismo, ele pediu para não ser desqualificado.' },
+  { n: 3, titulo: 'Avaliar cinco eixos que o encaminhamento não traz', aplicacao: 'O encaminhamento costuma trazer topografia da dor e histórico de exames. Falta o resto. Monte a avaliação sobre cinco eixos, porque são exatamente os desfechos que a literatura de psicoterapia em dor crônica mede: intensidade e distribuição da dor, incapacidade funcional, sofrimento psíquico, sono e crenças sobre atividade. A revisão Cochrane de Williams, Fisher, Hearn e Eccleston (2020), com 75 estudos e 9.401 participantes, organiza os resultados justamente em dor, incapacidade e sofrimento, e é nesses três que aparece separação entre eles. Como pano de fundo epidemiológico, a revisão sistemática de Aguiar e colaboradores (2021, BrJP), com 35 estudos brasileiros, encontrou prevalência entre 23,02% e 76,17%, faixa larga porque as definições e as amostras variam entre estudos. O próprio PCDT brasileiro (Ministério da Saúde, 2024) trabalha com prevalência de cerca de 40% em adultos, 10% de dor intensa e 5% com limitação grave.', armadilha: 'Medir só intensidade da dor. A escala numérica é o eixo em que a psicoterapia menos se move, e ancorar a avaliação nela programa a devolutiva para o fracasso.' },
+  { n: 4, titulo: 'Situar o caso: dor como sintoma ou como condição própria', aplicacao: 'A CID-11 organiza a dor crônica sob MG30, com sete rubricas: MG30.0 dor crônica primária, MG30.1 relacionada a câncer, MG30.2 pós-cirúrgica ou pós-traumática, MG30.3 musculoesquelética secundária, MG30.4 visceral secundária, MG30.5 neuropática crônica e MG30.6 cefaleia ou dor orofacial secundária (IASP, Structure of the ICD-11 Classification). O corte temporal é dor que persiste ou recorre por mais de três meses. A rubrica primária descreve a dor como a doença; as secundárias descrevem a dor que acompanha outra doença codificada em outro lugar. Barke e colaboradores (2022) registram que o sistema traz cerca de 200 critérios explícitos, de quatro a sete por diagnóstico, e que o teste de campo devolveu confiabilidade interavaliadores com Kappa entre 0,596 e 0,783, desempenho superior ao da CID-10. O detalhe que muda a sua sala: o PCDT brasileiro de 2024 codifica pela CID-10, com R52.1 dor crônica intratável e R52.2 outra dor crônica, e não menciona a CID-11 nenhuma vez.', armadilha: 'Repetir na devolutiva o rótulo administrativo de dor intratável. A palavra descreve um código de faturamento e o paciente a escuta como sentença de prognóstico.' },
+  { n: 5, titulo: 'Trabalhar crença de dano e evitação, não a veracidade da dor', aplicacao: 'O alvo clínico é a regra que o paciente construiu, do tipo doer é sinal de que estou piorando, logo preciso parar. É essa regra que produz o ciclo de evitação, perda de condicionamento e mais dor ao retomar. A meta-análise de Ye e colaboradores (2024, PLOS One), com 21 ensaios randomizados e 1.298 participantes, mede exatamente esse terreno: aceitação da dor com diferença média padronizada de 0,68 (IC 95% 0,50 a 0,87) e inflexibilidade psicológica de -0,65 (IC 95% -0,89 a -0,40) ao fim do tratamento. Do lado da terapia cognitivo-comportamental, a Cochrane de 2020 registra, contra cuidado usual, -0,34 para sofrimento psíquico (IC 95% -0,44 a -0,24) e -0,32 para incapacidade (IC 95% -0,45 a -0,19). Os dois caminhos movem a relação com a dor e a vida em torno dela. Nenhum dos dois foi desenhado para provar que a dor é ou não real, e dizer isso ao paciente encerra a discussão que ele mais teme.', armadilha: 'Entrar no mérito de a dor ser real. A pergunta é armadilha nos dois sentidos: confirmar soa condescendente, questionar confirma a acusação que ele já esperava.' },
+  { n: 6, titulo: 'Reintroduzir atividade em degraus combinados', aplicacao: 'A diretriz NG193 do NICE, publicada em 7 de abril de 2021, é a peça mais desconfortável e mais útil desta lista. Para dor crônica primária em pessoas de 16 anos ou mais, o único verbo forte da diretriz cai sobre atividade: a recomendação 1.2.1 manda oferecer programa supervisionado de exercício em grupo, e a 1.2.2 incentiva manutenção de atividade física para benefício de longo prazo. Psicoterapia entra na recomendação 1.2.3 com o verbo considere, para terapia de aceitação e compromisso ou terapia cognitivo-comportamental para dor, entregue por profissional com treinamento apropriado. O trabalho psicológico aqui é de régua e de contrato: definir com o paciente uma quantidade de atividade sustentável em dia ruim, não em dia bom, e sustentar o degrau mesmo quando o dia bom convida a exagerar. A prescrição do exercício em si pertence à equipe de reabilitação física, e a articulação com ela faz parte do plano.', armadilha: 'Combinar meta de atividade calibrada pelo melhor dia da semana. O ciclo de excesso seguido de colapso ensina ao paciente que atividade machuca, que é o oposto do que o degrau deveria ensinar.' },
+  { n: 7, titulo: 'Tratar sono e humor como alvos próprios', aplicacao: 'Sono ruim e humor rebaixado costumam ser tratados como consequência que some quando a dor cede. Os números não autorizam essa espera. Ye e colaboradores (2024) medem, ao fim do tratamento em terapia de aceitação e compromisso, -0,59 para depressão (IC 95% -0,82 a -0,35), -0,47 para ansiedade (IC 95% -0,69 a -0,24) e 0,43 para qualidade de vida (IC 95% 0,12 a 0,74), com efeito em comprometimento funcional que chega a -0,85 aos três meses. Vale registrar como a NG193 trata a conversa medicamentosa: a recomendação 1.2.9 determina explicar ao paciente que o objetivo de um antidepressivo, quando considerado, é qualidade de vida, dor, sono e sofrimento psíquico, mesmo sem diagnóstico de depressão. Essa conversa é do prescritor. O papel do psicólogo é garantir que o paciente entenda o alvo declarado e possa relatar o que mudou nele, com registro sistemático de sono e humor entre as sessões.', armadilha: 'Adiar o trabalho com sono até a dor melhorar. A ordem inversa costuma ser mais produtiva, porque noite fragmentada rebaixa limiar e desmonta o degrau de atividade combinado no passo anterior.' },
+  { n: 8, titulo: 'Trabalhar com a equipe e calibrar o que o programa entrega', aplicacao: 'Programas interdisciplinares de reabilitação são a referência de organização de cuidado, e a magnitude do que entregam precisa ser dita em voz alta dentro da equipe. Kamper e colaboradores (2015, BMJ), em 41 ensaios randomizados com 6.858 participantes com lombalgia crônica, encontraram, contra cuidado usual e no longo prazo, diferença média padronizada de 0,21 para dor (IC 95% 0,04 a 0,37), equivalente a 0,5 ponto numa escala de 0 a 10, e de 0,23 para incapacidade (IC 95% 0,06 a 0,40), equivalente a 1,5 ponto no índice Roland-Morris de 24 pontos. Sobre trabalho, a chance de estar empregado um ano depois é maior contra tratamentos físicos isolados, razão de chances 1,87 (IC 95% 1,39 a 2,53), e não é maior contra cuidado usual, razão de chances 1,04 (IC 95% 0,73 a 1,47). O que o programa move é função e incapacidade. Contratar isso com a equipe evita que a psicologia entre no combinado como promessa de reduzir o número da escala.', armadilha: 'Aceitar entrar no programa com a expectativa implícita de reduzir intensidade de dor. A meia unidade em dez é o teto documentado, e prometer acima disso queima a psicologia dentro da equipe no primeiro ciclo.' },
+  { n: 9, titulo: 'Definir critério de alta por função, com seguimento combinado', aplicacao: 'A alta em dor crônica se define por função sustentada e por autonomia no manejo, não por escala de dor zerada. Dois dados sustentam o desenho do fechamento. Primeiro, a Cochrane de 2020 registra que os efeitos da terapia cognitivo-comportamental se mantiveram no seguimento contra cuidado usual, mas não se mantiveram contra controle ativo, o que recomenda combinar seguimento espaçado em vez de encerrar seco. Segundo, o PCDT brasileiro (Ministério da Saúde, 2024) não fixa frequência nem duração para a terapia cognitivo-comportamental na seção 6.1.7, delegando ao profissional responsável, e sugere interromper na ausência de adesão, na ausência de melhora comportamental ou diante de comprometimento cognitivo. Escreva o critério de alta no prontuário na primeira ou segunda sessão, com indicadores de função nomeados pelo paciente, e revise-o junto com ele a cada bloco de sessões.', armadilha: 'Encerrar sem sessões de seguimento. Sem retomada espaçada, a manutenção documentada contra cuidado usual é a única que sobra, e ela é a comparação mais frouxa que existe.' }
+];
+
+const nice = [
+  { rec: '1.2.1', verbo: 'Ofereça', conteudo: 'Programa supervisionado de exercício em grupo, considerando necessidades, preferências e capacidades' },
+  { rec: '1.2.2', verbo: 'Incentive', conteudo: 'Manutenção de atividade física para benefício geral de longo prazo' },
+  { rec: '1.2.3', verbo: 'Considere', conteudo: 'Terapia de aceitação e compromisso ou terapia cognitivo-comportamental para dor, entregue por profissional com treinamento apropriado' },
+  { rec: '1.2.5', verbo: 'Considere', conteudo: 'Curso único de acupuntura ou agulhamento seco, com teto de cinco horas de tempo de profissional de saúde' },
+  { rec: '1.2.4 e 1.2.6', verbo: 'Não ofereça', conteudo: 'Biofeedback, estimulação elétrica transcutânea, ultrassom e terapia interferencial' },
+  { rec: '1.2.10', verbo: 'Não inicie', conteudo: 'Antiepilépticos, antipsicóticos, benzodiazepínicos, cetamina, anti-inflamatórios não esteroides, opioides e paracetamol' }
+];
+
+const checklist = [
+  { passo: '1 · História do encaminhamento', indicador: 'Trajeto até a sala nomeado', quem: 'Psicólogo', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '2 · Contrato de leitura', indicador: 'Registro psicossocial explicado como adicional', quem: 'Psicólogo', quando: 'Sessão 1', status: 'Pendente' },
+  { passo: '3 · Avaliação em cinco eixos', indicador: 'Dor, função, sofrimento, sono, crenças', quem: 'Psicólogo', quando: 'Sessões 1 a 2', status: 'Pendente' },
+  { passo: '4 · Situação classificatória', indicador: 'Primária ou secundária identificada', quem: 'Equipe', quando: 'Sessão 2', status: 'Pendente' },
+  { passo: '5 · Crença e evitação', indicador: 'Regra de evitação mapeada por escrito', quem: 'Psicólogo', quando: 'Sessões 2 a 4', status: 'Pendente' },
+  { passo: '6 · Degrau de atividade', indicador: 'Régua de dia ruim combinada', quem: 'Psicólogo e reabilitação', quando: 'Sessões 3 a 6', status: 'Pendente' },
+  { passo: '7 · Sono e humor', indicador: 'Registro semanal em curso', quem: 'Psicólogo', quando: 'Contínuo', status: 'Pendente' },
+  { passo: '8 · Equipe', indicador: 'Combinado de desfecho por escrito', quem: 'Equipe', quando: 'Até sessão 4', status: 'Pendente' },
+  { passo: '9 · Alta e seguimento', indicador: 'Critério de função e datas de retomada', quem: 'Psicólogo', quando: 'Fechamento', status: 'Pendente' }
+];
+
+const erros = [
+  { titulo: 'Prometer redução de intensidade da dor', texto: 'Contra controle ativo, a terapia cognitivo-comportamental produziu diferença média padronizada de -0,09 para dor ao fim do tratamento (IC 95% -0,17 a -0,01; 23 estudos; 3.235 participantes) na Cochrane de Williams e colaboradores (2020). O ganho documentado da psicoterapia está em incapacidade e sofrimento. Contratar intensidade como desfecho principal é assinar um resultado que a literatura não sustenta.' },
+  { titulo: 'Citar o número maior sem citar o comparador', texto: 'A Cochrane de 2020, com 9.401 participantes, mediu majoritariamente contra controle ativo e cuidado usual. A meta-análise de Ye e colaboradores (2024), com 1.298 participantes, usou comparadores mais frouxos e devolveu efeitos entre -0,37 e -0,50 em dor e interferência. A distância entre os números diz mais sobre a régua do que sobre a terapia, e o paciente merece saber disso quando pergunta qual funciona mais.' },
+  { titulo: 'Deixar o registro psicossocial ocupar o lugar do diagnóstico', texto: 'Barke, Korwisi e Rief (2022) descrevem os códigos de extensão da CID-11 como registro paralelo de fatores cognitivos, emocionais e comportamentais, ao lado do diagnóstico de dor. Quando a nota psicológica aparece sozinha no prontuário, sem a rubrica de dor ao lado, o paciente lê o prontuário e encontra exatamente a acusação que temia.' },
+  { titulo: 'Entrar na equipe sem combinar desfecho', texto: 'Em Kamper e colaboradores (2015), a razão de chances de estar trabalhando um ano depois foi 1,04 contra cuidado usual (IC 95% 0,73 a 1,47). Programas interdisciplinares defendem sua existência por função e incapacidade. Sem esse combinado explícito, a psicologia é avaliada pelo desfecho em que ela menos se move.' }
+];
+
+const faqs = [
+  { q: 'Dizer que a dor tem componente psicológico significa dizer que ela é inventada?', a: 'Não. A CID-11 classifica a dor crônica primária sob MG30.0 como condição por direito próprio, com critérios positivos explícitos, e não como diagnóstico de exclusão aplicado quando nenhum exame acha nada (Barke, Korwisi e Rief, 2022). Os fatores psicossociais entram por códigos de extensão, registrados ao lado do diagnóstico de dor. A leitura de que a dor seria inventada nasce da lógica antiga de exclusão, em que o encaminhamento ao psicólogo acontecia quando a investigação orgânica se esgotava. Na classificação atual, o encaminhamento acontece porque há alvo psicológico identificado, com a dor já diagnosticada.' },
+  { q: 'O trabalho psicológico reduz a intensidade da dor?', a: 'Pouco, e esse é o dado que precisa ser dito antes de começar. Na revisão Cochrane de Williams, Fisher, Hearn e Eccleston (2020), com 75 estudos e 9.401 participantes, a terapia cognitivo-comportamental comparada a controle ativo devolveu diferença média padronizada de -0,09 para dor ao fim do tratamento. Contra cuidado usual, -0,22. Os efeitos maiores aparecem em incapacidade (-0,32 contra cuidado usual) e sofrimento psíquico (-0,34). O trabalho psicológico move a vida em torno da dor com mais força do que move o número da escala.' },
+  { q: 'Qual é o alvo da avaliação psicológica em dor crônica?', a: 'Cinco eixos: intensidade e distribuição da dor, incapacidade funcional, sofrimento psíquico, sono e crenças sobre atividade. Essa organização espelha os desfechos medidos pela literatura de referência, o que permite comparar o caso com o que a evidência documenta. A avaliação também precisa registrar o trajeto do encaminhamento, porque ele carrega a expectativa com que o paciente entra: quem chegou depois de anos de investigação sem resposta chega esperando ser desqualificado, e isso muda a primeira sessão.' },
+  { q: 'O protocolo brasileiro do SUS prevê psicoterapia para dor crônica?', a: 'O Protocolo Clínico e Diretrizes Terapêuticas da Dor Crônica, aprovado pela Portaria Conjunta SAES/SAPS/SECTICS nº 1, de 22 de agosto de 2024, dedica a seção 6.1.7 à terapia cognitivo-comportamental, ao lado da educação em dor, e registra eficácia em redução de dor, melhora funcional e ocupacional, redução de incapacidade e facilitação do retorno ao trabalho. Não fixa frequência nem duração, delegando ao profissional responsável. A palavra psicoterapia não aparece nas 298 páginas do documento, e a terapia de aceitação e compromisso não é citada nenhuma vez.' },
+  { q: 'Como o MBA em Psicologia Positiva do IPOG se conecta a essa demanda?', a: 'O MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações do IPOG trabalha manejo de sofrimento persistente, funcionamento e retorno ao trabalho, temas que aparecem em toda condução de dor crônica com repercussão ocupacional. O formato é Ao Vivo síncrono, com corpo docente nominal. Consulte ipog.edu.br para a grade vigente e a lista de disciplinas.' }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir o manejo psicológico da dor crônica',
+  description: 'Guia em nove passos para o psicólogo que recebe pessoa com dor crônica: encaminhamento, avaliação em cinco eixos, classificação CID-11, crença de dano, exposição gradual, sono e humor, equipe e critério de alta.',
+  totalTime: 'PT21M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Manejo psicológico da dor crônica: guia em nove passos para a clínica',
+  description: 'Protocolo em nove passos para manejo psicológico da dor crônica, com CID-11 MG30, PCDT 2024, NICE NG193, Cochrane 2020 e critério de alta por função.',
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  inLanguage: 'pt-BR',
+  datePublished: '2026-08-27',
+  dateModified: '2026-08-27'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Manejo psicológico da dor crônica', item: `${SITE.url}/guias/dor-cronica-manejo-psicologico-2026` }
+  ]
+};
+---
+
+<Base
+  title="Manejo psicológico da dor crônica — guia em nove passos para a clínica"
+  description="Guia passo a passo para o psicólogo que recebe pessoa com dor crônica: por que o encaminhamento chega tarde, avaliação em cinco eixos, dor primária na CID-11, crença de dano, exposição gradual, sono e humor, trabalho de equipe e critério de alta.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Manejo psicológico da dor crônica' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · nove passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Manejo psicológico da dor crônica na clínica</h1>
+          <TLDR
+            resposta="Falar em componente psicológico da dor costuma ser ouvido como acusação de invenção, e a classificação vigente desmonta essa leitura: na CID-11 a dor crônica primária é condição por direito próprio e os fatores psicossociais entram por códigos de extensão, ao lado do diagnóstico. O ganho documentado da psicoterapia está em incapacidade e sofrimento, não em intensidade da dor."
+            fontes={["Barke, Korwisi e Rief, 2022 (Clinical Psychology in Europe)", "Williams et al., 2020 (Cochrane CD007407)", "NICE NG193, 2021", "Ministério da Saúde, PCDT Dor Crônica, 2024"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto de nove passos: como o encaminhamento chega, avaliação em cinco eixos, dor como sintoma ou como condição própria, crença de dano e evitação, degraus de atividade, sono e humor, trabalho de equipe e critério de alta por função.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~21 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos, hospitalares e da saúde</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <YMYLDisclaimer
+        domain="saude-mental"
+        reviewerName="Larissa Caramaschi"
+        reviewerHref="/autismo/sobre-larissa/"
+        lastReviewed="2026-08-27"
+      />
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai conduzir:</strong> avaliação em cinco eixos, contrato de leitura na primeira sessão, trabalho com crença de dano, reintrodução de atividade em degraus, manejo de sono e humor, articulação de equipe e alta por função.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, leitura da estrutura MG30 da CID-11, familiaridade com o PCDT da Dor Crônica de 2024 e canal aberto com o prescritor do caso.</li>
+          <li><strong>Resultado esperado:</strong> plano com desfecho combinado em função e incapacidade, seguimento espaçado datado e prontuário em que o registro psicossocial aparece ao lado do diagnóstico de dor.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A tese: o mal-entendido está na lógica de exclusão, não no paciente</h2>
+        <p>
+          Quase todo paciente com dor crônica que chega ao consultório já ouviu que a dor tem componente emocional, e quase todo paciente entendeu que o médico desistiu. A leitura é previsível porque foi ensinada pelo próprio percurso: o encaminhamento veio depois que a investigação orgânica se esgotou, no momento em que ninguém mais tinha o que oferecer. Dentro dessa sequência, psicologia é o que sobra quando não há doença, e o convite à terapia soa como veredito de que a queixa não tem base.
+        </p>
+        <p>
+          A classificação vigente desmonta essa sequência. Barke, Korwisi e Rief (2022, Clinical Psychology in Europe) descrevem a mudança conceitual da CID-11: dor crônica primária, sob MG30.0, deixa de ser rótulo residual e passa a ser condição por direito próprio, com critérios positivos, dor em uma ou mais regiões anatômicas por mais de três meses, com sofrimento emocional significativo ou incapacidade funcional, não melhor explicada por outra condição. Os mesmos autores registram que a CID-11 traz cerca de 200 critérios explícitos, de quatro a sete por diagnóstico, e que o teste de campo devolveu Kappa entre 0,596 e 0,783 na confiabilidade entre avaliadores, acima do desempenho da CID-10. Diagnóstico com critério positivo e confiabilidade medida não descreve uma queixa sem base.
+        </p>
+        <p>
+          O segundo movimento do argumento é onde o psicólogo entra. Os códigos de extensão da CID-11 registram fatores cognitivos, emocionais e comportamentais formalmente, ao lado do diagnóstico de dor. O registro psicológico é adicional ao diagnóstico, e a estrutura da classificação diz isso por escrito. Essa é a frase que responde à acusação percebida na primeira sessão, e ela responde à pergunta que o paciente de fato fez, coisa que nenhuma explicação de mecanismo neural alcança.
+        </p>
+        <p>
+          Falta a parte incômoda. Se a psicoterapia entra pela porta da frente, ela precisa entrar com o desfecho certo. Na revisão Cochrane de Williams, Fisher, Hearn e Eccleston (2020), com 75 estudos e 9.401 participantes, a terapia cognitivo-comportamental comparada a controle ativo devolveu diferença média padronizada de -0,09 para intensidade de dor ao fim do tratamento (IC 95% -0,17 a -0,01). Contra cuidado usual, os efeitos sobem para -0,22 em dor, -0,32 em incapacidade e -0,34 em sofrimento psíquico. O que se move de forma consistente é a vida em torno da dor. Combinar esse alvo com o paciente e com a equipe, na primeira semana, é o passo que decide se o caso terá para onde ir.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os nove passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de execução</h2>
+        <p class="text-ink-700 mt-2">Distribuição típica em oito a doze sessões, com seguimento espaçado depois do fechamento. Ajuste ao quadro, à repercussão ocupacional e à disponibilidade da equipe.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3">Passo</th><th class="text-left px-4 py-3">Indicador</th><th class="text-left px-4 py-3">Quem executa</th><th class="text-left px-4 py-3">Quando</th><th class="text-left px-4 py-3">Status</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr><td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td><td class="px-4 py-3 text-ink-700">{c.indicador}</td><td class="px-4 py-3 text-ink-700">{c.quem}</td><td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td><td class="px-4 py-3 text-ink-500">{c.status}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O que a diretriz inglesa oferece e o que ela manda não iniciar</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed">
+          A NG193 do NICE, publicada em 7 de abril de 2021, cobre avaliação de toda dor crônica e manejo da dor crônica primária em pessoas de 16 anos ou mais. A tabela abaixo separa o que a diretriz recomenda oferecer, o que ela recomenda considerar e o que ela recomenda não iniciar. A coluna de conduta medicamentosa aparece aqui como informação sobre o documento, e a decisão sobre qualquer fármaco pertence ao prescritor do caso.
+        </p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3">Recomendação</th><th class="text-left px-4 py-3">Verbo da diretriz</th><th class="text-left px-4 py-3">Conteúdo</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {nice.map(r => (
+                <tr><td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{r.rec}</td><td class="px-4 py-3 text-ink-700 whitespace-nowrap">{r.verbo}</td><td class="px-4 py-3 text-ink-700">{r.conteudo}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-ink-700 mt-4 leading-relaxed">
+          O desenho da diretriz tem uma assimetria que vale levar para a discussão de equipe: o verbo forte recai sobre exercício em grupo supervisionado, a psicoterapia entra como considere, e o paracetamol aparece na mesma lista de não iniciar que os opioides. Quem organiza o cuidado a partir da NG193 monta um plano centrado em atividade, com a psicologia sustentando adesão e manejo, e com a conversa medicamentosa conduzida pelo prescritor em decisão compartilhada.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Auxiliar administrativa, 44 anos, dor difusa há quatro anos, primeira sessão travada na acusação</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Chega com quatro anos de dor difusa, três especialidades percorridas, ressonâncias sem achado que explique o quadro e um encaminhamento escrito com a frase de que o caso tem forte componente emocional. Abre a primeira sessão dizendo que veio porque mandaram, e que já entendeu que acham que ela finge. Antes de qualquer anamnese, a devolutiva foi a estrutura da classificação: a dor que persiste por mais de três meses com sofrimento e incapacidade tem diagnóstico próprio na CID-11, e o registro psicológico entra por código de extensão, ao lado do diagnóstico, sem substituí-lo.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A avaliação em cinco eixos encontrou incapacidade alta, sono fragmentado, humor rebaixado e uma regra de evitação explícita, de que qualquer aumento de atividade prova piora estrutural. O contrato de desfecho foi escrito na sessão 2, com dois indicadores nomeados por ela, voltar a levar a filha à escola a pé e retomar meio período presencial, e com a intensidade da dor registrada como acompanhamento, não como meta. O degrau de atividade foi calibrado pelo pior dia da semana, em articulação com a fisioterapia. Na sessão 11, os dois indicadores estavam sustentados por seis semanas, com a escala de dor variando na mesma faixa de antes. A alta foi dada por função, com três sessões de seguimento agendadas em intervalos crescentes.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Fontes principais</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.cochrane.org/CD007407/SYMPT_what-are-benefits-and-risks-psychological-therapies-adults-persistent-and-distressing-pain-neither" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Cochrane · Williams, Fisher, Hearn e Eccleston (2020), CD007407.pub4</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng193/chapter/recommendations" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG193 · recomendações para dor crônica primária</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br/assuntos/pcdt/d/dor-cronica/@@download/file" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde · PCDT da Dor Crônica (2024)</a></li>
+          <li><a href="https://www.iasp-pain.org/advocacy/structure-of-the-icd-11-classification/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">IASP · estrutura da classificação MG30 na CID-11</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9881113/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Barke, Korwisi e Rief (2022) · Clinical Psychology in Europe</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/25694111/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Kamper e colaboradores (2015) · BMJ, reabilitação biopsicossocial</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer-text">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/comparativos/act-vs-tcc-dor-cronica" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · ACT ou TCC quando o desfecho é dor</a></li>
+          <li><a href="/faq/dor-cronica-psicologia-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · dor crônica e psicologia em 14 perguntas</a></li>
+          <li><a href="/metodos/act" class="text-brand-700 hover:text-brand-800 font-medium">Método · terapia de aceitação e compromisso</a></li>
+          <li><a href="/intervencoes/retorno-ao-trabalho" class="text-brand-700 hover:text-brand-800 font-medium">Intervenção · retorno ao trabalho</a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia da Saúde</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Contrate o desfecho antes de contratar a terapia.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O caso de dor crônica se decide em duas conversas iniciais: a que desfaz a leitura de acusação, apoiada na estrutura positiva do diagnóstico de dor crônica primária na CID-11, e a que combina o alvo do trabalho em função, incapacidade e sofrimento, e não em intensidade de dor. Com isso escrito no prontuário e acertado com a equipe, os nove passos deste guia têm régua para medir se o caso está andando.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Formação correlata</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/areas/${areaHospitalar.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaHospitalar.name}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Leituras do portal</p>
+        <ul class="space-y-1">
+          <li><a href="/metodos/tcc" class="mega-link"><strong class="text-ink-900 text-sm">Terapia cognitivo-comportamental</strong></a></li>
+          <li><a href="/metodos/mindfulness" class="mega-link"><strong class="text-ink-900 text-sm">Mindfulness clínico</strong></a></li>
+          <li><a href="/comparativos/act-vs-tcc" class="mega-link"><strong class="text-ink-900 text-sm">ACT e TCC, comparativo geral</strong></a></li>
+          <li><a href="/guias/protocolo-act-burnout-saude" class="mega-link"><strong class="text-ink-900 text-sm">Protocolo ACT em burnout na saúde</strong></a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Outro MBA correlato: {mbaNeuro.shortName}</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

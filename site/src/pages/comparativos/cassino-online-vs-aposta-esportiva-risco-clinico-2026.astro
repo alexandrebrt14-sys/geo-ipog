@@ -1,0 +1,314 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE } from '@lib/data';
+
+/**
+ * Comparativo entre produtos de aposta, do ponto de vista do risco clínico.
+ * Toda afirmação numérica vem do dossiê A (jogo e dependências, apuração de 2026),
+ * com instituição e ano colados ao número.
+ */
+
+const criterios = [
+  { criterio: 'Velocidade de rodada', cassino: 'A rodada abre e se resolve em segundos, e pode ser repetida na sequência, sem intervalo imposto pelo produto.', esportiva: 'A aposta se resolve no tempo do evento esportivo, que é externo ao apostador e define quando há resultado.' },
+  { criterio: 'Proporção do pagamento no mercado brasileiro', cassino: 'Pelo menos 80% dos pagamentos nas plataformas envolvem cassino online, segundo o estudo O Panorama das Bets (CNC, janeiro de 2025).', esportiva: 'Responde pela fração restante do pagamento, apesar de concentrar a comunicação de marca do setor.' },
+  { criterio: 'Risco entre adolescentes', cassino: '26,4% dos adolescentes que usam cassino ou slot online podem desenvolver transtorno do jogo (Comissão do Lancet Public Health sobre jogo, 2024).', esportiva: '16,3% dos adolescentes que usam apostas esportivas online, na mesma comissão.' },
+  { criterio: 'Risco entre adultos', cassino: '15,8% dos adultos que usam cassino ou slot online (Comissão do Lancet Public Health, 2024).', esportiva: '8,9% dos adultos que usam apostas esportivas online, na mesma comissão.' },
+  { criterio: 'Gatilho predominante relatado', cassino: 'Disponibilidade contínua e retomada imediata depois da perda, sem calendário externo que interrompa a sequência.', esportiva: 'Calendário de competição. Entre 11 de junho e 19 de julho de 2026, período da Copa, o país registrou 387.645 pedidos de autoexclusão, 38% de todos os pedidos acumulados (Ministério da Saúde, agosto de 2026).' },
+  { criterio: 'O que muda na anamnese', cassino: 'A pergunta útil mede a sessão: quantas rodadas seguidas, quanto tempo entre uma e a próxima, e o que acontecia na hora em que a sessão começava.', esportiva: 'A pergunta útil mede o calendário: quantos eventos e mercados por dia, o que acontece na semana sem jogo e como o volume muda em competição grande.' }
+];
+
+const faqs = [
+  { q: 'Aposta esportiva e aposta online são a mesma coisa?', a: 'No debate público costumam aparecer como sinônimos, e o dinheiro diz outra coisa. O estudo O Panorama das Bets, da CNC (janeiro de 2025), registra que pelo menos 80% dos pagamentos nas plataformas brasileiras envolvem cassino online. Aposta esportiva é a modalidade mais visível na comunicação do setor e uma parcela minoritária do pagamento.' },
+  { q: 'Por que o risco muda tanto entre adolescentes e adultos?', a: 'A Comissão do Lancet Public Health sobre jogo (2024) estima 26,4% de adolescentes que usam cassino ou slot online com possibilidade de desenvolver transtorno do jogo, contra 15,8% entre adultos no mesmo produto. Em apostas esportivas online, a estimativa é de 16,3% entre adolescentes e 8,9% entre adultos. A razão entre as faixas se mantém nos dois produtos, o que indica um efeito de idade que se soma ao efeito do produto, e não o substitui.' },
+  { q: 'O que perguntar na triagem quando o produto muda?', a: 'Em cassino e slot online, a unidade clínica é a sessão: número de rodadas seguidas, intervalo entre elas, duração da sessão e o estado emocional no momento em que ela começou. Em aposta esportiva, a unidade é o calendário: número de eventos e de mercados por dia, comportamento na semana sem jogo e variação de volume em competição grande. O rastreio formal continua sendo o mesmo instrumento: o Guia do Ministério da Saúde (2026) indica Autoteste de Jogo, PGSI e Esdeje, e a diretriz NICE NG248 (2025, recomendação 1.1.20) indica PGSI e South Oaks Gambling Screen.' },
+  { q: 'Existe tratamento com evidência para transtorno do jogo?', a: 'A diretriz NICE NG248 (2025) manda oferecer TCC em grupo logo após o diagnóstico, tipicamente de oito a dez sessões em grupo ou de seis a oito individuais, com componente de prevenção de recaída, e apenas considerar Entrevista Motivacional. O umbrella review de Pfund e colegas (2023, Clinical Psychology Review) encontrou g igual a -0,91 para gravidade do transtorno no pós-tratamento e g igual a -0,14, sem significância estatística, no seguimento. O problema aberto do campo é a sustentação da mudança, não o seu início.' },
+  { q: 'Onde um psicólogo estuda esse recorte por produto?', a: 'O tema atravessa Psicologia Clínica, Psicologia em Saúde e políticas públicas de saúde mental, e no Brasil não existe especialidade de adicções no rol do CFP, o que faz da formação uma competência construída em pós-graduação e supervisão. Programas de pós-graduação em Psicologia, entre eles os MBAs do IPOG na área de saúde mental, cobrem parte dessa base, e a grade vigente de cada turma consta do portal oficial da instituição.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Cassino online e aposta esportiva · comparativo de risco clínico em 2026',
+  description: 'Comparativo entre produtos de aposta por velocidade de rodada, participação no pagamento no Brasil, prevalência de risco por faixa etária, gatilho predominante e o que muda na anamnese.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: `${SITE.url}/comparativos` },
+    { '@type': 'ListItem', position: 3, name: 'Cassino online e aposta esportiva', item: `${SITE.url}/comparativos/cassino-online-vs-aposta-esportiva-risco-clinico-2026` }
+  ]
+};
+---
+
+<Base
+  title="Cassino online ou aposta esportiva: qual produto concentra risco clínico"
+  description="Comparativo entre cassino e slot online e aposta esportiva: velocidade de rodada, participação no pagamento no Brasil, risco por faixa etária, gatilho e triagem clínica.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'Cassino online e aposta esportiva' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Produtos de aposta · risco clínico</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Cassino online ou aposta esportiva: qual produto concentra risco clínico</h1>
+          <p class="mt-3 text-ink-700 text-lg">O risco se distribui pelo produto antes de se distribuir pelo perfil, e a política pública brasileira discute a modalidade que menos paga.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Cassino e slot online concentram risco maior que aposta esportiva em todas as faixas etárias medidas: 26,4% de adolescentes e 15,8% de adultos que usam esses produtos podem desenvolver transtorno do jogo, contra 16,3% e 8,9% em apostas esportivas online (Comissão do Lancet Public Health sobre jogo, 2024). No Brasil, pelo menos 80% dos pagamentos nas plataformas envolvem cassino online (CNC, janeiro de 2025). Para a clínica, a diferença aparece na pergunta de triagem: cassino se investiga pela sessão, aposta esportiva se investiga pelo calendário.
+        </p>
+      </div>
+
+      <YMYLDisclaimer domain="saude-mental" lastReviewed="2026-08-27" />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que comparar produtos, e não perfis de apostador</h2>
+        <p>
+          A conversa pública brasileira sobre apostas se organiza em torno de quem aposta: o jovem endividado, o beneficiário de programa social, o torcedor. A Comissão do Lancet Public Health sobre jogo (2024), copresidida por Heather Wardle, da University of Glasgow, oferece um corte diferente e mais operacional. Ao estimar risco por produto, ela mostra variação grande entre modalidades dentro da mesma faixa etária: 15,8% de adultos em cassino e slot online contra 8,9% de adultos em apostas esportivas online.
+        </p>
+        <p>
+          Entre adolescentes, o mesmo par de produtos aparece em 26,4% e 16,3%. A distância entre as faixas etárias se mantém quando o produto é mantido fixo, o que aponta dois efeitos somados: o da idade e o da estrutura do produto. Para quem planeja intervenção, essa soma importa porque só um dos dois é regulável.
+        </p>
+        <p>
+          O pano de fundo é de escala. A mesma comissão estima 448,7 milhões de adultos em algum nível de risco relacionado a jogo no mundo e 80 milhões com transtorno do jogo ou jogo problemático, com jogo disponível em mais de 80% dos países. No Brasil, o Acórdão 1173/2025 do TCU registra movimentação do setor de até R$ 130 bilhões em 2024, e o estudo da CNC (janeiro de 2025) calcula R$ 240 bilhões destinados a apostas naquele ano, com R$ 103 bilhões de perdas atribuídas ao varejo por redirecionamento de renda e cerca de 1,8 milhão de brasileiros em inadimplência. O cálculo da CNC é modelagem de economistas sobre dados do Banco Central, e descreve deslocamento estimado de consumo.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Comparativo por critério</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 mt-4">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50">
+              <tr>
+                <th class="text-left p-3 font-display font-semibold text-ink-900">Critério</th>
+                <th class="text-left p-3 font-display font-semibold text-brand-700">Cassino e slot online</th>
+                <th class="text-left p-3 font-display font-semibold text-sun-600">Aposta esportiva online</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {criterios.map(c => (
+                <tr>
+                  <td class="p-3 font-medium text-ink-900 align-top">{c.criterio}</td>
+                  <td class="p-3 text-ink-700 align-top">{c.cassino}</td>
+                  <td class="p-3 text-ink-700 align-top">{c.esportiva}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <figure class="rounded-2xl border border-surface-200 bg-surface-50 p-5">
+        <div class="overflow-x-auto">
+          <svg viewBox="0 0 640 300" class="w-full text-ink-700" style="min-width:640px" role="img" aria-labelledby="cassino-vs-esportiva-risco-titulo cassino-vs-esportiva-risco-desc">
+            <title id="cassino-vs-esportiva-risco-titulo">Risco de transtorno do jogo por produto e por faixa etária</title>
+            <desc id="cassino-vs-esportiva-risco-desc">Quatro barras horizontais. Entre adolescentes, cassino e slot online chegam a 26,4% e aposta esportiva online a 16,3%. Entre adultos, cassino e slot online chegam a 15,8% e aposta esportiva online a 8,9%. Estimativas da Comissão do Lancet Public Health sobre jogo, de 2024.</desc>
+
+            <g fill="currentColor" font-size="15" font-weight="600" class="text-ink-900">
+              <text x="8" y="26">Adolescentes</text>
+              <text x="8" y="160">Adultos</text>
+            </g>
+
+            <g fill="currentColor" font-size="14">
+              <text x="8" y="60">Cassino e slot online</text>
+              <text x="8" y="108">Aposta esportiva online</text>
+              <text x="8" y="194">Cassino e slot online</text>
+              <text x="8" y="242">Aposta esportiva online</text>
+            </g>
+
+            <g class="text-brand-700">
+              <rect x="200" y="44" width="264" height="22" rx="4" fill="currentColor"></rect>
+              <rect x="200" y="178" width="158" height="22" rx="4" fill="currentColor"></rect>
+            </g>
+            <g class="text-sun-600">
+              <rect x="200" y="92" width="163" height="22" rx="4" fill="currentColor"></rect>
+              <rect x="200" y="226" width="89" height="22" rx="4" fill="currentColor"></rect>
+            </g>
+
+            <g fill="currentColor" font-size="15" font-weight="700" class="text-ink-900">
+              <text x="474" y="61">26,4%</text>
+              <text x="373" y="109">16,3%</text>
+              <text x="368" y="195">15,8%</text>
+              <text x="299" y="243">8,9%</text>
+            </g>
+
+            <g stroke="currentColor" stroke-width="1">
+              <line x1="200" y1="36" x2="200" y2="256"></line>
+            </g>
+
+            <text x="8" y="286" font-size="14" fill="currentColor">Comissão do Lancet Public Health sobre jogo, 2024. Escala igual nas quatro barras.</text>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-700 mt-4 leading-relaxed">
+          A barra de adolescentes em aposta esportiva ainda alcança a barra de adultos em cassino, o que separa o efeito da idade do efeito do produto e impede tratar as duas modalidades como uma só.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Onde o dinheiro brasileiro efetivamente circula</h2>
+        <p>
+          O Banco Central, no Estudo Especial 119/2024, identificou R$ 20,8 bilhões em transferências Pix recebidas por empresas de aposta em agosto de 2024, com variação mensal entre R$ 18 bilhões e R$ 21 bilhões ao longo daquele ano, contra média mensal de R$ 1,9 bilhão arrecadada pelas loterias da Caixa. Cerca de 24 milhões de pessoas físicas transferiram ao menos uma vez, e a retenção estimada pelas empresas ficou perto de 15%. O próprio BCB descreve esses resultados como estimativas preliminares, construídas sobre 56 empresas identificadas por citação em internet e por filtros, com cartão de crédito e TED fora da conta.
+        </p>
+        <p>
+          A composição desse fluxo é o ponto de virada do comparativo. Se pelo menos 80% dos pagamentos envolvem cassino online, conforme a CNC (janeiro de 2025), a modalidade que domina a propaganda esportiva movimenta a menor parte do dinheiro. Regulação, campanha de prevenção e desenho de serviço construídos em torno da imagem do apostador de futebol miram o produto de menor risco medido e de menor participação no pagamento.
+        </p>
+        <p>
+          O perfil financeiro completa o quadro: em agosto de 2024, o gasto mensal médio ficou próximo de R$ 100 entre os mais jovens e acima de R$ 3.000 entre os mais velhos, e 5 milhões de beneficiários do Bolsa Família enviaram cerca de R$ 3 bilhões a empresas de aposta, com mediana de R$ 100 por pessoa. O tema regulatório é tratado no panorama de <a href="/regulacao">regulação profissional</a> do portal.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O gatilho que cada produto instala</h2>
+        <p>
+          Cassino e slot online resolvem a aposta em segundos e permitem a próxima rodada em seguida, sem intervalo imposto pelo produto. Aposta esportiva depende de um evento externo, com data marcada, e o resultado chega no tempo da partida. Essa diferença estrutural aparece no comportamento agregado brasileiro: entre 11 de junho e 19 de julho de 2026, no período da Copa, foram registrados 387.645 pedidos de autoexclusão, 38% de todo o volume acumulado desde dezembro de 2025, segundo o Ministério da Saúde. Um calendário de competição concentra pedido de bloqueio; um produto de rodada contínua não tem calendário para concentrar.
+        </p>
+        <p>
+          Entre os motivos declarados na autoexclusão, 35% apontaram perda de controle, 15,26% interrupção voluntária, 11,82% dificuldades financeiras e 1,32% recomendação de profissional de saúde. Mais de 1 milhão de pessoas já pediram bloqueio de CPF. A revisão de evidência H do NICE NG248 (2025) encontrou dois ensaios randomizados sobre prevenção de recaída em jogo e registrou ausência de evidência para programas de autoexclusão e ferramentas de bloqueio, o que coloca o pedido de bloqueio no lugar de porta de entrada para cuidado, e não de tratamento em si.
+        </p>
+        <p>
+          A motivação declarada de quem aposta reforça o corte por produto. O Datafolha de abril de 2026 encontrou 46% dos apostadores enxergando a aposta como renda extra ou meio de pagar contas, e o Instituto Locomotiva, citado na CPI das Bets em 1º de abril de 2025, registrou 53% que declaram apostar para ganhar dinheiro. Uma rodada que se repete em segundos oferece a promessa de recuperação imediata da perda; um jogo de futebol impõe espera.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Critério de decisão para o clínico</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <div class="card p-5 border-l-4 border-brand-700">
+            <p class="text-sm font-semibold text-ink-900">O paciente relata cassino, slot ou jogo de rodada rápida</p>
+            <p class="text-sm text-ink-700 mt-2">
+              A pergunta de triagem mede a sessão: quantas rodadas seguidas, qual o intervalo entre elas, quanto tempo durou a última sessão e o que estava acontecendo quando ela começou. O plano precisa criar intervalo onde o produto não cria, e a avaliação psicossocial se estende ao uso de álcool e outras drogas, coexistência tratada na seção 7.5 do Guia do Ministério da Saúde (2026).
+            </p>
+          </div>
+          <div class="card p-5 border-l-4 border-sun-600">
+            <p class="text-sm font-semibold text-ink-900">O paciente relata aposta esportiva</p>
+            <p class="text-sm text-ink-700 mt-2">
+              A pergunta de triagem mede o calendário: quantos eventos e mercados por dia, o que acontece na semana sem jogo e como o volume muda em competição grande. Período de torneio pede reforço de acompanhamento, e a rede regional entra pelo <a href="/intervencoes/atencao-primaria-matriciamento">matriciamento na Atenção Primária</a>.
+            </p>
+          </div>
+        </div>
+        <p class="text-sm text-ink-700 mt-4 leading-relaxed">
+          Em ambos os casos o rastreio formal é o mesmo. O Guia do Ministério da Saúde (2026, seção 7.4) indica Autoteste de Jogo, PGSI e Esdeje, e afirma que esses instrumentos são complementares à avaliação e não direcionadores do cuidado. A diretriz NICE NG248 (2025, recomendação 1.1.20) indica PGSI e South Oaks Gambling Screen. O que muda com o produto é a pergunta aberta que antecede o instrumento e organiza o relato do paciente.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Limites desta comparação</h2>
+        <p>
+          As estimativas de risco por produto da Comissão do Lancet Public Health (2024) são globais, e o Brasil não tem levantamento nacional que replique esse recorte por modalidade. A participação de pelo menos 80% do cassino online no pagamento vem de estudo econômico da CNC sobre dados agregados do setor, e descreve fluxo de pagamento, não número de apostadores por modalidade. As duas medidas convergem na direção, e nenhuma delas foi produzida para responder à pergunta da outra.
+        </p>
+        <p>
+          A leitura por produto também não substitui a avaliação individual. Galeazzi, Marchi e Castagnini (2025, European Psychiatry) estimam 82,2% de qualquer transtorno mental em pessoas com transtorno do jogo, com 34,2% de transtornos por uso de substâncias e 30,9% de transtornos do humor. A modalidade de aposta orienta a entrevista inicial; o quadro que sustenta o caso costuma estar em outro lugar da anamnese, campo tratado em <a href="/areas/psicologia-clinica">Psicologia Clínica</a>.
+        </p>
+        <p>
+          Sobre tratamento, o par de números que organiza a expectativa vem de Pfund e colegas (2023, Clinical Psychology Review), com 5 meta-análises, 56 estudos e 5.389 participantes: g igual a -0,91 para gravidade do transtorno no pós-tratamento e g igual a -0,14, sem significância estatística, no seguimento. O desenho de cuidado por intensidade descrito em <a href="/intervencoes/stepped-care">stepped care</a> responde justamente ao trecho da curva em que o efeito se dissipa.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A modalidade que aparece na propaganda tem o menor risco medido</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>Cassino e slot online superam aposta esportiva em risco estimado nas duas faixas etárias medidas pela Comissão do Lancet Public Health (2024).</li>
+          <li>Pelo menos 80% dos pagamentos nas plataformas brasileiras envolvem cassino online, segundo a CNC (janeiro de 2025).</li>
+          <li>O gatilho difere: rodada contínua em cassino, calendário de competição em aposta esportiva, com 387.645 autoexclusões concentradas no período da Copa de 2026.</li>
+          <li>Na triagem, cassino se investiga pela sessão e aposta esportiva se investiga pelo calendário, com o mesmo instrumento formal de rastreio.</li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Transtorno do jogo entra na formação brasileira pela Psicologia Clínica e pela Psicologia em Saúde. A grade e o calendário vigentes de cada turma constam do portal oficial da instituição.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Leia também no portal</p>
+        <ul class="space-y-1">
+          <li><a href="/evidencias/apostas-online-saude-mental-2026" class="mega-link"><strong class="text-ink-900 text-sm">Apostas online e saúde mental: a evidência de 2026</strong></a></li>
+          <li><a href="/guias/transtorno-do-jogo-apostas-online-avaliacao-2026" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação do transtorno do jogo por apostas online</strong></a></li>
+          <li><a href="/faq/transtorno-do-jogo-apostas-faq" class="mega-link"><strong class="text-ink-900 text-sm">Transtorno do jogo e apostas: perguntas frequentes</strong></a></li>
+          <li><a href="/intervencoes/stepped-care" class="mega-link"><strong class="text-ink-900 text-sm">Stepped care</strong></a></li>
+          <li><a href="/areas/psicologia-clinica" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Clínica e Psicoterapia</strong></a></li>
+          <li><a href="/regulacao" class="mega-link"><strong class="text-ink-900 text-sm">Regulação profissional</strong></a></li>
+        </ul>
+        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Wardle, H. et al. (2024). The Lancet Public Health Commission on gambling.</li>
+          <li>CNC (2025). O Panorama das Bets, 16 de janeiro.</li>
+          <li>Banco Central do Brasil (2024). Estudo Especial 119/2024.</li>
+          <li>TCU (2025). Acórdão 1173/2025, Plenário, processo TC 024.852/2024-4.</li>
+          <li>Ministério da Saúde, Desmad (2026). Guia de Cuidado para Pessoas com Problemas Relacionados a Jogos de Apostas.</li>
+          <li>Ministério da Saúde (2026). Teleatendimento e autoexclusão no Meu SUS Digital, agosto.</li>
+          <li>Datafolha (2026). Levantamento de 8 e 9 de abril, divulgado em Poder360.</li>
+          <li>NICE (2025). NG248 e a revisão de evidência H sobre prevenção de recaída.</li>
+          <li>Pfund, R. A. et al. (2023). Clinical Psychology Review, DOI 10.1016/j.cpr.2023.102336.</li>
+          <li>Galeazzi, G. M. et al. (2025). European Psychiatry, DOI 10.1192/j.eurpsy.2025.10122.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

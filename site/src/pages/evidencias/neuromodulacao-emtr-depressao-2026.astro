@@ -1,0 +1,326 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const mbasCorrelatos = MBAS.filter(m => ['mba-neuro', 'mba-ncpp', 'mba-positiva'].includes(m.id));
+
+const quadroEvidencia = [
+  {
+    indicacao: 'Depressão unipolar e bipolar, EMT superficial',
+    desfecho: 'Resposta clínica superior à estimulação simulada em dez das 18 estratégias comparadas na rede',
+    forca: 'Revisão sistemática com meta-análise em rede de 113 ensaios, 262 braços e 6.750 pacientes randomizados (Mutz e colegas, BMJ, 2019)',
+    regulacao: 'Reconhecida como ato médico pela Resolução CFM nº 1.986/2012, com operação privativa de médico'
+  },
+  {
+    indicacao: 'Alucinações auditivas nas esquizofrenias, EMT superficial',
+    desfecho: 'Indicação reconhecida na norma brasileira, sem estimativa de efeito na meta-análise em rede, que teve escopo restrito a depressão',
+    forca: 'Reconhecimento normativo (Resolução CFM nº 1.986/2012, com base no Parecer CFM nº 37/11)',
+    regulacao: 'Indicação válida, operação privativa de médico'
+  },
+  {
+    indicacao: 'Planejamento de neurocirurgia, EMT superficial',
+    desfecho: 'Uso de mapeamento pré-operatório, reconhecido na norma como indicação válida',
+    forca: 'Reconhecimento normativo (Resolução CFM nº 1.986/2012)',
+    regulacao: 'Indicação válida, operação privativa de médico'
+  },
+  {
+    indicacao: 'EMT superficial em outras indicações e EMT profunda',
+    desfecho: 'Sem desfecho reconhecido pela norma brasileira para uso assistencial',
+    forca: 'Classificação normativa de procedimento experimental (Resolução CFM nº 1.986/2012)',
+    regulacao: 'Experimental: fora de pesquisa, não há via assistencial reconhecida'
+  },
+  {
+    indicacao: 'Eletroconvulsoterapia bitemporal, depressão',
+    desfecho: 'Razão de chances de resposta de 8,91 contra estimulação simulada (IC 95% de 2,57 a 30,91)',
+    forca: 'Meta-análise em rede com busca até maio de 2018; risco de viés baixo ou incerto em 94 dos 113 ensaios (Mutz e colegas, BMJ, 2019)',
+    regulacao: 'Procedimento médico, fora do escopo da Psicologia em qualquer etapa da aplicação'
+  },
+  {
+    indicacao: 'Eletroconvulsoterapia unilateral direita de alta dose, depressão',
+    desfecho: 'Razão de chances de resposta de 7,27 contra estimulação simulada (IC 95% de 1,90 a 27,78)',
+    forca: 'Meta-análise em rede, intervalo de confiança amplo e precisão variável entre estimativas (Mutz e colegas, BMJ, 2019)',
+    regulacao: 'Procedimento médico, fora do escopo da Psicologia em qualquer etapa da aplicação'
+  }
+];
+
+const fronteira = [
+  { ato: 'Operar o aparelho de EMT e definir parâmetros de aplicação', quem: 'Médico, exclusivamente', base: 'Resolução CFM nº 1.986/2012, artigo 2º' },
+  { ato: 'Indicar o procedimento e responder pelo ambiente de aplicação', quem: 'Médico', base: 'Resolução CFM nº 1.986/2012, artigos 1º e 3º' },
+  { ato: 'Avaliação neuropsicológica de linha de base e de seguimento', quem: 'Psicólogo habilitado', base: 'Avaliação cognitiva e laudo são atos privativos de psicólogo com registro ativo no CRP' },
+  { ato: 'Psicoterapia concomitante ao curso de estimulação', quem: 'Psicólogo', base: 'Resolução CFP nº 13/2022, sobre diretrizes para o exercício da psicoterapia' },
+  { ato: 'Medida seriada de desfecho e leitura clínica da resposta', quem: 'Equipe, com registro de cada profissional no seu escopo', base: 'Código de Ética Profissional do Psicólogo, Resolução CFP nº 010/2005, artigo 1º, alínea b' },
+  { ato: 'Prometer resposta ao paciente antes da série de aplicações', quem: 'Ninguém', base: 'Intervalos de confiança amplos nas estimativas de resposta (Mutz e colegas, BMJ, 2019)' }
+];
+
+const faqs = [
+  {
+    q: 'O psicólogo pode aplicar estimulação magnética transcraniana?',
+    a: 'Não. A Resolução CFM nº 1.986/2012, aprovada em sessão plenária de 22 de março de 2012 com base no Parecer CFM nº 37/11, é literal no artigo 2º: a operação de aparelhos de EMT será realizada exclusivamente por médico. O artigo 3º exige ainda ambiente específico com equipamento de emergência para convulsões, incluindo ponto de oxigênio, laringoscópio e diazepam injetável. O psicólogo entra no arranjo pela avaliação e pelo acompanhamento, nunca pela operação do equipamento.'
+  },
+  {
+    q: 'Quais indicações de EMT a regra brasileira reconhece?',
+    a: 'A Resolução CFM nº 1.986/2012 reconhece a EMT superficial como ato médico válido para depressões uni e bipolar, alucinações auditivas nas esquizofrenias e planejamento de neurocirurgia. A EMT superficial para outras indicações e a EMT profunda seguem classificadas como procedimento experimental pela mesma norma. A resolução é de 2012 e antecede a difusão do theta burst e da EMT acelerada, o que explica a distância entre a lista da norma e o que aparece na literatura recente.'
+  },
+  {
+    q: 'A EMT é mais eficaz do que a eletroconvulsoterapia em depressão?',
+    a: 'A meta-análise em rede de Mutz, Vipulananthan, Carter, Hurlemann, Fu e Young (BMJ, volume 364, artigo l1079, março de 2019) reuniu 113 ensaios, 262 braços de tratamento e 6.750 pacientes randomizados, e encontrou dez das 18 estratégias com resposta superior à estimulação simulada. As maiores razões de chance ficaram com a eletroconvulsoterapia bitemporal, 8,91 (IC 95% de 2,57 a 30,91), e com a unilateral direita de alta dose, 7,27 (IC 95% de 1,90 a 27,78). Os intervalos são amplos, e os próprios autores registram precisão variável entre estimativas e busca encerrada em maio de 2018.'
+  },
+  {
+    q: 'Onde entra a avaliação neuropsicológica em um serviço de neuromodulação?',
+    a: 'Em dois pontos: linha de base antes da série de aplicações e seguimento depois dela. A linha de base documenta funcionamento cognitivo prévio, o que permite distinguir queixa cognitiva atribuída ao procedimento de déficit que já existia. O seguimento mede mudança com o mesmo instrumento e o mesmo examinador sempre que possível. Sem linha de base, qualquer queixa posterior fica sem referência de comparação.'
+  },
+  {
+    q: 'Que formação prepara o psicólogo para trabalhar em serviço de neuromodulação?',
+    a: 'A base é avaliação neuropsicológica, leitura de desfecho clínico e domínio das fronteiras profissionais que a Resolução CFM nº 1.986/2012 e as resoluções do CFP desenham. Programas do IPOG nas trilhas de reabilitação neuropsicológica e de neurociência aplicada cobrem esse conjunto. Vale comparar grade, carga horária e calendário no portal oficial antes de decidir.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Neuromodulação não invasiva em depressão: evidência, regra brasileira e fronteira profissional',
+  description: 'O que a meta-análise em rede sustenta por indicação, o que a Resolução CFM nº 1.986/2012 autoriza e onde a avaliação neuropsicológica entra no arranjo.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Evidências', item: `${SITE.url}/evidencias` },
+    { '@type': 'ListItem', position: 3, name: 'Neuromodulação e depressão', item: `${SITE.url}/evidencias/neuromodulacao-emtr-depressao-2026` }
+  ]
+};
+---
+
+<Base
+  title="Neuromodulação não invasiva em depressão: evidência e fronteira profissional em 2026"
+  description="O que a evidência sustenta por indicação, o que a Resolução CFM nº 1.986/2012 autoriza, e onde a avaliação neuropsicológica entra no serviço de neuromodulação.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Evidências', href: '/evidencias' }, { label: 'Neuromodulação e depressão' }]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Evidência · Neuropsicologia · fronteira profissional</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Neuromodulação não invasiva em depressão: o que a evidência sustenta e onde o psicólogo entra</h1>
+          <p class="mt-3 text-ink-700 text-lg">A operação do aparelho é privativa do médico desde 2012. A medida do que mudou na cabeça do paciente é outro ato, e ele é do psicólogo.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">Ver MBAs no IPOG<svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A Resolução CFM nº 1.986/2012 reconhece a estimulação magnética transcraniana superficial como ato médico válido em três indicações e determina, no artigo 2º, que a operação do aparelho é exclusiva de médico. A meta-análise em rede de Mutz e colegas (BMJ, 2019), com 113 ensaios e 6.750 pacientes randomizados, encontrou dez das 18 estratégias com resposta superior à estimulação simulada, com intervalos de confiança amplos. Para o psicólogo, o espaço técnico está na avaliação neuropsicológica de linha de base e de seguimento, na psicoterapia concomitante e na medida seriada de desfecho, e não em qualquer etapa da aplicação.
+        </p>
+      </div>
+
+      <YMYLDisclaimer domain="neuropsicologia" lastReviewed="2026-08-27" />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que a norma brasileira autoriza, e desde quando</h2>
+        <p>
+          A Resolução CFM nº 1.986/2012, aprovada em sessão plenária de 22 de março de 2012 com base no Parecer CFM nº 37/11, reconhece a estimulação magnética transcraniana superficial como ato médico válido em depressões uni e bipolar, alucinações auditivas nas esquizofrenias e planejamento de neurocirurgia. Todas as demais aplicações da EMT superficial, e a EMT profunda em qualquer indicação, permanecem classificadas pela norma como procedimento experimental.
+        </p>
+        <p>
+          O artigo 2º é literal: a operação de aparelhos de EMT será realizada exclusivamente por médico. O artigo 3º exige ambiente específico, com equipamento de emergência para convulsões, incluindo ponto de oxigênio, laringoscópio e diazepam injetável. A resolução chega a fixar parâmetros para a indicação em depressão: 10 Hz, 110% do limiar motor, 25 séries de cinco segundos, 20 dias de aplicação, total de 25.000 pulsos sobre o córtex dorsolateral pré-frontal esquerdo.
+        </p>
+        <p>
+          O detalhe que muda a leitura de 2026 é a data. A norma é de 2012 e antecede a difusão do theta burst e dos protocolos acelerados. Um serviço que hoje anuncia formatos mais curtos está operando em terreno que a resolução vigente ainda classifica fora da lista reconhecida, e isso é uma informação clínica que o psicólogo da equipe precisa ter antes de descrever o procedimento a um paciente. O mapa de normas que organizam a prática está reunido em <a href="/regulacao">regulação</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Indicação, desfecho, força da evidência e status regulatório</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 mt-4">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3">Indicação e técnica</th> <th class="text-left px-4 py-3">Desfecho medido</th> <th class="text-left px-4 py-3">Força da evidência</th> <th class="text-left px-4 py-3">Status regulatório</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {quadroEvidencia.map(q => (
+                <tr><td class="px-4 py-3 font-semibold text-ink-900">{q.indicacao}</td> <td class="px-4 py-3 text-ink-700">{q.desfecho}</td> <td class="px-4 py-3 text-ink-700">{q.forca}</td> <td class="px-4 py-3 text-ink-700">{q.regulacao}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-700 mt-3 leading-relaxed">
+          Duas colunas discordam entre si de propósito. Há indicação reconhecida pela norma sem estimativa de efeito na meta-análise, e há estratégia com razão de chances alta cuja aplicação está inteiramente fora do escopo da Psicologia.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que a comparação entre técnicas realmente mostrou</h2>
+        <p>
+          Mutz, Vipulananthan, Carter, Hurlemann, Fu e Young (BMJ, volume 364, artigo l1079, 27 de março de 2019) conduziram revisão sistemática com meta-análise em rede de 113 ensaios, 262 braços de tratamento e 6.750 pacientes randomizados, com idade média de 47,9 anos e 59% de mulheres. Dez das 18 estratégias de neuromodulação avaliadas tiveram resposta superior à estimulação simulada. As duas maiores razões de chance ficaram com a eletroconvulsoterapia: bitemporal, 8,91, com intervalo de confiança de 95% entre 2,57 e 30,91, e unilateral direita de alta dose, 7,27, entre 1,90 e 27,78.
+        </p>
+        <p>
+          A amplitude desses intervalos é o achado que o psicólogo precisa levar para a conversa de equipe. Um intervalo que vai de 2,57 a 30,91 é compatível com efeito moderado e com efeito muito grande, e não autoriza prometer resposta a um paciente individual. Os autores registram risco de viés baixo ou incerto em 94 dos 113 ensaios, ou 83%, e precisão que variou consideravelmente entre as estimativas. A busca encerrou em 8 de maio de 2018, o que deixa quase oito anos de literatura fora do cálculo até 2026.
+        </p>
+        <p>
+          O ponto de decisão para quem organiza serviço: a comparação entre técnicas responde qual estratégia tem mais chance de resposta na média da rede, e não qual estratégia serve a este paciente. Essa segunda pergunta depende de história clínica, tolerância a efeito cognitivo e disponibilidade de acompanhamento, e é aí que a avaliação entra.
+        </p>
+      </div>
+
+      <figure class="rounded-2xl border border-surface-200 bg-surface-50 p-5">
+        <div class="overflow-x-auto">
+          <svg viewBox="0 0 720 290" class="w-full text-ink-700" style="min-width:720px" role="img" aria-labelledby="neuromodulacao-fronteira-titulo neuromodulacao-fronteira-desc">
+            <title id="neuromodulacao-fronteira-titulo">Divisão de atos em um serviço de neuromodulação para depressão</title>
+            <desc id="neuromodulacao-fronteira-desc">Três faixas horizontais. Faixa superior, ato exclusivamente médico: indicar o procedimento, operar o aparelho, definir parâmetros e responder pelo ambiente com equipamento de emergência, conforme os artigos 1º, 2º e 3º da Resolução CFM número 1.986 de 2012. Faixa central, trabalho conjunto da equipe: linha de base antes da série, medida seriada de desfecho durante e leitura clínica compartilhada da resposta. Faixa inferior, ato do psicólogo: avaliação neuropsicológica de linha de base e de seguimento, psicoterapia concomitante e registro do que mudou no funcionamento cognitivo.</desc>
+
+            <g class="text-brand-700">
+              <rect x="6" y="8" width="708" height="32" rx="10" fill="none" stroke="currentColor" stroke-width="1.5"></rect>
+              <text x="20" y="30" font-size="15" font-weight="600" fill="currentColor">Quem faz o quê: três faixas que não se sobrepõem</text>
+            </g>
+
+            <g stroke="currentColor" fill="none" stroke-width="1.5">
+              <rect x="6" y="54" width="708" height="70" rx="12"></rect> <rect x="6" y="134" width="708" height="66" rx="12"></rect>
+              <rect x="6" y="210" width="708" height="70" rx="12"></rect>
+              <path d="M186 54 L186 124"></path> <path d="M186 134 L186 200"></path> <path d="M186 210 L186 280"></path>
+            </g>
+
+            <g fill="currentColor" font-size="14">
+              <text x="20" y="80" font-size="14" font-weight="600" class="text-ink-900">Ato médico</text>
+              <text x="20" y="102" font-size="14">exclusivo</text>
+              <text x="202" y="80">Indicar o procedimento, operar o aparelho, definir parâmetros</text>
+              <text x="202" y="102">e responder pelo ambiente com material de emergência</text>
+              <text x="202" y="118" font-size="14" class="text-brand-700">Resolução CFM 1.986/2012, artigos 1º, 2º e 3º</text>
+
+              <text x="20" y="160" font-size="14" font-weight="600" class="text-ink-900">Trabalho de</text>
+              <text x="20" y="182" font-size="14">equipe</text>
+              <text x="202" y="160">Linha de base antes da série, medida seriada durante</text>
+              <text x="202" y="182">e leitura clínica compartilhada da resposta obtida</text>
+
+              <text x="20" y="238" font-size="14" font-weight="600" class="text-ink-900">Ato do</text>
+              <text x="20" y="260" font-size="14">psicólogo</text>
+              <text x="202" y="238">Avaliação neuropsicológica de linha de base e seguimento,</text>
+              <text x="202" y="260">psicoterapia concomitante, registro da mudança cognitiva</text>
+              <text x="202" y="276" font-size="14" class="text-brand-700">Resolução CFP 13/2022 e Código de Ética, artigo 1º, alínea b</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-700 mt-4 leading-relaxed">
+          A figura torna visível o erro mais comum na montagem desse tipo de serviço: tratar a faixa central como se pertencesse a alguém, quando ela só existe se as duas faixas externas estiverem ocupadas por profissionais distintos.
+        </figcaption>
+      </figure>
+
+      <div>
+        <h2 class="section-h text-2xl">A fronteira, ato por ato</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 mt-4">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3">Ato</th> <th class="text-left px-4 py-3">De quem é</th> <th class="text-left px-4 py-3">Base normativa ou técnica</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {fronteira.map(f => (
+                <tr><td class="px-4 py-3 text-ink-700">{f.ato}</td> <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{f.quem}</td> <td class="px-4 py-3 text-ink-700">{f.base}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-700 mt-3 leading-relaxed">
+          O critério de decisão é simples de aplicar e desconfortável de sustentar: se o ato envolve o equipamento, o parâmetro ou o corpo do paciente, ele é médico. Se envolve medir, descrever e acompanhar o funcionamento psicológico, ele é do psicólogo. Quem quiser aprofundar o segundo lado encontra o percurso em <a href="/areas/neuropsicologia">neuropsicologia</a>.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que a linha de base neuropsicológica decide a qualidade do serviço</h2>
+        <p>
+          Um paciente que chega a um serviço de neuromodulação com depressão resistente costuma trazer queixa cognitiva anterior ao procedimento: lentidão, esquecimento, dificuldade de sustentar atenção. Sem avaliação de linha de base, qualquer queixa relatada depois da série de aplicações fica sem referência de comparação, e a equipe se vê discutindo atribuição de causa a partir de impressão.
+        </p>
+        <p>
+          A avaliação prévia resolve isso ao produzir um registro de funcionamento com instrumento, data e examinador. O seguimento repete o mesmo protocolo e a comparação passa a ser entre duas medidas do mesmo objeto, não entre uma medida e uma lembrança. Essa é a contribuição técnica que o psicólogo leva para a mesa, e ela é a razão pela qual o serviço bem montado tem um psicólogo antes e depois do curso de estimulação, e não apenas durante.
+        </p>
+        <p>
+          O acompanhamento psicoterápico concomitante segue as diretrizes da Resolução CFP nº 13/2022. A escolha de abordagem depende do quadro e da preferência do paciente, e protocolos estruturados com desfecho medido facilitam a leitura conjunta com a equipe médica, como discutido em <a href="/metodos/tcc">terapia cognitivo-comportamental</a>. Outras sínteses de evidência do portal ficam em <a href="/evidencias">evidências</a>.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que ainda falta para fechar a leitura</h2>
+        <p>
+          A norma brasileira e a meta-análise em rede envelheceram em direções diferentes. A Resolução CFM nº 1.986/2012 fixou lista de indicações e parâmetros antes do theta burst e dos protocolos acelerados. A busca de Mutz e colegas encerrou em maio de 2018. Entre as duas datas e 2026 acumulou-se literatura que nenhum dos dois documentos incorpora, e essa lacuna é o principal limite de qualquer afirmação sobre eficácia comparada feita hoje com base neles.
+        </p>
+        <p>
+          Para o psicólogo que atua ou pretende atuar em serviço de neuromodulação, a consequência executável é curta: leia a resolução vigente em primeira mão antes de descrever o procedimento a um paciente, mantenha linha de base e seguimento com o mesmo protocolo, e trate intervalo de confiança amplo como o que ele é, uma incerteza sobre o caso individual. A base aplicada dessa competência está em <a href="/areas/reabilitacao-neuropsicologica">reabilitação neuropsicológica</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none"><span class="font-semibold text-ink-900">{f.q}</span><svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg></summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A régua de 2012 delimita o ato; a medida do resultado ainda está vaga</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Operar o aparelho é privativo do médico e a lista de indicações reconhecidas é anterior ao theta burst. O psicólogo entra pela avaliação de linha de base, pela psicoterapia concomitante e pela medida seriada de desfecho, que é o que permite dizer, no fim da série, o que efetivamente mudou.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs IPOG correlatos</h3>
+        <ul class="space-y-1 mt-3">
+          {mbasCorrelatos.map(m => (<li><a href={`/mbas/${m.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{m.shortName}</strong></a></li>))}
+        </ul>
+        <p class="text-xs text-ink-500 mt-3 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes primárias</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://portal.cfm.org.br/images/stories/pdf/1986transcraniana.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Resolução CFM nº 1.986/2012</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/30917990/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Mutz e colegas (2019) · BMJ</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Conselho Federal de Psicologia</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Leitura relacionada</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/evidencias/psicodelicos-assistidos-2026" class="mega-link">Psicodélicos assistidos em 2026</a></li>
+          <li><a href="/areas/psicologia-clinica" class="mega-link">Psicologia clínica</a></li>
+          <li><a href="/guias/neuropsi-long-covid-brain-fog" class="mega-link">Neuropsicologia e névoa cognitiva</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

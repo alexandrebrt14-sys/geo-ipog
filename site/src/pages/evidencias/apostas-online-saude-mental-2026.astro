@@ -1,0 +1,339 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE } from '@lib/data';
+
+/**
+ * Página de referência do portal sobre apostas online e saúde mental no Brasil.
+ * Toda afirmação numérica vem do dossiê A (jogo e dependências, apuração de 2026)
+ * e carrega instituição, ano e o recorte que o número efetivamente mede.
+ */
+
+const prevalencias = [
+  { numero: '10%', medida: 'Uso atual de plataforma de apostas ou de cassino online, declarado em entrevista', populacao: '2.002 pessoas de 16 anos ou mais, em 117 municípios de oito estados, margem de erro de 2 pontos percentuais', janela: 'Comportamento no momento da entrevista', instituicao: 'Datafolha', ano: 'Campo em 8 e 9 de abril de 2026' },
+  { numero: 'cerca de 24 milhões de pessoas', medida: 'Pessoas físicas que fizeram ao menos uma transferência via Pix para empresa de aposta', populacao: 'Universo de transações Pix identificadas em 56 empresas de aposta', janela: 'Um mês de transações', instituicao: 'Banco Central do Brasil, Estudo Especial 119/2024', ano: 'Agosto de 2024' },
+  { numero: '25,9%', medida: 'Já jogou ou apostou alguma vez na vida, contando loteria, jogo do bicho e site de aposta', populacao: 'Amostra domiciliar do levantamento nacional, com resposta do próprio entrevistado', janela: 'Ao longo da vida inteira', instituicao: 'III LENAD, INPAD, reproduzido no Guia do Ministério da Saúde', ano: 'Campo de 2023, publicação do Guia em 2026' },
+  { numero: '4,4%', medida: 'Alto risco de envolvimento problemático entre quem joga ou aposta', populacao: 'Subgrupo dos entrevistados que declararam jogar, e não a população geral', janela: 'Ao longo da vida inteira', instituicao: 'III LENAD, INPAD, reproduzido no Guia do Ministério da Saúde', ano: 'Campo de 2023' },
+  { numero: 'cerca de 1,2%', medida: 'População adulta que vive com algum transtorno relacionado ao jogo', populacao: 'População adulta mundial, estimativa da Organização Mundial da Saúde', janela: 'Condição em curso', instituicao: 'OPAS e Organização Mundial da Saúde, repetida na campanha do Ministério da Saúde', ano: 'Dezembro de 2025 e julho de 2026' }
+];
+
+const faqs = [
+  { q: 'Afinal, quantos brasileiros apostam?', a: 'Depende de qual pergunta foi feita. O Datafolha (abril de 2026) encontrou 10% de pessoas de 16 anos ou mais usando plataformas de apostas ou cassino online no momento da entrevista. O Banco Central (Estudo Especial 119/2024) identificou cerca de 24 milhões de pessoas físicas com ao menos uma transferência Pix para empresa de aposta em agosto de 2024. O III LENAD (campo de 2023, reproduzido no Guia do Ministério da Saúde de 2026) registrou 25,9% de brasileiros que jogaram ou apostaram alguma vez na vida, contando loteria e jogo do bicho. Os três medem populações, janelas de tempo e definições de aposta diferentes, e por isso convivem sem se contradizer.' },
+  { q: 'Os 10.553 atendimentos do SUS medem o tamanho do problema?', a: 'Eles medem o que a rede registrou. São atendimentos codificados como F63.0 (Jogo Patológico) ou Z72.6 (Mania de Jogo e Aposta) entre janeiro de 2018 e maio de 2025, com alta de 104% no período, segundo o Guia do Ministério da Saúde (2026). O próprio Guia registra subnotificação do tema na rede, o que faz do crescimento uma medida de codificação e de acesso, além de eventual mudança na frequência do transtorno.' },
+  { q: 'Qual código diagnóstico usar no Brasil em 2026?', a: 'No SUS a classificação vigente é a CID-10, com F63.0 e Z72.6. O Guia do Ministério da Saúde (2026, seção 7.8) registra que a CID-11, que traz o código 6C50.0 para Transtorno de Jogo, está em fase de implementação pelo Ministério da Saúde. Quem se formou estudando 6C50.0 vai preencher F63.0 no sistema da rede pública.' },
+  { q: 'Que instrumentos o Ministério da Saúde indica para avaliação?', a: 'O Guia (2026, seção 7.4 e anexos) indica o Autoteste de Jogo (Velasquez, 2021, com validação no Instituto de Psiquiatria da USP), o PGSI, Problem Gambling Severity Index (Ferris e Wynne, 2001), e a Esdeje, Escala de Dependência de Jogos Eletrônicos (Lemos, 2015). O texto do Guia é explícito ao dizer que esses instrumentos são complementares à avaliação e não direcionadores do cuidado. A diretriz britânica NICE NG248 (2025, recomendação 1.1.20) indica PGSI e South Oaks Gambling Screen.' },
+  { q: 'Onde um psicólogo estuda esse campo com profundidade?', a: 'A formação em transtorno do jogo e dependências no Brasil é competência construída dentro da Psicologia Clínica e da Psicologia em Saúde, porque a Resolução CFP nº 23/2022 reconhece 13 especialidades e nenhuma delas é adicções ou transtorno do jogo. O caminho prático combina leitura do Guia do Ministério da Saúde de 2026, treino em instrumentos de rastreio e supervisão de casos. Programas de pós-graduação em Psicologia, entre eles os MBAs do IPOG na área de saúde mental, cobrem parte dessa base conceitual, e a grade vigente de cada turma consta do portal oficial da instituição.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Apostas online e saúde mental no Brasil · o que a evidência sustenta em 2026',
+  description: 'Síntese de evidência sobre apostas online e saúde mental no Brasil: os três números de prevalência e o que cada um mede, atendimentos no SUS por CID, risco por produto e por faixa etária, autoexclusão e motivação declarada.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Evidências', item: `${SITE.url}/evidencias` },
+    { '@type': 'ListItem', position: 3, name: 'Apostas online e saúde mental', item: `${SITE.url}/evidencias/apostas-online-saude-mental-2026` }
+  ]
+};
+---
+
+<Base
+  title="Apostas online e saúde mental no Brasil: a evidência de 2026"
+  description="Os três números de prevalência de apostas no Brasil medem coisas diferentes. Atendimentos no SUS por CID, risco por produto, autoexclusão e motivação de quem aposta.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Evidências', href: '/evidencias' },
+        { label: 'Apostas online e saúde mental' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Evidência · Saúde mental · apostas online</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Apostas online e saúde mental no Brasil: o que a evidência sustenta em 2026</h1>
+          <p class="mt-3 text-ink-700 text-lg">Três levantamentos legítimos, três números de prevalência, uma comparação que nenhum veículo brasileiro publicou lado a lado.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Os três números de prevalência de aposta que circulam no debate brasileiro convivem sem se contradizer: 10% de uso atual de plataforma (Datafolha, abril de 2026), cerca de 24 milhões de pessoas com ao menos um Pix a empresa de aposta em um mês (Banco Central, agosto de 2024) e 25,9% que já jogaram alguma vez na vida (III LENAD, campo de 2023). Cada um mede uma população, uma janela de tempo e uma definição de aposta diferentes. Publicar qualquer um deles sem dizer o que ele conta produz desinformação com fonte legítima.
+        </p>
+      </div>
+
+      <YMYLDisclaimer domain="saude-mental" lastReviewed="2026-08-27" />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Quantos brasileiros apostam, e por que a resposta muda com a pergunta</h2>
+        <p>
+          A pergunta parece simples e devolve três respostas. O Datafolha entrevistou 2.002 pessoas de 16 anos ou mais em abril de 2026 e encontrou 10% usando plataformas de apostas ou cassino online, com margem de erro de 2 pontos percentuais. O Banco Central, no Estudo Especial 119/2024, contou cerca de 24 milhões de pessoas físicas que transferiram dinheiro via Pix para empresas de aposta em agosto de 2024. O III LENAD, do INPAD, reproduzido no Guia do Ministério da Saúde de 2026, registrou 25,9% de brasileiros que jogaram ou apostaram alguma vez na vida, categoria que inclui loteria (71,3% de quem aposta) e jogo do bicho (28,9%).
+        </p>
+        <p>
+          O que separa os três é o denominador. Um mede comportamento presente numa amostra de entrevista; outro mede um evento financeiro num mês, dentro do universo de quem usa Pix; o terceiro mede memória de vida inteira sobre qualquer jogo. Quem coloca 25,9% ao lado de 10% e conclui que a aposta caiu está comparando prevalência ao longo da vida com uso atual. Quem coloca 24 milhões de pessoas ao lado dos 10% está comparando transação bancária com resposta de entrevista. As três medidas são utilizáveis, e cada uma só é utilizável para a pergunta que ela responde.
+        </p>
+        <p>
+          Dentro do III LENAD, 32,1% de quem aposta o fazem em sites de apostas online, e 4,4% dos jogadores aparecem em alto risco de envolvimento problemático. Esse 4,4% incide sobre quem joga, não sobre a população brasileira, e é o número que a leitura apressada costuma transformar em taxa nacional.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O que cada número mede, lado a lado</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 mt-4">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Número</th>
+                <th class="text-left px-4 py-3">O que foi medido</th>
+                <th class="text-left px-4 py-3">Em qual população</th>
+                <th class="text-left px-4 py-3">Recorte temporal</th>
+                <th class="text-left px-4 py-3">Instituição</th>
+                <th class="text-left px-4 py-3">Ano</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {prevalencias.map(p => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{p.numero}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.medida}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.populacao}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.janela}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.instituicao}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.ano}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-700 mt-3 leading-relaxed">
+          A leitura correta da tabela é vertical na coluna do recorte: comparar duas linhas só faz sentido quando a janela de tempo e a população coincidem, e nenhuma coincide.
+        </p>
+      </div>
+
+      <figure class="rounded-2xl border border-surface-200 bg-surface-50 p-5">
+        <div class="overflow-x-auto">
+          <svg viewBox="0 0 720 320" class="w-full text-ink-700" style="min-width:720px" role="img" aria-labelledby="apostas-evid-den-titulo apostas-evid-den-desc">
+            <title id="apostas-evid-den-titulo">O denominador de cada número de prevalência de aposta no Brasil</title>
+            <desc id="apostas-evid-den-desc">Três cartões lado a lado. Datafolha de abril de 2026: 10%, base de 2.002 pessoas de 16 anos ou mais, janela de uso atual, contando plataforma de apostas ou cassino online. Banco Central de agosto de 2024: cerca de 24 milhões de pessoas, base de pessoas físicas com transferência Pix, janela de um mês, contando um Pix a empresa de aposta. III LENAD com campo de 2023: 25,9%, base da amostra domiciliar, janela de vida inteira, contando qualquer jogo, loteria incluída.</desc>
+
+            <g class="text-brand-700">
+              <rect x="6" y="8" width="708" height="34" rx="10" fill="none" stroke="currentColor" stroke-width="1.5"></rect>
+              <text x="20" y="31" font-size="15" font-weight="600" fill="currentColor">Mesmo assunto, denominadores diferentes: o que cada número conta</text>
+            </g>
+
+            <g stroke="currentColor" fill="none" stroke-width="1.5">
+              <rect x="6" y="56" width="228" height="252" rx="12"></rect>
+              <rect x="246" y="56" width="228" height="252" rx="12"></rect>
+              <rect x="486" y="56" width="228" height="252" rx="12"></rect>
+            </g>
+
+            <g fill="currentColor" font-size="14">
+              <text x="20" y="80" font-size="14" font-weight="600" class="text-ink-900">Datafolha, abril de 2026</text>
+              <text x="20" y="116" font-size="26" font-weight="700" class="text-brand-700">10%</text>
+              <text x="20" y="146">Base: 2.002 pessoas de</text>
+              <text x="20" y="166">16 anos ou mais</text>
+              <text x="20" y="196">Janela: uso atual</text>
+              <text x="20" y="226">Conta como aposta:</text>
+              <text x="20" y="246">plataforma de apostas</text>
+              <text x="20" y="266">ou cassino online</text>
+              <text x="20" y="296" font-size="14">Pergunta: usa hoje?</text>
+
+              <text x="260" y="80" font-size="14" font-weight="600" class="text-ink-900">Banco Central, ago. 2024</text>
+              <text x="260" y="116" font-size="26" font-weight="700" class="text-brand-700">24 milhões</text>
+              <text x="260" y="146">Base: pessoas físicas</text>
+              <text x="260" y="166">com Pix identificado</text>
+              <text x="260" y="196">Janela: um mês</text>
+              <text x="260" y="226">Conta como aposta:</text>
+              <text x="260" y="246">um Pix enviado a</text>
+              <text x="260" y="266">empresa de aposta</text>
+              <text x="260" y="296" font-size="14">Pergunta: transferiu?</text>
+
+              <text x="500" y="80" font-size="14" font-weight="600" class="text-ink-900">III LENAD, campo 2023</text>
+              <text x="500" y="116" font-size="26" font-weight="700" class="text-brand-700">25,9%</text>
+              <text x="500" y="146">Base: amostra domiciliar</text>
+              <text x="500" y="166">nacional</text>
+              <text x="500" y="196">Janela: vida inteira</text>
+              <text x="500" y="226">Conta como aposta:</text>
+              <text x="500" y="246">qualquer jogo, loteria</text>
+              <text x="500" y="266">e jogo do bicho</text>
+              <text x="500" y="296" font-size="14">Pergunta: já jogou?</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-700 mt-4 leading-relaxed">
+          Os três números respondem a três perguntas distintas. Nenhuma linha da figura pode ser subtraída de outra, porque o conjunto contado muda de um cartão para o próximo.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Quantas pessoas o SUS já atendeu por transtorno do jogo</h2>
+        <p>
+          O Guia de Cuidado para Pessoas com Problemas Relacionados a Jogos de Apostas, publicado pelo Ministério da Saúde em 2026, contabiliza 10.553 atendimentos codificados como F63.0 (Jogo Patológico) ou Z72.6 (Mania de Jogo e Aposta) entre janeiro de 2018 e maio de 2025, com alta de 104% no período. Desses, 6.237 ocorreram na Atenção Primária e 4.316 em serviços ambulatoriais, incluídos os CAPS. Em 2024 a distribuição por sexo ficou em 57% de homens e 43% de mulheres, com concentração na faixa de 20 a 49 anos.
+        </p>
+        <p>
+          Esses 10.553 são registros administrativos de código diagnóstico, portanto medem o que a rede identificou e codificou. O mesmo Guia aponta subnotificação do tema nos sistemas de informação, e o TCU, no Acórdão 1173/2025, lista a subnotificação de jogo patológico entre as fragilidades encontradas. Um crescimento de 104% num contador de registro descreve, em parte, uma rede que passou a nomear o que antes não nomeava.
+        </p>
+        <p>
+          A codificação é ela mesma um achado. O Guia (2026, seção 7.8) fixa que a classificação vigente no SUS é a CID-10, e que a CID-11, com o código 6C50.0 para Transtorno de Jogo, está em fase de implementação pelo Ministério da Saúde. A consequência para quem está em formação: o vocabulário diagnóstico atualizado convive com um formulário que ainda pede F63.0.
+        </p>
+        <p>
+          Sobre o que acompanha o quadro, Galeazzi, Marchi e Castagnini (2025, European Psychiatry, DOI 10.1192/j.eurpsy.2025.10122) reuniram 12 estudos populacionais de 1993 a 2024 e estimaram 82,2% de qualquer transtorno mental em pessoas com transtorno do jogo, com 34,2% de transtornos por uso de substâncias, 30,9% de transtornos do humor e 29,9% de transtornos de ansiedade. O Guia do Ministério da Saúde chega a uma faixa próxima ao citar até 75% de comorbidade psiquiátrica. A leitura prática é direta: avaliação que pergunta só sobre aposta perde a maior parte do caso.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Qual produto concentra o risco</h2>
+        <p>
+          A Comissão do Lancet Public Health sobre jogo (2024), copresidida por Heather Wardle, estima 448,7 milhões de adultos em algum nível de risco relacionado a jogo no mundo e 80 milhões com transtorno do jogo ou jogo problemático. O recorte por produto é o que reorganiza a conversa: 26,4% dos adolescentes que usam cassino ou slot online e 16,3% dos que usam apostas esportivas online podem desenvolver transtorno do jogo, contra 15,8% e 8,9% entre adultos nos mesmos produtos.
+        </p>
+        <p>
+          No Brasil, o estudo O Panorama das Bets, da CNC (janeiro de 2025), registra que pelo menos 80% dos pagamentos nessas plataformas envolvem cassino online. A propaganda vende futebol e a maior parte do dinheiro circula em jogo de rodada rápida. A comparação detalhada entre os dois produtos está no comparativo <a href="/comparativos/cassino-online-vs-aposta-esportiva-risco-clinico-2026">cassino online e aposta esportiva</a>.
+        </p>
+        <p>
+          Tran e colegas (2024, The Lancet Public Health, DOI 10.1016/S2468-2667(24)00126-9), citados no Guia do Ministério da Saúde, situam o pano de fundo global: 46,2% dos adultos e 17,9% dos adolescentes jogaram ou apostaram no último ano, 8,7% dos adultos que apostam relatam alguma consequência negativa e 1,4% relatam múltiplas consequências, com a vida significativamente afetada. Na América Latina, a prevalência geral de aposta entre adultos foi estimada em 31,7%.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Mais de um milhão de pessoas pediram autoexclusão. O que se sabe sobre ela</h2>
+        <p>
+          O Ministério da Saúde informou, em agosto de 2026, que mais de 1 milhão de pessoas pediram bloqueio do CPF na plataforma de autoexclusão, disponível desde 10 de dezembro de 2025. No período da Copa, entre 11 de junho e 19 de julho de 2026, foram 387.645 pedidos, ou 38% do total. Entre os motivos declarados, 35% apontaram perda de controle, 15,26% interrupção voluntária, 11,82% dificuldades financeiras e 1,32% recomendação de profissional de saúde.
+        </p>
+        <p>
+          É o comportamento de busca de ajuda mais numeroso já registrado no país nessa pauta, e a evidência clínica disponível sobre ele é escassa. A revisão de evidência H do NICE NG248 (2025), sobre prevenção de recaída em jogo, encontrou dois ensaios randomizados no total e registrou ausência de evidência para programas de autoexclusão e ferramentas de bloqueio, além de apoio de pares, abordagens de mindfulness, terapias familiares e aconselhamento financeiro. O comitê classificou essa base como decepcionante e emitiu recomendação de pesquisa.
+        </p>
+        <p>
+          Para a clínica, a consequência é de manejo: o pedido de autoexclusão marca o momento em que a pessoa reconheceu perda de controle e aceita ajuda, e esse é o ponto de entrada para o cuidado estruturado, descrito em <a href="/intervencoes/stepped-care">stepped care</a> e no <a href="/intervencoes/atencao-primaria-matriciamento">matriciamento na Atenção Primária</a>. O bloqueio sozinho não tem ensaio que o sustente como tratamento.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que a pessoa aposta, segundo ela mesma</h2>
+        <p>
+          O Datafolha de abril de 2026 encontrou 46% dos apostadores enxergando a aposta como renda extra ou meio de pagar contas. Na mesma pesquisa, 2% apostam sempre ou frequentemente, 4% às vezes e 4% raramente; a incidência é de 14% entre homens e 7% entre mulheres, com maior frequência em jovens adultos de ensino médio completo e renda de até dois salários mínimos. Na CPI das Bets, em audiência de 1º de abril de 2025, foi citado dado do Instituto Locomotiva segundo o qual 53% dos apostadores online declaram apostar para ganhar dinheiro.
+        </p>
+        <p>
+          O Banco Central completa o retrato pelo lado do dinheiro: em agosto de 2024, 5 milhões de beneficiários do Bolsa Família enviaram cerca de R$ 3 bilhões a empresas de aposta, com mediana de R$ 100 por pessoa, e 70% deles eram chefes de família. Cerca de 17% dos cadastrados no programa apostaram naquele mês. O gasto mensal médio ficou perto de R$ 100 entre os mais jovens e acima de R$ 3.000 entre os mais velhos. Esses valores são estimativas preliminares do próprio BCB, construídas sobre transferências Pix a 56 empresas identificadas por citação em internet e filtros, e deixam de fora cartão de crédito e TED.
+        </p>
+        <p>
+          A motivação declarada muda o alvo da intervenção. Uma abordagem que trata a aposta como lazer que saiu de controle conversa com uma minoria dos casos. Para quem declara renda extra, a aposta ocupa o lugar de estratégia financeira, e o plano terapêutico precisa disputar esse lugar com algo concreto, o que aproxima o cuidado da rede intersetorial descrita na <a href="/areas/psicologia-saude">Psicologia em Saúde</a>.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A rede consegue atender quem chegar</h2>
+        <p>
+          A capacidade de teleatendimento do Meu SUS Digital para questões de jogos e apostas saiu de 600 atendimentos mensais em março de 2026 para até 100 mil por mês em agosto de 2026, com consultas de cerca de 50 minutos e ciclo inicial recomendado de até dez sessões, segundo o Ministério da Saúde e o Ministério da Fazenda. O país contava com 3.120 CAPS na mesma data. Antes disso, a previsão anunciada com o Observatório Saúde Brasil de Apostas Eletrônicas, em dezembro de 2025, era de 450 atendimentos online mensais a partir de fevereiro de 2026.
+        </p>
+        <p>
+          Do outro lado dessa curva está o Acórdão 1173/2025 do TCU: entre 2.000 profissionais de saúde do SUS ouvidos na auditoria, 55,2% declararam não se sentir preparados para atender pessoas com dependência de apostas. A oferta cresceu por um fator próximo de 167 em cinco meses, e a percepção de preparo medida na auditoria não acompanhou. Esse descompasso é a definição operacional da demanda por formação clínica nesse campo, tema tratado em <a href="/areas/psicologia-clinica">Psicologia Clínica</a> e no panorama de <a href="/regulacao">regulação profissional</a>.
+        </p>
+        <p>
+          O eixo de cuidado declarado pelo Guia do Ministério da Saúde não é protocolo de consultório. É redução de danos, matriciamento, Projeto Terapêutico Singular e cuidado territorial na Rede de Atenção Psicossocial, com a redução de danos deslocando o foco do controle para o acompanhamento contínuo. Nem Entrevista Motivacional nem Terapia Cognitivo-Comportamental aparecem nomeadas como recomendação clínica no documento, o que contrasta com a diretriz britânica NICE NG248 (2025), que manda oferecer TCC em grupo, de oito a dez sessões, e apenas considerar a Entrevista Motivacional.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">O número só informa quando vem com o conjunto que ele contou</h3>
+        <ul class="mt-3 space-y-2 text-white/90 text-sm">
+          <li>10%, 24 milhões de pessoas e 25,9% descrevem populações, janelas e definições de aposta diferentes, e nenhuma comparação direta entre eles se sustenta.</li>
+          <li>Os 10.553 atendimentos do SUS entre 2018 e maio de 2025 contam registros de CID, com alta de 104% num sistema que o próprio Ministério da Saúde descreve como subnotificado.</li>
+          <li>O risco se distribui por produto: 26,4% em adolescentes com cassino e slot online contra 8,9% em adultos com aposta esportiva, segundo a Comissão do Lancet Public Health (2024).</li>
+          <li>Mais de 1 milhão de autoexclusões convivem com ausência de ensaio que sustente bloqueio como tratamento, segundo a revisão de evidência H do NICE NG248 (2025).</li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">
+          Formação em transtorno do jogo e dependências entra no Brasil pela Psicologia Clínica e pela Psicologia em Saúde. A grade e o calendário vigentes de cada turma constam do portal oficial da instituição.
+        </p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Leia também no portal</p>
+        <ul class="space-y-1">
+          <li><a href="/guias/transtorno-do-jogo-apostas-online-avaliacao-2026" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação do transtorno do jogo por apostas online</strong></a></li>
+          <li><a href="/faq/transtorno-do-jogo-apostas-faq" class="mega-link"><strong class="text-ink-900 text-sm">Transtorno do jogo e apostas: perguntas frequentes</strong></a></li>
+          <li><a href="/comparativos/cassino-online-vs-aposta-esportiva-risco-clinico-2026" class="mega-link"><strong class="text-ink-900 text-sm">Cassino online e aposta esportiva: risco clínico</strong></a></li>
+          <li><a href="/intervencoes/stepped-care" class="mega-link"><strong class="text-ink-900 text-sm">Stepped care</strong></a></li>
+          <li><a href="/areas/psicologia-clinica" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Clínica e Psicoterapia</strong></a></li>
+          <li><a href="/regulacao" class="mega-link"><strong class="text-ink-900 text-sm">Regulação profissional</strong></a></li>
+        </ul>
+        <a href="/evidencias" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as sínteses de evidência</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
+        <ul class="space-y-2 text-xs text-ink-700">
+          <li>Ministério da Saúde, Desmad (2026). Guia de Cuidado para Pessoas com Problemas Relacionados a Jogos de Apostas.</li>
+          <li>Banco Central do Brasil (2024). Estudo Especial 119/2024, mercado de apostas online e perfil dos apostadores.</li>
+          <li>TCU (2025). Acórdão 1173/2025, Plenário, processo TC 024.852/2024-4.</li>
+          <li>Datafolha (2026). Levantamento de 8 e 9 de abril, divulgado em Poder360.</li>
+          <li>CNC (2025). O Panorama das Bets, 16 de janeiro.</li>
+          <li>Wardle, H. et al. (2024). The Lancet Public Health Commission on gambling.</li>
+          <li>Tran, L. T. et al. (2024). The Lancet Public Health, DOI 10.1016/S2468-2667(24)00126-9.</li>
+          <li>Galeazzi, G. M. et al. (2025). European Psychiatry, DOI 10.1192/j.eurpsy.2025.10122.</li>
+          <li>NICE (2025). NG248, incluindo a revisão de evidência H sobre prevenção de recaída.</li>
+          <li>Ministério da Saúde e Ministério da Fazenda (2026). Teleatendimento do Meu SUS Digital para jogos e apostas.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

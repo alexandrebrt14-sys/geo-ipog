@@ -1,0 +1,289 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+
+const criterios = [
+  {
+    criterio: 'Força da recomendação na diretriz',
+    tcci: 'Recomendação FORTE, a única do documento comportamental inteiro (Edinger e colaboradores, 2021).',
+    higiene: 'Recomendação CONTRA quando usada isoladamente (Edinger e colaboradores, 2021).',
+    farmaco: 'Todas as recomendações classificadas como FRACAS, sem exceção (Sateia, Buysse, Krystal, Neubauer e Heald, 2017).'
+  },
+  {
+    criterio: 'Sistema de classificação usado',
+    tcci: 'GRADE, aplicado pela American Academy of Sleep Medicine, com recomendação forte para o pacote multicomponente e condicional para cada componente isolado.',
+    higiene: 'GRADE, com direção contrária à intervenção quando ela aparece sozinha.',
+    farmaco: 'GRADE, com todas as moléculas avaliadas em recomendação fraca, incluindo zolpidem, eszopiclona, zaleplona, triazolam, temazepam, ramelteona, doxepina e suvorexanto.'
+  },
+  {
+    criterio: 'Desfecho medido',
+    tcci: 'Latência para início do sono, eficiência do sono, vigília após início do sono, tempo total de sono e número de despertares, em diário de sono (Leite, Kakazu, Carvalho, Tufik e Pires, 2025).',
+    higiene: 'Os mesmos desfechos de sono, sem que o efeito isolado sustente recomendação favorável.',
+    farmaco: 'Aumento do tempo total de sono no início do tratamento, distinguido dos sintomas diurnos na diretriz de tratamento combinado (Buysse e colaboradores, 2026).'
+  },
+  {
+    criterio: 'Duração de uso prevista',
+    tcci: 'Primeira linha para adultos de qualquer idade, inclusive com comorbidades, sem teto de tempo declarado, presencial ou digital, com grau de recomendação A (Riemann, Espie, Altena e colaboradores, 2023).',
+    higiene: 'Não se aplica, porque a diretriz não a recomenda como tratamento autônomo.',
+    farmaco: 'Nenhuma molécula sustenta recomendação forte, e a atualização europeia mantém a TCC-I como primeira linha em vez do fármaco (Sateia, Buysse, Krystal, Neubauer e Heald, 2017; Riemann, Espie, Altena e colaboradores, 2023).'
+  },
+  {
+    criterio: 'Risco e efeito adverso',
+    tcci: 'Sem evento adverso farmacológico. O desconforto previsto está no componente de restrição de sono, que reduz o tempo na cama antes de ampliá-lo, e exige acordo prévio com o paciente.',
+    higiene: 'Risco baixo e efeito insuficiente. O dano prático é de substituição: ocupa o lugar do tratamento que tem recomendação forte.',
+    farmaco: 'A própria diretriz farmacológica sugere NÃO usar trazodona nem tiagabina para insônia crônica (Sateia, Buysse, Krystal, Neubauer e Heald, 2017). Decisões sobre fármaco são do médico prescritor.'
+  },
+  {
+    criterio: 'Quem pode conduzir no Brasil',
+    tcci: 'Psicólogo com registro ativo no CRP, dentro do escopo da psicoterapia. O Consenso Brasileiro de 2023 registra a insônia crônica como queixa frequente em consultórios de diferentes áreas da saúde, particularmente Medicina e Psicologia (Drager, Assis, Bacelar, Poyares, Conway, Pires e colaboradores, 2023).',
+    higiene: 'Qualquer profissional de saúde pode orientar, o que explica a difusão ampla e o baixo custo de entrega.',
+    farmaco: 'Prescrição privativa do médico. O psicólogo participa da articulação, nunca da decisão sobre o fármaco.'
+  },
+  {
+    criterio: 'Disponibilidade prática',
+    tcci: 'Presencial ou digital, com o formato digital reconhecido pela diretriz europeia. A versão totalmente automatizada foi menos eficaz do que a assistida por terapeuta em 29 ensaios randomizados com 9.475 participantes, com conclusão a favor de modelo híbrido (Hwang, Lee, Woo, Kim e Kwon, 2025).',
+    higiene: 'Disponibilidade máxima e custo mínimo, o que a torna a alternativa mais entregue no consultório brasileiro.',
+    farmaco: 'Ampla, dependente de consulta médica e receita. A diretriz brasileira de 2010 já classificava o zolpidem como hipnótico padrão.'
+  }
+];
+
+const contornos = [
+  {
+    titulo: 'Quando a combinação com medicação tem apoio',
+    texto: 'A diretriz de tratamento combinado da American Academy of Sleep Medicine (Buysse e colaboradores, 2026) sugere a combinação de TCC-I com medicação em vez de medicação isolada. Para o paciente que já chega em uso de hipnótico, acrescentar a TCC-I é a direção apontada pelo documento.'
+  },
+  {
+    titulo: 'Quando a combinação não tem apoio',
+    texto: 'A mesma diretriz sugere CONTRA a combinação quando a alternativa disponível é a TCC-I isolada. As duas recomendações são condicionais e com baixa certeza de evidência, o que mantém espaço para decisão clínica caso a caso.'
+  },
+  {
+    titulo: 'A exceção declarada pelos autores',
+    texto: 'O documento registra que pacientes que valorizam mais aumentar o tempo total de sono logo no início do tratamento, e menos reduzir sintomas diurnos, podem razoavelmente escolher a combinação. A preferência entra na decisão com legitimidade prevista no texto.'
+  },
+  {
+    titulo: 'Quando o formato digital resolve',
+    texto: 'A meta-análise brasileira de Leite, Kakazu, Carvalho, Tufik e Pires (2025), com 14 ensaios randomizados, não encontrou diferença estatisticamente significativa entre TCC-I digital e controles ativos, isto é, TCC-I presencial ou por telessaúde. Contra controles inativos, a TCC-I digital reduziu a latência para início do sono em 15,53 minutos e melhorou a eficiência do sono em 7,91 pontos percentuais. O empate contra controle ativo apoia-se em apenas 3 dos 14 ensaios, e os autores registram que nenhum estudo usou polissonografia e que todas as análises dependeram de diário de sono autorrelatado, o que mantém o achado de Hwang, Lee, Woo, Kim e Kwon (2025) como critério de decisão: a versão totalmente automatizada foi menos eficaz do que a assistida por terapeuta.'
+  }
+];
+
+const faqs = [
+  { q: 'Higiene do sono serve para alguma coisa?', a: 'A higiene do sono permanece como conteúdo dentro do pacote multicomponente de TCC-I, com função de moldura. O que a diretriz da American Academy of Sleep Medicine (Edinger e colaboradores, 2021) recomenda CONTRA é o uso dela isolada, como se a folha de recomendações gerais fosse o tratamento da insônia crônica.' },
+  { q: 'Por que a farmacoterapia inteira está em recomendação fraca?', a: 'A diretriz da American Academy of Sleep Medicine para tratamento farmacológico da insônia crônica (Sateia, Buysse, Krystal, Neubauer e Heald, 2017) classifica todas as suas recomendações como fracas no sistema GRADE, incluindo zolpidem, eszopiclona, zaleplona, triazolam, temazepam, ramelteona, doxepina e suvorexanto, e sugere não usar trazodona nem tiagabina. Recomendação fraca no GRADE indica balanço incerto entre benefício e risco, não ausência de uso possível.' },
+  { q: 'A escolha muda para idoso ou para quem tem comorbidade?', a: 'A atualização de 2023 da diretriz europeia de insônia (Riemann, Espie, Altena e colaboradores, 2023) recomenda a TCC-I como primeira linha para insônia crônica em adultos de qualquer idade, inclusive com comorbidades, presencial ou digital, com grau de recomendação A. A presença de comorbidade não desloca a primeira linha.' },
+  { q: 'Que formação prepara o psicólogo para conduzir essa escolha?', a: 'A leitura comparada de diretriz, o manejo comportamental do ritmo de sono e a articulação com o médico prescritor pedem base sólida em terapia cognitivo-comportamental e em neurociência do comportamento. Programas Ao Vivo síncronos com corpo docente nominal, como o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano do IPOG, cobrem esse fundamento. Consulte ipog.edu.br para a grade vigente.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'TCC-I, higiene do sono e farmacoterapia: comparativo de força de recomendação na insônia crônica',
+  description: 'Comparativo entre TCC-I multicomponente, higiene do sono isolada e farmacoterapia para insônia crônica em adultos, por força de recomendação, sistema GRADE, desfecho, risco e quem pode conduzir no Brasil.',
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  inLanguage: 'pt-BR',
+  datePublished: '2026-08-27',
+  dateModified: '2026-08-27'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.tldr-resposta', '.faq-answer-text', 'h1', 'h2'] },
+  mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: `${SITE.url}/comparativos` },
+    { '@type': 'ListItem', position: 3, name: 'TCC-I, higiene do sono e farmacoterapia', item: `${SITE.url}/comparativos/tcc-i-vs-higiene-do-sono-vs-farmaco-insonia` }
+  ]
+};
+---
+
+<Base
+  title="TCC-I, higiene do sono e farmacoterapia na insônia crônica · comparativo por força de recomendação"
+  description="Comparativo de três alternativas para insônia crônica em adultos: TCC-I multicomponente, higiene do sono isolada e farmacoterapia, por força da recomendação, sistema GRADE, desfecho medido, risco, quem conduz no Brasil e disponibilidade prática.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'TCC-I, higiene do sono e farmacoterapia' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · 3 alternativas · 7 critérios</span>
+          <h1 class="section-h text-3xl sm:text-4xl">TCC-I, higiene do sono ou remédio para insônia crônica</h1>
+          <TLDR
+            resposta="A TCC-I multicomponente é a única recomendação forte da diretriz comportamental da American Academy of Sleep Medicine, a farmacoterapia da mesma casa tem todas as recomendações classificadas como fracas no sistema GRADE, e a higiene do sono isolada recebe recomendação contra. A alternativa mais prescrita no consultório é justamente a que a diretriz desaconselha."
+            fontes={["Edinger e colaboradores, 2021 (AASM)", "Sateia, Buysse, Krystal, Neubauer e Heald, 2017 (AASM)", "Riemann, Espie, Altena e colaboradores, 2023"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Sete critérios lado a lado: força da recomendação, sistema de classificação, desfecho medido, duração de uso prevista, risco e efeito adverso, quem pode conduzir no Brasil e disponibilidade prática.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>Primeira linha:</strong> TCC-I multicomponente, presencial ou digital, para adultos de qualquer idade, inclusive com comorbidades.</li>
+          <li><strong>Desaconselhada sozinha:</strong> higiene do sono isolada, que é a orientação mais distribuída no consultório brasileiro.</li>
+          <li><strong>Fronteira profissional:</strong> a TCC-I é conduzida por psicólogo, e qualquer decisão sobre medicação pertence ao médico prescritor.</li>
+        </ul>
+      </div>
+
+      <figure class="not-prose">
+        <h2 class="section-h text-2xl">Como a força da recomendação se compara entre as três</h2>
+        <p class="mt-2 text-ink-700">A diretriz comportamental e a diretriz farmacológica da American Academy of Sleep Medicine usam o mesmo sistema GRADE, o que torna as três alternativas comparáveis na mesma régua.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200 bg-surface-50 p-4">
+          <svg viewBox="0 0 680 260" width="680" height="260" role="img" aria-labelledby="insonia-comp-titulo insonia-comp-desc" class="min-w-[640px]">
+            <title id="insonia-comp-titulo">Força da recomendação de TCC-I, farmacoterapia e higiene do sono isolada na insônia crônica</title>
+            <desc id="insonia-comp-desc">Três barras horizontais na mesma régua GRADE. A TCC-I multicomponente tem recomendação forte, com a barra mais longa. A farmacoterapia tem recomendação fraca, com barra intermediária. A higiene do sono isolada tem recomendação contra, representada por barra vazada com contorno tracejado.</desc>
+            <g class="text-ink-900" fill="currentColor" font-size="17" font-weight="600">
+              <text x="0" y="34">TCC-I multicomponente</text>
+              <text x="0" y="118">Farmacoterapia da insônia</text>
+              <text x="0" y="202">Higiene do sono isolada</text>
+            </g>
+            <g class="text-brand-700" fill="currentColor"><rect x="0" y="46" width="520" height="30" rx="6" /></g>
+            <g class="text-ink-500" fill="currentColor"><rect x="0" y="130" width="230" height="30" rx="6" /></g>
+            <g class="text-amber-800" stroke="currentColor" fill="none" stroke-width="2.5" stroke-dasharray="8 6"><rect x="0" y="214" width="110" height="30" rx="6" /></g>
+            <g class="text-ink-900" fill="currentColor" font-size="16">
+              <text x="534" y="67">Recomendação forte</text>
+              <text x="244" y="151">Recomendação fraca no GRADE</text>
+              <text x="124" y="235">Recomendação CONTRA</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="mt-3 text-sm text-ink-600">A intervenção com a barra mais curta, e única em direção contrária, é a que mais chega ao paciente brasileiro em forma de folha de orientações. Fontes: Edinger e colaboradores (2021) e Sateia, Buysse, Krystal, Neubauer e Heald (2017).</figcaption>
+      </figure>
+
+      <div>
+        <h2 class="section-h text-2xl">Comparação por critério</h2>
+        <p class="mt-2 text-ink-700">Cada linha responde a uma pergunta que a decisão clínica precisa fechar antes da primeira sessão.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3 w-40">Critério</th><th class="text-left px-4 py-3">TCC-I multicomponente</th><th class="text-left px-4 py-3">Higiene do sono isolada</th><th class="text-left px-4 py-3">Farmacoterapia</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {criterios.map(c => (<tr><td class="px-4 py-3 font-semibold text-ink-900 align-top">{c.criterio}</td><td class="px-4 py-3 text-ink-700 align-top">{c.tcci}</td><td class="px-4 py-3 text-ink-700 align-top">{c.higiene}</td><td class="px-4 py-3 text-ink-700 align-top">{c.farmaco}</td></tr>))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Qual escolher, e por quê</h2>
+        <p>
+          A recomendação deste comparativo é direta: para o adulto com insônia crônica, a TCC-I multicomponente é a escolha de partida, e a higiene do sono isolada não é alternativa a ela. A diretriz de prática clínica da American Academy of Sleep Medicine sobre tratamentos comportamentais e psicológicos para o transtorno de insônia crônica em adultos (Edinger e colaboradores, 2021) emite uma única recomendação forte em todo o documento, e ela é a TCC-I multicomponente. Terapias breves multicomponentes, controle de estímulos isolado, restrição de sono isolada e terapia de relaxamento ficam em recomendação condicional. A higiene do sono isolada recebe recomendação contra.
+        </p>
+        <p>
+          Do outro lado, a diretriz da American Academy of Sleep Medicine para tratamento farmacológico da insônia crônica (Sateia, Buysse, Krystal, Neubauer e Heald, 2017) classifica todas as suas recomendações como fracas no sistema GRADE, sem exceção, e ainda sugere não usar trazodona nem tiagabina. O detalhe que muda a leitura é o sistema: as duas diretrizes usam o mesmo GRADE, então a diferença entre forte e fraca não é diferença de escola nem de autoria, é diferença medida na mesma régua pela mesma casa editorial.
+        </p>
+        <p>
+          A atualização de 2023 da diretriz europeia de insônia (Riemann, Espie, Altena e colaboradores, 2023) fecha o quadro ao colocar a TCC-I como tratamento de primeira linha para insônia crônica em adultos de qualquer idade, inclusive com comorbidades, presencial ou digital, com grau de recomendação A. O mesmo documento recomenda que a actigrafia não seja usada na avaliação de rotina da insônia, com grau C, o que devolve o diário de sono ao centro da avaliação. O caminho técnico completo está no <a href="/guias/insonia-cronica-tcc-i-protocolo-2026">guia de protocolo de TCC-I em nove passos</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Condições de contorno</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {contornos.map(c => (<div class="card p-5 border-surface-200"><h3 class="font-display font-semibold text-base text-ink-900">{c.titulo}</h3><p class="text-sm text-ink-700 mt-2 leading-relaxed">{c.texto}</p></div>))}
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O problema é de prática, não de evidência</h2>
+        <p>
+          A distância entre o que as diretrizes dizem e o que o paciente recebe não se explica por controvérsia científica. No Brasil, o Consenso Brasileiro de diagnóstico e tratamento da insônia em adultos (Drager, Assis, Bacelar, Poyares, Conway, Pires e colaboradores, 2023), coordenado pela Associação Brasileira do Sono e pela Associação Brasileira de Medicina do Sono, com metodologia PICO nas perguntas de tratamento, registra a insônia crônica como queixa frequente em consultórios de diferentes áreas da saúde, particularmente Medicina e Psicologia. A diretriz brasileira anterior, publicada em Arquivos de Neuro-Psiquiatria em 2010, já classificava a terapia comportamental cognitiva como padrão e o zolpidem como hipnótico padrão.
+        </p>
+        <p>
+          O tamanho da população afetada tira a questão do plano teórico. O estudo epidemiológico do sono de São Paulo (Castro, Poyares, Leger, Bittencourt e Tufik, 2013), com 1.042 participantes avaliados por polissonografia e taxa de resposta de 95%, encontrou prevalência subjetiva de sintomas de insônia de 45%, prevalência objetiva de 32% e prevalência pelo critério do DSM-IV de 15%, em amostra de base populacional de uma única cidade. Em qualquer um dos três recortes, a alternativa com recomendação contra continua sendo a mais entregue, e a alternativa com recomendação forte continua dependendo de haver psicólogo formado para conduzi-la. A organização da oferta por níveis de cuidado, descrita em <a href="/intervencoes/stepped-care">cuidado por etapas</a>, é o desenho que aproxima a primeira linha de quem precisa dela, e o repertório técnico de base está em <a href="/metodos/tcc">terapia cognitivo-comportamental</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span><svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer-text">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/insonia-cronica-tcc-i-protocolo-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Protocolo de TCC-I em nove passos</a></li>
+          <li><a href="/faq/insonia-tcc-i-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Insônia crônica e TCC-I</a></li>
+          <li><a href="/metodos/tcc" class="text-brand-700 hover:text-brand-800 font-medium">Método · Terapia cognitivo-comportamental</a></li>
+          <li><a href="/metodos/mindfulness" class="text-brand-700 hover:text-brand-800 font-medium">Método · Mindfulness</a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia Clínica e Psicoterapia</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A alternativa mais prescrita é a única com recomendação contra.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Na mesma régua GRADE, a TCC-I multicomponente tem recomendação forte, a farmacoterapia da insônia tem todas as recomendações em força fraca e a higiene do sono isolada tem recomendação contra. O gargalo brasileiro está na oferta de profissional preparado para conduzir a primeira linha. Para o psicólogo que quer ocupar esse espaço, o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano do IPOG cobre o fundamento de neurociência e comportamento por trás do protocolo.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">Ver MBAs no IPOG</a>
+      </div>
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNcpp.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNcpp.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+      </div>
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Trilhas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href="/comparativos/act-vs-tcc" class="mega-link"><strong class="text-ink-900 text-sm">Comparativo entre ACT e TCC</strong></a></li>
+        </ul>
+      </div>
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes principais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://link.springer.com/article/10.5664/jcsm.8986" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Edinger e colaboradores, 2021 · diretriz comportamental da AASM</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5263087/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Sateia e colaboradores, 2017 · diretriz farmacológica da AASM</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/38016484/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Riemann e colaboradores, 2023 · diretriz europeia</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12731755/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Leite e colaboradores, 2025 · meta-análise brasileira</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

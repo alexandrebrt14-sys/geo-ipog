@@ -1,0 +1,339 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
+
+const passos = [
+  {
+    n: 1, titulo: 'Separar insônia crônica de queixa de sono',
+    aplicacao: 'A insônia crônica é o quadro em que a diretriz da American Academy of Sleep Medicine (Edinger e colaboradores, 2021) coloca a TCC-I como recomendação forte, e ela não se confunde com noite mal dormida ou sono curto sem prejuízo diurno. O quadro exige dificuldade para iniciar ou manter o sono, com repercussão diurna relatada pelo próprio paciente, apesar de oportunidade e circunstância adequadas para dormir. O estudo epidemiológico do sono de São Paulo (Castro, Poyares, Leger, Bittencourt e Tufik, 2013) mostra por que a triagem precisa dessa régua: na mesma amostra de 1.042 participantes avaliados com polissonografia, a prevalência subjetiva de sintomas de insônia foi de 45%, a prevalência objetiva foi de 32% e a prevalência pelo critério diagnóstico do DSM-IV caiu para 15%. Três números na mesma população, porque cada um responde a uma pergunta diferente.',
+    armadilha: 'Tratar toda queixa de sono como insônia. Sem prejuízo diurno e sem persistência, o caso pede orientação e observação, não o protocolo estruturado completo.'
+  },
+  {
+    n: 2, titulo: 'Abrir o diário de sono antes de qualquer intervenção',
+    aplicacao: 'O diário de sono preenchido pelo paciente por pelo menos duas semanas consecutivas é o instrumento que sustenta os dois componentes mais potentes da TCC-I, porque controle de estímulos e restrição de sono dependem de horário de deitar, horário de levantar, latência estimada, despertares e tempo na cama. Sem essa linha de base, o psicólogo prescreve janela de sono no escuro. A atualização de 2023 da diretriz europeia de insônia (Riemann, Espie, Altena e colaboradores, 2023) é explícita quanto ao que não entra na rotina: a actigrafia não é recomendada para avaliação de rotina da insônia, com grau C de recomendação. O diário autorrelatado continua sendo o padrão de trabalho da clínica.',
+    armadilha: 'Substituir o diário por relato retrospectivo em sessão. A memória do paciente com insônia superestima latência e subestima tempo total de sono, e a janela calculada em cima disso fica errada.'
+  },
+  {
+    n: 3, titulo: 'Fazer psicoeducação sobre o modelo, não sobre lista de dicas',
+    aplicacao: 'A psicoeducação da TCC-I explica ao paciente o modelo de dois processos e o papel do condicionamento, para que ele entenda por que a cama virou sinal de vigília e por que o esforço para dormir aumenta o despertar. A distinção importa: a diretriz da American Academy of Sleep Medicine (Edinger e colaboradores, 2021) emite recomendação CONTRA a higiene do sono isolada, ou seja, contra a entrega de uma lista de recomendações gerais como se fosse tratamento. A higiene do sono permanece na peça como conteúdo dentro do pacote multicomponente, com peso de moldura, não de intervenção autônoma.',
+    armadilha: 'Encerrar a primeira sessão entregando a folha de higiene do sono e marcando retorno em um mês. É exatamente a conduta que recebeu recomendação contra na diretriz de 2021.'
+  },
+  {
+    n: 4, titulo: 'Aplicar controle de estímulos',
+    aplicacao: 'O controle de estímulos recondiciona a associação entre cama e sono: usar a cama apenas para dormir e para atividade sexual, deitar somente com sonolência, sair da cama quando o sono não vem, retornar apenas com sonolência de volta e manter horário fixo de levantar, inclusive no fim de semana. Na diretriz da American Academy of Sleep Medicine (Edinger e colaboradores, 2021), o controle de estímulos isolado recebe recomendação condicional, e não forte. A leitura prática é direta: o componente tem evidência, mas quem sustenta a recomendação forte é o pacote multicomponente do qual ele faz parte.',
+    armadilha: 'Prescrever o componente isolado e chamar o resultado de TCC-I. O que a diretriz recomenda fortemente é a TCC-I multicomponente, e o recorte de um componente muda a força da recomendação.'
+  },
+  {
+    n: 5, titulo: 'Calcular a restrição de sono a partir do diário',
+    aplicacao: 'A restrição de sono comprime o tempo na cama até aproximar-se do tempo total de sono registrado no diário, aumenta a pressão homeostática e devolve continuidade ao sono, com ampliação gradual da janela conforme a eficiência do sono melhora. O componente é desconfortável nas primeiras semanas, com sonolência diurna previsível, e por isso exige contrato explícito com o paciente e cuidado com quem dirige ou opera máquina. Na diretriz da American Academy of Sleep Medicine (Edinger e colaboradores, 2021), a restrição de sono isolada também é recomendação condicional. A eficiência do sono é o indicador que governa a ampliação da janela, e ela sai do próprio diário.',
+    armadilha: 'Comprimir a janela sem avisar o paciente da sonolência esperada nas duas primeiras semanas. A adesão cai na semana em que o desconforto aparece, que é justamente quando o componente começa a agir.'
+  },
+  {
+    n: 6, titulo: 'Reestruturar as crenças que mantêm o esforço para dormir',
+    aplicacao: 'A reestruturação cognitiva na insônia mira crenças específicas sobre sono, como a exigência de oito horas fixas, a atribuição de todo desempenho diurno ruim à noite anterior e a catastrofização antecipatória na hora de deitar. O alvo é o esforço voluntário para dormir, que é ele mesmo um ativador. O material dessa etapa vem do diário e das medidas de repercussão diurna, porque o paciente costuma descobrir, ao comparar registro e memória, que noites que julgou perdidas tiveram sono. A técnica dialoga diretamente com o repertório geral da TCC, e o psicólogo formado nesse tronco reaproveita a estrutura de sessão que já domina.',
+    armadilha: 'Discutir crença sobre sono sem dado do diário na mesa. A conversa vira debate de opinião e o paciente sai com a mesma regra rígida que trouxe.'
+  },
+  {
+    n: 7, titulo: 'Usar relaxamento como componente de apoio',
+    aplicacao: 'A terapia de relaxamento aparece na diretriz da American Academy of Sleep Medicine (Edinger e colaboradores, 2021) entre as recomendações condicionais, ao lado das terapias breves multicomponentes, do controle de estímulos isolado e da restrição de sono isolada. Na condução prática, ela ocupa lugar de apoio para o paciente com ativação somática alta na hora de deitar, e não substitui os componentes comportamentais. O critério de inclusão é clínico: se o relato de hiperativação física domina a queixa, o componente entra com espaço de treino em sessão e prática em casa.',
+    armadilha: 'Encher a agenda de relaxamento porque é a parte confortável do protocolo, e adiar o controle de estímulos e a restrição de sono, que são os componentes que mudam o horário de deitar.'
+  },
+  {
+    n: 8, titulo: 'Conduzir o caso de quem já usa hipnótico junto do prescritor',
+    aplicacao: 'A diretriz de tratamento combinado da American Academy of Sleep Medicine (Buysse e colaboradores, 2026) sugere CONTRA a combinação de TCC-I com medicação quando a alternativa disponível é a TCC-I isolada, e sugere a combinação quando a alternativa é a medicação isolada. As duas recomendações são condicionais e com baixa certeza de evidência, e os próprios autores registram a ressalva: quem valoriza mais aumentar o tempo total de sono logo no início do tratamento, e menos reduzir sintomas diurnos, pode razoavelmente escolher a combinação. Para o psicólogo, a consequência é de fronteira profissional: qualquer decisão sobre a medicação em curso pertence ao médico prescritor, e o papel da Psicologia é conduzir o protocolo e devolver ao prescritor o registro objetivo de evolução do diário.',
+    armadilha: 'Orientar o paciente sobre o uso do medicamento em curso. Decisão sobre fármaco é ato médico, e o psicólogo que entra nesse terreno sai do escopo da profissão.'
+  },
+  {
+    n: 9, titulo: 'Definir de saída o critério de encaminhamento',
+    aplicacao: 'O protocolo precisa nascer com a regra de saída escrita: encaminhamento para avaliação médica do sono diante de indícios de outro transtorno do sono, como apneia obstrutiva sugerida por ronco e sonolência desproporcional, movimentos periódicos de membros, parassonia com risco, ou quando o quadro de insônia se mantém sem resposta apesar da aplicação completa dos componentes. O Consenso Brasileiro de diagnóstico e tratamento da insônia em adultos (Drager, Assis, Bacelar, Poyares, Conway, Pires e colaboradores, 2023) foi coordenado pela Associação Brasileira do Sono e pela Associação Brasileira de Medicina do Sono, com metodologia PICO nas perguntas de tratamento, e registra que a insônia crônica é queixa frequente em consultórios de diferentes áreas da saúde, particularmente Medicina e Psicologia. O encaminhamento é articulação prevista no próprio documento, não abandono de caso.',
+    armadilha: 'Insistir no protocolo por meses em paciente com sinal claro de apneia. A TCC-I não trata o transtorno respiratório do sono, e o tempo perdido é clínico, não administrativo.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Régua diagnóstica', indicador: 'Persistência e prejuízo diurno registrados', quem: 'Psicólogo', quando: 'Avaliação inicial' },
+  { passo: '2 · Diário de sono', indicador: 'Duas semanas completas', quem: 'Paciente', quando: 'Antes do segundo encontro' },
+  { passo: '3 · Psicoeducação', indicador: 'Modelo explicado, não lista de dicas', quem: 'Psicólogo', quando: 'Encontros iniciais' },
+  { passo: '4 · Controle de estímulos', indicador: 'Regras acordadas por escrito', quem: 'Psicólogo', quando: 'Início da fase comportamental' },
+  { passo: '5 · Restrição de sono', indicador: 'Janela calculada do diário', quem: 'Psicólogo', quando: 'Início da fase comportamental' },
+  { passo: '6 · Reestruturação cognitiva', indicador: 'Crenças sobre sono mapeadas', quem: 'Psicólogo', quando: 'Fase intermediária' },
+  { passo: '7 · Relaxamento', indicador: 'Incluído por indicação, não por rotina', quem: 'Psicólogo', quando: 'Conforme o caso' },
+  { passo: '8 · Uso de hipnótico', indicador: 'Prescritor identificado e informado', quem: 'Psicólogo e médico', quando: 'Avaliação inicial e seguimento' },
+  { passo: '9 · Critério de saída', indicador: 'Regra de encaminhamento escrita', quem: 'Psicólogo', quando: 'Avaliação inicial' }
+];
+
+const forca = [
+  { item: 'TCC-I multicomponente', forca: 'Forte', fonte: 'Edinger e colaboradores, 2021 (AASM)' },
+  { item: 'Terapias breves multicomponentes', forca: 'Condicional', fonte: 'Edinger e colaboradores, 2021 (AASM)' },
+  { item: 'Controle de estímulos isolado', forca: 'Condicional', fonte: 'Edinger e colaboradores, 2021 (AASM)' },
+  { item: 'Restrição de sono isolada', forca: 'Condicional', fonte: 'Edinger e colaboradores, 2021 (AASM)' },
+  { item: 'Terapia de relaxamento', forca: 'Condicional', fonte: 'Edinger e colaboradores, 2021 (AASM)' },
+  { item: 'Higiene do sono isolada', forca: 'Recomendação CONTRA', fonte: 'Edinger e colaboradores, 2021 (AASM)' },
+  { item: 'Hipnóticos avaliados na diretriz farmacológica', forca: 'Todas fracas no GRADE', fonte: 'Sateia, Buysse, Krystal, Neubauer e Heald, 2017 (AASM)' }
+];
+
+const erros = [
+  { titulo: 'Chamar higiene do sono de tratamento', texto: 'A higiene do sono isolada é o componente que a diretriz da American Academy of Sleep Medicine (Edinger e colaboradores, 2021) recomenda CONTRA, e é o que mais circula em orientação de consultório e em material de divulgação. A folha de dicas continua útil dentro do pacote, com função de moldura. Sozinha, ela ocupa o lugar do tratamento que tem recomendação forte.' },
+  { titulo: 'Supor que a evidência é recente e importada', texto: 'A diretriz brasileira publicada em Arquivos de Neuro-Psiquiatria em 2010 já classificava a terapia comportamental cognitiva como padrão para insônia, e o zolpidem como hipnótico padrão. O Consenso Brasileiro de 2023 reconhece a Psicologia no texto. O atraso entre diretriz e prática de consultório no Brasil passa de uma década.' },
+  { titulo: 'Tratar aplicativo como equivalente de terapeuta', texto: 'A revisão sistemática com meta-análise de Hwang, Lee, Woo, Kim e Kwon (2025), com 29 ensaios randomizados e 9.475 participantes, encontrou efeitos moderados a grandes da TCC-I digital totalmente automatizada sobre a gravidade da insônia frente a controles, e ao mesmo tempo registra que a versão totalmente automatizada foi menos eficaz do que a TCC-I assistida por terapeuta, com conclusão a favor de modelo híbrido com apoio de terapeuta. A meta-análise brasileira de Leite, Kakazu, Carvalho, Tufik e Pires (2025) que empatou TCC-I digital e controle ativo apoia esse empate em apenas 3 dos 14 ensaios incluídos, sem polissonografia em nenhum deles e com todas as análises dependentes de diário de sono autorrelatado.' },
+  { titulo: 'Fechar a janela de sono sem contrato com o paciente', texto: 'A restrição de sono produz sonolência diurna nas primeiras semanas por desenho. Sem acordo prévio sobre esse efeito e sem cuidado com direção de veículo e operação de máquina, a adesão cai justamente na semana em que o componente começa a agir.' }
+];
+
+const faqs = [
+  { q: 'Psicólogo pode conduzir tratamento de insônia crônica no Brasil?', a: 'Sim, dentro do escopo da Psicologia. A TCC-I é intervenção psicoterápica, e o Consenso Brasileiro de diagnóstico e tratamento da insônia em adultos (Drager, Assis, Bacelar, Poyares, Conway, Pires e colaboradores, 2023), coordenado pela Associação Brasileira do Sono e pela Associação Brasileira de Medicina do Sono, registra que a insônia crônica é queixa frequente em consultórios de diferentes áreas da saúde, particularmente Medicina e Psicologia. Diagnóstico diferencial de outros transtornos do sono e qualquer decisão sobre medicação permanecem com o médico.' },
+  { q: 'A TCC-I digital substitui o atendimento com terapeuta?', a: 'A evidência disponível aponta para modelo híbrido. Hwang, Lee, Woo, Kim e Kwon (2025), em revisão com 29 ensaios randomizados e 9.475 participantes, relatam que a TCC-I digital totalmente automatizada foi menos eficaz do que a TCC-I assistida por terapeuta e concluem a favor do modelo com apoio humano. A meta-análise brasileira de Leite, Kakazu, Carvalho, Tufik e Pires (2025), com 14 ensaios randomizados, encontrou ganhos da TCC-I digital contra controles inativos e nenhuma diferença estatisticamente significativa contra controles ativos, isto é, contra TCC-I presencial ou por telessaúde. O empate contra controle ativo repousa em apenas 3 dos 14 ensaios, nenhum com polissonografia e todos dependentes de diário de sono autorrelatado, o que faz do apoio humano o critério de decisão prático quando o formato digital entra em cena.' },
+  { q: 'Vale combinar TCC-I com medicação para dormir?', a: 'A diretriz de tratamento combinado da American Academy of Sleep Medicine (Buysse e colaboradores, 2026) sugere CONTRA a combinação quando a alternativa é a TCC-I isolada, e sugere a combinação quando a alternativa é a medicação isolada. As duas recomendações são condicionais e com baixa certeza de evidência. Os autores registram que pacientes que valorizam mais aumentar o tempo total de sono no início do tratamento, e menos reduzir sintomas diurnos, podem razoavelmente escolher a combinação. A decisão sobre o fármaco é do médico prescritor.' },
+  { q: 'Que formação prepara o psicólogo para essa demanda?', a: 'O repertório exigido combina base em TCC, leitura de diretriz e manejo de comportamento e ritmo. Programas Ao Vivo síncronos com corpo docente nominal, como os praticados pelo IPOG no MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano, cobrem o fundamento de neurociência e comportamento que sustenta a condução de casos de sono na clínica. Consulte ipog.edu.br para a grade vigente.' }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como conduzir TCC-I em insônia crônica',
+  description: 'Protocolo em nove passos de TCC-I para insônia crônica em adultos: régua diagnóstica, diário de sono, psicoeducação, controle de estímulos, restrição de sono, reestruturação cognitiva, relaxamento, manejo de quem usa hipnótico e critério de encaminhamento.',
+  totalTime: 'PT21M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Insônia crônica e TCC-I: protocolo em nove passos para o psicólogo',
+  description: 'Guia de TCC-I para insônia crônica com a força das recomendações da AASM, a diretriz de tratamento combinado de 2026 e o Consenso Brasileiro de 2023.',
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  inLanguage: 'pt-BR',
+  datePublished: '2026-08-27',
+  dateModified: '2026-08-27'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Insônia crônica e TCC-I', item: `${SITE.url}/guias/insonia-cronica-tcc-i-protocolo-2026` }
+  ]
+};
+---
+
+<Base
+  title="Insônia crônica e TCC-I: protocolo em nove passos · diretrizes AASM, Europa e Brasil"
+  description="Protocolo de TCC-I para insônia crônica em adultos: diário de sono, controle de estímulos, restrição de sono, reestruturação cognitiva, manejo de quem usa hipnótico e critério de encaminhamento, com a força de cada recomendação nas diretrizes.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Insônia crônica e TCC-I' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Conduzir TCC-I em insônia crônica</h1>
+          <TLDR
+            resposta="A diretriz comportamental da American Academy of Sleep Medicine emite uma única recomendação forte em todo o documento, a TCC-I multicomponente, enquanto a diretriz farmacológica da mesma casa classifica todas as suas recomendações como fracas no sistema GRADE. A higiene do sono isolada, que é justamente o que mais se prescreve, recebe recomendação contra."
+            fontes={["Edinger e colaboradores, 2021 (AASM)", "Sateia, Buysse, Krystal, Neubauer e Heald, 2017 (AASM)", "Buysse e colaboradores, 2026 (AASM)"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto de condução para o psicólogo clínico: régua diagnóstica, diário de sono, psicoeducação de modelo, controle de estímulos, restrição de sono, reestruturação cognitiva, relaxamento de apoio, articulação com o prescritor e regra de encaminhamento.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~21 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos clínicos e da saúde</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <YMYLDisclaimer domain="saude-mental" lastReviewed="2026-08-27" />
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> conduzir o protocolo multicomponente de TCC-I em adulto com insônia crônica, do diário de sono ao critério de encaminhamento.</li>
+          <li><strong>Pré-requisitos:</strong> registro no CRP ativo, base em terapia cognitivo-comportamental, leitura das diretrizes da American Academy of Sleep Medicine e canal aberto com o médico prescritor quando há hipnótico em uso.</li>
+          <li><strong>Resultado esperado:</strong> protocolo aplicado com janela de sono ancorada em diário, evolução registrada por indicador objetivo e regra de saída definida desde a primeira sessão.</li>
+        </ul>
+      </div>
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que a intervenção mais prescrita é a que tem recomendação contra</h2>
+        <p>
+          A diretriz de prática clínica da American Academy of Sleep Medicine sobre tratamentos comportamentais e psicológicos para o transtorno de insônia crônica em adultos (Edinger e colaboradores, 2021) emite uma única recomendação forte em todo o documento, e ela é a terapia cognitivo-comportamental multicomponente para insônia. Todas as demais recomendações do texto são condicionais: terapias breves multicomponentes, controle de estímulos isolado, restrição de sono isolada e terapia de relaxamento. A higiene do sono isolada recebe recomendação contra.
+        </p>
+        <p>
+          Do outro lado da mesma casa editorial, a diretriz da American Academy of Sleep Medicine para tratamento farmacológico da insônia crônica (Sateia, Buysse, Krystal, Neubauer e Heald, 2017) classifica todas as suas recomendações como fracas no sistema GRADE, incluindo zolpidem, eszopiclona, zaleplona, triazolam, temazepam, ramelteona, doxepina e suvorexanto. O mesmo documento sugere não usar trazodona nem tiagabina. Colocadas lado a lado, as duas diretrizes desenham um mapa incômodo para a prática brasileira: a intervenção com a recomendação mais forte é psicológica, a farmacologia inteira está em recomendação fraca, e a orientação que mais circula no consultório é a que tem recomendação contra.
+        </p>
+        <p>
+          A atualização de 2023 da diretriz europeia de insônia (Riemann, Espie, Altena e colaboradores, 2023) fecha o cerco na mesma direção, ao recomendar a TCC-I como tratamento de primeira linha para insônia crônica em adultos de qualquer idade, inclusive com comorbidades, aplicada presencialmente ou digitalmente, com grau de recomendação A. A consequência para o psicólogo brasileiro é de posição: a TCC-I não é alternativa complementar ao tratamento medicamentoso, é a primeira linha que a maior parte dos pacientes com insônia crônica nunca recebeu.
+        </p>
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">Qual é a força de cada componente na diretriz</h2>
+        <p class="text-ink-700 mt-2">A leitura por linha explica por que o recorte de um componente isolado muda a força da recomendação e por que o pacote é o objeto da recomendação forte.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3">Intervenção</th><th class="text-left px-4 py-3">Força da recomendação</th><th class="text-left px-4 py-3">Origem</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {forca.map(f => (<tr><td class="px-4 py-3 font-semibold text-ink-900">{f.item}</td><td class="px-4 py-3 text-ink-700">{f.forca}</td><td class="px-4 py-3 text-ink-700">{f.fonte}</td></tr>))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-ink-500">A comparação detalhada entre as três alternativas está no <a href="/comparativos/tcc-i-vs-higiene-do-sono-vs-farmaco-insonia" class="text-brand-700 hover:text-brand-800 font-medium">comparativo entre TCC-I, higiene do sono e farmacoterapia</a>.</p>
+      </div>
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os nove passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p><p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>))}
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">Como distribuir o protocolo sessão a sessão</h2>
+        <p class="text-ink-700 mt-2">Ordem de execução ao longo do acompanhamento, com o diário mantido do início ao fim. Ajuste ao caso, às comorbidades e à disponibilidade do paciente.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3">Passo</th><th class="text-left px-4 py-3">Indicador</th><th class="text-left px-4 py-3">Quem executa</th><th class="text-left px-4 py-3">Quando</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (<tr><td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td><td class="px-4 py-3 text-ink-700">{c.indicador}</td><td class="px-4 py-3 text-ink-700">{c.quem}</td><td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td></tr>))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que muda com a diretriz de tratamento combinado de 2026</h2>
+        <p>
+          A diretriz de tratamento combinado da American Academy of Sleep Medicine (Buysse e colaboradores, 2026), publicada em 13 de abril de 2026 no Journal of Clinical Sleep Medicine em acesso aberto, traz duas recomendações condicionais com baixa certeza de evidência. A primeira sugere a combinação de TCC-I com medicação em vez de medicação isolada. A segunda sugere contra a combinação de TCC-I com medicação quando a alternativa é a TCC-I isolada.
+        </p>
+        <p>
+          O par de recomendações reorganiza a conversa entre psicólogo e médico. Para o paciente que já chega em uso de hipnótico, somar a TCC-I tem apoio da diretriz. Para o paciente que chega sem medicação, acrescentar fármaco à TCC-I não tem apoio, e o documento aponta na direção contrária. Os próprios autores declaram a ressalva que sustenta a exceção: quem valoriza mais aumentar o tempo total de sono logo no início do tratamento, e menos reduzir sintomas diurnos, pode razoavelmente escolher a combinação. Esse é o ponto em que a preferência do paciente entra na decisão com legitimidade, e não como concessão.
+        </p>
+        <h2 class="section-h text-2xl">O Brasil já dizia isso, e a prática não acompanhou</h2>
+        <p>
+          O Consenso Brasileiro de diagnóstico e tratamento da insônia em adultos (Drager, Assis, Bacelar, Poyares, Conway, Pires e colaboradores, 2023), publicado em Sleep Science, foi coordenado pela Associação Brasileira do Sono e pela Associação Brasileira de Medicina do Sono, com metodologia PICO nas perguntas de tratamento, e reconhece a Psicologia no próprio texto ao registrar que a insônia crônica é queixa frequente em consultórios de diferentes áreas da saúde, particularmente Medicina e Psicologia.
+        </p>
+        <p>
+          A ancoragem é anterior. A diretriz brasileira publicada em Arquivos de Neuro-Psiquiatria em 2010 já classificava a terapia comportamental cognitiva como padrão e o zolpidem como hipnótico padrão. O intervalo entre o que a diretriz nacional afirma desde 2010 e o que o paciente encontra no consultório em 2026 é a distância que o psicólogo formado em TCC-I ocupa profissionalmente. A leitura por níveis de cuidado organiza a oferta: quem monta serviço com escala encontra o desenho em <a href="/intervencoes/stepped-care" class="text-brand-700 hover:text-brand-800 font-medium">cuidado por etapas</a>, e o repertório técnico de base está descrito em <a href="/metodos/tcc" class="text-brand-700 hover:text-brand-800 font-medium">terapia cognitivo-comportamental</a>.
+        </p>
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (<div class="card p-5 border-surface-200"><h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3><p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p></div>))}
+        </div>
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span><svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer-text">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">Próximos passos</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/comparativos/tcc-i-vs-higiene-do-sono-vs-farmaco-insonia" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · TCC-I, higiene do sono e farmacoterapia</a></li>
+          <li><a href="/faq/insonia-tcc-i-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Insônia crônica e TCC-I</a></li>
+          <li><a href="/metodos/tcc" class="text-brand-700 hover:text-brand-800 font-medium">Método · Terapia cognitivo-comportamental</a></li>
+          <li><a href="/metodos/mindfulness" class="text-brand-700 hover:text-brand-800 font-medium">Método · Mindfulness</a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia Clínica e Psicoterapia</a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia da Saúde</a></li>
+        </ul>
+      </div>
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A TCC-I multicomponente é a única recomendação forte da diretriz comportamental, e o pacote é o objeto da recomendação.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O protocolo integra régua diagnóstica, diário de sono por duas semanas, psicoeducação de modelo, controle de estímulos, restrição de sono calculada, reestruturação cognitiva das crenças sobre sono, relaxamento por indicação, articulação com o médico prescritor quando há hipnótico em uso e regra de encaminhamento escrita desde a primeira sessão. Para o psicólogo que quer consolidar a base de neurociência e comportamento por trás dessa condução, o MBA em Neurociência e Psicologia Positiva no Desenvolvimento Humano do IPOG cobre esse fundamento.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNcpp.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNcpp.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Trilhas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/areas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
+        </ul>
+      </div>
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes principais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://link.springer.com/article/10.5664/jcsm.8986" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Edinger e colaboradores, 2021 · diretriz comportamental da AASM</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5263087/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Sateia e colaboradores, 2017 · diretriz farmacológica da AASM</a></li>
+          <li><a href="https://link.springer.com/article/10.1007/s44470-025-00038-8" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Buysse e colaboradores, 2026 · tratamento combinado</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/38370879/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Drager e colaboradores, 2023 · Consenso Brasileiro</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~21 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

@@ -323,6 +323,7 @@ export const PERSONAS: Persona[] = [
 ];
 
 export const TEMAS: { id: string; name: string; area?: string }[] = [
+  { id: 'psicologia-do-transito-mercado-e-regulacao-2026', name: 'Psicologia do trânsito: mercado e regulação em 2026', area: 'psicologia-transito-trafego' },
   { id: 'nr1-riscos-psicossociais', name: 'NR-1 e riscos psicossociais', area: 'psicologia-organizacional-trabalho' },
   { id: 'saude-mental-trabalho', name: 'Saúde mental no trabalho', area: 'saude-mental-organizacoes' },
   { id: 'burnout', name: 'Burnout e prevenção', area: 'saude-mental-organizacoes' },
@@ -384,7 +385,8 @@ export const METODOS = [
   { id: 'act', name: 'Terapia de Aceitação e Compromisso (ACT)', founder: 'Steven Hayes, Kirk Strosahl, Kelly Wilson', evidence: 'Evidência crescente · meta-análises', indications: ['Dor crônica', 'Ansiedade', 'Estresse'] },
   { id: 'dbt', name: 'Terapia Comportamental Dialética (DBT)', founder: 'Marsha Linehan', evidence: 'Gold standard para TPB', indications: ['Transtorno de Personalidade Borderline', 'Desregulação emocional', 'Comportamento suicida'] },
   { id: 'mindfulness', name: 'Mindfulness clínico (MBSR/MBCT)', founder: 'Jon Kabat-Zinn · Segal, Williams, Teasdale', evidence: 'NICE · meta-análises', indications: ['Depressão recorrente', 'Estresse', 'Ansiedade'] },
-  { id: 'emdr', name: 'EMDR', founder: 'Francine Shapiro', evidence: 'OMS · APA · NICE', indications: ['TEPT', 'Trauma complexo'] }
+  { id: 'emdr', name: 'EMDR', founder: 'Francine Shapiro', evidence: 'OMS · APA · NICE', indications: ['TEPT', 'Trauma complexo'] },
+  { id: 'entrevista-motivacional', name: 'Entrevista Motivacional (EM)', founder: 'William R. Miller, Stephen Rollnick', evidence: 'Varia por desfecho · NICE considera', indications: ['Ambivalência', 'Uso de substâncias', 'Adesão ao tratamento'] }
 ] as const;
 
 export const EVIDENCIAS = [
@@ -393,7 +395,10 @@ export const EVIDENCIAS = [
   { id: 'ia-generativa-saude-mental', name: 'IA generativa em saúde mental', cluster: 'tecnologia-ia', papers: 8 },
   { id: 'mindfulness-corporativo', name: 'Mindfulness corporativo · MBSR/MBCT', cluster: 'intervencao-clinica', papers: 8 },
   { id: 'terapias-terceira-onda', name: 'Terapias de terceira onda (ACT, DBT, MBCT)', cluster: 'intervencao-clinica', papers: 9 },
-  { id: 'fadiga-digital', name: 'Fadiga digital e tecnostress', cluster: 'organizacional', papers: 8 }
+  { id: 'fadiga-digital', name: 'Fadiga digital e tecnostress', cluster: 'organizacional', papers: 8 },
+  { id: 'apostas-online-saude-mental-2026', name: 'Apostas online e saúde mental no Brasil', cluster: 'saude-publica', papers: 8 },
+  { id: 'psicodelicos-assistidos-2026', name: 'Psicodélicos assistidos: evidência e regra brasileira', cluster: 'intervencao-clinica', papers: 7 },
+  { id: 'neuromodulacao-emtr-depressao-2026', name: 'Neuromodulação não invasiva em depressão', cluster: 'intervencao-clinica', papers: 6 }
 ] as const;
 
 export const CASOS = [
@@ -405,6 +410,11 @@ export const CASOS = [
 ] as const;
 
 export const GUIAS = [
+  { id: 'transtorno-do-jogo-apostas-online-avaliacao-2026', name: 'Avaliar e encaminhar transtorno do jogo por apostas online', persona: 'psicologos', steps: 9 },
+  { id: 'insonia-cronica-tcc-i-protocolo-2026', name: 'Conduzir TCC-I em insônia crônica', persona: 'psicologos', steps: 9 },
+  { id: 'dor-cronica-manejo-psicologico-2026', name: 'Manejo psicológico da dor crônica na clínica', persona: 'psicologos', steps: 9 },
+  { id: 'psico-oncologia-cuidados-paliativos-protocolo-2026', name: 'Atuar em psico-oncologia e cuidados paliativos', persona: 'psicologos', steps: 9 },
+  { id: 'avaliacao-psicologica-transito-contran-2026', name: 'Atuar como perito examinador em avaliação psicológica no trânsito', persona: 'psicologos', steps: 9 },
   { id: 'implementar-nr1-em-empresa', name: 'Implementar NR-1 em empresa', persona: 'rh', steps: 9 },
   { id: 'construir-programa-bem-estar', name: 'Construir programa de bem-estar evidence-based', persona: 'rh', steps: 9 },
   { id: 'retorno-ao-trabalho-pos-burnout', name: 'Retorno ao trabalho pós-burnout', persona: 'psicologos', steps: 9 },
@@ -424,6 +434,10 @@ export const GUIAS = [
 ] as const;
 
 export const FAQS_DEEP = [
+  { id: 'transtorno-do-jogo-apostas-faq', name: 'Transtorno do jogo e apostas online', qas: 14 },
+  { id: 'insonia-tcc-i-faq', name: 'Insônia crônica e TCC-I', qas: 14 },
+  { id: 'dor-cronica-psicologia-faq', name: 'Dor crônica e psicologia', qas: 14 },
+  { id: 'avaliacao-psicologica-transito-faq', name: 'Avaliação psicológica no trânsito', qas: 14 },
   { id: 'nr1-faq', name: 'NR-1 e riscos psicossociais', qas: 14 },
   { id: 'mba-vs-especializacao-faq', name: 'MBA vs especialização', qas: 14 },
   { id: 'carreira-psicologo-organizacional-faq', name: 'Carreira em Psicologia Organizacional', qas: 13 },
@@ -456,7 +470,10 @@ export const INTERVENCOES = [
   { id: 'iapt-nhs', name: 'IAPT · NHS Talking Therapies', evidence: 'NHS validado em larga escala', context: 'Inglaterra, modelo de acesso' },
   { id: 'atencao-primaria-matriciamento', name: 'Atenção primária · matriciamento', evidence: 'PNAB 2017 · RAPS', context: 'Brasil, SUS, eMulti, CAPS' },
   { id: 'intervencao-crise', name: 'Intervenção em crise e suicidalidade', evidence: 'OMS mhGAP · SAMU/CAPS', context: 'Emergência psicossocial' },
-  { id: 'retorno-ao-trabalho', name: 'Retorno ao trabalho pós-afastamento', evidence: 'OMS 2022 · Cochrane', context: 'Pós-licença saúde mental, NR-1' }
+  { id: 'retorno-ao-trabalho', name: 'Retorno ao trabalho pós-afastamento', evidence: 'OMS 2022 · Cochrane', context: 'Pós-licença saúde mental, NR-1' },
+  { id: 'reducao-de-danos', name: 'Redução de danos', evidence: 'Guia do Ministério da Saúde 2026', context: 'RAPS, CAPS AD, atenção primária' },
+  { id: 'prevencao-de-recaida', name: 'Prevenção de recaída', evidence: 'Grant e colegas 2017', context: 'Manutenção após tratamento' },
+  { id: 'cuidados-paliativos-e-fim-de-vida', name: 'Cuidados paliativos e fim de vida', evidence: 'Portaria GM/MS 3.681/2024', context: 'Oncologia e doença ameaçadora da vida' }
 ] as const;
 
 export const TEMAS_EMERGENTES_2025_2026 = [

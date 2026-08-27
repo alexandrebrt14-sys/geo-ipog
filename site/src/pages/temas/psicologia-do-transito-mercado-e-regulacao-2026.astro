@@ -1,0 +1,299 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const areaTransito = AREAS.find(a => a.id === 'psicologia-transito-trafego')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+const areaForense = AREAS.find(a => a.id === 'psicologia-juridica-forense')!;
+
+const linhaDoTempo = [
+  { ano: '1997', norma: 'Lei nº 9.503, Código de Trânsito Brasileiro', efeito: 'Cria o exame de aptidão e a avaliação psicológica como condição de habilitação (art. 147).' },
+  { ano: '2001', norma: 'Lei nº 10.350, art. 147, § 3º', efeito: 'Restringe a avaliação periódica a quem exerce atividade remunerada ao veículo.' },
+  { ano: '2019', norma: 'Resolução CFP nº 1/2019', efeito: 'Enquadra a avaliação como perícia e fixa oito construtos obrigatórios.' },
+  { ano: '2020', norma: 'Lei nº 14.071, art. 147', efeito: 'Exige titulação de especialista e alonga a validade do exame médico para 10, 5 e 3 anos.' },
+  { ano: '2022', norma: 'Resolução CONTRAN nº 927, art. 22', efeito: 'Mantém o preço estadual, com referência na tabela de honorários da FENAPSI e do CFP.' },
+  { ano: '2024', norma: 'Resolução CONTRAN nº 927, art. 19, § 2º', efeito: 'Em 12 de abril encerra o direito adquirido: sem título de especialista, não se examina.' },
+  { ano: '2025', norma: 'Resolução CONTRAN nº 1.020, art. 12', efeito: 'Flexibiliza a habilitação e mantém a avaliação psicológica como etapa IV do processo.' },
+  { ano: '2026', norma: 'Lei nº 15.428, art. 148, §§ 6º e 7º', efeito: 'Autorização do perito vai ao ente federal e o valor vira preço público corrigido pelo IPCA.' }
+];
+
+const categorias = [
+  { grupo: 'B, condutor de carro', total: '42.065.067', regime: 'Avaliação apenas na primeira habilitação, salvo atividade remunerada' },
+  { grupo: 'AB, condutor de moto e carro', total: '33.282.376', regime: 'Avaliação apenas na primeira habilitação, salvo atividade remunerada' },
+  { grupo: 'AD, condutor de moto e ônibus', total: '4.632.506', regime: 'Perfil típico de transporte de passageiros' },
+  { grupo: 'D, condutor de ônibus', total: '2.731.967', regime: 'Perfil típico de transporte de passageiros' },
+  { grupo: 'A, condutor de moto', total: '2.291.199', regime: 'Avaliação apenas na primeira habilitação, salvo atividade remunerada' },
+  { grupo: 'AE, condutor de moto e carreta', total: '1.717.987', regime: 'Perfil típico de transporte de carga' },
+  { grupo: 'AC, condutor de moto e caminhão', total: '1.021.261', regime: 'Perfil típico de transporte de carga' },
+  { grupo: 'C, condutor de caminhão', total: '991.662', regime: 'Perfil típico de transporte de carga' },
+  { grupo: 'E, condutor de carreta', total: '700.873', regime: 'Perfil típico de transporte de carga' }
+];
+
+const atores = [
+  { ator: 'Psicólogo perito examinador', poder: 'Responde sozinho pela realização e pelo resultado da avaliação (Resolução CONTRAN nº 927/2022, art. 10).', mudanca: 'Passa a ser descrito como autorizado pelo órgão máximo executivo de trânsito da União (CTB, art. 148, § 6º).' },
+  { ator: 'Entidade credenciada', poder: 'É o objeto do credenciamento, com exigências de sala e vigência anual renovável (arts. 16, § 2º, e 17, III).', mudanca: 'Perde a variável de preço como instrumento de posicionamento regional.' },
+  { ator: 'Órgão executivo de trânsito do Estado', poder: 'Credencia peritos e entidades e fixava os honorários (arts. 19 e 22).', mudanca: 'Mantém o rito operacional enquanto o CONTRAN não regulamenta o preço público federal.' },
+  { ator: 'Órgão máximo executivo de trânsito da União', poder: 'Recebe anualmente dos Estados a relação nominal de peritos credenciados (art. 19, § 4º).', mudanca: 'Ganha a competência de autorizar o perito e de fixar o preço do exame.' },
+  { ator: 'Conselho Federal de Psicologia', poder: 'Confere o título de especialista, define o conteúdo da perícia e mantém o Satepsi.', mudanca: 'Deixa de ter a sua tabela de honorários como referência de preço do exame.' },
+  { ator: 'Candidato à habilitação', poder: 'Pode pedir Junta Psicológica em 30 dias e recorrer ao CETRAN ou ao CONTRANDIFE (arts. 12 e 15).', mudanca: 'Passa a pagar valor de referência nacional, com reajuste anual previsto em lei.' }
+];
+
+const faqs = [
+  {
+    q: 'A demanda por avaliação psicológica no trânsito é recorrente ou de fluxo único?',
+    a: 'As duas coisas, em proporções muito diferentes. Pelo artigo 147, parágrafo 3º, do Código de Trânsito Brasileiro, o condutor sem atividade remunerada ao veículo passa pela avaliação psicológica apenas no exame da primeira habilitação. A recorrência existe para quem exerce atividade remunerada. Nas categorias tipicamente ligadas a carga e passageiros (C, D, E, AC, AD e AE) havia 11.796.256 condutores habilitados em julho de 2026, ou 13,2% da base nacional (Senatran, Registro Nacional de Condutores Habilitados, 2026). A categoria da carteira não equivale à anotação de atividade remunerada, então esse recorte é piso de referência, e não a contagem de condutores sujeitos à avaliação periódica.'
+  },
+  {
+    q: 'O preço público federal vale desde já?',
+    a: 'A regra está em vigor e a operação depende de regulamentação. O parágrafo 7º do artigo 148 do CTB, incluído pela Lei nº 15.428, de 5 de junho de 2026, submete os valores dos exames a preço público fixado pelo órgão máximo executivo de trânsito da União, conforme regulamentação do CONTRAN, com atualização anual pelo IPCA. O artigo 22 da Resolução CONTRAN nº 927/2022, que atribuía a fixação aos Estados, permanece no texto da resolução até que essa regulamentação seja editada.'
+  },
+  {
+    q: 'Quantos psicólogos peritos examinadores atuam no Brasil?',
+    a: 'O número não está publicado em base aberta, embora a obrigação de reuni-lo exista desde 2022. A Resolução CONTRAN nº 927/2022, artigo 19, parágrafo 4º, determina que os órgãos executivos de trânsito dos Estados e do Distrito Federal remetam anualmente à Senatran a relação dos profissionais credenciados com os respectivos certificados, e o artigo 24 obriga o envio da estatística anual de exames. A consolidação nacional dessas duas séries não está disponível para consulta pública.'
+  },
+  {
+    q: 'Vale escolher formação em psicologia do trânsito agora?',
+    a: 'A decisão depende de tolerar um mercado com preço dado e oferta filtrada por titulação. A entrada exige Título de Especialista em Psicologia do Trânsito reconhecido pelo CFP e curso de pós-graduação reconhecido pelo Ministério da Educação (Resolução CONTRAN nº 927/2022, artigo 19, inciso III e parágrafo 3º), e nenhum curso substitui o processo de credenciamento junto ao órgão de trânsito. Quem busca essa base encontra no IPOG pós-graduação em Psicologia em formato Ao Vivo síncrono com corpo docente nominal; confira a grade vigente e o reconhecimento do curso antes de decidir.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Psicologia do trânsito em 2026: mercado, regulação e o que a Lei 15.428 redistribui',
+  description: 'Leitura de mercado da psicologia do trânsito: estrutura da demanda no RENACH, atores da cadeia, linha do tempo da regra de 1997 a 2026 e o efeito do preço público federal sobre quem escolhe formação.',
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  inLanguage: 'pt-BR',
+  datePublished: '2026-08-27',
+  dateModified: '2026-08-27',
+  about: 'Psicologia do trânsito, perícia psicológica, regulação do CONTRAN, mercado de avaliação de condutores'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Temas', item: SITE.url + '/temas/' },
+    { '@type': 'ListItem', position: 3, name: 'Psicologia do trânsito: mercado e regulação em 2026', item: SITE.url + '/temas/psicologia-do-transito-mercado-e-regulacao-2026/' }
+  ]
+};
+---
+
+<Base
+  title="Psicologia do trânsito em 2026: mercado, regulação e o que a Lei 15.428 redistribui"
+  description="Estrutura da demanda por avaliação psicológica de condutores no RENACH, atores da cadeia, linha do tempo da regra de 1997 a 2026 e o efeito do preço público federal sobre quem escolhe formação na área.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Temas', href: '/temas' },
+        { label: 'Psicologia do trânsito: mercado e regulação' }
+      ]} />
+      <span class="section-eyebrow mt-3">Tema · Regulação e mercado · CONTRAN · CFP · 2026</span>
+      <h1 class="section-h text-3xl sm:text-4xl">Psicologia do trânsito em 2026: o que a mudança regulatória redistribui</h1>
+      <p class="mt-3 text-ink-700 text-lg max-w-3xl">Em junho de 2026 o preço da avaliação psicológica de condutores deixou de ser assunto de 27 jurisdições estaduais. Quem escolhe formação na área agora decide sobre um mercado com outro desenho.</p>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">A Lei nº 15.428, de 5 de junho de 2026, alterou o artigo 148 do Código de Trânsito Brasileiro em dois pontos que reorganizam o mercado de psicologia do trânsito: a autorização do perito examinador passa a ser referida ao órgão máximo executivo de trânsito da União e o valor do exame vira preço público nacional corrigido anualmente pelo IPCA. Do lado da demanda, o Registro Nacional de Condutores Habilitados registrava 89.438.546 condutores em julho de 2026, dos quais 13,2% estão em categorias tipicamente ligadas a carga e passageiros, o único segmento com avaliação psicológica recorrente.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A tese: um mercado de fluxo único que passou a ter preço de tabela nacional</h2>
+        <p>A psicologia do trânsito é descrita, no debate público, como um exame que acompanha a renovação da carteira. O artigo 147, parágrafo 3º, do Código de Trânsito Brasileiro diz o contrário: para quem não exerce atividade remunerada ao veículo, a avaliação psicológica entra apenas no exame da primeira habilitação. As três faixas de periodicidade que a Lei nº 14.071/2020 fixou, 10 anos abaixo dos 50, 5 anos entre 50 e 70 e 3 anos a partir dos 70, valem para o exame de aptidão física e mental. A avaliação psicológica do condutor comum é evento único na vida.</p>
+        <p>Isso define a estrutura da demanda. O Registro Nacional de Condutores Habilitados contabilizava 89.438.546 condutores habilitados em julho de 2026 (Senatran, 2026). A parcela com recorrência normativa está nas categorias voltadas a carga e passageiros, 11.796.256 condutores, ou 13,2% da base. O restante da carteira nacional já cumpriu a exigência e só volta à clínica se passar a exercer atividade remunerada. O fluxo que sustenta a atividade é, portanto, o de novos habilitados somado ao segmento profissional, e não o estoque de 89 milhões.</p>
+        <p>Sobre essa estrutura, a Lei nº 15.428/2026 mexeu na única variável que a clínica ainda controlava localmente. O artigo 22 da Resolução CONTRAN nº 927/2022 mandava os órgãos executivos de trânsito dos Estados e do Distrito Federal fixarem os honorários, tendo como referência a Tabela Referencial de Honorários da Federação Nacional de Psicólogos e do Conselho Federal de Psicologia. O parágrafo 7º do artigo 148 do CTB substitui esse arranjo por preço público fixado pelo ente federal, com reajuste anual pelo IPCA. O poder de precificar sai de 27 órgãos estaduais e de uma referência produzida pela categoria profissional, e vai para um único órgão, com índice de correção escrito em lei.</p>
+        <p>Quem escolhe formação agora está decidindo sobre um mercado com barreira de entrada normativa alta, preço dado e volume limitado por norma. A barreira vem do artigo 19 da Resolução CONTRAN nº 927/2022: título de especialista reconhecido pelo CFP, curso de pós-graduação reconhecido pelo MEC e credenciamento da entidade renovado a cada ano. O limite de volume vem do artigo 20, que manda respeitar o teto diário de perícias definido pelo CFP, e do artigo 17, inciso III, que fixa metragem mínima de sala por candidato avaliado. Esse conjunto explica por que a diferenciação possível na área é técnica, e passa por qualidade de perícia defensável.</p>
+      </div>
+
+      <figure class="not-prose">
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-white p-4">
+          <svg
+            role="img"
+            aria-labelledby="transito-mercado-titulo transito-mercado-desc"
+            viewBox="0 0 700 660"
+            class="min-w-[680px] w-full h-auto">
+            <title id="transito-mercado-titulo">Linha do tempo da regra da avaliação psicológica de trânsito, de 1997 a 2026</title>
+            <desc id="transito-mercado-desc">Oito marcos normativos em ordem cronológica. Cada marco traz o ano, a norma e o efeito sobre a exigência ou sobre o preço do exame, do Código de Trânsito Brasileiro de 1997 até a Lei número 15.428, de 2026, que transformou o valor em preço público federal indexado ao IPCA.</desc>
+            <line x1="96" y1="42" x2="96" y2="620" stroke="currentColor" stroke-width="3" class="text-ink-500" />
+            {linhaDoTempo.map((m, i) => (
+              <g transform={`translate(0 ${52 + i * 74})`}>
+                <text x="76" y="6" text-anchor="end" font-size="19" font-weight="700" fill="currentColor" class="text-brand-700">{m.ano}</text>
+                <circle cx="96" cy="0" r="8" fill="currentColor" class="text-brand-700" />
+                <text x="122" y="0" font-size="16" font-weight="600" fill="currentColor" class="text-ink-900">{m.norma}</text>
+                <text x="122" y="24" font-size="15" fill="currentColor" class="text-ink-700">{m.efeito}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
+        <figcaption class="mt-3 text-sm text-ink-700">Dois marcos mudam quem paga e quanto: 2022 fixa o preço no âmbito estadual com referência da própria categoria profissional, e 2026 o transfere para preço público federal indexado. Os demais mexem em quem pode examinar e em quem precisa ser examinado.</figcaption>
+      </figure>
+
+      <div>
+        <h2 class="section-h text-2xl">Onde está a demanda recorrente</h2>
+        <p class="text-ink-700 mt-2">Distribuição de condutores habilitados por categoria em julho de 2026 (Senatran, Registro Nacional de Condutores Habilitados). Categorias de ciclomotor, com 3.648 condutores no total, ficam fora da tabela por ordem de grandeza.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Categoria</th>
+                <th class="text-left px-4 py-3">Condutores</th>
+                <th class="text-left px-4 py-3">Regime de avaliação psicológica</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {categorias.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{c.grupo}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.total}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.regime}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-ink-700 mt-3 text-sm">A categoria da carteira indica perfil de uso, e não a anotação de atividade remunerada prevista no artigo 147, parágrafo 5º, do CTB. Um condutor categoria B com essa anotação também é submetido à avaliação periódica, o que faz do recorte por categoria um piso de referência.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Quem são os atores e o que cada um perde ou ganha</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Ator</th>
+                <th class="text-left px-4 py-3">Poder que a norma lhe dá</th>
+                <th class="text-left px-4 py-3">O que muda em 2026</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {atores.map(a => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{a.ator}</td>
+                  <td class="px-4 py-3 text-ink-700">{a.poder}</td>
+                  <td class="px-4 py-3 text-ink-700">{a.mudanca}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O gargalo técnico da área está no instrumento, não no protocolo</h2>
+        <p>A Resolução CFP nº 1/2019 fixa oito construtos obrigatórios e, no artigo 2º, parágrafo 4º, devolve ao psicólogo a escolha dos testes, com a condição de parecer favorável no Satepsi, regulamentado pela Resolução CFP nº 31/2022. O sistema classificava 176 instrumentos como favoráveis em agosto de 2026 (Conselho Federal de Psicologia, 2026), organizados por 14 filtros de construto psicológico. Nenhum desses filtros é um contexto de aplicação, e trânsito não aparece entre eles.</p>
+        <p>A consequência é uma padronização de conteúdo sem padronização de ferramenta. Dois candidatos avaliados em cidades diferentes podem ser medidos por baterias inteiramente distintas, ambas em conformidade com a norma. Para o mercado, isso significa que a comparação entre clínicas se dá por construto coberto, normatização e justificativa técnica de escolha, e não por nome de bateria. Para quem estuda, significa que a competência decisiva é ler propriedade psicométrica de instrumento, e não decorar um protocolo fixo.</p>
+        <p>O pano de fundo do campo continua se movendo na direção contrária ao ganho de segurança. Ao publicar a base consolidada do Sistema de Informações de Mortalidade do DATASUS referente a 2023, compilada por Jorge Tiago Bastos, do Departamento de Transportes da Universidade Federal do Paraná, o Observatório Nacional de Segurança Viária registrou tendência de crescimento do número de vítimas fatais desde 2020, com aumento entre ocupantes de motocicletas e ciclistas em relação a 2022 (Observatório Nacional de Segurança Viária, 2025). A avaliação psicológica pericial alcança o candidato que entra na fila da habilitação, e é sobre esse recorte que a sua eficácia pode ser discutida.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O que isso muda na escolha da formação</h2>
+        <ol class="mt-4 space-y-3 list-decimal pl-5 text-ink-700">
+          <li><strong>Confirme o reconhecimento antes da matrícula.</strong> A Resolução CONTRAN nº 927/2022, artigo 19, parágrafo 3º, exige curso de pós-graduação reconhecido pelo Ministério da Educação. Curso livre e treinamento de fornecedor de teste não atendem ao requisito.</li>
+          <li><strong>Separe conclusão de curso e título de especialista.</strong> O título é conferido pelo conselho profissional, conforme o artigo 147 do CTB e o artigo 19, inciso III, da resolução. São dois atos distintos e o credenciamento depende do segundo.</li>
+          <li><strong>Projete receita por volume, e volume por norma.</strong> O teto diário de perícias do artigo 20 e a metragem mínima de sala do artigo 17, inciso III, definem a capacidade instalada antes de qualquer plano comercial.</li>
+          <li><strong>Trate o preço como parâmetro, não como estratégia.</strong> Com o parágrafo 7º do artigo 148 do CTB, o valor do exame passa a ser preço público federal reajustado pelo IPCA.</li>
+          <li><strong>Escolha formação que ensine a defender a escolha do instrumento.</strong> A conformidade se prova por cobertura de construto e justificativa psicométrica, e é aí que a formação técnica se paga.</li>
+        </ol>
+        <p class="text-ink-700 mt-4">Para quem vai construir essa base, o IPOG mantém pós-graduação em Psicologia em formato Ao Vivo síncrono com corpo docente nominal. Confira a grade vigente, a modalidade e o reconhecimento do curso junto ao MEC antes de decidir.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Continuar por aqui</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/avaliacao-psicologica-transito-contran-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Perito examinador de trânsito em nove passos</a></li>
+          <li><a href="/faq/avaliacao-psicologica-transito-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Avaliação psicológica de trânsito em 14 perguntas</a></li>
+          <li><a href="/areas/psicologia-transito-trafego" class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia de Trânsito e Tráfego</a></li>
+          <li><a href="/regulacao" class="text-brand-700 hover:text-brand-800 font-medium">Regulação · Panorama das normas que alcançam o psicólogo</a></li>
+          <li><a href="/tipos-de-pos-graduacao" class="text-brand-700 hover:text-brand-800 font-medium">Tipos de pós-graduação e o que cada um habilita</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A regulação de 2026 tirou o preço da mesa e deixou a técnica.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">O mercado de avaliação psicológica de condutores tem barreira de entrada normativa desde 12 de abril de 2024, volume limitado pelo teto diário de perícias e, desde 5 de junho de 2026, valor definido como preço público federal indexado ao IPCA. A demanda recorrente está concentrada no segmento profissional, 13,2% da base de condutores habilitados. O que resta como diferencial é a qualidade da perícia e a defesa técnica da bateria escolhida, e é isso que a formação precisa entregar. O IPOG mantém pós-graduação em Psicologia em formato Ao Vivo síncrono com corpo docente nominal.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho de formação</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">Formato Ao Vivo síncrono e corpo docente nominal. Para grade, modalidade e turma vigentes, consulte o portal oficial e confirme o reconhecimento do curso junto ao MEC.</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/tipos-de-pos-graduacao" class="btn btn-ghost mt-2 w-full">Tipos de pós-graduação</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas conectadas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaTransito.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaTransito.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+          <li><a href={`/areas/${areaForense.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaForense.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15428.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei nº 15.428, de 5 de junho de 2026</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/l9503compilado.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CTB, texto compilado</a></li>
+          <li><a href="https://www.gov.br/transportes/pt-br/assuntos/transito/conteudo-contran/resolucoes/Resolucao9272022.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Resolução CONTRAN nº 927/2022</a></li>
+          <li><a href="https://www.gov.br/transportes/pt-br/assuntos/transito/conteudo-Senatran/estatisticas-quantidade-de-habilitados-denatran" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Senatran, condutores habilitados</a></li>
+          <li><a href="https://www.onsv.org.br/estudos/dados" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Observatório Nacional de Segurança Viária</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">No portal</p>
+        <ul class="space-y-1">
+          <li><a href="/comparativos/laudo-psicologico-vs-laudo-medico" class="mega-link"><strong class="text-ink-900 text-sm">Laudo psicológico e laudo médico</strong></a></li>
+          <li><a href="/faq/avaliacao-psicologica-laudos-faq" class="mega-link"><strong class="text-ink-900 text-sm">FAQ de avaliação psicológica e documentos</strong></a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

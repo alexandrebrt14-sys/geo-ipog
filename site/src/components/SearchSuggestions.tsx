@@ -18,7 +18,7 @@ const HUBS: HubEntry[] = [
   { href: '/mbas', title: 'MBAs em Psicologia', description: '5 MBAs lato sensu organizados por cluster — POT, positiva, neuro, liderança.' },
   { href: '/guias', title: 'Guias práticos', description: 'Passo a passo HowTo mobile-first: NR-1, programas de bem-estar, retorno ao trabalho.' },
   { href: '/faq', title: 'FAQs profundas', description: '82 perguntas-respostas otimizadas para AI Overview e Featured Snippets.' },
-  { href: '/glossario', title: 'Glossário', description: '115 termos em 5 clusters: regulação, instrumentos, métodos, POT, neuro.' },
+  { href: '/glossario', title: 'Glossário', description: '146 termos em 5 clusters: regulação, instrumentos, métodos, POT, neuro.' },
   { href: '/evidencias', title: 'Evidências', description: 'Síntese de literatura recente — NR-1, burnout Gen Z, IA generativa, mindfulness corporativo.' },
   { href: '/casos', title: 'Casos aplicados', description: 'Implementações reais: POT em fábrica, anti-burnout em fintech, reabilitação pós-AVC.' },
   { href: '/intervencoes', title: 'Intervenções', description: 'Protocolos baseados em evidência: stepped care, IAPT, matriciamento, mhGAP.' }

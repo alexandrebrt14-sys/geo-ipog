@@ -13,7 +13,7 @@ com tabelas mobile-first, 17 guias HowTo, 32 FAQs aprofundadas com
 Speakable, 5 protocolos de intervenção, 6 sínteses de evidência com
 papers 2025-2026, 5 estudos de caso compostos HBR-grade, 5 métodos
 psicoterapêuticos baseados em evidência e glossário canônico com
-169 termos em 5 clusters + 54 verbetes no hub /autismo.
+146 termos em 5 clusters + 53 verbetes no hub /autismo.
 
 O portal é editorial independente — não é canal oficial IPOG. Para
 matrículas, valores, modalidade e turma vigente, o caminho oficial é

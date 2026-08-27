@@ -28,6 +28,13 @@ interface Props {
    * `#webpage` usado por algumas páginas) e inclui speakable para GEO/voz.
    */
   emitWebPage?: boolean;
+  /**
+   * Onda 1 SEO/GEO (27/08/2026): datas Open Graph de artigo. Só são emitidas
+   * quando pageType === 'article' E a página passa o valor (ISO 8601). Nunca
+   * inventadas: sem prop, sem meta.
+   */
+  datePublished?: string;
+  dateModified?: string;
 }
 
 const {
@@ -40,7 +47,9 @@ const {
   bodyClass = '',
   searchPrefill = '',
   noindex = false,
-  emitWebPage = false
+  emitWebPage = false,
+  datePublished,
+  dateModified
 } = Astro.props;
 
 // E-E-A-T: rotas do hub /autismo/* têm Larissa Caramaschi como autora canônica.
@@ -138,6 +147,7 @@ if (emitWebPage) {
   <meta name="author" content="Alexandre Caramaschi — Brasil GEO" />
   <link rel="canonical" href={canonical} />
   <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+  <link rel="alternate" type="application/rss+xml" title="Feed RSS · posgraduacaopsicologia.com" href="/feed.xml" />
   <meta name="robots" content={noindex ? 'noindex,follow' : 'index,follow,max-image-preview:large'} />
 
   <meta property="og:type" content={pageType} />
@@ -146,6 +156,8 @@ if (emitWebPage) {
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
+  {pageType === 'article' && datePublished && <meta property="article:published_time" content={datePublished} />}
+  {pageType === 'article' && dateModified && <meta property="article:modified_time" content={dateModified} />}
   <meta property="og:image" content={ogImage} />
   <meta property="og:image:secure_url" content={ogImage} />
   <meta property="og:image:type" content="image/jpeg" />

@@ -112,7 +112,7 @@ const ENTRIES: Array<Omit<FeedItem, 'pubDate'> & { source: string; fallbackDate:
     fallbackDate: '2026-05-19'
   },
   {
-    title: 'Glossário do hub Autismo · 54 verbetes em 6 clusters',
+    title: 'Glossário do hub Autismo · 53 verbetes em 6 clusters',
     link: `${SITE}/autismo/glossario/`,
     description: 'Vocabulário canônico de autismo nível 1 em adultos: identity-first language, masking, monotropia, função executiva, inércia autística, ADOS-2 módulo 4 e mais.',
     category: 'Autismo · Glossário',
@@ -308,7 +308,7 @@ const ENTRIES: Array<Omit<FeedItem, 'pubDate'> & { source: string; fallbackDate:
   {
     title: 'Glossário canônico · 5 clusters + hub Autismo',
     link: `${SITE}/glossario/`,
-    description: 'Índice canônico de 169 verbetes em 5 clusters principais (conceitos POT, neuro, instrumentos, métodos, regulação) mais 54 verbetes do hub Autismo.',
+    description: 'Índice canônico de 146 verbetes em 5 clusters principais (conceitos POT, neuro, instrumentos, métodos, regulação) mais 53 verbetes do hub Autismo.',
     category: 'Glossário · Índice',
     creator: 'Alexandre Caramaschi',
     source: 'src/pages/glossario.astro',

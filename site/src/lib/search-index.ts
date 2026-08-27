@@ -363,7 +363,7 @@ export function buildIndex(): SearchDoc[] {
     { title: 'Todos os MBAs e especializações', href: '/mbas', subtitle: 'Hub · 5 MBAs', kw: 'mbas pos graduacao especializacao lato sensu', weight: 1.6, kind: 'MBA' },
     { title: 'Guias práticos passo a passo', href: '/guias', subtitle: 'Hub · 6 guias HowTo', kw: 'guias playbooks passo a passo howto', weight: 1.3, kind: 'Guia' },
     { title: 'Perguntas frequentes (FAQ)', href: '/faq', subtitle: 'Hub · 82 perguntas', kw: 'faq perguntas frequentes duvidas', weight: 1.2, kind: 'FAQ' },
-    { title: 'Glossário · 115 termos', href: '/glossario', subtitle: 'Hub · 5 clusters', kw: 'glossario termos definicoes vocabulario', weight: 1.0, kind: 'Glossário' },
+    { title: 'Glossário · 146 termos', href: '/glossario', subtitle: 'Hub · 5 clusters', kw: 'glossario termos definicoes vocabulario', weight: 1.0, kind: 'Glossário' },
     { title: 'Evidências e revisões', href: '/evidencias', subtitle: 'Hub · 6 dossiês', kw: 'evidencia revisao paper estudo meta-analise', weight: 1.2, kind: 'Evidência' },
     { title: 'Casos práticos', href: '/casos', subtitle: 'Hub · 5 casos', kw: 'casos aplicacao real exemplo pratico', weight: 1.1, kind: 'Caso' },
     { title: 'Intervenções e modelos de cuidado', href: '/intervencoes', subtitle: 'Hub · 5 protocolos', kw: 'intervencoes modelos cuidado clinico protocolos', weight: 1.1, kind: 'Intervenção' },

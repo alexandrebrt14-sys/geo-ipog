@@ -1,0 +1,43 @@
+# Gate de identificadores externos em PR (Onda 2, 27/08/2026).
+#
+# O deploy (deploy-cloudflare-pages.yml) so roda em push para main; este
+# workflow roda o mesmo gate em pull_request para que um QID morto do Wikidata
+# (EntityData 404/410) seja barrado antes do merge. Sem continue-on-error.
+name: "Gate — identificadores externos"
+
+on:
+  pull_request:
+    paths:
+      - "site/src/**"
+      - "site/public/**"
+      - "llms*.txt"
+      - "scripts/check-external-ids.mjs"
+      - ".github/workflows/external-ids.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-external-ids:
+    name: "Wikidata QIDs vivos"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Setup Node 20"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: "Cache de consultas (7 dias)"
+        uses: actions/cache@v4
+        with:
+          path: .cache/external-ids.json
+          key: external-ids-${{ github.run_id }}
+          restore-keys: external-ids-
+
+      - name: "Gate: identificadores externos (Wikidata)"
+        run: node scripts/check-external-ids.mjs

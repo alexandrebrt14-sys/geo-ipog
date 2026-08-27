@@ -161,6 +161,12 @@ const sections = [
   { id: 'recursos', prefix: 'recursos/', file: 'sitemap-recursos.xml' }
 ];
 
+// Onda 1 SEO/GEO (27/08/2026): tudo que nao casa com nenhum prefixo acima (home,
+// paginas de raiz como /sobre/, /regulacao/, /roadmap/ e o grupo
+// pos-graduacao-psicologia/) vai para sitemap-institucional.xml, de modo que a
+// soma dos shards seja exatamente igual ao sitemap.xml.
+const INSTITUCIONAL_FILE = 'sitemap-institucional.xml';
+
 // Main sitemap = todas as URLs.
 fs.writeFileSync(path.join(distDir, 'sitemap.xml'), buildUrlset(out), 'utf-8');
 
@@ -178,11 +184,44 @@ for (const sec of sections) {
   subSitemapsWritten.push({ file: sec.file, count: urls.length, lastmod: subLastmod });
 }
 
+// Shard institucional: URLs que nao entraram em nenhuma secao.
+{
+  const covered = new Set();
+  for (const sec of sections) for (const u of out) if (u.route.startsWith(sec.prefix)) covered.add(u.loc);
+  const rest = out.filter(u => !covered.has(u.loc));
+  if (rest.length > 0) {
+    fs.writeFileSync(path.join(distDir, INSTITUCIONAL_FILE), buildUrlset(rest), 'utf-8');
+    subSitemapsWritten.push({ file: INSTITUCIONAL_FILE, count: rest.length, lastmod: rest.map(u => u.lastmod).sort().pop() || today });
+  }
+  const shardTotal = subSitemapsWritten.reduce((n, s) => n + s.count, 0);
+  if (shardTotal !== out.length) {
+    throw new Error(`[gen-sitemap] soma dos shards (${shardTotal}) difere do sitemap.xml (${out.length})`);
+  }
+}
+
+// sitemap_agentic_discovery.xml (public/, estatico): recursos para agentes
+// (agents.md, llms.txt, mcp.json...). Entra no indice com lastmod = data do
+// ultimo commit do arquivo; fora do sitemap.xml porque nao sao paginas HTML.
+const agenticFile = 'sitemap_agentic_discovery.xml';
+const agenticSrc = path.resolve('public', agenticFile);
+let agenticEntry = null;
+if (fs.existsSync(agenticSrc)) {
+  let lastmod = null;
+  try {
+    lastmod = execFileSync('git', ['log', '-1', '--format=%cI', '--', agenticSrc], {
+      cwd: path.resolve('.'), stdio: ['ignore', 'pipe', 'ignore'], encoding: 'utf-8'
+    }).trim().slice(0, 10) || null;
+  } catch { /* sem git */ }
+  if (!lastmod) lastmod = fs.statSync(agenticSrc).mtime.toISOString().slice(0, 10);
+  agenticEntry = { loc: `${SITE}/${agenticFile}`, lastmod };
+}
+
 // sitemap-index.xml aponta para o principal + todos os sub-sitemaps.
 // lastmod do indice = maior lastmod entre todos os sitemaps.
 const allMaps = [
   { loc: `${SITE}/sitemap.xml`, lastmod: out.map(u => u.lastmod).sort().pop() || today },
   ...subSitemapsWritten.map(s => ({ loc: `${SITE}/${s.file}`, lastmod: s.lastmod })),
+  ...(agenticEntry ? [agenticEntry] : []),
 ];
 
 const indexXml = `<?xml version="1.0" encoding="UTF-8"?>

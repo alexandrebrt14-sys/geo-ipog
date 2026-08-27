@@ -88,7 +88,7 @@ export const brasilGeoOrganization = {
     'Entity SEO',
     'AI marketing measurement'
   ],
-  publishingPrinciples: 'https://brasilgeo.ai/principios-editoriais',
+  publishingPrinciples: 'https://posgraduacaopsicologia.com/principios-editoriais/',
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'editorial',

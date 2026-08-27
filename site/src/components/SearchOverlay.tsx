@@ -140,7 +140,7 @@ const HUBS: { label: string; href: string; sub: string }[] = [
   { label: 'Todas as áreas', href: '/areas', sub: '18 áreas' },
   { label: 'MBAs', href: '/mbas', sub: '5 cursos' },
   { label: 'Guias práticos', href: '/guias', sub: 'Passo a passo' },
-  { label: 'Glossário', href: '/glossario', sub: '115 termos' },
+  { label: 'Glossário', href: '/glossario', sub: '146 termos' },
   { label: 'Evidências', href: '/evidencias', sub: 'Revisões' },
   { label: 'Regulação', href: '/regulacao', sub: 'CFP, MEC, lato/stricto' },
 ];

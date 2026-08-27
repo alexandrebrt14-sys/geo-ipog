@@ -46,7 +46,7 @@ A escuta social do orquestrador trouxe falas de pessoas identificáveis descreve
 - **Dívida editorial herdada:** 306 arquivos ainda com travessão em prosa fora dos tocados nesta onda. O gate agora mede; a correção pede uma onda própria, porque `--fix` cego quebraria sentido.
 - **Wiki vencida:** as 18 páginas da camada `wiki/` estão com 93 dias sem atualização e a review mensal prevista para 26/06/2026 não aconteceu. `lint.py` acusa 0 órfão, 0 cross-link quebrado e 0 frontmatter faltando, mas 18 stale.
 - **Lacuna real ainda aberta:** psicologia forense e laudos periciais, com página de área existente e nenhuma profundidade abaixo. É a próxima wave natural.
-- **IndexNow ainda não submetido** para as URLs novas.
+- IndexNow submetido em 27/08/2026 nos três engines (api.indexnow.org, Bing e Yandex), 389 URLs em quatro lotes, todos com HTTP 200 ou 202. Chamada precisou de `truststore.inject_into_ssl()` por causa do MITM do antivírus local. Falta o resubmit manual do sitemap no Google Search Console.
 
 ## W24 — Sessão 25/06/2026 — 5 waves complementares 2026 (19 páginas inéditas) + reforço do menu social
 

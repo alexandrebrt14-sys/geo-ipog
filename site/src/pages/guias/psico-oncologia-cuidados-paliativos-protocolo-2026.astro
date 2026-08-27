@@ -1,0 +1,340 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaHosp = AREAS.find(a => a.id === 'psicologia-hospitalar')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+
+const passos = [
+  { n: 1, titulo: 'Mapear a retaguarda antes de aceitar o programa de rastreio', aplicacao: 'A primeira pergunta ao entrar no serviço é quantos atendimentos por semana a equipe consegue absorver quando o rastreio positiva. Feldstain, Tomei, Bélanger e Lebel (Current Oncology, 2014) sustentam, em análise metodológica, que falta evidência de que programas de rastreio de distress melhorem desfechos de pacientes em comparação com o cuidado de rotina, e apontam lacunas de validação nos próprios instrumentos usados em programas nacionais. Antes de desenhar a triagem, escreva com a chefia a capacidade instalada: número de vagas psicológicas por semana, tempo máximo entre sinalização e primeiro contato, e quem assume o caso quando a agenda fecha.', armadilha: 'Implantar o termômetro de distress em toda a fila ambulatorial com um psicólogo de 20 horas semanais. O programa passa a medir sofrimento que ninguém tem agenda para acolher.' },
+  { n: 2, titulo: 'Reconstruir o caminho pelo qual o encaminhamento chega', aplicacao: 'Em serviço de oncologia o pedido raramente vem do paciente. Vem da enfermagem que percebeu choro na quimioterapia, do médico que sentiu a consulta travar, da assistente social que ouviu o problema em casa. Cada porta traz uma pergunta clínica diferente, e a Nota Orientativa CRP06 nº 6/2025 posiciona a psicologia em todos os níveis de atenção à saúde, incluindo ambulatório especializado, unidade hospitalar, atendimento domiciliar e equipes de apoio matricial. Documente o motivo real do encaminhamento em uma frase escrita por quem encaminhou, com data e desfecho esperado.', armadilha: 'Aceitar o encaminhamento com a etiqueta de paciente ansioso. A etiqueta esconde a pergunta da equipe, e a devolutiva volta genérica para quem pediu ajuda.' },
+  { n: 3, titulo: 'Rastrear distress lendo a acurácia real do instrumento', aplicacao: 'O Distress Thermometer da NCCN é uma escala de 0 a 10 com ponto de corte usual em 4. A meta-análise de Ma e colaboradores (Supportive Care in Cancer, 2014), com 42 estudos e 14.808 pacientes, encontrou nesse corte sensibilidade agrupada de 0,81 (IC 95% 0,79 a 0,82), especificidade de 0,72 (IC 95% 0,71 a 0,72) e AUC de 0,83. Especificidade de 0,72 significa cerca de 28 sinalizações positivas a cada 100 pessoas sem o quadro. O resumo crítico do DARE registra que a ausência de padrão de referência consistente entre os estudos sugere acurácia possivelmente superestimada. Trate a pontuação como abertura de conversa, com a entrevista clínica decidindo o encaminhamento.', armadilha: 'Confundir as duas prevalências do campo. Mehnert e colaboradores (2014) encontraram 31,8% de qualquer transtorno mental em quatro semanas por entrevista diagnóstica padronizada, enquanto o distress elevado rastreado por escala chega a 52% em amostra representativa das principais entidades tumorais (LUPE, Frontiers in Psychology, 2023). Trocar um número pelo outro infla o pedido de recurso e derruba a credibilidade do serviço.' },
+  { n: 4, titulo: 'Avaliar o que o paciente quer saber e quem ele quer que decida', aplicacao: 'Antes de qualquer conversa sobre prognóstico, apure duas coisas separadas: o quanto de informação essa pessoa deseja receber agora e quem ela quer na sala quando a informação chegar. A Nota CRP06 nº 6/2025 fixa entre as atribuições da psicologia favorecer a compreensão sobre diagnóstico, prognóstico e projeto terapêutico com letramento em saúde adaptado às necessidades desenvolvimentais, cognitivas e socioemocionais, além de sustentar a autonomia com participação ativa nas decisões de cuidado. A Resolução CIT nº 41, de 31 de outubro de 2018, já inscrevia o respeito à autodeterminação e à diretiva antecipada de vontade entre os princípios do cuidado paliativo no SUS.', armadilha: 'Supor que quem cala quer saber tudo, ou que quem pergunta muito aguenta tudo. O desejo de informação varia ao longo do tratamento e precisa ser reperguntado a cada virada clínica.' },
+  { n: 5, titulo: 'Sustentar a comunicação de más notícias dentro da equipe', aplicacao: 'A notícia é dada por quem detém a informação clínica, em geral o médico assistente. O trabalho psicológico acontece nos três tempos ao redor: preparar a sala e o paciente antes, observar durante o que foi de fato ouvido, e retomar depois o que ficou fragmentado. A Nota CRP06 nº 6/2025 lista apoiar a comunicação, especialmente diante de notícias difíceis, entre as atribuições da psicologia em cuidados paliativos. Combine com a equipe um sinal explícito de convocação, porque a presença improvisada na porta do consultório costuma chegar tarde.', armadilha: 'Assumir a notícia no lugar do médico para poupar a equipe. O paciente perde a referência clínica da informação e o psicólogo perde a posição de quem recolhe o impacto depois.' },
+  { n: 6, titulo: 'Trabalhar com a família e com o cuidador principal', aplicacao: 'A Portaria GM/MS nº 3.681/2024 define cuidados paliativos abrangendo as dimensões física, psicoemocional, espiritual e social, e a Resolução CIT nº 41/2018 inclui o apoio à família, inclusive no luto, entre os princípios norteadores. Na prática, isso vira três tarefas: identificar quem é o cuidador principal e o custo que ele já está pagando, nomear os desacordos familiares sobre o plano antes que virem crise de leito, e redistribuir tarefas de cuidado para que a rede pare de girar em torno de uma pessoa só. A Nota CRP06 nº 6/2025 acrescenta identificar fatores de risco na história de vida que aumentem a vulnerabilidade.', armadilha: 'Atender a família apenas quando o conflito estoura na enfermaria. Nesse ponto a conversa já é arbitragem entre posições fixadas, com pouca margem clínica.' },
+  { n: 7, titulo: 'Manejar sofrimento existencial e desmoralização com expectativa calibrada', aplicacao: 'As três psicoterapias mais citadas no campo têm resultado modesto e bem documentado. O ensaio randomizado do CALM (Rodin et al., Journal of Clinical Oncology, 2018), com 305 pacientes com câncer avançado, achou d de Cohen de 0,23 em três meses (p igual a 0,04) e de 0,29 em seis meses (p igual a 0,02), faixa de efeito pequeno, com efeito adicional em preparação para o fim da vida aos seis meses. Ofereça a intervenção pelo que ela entrega. Quando aparecer o desejo de antecipar a morte, o manejo é clínico e imediato: acolher a fala sem interrogatório, revisar com a equipe dor e sintomas mal controlados, checar rede de suporte e registrar o combinado de seguimento. O CVV atende pelo telefone 188, 24 horas por dia, e o serviço precisa ter a via de urgência psiquiátrica escrita e conhecida por toda a equipe.', armadilha: 'Apresentar protocolo de sentido como promessa de alívio do sofrimento. Chochinov e colaboradores (Lancet Oncology, 2011) concluíram que a capacidade da Dignity Therapy de mitigar sofrimento explícito, como depressão e desejo de morte, ainda não estava comprovada no ensaio randomizado multicêntrico.' },
+  { n: 8, titulo: 'Conduzir luto antecipatório e o cuidado depois da morte', aplicacao: 'O luto começa antes do óbito, quando a família reconhece a perda de funções, de papéis e de projeto de vida. A Nota CRP06 nº 6/2025 inclui expressamente oferecer assistência no processo de luto e nos cuidados pós-morte aos familiares entre as atribuições da psicologia em cuidados paliativos. Operacionalize com três marcos: uma conversa de preparação com o cuidador quando a equipe muda o objetivo do plano, presença combinada nas horas seguintes ao óbito, e um contato de seguimento em janela definida, com critério escrito para identificar quem precisa de acompanhamento formal.', armadilha: 'Encerrar o caso no óbito porque o prontuário fechou. Sem contato de seguimento, o serviço nunca identifica a família que ficou com luto prolongado e sem porta de entrada.' },
+  { n: 9, titulo: 'Cuidar da equipe que fica', aplicacao: 'A Nota CRP06 nº 6/2025 fixa entre as atribuições fortalecer relações multi, inter e transdisciplinares e sustentar os vínculos entre paciente, familiares e equipe. Na rotina, isso pede espaço regular de discussão de caso com hora marcada, separado da passagem de plantão, e uma regra clara de que o psicólogo da equipe não é o terapeuta dos colegas. A mesma nota registra, citando o Atlas dos Cuidados Paliativos do Brasil (ANCP, 2023), que mais de 90% das instituições realizam atividades formativas próprias, sinal de que a formação de base não entrega o profissional pronto para esse contexto.', armadilha: 'Aceitar a função de amortecedor emocional informal da enfermaria. O papel consome a agenda clínica, confunde o lugar profissional e não produz registro nem continuidade.' }
+];
+
+const checklist = [
+  { passo: '1 · Retaguarda mapeada', indicador: 'Capacidade semanal e prazo de contato escritos', quem: 'Psicólogo e chefia', quando: 'Antes de ligar o rastreio' },
+  { passo: '2 · Porta de encaminhamento', indicador: 'Motivo em uma frase de quem encaminhou', quem: 'Equipe assistente', quando: 'Na abertura do caso' },
+  { passo: '3 · Rastreio de distress', indicador: 'Escore, corte e entrevista de confirmação', quem: 'Psicólogo ou enfermagem treinada', quando: 'Entrada e viradas clínicas' },
+  { passo: '4 · Preferência de informação', indicador: 'Registro de quanto se quer saber e de quem decide', quem: 'Psicólogo', quando: 'Antes da conversa de prognóstico' },
+  { passo: '5 · Más notícias', indicador: 'Sinal de convocação combinado com a equipe', quem: 'Equipe multiprofissional', quando: 'A cada virada de plano' },
+  { passo: '6 · Família e cuidador', indicador: 'Cuidador principal nomeado e sobrecarga avaliada', quem: 'Psicólogo', quando: 'Primeiras duas semanas' },
+  { passo: '7 · Sofrimento existencial', indicador: 'Plano de manejo e via de urgência escrita', quem: 'Psicólogo e equipe', quando: 'Contínuo' },
+  { passo: '8 · Luto antecipatório', indicador: 'Conversa de preparação e contato pós-óbito', quem: 'Psicólogo', quando: 'Mudança de objetivo e pós-morte' },
+  { passo: '9 · Cuidado da equipe', indicador: 'Discussão de caso com hora marcada', quem: 'Serviço', quando: 'Semanal ou quinzenal' }
+];
+
+const erros = [
+  { titulo: 'Prometer transformação onde a evidência descreve efeito pequeno', texto: 'O CALM produziu d de 0,23 e 0,29 (Rodin et al., 2018). A psicoterapia centrada no sentido para sobreviventes perdeu o efeito no desfecho primário nos seguimentos de um e dois anos (Holtmaat et al., Psycho-Oncology, 2020, com 170 participantes). Melhorar um pouco algo que hoje não recebe cuidado algum já sustenta o serviço. Inflar o número derruba a confiança da equipe médica no primeiro caso que não responde.' },
+  { titulo: 'Tratar escore de rastreio como diagnóstico', texto: 'Com especificidade de 0,72 no ponto de corte 4 (Ma et al., 2014), boa parte das sinalizações positivas não corresponde a transtorno instalado. A entrevista clínica decide. Encaminhar por escore isolado enche a agenda com quem responderia a orientação breve e adia quem já tem quadro instalado.' },
+  { titulo: 'Montar série histórica com edições diferentes da Estimativa do INCA', texto: 'A Estimativa 2026-2028, lançada em 4 de fevereiro de 2026, projeta 781 mil casos novos de câncer por ano no Brasil, ou cerca de 518 mil quando excluídos os tumores de pele não melanoma. O próprio INCA adverte que estimativas publicadas em edições diferentes não devem ser comparadas diretamente entre si, por atualizações metodológicas, melhorias nos registros de base populacional e correções de sub-registro. Em apresentação institucional, cite uma edição só, com o ano colado ao número.' },
+  { titulo: 'Chamar cuidado paliativo de cuidado de fim de vida', texto: 'A Nota CRP06 nº 6/2025 combate esse equívoco de forma direta: o entendimento atual reconhece os cuidados paliativos como abordagem ativa, preventiva e integrativa, com foco no sofrimento em sua complexidade, qualquer que seja o estágio da doença. A Resolução CIT nº 41/2018 já listava o início precoce junto ao tratamento modificador da doença entre os princípios norteadores.' }
+];
+
+const faqs = [
+  { q: 'O psicólogo pode dar a notícia do prognóstico ao paciente?', a: 'A informação clínica é responsabilidade de quem a detém, em geral o médico assistente. O papel da psicologia está descrito na Nota Orientativa CRP06 nº 6/2025 como apoiar a comunicação, especialmente diante de notícias difíceis, e favorecer a compreensão sobre diagnóstico, prognóstico e projeto terapêutico com letramento em saúde adaptado. Na prática, o psicólogo prepara o paciente e a família antes, acompanha a conversa quando isso está combinado com a equipe, e retoma depois o que ficou fragmentado. Substituir o médico na entrega da notícia desorganiza a referência clínica do paciente.' },
+  { q: 'Quando o cuidado paliativo deve entrar no percurso de um paciente com câncer?', a: 'A Resolução CIT nº 41, de 31 de outubro de 2018, publicada no Diário Oficial da União em 23 de novembro de 2018, inscreve o início precoce junto ao tratamento modificador da doença entre os princípios norteadores dos cuidados paliativos no SUS. A Nota CRP06 nº 6/2025 reforça que o campo deixou de se restringir à terminalidade e passou a tratar o sofrimento em qualquer estágio da doença. Entrada precoce e entrada no fim de vida produzem trabalhos psicológicos diferentes, com objetivos e instrumentos distintos.' },
+  { q: 'O psicólogo é obrigatório nas equipes de cuidados paliativos do SUS?', a: 'Sim, na letra da norma. A Portaria GM/MS nº 3.681, assinada em 7 de maio de 2024 e publicada em 22 de maio de 2024, institui a Política Nacional de Cuidados Paliativos e fixa o psicólogo com 30 horas semanais na composição mínima das duas modalidades de equipe, a Equipe Matricial de Cuidados Paliativos e a Equipe Assistencial de Cuidados Paliativos, com a mesma carga horária semanal do enfermeiro e do assistente social.' },
+  { q: 'Existe resolução do CFP dedicada exclusivamente a cuidados paliativos?', a: 'A norma aplicável de escopo mais amplo é a Resolução CFP nº 17/2022, sobre práticas psicológicas em contextos de atenção básica, secundária e terciária de saúde, que reafirma a presença do cuidado psicológico nos diversos estágios do processo saúde-doença, inclusive nos casos que demandem cuidados paliativos. O documento mais específico disponível é a Nota Orientativa CRP06 nº 6/2025, aprovada na 2.473ª Sessão Plenária Ordinária de 17 de maio de 2025, somada às recomendações de competências publicadas pelo Comitê de Psicologia da ANCP em dezembro de 2023.' },
+  { q: 'Que formação prepara o psicólogo para oncologia e cuidados paliativos?', a: 'O caminho de referência combina residência multiprofissional em oncologia ou em cuidados paliativos, cursos de aperfeiçoamento vinculados a serviços hospitalares e supervisão clínica continuada dentro do próprio serviço. Programas de pós-graduação em psicologia da saúde e em reabilitação cobrem parte da base de comunicação clínica, avaliação de sofrimento e trabalho em equipe multiprofissional. No IPOG, o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo trabalha avaliação e planos de intervenção no contexto de saúde, em formato Ao Vivo síncrono. Consulte o portal oficial do IPOG para grade vigente e turmas.' }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org', '@type': 'HowTo',
+  name: 'Como atuar como psicólogo em serviço de oncologia e cuidados paliativos',
+  description: 'Protocolo em nove passos para o psicólogo que entra em serviço de oncologia ou cuidados paliativos: retaguarda, encaminhamento, rastreio de distress, preferência de informação, más notícias, família, sofrimento existencial, luto antecipatório e cuidado da equipe.',
+  totalTime: 'PT22M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({ '@type': 'HowToStep', position: p.n, name: p.titulo, text: p.aplicacao }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: 'Psico-oncologia e cuidados paliativos: protocolo de entrada do psicólogo no serviço',
+  description: 'Guia em nove passos com evidência nomeada sobre rastreio de distress, comunicação de más notícias, sofrimento existencial e luto antecipatório em oncologia e cuidados paliativos.',
+  author: { '@id': alexandrePersonBase['@id'] }, publisher: { '@id': brasilGeoOrganization['@id'] }, inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url }, { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` }, { '@type': 'ListItem', position: 3, name: 'Psico-oncologia e cuidados paliativos', item: `${SITE.url}/guias/psico-oncologia-cuidados-paliativos-protocolo-2026` }]
+};
+---
+
+<Base
+  title="Psico-oncologia e cuidados paliativos: protocolo do psicólogo em nove passos (2026)"
+  description="Protocolo de entrada do psicólogo em serviço de oncologia e cuidados paliativos: rastreio de distress com acurácia real, preferência de informação, más notícias, família e cuidador, sofrimento existencial, luto antecipatório e cuidado da equipe. Conteúdo independente.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Psico-oncologia e cuidados paliativos' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · nove passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Atuar como psicólogo em serviço de oncologia e cuidados paliativos</h1>
+          <TLDR
+            resposta="As três psicoterapias mais celebradas da psico-oncologia entregam efeito pequeno, e a Dignity Therapy falhou no desfecho primário do próprio ensaio multicêntrico. Enquanto isso, o psicólogo é composição mínima obrigatória das equipes de cuidados paliativos do SUS desde 2024, com 30 horas semanais. O que decide a qualidade do serviço passou a ser a formação de quem ocupa a vaga, e não o protocolo de assinatura que ele diz aplicar."
+            fontes={["Chochinov et al., Lancet Oncology, 2011", "Rodin et al., J Clin Oncol, 2018", "Portaria GM/MS nº 3.681/2024"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto de entrada no serviço: mapear a retaguarda, ler o encaminhamento, rastrear distress com a acurácia real do instrumento, apurar preferência de informação, sustentar a comunicação de más notícias, trabalhar família e cuidador, manejar sofrimento existencial, conduzir luto antecipatório e cuidar da equipe.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~22 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos hospitalares e da saúde</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <YMYLDisclaimer domain="saude-mental" lastReviewed="2026-08-27" />
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que você vai aprender:</strong> montar a rotina psicológica de um serviço de oncologia ou de cuidados paliativos, do desenho do rastreio ao cuidado com a família depois do óbito.</li>
+          <li><strong>Pré-requisitos:</strong> registro CRP ativo, leitura da Portaria GM/MS nº 3.681/2024 e da Nota Orientativa CRP06 nº 6/2025, e acordo escrito com a chefia sobre capacidade de atendimento.</li>
+          <li><strong>Resultado esperado:</strong> protocolo de nove passos com critério explícito de encaminhamento, expectativa calibrada de efeito e via de urgência definida.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A tese: o protocolo de assinatura entrega pouco, e a vaga já está garantida por norma</h2>
+        <p>
+          O marketing do campo apresenta as psicoterapias de sentido e de dignidade como aquilo que transforma o fim de vida. Os ensaios dizem menos. No estudo randomizado do CALM (Rodin et al., Journal of Clinical Oncology, 2018), com 305 pacientes com câncer avançado, o efeito sobre sintomas depressivos foi de d igual a 0,23 em três meses e 0,29 em seis meses, faixa convencionalmente classificada como pequena. No ensaio randomizado multicêntrico de Chochinov e colaboradores (Lancet Oncology, 2011), a Dignity Therapy não produziu diferença significativa nas medidas primárias de sofrimento, e o que apareceu foi utilidade percebida, senso de dignidade e mudança na percepção da família. No seguimento de longo prazo da psicoterapia centrada no sentido (Holtmaat et al., Psycho-Oncology, 2020, com 170 participantes), o ganho no desfecho primário se dissipou em um e dois anos.
+        </p>
+        <p>
+          Nada disso invalida o campo. Invalida a retórica. Intervenções que melhoram um pouco algo que hoje não recebe cuidado nenhum já justificam a presença do psicólogo, desde que a promessa feita à equipe corresponda ao tamanho do efeito publicado.
+        </p>
+        <p>
+          A segunda metade da tese muda a decisão de carreira. A Portaria GM/MS nº 3.681, assinada em 7 de maio de 2024 e publicada em 22 de maio de 2024, fixa o psicólogo com 30 horas semanais na composição mínima das duas modalidades de equipe da Política Nacional de Cuidados Paliativos, com a mesma carga horária do enfermeiro e do assistente social. O argumento de reconhecimento profissional está normativamente vencido. O que continua em aberto é quem forma esse profissional: a Nota Orientativa CRP06 nº 6/2025 registra, citando o Atlas dos Cuidados Paliativos do Brasil (ANCP, 2023), que mais de 90% das instituições realizam atividades formativas próprias, sinal de que a graduação não entrega o profissional pronto para o serviço.
+        </p>
+        <p>
+          A consequência operacional aparece no primeiro dia de trabalho e organiza este guia. Se o diferencial não está no protocolo de assinatura, ele está no desenho da rotina: capacidade de atendimento definida antes do rastreio, leitura correta do que o encaminhamento pede, expectativa calibrada na devolutiva à equipe e continuidade escrita até depois do óbito.
+        </p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os nove passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist de implantação no serviço</h2>
+        <p class="text-ink-700 mt-2">Ordem sugerida para os três primeiros meses de um psicólogo recém-chegado ao serviço. Adapte ao porte da unidade e à composição da equipe.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Indicador verificável</th>
+                <th class="text-left px-4 py-3">Quem executa</th>
+                <th class="text-left px-4 py-3">Quando</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.quando}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O que esperar de cada protocolo psicológico com evidência publicada</h2>
+        <p class="text-ink-700 mt-2">Os três programas mais citados em psico-oncologia, com o desfecho que cada ensaio de fato mediu. A última coluna traduz o achado em expectativa para a devolutiva à equipe.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Protocolo</th>
+                <th class="text-left px-4 py-3">Ensaio e amostra</th>
+                <th class="text-left px-4 py-3">Achado principal</th>
+                <th class="text-left px-4 py-3">Leitura clínica</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">CALM</td>
+                <td class="px-4 py-3 text-ink-700">Rodin et al., J Clin Oncol, 2018; 305 pacientes com câncer avançado.</td>
+                <td class="px-4 py-3 text-ink-700">Sintomas depressivos com d de 0,23 em três meses e 0,29 em seis meses; efeito em preparação para o fim da vida aos seis meses.</td>
+                <td class="px-4 py-3 text-ink-700">Efeito pequeno e consistente. Sítio único e amostra de alta escolaridade limitam a generalização, conforme os próprios autores.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Dignity Therapy</td>
+                <td class="px-4 py-3 text-ink-700">Chochinov et al., Lancet Oncol, 2011; ensaio randomizado multicêntrico em pacientes terminais.</td>
+                <td class="px-4 py-3 text-ink-700">Sem diferença significativa nas medidas primárias de sofrimento; ganho em utilidade percebida, senso de dignidade e percepção da família.</td>
+                <td class="px-4 py-3 text-ink-700">Indicação sustentada pela experiência relatada de fim de vida, com o sintoma medido fora do alcance demonstrado.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-ink-900">Psicoterapia centrada no sentido</td>
+                <td class="px-4 py-3 text-ink-700">Holtmaat et al., Psycho-Oncology, 2020; 170 sobreviventes em três braços.</td>
+                <td class="px-4 py-3 text-ink-700">Ganho de curto prazo no desfecho primário dissipado em um e dois anos; efeitos secundários em relações positivas (d de 0,82) e crescimento pessoal (d de 0,94).</td>
+                <td class="px-4 py-3 text-ink-700">Planeje seguimento e reforço. Os autores pedem cautela pela inconsistência entre medidas e grupos.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-ink-700 mt-3 leading-relaxed">
+          A scoping review de Velasco Yanez e colaboradores (BMC Palliative Care, 2025), com 82 artigos sobre Dignity Therapy, encontrou benefício em percepção de dignidade e bem-estar espiritual ao lado de resultados inconclusivos em ansiedade, depressão e qualidade de vida, com amostras pequenas em 35,8% dos estudos incluídos. Levar esse quadro para a reunião de equipe é o que impede a promessa que o serviço não pode cumprir.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
+        <h3 class="font-display font-semibold text-lg text-ink-900">Ambulatório de oncologia que desligou o rastreio universal por seis semanas</h3>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Um ambulatório de oncologia clínica em hospital geral implantou o termômetro de distress na recepção, para todos os pacientes em quimioterapia, com um psicólogo de 30 horas semanais. Em dois meses, a lista de sinalizações positivas passou de 200 nomes, com tempo médio entre marcação e primeiro contato acima de cinco semanas. A enfermagem parou de aplicar a escala, por constrangimento de perguntar sobre sofrimento sem ter o que oferecer depois.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A correção inverteu a ordem. O rastreio foi suspenso por seis semanas e recolocado apenas em dois pontos do percurso, a primeira consulta e a mudança de linha de tratamento, com a escala aplicada por enfermeiro treinado e entrevista clínica breve no mesmo dia para quem pontuasse acima do corte. O serviço reservou quatro vagas diárias de acolhimento com prazo de 72 horas. O caso ilustra o argumento da tese: reduzir o volume rastreado aumentou o número de pessoas efetivamente atendidas.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Erros frequentes</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Continuar por aqui</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/intervencoes/cuidados-paliativos-e-fim-de-vida" class="text-brand-700 hover:text-brand-800 font-medium">Intervenção · Cuidados paliativos e fim de vida</a></li>
+          <li><a href="/areas/psicologia-hospitalar" class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia hospitalar</a></li>
+          <li><a href="/areas/psicologia-saude" class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia da saúde</a></li>
+          <li><a href="/guias/luto-perinatal-gestacional-manejo-clinico-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Luto perinatal e gestacional</a></li>
+          <li><a href="/faq/luto-perinatal-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Luto perinatal</a></li>
+          <li><a href="/intervencoes/stepped-care" class="text-brand-700 hover:text-brand-800 font-medium">Intervenção · Stepped care</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Fontes normativas e de evidência</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="https://www.gov.br/inca/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">INCA · Estimativa de incidência de câncer no Brasil</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP · Resolução nº 17/2022 e notas orientativas</a></li>
+          <li><a href="https://paliativo.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANCP · Academia Nacional de Cuidados Paliativos</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde · Portaria GM/MS nº 3.681/2024</a></li>
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV · apoio emocional pelo telefone 188, 24 horas</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">Dimensione a retaguarda, depois ligue o rastreio</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          O protocolo de entrada em oncologia e cuidados paliativos começa pela capacidade de atendimento, passa por um rastreio lido com a acurácia real do instrumento e termina no cuidado com a família depois do óbito e com a equipe que fica. A expectativa de efeito das psicoterapias do campo é pequena e bem documentada, e apresentá-la assim protege o serviço. Para o psicólogo que quer consolidar base técnica em avaliação e intervenção no contexto de saúde, o MBA em Reabilitação Neuropsicológica e Desenvolvimento Cognitivo do IPOG cobre parte desse percurso. Consulte o portal oficial para grade vigente.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaNeuro.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaNeuro.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Números do contexto</p>
+        <ul class="space-y-3 text-sm text-ink-700">
+          <li><strong class="text-ink-900">781 mil</strong> casos novos de câncer por ano projetados para o triênio de 2026 a 2028 no Brasil (INCA, 2026).</li>
+          <li><strong class="text-ink-900">31,8%</strong> de qualquer transtorno mental em quatro semanas por entrevista diagnóstica padronizada (Mehnert et al., 2014).</li>
+          <li><strong class="text-ink-900">0,72</strong> de especificidade do termômetro de distress no ponto de corte 4 (Ma et al., 2014).</li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-2">
+          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+          <li><a href={`/mbas#${mbaPositiva.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPositiva.shortName}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaHosp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaHosp.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

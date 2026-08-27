@@ -1,0 +1,258 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+const areaHospitalar = AREAS.find(a => a.id === 'psicologia-hospitalar')!;
+
+const criterios = [
+  { c: 'Alvo declarado da intervenção', act: 'A relação da pessoa com a dor e com as regras que ela criou sobre atividade. Ye e colaboradores (2024, PLOS One) medem esse alvo diretamente: aceitação da dor 0,68 (IC 95% 0,50 a 0,87) e inflexibilidade psicológica -0,65 (IC 95% -0,89 a -0,40).', tcc: 'O conteúdo do pensamento sobre a dor e o comportamento associado. O PCDT brasileiro (Ministério da Saúde, 2024) coloca a terapia cognitivo-comportamental na seção 6.1.7, ao lado da educação em dor.' },
+  { c: 'Desfecho primário medido nos ensaios', act: 'Interferência da dor e comprometimento funcional aparecem como desfechos de topo em Ye e colaboradores (2024), acima de intensidade.', tcc: 'A revisão Cochrane de Williams, Fisher, Hearn e Eccleston (2020) organiza os desfechos em dor, incapacidade e sofrimento psíquico, com relato separado por comparador.' },
+  { c: 'Tamanho de efeito documentado', act: 'Pós-tratamento, em 21 ensaios e 1.298 participantes: interferência da dor -0,50 (IC 95% -0,66 a -0,34), comprometimento funcional -0,74 (IC 95% -1,13 a -0,35), intensidade -0,37 (IC 95% -0,57 a -0,17). Aos três meses, comprometimento funcional chega a -0,85 (IC 95% -1,32 a -0,39).', tcc: 'Em 75 estudos e 9.401 participantes: contra controle ativo, dor -0,09 (IC 95% -0,17 a -0,01), incapacidade -0,12, sofrimento -0,09. Contra cuidado usual, dor -0,22, incapacidade -0,32 e sofrimento -0,34.' },
+  { c: 'Comparador usado para chegar ao número', act: 'Comparadores mais frouxos e base amostral de 1.298 pessoas, com heterogeneidade clínica alta em vários desfechos (I2 de 80% em comprometimento funcional, 66% em depressão, 62% em intensidade).', tcc: 'Majoritariamente controle ativo e cuidado usual, em base de 9.401 pessoas. A certeza GRADE é moderada na maior parte dos desfechos e baixa para incapacidade contra cuidado usual.' },
+  { c: 'O que pede do paciente', act: 'Disposição para agir na direção de valores mantendo a dor presente, sem condicionar a retomada de atividade ao alívio prévio.', tcc: 'Registro sistemático de pensamento, atividade e resposta, com tarefas entre sessões e disposição para testar previsões contra o que acontece.' },
+  { c: 'Formato e duração', act: 'A NG193 do NICE, publicada em 7 de abril de 2021, cita a terapia de aceitação e compromisso na recomendação 1.2.3 sem fixar número de sessões. O PCDT brasileiro de 2024 não a menciona em nenhuma passagem.', tcc: 'A mesma recomendação 1.2.3 do NICE também não fixa duração. O PCDT brasileiro delega frequência e duração ao profissional responsável e sugere interromper na ausência de adesão ou de melhora comportamental.' },
+  { c: 'Exigência de treinamento e supervisão', act: 'A recomendação 1.2.3 do NICE condiciona a indicação à entrega por profissional de saúde com treinamento apropriado, sem distinguir entre as duas terapias.', tcc: 'Mesma condição de treinamento apropriado na NG193. No Brasil, a existência de seção própria no PCDT dá lastro documental para pleitear a oferta dentro do serviço.' },
+  { c: 'Onde se aplica melhor', act: 'Casos em que a evitação de atividade e a luta contra a dor organizam a incapacidade, e casos em que a redução de intensidade já foi tentada e falhou.', tcc: 'Casos com crença de dano explícita e testável, insônia associada e necessidade de documentar plano estruturado dentro de serviço público ou de operadora.' }
+];
+
+const barras = [
+  { rot: 'TCC contra controle ativo', val: 0.09, base: '3.235 participantes', y: 78 },
+  { rot: 'TCC contra cuidado usual', val: 0.22, base: '29 estudos', y: 128 },
+  { rot: 'ACT, intensidade da dor', val: 0.37, base: '1.298 participantes', y: 178 },
+  { rot: 'ACT, interferência da dor', val: 0.50, base: '1.298 participantes', y: 228 }
+];
+const escala = (v: number) => 250 + (v / 0.6) * 330;
+
+const faqs = [
+  { q: 'ACT é melhor do que TCC para dor crônica?', a: 'A comparação direta entre as duas em dor crônica não está resolvida pelos números disponíveis, porque as duas melhores sínteses usam comparadores diferentes. A revisão Cochrane de Williams, Fisher, Hearn e Eccleston (2020) mediu terapia cognitivo-comportamental sobretudo contra controle ativo, em 9.401 participantes, e encontrou -0,09 em intensidade de dor. A meta-análise de Ye e colaboradores (2024, PLOS One) mediu terapia de aceitação e compromisso em 1.298 participantes, com comparadores mais frouxos, e encontrou entre -0,37 e -0,50. A diferença entre os dois resultados acompanha a régua, não a técnica. Quando o comparador é qualquer intervenção ativa que também ocupe o paciente, o efeito em intensidade encolhe nas duas.' },
+  { q: 'Se o efeito em dor é pequeno, vale a pena indicar psicoterapia?', a: 'Vale, desde que o desfecho combinado seja o certo. Contra cuidado usual, a Cochrane de 2020 registra -0,32 em incapacidade e -0,34 em sofrimento psíquico, efeitos maiores do que os observados em intensidade de dor. Ye e colaboradores (2024) registram comprometimento funcional de -0,74 ao fim do tratamento e -0,85 aos três meses. O que a psicoterapia move de forma mais consistente é a vida em torno da dor: quanto a pessoa faz, quanto sofre, como dorme e como decide sobre atividade.' },
+  { q: 'Por que a terapia de aceitação e compromisso não aparece no protocolo do SUS?', a: 'O Protocolo Clínico e Diretrizes Terapêuticas da Dor Crônica, aprovado pela Portaria Conjunta SAES/SAPS/SECTICS nº 1, de 22 de agosto de 2024, tem 298 páginas, dedica a seção 6.1.7 à terapia cognitivo-comportamental e não traz nenhuma ocorrência da terapia de aceitação e compromisso. O documento também não usa a palavra psicoterapia e codifica a dor pela CID-10, com R52.1 e R52.2. Na prática de serviço público, isso significa que o pleito por terapia cognitivo-comportamental tem lastro documental direto no protocolo, e o pleito por terapia de aceitação e compromisso precisa se apoiar em diretriz internacional como a NG193 do NICE.' },
+  { q: 'Como escolher entre as duas na primeira avaliação?', a: 'Use o padrão de evitação como critério de entrada. Quando o paciente organiza o dia em torno de não sentir dor e recusa atividade até que ela ceda, o alvo de aceitação e ação comprometida com valores tem mais tração, e é o terreno em que Ye e colaboradores (2024) medem efeito. Quando existe uma crença de dano específica e testável, do tipo curvar a coluna provoca lesão nova, o teste comportamental estruturado da terapia cognitivo-comportamental resolve mais rápido. Em casos com insônia associada, o repertório cognitivo-comportamental tem protocolo mais estabelecido para sono.' },
+  { q: 'Qual formação prepara o psicólogo para conduzir esses casos?', a: 'A demanda pede leitura de evidência com atenção ao comparador, trabalho em equipe com prescritor e reabilitação física, e manejo de sofrimento persistente com repercussão ocupacional. O MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações do IPOG trabalha esse conjunto em formato Ao Vivo síncrono, com corpo docente nominal. Consulte ipog.edu.br para a grade vigente.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'ACT ou TCC para dor crônica: comparativo por desfecho, comparador e diretriz',
+  description: 'Comparativo entre terapia de aceitação e compromisso e terapia cognitivo-comportamental no recorte de dor crônica, com tamanhos de efeito, comparadores, NICE NG193 e PCDT brasileiro de 2024.',
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  inLanguage: 'pt-BR',
+  datePublished: '2026-08-27',
+  dateModified: '2026-08-27'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.faq-answer-text', 'h1', 'h2'] },
+  mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Comparativos', item: `${SITE.url}/comparativos` },
+    { '@type': 'ListItem', position: 3, name: 'ACT ou TCC para dor crônica', item: `${SITE.url}/comparativos/act-vs-tcc-dor-cronica` }
+  ]
+};
+---
+
+<Base
+  title="ACT ou TCC para dor crônica — comparativo por desfecho e comparador"
+  description="Comparativo entre terapia de aceitação e compromisso e terapia cognitivo-comportamental no recorte de dor crônica: alvo, desfecho medido, tamanho de efeito, comparador, formato, treinamento exigido e onde cada uma se aplica melhor.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Comparativos', href: '/comparativos' },
+        { label: 'ACT ou TCC para dor crônica' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Comparativo · Recorte de dor crônica</span>
+          <h1 class="section-h text-3xl sm:text-4xl">ACT ou TCC para dor crônica: o que muda quando o desfecho é dor</h1>
+          <p class="mt-3 text-ink-700 text-lg">Este comparativo trata do recorte de dor crônica. A comparação geral entre as duas abordagens, com mecanismo, base teórica e indicação por transtorno, está em <a href="/comparativos/act-vs-tcc" class="text-brand-700 hover:text-brand-800 font-semibold">ACT vs TCC</a>.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <YMYLDisclaimer domain="saude-mental" reviewerName="Larissa Caramaschi" reviewerHref="/autismo/sobre-larissa/" lastReviewed="2026-08-27" />
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          Em dor crônica, a escolha entre as duas abordagens decide menos do que a escolha do desfecho. Contra controle ativo, a terapia cognitivo-comportamental produziu -0,09 em intensidade de dor em 9.401 participantes (Williams et al., 2020); a terapia de aceitação e compromisso, com comparadores mais frouxos e 1.298 participantes, produziu -0,37 em intensidade e -0,50 em interferência (Ye et al., 2024). As duas movem função, incapacidade e sofrimento com mais força do que movem intensidade. A NG193 do NICE (2021) coloca ambas sob o verbo considere; o PCDT brasileiro de 2024 traz seção própria para a terapia cognitivo-comportamental e nenhuma menção à de aceitação e compromisso.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que muda quando o desfecho é dor, e não humor</h2>
+        <p>
+          Na comparação geral entre as duas abordagens, o desfecho costuma ser o próprio sintoma que define o quadro: escore de depressão, escore de ansiedade, remissão. Em dor crônica, o desfecho se parte em pelo menos três, e eles não andam juntos. A revisão Cochrane de Williams, Fisher, Hearn e Eccleston (2020) relata separadamente dor, incapacidade e sofrimento psíquico, e a distância entre eles é a informação clínica principal: contra cuidado usual, a terapia cognitivo-comportamental devolveu -0,22 em dor, -0,32 em incapacidade e -0,34 em sofrimento. Contra controle ativo, os mesmos números caem para -0,09, -0,12 e -0,09.
+        </p>
+        <p>
+          A segunda mudança é o comparador. Em depressão, comparar psicoterapia com lista de espera ou com cuidado usual já é considerado desenho fraco, e a literatura migrou para controles ativos. Em dor crônica, as duas melhores sínteses disponíveis estão em pontos diferentes dessa migração, e é isso que explica boa parte da diferença de magnitude entre elas. A Cochrane de 2020 reuniu 75 estudos e 9.401 participantes com comparação majoritária contra controle ativo e cuidado usual. A meta-análise de Ye e colaboradores (2024, PLOS One) reuniu 21 ensaios randomizados e 1.298 participantes com comparadores mais frouxos, além de heterogeneidade clínica alta e ausência de pré-registro do protocolo declarada pelos próprios autores.
+        </p>
+        <p>
+          A terceira mudança é regulatória, e ela é local. A NG193 do NICE, publicada em 7 de abril de 2021, trata as duas no mesmo nível de recomendação, a 1.2.3, com o verbo considere, e reserva o verbo ofereça para programa supervisionado de exercício em grupo. Já o Protocolo Clínico e Diretrizes Terapêuticas da Dor Crônica, aprovado pela Portaria Conjunta SAES/SAPS/SECTICS nº 1, de 22 de agosto de 2024, dedica a seção 6.1.7 à terapia cognitivo-comportamental e não cita a terapia de aceitação e compromisso em nenhuma de suas 298 páginas. Dentro do SUS ou de operadora que se orienta pelo protocolo nacional, essa assimetria documental pesa na viabilidade da indicação, independentemente do que a meta-análise mais recente aponte.
+        </p>
+      </div>
+
+      <figure>
+        <h2 class="section-h text-2xl">A escada dos comparadores</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="dor-act-tcc-fig-titulo dor-act-tcc-fig-desc" viewBox="0 0 620 300" width="620" height="300" style="min-width:620px" class="block">
+            <title id="dor-act-tcc-fig-titulo">Efeito em dor por comparador usado no estudo</title>
+            <desc id="dor-act-tcc-fig-desc">Quatro barras horizontais com o valor absoluto da diferença média padronizada em dor ou interferência. Terapia cognitivo-comportamental contra controle ativo aparece em 0,09; contra cuidado usual, em 0,22. Terapia de aceitação e compromisso, com comparadores mais frouxos, aparece em 0,37 para intensidade e 0,50 para interferência.</desc>
+            <text x="20" y="30" font-size="15" font-weight="600" class="fill-ink-900">Diferença média padronizada em dor, valor absoluto</text>
+            <line x1="250" y1="52" x2="250" y2="268" stroke-width="1.5" class="stroke-ink-500" />
+            {barras.map(b => (
+              <g>
+                <text x="238" y={b.y + 14} font-size="14" text-anchor="end" class="fill-ink-900">{b.rot}</text>
+                <rect x="250" y={b.y} width={escala(b.val) - 250} height="22" rx="4" class={b.rot.startsWith('ACT') ? 'fill-brand-700' : 'fill-brand-400'} />
+                <text x={escala(b.val) + 8} y={b.y + 16} font-size="14" font-weight="600" class="fill-ink-900">{b.val.toFixed(2).replace('.', ',')}</text>
+                <text x="238" y={b.y + 30} font-size="14" text-anchor="end" class="fill-ink-500">{b.base}</text>
+              </g>
+            ))}
+            <text x="250" y="288" font-size="14" class="fill-ink-500">Barras claras: Cochrane 2020. Barras escuras: PLOS One 2024.</text>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">A ordem das barras acompanha a exigência do comparador, e não a abordagem: o número maior pertence à síntese com base amostral menor e controles mais frouxos. Fontes: Williams et al. (2020) e Ye et al. (2024).</figcaption>
+      </figure>
+
+      <div>
+        <h2 class="section-h text-2xl">Comparação por critério</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed">Oito critérios de decisão, com o número e a fonte colados a cada linha. Leia a linha de comparador antes da linha de tamanho de efeito.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3 w-48">Critério</th><th class="text-left px-4 py-3">Terapia de aceitação e compromisso</th><th class="text-left px-4 py-3">Terapia cognitivo-comportamental</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {criterios.map(r => (
+                <tr><td class="px-4 py-3 font-semibold text-ink-900 align-top">{r.c}</td><td class="px-4 py-3 text-ink-700 align-top">{r.act}</td><td class="px-4 py-3 text-ink-700 align-top">{r.tcc}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Três perguntas que resolvem a escolha na primeira avaliação</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+          <div class="card p-5 border-surface-200">
+            <h3 class="font-display font-semibold text-base text-ink-900">O paciente adia atividade até a dor ceder?</h3>
+            <p class="text-sm text-ink-700 mt-2 leading-relaxed">Se a resposta é sim, o alvo é a luta contra a sensação, e o repertório de aceitação e ação comprometida tem medida direta nesse terreno em Ye e colaboradores (2024), com aceitação da dor em 0,68.</p>
+          </div>
+          <div class="card p-5 border-surface-200">
+            <h3 class="font-display font-semibold text-base text-ink-900">Existe crença de dano específica e testável?</h3>
+            <p class="text-sm text-ink-700 mt-2 leading-relaxed">Crença nomeável, do tipo curvar a coluna provoca lesão nova, é falsificável dentro da sessão. O teste comportamental estruturado da terapia cognitivo-comportamental costuma resolver isso em menos encontros.</p>
+          </div>
+          <div class="card p-5 border-surface-200">
+            <h3 class="font-display font-semibold text-base text-ink-900">Onde o caso será autorizado e registrado?</h3>
+            <p class="text-sm text-ink-700 mt-2 leading-relaxed">Em serviço orientado pelo PCDT de 2024, só a terapia cognitivo-comportamental tem seção própria, a 6.1.7. A assimetria documental muda a viabilidade da indicação antes de qualquer argumento de eficácia.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Recomendação, com a condição de contorno explícita</h2>
+        <p>
+          A recomendação de entrada é usar o padrão de evitação como critério. Quando o paciente organiza a rotina em torno de não provocar dor e adia toda retomada de atividade até que ela ceda, o alvo de aceitação e ação comprometida tem tração maior, e é exatamente esse terreno que Ye e colaboradores (2024) medem, com aceitação da dor em 0,68 e inflexibilidade psicológica em -0,65. Quando existe uma crença de dano específica e testável, do tipo levantar peso provoca lesão nova, o teste comportamental estruturado da terapia cognitivo-comportamental costuma resolver em menos sessões, porque a crença é falsificável dentro da própria sessão.
+        </p>
+        <p>
+          A condição de contorno é onde o caso será tratado. Em serviço público brasileiro ou em operadora que se orienta pelo protocolo nacional, a terapia cognitivo-comportamental tem seção própria no PCDT de 2024 e a terapia de aceitação e compromisso não é citada, o que muda a conversa de autorização e de registro. A recomendação prática nesse contexto é começar pelo repertório com lastro documental e incorporar componentes de aceitação dentro do plano, sem trocar o rótulo da intervenção registrada.
+        </p>
+        <p>
+          Há uma segunda condição de contorno, e ela vale para as duas. Nenhuma das sínteses disponíveis sustenta indicação isolada. A NG193 do NICE reserva o verbo forte para programa supervisionado de exercício em grupo, e Kamper e colaboradores (2015, BMJ), em 41 ensaios randomizados com 6.858 participantes, mostram que a reabilitação biopsicossocial multidisciplinar entrega, contra cuidado usual e no longo prazo, cerca de 0,5 ponto em uma escala de dor de 0 a 10 e 1,5 ponto no índice Roland-Morris de 24 pontos. A psicoterapia entra dentro de um plano de atividade, e não no lugar dele.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Limites desta comparação</p>
+        <p class="text-ink-700 leading-relaxed">
+          As duas sínteses citadas não foram desenhadas para se comparar entre si. Ye e colaboradores (2024) declaram heterogeneidade clínica alta em vários desfechos, com I2 de 80% em comprometimento funcional, 66% em depressão, 62% em intensidade e 51% em ansiedade, além de ausência de pré-registro do protocolo, busca restrita a um idioma, oito estudos com risco incerto de viés em ocultação de alocação e seis sem cegamento explícito do avaliador de desfecho. Na Cochrane de 2020, a certeza GRADE é moderada na maioria dos desfechos e baixa para incapacidade contra cuidado usual, a maior parte dos domínios de risco de viés ficou em risco alto ou incerto, e os efeitos se mantiveram no seguimento contra cuidado usual, mas não contra controle ativo.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer-text">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Continuar por aqui</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/dor-cronica-manejo-psicologico-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · manejo psicológico da dor crônica em nove passos</a></li>
+          <li><a href="/faq/dor-cronica-psicologia-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · dor crônica e psicologia</a></li>
+          <li><a href="/comparativos/act-vs-tcc" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo geral · ACT vs TCC</a></li>
+          <li><a href="/metodos/act" class="text-brand-700 hover:text-brand-800 font-medium">Método · terapia de aceitação e compromisso</a></li>
+          <li><a href="/metodos/tcc" class="text-brand-700 hover:text-brand-800 font-medium">Método · terapia cognitivo-comportamental</a></li>
+        </ul>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Formação correlata</p>
+        <h3 class="font-display font-semibold text-lg mt-1">{mbaPositiva.shortName}</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva.description}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver MBAs no IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/areas/${areaHospitalar.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaHospitalar.name}</strong></a></li>
+          <li><a href="/metodos/mindfulness" class="mega-link"><strong class="text-ink-900 text-sm">Mindfulness clínico</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes desta página</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.cochrane.org/CD007407/SYMPT_what-are-benefits-and-risks-psychological-therapies-adults-persistent-and-distressing-pain-neither" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Williams et al. (2020), Cochrane CD007407.pub4</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11178235/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ye et al. (2024), PLOS One</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng193/chapter/recommendations" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG193 (2021)</a></li>
+          <li><a href="https://www.gov.br/saude/pt-br/assuntos/pcdt/d/dor-cronica/@@download/file" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">PCDT da Dor Crônica (2024)</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/25694111/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Kamper et al. (2015), BMJ</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

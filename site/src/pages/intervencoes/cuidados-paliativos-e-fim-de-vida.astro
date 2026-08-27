@@ -1,0 +1,340 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE, MBAS, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const areaHosp = AREAS.find(a => a.id === 'psicologia-hospitalar')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+
+const protocolos = [
+  { nome: 'CALM (Managing Cancer and Living Meaningfully)', autoria: 'Rodin e colaboradores, Journal of Clinical Oncology, 2018', desenho: 'Ensaio randomizado controlado com 305 pacientes com câncer avançado, 151 no braço CALM somado ao cuidado usual e 154 no cuidado usual isolado.', achado: 'Sintomas depressivos com d de Cohen de 0,23 em três meses (p igual a 0,04) e 0,29 em seis meses (p igual a 0,02), além de efeito em preparação para o fim da vida aos seis meses.', limite: 'Sítio único em grande cidade canadense, com amostra predominantemente branca, anglófona e de alta escolaridade. Os autores registram que faltam dados sobre o momento ótimo de aplicação e sobre mecanismos de ação.' },
+  { nome: 'Dignity Therapy', autoria: 'Chochinov e colaboradores, The Lancet Oncology, 2011', desenho: 'Ensaio randomizado multicêntrico comparando Dignity Therapy, cuidado centrado no cliente e cuidado paliativo padrão em pacientes terminais.', achado: 'Sem diferença significativa nas medidas primárias de sofrimento. Os ganhos apareceram em desfechos secundários autorrelatados: utilidade percebida, senso de dignidade, qualidade de vida e percepção da família sobre o paciente.', limite: 'Os próprios autores concluíram que a capacidade da técnica de mitigar sofrimento explícito, como depressão e desejo de morte, ainda não estava comprovada, e que a indicação clínica se apoia na experiência relatada de fim de vida.' },
+  { nome: 'Psicoterapia centrada no sentido', autoria: 'Holtmaat e colaboradores, Psycho-Oncology, 2020', desenho: 'Seguimento de longo prazo da versão para sobreviventes de câncer, com 170 participantes em três braços: 57 em psicoterapia centrada no sentido, 56 em grupo de apoio e 57 em cuidado usual.', achado: 'A melhoria de curto prazo no desfecho primário, sentido pessoal, se dissipou nos seguimentos de um e dois anos. Sobraram efeitos secundários em relações positivas (d de 0,82 contra cuidado usual em dois anos) e crescimento pessoal (d de 0,94 contra grupo de apoio em um ano, entre completadores).', limite: 'Os autores alertam que a possibilidade de achados ao acaso não pôde ser descartada, dada a inconsistência entre medidas e grupos.' }
+];
+
+const equipes = [
+  { equipe: 'Equipe Matricial de Cuidados Paliativos (EMCP)', medico: '40 horas semanais', enfermeiro: '30 horas', social: '30 horas', psicologo: '30 horas', extra: 'Pediatra opcional em 20 horas' },
+  { equipe: 'Equipe Assistencial de Cuidados Paliativos (EACP)', medico: '20 horas semanais', enfermeiro: '30 horas', social: '30 horas', psicologo: '30 horas', extra: 'Técnicos de enfermagem em 90 horas' }
+];
+
+const cobertura = [
+  { indicador: 'Serviços registrados no Brasil', valor: '234 entradas, sendo 128 serviços novos e 106 atualizações', fonte: 'Atlas ANCP, 3ª edição' },
+  { indicador: 'Distribuição regional', valor: 'Sudeste 98; Nordeste 60; Sul 40; Distrito Federal 16; Norte sete', fonte: 'Atlas ANCP, 3ª edição' },
+  { indicador: 'Natureza jurídica dos serviços', valor: 'SUS 52,5%; arranjo público-privado 15,3%; privado 32%', fonte: 'Atlas ANCP, 3ª edição' },
+  { indicador: 'Cobertura na rede pública brasileira', valor: 'Um serviço por 1,6 milhão de habitantes, contra recomendação europeia de dois por 100 mil', fonte: 'Atlas ANCP, 3ª edição' },
+  { indicador: 'Pessoas que necessitam de cuidados paliativos nas Américas por ano', valor: '2.984.970', fonte: 'ATLANTES, 2025' },
+  { indicador: 'Serviços especializados no continente', valor: '10.526 no total, com 2.865 na América Latina e 7.627 na América do Norte; média de 0,33 por 100 mil habitantes', fonte: 'ATLANTES, 2025' },
+  { indicador: 'Países que garantem cuidados paliativos por lei na atenção primária', valor: '10 dos 35 países (28,5%)', fonte: 'ATLANTES, 2025' }
+];
+
+const erros = [
+  { titulo: 'Tratar cuidado paliativo como sinônimo de fim de vida', texto: 'A Nota Orientativa CRP06 nº 6/2025 enfrenta esse equívoco de forma direta: o entendimento atual reconhece os cuidados paliativos como abordagem ativa, preventiva e integrativa, com foco no sofrimento em sua complexidade, qualquer que seja o estágio da doença. A Resolução CIT nº 41/2018 já listava o início precoce junto ao tratamento modificador da doença entre os princípios norteadores.' },
+  { titulo: 'Chamar a Resolução CIT nº 41/2018 de política nacional', texto: 'A Resolução CIT nº 41, de 31 de outubro de 2018, publicada no Diário Oficial da União em 23 de novembro de 2018, pactuou diretrizes de organização. A política nacional com equipes e composição definidas veio com a Portaria GM/MS nº 3.681, assinada em 7 de maio de 2024 e publicada em 22 de maio de 2024. Somar as duas normas em uma só apaga seis anos de diferença entre diretriz e política.' },
+  { titulo: 'Prometer alívio de sofrimento que o ensaio não mediu', texto: 'A scoping review de Velasco Yanez e colaboradores (BMC Palliative Care, 2025), com 82 artigos sobre Dignity Therapy, encontrou benefício em percepção de dignidade e bem-estar espiritual ao lado de resultados inconclusivos em ansiedade, depressão e qualidade de vida, com amostras pequenas em 35,8% dos estudos. Oferecer a intervenção pelo desfecho que ela de fato move preserva a credibilidade do serviço.' },
+  { titulo: 'Ler crescimento percentual de oferta como ganho de acesso', texto: 'A base de partida brasileira é baixa. A terceira edição do Atlas dos Cuidados Paliativos no Brasil, lançada pela ANCP em 9 de janeiro de 2024, registrou 234 entradas de serviços, com o Sudeste concentrando 98 e o Norte com sete. Percentual alto sobre base pequena não move o acesso de quem está longe do Sudeste.' }
+];
+
+const faqs = [
+  { q: 'Cuidado paliativo é a mesma coisa que cuidado de fim de vida?', a: 'Não. A Resolução CIT nº 41, de 31 de outubro de 2018, inscreve o início precoce junto ao tratamento modificador da doença entre os princípios norteadores dos cuidados paliativos no SUS, e a Portaria GM/MS nº 3.681/2024 define o campo como as ações de saúde para alívio da dor, do sofrimento e de outros sintomas em pessoas que enfrentam doenças que ameaçam ou limitam a continuidade da vida, abrangendo as dimensões física, psicoemocional, espiritual e social. O cuidado de fim de vida é um trecho desse percurso, e não o percurso inteiro.' },
+  { q: 'O psicólogo faz parte obrigatória da equipe de cuidados paliativos?', a: 'Sim. A Portaria GM/MS nº 3.681/2024 fixa o psicólogo com 30 horas semanais na composição mínima das duas modalidades de equipe da Política Nacional de Cuidados Paliativos, a Equipe Matricial e a Equipe Assistencial, com a mesma carga horária semanal do enfermeiro e do assistente social. A Nota Orientativa CRP06 nº 6/2025 confirma que a psicologia integra as duas equipes e atua em todos os níveis de atenção à saúde, no SUS, na rede suplementar e na rede privada.' },
+  { q: 'Que evidência sustenta as psicoterapias usadas em cuidados paliativos?', a: 'A evidência disponível é de efeito pequeno e bem delimitado. O CALM produziu d de 0,23 e 0,29 em sintomas depressivos (Rodin et al., 2018). A Dignity Therapy não moveu as medidas primárias de sofrimento no ensaio randomizado multicêntrico de Chochinov e colaboradores (2011). A psicoterapia centrada no sentido perdeu o ganho no desfecho primário nos seguimentos de um e dois anos (Holtmaat et al., 2020). Em uma população que hoje recebe pouco ou nenhum cuidado psicológico, efeito pequeno documentado ainda é razão suficiente para ofertar, desde que a promessa acompanhe o tamanho do efeito.' },
+  { q: 'Qual é a cobertura de cuidados paliativos no Brasil?', a: 'A terceira edição do Atlas dos Cuidados Paliativos no Brasil (ANCP, lançada em 9 de janeiro de 2024) registrou 234 entradas de serviços, com 123 no SUS (52,5%), 36 em arranjo público-privado (15,3%) e 75 privados (32%). A distribuição regional é desigual: Sudeste com 98 serviços, Nordeste com 60, Sul com 40, Distrito Federal com 16 e Norte com sete. Na rede pública, a média é de um serviço para cada 1,6 milhão de habitantes, contra recomendação europeia de dois serviços por 100 mil habitantes.' },
+  { q: 'Existe formação específica reconhecida para o psicólogo paliativista?', a: 'Não há resolução do CFP dedicada exclusivamente a cuidados paliativos. A norma aplicável de escopo mais amplo é a Resolução CFP nº 17/2022, sobre práticas psicológicas em contextos de atenção básica, secundária e terciária de saúde, que reafirma a presença do cuidado psicológico nos diversos estágios do processo saúde-doença, inclusive nos casos que demandem cuidados paliativos. O Comitê de Psicologia da ANCP publicou, em dezembro de 2023, recomendações de competências, habilidades e atitudes para psicólogas e psicólogos paliativistas. Programas de pós-graduação em psicologia da saúde e em reabilitação, como os oferecidos pelo IPOG, cobrem parte da base técnica. Consulte o portal oficial do IPOG para grade vigente.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: 'Cuidados paliativos e fim de vida: o lugar do psicólogo na equipe e o momento de entrada do cuidado',
+  description: 'Protocolo de intervenção em cuidados paliativos: entrada precoce, evidência das psicoterapias do campo, composição de equipe pela Portaria GM/MS nº 3.681/2024 e cobertura brasileira pelo Atlas da ANCP.',
+  author: { '@id': alexandrePersonBase['@id'] }, publisher: { '@id': brasilGeoOrganization['@id'] }, inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url }, { '@type': 'ListItem', position: 2, name: 'Intervenções', item: `${SITE.url}/intervencoes` }, { '@type': 'ListItem', position: 3, name: 'Cuidados paliativos e fim de vida', item: `${SITE.url}/intervencoes/cuidados-paliativos-e-fim-de-vida` }]
+};
+---
+
+<Base
+  title="Cuidados paliativos e fim de vida: o papel do psicólogo, a entrada precoce e a cobertura no Brasil"
+  description="Protocolo de intervenção em cuidados paliativos: quando o cuidado entra, evidência do CALM, da Dignity Therapy e da psicoterapia centrada no sentido, composição de equipe pela Portaria GM/MS nº 3.681/2024 e cobertura brasileira. Conteúdo independente.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Intervenções', href: '/intervencoes' },
+        { label: 'Cuidados paliativos e fim de vida' }
+      ]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Protocolo · Norma nacional vigente (PNCP, 2024)</span>
+        <h1 class="section-h text-3xl sm:text-4xl">Cuidados paliativos e fim de vida: o lugar do psicólogo na equipe e o momento em que o cuidado entra</h1>
+        <p class="mt-3 text-ink-700 text-lg">A Política Nacional de Cuidados Paliativos tornou o psicólogo composição mínima obrigatória das equipes em 2024. O que ainda não foi resolvido é a formação de quem ocupa a vaga e a geografia de quem alcança o serviço.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-5">
+          Ver MBAs correlatos no IPOG
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <YMYLDisclaimer domain="saude-mental" lastReviewed="2026-08-27" />
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="space-y-2 text-ink-900 leading-relaxed">
+          <li><strong>O que é:</strong> cuidado ofertado por equipe multiprofissional para alívio da dor, do sofrimento e de outros sintomas em doenças que ameaçam ou limitam a continuidade da vida, nas dimensões física, psicoemocional, espiritual e social.</li>
+          <li><strong>Quando entra:</strong> desde o diagnóstico, em paralelo ao tratamento modificador da doença, conforme princípio de início precoce da Resolução CIT nº 41/2018.</li>
+          <li><strong>Evidência psicológica:</strong> efeito pequeno e bem documentado (Rodin et al., 2018; Chochinov et al., 2011; Holtmaat et al., 2020).</li>
+          <li><strong>Norma vigente:</strong> Portaria GM/MS nº 3.681, assinada em 7 de maio de 2024 e publicada em 22 de maio de 2024, com psicólogo em 30 horas semanais nas duas modalidades de equipe.</li>
+        </ul>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A tese: o gargalo saiu da lei e foi para a formação</h2>
+        <p>Durante duas décadas o argumento do campo foi de reconhecimento: a psicologia precisava ser reconhecida como parte da equipe de cuidados paliativos. Esse argumento está normativamente vencido. A Portaria GM/MS nº 3.681, assinada em 7 de maio de 2024 e publicada no Diário Oficial da União em 22 de maio de 2024, institui a Política Nacional de Cuidados Paliativos no SUS e fixa o psicólogo com 30 horas semanais na composição mínima tanto da Equipe Matricial quanto da Equipe Assistencial, a mesma carga horária do enfermeiro e do assistente social. A vaga existe por norma.</p>
+        <p>O que continua em aberto é quem prepara o profissional que ocupa essa vaga. A Nota Orientativa CRP06 nº 6/2025 registra, citando o Atlas dos Cuidados Paliativos do Brasil (ANCP, 2023), que mais de 90% das instituições realizam atividades formativas próprias, o que a própria nota lê como evidência de lacuna na formação dos profissionais de saúde. No plano continental, o Atlas de Cuidados Paliativos nas Américas 2025, produzido pelo Observatório ATLANTES da Universidad de Navarra, registra que apenas 15 dos 35 países exigem formação obrigatória em cuidados paliativos nos cursos de medicina.</p>
+        <p>A segunda metade do gargalo é geográfica. A terceira edição do Atlas brasileiro, lançada pela ANCP em 9 de janeiro de 2024, registrou 234 entradas de serviços, com média de um serviço para cada 1,6 milhão de habitantes na rede pública, contra recomendação europeia de dois serviços por 100 mil habitantes. A distância é de ordem de magnitude. Para quem escolhe pós-graduação, a consequência é concreta: a demanda regulada já existe, e a diferenciação virá do preparo técnico para comunicação clínica, avaliação de sofrimento e trabalho em equipe, e não da existência da vaga.</p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que a norma define como cuidado paliativo</h2>
+        <p>A Portaria GM/MS nº 3.681/2024 define cuidados paliativos como as ações e os serviços de saúde para alívio da dor, do sofrimento e de outros sintomas em pessoas que enfrentam doenças ou outras condições de saúde que ameaçam ou limitam a continuidade da vida, abrangendo as dimensões física, psicoemocional, espiritual e social. A política foi instituída por alteração da Portaria de Consolidação GM/MS nº 2, de 28 de setembro de 2017, com inclusão do Anexo XLIV.</p>
+        <p>Seis anos antes, a Resolução CIT nº 41, de 31 de outubro de 2018, publicada no Diário Oficial da União em 23 de novembro de 2018, já havia pactuado as diretrizes de organização. Entre os princípios norteadores estão o início precoce junto ao tratamento modificador da doença, a aceitação da morte como processo natural, a recusa de futilidades diagnósticas e terapêuticas, a integração de aspectos psicológicos e espirituais, o apoio à família inclusive no luto, o trabalho multiprofissional, a comunicação empática e honesta, o respeito à autodeterminação e o respeito à diretiva antecipada de vontade. A oferta é organizada na Atenção Básica, que coordena o cuidado, e nas modalidades domiciliar, ambulatorial, de urgência e emergência e hospitalar.</p>
+        <p>A distinção entre os dois documentos costuma se perder. A resolução de 2018 pactuou diretrizes; a portaria de 2024 instituiu política com equipes e composição definidas. Quem cita uma pela outra atribui a 2018 uma estrutura que só apareceu em 2024.</p>
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">Quando o cuidado paliativo entra no percurso</h2>
+        <p class="text-ink-700 mt-2">Entrar cedo altera o objeto do trabalho psicológico. Na entrada precoce, o cuidado acompanha decisão terapêutica, adesão, comunicação familiar e projeto de vida durante o tratamento ativo. Na entrada tardia, o mesmo profissional recebe uma família já exaurida e um paciente com pouca margem para participar das próprias decisões.</p>
+        <figure class="mt-4">
+          <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4">
+            <svg viewBox="0 0 700 330" role="img" aria-labelledby="paliativos-fig-titulo paliativos-fig-desc" class="w-full min-w-[700px] h-auto">
+              <title id="paliativos-fig-titulo">Comparação entre o modelo sequencial e o modelo de entrada precoce do cuidado paliativo</title>
+              <desc id="paliativos-fig-desc">Duas linhas do tempo entre diagnóstico e óbito. Na primeira, o cuidado paliativo começa apenas quando o tratamento modificador da doença termina. Na segunda, o cuidado paliativo corre em paralelo ao tratamento modificador desde o diagnóstico e continua depois do óbito, como apoio ao luto da família.</desc>
+              <g class="text-ink-500">
+                <line x1="110" y1="40" x2="110" y2="292" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4" />
+                <line x1="470" y1="40" x2="470" y2="292" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4" />
+              </g>
+              <g class="text-ink-900">
+                <text x="12" y="28" font-size="16" font-weight="600" fill="currentColor">Modelo sequencial, hoje superado</text>
+                <text x="12" y="142" font-size="16" font-weight="600" fill="currentColor">Modelo atual, com entrada precoce</text>
+                <text x="46" y="316" font-size="14" fill="currentColor">Diagnóstico</text>
+                <text x="440" y="316" font-size="14" fill="currentColor">Óbito</text>
+              </g>
+              <g class="text-brand-700">
+                <rect x="110" y="44" width="250" height="28" rx="6" fill="currentColor" />
+                <rect x="110" y="158" width="250" height="26" rx="6" fill="currentColor" />
+              </g>
+              <g class="text-ink-700">
+                <rect x="360" y="44" width="110" height="28" rx="6" fill="currentColor" />
+                <rect x="110" y="192" width="360" height="26" rx="6" fill="currentColor" />
+                <text x="110" y="94" font-size="14" fill="currentColor">Tratamento modificador da doença</text>
+                <text x="364" y="94" font-size="14" fill="currentColor">Cuidado paliativo</text>
+                <text x="368" y="177" font-size="14" fill="currentColor">Tratamento modificador da doença</text>
+                <text x="478" y="211" font-size="14" fill="currentColor">Cuidado paliativo</text>
+                <text x="470" y="266" font-size="14" fill="currentColor">Apoio ao luto da família</text>
+              </g>
+              <g class="text-ink-500">
+                <rect x="470" y="226" width="150" height="26" rx="6" fill="currentColor" />
+              </g>
+            </svg>
+          </div>
+          <figcaption class="text-sm text-ink-600 mt-2">O tempo total de contato com o paciente muda pouco entre os dois modelos; o que muda é quantas decisões ainda estão abertas quando o psicólogo chega.</figcaption>
+        </figure>
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">Protocolos psicológicos com evidência publicada</h2>
+        <p class="text-ink-700 mt-2">Os três programas mais citados do campo, com o desenho de cada ensaio, o achado e o limite declarado pelos próprios autores.</p>
+        <div class="space-y-4 mt-4">
+          {protocolos.map(p => (
+            <div class="card p-6 border-surface-200">
+              <h3 class="font-display font-semibold text-lg text-ink-900">{p.nome}</h3>
+              <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mt-1">{p.autoria}</p>
+              <p class="mt-3 text-ink-700 leading-relaxed"><strong class="text-ink-900">Desenho.</strong> {p.desenho}</p>
+              <p class="mt-2 text-ink-700 leading-relaxed"><strong class="text-ink-900">Achado.</strong> {p.achado}</p>
+              <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+                <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Limite declarado</p>
+                <p class="text-sm text-ink-700 leading-relaxed">{p.limite}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">O psicólogo na equipe multiprofissional</h2>
+        <p class="text-ink-700 mt-2">Composição mínima das duas modalidades de equipe previstas na Política Nacional de Cuidados Paliativos, conforme a Portaria GM/MS nº 3.681/2024.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Modalidade</th>
+                <th class="text-left px-4 py-3">Médico</th>
+                <th class="text-left px-4 py-3">Enfermeiro</th>
+                <th class="text-left px-4 py-3">Assistente social</th>
+                <th class="text-left px-4 py-3">Psicólogo</th>
+                <th class="text-left px-4 py-3">Complemento</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {equipes.map(e => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{e.equipe}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{e.medico}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{e.enfermeiro}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{e.social}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{e.psicologo}</td>
+                  <td class="px-4 py-3 text-ink-700">{e.extra}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-ink-700 mt-3 leading-relaxed">A Nota Orientativa CRP06 nº 6/2025, aprovada na 2.473ª Sessão Plenária Ordinária do CRP da 6ª Região em 17 de maio de 2025, detalha as atribuições correspondentes: favorecer a compreensão sobre diagnóstico, prognóstico e projeto terapêutico com letramento em saúde adaptado, apoiar a comunicação diante de notícias difíceis, avaliar dor e sofrimento em suas múltiplas dimensões, identificar fatores de risco na história de vida que aumentem a vulnerabilidade, sustentar a autonomia com participação ativa nas decisões de cuidado, fortalecer as relações multi, inter e transdisciplinares, apoiar a construção de sentido diante da finitude e oferecer assistência no processo de luto e nos cuidados pós-morte aos familiares.</p>
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">Cobertura e acesso: onde o cuidado paliativo existe no Brasil</h2>
+        <p class="text-ink-700 mt-2">A oferta cresce e continua concentrada. Os dados abaixo vêm da terceira edição do Atlas dos Cuidados Paliativos no Brasil (ANCP, lançada em 9 de janeiro de 2024) e do Atlas de Cuidados Paliativos nas Américas 2025 (Observatório ATLANTES, Universidad de Navarra, lançado em 31 de outubro de 2025).</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Indicador</th>
+                <th class="text-left px-4 py-3">Valor</th>
+                <th class="text-left px-4 py-3">Fonte</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {cobertura.map(c => (
+                <tr>
+                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{c.valor}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.fonte}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-ink-700 mt-3 leading-relaxed">Quatro países do continente superam a recomendação internacional de dois serviços por 100 mil habitantes: Chile, Costa Rica, Estados Unidos e Uruguai. Existem 375 serviços pediátricos nas Américas, distribuídos em 22 dos 35 países. Para o psicólogo brasileiro, esses números descrevem o tamanho da rede em que a vaga criada pela Política Nacional de Cuidados Paliativos precisa caber.</p>
+      </div>
+      <div>
+        <h2 class="section-h text-2xl">Erros comuns na implantação</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {erros.map(e => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que a formação precisa cobrir</h2>
+        <p>A leitura combinada da Nota Orientativa CRP06 nº 6/2025 e das recomendações de competências publicadas pelo Comitê de Psicologia da ANCP em dezembro de 2023 aponta cinco blocos. O primeiro é comunicação clínica: preparar, acompanhar e retomar conversas difíceis dentro da equipe, sem substituir quem detém a informação médica. O segundo é avaliação de dor e sofrimento em múltiplas dimensões, incluindo a distinção entre transtorno mental instalado e sofrimento esperado diante da doença grave.</p>
+        <p>O terceiro bloco é trabalho com a família, com apoio ao cuidador principal e assistência no luto, inclusive nos cuidados pós-morte. O quarto é ética e autodeterminação, com respeito à diretiva antecipada de vontade e recusa de futilidade terapêutica, ancorado no Código de Ética Profissional do Psicólogo e na Resolução CFP nº 17/2022. O quinto é o trabalho em equipe multiprofissional e no apoio matricial, porque a Política Nacional de Cuidados Paliativos organiza a oferta da Atenção Básica ao hospital, e o psicólogo circula entre esses pontos.</p>
+        <p>O que a formação não deve prometer está igualmente claro na evidência: nenhum dos protocolos com ensaio randomizado publicado no campo demonstrou reduzir sofrimento explícito de forma consistente. Um currículo honesto ensina a ofertar a intervenção pelo desfecho que ela move e a construir a rotina de serviço que sustenta o resto.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Continuar por aqui</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/guias/psico-oncologia-cuidados-paliativos-protocolo-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Protocolo do psicólogo em oncologia e cuidados paliativos</a></li>
+          <li><a href="/areas/psicologia-hospitalar" class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia hospitalar</a></li>
+          <li><a href="/areas/psicologia-saude" class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia da saúde</a></li>
+          <li><a href="/intervencoes/atencao-primaria-matriciamento" class="text-brand-700 hover:text-brand-800 font-medium">Intervenção · Atenção primária e matriciamento</a></li>
+          <li><a href="/intervencoes/stepped-care" class="text-brand-700 hover:text-brand-800 font-medium">Intervenção · Stepped care</a></li>
+          <li><a href="/guias/luto-perinatal-gestacional-manejo-clinico-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia · Luto perinatal e gestacional</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A vaga já está na norma. A diferenciação está no preparo.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">A Política Nacional de Cuidados Paliativos colocou o psicólogo em 30 horas semanais na composição mínima das duas modalidades de equipe, e a Resolução CIT nº 41/2018 já havia inscrito o início precoce entre os princípios do cuidado. A evidência das psicoterapias do campo é de efeito pequeno e bem delimitado, e a rede brasileira ainda opera com um serviço público para cada 1,6 milhão de habitantes. Para o psicólogo que quer sustentar essa função com base técnica em avaliação e intervenção no contexto de saúde, os MBAs do IPOG em Reabilitação Neuropsicológica e em Psicologia Positiva cobrem parte desse percurso. Consulte o portal oficial para grade vigente.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs correlatos no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">Cuidados paliativos dialogam com avaliação em contexto de saúde, comunicação clínica e trabalho em equipe multiprofissional. O IPOG oferece MBAs correlatos em formato Ao Vivo síncrono.</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Números da rede</p>
+        <ul class="space-y-3 text-sm text-ink-700">
+          <li><strong class="text-ink-900">30 horas</strong> semanais de psicólogo na composição mínima das duas equipes da PNCP (Portaria GM/MS nº 3.681/2024).</li>
+          <li><strong class="text-ink-900">1 para 1,6 milhão</strong> de habitantes é a cobertura de serviços na rede pública brasileira (Atlas ANCP, 3ª edição).</li>
+          <li><strong class="text-ink-900">15 de 35</strong> países das Américas exigem formação obrigatória em cuidados paliativos na medicina (ATLANTES, 2025).</li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
+        <ul class="space-y-1">
+          {MBAS.filter(m => ['mba-neuro','mba-positiva'].includes(m.id)).map(m => (
+            <li><a href={`/mbas#${m.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{m.shortName}</strong></a></li>
+          ))}
+        </ul>
+        <a href="/mbas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os MBAs</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas adjacentes</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaHosp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaHosp.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde · Portaria GM/MS nº 3.681/2024</a></li>
+          <li><a href="https://www.conass.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CONASS · Resolução CIT nº 41/2018</a></li>
+          <li><a href="https://paliativo.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANCP · Atlas dos Cuidados Paliativos no Brasil</a></li>
+          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP · Resolução nº 17/2022</a></li>
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV · apoio emocional pelo telefone 188, 24 horas</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

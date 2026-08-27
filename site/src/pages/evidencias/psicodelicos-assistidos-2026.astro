@@ -1,0 +1,330 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE, MBAS } from '@lib/data';
+
+const mbasCorrelatos = MBAS.filter(m => ['mba-positiva', 'mba-neuro', 'mba-ncpp'].includes(m.id));
+
+const quadroEvidencia = [
+  {
+    indicacao: 'Depressão resistente ao tratamento, psilocibina sintética',
+    desfecho: 'MADRS na semana 3: queda de 12,0 pontos no braço de dose alta contra 5,4 pontos no braço comparador; diferença de 6,6 pontos (IC 95% de 10,2 a 2,9; p menor que 0,001)',
+    forca: 'Fase 2b revisada por pares, 233 adultos, dose única (Goodwin e colegas, New England Journal of Medicine, 2022)',
+    regulacao: 'Substância proscrita no Brasil, Lista F2 da Portaria SVS/MS nº 344/1998'
+  },
+  {
+    indicacao: 'Depressão resistente ao tratamento, programa de fase 3',
+    desfecho: 'MADRS na semana 6: diferença média de 3,8 pontos entre os dois braços de dose (p menor que 0,001); redução de ao menos 25% no MADRS em 25% dos participantes do COMP005 e 39% do COMP006',
+    forca: 'Comunicado corporativo da Compass Pathways de fevereiro de 2026, sem publicação revisada por pares até o momento',
+    regulacao: 'Sem aprovação da FDA; a empresa declara pedido de reunião para submissão contínua do NDA'
+  },
+  {
+    indicacao: 'Transtorno de estresse pós-traumático, midomafetamina (MDMA)',
+    desfecho: 'Sem desfecho aprovado: a FDA determinou que não poderia aprovar com os dados submetidos',
+    forca: 'Complete Response Letter da FDA com pedido de ensaio adicional de fase 3 (comunicado da Lykos Therapeutics, agosto de 2024)',
+    regulacao: 'Reprovado nos Estados Unidos em 2024; sem via regulatória aberta no Brasil'
+  },
+  {
+    indicacao: 'Depressão resistente ao tratamento, ayahuasca',
+    desfecho: 'MADRS menor no grupo ativo no dia 1, no dia 2 (p igual a 0,04) e no dia 7 (p menor que 0,0001); resposta no dia 7 de 64% contra 27% (p igual a 0,04); d de Cohen de 1,49 no dia 7',
+    forca: 'Ensaio randomizado, duplo-cego, controlado por placebo, 29 pacientes, seguimento de sete dias (Palhano-Fontes e colegas, Psychological Medicine, 2019)',
+    regulacao: 'Pesquisa clínica registrada (NCT02914769); não existe uso terapêutico autorizado fora de protocolo de pesquisa'
+  }
+];
+
+const limitesDoPsicologo = [
+  { item: 'Conduzir psicoterapia dentro de protocolo de pesquisa autorizado, com registro no CRP e capacitação específica', situacao: 'Compatível' },
+  { item: 'Estudar a literatura, supervisionar equipe e preparar o serviço para uma eventual mudança de regra', situacao: 'Compatível' },
+  { item: 'Acolher paciente que relata uso próprio, sem julgamento moral e sem endosso técnico', situacao: 'Compatível' },
+  { item: 'Prescrever, administrar, indicar ou fornecer substância psicoativa', situacao: 'Fora do escopo da profissão' },
+  { item: 'Oferecer sessão de acompanhamento a uso feito fora de protocolo autorizado', situacao: 'Fora do escopo da profissão' },
+  { item: 'Anunciar terapia assistida por psicodélicos como serviço disponível ao público no Brasil', situacao: 'Fora do escopo da profissão' },
+  { item: 'Atuar em cenário ritualístico ou religioso apresentando o ato como técnica psicológica', situacao: 'Fora do escopo da profissão' }
+];
+
+const faqs = [
+  {
+    q: 'A psicoterapia assistida por psicodélicos já pode ser oferecida no Brasil?',
+    a: 'Não fora de protocolo de pesquisa autorizado. A Portaria SVS/MS nº 344, de 12 de maio de 1998, lista psilocibina (item 172) e psilocina (item 173) na Lista F2, de substâncias psicotrópicas de uso proscrito. Enquanto a substância estiver nessa lista, não existe prescrição possível, e portanto não existe protocolo assistido disponível fora de pesquisa. A Nota Orientativa CRP06 nº 2/2025, aprovada pelo CRP SP em 26 de abril de 2025, registra que a aplicação terapêutica dessas substâncias está ainda em fase experimental.'
+  },
+  {
+    q: 'Por que a FDA reprovou a MDMA se os ensaios pareciam positivos?',
+    a: 'A Lykos Therapeutics comunicou, em 9 de agosto de 2024, que a FDA emitiu Complete Response Letter para a nova aplicação de medicamento de cápsulas de midomafetamina em adultos com TEPT, determinando que não poderia aprovar com os dados submetidos e solicitando um ensaio adicional de fase 3. Zamaria, Fernandes-Osterhold, Shedler e Yehuda (Frontiers in Psychology, 2025) argumentam que parte do impasse é estrutural: o papel da agência é aprovar agentes farmacológicos, não psicoterapias, e o tratamento em questão é combinado.'
+  },
+  {
+    q: 'O psicólogo pode acompanhar um paciente que usou psicodélico por conta própria?',
+    a: 'Acolher o paciente e trabalhar clinicamente o que ele traz cabe no exercício regular da profissão. O que não cabe é organizar, endossar ou dar cobertura técnica ao uso. A Nota Orientativa CRP06 nº 2/2025 invoca o artigo 1º, alínea b, do Código de Ética Profissional do Psicólogo (Resolução CFP nº 010/2005), que restringe a responsabilidade profissional às atividades para as quais se esteja pessoal, teórica e tecnicamente capacitado, e a Resolução CFP nº 07/2023, sobre atuação laica da Psicologia.'
+  },
+  {
+    q: 'Qual é a diferença entre o ensaio brasileiro e os ensaios internacionais?',
+    a: 'A molécula. Palhano-Fontes e colegas (Psychological Medicine, 2019) testaram ayahuasca, não psilocibina sintética, em 29 pacientes com depressão resistente, com seguimento de sete dias. Os ensaios de fase 2b e fase 3 conduzidos fora do Brasil usam psilocibina sintética, com amostras maiores e seguimento de semanas. Comparar tamanho de efeito entre os dois desenhos sem considerar molécula, amostra e horizonte de medida produz leitura enganosa.'
+  },
+  {
+    q: 'Onde um psicólogo se prepara para esse debate sem sair do que a regra permite?',
+    a: 'O caminho hoje é formação em clínica baseada em evidência, leitura direta das normas do CFP e do CRP e domínio de protocolos já autorizados para os mesmos quadros. Programas do IPOG nas trilhas de psicologia positiva, neurociência e reabilitação neuropsicológica cobrem a base de avaliação e de desfecho que sustenta essa leitura crítica. Vale comparar grade e calendário no portal oficial antes de decidir.'
+  }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Psicodélicos assistidos em 2026: o que a evidência sustenta e o que a regra brasileira permite',
+  description: 'Síntese de evidência clínica sobre psicoterapia assistida por psicodélicos, status regulatório no Brasil e fora dele, e o escopo exato do psicólogo nesse arranjo.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Evidências', item: `${SITE.url}/evidencias` },
+    { '@type': 'ListItem', position: 3, name: 'Psicodélicos assistidos', item: `${SITE.url}/evidencias/psicodelicos-assistidos-2026` }
+  ]
+};
+---
+
+<Base
+  title="Psicodélicos assistidos em 2026: evidência clínica e o limite da regra brasileira"
+  description="O que os ensaios com psilocibina, MDMA e ayahuasca sustentam, por que a FDA reprovou a MDMA em 2024 e o que o psicólogo brasileiro pode e não pode fazer hoje.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Evidências', href: '/evidencias' }, { label: 'Psicodélicos assistidos' }]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Evidência · Clínica · fronteira regulatória</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Psicodélicos assistidos em 2026: o que a evidência sustenta e o que a regra brasileira permite</h1>
+          <p class="mt-3 text-ink-700 text-lg">Entre o ensaio de fase 3 e o consultório brasileiro existe uma lista de substâncias proscritas, e ela não se move por entusiasmo.</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">Ver MBAs no IPOG<svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A evidência clínica de psicodélicos assistidos avançou até a fase 3 em depressão resistente, e a regra brasileira permanece onde estava em 1998: psilocibina e psilocina seguem na Lista F2 da Portaria SVS/MS nº 344, de uso proscrito. A consequência prática para o psicólogo é direta: fora de protocolo de pesquisa autorizado, não existe terapia assistida por psicodélicos legalmente ofertável no Brasil, e o Código de Ética limita a atuação ao que o profissional está tecnicamente capacitado a fazer. A distância entre o noticiário e o consultório é regulatória, não científica.
+        </p>
+      </div>
+
+      <YMYLDisclaimer domain="saude-mental" lastReviewed="2026-08-27" />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que os ensaios clínicos efetivamente mediram</h2>
+        <p>
+          O maior ensaio revisado por pares em depressão resistente ao tratamento é o de fase 2b de Goodwin e colegas (New England Journal of Medicine, volume 387, número 18, páginas 1637 a 1648, novembro de 2022). Foram 233 adultos, dose única de psilocibina sintética em três braços, sempre acompanhada de apoio psicológico durante a sessão. Na semana 3, o braço de dose alta (25 mg) registrou queda média de 12,0 pontos na escala MADRS contra queda de 5,4 pontos no braço de dose mínima, uma diferença de 6,6 pontos, com intervalo de confiança de 95% entre 10,2 e 2,9 pontos e p menor que 0,001.
+        </p>
+        <p>
+          O mesmo estudo registrou eventos adversos em 179 dos 233 participantes, ou 77%, e ideação ou comportamento suicida e autolesão em todos os braços de dose, inclusive no comparador. Esse dado importa para a tese porque desloca a conversa do tamanho de efeito para o desenho do cuidado: um tratamento que produz melhora média relevante e eventos graves em qualquer braço exige monitoramento clínico continuado, não uma sessão isolada.
+        </p>
+        <p>
+          O programa de fase 3 mudou a magnitude. O comunicado da Compass Pathways de 17 de fevereiro de 2026 sobre o estudo COMP006 relata diferença média de 3,8 pontos no MADRS na semana 6 entre o braço de dose alta e o comparador, com p menor que 0,001, e redução de ao menos 25% no MADRS em 25% dos participantes do braço de dose alta no COMP005 e 39% no COMP006. A empresa declara pedido de reunião com a FDA para submissão contínua e expectativa de completar a submissão do NDA no quarto trimestre. A diferença de 3,8 pontos é inferior aos 6,6 pontos observados na fase 2b, e o material é comunicado de empresa de capital aberto, com o peso de prova que isso implica.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Indicação, desfecho, força da evidência e regra vigente</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 mt-4">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3">Indicação e substância</th> <th class="text-left px-4 py-3">Desfecho medido</th> <th class="text-left px-4 py-3">Força da evidência</th> <th class="text-left px-4 py-3">Status regulatório</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {quadroEvidencia.map(q => (
+                <tr><td class="px-4 py-3 font-semibold text-ink-900">{q.indicacao}</td> <td class="px-4 py-3 text-ink-700">{q.desfecho}</td> <td class="px-4 py-3 text-ink-700">{q.forca}</td> <td class="px-4 py-3 text-ink-700">{q.regulacao}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-700 mt-3 leading-relaxed">
+          A leitura útil da tabela é horizontal: nenhuma linha com desfecho positivo tem, na última coluna, uma via de oferta clínica aberta no Brasil.
+        </p>
+      </div>
+
+      <figure class="rounded-2xl border border-surface-200 bg-surface-50 p-5">
+        <div class="overflow-x-auto">
+          <svg viewBox="0 0 720 300" class="w-full text-ink-700" style="min-width:720px" role="img" aria-labelledby="psicodelicos-vias-titulo psicodelicos-vias-desc">
+            <title id="psicodelicos-vias-titulo">Onde cada etapa da evidência de psicodélicos assistidos para quando encontra a regra brasileira</title>
+            <desc id="psicodelicos-vias-desc">Três blocos em sequência. Primeiro bloco, evidência clínica: fase 2b publicada em 2022 com 233 adultos e fase 3 anunciada em 2026, além de um ensaio brasileiro com ayahuasca e 29 pacientes em 2019. Segundo bloco, regulação fora do Brasil: a psilocibina segue sem aprovação da FDA e a midomafetamina recebeu Complete Response Letter em 2024 com pedido de novo ensaio de fase 3. Terceiro bloco, Brasil: psilocibina e psilocina permanecem na Lista F2 da Portaria SVS barra MS número 344 de 1998, de uso proscrito, de modo que a oferta clínica fora de pesquisa autorizada não tem via legal.</desc>
+
+            <g class="text-brand-700">
+              <rect x="6" y="8" width="708" height="34" rx="10" fill="none" stroke="currentColor" stroke-width="1.5"></rect>
+              <text x="20" y="31" font-size="15" font-weight="600" fill="currentColor">Da evidência ao consultório: onde o percurso para</text>
+            </g>
+
+            <g stroke="currentColor" fill="none" stroke-width="1.5">
+              <rect x="6" y="60" width="216" height="228" rx="12"></rect> <rect x="252" y="60" width="216" height="228" rx="12"></rect>
+              <rect x="498" y="60" width="216" height="228" rx="12"></rect>
+              <path d="M228 174 L246 174"></path> <path d="M240 168 L246 174 L240 180"></path> <path d="M474 174 L492 174"></path> <path d="M486 168 L492 174 L486 180"></path>
+            </g>
+
+            <g fill="currentColor" font-size="14">
+              <text x="20" y="86" font-size="14" font-weight="600" class="text-ink-900">1. Evidência clínica</text>
+              <text x="20" y="114">Fase 2b, 233 adultos,</text>
+              <text x="20" y="134">MADRS com 6,6 pontos</text>
+              <text x="20" y="154">de diferença (2022)</text>
+              <text x="20" y="184">Fase 3, diferença de</text>
+              <text x="20" y="204">3,8 pontos (2026)</text>
+              <text x="20" y="234">Ayahuasca, 29 pacientes,</text>
+              <text x="20" y="254">resposta de 64% no dia 7</text>
+              <text x="20" y="274" class="text-ink-900">Sinal existe, magnitude cai</text>
+
+              <text x="266" y="86" font-size="14" font-weight="600" class="text-ink-900">2. Regra fora do Brasil</text>
+              <text x="266" y="114">Psilocibina sem</text>
+              <text x="266" y="134">aprovação da FDA</text>
+              <text x="266" y="164">Midomafetamina com</text>
+              <text x="266" y="184">Complete Response</text>
+              <text x="266" y="204">Letter em 2024</text>
+              <text x="266" y="234">Pedido de ensaio</text>
+              <text x="266" y="254">adicional de fase 3</text>
+              <text x="266" y="274" class="text-ink-900">Nenhuma via aberta</text>
+
+              <text x="512" y="86" font-size="14" font-weight="600" class="text-ink-900">3. Brasil, hoje</text>
+              <text x="512" y="114">Psilocibina e psilocina</text>
+              <text x="512" y="134">na Lista F2 da Portaria</text>
+              <text x="512" y="154">SVS/MS 344 de 1998</text>
+              <text x="512" y="184">Uso proscrito, sem</text>
+              <text x="512" y="204">prescrição possível</text>
+              <text x="512" y="234">Pesquisa autorizada é</text>
+              <text x="512" y="254">o único cenário legal</text>
+              <text x="512" y="274" class="text-ink-900">Oferta clínica: barrada</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-700 mt-4 leading-relaxed">
+          A figura mostra que a barreira à oferta no Brasil não está no tamanho de efeito medido nos ensaios, e sim em uma classificação de substância que antecede todos eles em mais de duas décadas.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que a reprovação da MDMA em 2024 não foi um acidente de percurso</h2>
+        <p>
+          A Lykos Therapeutics comunicou em 9 de agosto de 2024 que a FDA emitiu Complete Response Letter para a nova aplicação de medicamento de cápsulas de midomafetamina em adultos com transtorno de estresse pós-traumático, informando que não poderia aprovar com os dados submetidos e solicitando um ensaio adicional de fase 3 para estudar melhor segurança e eficácia. O episódio reorganizou as expectativas do campo inteiro.
+        </p>
+        <p>
+          Zamaria, Fernandes-Osterhold, Shedler e Yehuda (Frontiers in Psychology, volume 16, artigo 1505894, fevereiro de 2025) sustentam que o obstáculo é de arquitetura regulatória. Os autores registram que o papel da FDA é aprovar agentes farmacológicos, não psicoterapias, e que a agência provavelmente não estava familiarizada com a complicação de incluir terapia junto com a MDMA, em vez de avaliar a administração da substância como intervenção farmacológica isolada. O argumento central do artigo é que a terapia assistida por psicodélicos é um tratamento combinado e uma intervenção relacional.
+        </p>
+        <p>
+          A consequência para quem lê no Brasil: mesmo que uma agência estrangeira aprove a molécula amanhã, o componente psicoterapêutico continuará sem aprovação regulatória equivalente, porque nenhuma agência de medicamentos aprova psicoterapia. Quem espera um selo único que autorize o pacote inteiro está esperando um documento que o desenho institucional não produz. A leitura de <a href="/metodos/tcc">protocolos psicoterápicos já consolidados</a> e do que os torna auditáveis ajuda a entender o descompasso.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O Brasil pesquisou outra molécula, e isso muda a leitura</h2>
+        <p>
+          O ensaio clínico brasileiro de referência não usou psilocibina. Palhano-Fontes e colegas (Psychological Medicine, volume 49, número 4, páginas 655 a 663, 2019, registro NCT02914769) conduziram ensaio randomizado, duplo-cego e controlado por placebo com ayahuasca em 29 pacientes com depressão resistente ao tratamento, em dose única. O MADRS foi significativamente menor no grupo ativo no dia 1, no dia 2 (p igual a 0,04) e no dia 7 (p menor que 0,0001), com d de Cohen de 0,84 no dia 1, 0,84 no dia 2 e 1,49 no dia 7. A taxa de resposta no dia 7 foi de 64% contra 27% (p igual a 0,04), e a remissão foi de 36% contra 7% (p igual a 0,054).
+        </p>
+        <p>
+          Amostra de 29 pacientes e seguimento de sete dias delimitam o que esse ensaio autoriza afirmar: sinal antidepressivo agudo, sem informação sobre manutenção. Citar o tamanho de efeito de 1,49 ao lado dos resultados de fase 3 internacionais, sem dizer que um mede sete dias e o outro mede seis semanas, transforma dois achados legítimos em uma comparação sem sentido. O portal reúne outros casos desse tipo de leitura cruzada na <a href="/evidencias">seção de evidências</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">O que cabe e o que não cabe ao psicólogo hoje</h2>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          A Nota Orientativa CRP06 nº 2/2025, processo nº 570600321.000349/2025-33, aprovada na 2466ª Sessão Plenária Ordinária do CRP SP em 26 de abril de 2025, orienta a categoria sobre considerações éticas e científicas em relação aos psicodélicos e afirma que a aplicação terapêutica dessas substâncias está ainda em fase experimental. O texto se apoia no artigo 1º, alínea b, do Código de Ética Profissional do Psicólogo (Resolução CFP nº 010/2005), na Resolução CFP nº 13/2022, sobre diretrizes para o exercício da psicoterapia, e na Resolução CFP nº 07/2023, sobre atuação laica da Psicologia. Trata-se de norma de conselho regional, com alcance de orientação e não de resolução federal.
+        </p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 mt-4">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3">Conduta</th> <th class="text-left px-4 py-3">Situação diante da regra vigente</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {limitesDoPsicologo.map(l => (
+                <tr><td class="px-4 py-3 text-ink-700">{l.item}</td> <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{l.situacao}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-700 mt-3 leading-relaxed">
+          O critério que organiza a tabela é a capacitação declarável somada à existência de autorização legal para o ato. Quando um dos dois falta, a conduta sai do escopo, ainda que a intenção clínica seja boa. Quem trabalha com esses quadros encontra em <a href="/areas/psicologia-clinica">psicologia clínica</a> o mapa de competências que sustenta a decisão, e em <a href="/regulacao">regulação</a> a lista de normas que a delimitam.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que ainda não está resolvido</h2>
+        <p>
+          Três lacunas seguem abertas. A primeira é a manutenção do efeito: os desfechos primários publicados medem semanas, e depressão resistente é condição de anos. A segunda é o componente psicoterápico, que nenhum dos ensaios isolou como variável independente, o que impede dizer quanto do resultado vem da substância e quanto vem do acompanhamento durante a sessão. A terceira é a segurança em população com risco suicida, presente em todos os braços do ensaio de fase 2b.
+        </p>
+        <p>
+          Para o profissional brasileiro, a decisão prática de 2026 é de preparo, não de oferta. Dominar avaliação de desfecho, manejo de risco e protocolos já autorizados para os mesmos quadros é o que permitirá atuar com competência se e quando a regra mudar. Quem atende quadros de trauma encontra base aplicável em <a href="/guias/manejo-trauma-complexo-cptsd">manejo de trauma complexo</a>, e quem organiza serviço deve observar como a Psicologia vem tratando outras fronteiras técnicas em <a href="/guias/uso-etico-ia-clinica">uso ético de IA na clínica</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none"><span class="font-semibold text-ink-900">{f.q}</span><svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg></summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A ciência avançou por fases, a regra brasileira não se moveu desde 1998</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Psilocibina e psilocina seguem proscritas, a MDMA foi reprovada pela FDA em 2024 e nenhuma agência de medicamentos aprova psicoterapia. O que o psicólogo brasileiro pode fazer em 2026 é se preparar tecnicamente e ler as normas em primeira mão.
+        </p>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">MBAs IPOG correlatos</h3>
+        <ul class="space-y-1 mt-3">
+          {mbasCorrelatos.map(m => (<li><a href={`/mbas/${m.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{m.shortName}</strong></a></li>))}
+        </ul>
+        <p class="text-xs text-ink-500 mt-3 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes primárias</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/36322843/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Goodwin e colegas (2022) · NEJM</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6378413/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Palhano-Fontes e colegas (2019) · Psychological Medicine</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11835864/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Zamaria e colegas (2025) · Frontiers in Psychology</a></li>
+          <li><a href="https://www.prnewswire.com/news-releases/lykos-therapeutics-announces-complete-response-letter-for-midomafetamine-capsules-for-ptsd-302219182.html" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lykos Therapeutics (2024) · Complete Response Letter</a></li>
+          <li><a href="https://transparencia.cfp.org.br/wp-content/uploads/sites/29/2025/05/SEI_CFP-2171723-Nota-Orientativa-2-Psicodelicos-assinada.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Nota Orientativa CRP06 nº 2/2025</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Leitura relacionada</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/evidencias/terapias-terceira-onda" class="mega-link">Terapias de terceira onda</a></li>
+          <li><a href="/areas/neuropsicologia" class="mega-link">Neuropsicologia</a></li>
+          <li><a href="/metodos/emdr" class="mega-link">EMDR</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

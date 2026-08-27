@@ -6,6 +6,48 @@
 
 ---
 
+## W25 — Sessão 27/08/2026 — 5 waves complementares, 31 páginas inéditas e dois gates mecânicos
+
+### Páginas no ar
+**392 páginas** construídas (era 352 na W24). Sitemap principal com 389 URLs, 18 sitemaps referenciados. `astro check` 0 erros e 0 warnings; `npm run build` completo.
+
+### Contexto
+Demanda do CEO Alexandre Caramaschi: soltar mais cinco waves complementares com agentes especialistas em paralelo, populando menus e submenus com profundidade, UX e navegabilidade em mobile e desktop, técnicas de GEO, referência sutil ao IPOG e tom do curso-factory. Forçar os cinco LLMs orquestrados, buscar papers recentes de 2026 e reforçar o menu ligado a redes sociais com conteúdo reaproveitável em Quora, Medium e afins.
+
+### Método
+- **Orquestrador multi-LLM executado de verdade.** `cli.py doctor` verde (cinco providers comprando token), `cli.py run --force-5-llm` com 14 tarefas em sete waves, 14/14 OK, cobertura 4/4 dos providers canônicos mais o xAI, US$ 3,54 em 29 minutos (teto de US$ 25). Relatório em `execution_20260827_071548.json`.
+- **O próprio quality gate do orquestrador reprovou os textos que ele escreveu** (`quality_flag=REPROVADO`): zero CTA IPOG nas três peças, travessão em título, abertura por meta-comentário e JSON-LD ausente. Confirmou o anti-padrão #2 do CLAUDE.md por outro caminho: o orquestrador serve para plano, pesquisa e escuta, não para copy final.
+- **O mapa de lacunas do Gemini (t4) não era confiável**: afirmou que o portal "restringe o tema à TCC padrão" com `/metodos/act`, `/metodos/dbt` e `/comparativos/act-vs-tcc` no ar. O mapa usado foi a varredura própria por slug e por menção. A única lacuna dele que confere e segue aberta é psicologia forense e laudos periciais.
+- **Pesquisa ancorada em três dossiês** com regra de fonte aberta e conferida: A (jogo e apostas online, dependências, formação; 30 fontes), B (insônia e TCC-I, dor crônica, psico-oncologia e paliativos, psicologia do trânsito, psicodélicos e neuromodulação; 61 fontes), C (GEO e repurposing por canal; 31 fontes). Itens sem fonte aberta ficaram marcados e proibidos de publicação.
+- **Escritores proibidos de pesquisar.** Onze agentes especialistas em paralelo, cada um com o `WRITER_CONTEXT` canônico, o dossiê correspondente e o gate para rodar por conta.
+
+### Entregues (31 páginas inéditas)
+- **Wave 1 — Guias (5):** transtorno do jogo por apostas online, TCC-I em insônia crônica, manejo psicológico da dor crônica, psico-oncologia e cuidados paliativos, perícia em avaliação psicológica no trânsito.
+- **Wave 2 — Métodos e intervenções (4):** `/metodos/entrevista-motivacional`, `/intervencoes/reducao-de-danos`, `/intervencoes/prevencao-de-recaida`, `/intervencoes/cuidados-paliativos-e-fim-de-vida`. O submenu de intervenções saiu de cinco para oito páginas.
+- **Wave 3 — Comparativos e FAQs (8):** cassino online vs aposta esportiva, Entrevista Motivacional vs TCC no jogo, TCC-I vs higiene do sono vs fármaco, ACT vs TCC na dor crônica; FAQs de transtorno do jogo, insônia, dor crônica e avaliação no trânsito.
+- **Wave 4 — Evidências e tema (4):** apostas online e saúde mental, psicodélicos assistidos, neuromodulação em depressão, psicologia do trânsito como mercado e regulação.
+- **Wave 5 — Conteúdo e social (10):** oito peças reaproveitáveis novas na biblioteca (de 57 para 65 trechos), mais duas ferramentas editoriais inéditas, `/conteudo-social/perguntas-que-a-ia-responde` e `/conteudo-social/dores-que-o-publico-descreve-2026`. As seis páginas de canal foram atualizadas com as regras vigentes de 2026.
+
+### Territórios NET-NEW abertos
+Transtorno do jogo e apostas online (zero antes); insônia crônica e TCC-I (zero antes); dor crônica (zero antes); psico-oncologia e cuidados paliativos (zero antes); avaliação psicológica no trânsito, que tinha página de área órfã e nenhuma profundidade abaixo dela.
+
+### Gates mecânicos novos
+- `scripts/lint-editorial.py`: transforma a Diretriz Editorial em cheque com arquivo e linha (clichê, anti-padrão 26, escassez fabricada, verificação virando conteúdo, atribuição anônima, negar para afirmar, travessão em prosa, aspas curvas, acentuação no texto visível, naming canônico, tabela sem contêiner rolável, SVG sem nome acessível). Calibrado contra falso positivo: ignora frontmatter, expressão JSX, valor de chave de título e rótulo curto de link.
+- `scripts/lint-links.py`: resolve todo `href` interno contra as rotas que `src/pages` realmente produz. Pegou cinco links mortos durante a onda.
+- **Baseline medido do portal antes da W25: 323 bloqueios em 361 arquivos, dos quais 306 são travessão em prosa herdado de ondas anteriores.** As 31 páginas novas entraram em zero bloqueio, e os 40 travessões dos arquivos tocados nesta onda foram consertados.
+
+### Correção de regressão herdada
+`src/components/Icon.astro` quebrava o `astro check` com `ts(2322)` desde os commits anteriores a esta sessão. A união dos dois literais de acessibilidade não casava com `SVGAttributes`. Tipado como `Record<string, string>`, o portal voltou a 0 erro.
+
+### Decisão editorial de privacidade
+A escuta social do orquestrador trouxe falas de pessoas identificáveis descrevendo sofrimento psíquico, com nome de usuário e link de post. Nada disso foi publicado. A página de dores descreve o padrão em terceira pessoa e no agregado, e o único número institucional publicado é o do INSS (546.254 benefícios por transtornos mentais em 2025, alta de 15,66%, via Agência Brasil de 20/08/2026).
+
+### Pendências
+- **Dívida editorial herdada:** 306 arquivos ainda com travessão em prosa fora dos tocados nesta onda. O gate agora mede; a correção pede uma onda própria, porque `--fix` cego quebraria sentido.
+- **Wiki vencida:** as 18 páginas da camada `wiki/` estão com 93 dias sem atualização e a review mensal prevista para 26/06/2026 não aconteceu. `lint.py` acusa 0 órfão, 0 cross-link quebrado e 0 frontmatter faltando, mas 18 stale.
+- **Lacuna real ainda aberta:** psicologia forense e laudos periciais, com página de área existente e nenhuma profundidade abaixo. É a próxima wave natural.
+- **IndexNow ainda não submetido** para as URLs novas.
+
 ## W24 — Sessão 25/06/2026 — 5 waves complementares 2026 (19 páginas inéditas) + reforço do menu social
 
 ### Páginas no ar

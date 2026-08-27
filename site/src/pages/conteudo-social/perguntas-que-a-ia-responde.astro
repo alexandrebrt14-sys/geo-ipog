@@ -1,0 +1,345 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const datePublished = '2026-08-27';
+
+const perguntas = [
+  { q: 'Vale mais a pena um MBA ou uma especialização em Psicologia?', intencao: 'Aluno em decisão', canal: 'Quora', rota: '/comparativos/mba-vs-especializacao', rotulo: 'Comparativo MBA e especialização' },
+  { q: 'Pós em Psicologia a distância tem o mesmo valor que presencial?', intencao: 'Aluno em decisão', canal: 'Quora', rota: '/comparativos/ead-vs-presencial-pos-psicologia', rotulo: 'Comparativo a distância e presencial' },
+  { q: 'Quais são os tipos de pós-graduação em Psicologia no Brasil?', intencao: 'Aluno em decisão', canal: 'Medium', rota: '/tipos-de-pos-graduacao', rotulo: 'Tipos de pós-graduação' },
+  { q: 'Preciso de registro no CFP para atuar depois da pós?', intencao: 'Aluno em decisão', canal: 'Quora', rota: '/regulacao', rotulo: 'Regulação da profissão' },
+  { q: 'Psicólogo pode assinar laudo de TDAH em adulto?', intencao: 'Profissional em atualização', canal: 'Reddit', rota: '/faq/avaliacao-psicologica-laudos-faq', rotulo: 'FAQ de laudos psicológicos' },
+  { q: 'Como avaliar TDAH em adulto sem fechar diagnóstico só com a triagem?', intencao: 'Profissional em atualização', canal: 'Medium', rota: '/guias/avaliacao-tdah-adulto', rotulo: 'Guia de TDAH em adulto' },
+  { q: 'Por que tantas mulheres recebem diagnóstico de TDAH depois dos 30 anos?', intencao: 'Familiar', canal: 'Substack', rota: '/guias/avaliacao-tdah-mulheres-adultas', rotulo: 'Guia de TDAH em mulheres adultas' },
+  { q: 'Autismo em adulto sem deficiência intelectual, como se avalia?', intencao: 'Familiar', canal: 'Reddit', rota: '/guias/avaliacao-tea-adulto', rotulo: 'Guia de TEA em adulto' },
+  { q: 'O que a NR-1 obriga a empresa a fazer em 2026?', intencao: 'Gestor', canal: 'LinkedIn', rota: '/faq/nr1-faq', rotulo: 'FAQ da NR-1' },
+  { q: 'Quem responde pelo mapeamento de risco psicossocial dentro da empresa?', intencao: 'Gestor', canal: 'LinkedIn', rota: '/guias/implementar-nr1-em-empresa', rotulo: 'Guia de implementação da NR-1' },
+  { q: 'Burnout dá direito a afastamento pelo INSS?', intencao: 'Profissional em atualização', canal: 'Quora', rota: '/guias/afastamento-inss-burnout-nexo-qd85-2026', rotulo: 'Guia de nexo e afastamento' },
+  { q: 'Qual a diferença entre burnout e depressão?', intencao: 'Familiar', canal: 'Quora', rota: '/comparativos/burnout-vs-depressao-vs-cptsd', rotulo: 'Comparativo burnout e depressão' },
+  { q: 'A TCC continua sendo a terapia com mais evidência acumulada?', intencao: 'Aluno em decisão', canal: 'Medium', rota: '/metodos/tcc', rotulo: 'Página do método TCC' },
+  { q: 'ACT ou TCC: qual escolher como base da formação?', intencao: 'Aluno em decisão', canal: 'Quora', rota: '/comparativos/tcc-vs-act-formacao-pos', rotulo: 'Comparativo TCC e ACT na formação' },
+  { q: 'Como funciona o stepped care em serviço público de saúde mental?', intencao: 'Gestor', canal: 'LinkedIn', rota: '/intervencoes/stepped-care', rotulo: 'Intervenção stepped care' },
+  { q: 'Psicólogo do trânsito precisa de credenciamento para avaliar condutor?', intencao: 'Aluno em decisão', canal: 'Reddit', rota: '/areas/psicologia-transito-trafego', rotulo: 'Psicologia do trânsito e tráfego' },
+  { q: 'Vale a pena migrar da clínica para a Psicologia organizacional?', intencao: 'Aluno em decisão', canal: 'LinkedIn', rota: '/carreira/psicologia-organizacional', rotulo: 'Carreira organizacional' },
+  { q: 'Posso usar IA para redigir nota clínica sem ferir a LGPD?', intencao: 'Profissional em atualização', canal: 'X', rota: '/faq/lgpd-prontuario-ia-pratica-faq', rotulo: 'FAQ de LGPD e prontuário' },
+  { q: 'Chatbot de IA substitui terapeuta?', intencao: 'Familiar', canal: 'Reddit', rota: '/comparativos/ia-vs-terapeuta-humano', rotulo: 'Comparativo IA e terapeuta humano' },
+  { q: 'O que o CFP permite no uso de IA dentro do atendimento?', intencao: 'Profissional em atualização', canal: 'Medium', rota: '/guias/uso-etico-ia-clinica', rotulo: 'Guia de uso ético de IA' },
+  { q: 'Neuropsicologia e reabilitação neuropsicológica são a mesma coisa?', intencao: 'Aluno em decisão', canal: 'Quora', rota: '/comparativos/neuropsicologia-vs-reabilitacao', rotulo: 'Comparativo das duas rotas' },
+  { q: 'Como escolher supervisor clínico depois de terminar a pós?', intencao: 'Profissional em atualização', canal: 'Substack', rota: '/guias/escolher-supervisor-clinico', rotulo: 'Guia de escolha de supervisor' },
+  { q: 'Psicologia positiva aplicada à liderança tem formação própria?', intencao: 'Gestor', canal: 'LinkedIn', rota: '/areas/psicologia-positiva', rotulo: 'Psicologia positiva' },
+  { q: 'Onde encontro estas respostas já formatadas por canal?', intencao: 'Profissional em atualização', canal: 'Substack', rota: '/conteudo-social/biblioteca', rotulo: 'Biblioteca de snippets' }
+];
+
+const canais = [
+  { nome: 'Quora', regra: 'A política de perguntas e respostas exige que o essencial da resposta seja compreensível sem sair do Quora. Resposta que só faz sentido depois de navegar até um site externo, com aparência promocional, pode ser recolhida ou removida. Afiliação relevante precisa ser declarada na resposta ou na credencial, e link de afiliado é proibido sem exceção.', obriga: 'Escreva a resposta inteira dentro da plataforma, com a tabela e o dado no corpo. O teaser com veja o artigo completo no meu site é a hipótese literal de recolhimento prevista na política. Um ou dois links próprios por resposta longa, sempre dentro de um trecho útil.', fonte: 'Quora Help Center, Question and Answer Policies' },
+  { nome: 'Medium', regra: 'A política de conteúdo de IA do Medium classifica como plágio o uso de IA para reformular, resumir ou remixar conteúdo existente quando o resultado se parece com o original em conceito, estrutura ou elementos essenciais. Texto gerado por IA sem rótulo recebe distribuição Network Only, que alcança apenas seguidores e assinantes diretos, e texto gerado por IA não pode ficar atrás do paywall do Partner Program.', obriga: 'Repurposing automático está fora. Cada peça no Medium nasce escrita por humano, com ângulo próprio, e não como versão reescrita da página do portal. Havendo assistência de IA, a frase de rótulo entra nos dois primeiros parágrafos. Imagem gerada por IA leva a identificação na legenda. Republicação declarada usa canonical apontando para o original.', fonte: 'Medium Help Center, Artificial Intelligence (AI) content policy' },
+  { nome: 'LinkedIn', regra: 'As Professional Community Policies proíbem conteúdo comercial ou promocional não solicitado e mensagens gratuitamente repetitivas ou de conteúdo similar. Proíbem também combinar curtidas e compartilhamentos com terceiros para inflar engajamento, o que veta pods de forma nominal. E pedem esforço explícito de originalidade por peça.', obriga: 'Publique nativo e completo, com o post ou o artigo carregando o argumento inteiro. Link externo cru é o padrão de menor distribuição. Nada de variações mínimas do mesmo texto em série. No índice de visibilidade da Semrush o LinkedIn aparece entre as fontes mais citadas, com 89 mil URLs únicas citadas em respostas de IA no recorte de 325 mil prompts entre janeiro e fevereiro de 2026, o que faz do canal uma via de citação, e não só de alcance.', fonte: 'LinkedIn Professional Community Policies; Semrush AI Visibility Index 2026' },
+  { nome: 'Substack', regra: 'Desde 22 de julho de 2026 existe checagem opcional de IA em parceria com a Pangram: qualquer leitor pode acionar a varredura em post, nota, resposta ou comentário acima de 100 palavras e receber uma estimativa de quanto do texto é humano. O resultado não aparece sozinho, precisa ser pedido. Há ainda a declaração opcional de processo, em que o autor descreve como produz.', obriga: 'O canal é o mais permissivo do conjunto em regra escrita e o mais exposto em reputação, porque a auditoria fica na mão do leitor. Rode a checagem no rascunho antes de publicar. Preencha a declaração de processo. E deixe a peça fora do paywall quando o objetivo for citação, porque conteúdo pago não é extraível pelo motor.', fonte: 'TechCrunch, 22/07/2026, sobre a parceria Substack e Pangram' },
+  { nome: 'Reddit', regra: 'O guia de autopromoção do Reddit publica a proporção de 10%: no máximo um décimo das suas postagens e conversas deve apontar para conteúdo próprio. Votar apenas no próprio domínio ou pedir voto é manipulação de voto, com banimento de conta e, em caso extremo, do domínio. O guia pede identificação transparente de autoria.', obriga: 'Participe antes de publicar e leia as regras do subreddit, que se sobrepõem à regra geral. Identifique-se ao comentar sobre o próprio material. E trate o canal como camada, nunca como base: em 22 de julho de 2026 a CNBC reportou, com pronunciamento do Reddit, que o acordo de licenciamento com o Google, de US$ 60 milhões por ano, está terminando e que a plataforma discute cortar o acesso ao seu conteúdo para uso em IA. A ação caiu 8% no dia.', fonte: 'Reddit wiki de autopromoção; CNBC, 22/07/2026' },
+  { nome: 'X', regra: 'Aqui a trava não é de política, é de mecanismo. A ferramenta x_search do Grok, documentada pela xAI, faz busca por palavra-chave, busca semântica, busca por usuário e leitura de thread sobre o corpus público do X, e devolve citação apontando para o post de origem. O corpus é fechado a rastreador externo.', obriga: 'Publicar no X é a única entrada nessa base. Escreva o argumento inteiro na thread, com o número e a fonte na mesma frase, porque a thread é a unidade que o motor recupera. Conta protegida sai da base. Post que só carrega link não deixa nada para o modelo absorver.', fonte: 'xAI Docs, x_search' }
+];
+
+const naoAlavanca = [
+  { item: 'llms.txt', dado: 'A SE Ranking varreu cerca de 300 mil domínios em novembro de 2025 e encontrou adoção de 10,13%, sem correlação entre ter o arquivo e frequência de citação. Ao remover a variável de um modelo XGBoost, a acurácia preditiva melhorou.', leitura: 'Custo de publicar é quase zero e risco é zero, então manter o arquivo não é erro. Prometer ganho de citação a partir dele é.' },
+  { item: 'FAQPage como rich result', dado: 'O Google deixou de exibir o recurso na busca em 7 de maio de 2026 e removeu a documentação em junho de 2026. A marcação continua válida no Schema.org e não causa problema se permanecer na página.', leitura: 'A marcação segue útil para descrever a página como entidade. O que acabou foi a expansão de resultado e o ganho de cliques que a justificava.' },
+  { item: 'speakable', dado: 'Continua em beta na documentação do Google, restrito a conteúdo em inglês e a usuários nos Estados Unidos.', leitura: 'Para conteúdo em português do Brasil, o investimento é zero em 2026.' },
+  { item: 'Otimizar para o Bing pensando no ChatGPT', dado: 'A OpenAI documenta três agentes com finalidades separadas: OAI-SearchBot para as funcionalidades de busca do ChatGPT, GPTBot para coleta de treino e ChatGPT-User para busca disparada pelo usuário. Sites que bloqueiam o OAI-SearchBot não aparecem nas respostas de busca do ChatGPT.', leitura: 'A OpenAI opera índice próprio. O IndexNow segue valendo para Bing e Copilot, e liberar o OAI-SearchBot é a decisão que governa a presença no ChatGPT. Bloquear treino e liberar busca são escolhas independentes.' }
+];
+
+const anatomia = [
+  { parte: 'Pergunta literal', regra: 'O título repete a pergunta como o leitor a digita, sem reescrita de marketing. É a chave pela qual o motor casa a subconsulta.' },
+  { parte: 'Primeira frase resolutiva', regra: 'A abertura responde, com sujeito, condição e exceção dentro da mesma sentença. Quem recorta um parágrafo leva a resposta inteira.' },
+  { parte: 'Evidência com fonte colada', regra: 'O número vem acompanhado de autor e ano na mesma frase. Exemplo: das páginas citadas em AI Overviews, 38% também estavam no top 10 orgânico em março de 2026, contra 76% em julho de 2025 (Ahrefs, 2026).' },
+  { parte: 'Um link, dentro de trecho útil', regra: 'O link aponta para a página do portal que aprofunda o ponto e aparece depois de a resposta já estar completa, nunca no lugar dela.' }
+];
+
+const faqs = [
+  { q: 'Ranquear em primeiro lugar ainda garante citação em resposta de IA?', a: 'Não. Segundo o levantamento da Ahrefs sobre 863 mil palavras-chave e 4 milhões de URLs, publicado em março de 2026, apenas 38% das páginas citadas em AI Overviews também estavam no top 10 orgânico da mesma consulta, contra 76% em julho de 2025. O restante se divide entre posições 11 a 100 (31,2%) e páginas fora do top 100 (31,0%). A explicação técnica é a decomposição da pergunta em subconsultas, que privilegia páginas fortes em vários ângulos ao mesmo tempo.' },
+  { q: 'Posso passar um artigo do portal por um modelo de IA e publicar no Medium?', a: 'Não sem risco. A política de conteúdo de IA do Medium classifica como plágio o uso de IA para reformular, resumir ou remixar conteúdo existente quando o resultado preserva conceito, estrutura ou elementos essenciais do original. Além disso, texto gerado por IA sem rótulo cai em distribuição Network Only e não pode ficar atrás do paywall do Partner Program. A rota permitida é peça original escrita por humano, com ângulo próprio, ou republicação declarada com canonical apontando para o original.' },
+  { q: 'Por que a resposta no Quora precisa ser completa dentro da plataforma?', a: 'Porque a política do Quora diz que o essencial da resposta deve ser compreensível sem sair da plataforma, e prevê recolhimento ou remoção para respostas que dependem de navegação externa com aparência promocional. Na prática, o formato teaser mais link é o que a regra descreve como violação, e é justamente o formato que a maioria das estratégias de reaproveitamento usa.' },
+  { q: 'Qual o limite de autopromoção no Reddit?', a: 'O guia de autopromoção do Reddit publica a proporção de 10%: no máximo um décimo das postagens e conversas deve apontar para conteúdo próprio. Votar somente no próprio domínio ou pedir voto configura manipulação de voto, com banimento de conta e, em casos extremos, do domínio. Vale lembrar que a estabilidade do canal mudou: em 22 de julho de 2026 a CNBC reportou que o acordo de licenciamento com o Google, de US$ 60 milhões por ano, está terminando.' },
+  { q: 'Publicar llms.txt aumenta a chance de ser citado?', a: 'Não há evidência de que aumente. O estudo da SE Ranking sobre cerca de 300 mil domínios, de novembro de 2025, mediu adoção de 10,13% e nenhuma correlação com frequência de citação, e a acurácia de um modelo XGBoost melhorou ao remover a variável. A documentação do Google sobre recursos de IA afirma que não é preciso criar arquivos de texto para IA. Publicar não custa e não prejudica; contar com isso como alavanca prejudica o planejamento.' },
+  { q: 'Existe medição de quais domínios a IA cita em português do Brasil?', a: 'Não há estudo publicado com esse recorte. Semrush, Profound e Ahrefs medem mercado americano ou global, sem quebra por idioma. Qualquer afirmação sobre quais domínios a IA cita no Brasil é extrapolação de dado em inglês, e a saída para quem quiser autoridade nesse ponto é medir e publicar o próprio levantamento.' },
+  { q: 'Como este banco de perguntas se conecta a uma formação em Psicologia?', a: 'O banco só funciona quando quem responde domina o conteúdo, porque a resposta citável exige evidência com fonte e limite de escopo na mesma frase. Para quem quer sustentar esse nível técnico em Psicologia organizacional, avaliação ou reabilitação neuropsicológica, o IPOG mantém pós-graduação lato sensu nessas trilhas. Consulte ipog.edu.br para a grade vigente.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Banco de perguntas que a IA responde sobre pós em Psicologia',
+  description: 'Banco editorial com 24 perguntas reais feitas a motores generativos sobre pós-graduação em Psicologia e clínica, com intenção, canal de publicação, página do portal que responde e as regras vigentes de Quora, Medium, LinkedIn, Substack, Reddit e X em 2026.',
+  inLanguage: 'pt-BR',
+  datePublished,
+  dateModified: datePublished,
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  mainEntityOfPage: `${SITE.url}/conteudo-social/perguntas-que-a-ia-responde`
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  inLanguage: 'pt-BR',
+  mainEntity: faqs.slice(0, 6).map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Conteúdo e Social', item: `${SITE.url}/conteudo-social` },
+    { '@type': 'ListItem', position: 3, name: 'Perguntas que a IA responde', item: `${SITE.url}/conteudo-social/perguntas-que-a-ia-responde` }
+  ]
+};
+---
+
+<Base
+  title="Perguntas que a IA responde: banco de perguntas reais sobre pós em Psicologia"
+  description="Banco com 24 perguntas reais feitas a motores generativos sobre pós-graduação em Psicologia e clínica, com intenção do leitor, canal onde a pergunta rende, página do portal que responde e a regra vigente de Quora, Medium, LinkedIn, Substack, Reddit e X em 2026.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Conteúdo e Social', href: '/conteudo-social' },
+        { label: 'Perguntas que a IA responde' }
+      ]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Conteúdo e Social · Banco de perguntas</span>
+        <h1 class="section-h text-3xl sm:text-4xl mt-2">Perguntas que a IA responde sobre pós em Psicologia</h1>
+        <TLDR
+          resposta="Ranquear em primeiro lugar deixou de decidir a citação: em março de 2026, só 38% das páginas citadas em AI Overviews estavam no top 10 orgânico, contra 76% em julho de 2025. O que passou a decidir é cobrir a mesma pergunta por vários ângulos, com evidência e fonte na mesma frase. Este banco lista 24 perguntas reais, a intenção de quem pergunta, o canal onde a resposta rende e a página do portal que já responde."
+          fontes={['Ahrefs via Search Engine Journal, 03/2026', 'Google Search Central, recursos de IA', 'Quora, Medium, LinkedIn, Reddit e xAI, políticas vigentes']}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8">
+      <div class="prose prose-ink max-w-none">
+        <p>
+          A primeira posição virou um sinal entre vários. O levantamento da Ahrefs sobre 863 mil palavras-chave e 4 milhões de URLs, publicado em março de 2026, mediu que apenas 38% das páginas citadas em AI Overviews também estavam no top 10 orgânico da mesma consulta, contra 76% em julho de 2025. Quase dois terços das citações vêm de fora do top 10: 31,2% das posições 11 a 100 e 31,0% de páginas fora do top 100. Esse número muda a unidade de trabalho editorial, porque a página deixa de competir por uma palavra-chave e passa a competir por cobertura de um tema.
+        </p>
+        <p>
+          O mecanismo por trás disso tem nome: o motor decompõe a pergunta original em subconsultas e privilegia as páginas que aparecem bem em várias delas ao mesmo tempo. Com o Gemini 3 no lugar do modelo anterior a partir de 27 de janeiro de 2026, a média de fontes por resposta subiu 31,8%, de 11,55 para 15,22, e 42,4% dos domínios antes citados foram substituídos (SE Ranking, via Conversion). Mais espaço na resposta, e menos previsibilidade sobre quem ocupa esse espaço.
+        </p>
+        <p>
+          A consequência prática cabe numa frase: escrever para a pergunta rende mais que escrever para a palavra-chave. Um banco de perguntas reais, com a resposta redigida e a fonte colada, é ao mesmo tempo matéria-prima de publicação em Quora, Medium, LinkedIn, Substack, Reddit e X, e material extraível pelo motor. O paper de absorção de citação (Zhang, He e Yao, 2026), com 21.143 citações válidas em 602 prompts controlados, separa duas coisas que costumam ser confundidas: aparecer na lista de fontes e contribuir linguagem, evidência ou estrutura para o texto da resposta. Número solto é descartável; número com procedência entra no corpo da resposta.
+        </p>
+      </div>
+
+      <figure class="mt-8">
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-white p-4">
+          <svg viewBox="0 0 720 320" width="720" height="320" role="img" aria-labelledby="perguntas-ia-titulo perguntas-ia-desc" class="min-w-[720px] text-ink-900">
+            <title id="perguntas-ia-titulo">Caminho da pergunta do leitor até a citação na resposta do motor</title>
+            <desc id="perguntas-ia-desc">A pergunta do leitor é decomposta em três subconsultas. Cada subconsulta recupera uma página diferente do portal, que contribui evidência. A resposta citada reúne as três contribuições e exibe as URLs como fonte.</desc>
+            <g fill="none" stroke="currentColor" stroke-width="1.5" class="text-brand-600" opacity="0.75">
+              <path d="M164 160 L196 62" /><path d="M164 160 L196 160" /><path d="M164 160 L196 258" />
+              <path d="M350 62 L382 62" /><path d="M350 160 L382 160" /><path d="M350 258 L382 258" />
+              <path d="M546 62 L578 160" /><path d="M546 160 L578 160" /><path d="M546 258 L578 160" />
+            </g>
+            <g class="text-brand-700">
+              <rect x="12" y="124" width="152" height="72" rx="14" fill="none" stroke="currentColor" stroke-width="2" />
+              <text x="88" y="150" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">Pergunta</text>
+              <text x="88" y="170" text-anchor="middle" font-size="15" fill="currentColor">do leitor</text>
+              <text x="88" y="188" text-anchor="middle" font-size="14" fill="currentColor" opacity="0.85">23 palavras</text>
+              <rect x="578" y="118" width="130" height="84" rx="14" fill="none" stroke="currentColor" stroke-width="2" />
+              <text x="643" y="146" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">Resposta</text>
+              <text x="643" y="166" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">citada</text>
+              <text x="643" y="188" text-anchor="middle" font-size="14" fill="currentColor" opacity="0.85">3 URLs de fonte</text>
+            </g>
+            <g class="text-ink-700" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="196" y="30" width="154" height="64" rx="12" /><rect x="196" y="128" width="154" height="64" rx="12" /><rect x="196" y="226" width="154" height="64" rx="12" />
+            </g>
+            <g class="text-ink-700" fill="currentColor" text-anchor="middle">
+              <text x="273" y="56" font-size="15">Subconsulta 1</text><text x="273" y="76" font-size="14" opacity="0.85">definição</text>
+              <text x="273" y="154" font-size="15">Subconsulta 2</text><text x="273" y="174" font-size="14" opacity="0.85">comparação</text>
+              <text x="273" y="252" font-size="15">Subconsulta 3</text><text x="273" y="272" font-size="14" opacity="0.85">regra vigente</text>
+            </g>
+            <g class="text-ink-900" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="382" y="30" width="164" height="64" rx="12" /><rect x="382" y="128" width="164" height="64" rx="12" /><rect x="382" y="226" width="164" height="64" rx="12" />
+            </g>
+            <g class="text-ink-900" fill="currentColor" text-anchor="middle">
+              <text x="464" y="56" font-size="15">Página de área</text><text x="464" y="76" font-size="14" opacity="0.85">evidência 1</text>
+              <text x="464" y="154" font-size="15">Comparativo</text><text x="464" y="174" font-size="14" opacity="0.85">evidência 2</text>
+              <text x="464" y="252" font-size="15">FAQ do portal</text><text x="464" y="272" font-size="14" opacity="0.85">evidência 3</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="mt-3 text-sm text-ink-600 max-w-2xl">
+          O ganho não está em vencer uma consulta, está em ocupar três das subconsultas com páginas diferentes do mesmo domínio. Por isso o banco associa cada pergunta a uma página específica, e não à página mais forte do portal.
+        </figcaption>
+      </figure>
+
+      <h2 class="section-h text-2xl mt-12 mb-2">Quais perguntas os leitores fazem aos motores generativos?</h2>
+      <p class="text-ink-700 mb-5 max-w-3xl">
+        As 24 perguntas abaixo cobrem quatro intenções distintas, e a intenção decide o tom da resposta antes do canal. Aluno em decisão quer critério; profissional em atualização quer protocolo; gestor quer obrigação e prazo; familiar quer diferenciação de quadros sem linguagem técnica. A última coluna aponta a página do portal que já sustenta a resposta, porque a resposta publicada fora precisa ter para onde apontar depois de resolver o mérito.
+      </p>
+      <div class="overflow-x-auto rounded-2xl border border-surface-200">
+        <table class="min-w-full text-sm">
+          <thead class="bg-surface-50 text-ink-700 text-left">
+            <tr>
+              <th class="px-4 py-3 font-semibold">Pergunta</th>
+              <th class="px-4 py-3 font-semibold">Intenção</th>
+              <th class="px-4 py-3 font-semibold">Canal</th>
+              <th class="px-4 py-3 font-semibold">Página que responde</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-200 bg-white">
+            {perguntas.map(p => (
+              <tr class="align-top">
+                <td class="px-4 py-3 text-ink-900 font-medium">{p.q}</td>
+                <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{p.intencao}</td>
+                <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{p.canal}</td>
+                <td class="px-4 py-3"><a class="text-brand-700 font-semibold underline underline-offset-2" href={p.rota}>{p.rotulo}</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-h text-2xl mt-12 mb-2">Como é uma resposta citável?</h2>
+      <p class="text-ink-700 mb-5 max-w-3xl">
+        Uma resposta citável tem quatro partes fixas, e a ordem importa porque o motor recorta parágrafo, não página inteira. O paper GEO-SFE (Yu, Yang, Ding e Sato, 2026) mediu ganho de 17,3% em taxa de citação apenas com engenharia de estrutura em seis motores generativos, sem mudar o conteúdo factual.
+      </p>
+      <div class="overflow-x-auto rounded-2xl border border-surface-200">
+        <table class="min-w-full text-sm">
+          <thead class="bg-surface-50 text-ink-700 text-left">
+            <tr>
+              <th class="px-4 py-3 font-semibold">Parte</th>
+              <th class="px-4 py-3 font-semibold">O que ela exige</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-200 bg-white">
+            {anatomia.map(a => (
+              <tr class="align-top">
+                <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{a.parte}</td>
+                <td class="px-4 py-3 text-ink-700">{a.regra}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-h text-2xl mt-12 mb-2">Qual a regra vigente de cada canal em 2026?</h2>
+      <p class="text-ink-700 mb-5 max-w-3xl">
+        Três das seis regras abaixo mudaram o suficiente para invalidar rotinas de reaproveitamento que ainda circulam: a política de IA do Medium trata reescrita derivativa como plágio, o Quora pune resposta que só faz sentido fora da plataforma, e o Reddit combina a proporção de 10% com um contrato de licenciamento em disputa desde julho de 2026.
+      </p>
+      <div class="space-y-4">
+        {canais.map(c => (
+          <div class="rounded-2xl border border-surface-200 bg-white p-6">
+            <h3 class="font-display font-semibold text-lg text-ink-900">{c.nome}</h3>
+            <p class="mt-2 text-ink-700 text-sm leading-relaxed"><span class="font-semibold text-ink-900">Regra vigente.</span> {c.regra}</p>
+            <p class="mt-2 text-ink-700 text-sm leading-relaxed"><span class="font-semibold text-ink-900">O que obriga na prática.</span> {c.obriga}</p>
+            <p class="mt-3 text-xs text-ink-600">Fonte: {c.fonte}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="section-h text-2xl mt-12 mb-2">O que não é alavanca de citação?</h2>
+      <p class="text-ink-700 mb-5 max-w-3xl">
+        Quatro táticas concentram orçamento e atenção sem evidência que as sustente. Vale separar o que é inofensivo do que é caro, porque as duas categorias pedem decisões diferentes.
+      </p>
+      <div class="overflow-x-auto rounded-2xl border border-surface-200">
+        <table class="min-w-full text-sm">
+          <thead class="bg-surface-50 text-ink-700 text-left">
+            <tr>
+              <th class="px-4 py-3 font-semibold">Tática</th>
+              <th class="px-4 py-3 font-semibold">O que a fonte primária diz</th>
+              <th class="px-4 py-3 font-semibold">Decisão</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-200 bg-white">
+            {naoAlavanca.map(n => (
+              <tr class="align-top">
+                <td class="px-4 py-3 font-semibold text-ink-900">{n.item}</td>
+                <td class="px-4 py-3 text-ink-700">{n.dado}</td>
+                <td class="px-4 py-3 text-ink-700">{n.leitura}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-h text-2xl mt-12 mb-2">O que ainda não se sabe sobre citação em português do Brasil?</h2>
+      <div class="prose prose-ink max-w-none">
+        <p>
+          Não existe estudo publicado que meça quais domínios os motores generativos citam em consultas em português do Brasil. Os três levantamentos de referência recortam outra coisa: a Semrush analisou 126 milhões de prompts de busca com IA nos Estados Unidos entre janeiro e abril de 2026, a Profound cobriu 680 milhões de citações entre agosto de 2024 e junho de 2025 sem quebra por idioma, e a Ahrefs mediu palavras-chave em base global. Nenhum deles isola o português.
+        </p>
+        <p>
+          Isso torna qualquer afirmação sobre quais domínios a IA cita no Brasil uma extrapolação de dado em inglês. A hipótese de que existe menos concorrência por citação em português, por o pool de fontes ser menor, circula no mercado brasileiro sem medição publicada. Quem quiser autoridade nesse ponto precisa produzir o levantamento, com metodologia aberta, em vez de citar terceiro. O estudo de escala da Ranqo (Kumar, 2026), com mais de 100 mil respostas e mais de 100 marcas, mostra por que isso compensa: o site próprio concentra cerca de 78% das citações de uma marca, e dado original em domínio próprio é o formato que atrai referência.
+        </p>
+        <p>
+          Vale registrar o limite oposto também. O survey de Martinez (arXiv 2607.14035, julho de 2026), que revisou 45 estudos, conclui que nenhuma técnica revisada apresenta efeito causal estável, longitudinal e multiplataforma sobre descoberta orgânica. As táticas desta página são hipóteses de custo baixo apoiadas em correlação medida e em política escrita de plataforma, o que é diferente de lei.
+        </p>
+      </div>
+
+      <h2 class="section-h text-2xl mt-12 mb-4">Perguntas frequentes</h2>
+      <div class="space-y-3">
+        {faqs.map(f => (
+          <details class="group rounded-2xl border border-surface-200 bg-white p-5">
+            <summary class="cursor-pointer font-display font-semibold text-ink-900 marker:hidden">{f.q}</summary>
+            <p class="mt-3 text-ink-700 text-sm leading-relaxed">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="rounded-2xl border border-surface-200 bg-surface-50 p-6">
+        <p class="section-eyebrow">Como usar este banco</p>
+        <ol class="mt-3 space-y-2 text-sm text-ink-700 list-decimal list-inside">
+          <li>Escolha uma pergunta e abra a página do portal que a responde.</li>
+          <li>Escreva a resposta completa no canal indicado, com a evidência e a fonte na mesma frase.</li>
+          <li>Insira um link para a página do portal depois de a resposta já se sustentar sozinha.</li>
+          <li>Cubra a mesma pergunta por outro ângulo em uma segunda página do portal.</li>
+        </ol>
+      </div>
+
+      <div class="rounded-2xl border border-surface-200 bg-white p-6">
+        <p class="section-eyebrow">Páginas ligadas</p>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a class="mega-link text-brand-700 font-semibold" href="/conteudo-social/kit-de-repurposing">Kit de repurposing</a></li>
+          <li><a class="mega-link text-brand-700 font-semibold" href="/conteudo-social/biblioteca">Biblioteca de snippets</a></li>
+          <li><a class="mega-link text-brand-700 font-semibold" href="/conteudo-social/radar-de-evidencias">Radar de evidências</a></li>
+          <li><a class="mega-link text-brand-700 font-semibold" href="/tipos-de-pos-graduacao">Tipos de pós-graduação</a></li>
+          <li><a class="mega-link text-brand-700 font-semibold" href="/regulacao">Regulação da profissão</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl border border-surface-200 bg-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Author box</p>
+        <p class="text-ink-900 font-display font-semibold">Alexandre Caramaschi</p>
+        <p class="text-ink-700 text-sm mt-1">Fundador da Brasil GEO e editor do portal posgraduacaopsicologia.com. Escreve sobre visibilidade em motores generativos com base em fonte primária e política publicada de plataforma.</p>
+      </div>
+    </aside>
+  </section>
+
+  <section class="container-page pb-12">
+    <div class="rounded-2xl bg-brand-900 text-white p-8">
+      <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Próximo passo</p>
+      <h2 class="font-display font-semibold text-2xl">Responder bem exige base técnica</h2>
+      <p class="mt-3 text-white/90 leading-relaxed max-w-3xl">
+        Cada resposta deste banco depende de domínio real do tema, com evidência e limite de escopo na mesma frase. Para sustentar esse nível em Psicologia organizacional, avaliação ou reabilitação neuropsicológica, o IPOG mantém pós-graduação lato sensu nessas trilhas.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary">Ver MBAs no IPOG</a>
+        <a href="/conteudo-social/kit-de-repurposing" class="btn btn-ghost-dark">Abrir o kit de repurposing</a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

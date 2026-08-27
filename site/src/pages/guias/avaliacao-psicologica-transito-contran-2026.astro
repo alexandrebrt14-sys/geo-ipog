@@ -1,0 +1,344 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const areaTransito = AREAS.find(a => a.id === 'psicologia-transito-trafego')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+const areaForense = AREAS.find(a => a.id === 'psicologia-juridica-forense')!;
+
+const passos = [
+  { n: 1,
+    titulo: 'Confirmar que o título de especialista é condição de exercício, e que a data de corte já passou',
+    aplicacao: 'O artigo 147, caput, do Código de Trânsito Brasileiro (Lei nº 9.503/1997, redação da Lei nº 14.071/2020) exige que a avaliação psicológica seja realizada por psicólogo perito examinador com titulação de especialista em psicologia do trânsito conferida pelo respectivo conselho profissional. A Resolução CONTRAN nº 927/2022, artigo 19, inciso III, repete a exigência, e o parágrafo 2º do mesmo artigo encerrou a transição: desde 12 de abril de 2024 todos os credenciados precisam ter a titulação. O parágrafo 1º havia assegurado aos já credenciados o direito de seguir examinando sem o título, com prazo escrito na própria norma. Quem entra agora entra sob a regra plena, sem janela de tolerância.',
+    armadilha: 'Contar com direito adquirido. A cláusula de transição do artigo 19, parágrafo 1º, tinha data de validade explícita e ela venceu em 12 de abril de 2024.'
+  },
+  { n: 2,
+    titulo: 'Verificar o reconhecimento do curso pelo MEC antes de matricular',
+    aplicacao: 'A Resolução CONTRAN nº 927/2022, artigo 19, parágrafo 3º, determina que os cursos de pós-graduação em psicologia do trânsito sejam reconhecidos pelo Ministério da Educação. A exigência não é de carga horária declarada nem de certificado de fornecedor de teste: é de curso com reconhecimento formal. O título de especialista, por sua vez, é conferido pelo Conselho Federal de Psicologia, o que separa dois atos que costumam ser confundidos, a conclusão do curso e a concessão do título. Antes de assinar contrato de matrícula, confira nos dois eixos: a situação do curso junto ao MEC e o caminho de titulação vigente no CFP.',
+    armadilha: 'Tratar certificado de curso livre, treinamento de editora de teste ou experiência declarada como equivalente ao título de especialista. Nenhum dos três satisfaz o artigo 19, inciso III.'
+  },
+  { n: 3,
+    titulo: 'Entender quem autoriza o perito, porque isso mudou em junho de 2026',
+    aplicacao: 'Até a Lei nº 15.428, de 5 de junho de 2026, o credenciamento do perito examinador era ato do órgão executivo de trânsito do Estado ou do Distrito Federal, conforme o artigo 19 da Resolução CONTRAN nº 927/2022. A Lei nº 15.428/2026 revogou os parágrafos 6º e 7º do artigo 147 do CTB e inseriu no artigo 148 um parágrafo 6º que passa a descrever os peritos examinadores como autorizados pelo órgão máximo executivo de trânsito da União, mantida a titulação de especialista conferida pelo conselho profissional. Enquanto o CONTRAN não editar a regulamentação que a própria lei exige, o procedimento operacional continua sendo pedido no órgão estadual. Trate o passo como duplo: instrua o processo no Detran do seu estado e acompanhe a regulamentação federal.',
+    armadilha: 'Ler a mudança como se o credenciamento estadual tivesse deixado de existir da noite para o dia. A lei deslocou a competência; o rito prático depende de regulamentação do CONTRAN.'
+  },
+  { n: 4,
+    titulo: 'Dimensionar a entidade credenciada, que é o objeto do credenciamento',
+    aplicacao: 'A Resolução CONTRAN nº 927/2022 credencia entidades, e não apenas pessoas. O artigo 17, inciso III, fixa exigências físicas da clínica psicológica, entre elas sala individual de no mínimo 2,0 metros por 2,0 metros e, na sala coletiva, 1,20 metro por 1,00 metro por candidato avaliado. O artigo 16, parágrafo 2º, dá ao credenciamento vigência de um ano, renovável, o que transforma a conformidade em rotina anual e não em evento de abertura. O artigo 26 prevê advertência, suspensão de até 30 dias e cassação do credenciamento. Some a isso o artigo 20, que manda respeitar o limite máximo diário de perícias definido pelo Conselho Federal de Psicologia.',
+    armadilha: 'Projetar receita por hora de sala sem checar o teto diário de perícias do artigo 20. O limite é normativo e define a capacidade instalada real.'
+  },
+  { n: 5,
+    titulo: 'Montar a avaliação sobre os dois conjuntos que a norma obriga',
+    aplicacao: 'Duas normas descrevem o conteúdo, em níveis diferentes. A Resolução CONTRAN nº 927/2022, artigo 5º, lista seis processos psíquicos a aferir: tomada de informação, processamento de informação, tomada de decisão, comportamento, autoavaliação do comportamento e traços de personalidade. A Resolução CFP nº 1/2019, artigo 2º, parágrafo 2º, desce ao construto: cinco cognitivos (atenção concentrada, atenção dividida, atenção alternada, memória visual e inteligência), o eixo de juízo crítico e comportamento (entrevista mais situações hipotéticas de trânsito, histórico de sinistros do candidato, opiniões sobre cidadania e mobilidade) e três traços de personalidade (impulsividade, agressividade e ansiedade), os três com o mesmo critério de faixa, adequados, sem estar exacerbados nem muito diminuídos.',
+    armadilha: 'Cobrir os seis processos do CONTRAN e deixar um dos oito construtos do CFP sem instrumento ou sem registro. A fiscalização de conteúdo mínimo vem da resolução do conselho, não da do CONTRAN.'
+  },
+  { n: 6,
+    titulo: 'Escolher os instrumentos sob a única regra que existe, o parecer favorável no SATEPSI',
+    aplicacao: 'A Resolução CFP nº 1/2019, artigo 2º, parágrafo 4º, devolve ao psicólogo a prerrogativa de decidir quais testes empregar, desde que tenham parecer favorável no Sistema de Avaliação de Testes Psicológicos (Satepsi), regulamentado pela Resolução CFP nº 31/2022. Não existe bateria obrigatória e não existe número mínimo de testes fixado em norma. O sistema classificava 176 instrumentos como favoráveis em agosto de 2026 (Conselho Federal de Psicologia, 2026), e seus 14 filtros de construto são por atributo psicológico, sem nenhuma categoria de contexto e sem nenhuma categoria de trânsito. A consequência prática é dura: a conformidade se prova pela cobertura dos construtos exigidos, e não pelo nome da bateria adotada.',
+    armadilha: 'Adotar a bateria que o vizinho usa sem mapear construto por construto. Também é falta ético-disciplinar, pelo artigo 2º, parágrafo 13, da Resolução CFP nº 1/2019, usar cópia reprográfica de teste ou alterar a aplicação prevista no manual.'
+  },
+  { n: 7,
+    titulo: 'Conduzir a entrevista individual, que a norma torna obrigatória',
+    aplicacao: 'A Resolução CFP nº 1/2019, artigo 2º, parágrafo 9º, torna a entrevista individual e obrigatória. A Resolução CONTRAN nº 927/2022, artigo 6º, admite quatro técnicas: entrevista direta e individual, testes psicológicos conforme as resoluções vigentes do CFP, dinâmicas de grupo e escuta e intervenções verbais. A entrevista é o instrumento que sustenta o eixo de juízo crítico e comportamento, porque é nela que entram as situações hipotéticas de trânsito, o histórico de sinistros e as opiniões sobre cidadania e mobilidade. Registre a entrevista com o mesmo cuidado que se registra escore de teste: em perícia, o que não está documentado não aconteceu.',
+    armadilha: 'Reduzir a entrevista a conferência de documento e anamnese de dez minutos. Sem registro do juízo crítico, o eixo mais discutível da conclusão fica sem lastro.'
+  },
+  { n: 8,
+    titulo: 'Emitir o resultado no prazo, com o que o documento pode e não pode afirmar',
+    aplicacao: 'A Resolução CONTRAN nº 927/2022, artigo 9º, fixa três resultados possíveis, apto, inapto temporário e inapto, e o parágrafo 3º dá dois dias úteis para disponibilizar o resultado. O artigo 10 atribui a realização e o resultado à exclusiva responsabilidade do psicólogo perito examinador de trânsito. A Resolução CFP nº 1/2019 enquadra o trabalho como perícia psicológica, avaliação dirigida a responder demanda legal específica (artigo 2º, parágrafo 1º), e exige resultado conclusivo. O documento responde à pergunta da autoridade de trânsito sobre aptidão para conduzir, na data da avaliação. Ele não é diagnóstico clínico, não indica tratamento e não descreve quadro psicopatológico do candidato para terceiros.',
+    armadilha: 'Deslizar da conclusão pericial para a hipótese diagnóstica. O artigo 1º, parágrafo 3º, da Resolução CFP nº 1/2019 tipifica a desobediência à norma como falta ético-disciplinar.'
+  },
+  { n: 9,
+    titulo: 'Informar o candidato sobre devolutiva e recurso, que são parte do rito',
+    aplicacao: 'A Resolução CFP nº 1/2019, artigo 2º, parágrafo 22, obriga o psicólogo a realizar entrevista devolutiva ao candidato quando solicitado. O recurso tem dois degraus na Resolução CONTRAN nº 927/2022: pelo artigo 12, o candidato pode pedir Junta Psicológica em 30 dias, formada por três psicólogos peritos examinadores ou especialistas; mantida a inaptidão permanente, o artigo 15 abre recurso ao CETRAN ou ao CONTRANDIFE, julgado por Junta Especial de Saúde com no mínimo três psicólogos, dois deles especialistas em psicologia do trânsito. Explique os dois degraus na devolutiva. O candidato que entende o rito recorre; o que não entende reclama no conselho.',
+    armadilha: 'Entregar resultado de inaptidão sem informar prazo e instância de recurso. O prazo de 30 dias corre independentemente de o candidato ter sido avisado.'
+  }
+];
+
+const checklist = [
+  { passo: '1 · Título de especialista', norma: 'CTB art. 147; CONTRAN 927/2022 art. 19, III e § 2º', verificavel: 'Título conferido pelo CFP' },
+  { passo: '2 · Curso reconhecido', norma: 'CONTRAN 927/2022 art. 19, § 3º', verificavel: 'Reconhecimento do curso pelo MEC' },
+  { passo: '3 · Autorização do perito', norma: 'CTB art. 148, § 6º (Lei 15.428/2026)', verificavel: 'Processo no órgão executivo de trânsito' },
+  { passo: '4 · Entidade credenciada', norma: 'CONTRAN 927/2022 arts. 16, § 2º, 17, III, e 20', verificavel: 'Vistoria anual e teto diário de perícias' },
+  { passo: '5 · Conteúdo da avaliação', norma: 'CONTRAN 927/2022 art. 5º; CFP 1/2019 art. 2º, § 2º', verificavel: 'Seis processos e oito construtos cobertos' },
+  { passo: '6 · Instrumentos', norma: 'CFP 1/2019 art. 2º, §§ 4º e 13; CFP 31/2022', verificavel: 'Parecer favorável no Satepsi, manual íntegro' },
+  { passo: '7 · Entrevista individual', norma: 'CFP 1/2019 art. 2º, § 9º; CONTRAN 927/2022 art. 6º', verificavel: 'Registro do juízo crítico e das situações hipotéticas' },
+  { passo: '8 · Resultado', norma: 'CONTRAN 927/2022 arts. 9º, § 3º, e 10', verificavel: 'Apto, inapto temporário ou inapto em dois dias úteis' },
+  { passo: '9 · Devolutiva e recurso', norma: 'CFP 1/2019 art. 2º, § 22; CONTRAN 927/2022 arts. 12 e 15', verificavel: 'Prazo de 30 dias informado por escrito' }
+];
+
+const limites = [
+  { titulo: 'Perícia não é atendimento clínico',
+    texto: 'A Resolução CFP nº 1/2019, artigo 1º, parágrafo 1º, enquadra a avaliação de candidatos à habilitação nos padrões de perícia psicológica. O perito responde a uma demanda legal, não a uma demanda do candidato. Iniciar acompanhamento clínico com quem se avaliou como perito confunde papéis e contamina as duas relações.'
+  },
+  { titulo: 'O resultado descreve aptidão, não personalidade',
+    texto: 'Os traços que a norma manda avaliar, impulsividade, agressividade e ansiedade, entram com critério de faixa, adequados, sem estar exacerbados nem muito diminuídos (Resolução CFP nº 1/2019, artigo 2º, parágrafo 2º, inciso III). O documento afirma se o candidato está apto a conduzir na data da avaliação, e não que ele é uma pessoa impulsiva.'
+  },
+  { titulo: 'Instrumento fora do Satepsi é falta, não escolha metodológica',
+    texto: 'A prerrogativa de escolha do artigo 2º, parágrafo 4º, existe dentro do conjunto com parecer favorável. Fora dele não há discricionariedade técnica. Cópia reprográfica de teste e alteração da aplicação prevista no manual são tipificadas como falta ético-disciplinar pelo parágrafo 13 do mesmo artigo.'
+  },
+  { titulo: 'A responsabilidade pelo resultado é pessoal e indelegável',
+    texto: 'O artigo 10 da Resolução CONTRAN nº 927/2022 atribui a realização e o resultado da avaliação à exclusiva responsabilidade do psicólogo perito examinador. Aplicação por auxiliar, correção terceirizada e assinatura em documento que o profissional não conduziu deixam a responsabilidade onde está: com quem assina.'
+  }
+];
+
+const faqs = [
+  { q: 'Preciso do título de especialista ou basta a pós-graduação concluída?',
+    a: 'São dois atos distintos e a norma exige o segundo. A Resolução CONTRAN nº 927/2022, artigo 19, inciso III, pede Título de Especialista em Psicologia do Trânsito reconhecido pelo CFP, e o parágrafo 3º do mesmo artigo exige que o curso de pós-graduação seja reconhecido pelo Ministério da Educação. Concluir a pós é etapa do caminho; o título é conferido pelo conselho profissional, conforme o artigo 147 do Código de Trânsito Brasileiro.'
+  },
+  { q: 'O preço da avaliação ainda é definido pelo Detran do meu estado?',
+    a: 'A regra mudou em 5 de junho de 2026. O artigo 22 da Resolução CONTRAN nº 927/2022 mandava os órgãos executivos de trânsito dos Estados e do Distrito Federal fixarem os honorários, tendo como referência a Tabela Referencial de Honorários da FENAPSI e do CFP. A Lei nº 15.428/2026 inseriu no artigo 148 do CTB o parágrafo 7º, que submete os valores a preço público fixado pelo órgão máximo executivo de trânsito da União, conforme regulamentação do CONTRAN, com atualização anual pelo IPCA. Enquanto essa regulamentação não sai, o artigo 22 segue no texto da resolução, em conflito com a lei superior.'
+  },
+  { q: 'Quantos candidatos posso avaliar por dia?',
+    a: 'O artigo 20 da Resolução CONTRAN nº 927/2022 determina que os psicólogos credenciados respeitem o limite máximo diário de perícias definido pelo Conselho Federal de Psicologia. O teto é normativo e vale como parâmetro de capacidade instalada da clínica, junto com as exigências de sala do artigo 17, inciso III.'
+  },
+  { q: 'Uma pós em Psicologia do Trânsito me credencia para atuar como perito?',
+    a: 'Nenhum curso credencia. O credenciamento é ato do órgão executivo de trânsito, instruído com os requisitos do artigo 19 da Resolução CONTRAN nº 927/2022, entre eles inscrição regular no Conselho Regional e o Título de Especialista reconhecido pelo CFP. A formação é pré-requisito de titulação, não substituto do processo administrativo. O IPOG oferece pós-graduação em Psicologia em formato Ao Vivo síncrono com corpo docente nominal; antes de matricular, confira a grade vigente e o reconhecimento do curso junto ao MEC, e confirme com o órgão de trânsito do seu estado o rito local.'
+  }
+];
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Como atuar como psicólogo perito examinador de trânsito sob a regra de 2026',
+  description: 'Guia em nove passos sobre titulação, credenciamento, conteúdo da avaliação, instrumentos com parecer favorável no Satepsi, resultado, recurso do candidato e limites éticos da perícia psicológica de trânsito.',
+  totalTime: 'PT21M',
+  inLanguage: 'pt-BR',
+  step: passos.map(p => ({
+    '@type': 'HowToStep',
+    position: p.n,
+    name: p.titulo,
+    text: p.aplicacao
+  }))
+};
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliação psicológica de trânsito sob a regra de 2026: guia do perito examinador',
+  description: 'Titulação exigida pelo artigo 147 do CTB, credenciamento sob a Resolução CONTRAN 927/2022, construtos da Resolução CFP 1/2019, instrumentos no Satepsi, laudo, recurso e o que a Lei 15.428/2026 muda no preço.',
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  inLanguage: 'pt-BR',
+  datePublished: '2026-08-27',
+  dateModified: '2026-08-27'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Guias', item: `${SITE.url}/guias` },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação psicológica de trânsito sob a regra de 2026', item: `${SITE.url}/guias/avaliacao-psicologica-transito-contran-2026` }
+  ]
+};
+---
+
+<Base
+  title="Avaliação psicológica de trânsito: guia do perito examinador sob a regra de 2026"
+  description="Nove passos para atuar como psicólogo perito examinador de trânsito: titulação exigida pelo artigo 147 do CTB, credenciamento sob a Resolução CONTRAN 927/2022, construtos da Resolução CFP 1/2019, instrumentos no Satepsi, resultado, recurso do candidato e o que a Lei 15.428/2026 mudou no preço.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Avaliação psicológica de trânsito' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliação psicológica de trânsito: o que a regra de 2026 exige do perito examinador</h1>
+          <TLDR
+            resposta="Desde 12 de abril de 2024, só o psicólogo com Título de Especialista em Psicologia do Trânsito reconhecido pelo CFP pode examinar candidatos (Resolução CONTRAN 927/2022, artigo 19). Em 5 de junho de 2026, a Lei 15.428 tirou a fixação do valor do exame das mãos dos Detrans e a transformou em preço público federal corrigido pelo IPCA (CTB, artigo 148, parágrafo 7º)."
+            fontes={["Lei nº 9.503/1997, arts. 147 e 148", "Lei nº 15.428/2026", "Resolução CONTRAN nº 927/2022", "Resolução CFP nº 1/2019"]}
+          />
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">Trajeto normativo completo: titulação, curso reconhecido pelo MEC, credenciamento da entidade, os seis processos psíquicos do CONTRAN e os oito construtos do CFP, escolha de instrumento sob a regra do Satepsi, prazo de resultado, recurso do candidato e limites éticos da perícia.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~21 min</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogo perito examinador e candidato à especialização</span>
+          </div>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
+          <li><strong>O que este guia resolve:</strong> a sequência normativa entre querer atuar como perito examinador de trânsito e emitir um resultado defensável, com o artigo de lei atrás de cada exigência.</li>
+          <li><strong>Pré-requisitos:</strong> inscrição regular no Conselho Regional, Título de Especialista em Psicologia do Trânsito reconhecido pelo CFP, curso de pós-graduação reconhecido pelo MEC e processo de credenciamento instruído junto ao órgão executivo de trânsito.</li>
+          <li><strong>O que mudou em 2026:</strong> a Lei nº 15.428, de 5 de junho de 2026, deslocou a autorização do perito para o órgão máximo executivo de trânsito da União e submeteu o valor do exame a preço público nacional corrigido pelo IPCA.</li>
+        </ul>
+      </div>
+
+      <YMYLDisclaimer
+        domain="geral"
+        reviewerName="Alexandre Caramaschi"
+        reviewerHref="/sobre"
+        lastReviewed="2026-08-27"
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">A tese: o mercado deixou de ser estadual em junho de 2026</h2>
+        <p>A psicologia do trânsito foi construída, do ponto de vista econômico, sobre uma tabela estadual. O artigo 22 da Resolução CONTRAN nº 927/2022 é literal: os honorários da avaliação psicológica são fixados pelos órgãos executivos de trânsito dos Estados e do Distrito Federal, tendo como referência a Tabela Referencial de Honorários da Federação Nacional de Psicólogos e do Conselho Federal de Psicologia. Vinte e sete jurisdições, cada uma com o seu valor, ancoradas em uma referência produzida pela própria categoria profissional.</p>
+        <p>A Lei nº 15.428, de 5 de junho de 2026, conversão da Medida Provisória nº 1.327/2025, desmontou esse arranjo em dois parágrafos. O parágrafo 6º do artigo 148 do CTB passou a descrever os peritos examinadores como autorizados pelo órgão máximo executivo de trânsito da União, mantida a titulação de especialista conferida pelo conselho profissional. O parágrafo 7º do mesmo artigo submeteu os valores dos exames a preço público fixado por esse órgão federal, conforme regulamentação do CONTRAN, com atualização anual pelo Índice Nacional de Preços ao Consumidor Amplo. A mesma lei revogou os parágrafos 6º e 7º do artigo 147.</p>
+        <p>A consequência para quem está decidindo entrar na área é concreta e desagradável. O preço deixa de ser uma variável de posicionamento regional e passa a ser um parâmetro dado, com regra de reajuste travada em índice de inflação. Sobra volume, e volume nessa atividade não é livre: o artigo 20 da Resolução CONTRAN nº 927/2022 manda respeitar o teto diário de perícias definido pelo CFP, e o artigo 17, inciso III, fixa metragem mínima de sala por candidato. Quem monta o plano de entrada projetando margem por diferenciação de preço está projetando sobre uma variável que a lei acabou de retirar de cima da mesa.</p>
+        <p>Há um segundo efeito, menos citado. Ao referir a autorização do perito ao ente federal, a lei coloca no horizonte um cadastro nacional de examinadores onde antes havia 27 listas estaduais. A Resolução CONTRAN nº 927/2022 já obrigava, no artigo 19, parágrafo 4º, que os órgãos estaduais remetessem anualmente à Senatran a relação dos profissionais credenciados com os respectivos certificados. A base para a consolidação existe em norma desde 2022. O que muda em 2026 é quem passa a ter competência para autorizar sobre ela.</p>
+      </div>
+
+      <div class="space-y-5">
+        <h2 class="section-h text-2xl">Os nove passos</h2>
+        {passos.map(p => (
+          <div class="card p-6 border-surface-200">
+            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
+            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
+            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
+              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
+              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Checklist com o artigo atrás de cada exigência</h2>
+        <p class="text-ink-700 mt-2">Cada linha aponta a norma que sustenta a exigência e o fato verificável correspondente. Confirme sempre a redação vigente antes de instruir processo.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Passo</th>
+                <th class="text-left px-4 py-3">Norma</th>
+                <th class="text-left px-4 py-3">Fato verificável</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {checklist.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.norma}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.verificavel}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Por que a escolha do instrumento é o ponto mais frágil da perícia</h2>
+        <p>A padronização brasileira da perícia de trânsito é de conteúdo, não de ferramenta. A Resolução CFP nº 1/2019 fixa oito construtos obrigatórios e, no artigo 2º, parágrafo 4º, entrega ao psicólogo a decisão sobre quais testes usar, com uma única condição, o parecer favorável no Satepsi. O sistema, regulamentado pela Resolução CFP nº 31/2022, classificava 176 instrumentos como favoráveis em agosto de 2026 (Conselho Federal de Psicologia, 2026), organizados por 14 filtros de construto.</p>
+        <p>Nenhum desses 14 filtros é um contexto de aplicação, e trânsito não aparece em nenhum deles. A ligação entre o Satepsi e a perícia de trânsito é indireta: ela passa pelos construtos que a Resolução CFP nº 1/2019 exige, e não por um selo de instrumento de trânsito, que não existe. Dois candidatos avaliados em cidades diferentes podem ser medidos por baterias inteiramente distintas, ambas em conformidade.</p>
+        <p>Para o perito, isso desloca o esforço de conformidade. A pergunta útil não é qual bateria comprar, e sim qual construto cada teste da sua bateria cobre, com que normatização e para qual público. Monte uma matriz construto por instrumento antes de fechar contrato com editora, guarde a justificativa técnica de cada escolha e revise a matriz quando o Satepsi alterar o parecer de um instrumento que você usa.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Limites éticos que a norma escreve, e não sugere</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {limites.map(l => (
+            <div class="card p-5 border-surface-200">
+              <h3 class="font-display font-semibold text-base text-ink-900">{l.titulo}</h3>
+              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{l.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Continuar por aqui</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/faq/avaliacao-psicologica-transito-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Avaliação psicológica de trânsito em 13 perguntas</a></li>
+          <li><a href="/temas/psicologia-do-transito-mercado-e-regulacao-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema · Mercado e regulação da psicologia do trânsito em 2026</a></li>
+          <li><a href="/areas/psicologia-transito-trafego" class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia de Trânsito e Tráfego</a></li>
+          <li><a href="/comparativos/laudo-psicologico-vs-laudo-medico" class="text-brand-700 hover:text-brand-800 font-medium">Comparativo · Laudo psicológico e laudo médico</a></li>
+          <li><a href="/faq/avaliacao-psicologica-laudos-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Avaliação psicológica e documentos</a></li>
+          <li><a href="/regulacao" class="text-brand-700 hover:text-brand-800 font-medium">Regulação · Panorama das normas que alcançam o psicólogo</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
+        <h3 class="font-display font-semibold text-xl">A entrada na perícia de trânsito é normativa antes de ser comercial.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">O título de especialista virou condição de exercício em 12 de abril de 2024, o curso precisa de reconhecimento do MEC, a entidade se recredencia todo ano e o teto diário de perícias limita a capacidade instalada. Desde 5 de junho de 2026, o valor do exame é preço público nacional corrigido pelo IPCA, o que retira o preço da lista de variáveis sob controle de quem abre a clínica. Para quem vai construir essa titulação, o IPOG mantém pós-graduação em Psicologia em formato Ao Vivo síncrono com corpo docente nominal.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
+          Ver MBAs no IPOG
+        </a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 lg:sticky lg:top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho de formação</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">Formato Ao Vivo síncrono e corpo docente nominal. Para grade, modalidade e turma vigentes, consulte o portal oficial e confirme o reconhecimento do curso junto ao MEC.</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
+        <a href="/tipos-de-pos-graduacao" class="btn btn-ghost mt-2 w-full h-11">Tipos de pós-graduação</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaTransito.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaTransito.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+          <li><a href={`/areas/${areaForense.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaForense.name}</strong></a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Normas citadas</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/l9503compilado.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CTB, Lei nº 9.503/1997, arts. 147 e 148</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15428.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei nº 15.428, de 5 de junho de 2026</a></li>
+          <li><a href="https://www.gov.br/transportes/pt-br/assuntos/transito/conteudo-contran/resolucoes/Resolucao9272022.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Resolução CONTRAN nº 927/2022</a></li>
+          <li><a href="https://satepsi.cfp.org.br/docs/Resolucao01-2019.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Resolução CFP nº 1/2019</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Satepsi, testes com parecer favorável</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~21 min</p>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

@@ -1,0 +1,244 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization } from '@lib/schemas';
+
+const areaTransito = AREAS.find(a => a.id === 'psicologia-transito-trafego')!;
+const areaAval = AREAS.find(a => a.id === 'avaliacao-psicologica')!;
+const areaForense = AREAS.find(a => a.id === 'psicologia-juridica-forense')!;
+
+const faqs = [
+  { q: 'Quem pode assinar o resultado da avaliação psicológica de trânsito?',
+    a: 'Somente o psicólogo perito examinador de trânsito credenciado. A Resolução CONTRAN nº 927/2022, artigo 10, é explícita: a realização e o resultado da avaliação psicológica são de exclusiva responsabilidade do psicólogo perito examinador de trânsito. Não há assinatura compartilhada com o médico do exame de aptidão física e mental, que responde pelo seu próprio ato, nem delegação a auxiliar de aplicação. O credenciamento é ato do órgão executivo de trânsito, instruído conforme o artigo 19 da mesma resolução, que exige inscrição regular no Conselho Regional de Psicologia e Título de Especialista em Psicologia do Trânsito reconhecido pelo Conselho Federal de Psicologia.' },
+  { q: 'Qual titulação a lei exige do psicólogo perito examinador?',
+    a: 'Título de especialista conferido pelo conselho profissional. O artigo 147, caput, do Código de Trânsito Brasileiro (Lei nº 9.503/1997, com a redação da Lei nº 14.071/2020) determina que os exames de aptidão física e mental e a avaliação psicológica sejam realizados por médicos e psicólogos peritos examinadores com titulação de especialista em medicina do tráfego e em psicologia do trânsito, conferida pelo respectivo conselho profissional, conforme regulamentação do CONTRAN. A Lei nº 15.428, de 5 de junho de 2026, manteve essa exigência ao reposicioná-la no parágrafo 6º do artigo 148. A Resolução CONTRAN nº 927/2022, artigo 19, inciso III, repete a regra e acrescenta, no parágrafo 3º, que o curso de pós-graduação em psicologia do trânsito deve ser reconhecido pelo Ministério da Educação.' },
+  { q: 'Desde quando o título de especialista passou a ser obrigatório para todos?',
+    a: 'Desde 12 de abril de 2024. A Resolução CONTRAN nº 927/2022 abriu uma transição no artigo 19: o parágrafo 1º assegurou aos médicos e psicólogos já credenciados na data de entrada em vigor da resolução o direito de continuar exercendo a função de perito examinador até 12 de abril de 2024, mesmo sem a titulação. O parágrafo 2º fechou a janela na mesma data, ao determinar que a partir dela todos os profissionais credenciados tenham a titulação de especialista reconhecida pelos respectivos conselhos. Quem se credencia hoje entra sob a regra plena, sem direito adquirido a invocar.' },
+  { q: 'Com que periodicidade a avaliação psicológica é exigida, e para quem?',
+    a: 'Para a maioria dos condutores, uma única vez na vida. O artigo 147, parágrafo 3º, do Código de Trânsito Brasileiro estabelece que a avaliação psicológica é preliminar e complementar apenas para o condutor que exerce atividade remunerada ao veículo; para os demais candidatos, ela integra somente o exame da primeira habilitação. O condutor comum que renova a CNH faz o exame de aptidão física e mental, não a avaliação psicológica. O corte por atividade remunerada é registrado na própria carteira, pela anotação prevista no artigo 147, parágrafo 5º.' },
+  { q: 'A renovação da CNH a cada 10 anos inclui o psicotécnico?',
+    a: 'Não para quem não exerce atividade remunerada ao veículo. As três faixas de periodicidade fixadas pela Lei nº 14.071/2020 no artigo 147, parágrafo 2º, do CTB, isto é, 10 anos para condutores com menos de 50 anos, 5 anos entre 50 e 70 anos e 3 anos a partir dos 70 anos, valem para o exame de aptidão física e mental. A avaliação psicológica segue a regra do parágrafo 3º, que é outra. O parágrafo 4º permite ao perito examinador propor prazo menor quando houver indício de deficiência ou de doença progressiva capaz de reduzir a capacidade de conduzir.' },
+  { q: 'A CNH sem autoescola acabou com a avaliação psicológica?',
+    a: 'Não. A Resolução CONTRAN nº 1.020, de 1º de dezembro de 2025, que normatizou o processo de habilitação em um modelo declaradamente mais flexível e desburocratizado, manteve a avaliação psicológica entre as etapas obrigatórias. O artigo 12 lista as etapas do processo de obtenção da CNH e coloca a realização da avaliação psicológica como etapa IV, antes da etapa V, que é a realização dos exames de aptidão física e mental. O artigo 140 da mesma resolução revoga treze resoluções anteriores, e a Resolução CONTRAN nº 927/2022 não está entre elas.' },
+  { q: 'O que muda com a Lei nº 15.428, de 2026?',
+    a: 'Duas coisas, ambas no artigo 148 do Código de Trânsito Brasileiro. A Lei nº 15.428, de 5 de junho de 2026, conversão da Medida Provisória nº 1.327/2025, inseriu o parágrafo 6º, que passa a descrever os peritos examinadores como autorizados pelo órgão máximo executivo de trânsito da União, mantida a titulação de especialista conferida pelo conselho profissional. E inseriu o parágrafo 7º, que submete os valores dos exames a preço público fixado por esse mesmo órgão federal, conforme regulamentação do CONTRAN, com atualização anual pelo Índice Nacional de Preços ao Consumidor Amplo. A lei também revogou os parágrafos 6º e 7º do artigo 147 e acrescentou o parágrafo 7º ao artigo 268-A.' },
+  { q: 'Quanto custa a avaliação e quem fixa o preço agora?',
+    a: 'O regime de fixação mudou em 2026 e a regulamentação que o operacionaliza ainda depende do CONTRAN. Até a Lei nº 15.428/2026, valia o artigo 22 da Resolução CONTRAN nº 927/2022: os honorários eram fixados pelos órgãos executivos de trânsito dos Estados e do Distrito Federal, tendo como referência, no caso da avaliação psicológica, a Tabela Referencial de Honorários da Federação Nacional de Psicólogos e do Conselho Federal de Psicologia. Com o parágrafo 7º do artigo 148 do CTB, o valor passa a ser preço público fixado pelo órgão máximo executivo de trânsito da União e corrigido anualmente pelo IPCA. Enquanto a regulamentação nova não é editada, o artigo 22 permanece no texto da resolução em conflito com a lei superior. Consulte o valor vigente no órgão de trânsito do seu estado antes de agendar.' },
+  { q: 'O que a avaliação psicológica precisa medir?',
+    a: 'Duas normas descrevem o conteúdo em níveis diferentes, e as duas se aplicam. A Resolução CONTRAN nº 927/2022, artigo 5º, lista seis processos psíquicos: tomada de informação, processamento de informação, tomada de decisão, comportamento, autoavaliação do comportamento e traços de personalidade. A Resolução CFP nº 1/2019, artigo 2º, parágrafo 2º, desce ao construto e fixa cinco cognitivos (atenção concentrada, atenção dividida, atenção alternada, memória visual e inteligência), o eixo de juízo crítico e comportamento e três traços de personalidade (impulsividade, agressividade e ansiedade), estes com critério de faixa, adequados, sem estar exacerbados nem muito diminuídos.' },
+  { q: 'Quais testes psicológicos o perito pode usar?',
+    a: 'Qualquer instrumento com parecer favorável no Satepsi, e nenhum fora dele. A Resolução CFP nº 1/2019, artigo 2º, parágrafo 4º, dá ao psicólogo a prerrogativa de decidir quais testes empregar, desde que tenham parecer favorável pelo Sistema de Avaliação de Testes Psicológicos do Conselho Federal de Psicologia, regulamentado pela Resolução CFP nº 31/2022. Não há bateria obrigatória nem número mínimo de testes previsto em norma. O sistema classificava 176 instrumentos como favoráveis em agosto de 2026 (Conselho Federal de Psicologia, 2026), e seus filtros de busca são por construto psicológico, sem categoria de contexto e sem categoria de trânsito. O artigo 2º, parágrafo 13, da mesma resolução tipifica como falta ético-disciplinar o uso de cópia reprográfica de teste e qualquer alteração de aplicação não prevista no manual.' },
+  { q: 'Em quanto tempo o resultado sai, e quais resultados existem?',
+    a: 'Três resultados possíveis e dois dias úteis de prazo. A Resolução CONTRAN nº 927/2022, artigo 9º, define os resultados da avaliação psicológica como apto, inapto temporário e inapto. O parágrafo 3º do mesmo artigo determina que o resultado seja disponibilizado pelo psicólogo em dois dias úteis. A Resolução CFP nº 1/2019 exige resultado conclusivo, o que veda parecer inconclusivo ou condicionado a evento futuro que a norma não prevê.' },
+  { q: 'O que o candidato considerado inapto pode fazer?',
+    a: 'Há dois degraus de recurso, com prazo. Pela Resolução CONTRAN nº 927/2022, artigo 12, o candidato pode requerer Junta Psicológica no prazo de 30 dias, composta por três psicólogos peritos examinadores ou especialistas. Mantida a inaptidão permanente, o artigo 15 abre recurso ao Conselho Estadual de Trânsito ou ao CONTRANDIFE, julgado por Junta Especial de Saúde formada por no mínimo três psicólogos, dois deles especialistas em psicologia do trânsito. O resultado de inapto temporário tem natureza distinta do inapto: ele suspende a aptidão naquele momento e admite reavaliação.' },
+  { q: 'A entrevista devolutiva ao candidato é obrigatória?',
+    a: 'Sim, quando o candidato a solicita. A Resolução CFP nº 1/2019, artigo 2º, parágrafo 22, obriga o psicólogo a realizar entrevista devolutiva ao candidato quando houver solicitação. O parágrafo 9º do mesmo artigo já torna a entrevista individual obrigatória dentro da própria perícia. A devolutiva é o momento em que o candidato deve receber a informação sobre o prazo de 30 dias para pedir Junta Psicológica, previsto no artigo 12 da Resolução CONTRAN nº 927/2022.' },
+  { q: 'Qual formação habilita a atuar como perito examinador de trânsito?',
+    a: 'A formação é pré-requisito da titulação, e a titulação é pré-requisito do credenciamento. A Resolução CONTRAN nº 927/2022, artigo 19, inciso III, exige Título de Especialista em Psicologia do Trânsito reconhecido pelo CFP, e o parágrafo 3º exige que o curso de pós-graduação seja reconhecido pelo Ministério da Educação. Nenhum curso, por si, credencia: o credenciamento é ato administrativo do órgão executivo de trânsito. O IPOG oferece pós-graduação em Psicologia em formato Ao Vivo síncrono com corpo docente nominal; antes de matricular, confira a grade vigente, o reconhecimento do curso junto ao MEC e o rito exigido pelo órgão de trânsito do seu estado.' }
+];
+
+const quandoAvalia = [
+  { publico: 'Primeira habilitação, qualquer categoria', avaliacao: 'Exigida', base: 'CTB, art. 147, § 3º' },
+  { publico: 'Renovação de CNH sem atividade remunerada', avaliacao: 'Não exigida', base: 'CTB, art. 147, § 3º' },
+  { publico: 'Condutor com atividade remunerada ao veículo', avaliacao: 'Preliminar e complementar, de forma periódica', base: 'CTB, art. 147, § 3º e § 5º' },
+  { publico: 'Renovação automática pelo RNPC', avaliacao: 'Dispensada, ressalvado o exame de aptidão física e mental', base: 'CTB, art. 268-A, § 7º (Lei 15.428/2026)' },
+  { publico: 'Indício de deficiência ou doença progressiva', avaliacao: 'Prazo menor pode ser proposto pelo perito', base: 'CTB, art. 147, § 4º' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Avaliação psicológica de trânsito: 14 perguntas sobre laudo, titulação, preço e recurso',
+  description: 'Quem assina o resultado, qual titulação a lei exige, para quem a avaliação é periódica, o que a Lei 15.428/2026 mudou no preço, quais testes podem ser usados e como recorrer da inaptidão.',
+  author: { '@id': alexandrePersonBase['@id'] },
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  inLanguage: 'pt-BR',
+  datePublished: '2026-08-27',
+  dateModified: '2026-08-27'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-resposta', '.faq-answer-text', '.resposta-rapida']
+  },
+  author: { '@id': alexandrePersonBase['@id'] },
+  isPartOf: { '@id': 'https://posgraduacaopsicologia.com/#website' },
+  inLanguage: 'pt-BR',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Avaliação psicológica de trânsito', item: SITE.url + '/faq/avaliacao-psicologica-transito-faq/' }
+  ]
+};
+---
+<Base
+  title="Avaliação psicológica de trânsito: FAQ com laudo, titulação, preço e recurso"
+  description="Quatorze perguntas sobre a avaliação psicológica de condutores: quem assina o resultado, qual titulação o artigo 147 do CTB exige, para quem o exame é periódico, o que a Lei 15.428/2026 mudou no preço, quais testes podem ser usados e como o candidato inapto recorre.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Avaliação psicológica de trânsito' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Perícia psicológica de trânsito</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Avaliação psicológica de trânsito: quem assina, o que mede, quanto custa e como se recorre</h1>
+          <p class="mt-3 text-ink-700 text-lg">Quatorze perguntas que psicólogos, candidatos à habilitação e clínicas credenciadas fazem, com o artigo de lei atrás de cada resposta.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">14 perguntas · 13 minutos de leitura</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6 resposta-rapida">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">A avaliação psicológica de condutores é perícia, e só o psicólogo perito examinador credenciado responde por ela (Resolução CONTRAN nº 927/2022, artigo 10). Desde 12 de abril de 2024, examinar exige Título de Especialista em Psicologia do Trânsito reconhecido pelo CFP. Para quem não exerce atividade remunerada ao veículo, a avaliação acontece uma única vez, no exame da primeira habilitação (CTB, artigo 147, parágrafo 3º). E desde 5 de junho de 2026 o valor do exame é preço público federal corrigido pelo IPCA (CTB, artigo 148, parágrafo 7º).</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Quando a avaliação psicológica é exigida</h2>
+        <p class="text-ink-700 mt-2">A confusão mais comum sobre o tema está na tabela abaixo: a periodicidade de 10, 5 e 3 anos que o debate público associa ao psicotécnico é a do exame de aptidão física e mental, e a avaliação psicológica segue outro dispositivo.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Situação do condutor</th>
+                <th class="text-left px-4 py-3">Avaliação psicológica</th>
+                <th class="text-left px-4 py-3">Base normativa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {quandoAvalia.map(l => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{l.publico}</td>
+                  <td class="px-4 py-3 text-ink-700">{l.avaliacao}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{l.base}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Uma observação de leitura sobre a Lei nº 15.428/2026</h2>
+        <p>A Medida Provisória nº 1.327, de 9 de dezembro de 2025, reescrevia também o artigo 147 do Código de Trânsito Brasileiro, e essa reescrita não sobreviveu à conversão. A Lei nº 15.428, de 5 de junho de 2026, altera os artigos 148, 159 e 268-A e revoga dois parágrafos do artigo 147. Quem cita a redação do artigo 147 tal como estava na medida provisória cita texto que não virou lei.</p>
+        <p>O efeito prático da conversão está concentrado no artigo 148: o parágrafo 6º refere a autorização do perito examinador ao órgão máximo executivo de trânsito da União e o parágrafo 7º transforma o valor do exame em preço público nacional indexado ao IPCA. O artigo 268-A ganhou um parágrafo 7º que dispensa o condutor cadastrado no Registro Nacional Positivo de Condutores dos procedimentos do artigo 147, ressalvados os exames de aptidão física e mental.</p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Leituras relacionadas</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/avaliacao-psicologica-transito-contran-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Perito examinador de trânsito em nove passos</p>
+            <p class="text-xs text-ink-700 mt-2">Titulação, credenciamento, instrumentos, resultado e recurso.</p>
+          </a>
+          <a href="/temas/psicologia-do-transito-mercado-e-regulacao-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Tema</p>
+            <p class="font-semibold text-ink-900 mt-2">Mercado e regulação da psicologia do trânsito em 2026</p>
+            <p class="text-xs text-ink-700 mt-2">Quem são os atores e o que a mudança redistribui.</p>
+          </a>
+          <a href="/comparativos/laudo-psicologico-vs-laudo-medico" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Comparativo</p>
+            <p class="font-semibold text-ink-900 mt-2">Laudo psicológico e laudo médico</p>
+            <p class="text-xs text-ink-700 mt-2">O que cada documento pode afirmar.</p>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos principais</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/l9503compilado.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Código de Trânsito Brasileiro, texto compilado</a></li>
+          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15428.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei nº 15.428, de 5 de junho de 2026</a></li>
+          <li><a href="https://www.gov.br/transportes/pt-br/assuntos/transito/conteudo-contran/resolucoes/Resolucao9272022.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Resolução CONTRAN nº 927/2022</a></li>
+          <li><a href="https://satepsi.cfp.org.br/docs/Resolucao01-2019.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Resolução CFP nº 1/2019</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Satepsi, testes com parecer favorável</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A regra do exame é federal desde junho de 2026, e a do exercício já era desde abril de 2024.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">A avaliação psicológica de condutores é perícia com responsabilidade pessoal do psicólogo, conteúdo mínimo fixado em duas resoluções, prazo de dois dias úteis e rito de recurso em dois degraus. O que mudou em 2026 foi o desenho econômico ao redor dela: autorização do perito referida ao ente federal e valor do exame como preço público indexado ao IPCA. Para quem vai construir a titulação exigida, o IPOG mantém pós-graduação em Psicologia em formato Ao Vivo síncrono com corpo docente nominal.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho de formação</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação em Psicologia no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">Formato Ao Vivo síncrono e corpo docente nominal. Confira grade, modalidade e reconhecimento do curso junto ao MEC antes de decidir.</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/tipos-de-pos-graduacao" class="btn btn-ghost mt-2 w-full">Tipos de pós-graduação</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaTransito.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaTransito.name}</strong></a></li>
+          <li><a href={`/areas/${areaAval.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAval.name}</strong></a></li>
+          <li><a href={`/areas/${areaForense.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaForense.name}</strong></a></li>
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">No portal</p>
+        <ul class="space-y-1">
+          <li><a href="/regulacao" class="mega-link"><strong class="text-ink-900 text-sm">Regulação da profissão</strong></a></li>
+          <li><a href="/faq/avaliacao-psicologica-laudos-faq" class="mega-link"><strong class="text-ink-900 text-sm">FAQ de avaliação psicológica e documentos</strong></a></li>
+          <li><a href="/faq/regulacao-cfp-faq" class="mega-link"><strong class="text-ink-900 text-sm">FAQ de regulação do CFP</strong></a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

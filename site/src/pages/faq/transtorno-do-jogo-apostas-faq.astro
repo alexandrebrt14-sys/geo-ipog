@@ -1,0 +1,237 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { SITE, AREAS, MBAS } from '@lib/data';
+
+const faqs = [
+  { q: 'Qual código diagnóstico usar hoje no Brasil para transtorno do jogo?',
+    a: 'No SUS a classificação vigente em 2026 é a CID-10, com F63.0 para Jogo Patológico e Z72.6 para Mania de Jogo e Aposta. O Guia de Cuidado para Pessoas com Problemas Relacionados a Jogos de Apostas (Ministério da Saúde, 2026), na seção 7.8, registra que a CID-11, cujo código para Transtorno de Jogo é 6C50.0, está ainda em fase de implementação pelo Ministério da Saúde, embora vigore na Organização Mundial da Saúde desde 2022. Na prática, laudo, encaminhamento e prontuário destinados à rede pública brasileira usam o código da CID-10, com a menção ao equivalente da CID-11 quando o documento também circula fora do SUS.' },
+  { q: 'Apostar todo dia já é transtorno do jogo?',
+    a: 'Frequência isolada não fecha diagnóstico. O quadro se caracteriza por perda de controle sobre o comportamento, prioridade crescente do jogo sobre outras atividades e continuidade apesar de consequências negativas, com prejuízo funcional documentado ao longo do tempo. O III LENAD (2023), reproduzido pelo Guia do Ministério da Saúde (2026), estima 4,4% de alto risco de envolvimento problemático entre quem joga ou aposta, o que situa o transtorno como desfecho de uma minoria dos apostadores. Uma pessoa pode apostar diariamente sem preencher critérios, e outra pode apostar em episódios espaçados com perda de controle evidente em cada um.' },
+  { q: 'Qual produto de aposta está mais associado a problema?',
+    a: 'Cassino e caça-níquel online. A Lancet Public Health Commission on gambling (2024) estima que 26,4% dos adolescentes e 15,8% dos adultos que usam cassino ou caça-níquel online podem desenvolver transtorno do jogo, contra 16,3% dos adolescentes e 8,9% dos adultos em aposta esportiva online. O que separa os produtos é o intervalo entre a aposta e o resultado: a rodada de caça-níquel devolve o desfecho em segundos e permite repetição imediata. No Brasil, a Confederação Nacional do Comércio (2025) calcula que pelo menos 80% dos pagamentos feitos nas plataformas envolvem cassino online, e não a aposta esportiva que domina a propaganda.' },
+  { q: 'Quantos brasileiros apostam, afinal?',
+    a: 'Três levantamentos oficiais dão três números porque medem perguntas diferentes. O Datafolha, com campo em 8 e 9 de abril de 2026 e 2.002 entrevistados de 16 anos ou mais, encontrou 10% de brasileiros que usam plataformas de apostas ou cassino online, com margem de erro de dois pontos percentuais. O Banco Central (Estudo Especial 119/2024) identificou cerca de 24 milhões de pessoas físicas que fizeram ao menos uma transferência Pix a empresa de aposta em agosto de 2024. O III LENAD (2023), citado pelo Guia do Ministério da Saúde (2026), aponta 25,9% de brasileiros que já jogaram ou apostaram alguma vez na vida. Uso atual, transação em um mês e experiência ao longo da vida são recortes distintos, e citar qualquer um deles exige dizer qual pergunta foi feita.' },
+  { q: 'Por que tanta gente aposta se sabe que costuma perder?',
+    a: 'Porque boa parte de quem aposta no Brasil não descreve a prática como diversão. O Datafolha (2026) registra que 46% dos apostadores enxergam a aposta como renda extra ou meio de pagar contas, e que o perfil de maior incidência é o de jovem adulto com ensino médio completo e renda de até dois salários mínimos. Na audiência da CPI das Bets de 1º de abril de 2025, foi citado dado do Instituto Locomotiva segundo o qual 53% dos apostadores online declaram apostar para ganhar dinheiro. Intervenção que trata a aposta como lazer patológico erra o alvo motivacional de quem chega ao serviço com dívida e expectativa de renda.' },
+  { q: 'Autoexclusão resolve?',
+    a: 'Autoexclusão é um passo de cuidado, e não um tratamento completo. Mais de 1 milhão de brasileiros pediram bloqueio do CPF na plataforma de autoexclusão, sendo 387.645 pedidos entre 11 de junho e 19 de julho de 2026, período da Copa, e a perda de controle foi o motivo declarado em 35% dos casos (Ministério da Saúde, 2026). A revisão de evidência H da diretriz NG248 do NICE (2025) examinou o campo e registrou ausência de evidência para programas de autoexclusão e ferramentas de bloqueio na prevenção de recaída. O uso clínico útil do bloqueio é como marco pactuado e ponto de reavaliação, com acompanhamento mantido depois do pedido, porque endividamento, comorbidade e rotina continuam ativos.' },
+  { q: 'Onde a pessoa com problema de apostas é atendida no SUS?',
+    a: 'Na Rede de Atenção Psicossocial, com entrada pela Atenção Primária e cuidado especializado no CAPS do território. Dos 10.553 atendimentos registrados por F63.0 e Z72.6 entre janeiro de 2018 e maio de 2025, 6.237 ocorreram na Atenção Primária e 4.316 em serviços ambulatoriais, incluindo CAPS (Ministério da Saúde, 2026). A rede conta com 3.120 CAPS. Desde 2026 há também teleatendimento pelo Meu SUS Digital, com capacidade de até 100 mil consultas mensais em agosto de 2026, ante 600 por mês em março do mesmo ano, sessão de cerca de 50 minutos e ciclo inicial de até dez encontros, aberto ao apostador e ao familiar (Ministério da Saúde e Ministério da Fazenda, 2026).' },
+  { q: 'O que a família pode fazer?',
+    a: 'Pedir atendimento para si, antes de conseguir levar a pessoa ao serviço. O teleatendimento do SUS para problemas relacionados a jogos e apostas aceita agendamento pelo familiar, e não apenas pelo apostador (Ministério da Fazenda, 2026). Três condutas sustentam o vínculo: separar a conversa sobre dinheiro da conversa sobre culpa, combinar quem administra contas e senhas enquanto durar o risco, com autorização explícita da pessoa, e evitar quitar dívidas de forma repetida sem plano acordado, porque o pagamento silencioso remove a consequência sem tratar o comportamento. A revisão de evidência H do NICE (2025) não encontrou estudos suficientes sobre terapia familiar ou de casal na prevenção de recaída em jogo, o que mantém o apoio à família no terreno do acompanhamento clínico caso a caso.' },
+  { q: 'Qual tratamento psicológico tem mais evidência para transtorno do jogo?',
+    a: 'A Terapia Cognitivo-Comportamental. A diretriz NG248 do NICE (2025) recomenda oferecer TCC em grupo logo após o diagnóstico, tipicamente em 8 a 10 sessões, ou TCC individual em 6 a 8 sessões quando o grupo não for possível, sempre com componente de prevenção de recaída e com profissional treinado especificamente em jogo. Pfund e colaboradores (Clinical Psychology Review, 2023), em revisão guarda-chuva de cinco meta-análises, 56 estudos e 5.389 participantes, encontraram g = -0,91 para gravidade do transtorno no pós-tratamento e g = -0,14, sem significância estatística, no seguimento. O campo sabe iniciar a mudança e ainda não sabe sustentá-la.' },
+  { q: 'Entrevista Motivacional funciona para transtorno do jogo?',
+    a: 'A evidência disponível é fraca e a razão é metodológica. Forman e colaboradores (Psychology of Addictive Behaviors, 2025) encontraram g = -0,04 para frequência de jogo, g = -0,03 para gasto e g = 0,01 para gravidade dos sintomas no pós-tratamento, e concluíram que nenhum ensaio randomizado estabeleceu a integridade da Entrevista Motivacional nessa população, o que impede afirmar que o entregue nos ensaios era Entrevista Motivacional. Os mesmos autores apontam que estimativas anteriores estavam infladas por ensaios que misturavam a abordagem com cadernos de exercícios de TCC. A NG248 do NICE (2025) reflete essa hierarquia: considerar Entrevista Motivacional na recomendação 1.5.12 e oferecer TCC em grupo na 1.5.13.' },
+  { q: 'Transtorno do jogo vem sozinho ou junto com outro quadro?',
+    a: 'Junto, na maior parte dos casos. Galeazzi, Marchi e Castagnini (European Psychiatry, 2025), em revisão de 12 estudos populacionais publicados entre 1993 e 2024, encontraram 82,2% de prevalência de qualquer transtorno mental em pessoas com transtorno do jogo, com 34,2% de transtornos por uso de substâncias, 30,9% do humor, 29,9% de ansiedade, 14,3% de personalidade e 5,9% psicóticos. O Guia do Ministério da Saúde (2026) trata a coexistência com álcool e outras drogas em seção própria e determina que a avaliação psicossocial vá além das apostas. Plano terapêutico que fala apenas de jogo deixa de fora a parte frequentemente mais tratável do sofrimento.' },
+  { q: 'E quando aparece ideia de morte por causa das dívidas?',
+    a: 'A conduta é imediata e explícita. Pergunte de forma direta sobre pensamentos de morte, avalie o risco no momento da consulta, construa plano de segurança com a pessoa, combine quem da rede de apoio fica sabendo e defina o serviço de referência para intercorrência. Em risco imediato, o encaminhamento é para serviço de urgência. O CVV atende pelo 188, gratuito e 24 horas, em ligação, chat e e-mail. Endividamento, perda de patrimônio e ruptura familiar aparecem com frequência no quadro, e por isso a pergunta sobre risco de vida faz parte da avaliação de rotina, não de uma etapa avançada.' },
+  { q: 'Existe especialidade de dependência química na Psicologia brasileira?',
+    a: 'Não existe. A Resolução CFP nº 23/2022, em seu artigo 4º, lista 13 especialidades reconhecidas pelo Conselho Federal de Psicologia: Psicologia Escolar e Educacional, Psicologia Organizacional e do Trabalho, Psicologia de Tráfego, Psicologia Jurídica, Psicologia do Esporte, Psicologia Clínica, Psicologia Hospitalar, Psicopedagogia, Psicomotricidade, Psicologia Social, Neuropsicologia, Psicologia em Saúde e Avaliação Psicológica. Dependência química, adicções e transtorno do jogo não constam do rol, e quem atua nesse campo registra o título, quando registra, sob Psicologia Clínica ou Psicologia em Saúde. Vale a distinção fixada no artigo 8º, parágrafo 4º, da Resolução CNE/CES nº 1/2018: os certificados obtidos em cursos de especialização não equivalem a certificados de especialidade. O diploma de especialização é titulação acadêmica emitida por instituição de ensino; o título de especialista é registro profissional concedido pelo conselho, com regras próprias.' },
+  { q: 'Qual formação prepara o psicólogo para essa demanda?',
+    a: 'A base regulatória é a pós-graduação lato sensu com carga mínima de 360 horas e corpo docente com pelo menos 30% de portadores de título stricto sensu, conforme os artigos 7º e 9º da Resolução CNE/CES nº 1/2018. Sobre essa base, o preparo específico para problemas com apostas exige treinamento nos instrumentos que o Guia do Ministério da Saúde (2026) indica, leitura da NG248 do NICE (2025) para o desenho da intervenção, prática em rede com matriciamento e supervisão clínica continuada. O contexto explica a pressa: o TCU, no Acórdão 1173/2025, ouviu 2.000 profissionais do SUS e registrou que 55,2% declararam não se sentir preparados para atender pessoas com dependência de apostas, enquanto a capacidade de teleatendimento saltou de 600 para até 100 mil consultas mensais entre março e agosto de 2026. Para quem trabalha com prevenção, saúde mental e cultura de cuidado em organizações e serviços, o IPOG mantém o MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações em formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br para a grade vigente.' }
+];
+
+const prevalencia = [
+  { fonte: 'Datafolha, abril de 2026', numero: '10%', medida: 'Brasileiros de 16 anos ou mais que usam plataformas de apostas ou cassino online', base: '2.002 entrevistados, margem de erro de dois pontos percentuais' },
+  { fonte: 'Banco Central, agosto de 2024', numero: 'cerca de 24 milhões', medida: 'Pessoas físicas com ao menos uma transferência Pix a empresa de aposta no mês', base: 'Estudo Especial 119/2024, resultados preliminares' },
+  { fonte: 'III LENAD, 2023', numero: '25,9%', medida: 'Brasileiros que já jogaram ou apostaram alguma vez na vida', base: 'Reproduzido pelo Guia do Ministério da Saúde, 2026' },
+  { fonte: 'III LENAD, 2023', numero: '4,4%', medida: 'Alto risco de envolvimento problemático entre quem joga', base: 'Reproduzido pelo Guia do Ministério da Saúde, 2026' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: 'Transtorno do jogo e apostas online: FAQ com código CID, produto de risco, autoexclusão, SUS e formação',
+  description: '14 perguntas frequentes sobre transtorno do jogo no Brasil: F63.0 e 6C50.0, cassino online, autoexclusão, atendimento na RAPS, TCC, comorbidade e o rol de especialidades do CFP.',
+  author: { '@type': 'Organization', name: SITE.publisher },
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.url },
+  inLanguage: 'pt-BR', datePublished: '2026-08-27', dateModified: '2026-08-27'
+};
+
+const ldFaq = {
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.tldr-resposta', '.faq-answer-text', '.resposta-rapida'] },
+  author: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
+  isPartOf: { '@id': 'https://posgraduacaopsicologia.com/#website' },
+  inLanguage: 'pt-BR',
+  mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+};
+
+const ldBreadcrumb = {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: SITE.url + '/faq/' },
+    { '@type': 'ListItem', position: 3, name: 'Transtorno do jogo e apostas online', item: SITE.url + '/faq/transtorno-do-jogo-apostas-faq/' }
+  ]
+};
+
+const mbaPositiva = MBAS.find(m => m.id === 'mba-positiva');
+const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
+const areaSaude = AREAS.find(a => a.id === 'psicologia-saude')!;
+---
+<Base
+  title="Transtorno do jogo e apostas online · FAQ completo para psicólogos (2026)"
+  description="14 respostas sobre transtorno do jogo no Brasil: código CID-10 F63.0, cassino online como produto de maior risco, autoexclusão, atendimento na RAPS, TCC, comorbidade e formação do psicólogo.">
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'FAQ', href: '/faq' },
+        { label: 'Transtorno do jogo e apostas online' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">FAQ · Transtorno do jogo e apostas</span>
+          <h1 class="section-h text-3xl sm:text-4xl">Transtorno do jogo e apostas online: código, produto de risco, rede de atendimento e formação.</h1>
+          <p class="mt-3 text-ink-700 text-lg">14 perguntas que psicólogos, profissionais da Atenção Primária, equipes de CAPS e familiares fazem sobre problema de apostas no Brasil de 2026.</p>
+          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">14 perguntas · 14 minutos de leitura</p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <article class="lg:col-span-8 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="resposta-rapida text-ink-900 leading-relaxed">
+          No Brasil de 2026 o transtorno do jogo é registrado em CID-10, com F63.0 e Z72.6, enquanto a CID-11 e o código 6C50.0 seguem em fase de implementação pelo Ministério da Saúde. O produto de maior risco é o cassino online, não a aposta esportiva. O atendimento acontece na Rede de Atenção Psicossocial, com 3.120 CAPS e teleatendimento de até 100 mil consultas mensais pelo Meu SUS Digital. A autoexclusão já reúne mais de 1 milhão de pedidos de bloqueio de CPF e não tem evidência de efeito na prevenção de recaída.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-surface-200 bg-surface-50 p-5" role="note">
+        <p class="text-sm text-ink-700 leading-relaxed">
+          Conteúdo educacional para profissionais e familiares. Não substitui avaliação clínica, psicoterapia, supervisão profissional nem prescrição médica. Em sofrimento agudo ou risco de vida, ligue 188 (CVV, 24 horas) ou procure serviço de urgência.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map((f, i) => (
+            <details class="group p-5" open={i < 2}>
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="faq-answer-text mt-3 text-sm text-ink-700 leading-relaxed whitespace-pre-line">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Os números de prevalência e o que cada um mede</h2>
+        <p class="text-ink-700 mt-2">Quatro medidas oficiais convivem no debate brasileiro. A coluna da direita é o que separa uma da outra, e é o que precisa viajar junto do número em qualquer citação.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr><th class="text-left px-4 py-3">Fonte</th><th class="text-left px-4 py-3">Número</th><th class="text-left px-4 py-3">O que mede</th><th class="text-left px-4 py-3">Base</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {prevalencia.map(p => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900">{p.fonte}</td>
+                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{p.numero}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.medida}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.base}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Recursos principais</h2>
+        <ul class="mt-3 space-y-2 text-sm text-ink-700">
+          <li><a href="https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/guias-e-manuais/2026/guia-de-cuidado-para-pessoas-com-problemas-relacionados-a-jogos-de-apostas.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde, Guia de Cuidado para Pessoas com Problemas Relacionados a Jogos de Apostas (2026)</a></li>
+          <li><a href="https://www.ncbi.nlm.nih.gov/books/n/niceng248guid/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG248, Gambling-related harms (2025)</a></li>
+          <li><a href="https://portal.tcu.gov.br/imprensa/noticias/apostas-on-line-tcu-avalia-acoes-de-prevencao-do-governo" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">TCU, Acórdão 1173/2025 sobre apostas online</a></li>
+          <li><a href="https://site.cfp.org.br/servicos/titulo-de-especialista/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP, título de especialista e Resolução nº 23/2022</a></li>
+          <li><a href="https://www.cvv.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CVV, atendimento pelo 188</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Leituras relacionadas</h2>
+        <div class="mt-4 grid sm:grid-cols-3 gap-4">
+          <a href="/guias/transtorno-do-jogo-apostas-online-avaliacao-2026" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Guia</p>
+            <p class="font-semibold text-ink-900 mt-2">Avaliar e encaminhar transtorno do jogo</p>
+            <p class="text-xs text-ink-700 mt-2">Protocolo em nove passos, do rastreio ao encaminhamento na RAPS.</p>
+          </a>
+          <a href="/intervencoes/atencao-primaria-matriciamento" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Intervenção</p>
+            <p class="font-semibold text-ink-900 mt-2">Atenção Primária e matriciamento</p>
+            <p class="text-xs text-ink-700 mt-2">Como o caso se sustenta entre a UBS e o CAPS.</p>
+          </a>
+          <a href="/faq/regulacao-cfp-faq" class="card p-5 hover:shadow-lg transition-shadow">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">FAQ</p>
+            <p class="font-semibold text-ink-900 mt-2">Regulação do CFP</p>
+            <p class="text-xs text-ink-700 mt-2">Título de especialista, registro e limites do certificado.</p>
+          </a>
+        </div>
+        <ul class="mt-4 space-y-2 text-sm">
+          <li><a href="/intervencoes/stepped-care" class="text-brand-700 hover:text-brand-800 font-medium">Intervenção · Cuidado escalonado</a></li>
+          <li><a href="/metodos/tcc" class="text-brand-700 hover:text-brand-800 font-medium">Método · Terapia Cognitivo-Comportamental</a></li>
+          <li><a href={`/areas/${areaClinica.id}`} class="text-brand-700 hover:text-brand-800 font-medium">Área · Psicologia Clínica e Psicoterapia</a></li>
+          <li><a href="/tipos-de-pos-graduacao" class="text-brand-700 hover:text-brand-800 font-medium">Tipos de pós-graduação em Psicologia</a></li>
+          <li><a href="/faq/prevencao-suicidio-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ · Prevenção ao suicídio</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
+        <h3 class="font-display font-semibold text-xl">A oferta de atendimento cresceu antes da competência instalada.</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Entre março e agosto de 2026 a capacidade de teleatendimento do SUS para problemas com apostas passou de 600 para até 100 mil consultas mensais, e o Ministério da Saúde publicou o primeiro guia nacional sobre o tema em janeiro do mesmo ano. No Acórdão 1173/2025, o TCU registrou que 55,2% de 2.000 profissionais do SUS ouvidos declararam não se sentir preparados para esse atendimento. O gargalo declarado está na formação, e ele explica por que rastreio, codificação em CID-10 e manejo em rede viraram conteúdo obrigatório de pós-graduação clínica e em saúde.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-5">
+      <div class="card p-6 sticky top-20">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
+        <h3 class="font-display font-semibold text-lg mt-1">Pós-graduação no IPOG</h3>
+        <p class="text-sm text-ink-700 mt-2">{mbaPositiva ? mbaPositiva.description : 'O IPOG oferece pós-graduação em formato Ao Vivo síncrono com corpo docente nominal.'}</p>
+        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
+        <a href="/tipos-de-pos-graduacao" class="btn btn-ghost mt-2 w-full">Tipos de pós-graduação</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
+        <ul class="space-y-1">
+          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
+          <li><a href={`/areas/${areaSaude.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSaude.name}</strong></a></li>
+        </ul>
+        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas</a>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Onde buscar ajuda</p>
+        <ul class="space-y-2 text-sm text-ink-700">
+          <li>CAPS do território, pela Atenção Primária do município.</li>
+          <li>Teleatendimento do Meu SUS Digital, para apostador e familiar.</li>
+          <li>CVV pelo 188, gratuito e 24 horas.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldBreadcrumb)} />
+</Base>

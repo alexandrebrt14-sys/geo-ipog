@@ -792,6 +792,23 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/comparativos/act-vs-tcc-dor-cronica",
+    "title": "ACT ou TCC para dor crônica — comparativo por desfecho e comparador",
+    "description": "Comparativo entre terapia de aceitação e compromisso e terapia cognitivo-comportamental no recorte de dor crônica: alvo, desfecho medido, tamanho de efeito, comparador, formato, treinamento exigido e onde cada uma se aplica melhor.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "act",
+      "tcc",
+      "dor",
+      "cronica",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/comparativos/ahsd-vs-tdah-vs-tea-adulto",
     "title": "AHSD vs TDAH vs TEA no adulto: diferencial em neurodiversidade que coexiste",
     "description": "Comparativo clínico entre altas habilidades/superdotação (AHSD), TDAH e TEA na vida adulta. Sobreposição de sinais, perguntas diferenciais, dupla excepcionalidade e armadilhas de avaliação, com marcos brasileiros 2025-2026.",
@@ -886,6 +903,26 @@ export const AUTO_PAGES: AutoPage[] = [
       "burnout",
       "depressao",
       "cptsd",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/comparativos/cassino-online-vs-aposta-esportiva-risco-clinico-2026",
+    "title": "Cassino online ou aposta esportiva: qual produto concentra risco clínico",
+    "description": "Comparativo entre cassino e slot online e aposta esportiva: velocidade de rodada, participação no pagamento no Brasil, risco por faixa etária, gatilho e triagem clínica.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "cassino",
+      "online",
+      "aposta",
+      "esportiva",
+      "risco",
+      "clinico",
+      "2026",
       "comparativo"
     ],
     "weight": 0.95,
@@ -1087,6 +1124,24 @@ export const AUTO_PAGES: AutoPage[] = [
       "emdr",
       "tcc",
       "trauma",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/comparativos/entrevista-motivacional-vs-tcc-transtorno-do-jogo",
+    "title": "Entrevista Motivacional ou TCC no transtorno do jogo: comparativo",
+    "description": "Comparativo entre Entrevista Motivacional e TCC no transtorno do jogo: efeito no pós-tratamento e no seguimento, o verbo do NICE e a aplicação na rede brasileira.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "entrevista",
+      "motivacional",
+      "tcc",
+      "transtorno",
+      "jogo",
       "comparativo"
     ],
     "weight": 0.95,
@@ -1490,6 +1545,24 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/comparativos/tcc-i-vs-higiene-do-sono-vs-farmaco-insonia",
+    "title": "TCC-I, higiene do sono e farmacoterapia na insônia crônica · comparativo por força de recomendação",
+    "description": "Comparativo de três alternativas para insônia crônica em adultos: TCC-I multicomponente, higiene do sono isolada e farmacoterapia, por força da recomendação, sistema GRADE, desfecho medido, risco, quem conduz no Brasil e disponibilidade prática.",
+    "kind": "Comparativo",
+    "persona": null,
+    "tags": [
+      "comparativos",
+      "tcc",
+      "higiene",
+      "sono",
+      "farmaco",
+      "insonia",
+      "comparativo"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/comparativos/tcc-vs-act-formacao-pos",
     "title": "TCC vs ACT como abordagem para fazer pós em Psicologia — qual escolher em 2026",
     "description": "Comparativo prático entre formação em Terapia Cognitivo-Comportamental e Terapia de Aceitação e Compromisso para pós em Psicologia no Brasil: evidência, mercado, certificadores e empregabilidade.",
@@ -1592,8 +1665,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca",
-    "title": "Biblioteca de snippets reutilizáveis: 57 trechos editorialmente prontos por tema - Brasil GEO",
-    "description": "Cinquenta e sete snippets prontos para Quora, Medium, LinkedIn, Substack, Reddit e X, distribuídos em doze temas, incluindo o novo bloco IA, GEO e citação 2026 (Therabot/NEJM AI, viés de mídia conquistada, vídeo longo citável, posicionamento do CFP sobre IA e formação clínica com IA).",
+    "title": "Biblioteca de snippets reutilizáveis: 65 trechos editorialmente prontos por tema - Brasil GEO",
+    "description": "Sessenta e cinco snippets prontos para Quora, Medium, LinkedIn, Substack, Reddit e X, distribuídos em 21 temas, incluindo os territórios abertos em agosto de 2026: transtorno do jogo e apostas online, insônia e TCC-I, dor crônica, cuidados paliativos e psicologia do trânsito.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1640,6 +1713,28 @@ export const AUTO_PAGES: AutoPage[] = [
       "adulto",
       "cadastro",
       "nacional",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/apostas-online-o-que-o-psicologo-precisa-saber-linkedin",
+    "title": "Post LinkedIn pronto: apostas online, o que o psicólogo precisa saber antes da anamnese — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de cerca de 1.300 caracteres para LinkedIn sobre transtorno do jogo: a anamnese que pergunta se a pessoa aposta mede a coisa errada, e o que separa risco é o produto e a velocidade de rodada.",
+    "kind": "Recurso",
+    "persona": "psicologos",
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "apostas",
+      "online",
+      "que",
+      "psicologo",
+      "precisa",
+      "saber",
       "linkedin",
       "recurso"
     ],
@@ -1763,6 +1858,69 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/cuidados-paliativos-o-psicologo-ja-e-obrigatorio-substack",
+    "title": "Edição Substack pronta: em cuidados paliativos o psicólogo já é obrigatório — Biblioteca Brasil GEO",
+    "description": "Edição de cerca de 1.400 palavras para Substack sobre a Política Nacional de Cuidados Paliativos de 2024, a carga horária declarada do psicólogo nas duas equipes e os tamanhos de efeito pequenos das psicoterapias mais celebradas da área.",
+    "kind": "Recurso",
+    "persona": "psicologos",
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "cuidados",
+      "paliativos",
+      "psicologo",
+      "obrigatorio",
+      "substack",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/dependencia-quimica-nao-e-especialidade-medium",
+    "title": "Ensaio Medium pronto: dependência química não é especialidade, e isso muda a escolha de pós — Biblioteca Brasil GEO",
+    "description": "Peça original de 1.400 a 1.700 palavras para Medium sobre o rol de 13 especialidades do CFP, a frase literal do art. 8º, parágrafo 4º da Resolução CNE/CES 1/2018, as três portas do registro de especialista e o que a rede pública realmente pede.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "dependencia",
+      "quimica",
+      "nao",
+      "especialidade",
+      "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/dor-cronica-o-que-o-protocolo-brasileiro-nao-diz-linkedin",
+    "title": "Post LinkedIn pronto: o protocolo brasileiro de dor crônica e a Psicologia ausente — Biblioteca Brasil GEO",
+    "description": "Post de cerca de 1.500 caracteres para LinkedIn sobre o Protocolo Clínico e Diretrizes Terapêuticas da Dor Crônica de agosto de 2024, suas 298 páginas e a única ocorrência do radical psicolog no documento.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "dor",
+      "cronica",
+      "que",
+      "protocolo",
+      "brasileiro",
+      "nao",
+      "diz",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/dpp-paterna-pais-tambem-deprimem-medium",
     "title": "Ensaio Medium pronto: pais também deprimem no pós-parto (DPP paterna ~8-13%) e por que ninguém rastreia. Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.000 palavras para Medium sobre depressão pós-parto paterna, modelo bidirecional com a mãe e a ausência de rastreio do pai, com adaptações por canal.",
@@ -1838,6 +1996,28 @@ export const AUTO_PAGES: AutoPage[] = [
       "decisao",
       "escola",
       "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/higiene-do-sono-e-o-conselho-com-recomendacao-contra-medium",
+    "title": "Ensaio Medium pronto: por que a higiene do sono venceu o mercado e perdeu a diretriz — Biblioteca Brasil GEO",
+    "description": "Ensaio de cerca de 1.400 palavras para Medium com tese própria: a higiene do sono se espalhou porque escala sem profissional, e é o único item com recomendação contra na diretriz comportamental da AASM de 2021.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "higiene",
+      "sono",
+      "conselho",
+      "com",
+      "recomendacao",
+      "contra",
+      "medium",
       "recurso"
     ],
     "weight": 0.55,
@@ -1936,6 +2116,25 @@ export const AUTO_PAGES: AutoPage[] = [
       "substituir",
       "psicologo",
       "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/insonia-remedio-ou-terapia-quora",
+    "title": "Resposta Quora pronta: remédio para dormir ou terapia, o que funciona de verdade? — Biblioteca Brasil GEO",
+    "description": "Peça de cerca de 800 palavras para Quora sobre insônia crônica, ancorada na diretriz comportamental da AASM de 2021 e na diretriz farmacológica da mesma entidade de 2017, com resposta autossuficiente dentro da plataforma.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "insonia",
+      "remedio",
+      "terapia",
+      "quora",
       "recurso"
     ],
     "weight": 0.55,
@@ -2157,6 +2356,26 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/psicotecnico-mudou-de-dono-em-2026-linkedin",
+    "title": "Post LinkedIn pronto: o psicotécnico mudou de dono em 2026 — Biblioteca Brasil GEO",
+    "description": "Post de cerca de 1.500 caracteres para LinkedIn sobre a Resolução CONTRAN 1.020/2025, que manteve a avaliação psicológica como etapa IV, e a Lei 15.428/2026, que federalizou autorização do perito e preço do exame.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "psicotecnico",
+      "mudou",
+      "dono",
+      "2026",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/regulacao-ia-saude-mental-brasil-medium",
     "title": "Ensaio Medium pronto: o vácuo regulatório do PL 2338, o papel do CFP e a decisão para clínicas em 2026 — Biblioteca Brasil GEO",
     "description": "Ensaio de ~1200 palavras para Medium sobre o cenário regulatório brasileiro de IA em saúde mental em 2026 — PL 2338/2023 em tramitação, Posicionamento CFP 03/07/2025, RDC ANVISA 657/2022 e a decisão prática para clínicas.",
@@ -2276,6 +2495,27 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/transtorno-do-jogo-quando-vira-doenca-quora",
+    "title": "Resposta Quora pronta: quando apostar deixa de ser diversão e vira doença? — Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de cerca de 800 palavras para Quora sobre transtorno do jogo: código CID vigente no SUS, o produto que discrimina risco, a motivação declarada de quem aposta e o caminho de atendimento no SUS.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "transtorno",
+      "jogo",
+      "quando",
+      "vira",
+      "doenca",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/tres-ias-qual-pos-psicologia-quora",
     "title": "Resposta Quora pronta: perguntei a 3 IAs qual pós de Psicologia fazer e as respostas quase não se sobrepuseram. Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~800 palavras para Quora explicando por que ChatGPT, Gemini e Perplexity divergem ao recomendar pós em Psicologia (só 11% dos domínios coincidem) e como decidir pelos dados do Censo INEP 2024, com adaptações por canal.",
@@ -2310,6 +2550,25 @@ export const AUTO_PAGES: AutoPage[] = [
       "surveillance",
       "tecnoestresse",
       "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/dores-que-o-publico-descreve-2026",
+    "title": "Dores que o público descreve em 2026: mapa de pauta por canal",
+    "description": "As dez dores que o público brasileiro descreve nas redes sobre saúde mental, trabalho e terapia, em padrão agregado e sem exposição de ninguém, traduzidas em pauta editorial por canal com a regra vigente de cada plataforma em 2026.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "dores",
+      "que",
+      "publico",
+      "descreve",
+      "2026",
       "recurso"
     ],
     "weight": 0.55,
@@ -2356,6 +2615,23 @@ export const AUTO_PAGES: AutoPage[] = [
       "conteudo",
       "social",
       "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/perguntas-que-a-ia-responde",
+    "title": "Perguntas que a IA responde: banco de perguntas reais sobre pós em Psicologia",
+    "description": "Banco com 24 perguntas reais feitas a motores generativos sobre pós-graduação em Psicologia e clínica, com intenção do leitor, canal onde a pergunta rende, página do portal que responde e a regra vigente de Quora, Medium, LinkedIn, Substack, Reddit e X em 2026.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "perguntas",
+      "que",
+      "responde",
       "recurso"
     ],
     "weight": 0.55,
@@ -2512,6 +2788,24 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/evidencias/apostas-online-saude-mental-2026",
+    "title": "Apostas online e saúde mental no Brasil: a evidência de 2026",
+    "description": "Os três números de prevalência de apostas no Brasil medem coisas diferentes. Atendimentos no SUS por CID, risco por produto, autoexclusão e motivação de quem aposta.",
+    "kind": "Evidência",
+    "persona": null,
+    "tags": [
+      "evidencias",
+      "apostas",
+      "online",
+      "saude",
+      "mental",
+      "2026",
+      "evidência"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/evidencias/burnout-gen-z",
     "title": "Burnout e geração Z · evidência atualizada 2024-2026",
     "description": "Literatura recente sobre burnout em trabalhadores jovens: Maslach, Schaufeli, ICD-11, dados brasileiros e estratégias de intervenção organizacional.",
@@ -2573,6 +2867,23 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/evidencias/neuromodulacao-emtr-depressao-2026",
+    "title": "Neuromodulação não invasiva em depressão: evidência e fronteira profissional em 2026",
+    "description": "O que a evidência sustenta por indicação, o que a Resolução CFM nº 1.986/2012 autoriza, e onde a avaliação neuropsicológica entra no serviço de neuromodulação.",
+    "kind": "Evidência",
+    "persona": null,
+    "tags": [
+      "evidencias",
+      "neuromodulacao",
+      "emtr",
+      "depressao",
+      "2026",
+      "evidência"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/evidencias/nr1-riscos-psicossociais-2026",
     "title": "NR-1 e riscos psicossociais · evidência 2025-2026",
     "description": "Literatura recente sobre Portaria MTE 1.419/2024, modelos demanda-controle-apoio e instrumentos psicométricos para diagnóstico de risco psicossocial.",
@@ -2583,6 +2894,22 @@ export const AUTO_PAGES: AutoPage[] = [
       "nr1",
       "riscos",
       "psicossociais",
+      "2026",
+      "evidência"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
+    "route": "/evidencias/psicodelicos-assistidos-2026",
+    "title": "Psicodélicos assistidos em 2026: evidência clínica e o limite da regra brasileira",
+    "description": "O que os ensaios com psilocibina, MDMA e ayahuasca sustentam, por que a FDA reprovou a MDMA em 2024 e o que o psicólogo brasileiro pode e não pode fazer hoje.",
+    "kind": "Evidência",
+    "persona": null,
+    "tags": [
+      "evidencias",
+      "psicodelicos",
+      "assistidos",
       "2026",
       "evidência"
     ],
@@ -2665,6 +2992,21 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/faq/avaliacao-psicologica-transito-faq",
+    "title": "Avaliação psicológica de trânsito: FAQ com laudo, titulação, preço e recurso",
+    "description": "Quatorze perguntas sobre a avaliação psicológica de condutores: quem assina o resultado, qual titulação o artigo 147 do CTB exige, para quem o exame é periódico, o que a Lei 15.428/2026 mudou no preço, quais testes podem ser usados e como o candidato inapto recorre.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "avaliacao",
+      "psicologica",
+      "transito"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/faq/burnout-cid11-faq",
     "title": "Burnout CID-11 — FAQ | QD85, MBI Maslach, NR-1, retorno ao trabalho",
     "description": "Dezessete perguntas frequentes sobre burnout: CID-11 QD85, MBI Maslach 1981, NR-1 Portaria 1.419/2024, nexo ocupacional, LGPD, retorno ao trabalho e programa anti-burnout.",
@@ -2721,6 +3063,21 @@ export const AUTO_PAGES: AutoPage[] = [
       "pos",
       "parto",
       "paterna"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/faq/dor-cronica-psicologia-faq",
+    "title": "Dor crônica e psicologia — FAQ com 14 perguntas e fontes nomeadas",
+    "description": "Catorze perguntas sobre dor crônica e trabalho psicológico: se a dor é psicológica, o que a psicoterapia move, quantas sessões, fibromialgia, dor primária na CID-11, o protocolo brasileiro de 2024 e a diretriz NICE NG193.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "dor",
+      "cronica",
+      "psicologia"
     ],
     "weight": 0.95,
     "pageType": null
@@ -2785,6 +3142,20 @@ export const AUTO_PAGES: AutoPage[] = [
     "tags": [
       "faq",
       "psicologia"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/faq/insonia-tcc-i-faq",
+    "title": "Insônia crônica e TCC-I — FAQ com 14 perguntas · diretrizes AASM, Europa e Consenso Brasileiro",
+    "description": "Catorze perguntas e respostas sobre insônia crônica e TCC-I: higiene do sono, remédio para dormir, formato digital, tratamento combinado, número de sessões e o que o psicólogo pode conduzir no Brasil.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "insonia",
+      "tcc"
     ],
     "weight": 0.95,
     "pageType": null
@@ -3137,6 +3508,21 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/faq/transtorno-do-jogo-apostas-faq",
+    "title": "Transtorno do jogo e apostas online · FAQ completo para psicólogos (2026)",
+    "description": "14 respostas sobre transtorno do jogo no Brasil: código CID-10 F63.0, cassino online como produto de maior risco, autoexclusão, atendimento na RAPS, TCC, comorbidade e formação do psicólogo.",
+    "kind": "FAQ",
+    "persona": null,
+    "tags": [
+      "faq",
+      "transtorno",
+      "jogo",
+      "apostas"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
     "route": "/faq/trauma-complexo-cptsd-faq",
     "title": "Trauma complexo CPTSD — FAQ | CID-11 6B41, ITQ, STAIR de Cloitre, EMDR e diferencial com TPB",
     "description": "Dezessete perguntas frequentes sobre trauma complexo (CPTSD): CID-11 6B41, ITQ, fases STAIR, EMDR adaptado, diferencial com TPB, violência doméstica, abuso infantil e fluxo SUS no Brasil.",
@@ -3342,6 +3728,24 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/guias/avaliacao-psicologica-transito-contran-2026",
+    "title": "Avaliação psicológica de trânsito: o que a regra de 2026 exige do perito examinador",
+    "description": "",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "avaliacao",
+      "psicologica",
+      "transito",
+      "contran",
+      "2026",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/guias/avaliacao-saude-mental-perinatal",
     "title": "Avaliação de saúde mental perinatal — guia 9 passos · EPDS, GAD-7, screening universal, depressão pós-parto",
     "description": "Protocolo passo-a-passo para avaliação de saúde mental perinatal: EPDS (Cox 1987), GAD-7, screening universal em três momentos, depressão pós-parto, ansiedade perinatal, TEPT pós-parto, psicose puerperal e encaminhamento.",
@@ -3514,6 +3918,24 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/guias/dor-cronica-manejo-psicologico-2026",
+    "title": "Manejo psicológico da dor crônica — guia em nove passos para a clínica",
+    "description": "Guia passo a passo para o psicólogo que recebe pessoa com dor crônica: por que o encaminhamento chega tarde, avaliação em cinco eixos, dor primária na CID-11, crença de dano, exposição gradual, sono e humor, trabalho de equipe e critério de alta.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "dor",
+      "cronica",
+      "manejo",
+      "psicologico",
+      "2026",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/guias/dupla-excepcionalidade-2e-adulto-avaliacao",
     "title": "Dupla excepcionalidade (2e) no adulto: guia de avaliação · AHSD com TDAH ou TEA sem ver só um lado",
     "description": "Como avaliar dupla excepcionalidade (2e) no adulto: o talento mascara o transtorno e o transtorno mascara o talento. Leitura fatorial do WAIS, diferencial sem fechamento prematuro, custo da sobrecompensação e plano que reduz fricção em vez de exigir força de vontade.",
@@ -3595,6 +4017,24 @@ export const AUTO_PAGES: AutoPage[] = [
       "implementar",
       "nr1",
       "empresa",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
+    "route": "/guias/insonia-cronica-tcc-i-protocolo-2026",
+    "title": "Insônia crônica e TCC-I: protocolo em nove passos · diretrizes AASM, Europa e Brasil",
+    "description": "Protocolo de TCC-I para insônia crônica em adultos: diário de sono, controle de estímulos, restrição de sono, reestruturação cognitiva, manejo de quem usa hipnótico e critério de encaminhamento, com a força de cada recomendação nas diretrizes.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "insonia",
+      "cronica",
+      "tcc",
+      "protocolo",
+      "2026",
       "guia"
     ],
     "weight": 1,
@@ -3777,6 +4217,25 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/guias/psico-oncologia-cuidados-paliativos-protocolo-2026",
+    "title": "Psico-oncologia e cuidados paliativos: protocolo do psicólogo em nove passos (2026)",
+    "description": "Protocolo de entrada do psicólogo em serviço de oncologia e cuidados paliativos: rastreio de distress com acurácia real, preferência de informação, más notícias, família e cuidador, sofrimento existencial, luto antecipatório e cuidado da equipe. Conteúdo independente.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "psico",
+      "oncologia",
+      "cuidados",
+      "paliativos",
+      "protocolo",
+      "2026",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/guias/retorno-ao-trabalho-pos-burnout",
     "title": "Retorno ao trabalho pós-burnout — guia 9 passos · plano escalonado e revisão 90/180 dias",
     "description": "Protocolo passo-a-passo para retorno gradual ao trabalho após licença por saúde mental: comunicação com líder, ajustes razoáveis, monitoramento e revisão estrutural.",
@@ -3795,8 +4254,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/supervisao-async-ia-2026-protocolo-cfp",
-    "title": "Supervisão clínica assíncrona com IA em 2026 — protocolo em 10 passos | CFP 11/2018, Posicionamento 03/07/2025, LGPD",
-    "description": "Protocolo operacional em 10 passos para psicólogos supervisores: CFP 11/2018, Posicionamento CFP 03/07/2025 sobre IA, sigilo duplo, anonimização, escolha de ferramenta LGPD-compatível, governança, log, qualidade pedagógica, incidente e documentação ética.",
+    "title": "Supervisão clínica assíncrona com apoio de IA em 2026: protocolo em 10 passos sob CFP e LGPD.",
+    "description": "",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -3823,6 +4282,25 @@ export const AUTO_PAGES: AutoPage[] = [
       "camuflagem",
       "mulheres",
       "evidencia",
+      "2026",
+      "guia"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
+    "route": "/guias/transtorno-do-jogo-apostas-online-avaliacao-2026",
+    "title": "Transtorno do jogo e apostas online · guia de avaliação em nove passos (2026)",
+    "description": "Protocolo para o psicólogo que atende problema de apostas: rastreio com PGSI e Autoteste de Jogo, comorbidade, código CID-10 F63.0, eixo de cuidado do Guia do Ministério da Saúde de 2026, RAPS, dívida e autoexclusão.",
+    "kind": "Guia",
+    "persona": null,
+    "tags": [
+      "guias",
+      "transtorno",
+      "jogo",
+      "apostas",
+      "online",
+      "avaliacao",
       "2026",
       "guia"
     ],
@@ -3892,6 +4370,23 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/intervencoes/cuidados-paliativos-e-fim-de-vida",
+    "title": "Cuidados paliativos e fim de vida: o papel do psicólogo, a entrada precoce e a cobertura no Brasil",
+    "description": "Protocolo de intervenção em cuidados paliativos: quando o cuidado entra, evidência do CALM, da Dignity Therapy e da psicoterapia centrada no sentido, composição de equipe pela Portaria GM/MS nº 3.681/2024 e cobertura brasileira. Conteúdo independente.",
+    "kind": "Intervenção",
+    "persona": null,
+    "tags": [
+      "intervencoes",
+      "cuidados",
+      "paliativos",
+      "fim",
+      "vida",
+      "intervenção"
+    ],
+    "weight": 0.9,
+    "pageType": null
+  },
+  {
     "route": "/intervencoes/iapt-nhs",
     "title": "IAPT / NHS Talking Therapies: fundamentação, evidência e lições para o Brasil",
     "description": "Análise técnica do IAPT inglês (hoje NHS Talking Therapies): origem em David Clark, stepped care em escala, formação massiva, taxas de recuperação e adaptação ao SUS. Conteúdo independente.",
@@ -3916,6 +4411,36 @@ export const AUTO_PAGES: AutoPage[] = [
       "intervencoes",
       "intervencao",
       "crise",
+      "intervenção"
+    ],
+    "weight": 0.9,
+    "pageType": null
+  },
+  {
+    "route": "/intervencoes/prevencao-de-recaida",
+    "title": "Prevenção de recaída: lapso, gatilhos, plano de manejo e o que o mindfulness reduz",
+    "description": "Protocolo de prevenção de recaída em dependências: distinção entre lapso e recaída, situações de alto risco, plano de manejo, evidência do MBRP e medição de desfecho no seguimento. Conteúdo independente.",
+    "kind": "Intervenção",
+    "persona": null,
+    "tags": [
+      "intervencoes",
+      "prevencao",
+      "recaida",
+      "intervenção"
+    ],
+    "weight": 0.9,
+    "pageType": null
+  },
+  {
+    "route": "/intervencoes/reducao-de-danos",
+    "title": "Redução de danos: modelo de cuidado na RAPS, papel do psicólogo e critério de meta clínica",
+    "description": "Redução de danos como modelo de cuidado na rede pública brasileira: eixo do Guia do Ministério da Saúde de 2026, matriciamento, Projeto Terapêutico Singular, critérios entre abstinência e redução de risco e a lacuna de formação. Conteúdo independente.",
+    "kind": "Intervenção",
+    "persona": null,
+    "tags": [
+      "intervencoes",
+      "reducao",
+      "danos",
       "intervenção"
     ],
     "weight": 0.9,
@@ -4351,6 +4876,21 @@ export const AUTO_PAGES: AutoPage[] = [
     "tags": [
       "metodos",
       "emdr",
+      "método"
+    ],
+    "weight": 0.95,
+    "pageType": null
+  },
+  {
+    "route": "/metodos/entrevista-motivacional",
+    "title": "Entrevista Motivacional: fundamentos, evidência por desfecho e formação",
+    "description": "Entrevista Motivacional de Miller e Rollnick: as quatro tarefas, o que a 4a edição de 2023 mudou, onde a evidência sustenta o método e onde ela não sustenta.",
+    "kind": "Método",
+    "persona": null,
+    "tags": [
+      "metodos",
+      "entrevista",
+      "motivacional",
       "método"
     ],
     "weight": 0.95,
@@ -5579,7 +6119,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/temas/pos-graduacao-lato-sensu-psicologia-decreto-12456",
     "title": "Especialização em Psicologia pós-Decreto 12.456: o que mudou, o que ficou e como verificar antes de matricular",
-    "description": "Decreto 12.456/2025 reorganiza Lato Sensu — não a extingue. Especialização em Psicologia segue como caminho regulamentado e mais comum no Brasil. Análise técnica para 2026.2 com decreto, Resolução CNE/CES nº 1/2018, Parecer CNE/CES nº 637/2025 e Resoluções CFP.",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -5591,6 +6131,24 @@ export const AUTO_PAGES: AutoPage[] = [
       "psicologia",
       "decreto",
       "12456",
+      "tema"
+    ],
+    "weight": 0.9,
+    "pageType": null
+  },
+  {
+    "route": "/temas/psicologia-do-transito-mercado-e-regulacao-2026",
+    "title": "Psicologia do trânsito em 2026: mercado, regulação e o que a Lei 15.428 redistribui",
+    "description": "Estrutura da demanda por avaliação psicológica de condutores no RENACH, atores da cadeia, linha do tempo da regra de 1997 a 2026 e o efeito do preço público federal sobre quem escolhe formação na área.",
+    "kind": "Tema",
+    "persona": null,
+    "tags": [
+      "temas",
+      "psicologia",
+      "transito",
+      "mercado",
+      "regulacao",
+      "2026",
       "tema"
     ],
     "weight": 0.9,
@@ -5779,19 +6337,19 @@ export const AUTO_PAGES: AutoPage[] = [
 ];
 
 export const AUTO_PAGES_STATS = {
-  "Recurso": 79,
+  "Recurso": 89,
   "Área": 19,
   "Carreira": 7,
   "Caso": 7,
-  "Comparativo": 50,
-  "Evidência": 7,
-  "FAQ": 36,
+  "Comparativo": 54,
+  "Evidência": 10,
+  "FAQ": 40,
   "Glossário": 6,
-  "Guia": 36,
-  "Intervenção": 6,
+  "Guia": 41,
+  "Intervenção": 9,
   "MBA": 21,
-  "Método": 6,
+  "Método": 7,
   "Persona": 5,
   "Estado": 28,
-  "Tema": 46
+  "Tema": 47
 } as const;

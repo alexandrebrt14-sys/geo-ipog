@@ -102,7 +102,6 @@ for (const full of files) {
 const sorted = Object.fromEntries(Object.entries(routes).sort(([a], [b]) => a.localeCompare(b)));
 const manifest = {
   comment: 'AUTO-GERADO por scripts/gen-lastmod-manifest.mjs (datas reais do git por página). Não editar à mão; regenerar com: npm run lastmod:manifest',
-  generatedAt: new Date().toISOString(),
   shallow,
   routes: sorted
 };

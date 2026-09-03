@@ -24,6 +24,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { linkarTermos } from '../src/lib/glossario-links.ts';
 
 const SITE = 'https://posgraduacaopsicologia.com';
 const PAGE_TYPES = new Set([
@@ -135,6 +136,7 @@ function processPage({ html, route, dates, resolved, stats, linker, withCitation
 // opts.citation: liga a etapa 2 (E-E-A-T). opts.glossario: liga a etapa 3 (Onda 5).
 export default function seoPostbuild(opts = {}) {
   const withCitation = opts.citation === true;
+  const linker = opts.glossario === true ? linkarTermos : null;
   return {
     name: 'seo-postbuild',
     hooks: {
@@ -152,7 +154,7 @@ export default function seoPostbuild(opts = {}) {
           const route = routeOf(distDir, file);
           const dates = manifest?.routes?.[route] ?? null;
           const src = fs.readFileSync(file, 'utf-8');
-          const { html, changed } = processPage({ html: src, route, dates, resolved, stats, linker: null, withCitation });
+          const { html, changed } = processPage({ html: src, route, dates, resolved, stats, linker, withCitation });
           stats.pages++;
           if (changed) { fs.writeFileSync(file, html, 'utf-8'); stats.changed++; }
           if (!resolved[route] && dates) resolved[route] = dates.modified;

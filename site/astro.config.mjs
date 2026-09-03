@@ -19,7 +19,7 @@ export default defineConfig({
     react(),
     tailwind({ applyBaseStyles: false }),
     // Onda 3/5/E-E-A-T (03/09/2026): dateModified por git, citation e links termo->verbete no HTML final.
-    seoPostbuild()
+    seoPostbuild({ glossario: true })
   ],
   vite: {
     build: {

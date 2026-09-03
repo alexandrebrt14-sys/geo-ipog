@@ -57,8 +57,33 @@ function priorityForRoute(route) {
   return 0.5;
 }
 
-// Lastmod real por arquivo: prefere mtime do .astro de origem; cai para mtime do index.html.
+// Onda 3 SEO/GEO (03/09/2026): FONTE UNICA de datas. Primeiro o mapa rota -> dateModified
+// final escrito pela integracao scripts/seo-postbuild.mjs no build (lastmod == dateModified
+// do JSON-LD por construcao); depois o manifesto do git (scripts/gen-lastmod-manifest.mjs);
+// so entao o `git log -1` por arquivo, mantido como fallback.
+function loadRouteDates(file, pick) {
+  try {
+    const j = JSON.parse(fs.readFileSync(path.resolve('src', 'generated', file), 'utf-8'));
+    const out = new Map();
+    for (const [route, v] of Object.entries(j.routes || {})) out.set(route, pick(v));
+    return out;
+  } catch {
+    return new Map();
+  }
+}
+const resolvedDates = loadRouteDates('lastmod-resolved.json', v => v);
+const manifestDates = loadRouteDates('lastmod.json', v => v.modified);
+if (resolvedDates.size === 0 && manifestDates.size === 0) {
+  console.warn('[gen-sitemap] sem src/generated/lastmod*.json: caindo para git log por arquivo (rode npm run lastmod:manifest).');
+}
+
+// Lastmod real por rota: manifesto do git; fallback git log -1; fallback mtime.
 function lastmodForRoute(route, htmlPath) {
+  const routeKey = route ? '/' + route.replace(/\/$/, '') + '/' : '/';
+  const fromResolved = resolvedDates.get(routeKey);
+  if (fromResolved) return fromResolved;
+  const fromManifest = manifestDates.get(routeKey);
+  if (fromManifest) return fromManifest;
   const candidates = [];
   const base = route ? route.replace(/\/$/, '') : '';
   if (base) {

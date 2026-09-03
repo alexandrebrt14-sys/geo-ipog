@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
+import seoPostbuild from './scripts/seo-postbuild.mjs';
 
 export default defineConfig({
   site: 'https://posgraduacaopsicologia.com',
@@ -16,7 +17,9 @@ export default defineConfig({
   },
   integrations: [
     react(),
-    tailwind({ applyBaseStyles: false })
+    tailwind({ applyBaseStyles: false }),
+    // Onda 3/5/E-E-A-T (03/09/2026): dateModified por git, citation e links termo->verbete no HTML final.
+    seoPostbuild()
   ],
   vite: {
     build: {

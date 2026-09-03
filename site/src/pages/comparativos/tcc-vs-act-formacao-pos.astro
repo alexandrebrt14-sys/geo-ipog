@@ -32,6 +32,10 @@ const faqs = [
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
+  },
   headline: 'TCC vs ACT como abordagem para fazer pós em Psicologia: qual escolher',
   description: 'Comparativo prático entre formação em TCC e ACT como pós-graduação em Psicologia no Brasil em 2026: evidência científica, demanda de mercado, certificadores e empregabilidade.',
   author: alexandreAuthorRef,
@@ -39,15 +43,6 @@ const ldArticle = {
   inLanguage: 'pt-BR',
   about: 'TCC, ACT, formação em Psicologia, pós-graduação, certificação FBTC, ACBS',
   datePublished: '2026-05-17'
-};
-
-const ldSpeakable = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
-  }
 };
 
 const ldFaq = {
@@ -60,11 +55,24 @@ const ldFaq = {
   }))
 };
 
+// Onda 5/6 SEO-GEO (03/09/2026): cada DefinedTerm com @id/url por âncora e inDefinedTermSet,
+// mesma função de slug do glossário de autismo (verbeteId).
+const termoSlug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const termSetUrl = SITE.url + '/comparativos/tcc-vs-act-formacao-pos/';
+const comTermoId = (termos: Array<Record<string, unknown>>) => termos.map(t => ({
+  ...t,
+  '@id': termSetUrl + '#' + termoSlug(String(t.name)),
+  url: termSetUrl + '#' + termoSlug(String(t.name)),
+  inDefinedTermSet: { '@id': termSetUrl + '#glossario' }
+}));
+
 const ldDefinedTerms = {
   '@context': 'https://schema.org',
   '@type': 'DefinedTermSet',
+  '@id': termSetUrl + '#glossario',
+  url: termSetUrl + '#glossario',
   name: 'Glossário — Formação TCC e ACT 2026',
-  hasDefinedTerm: [
+  hasDefinedTerm: comTermoId([
     {
       '@type': 'DefinedTerm',
       name: 'TCC',
@@ -85,7 +93,7 @@ const ldDefinedTerms = {
       name: 'ACBS',
       description: 'Association for Contextual Behavioral Science, sociedade internacional que certifica formação em ACT e correlatas, com capítulo brasileiro ativo.'
     }
-  ]
+  ])
 };
 ---
 
@@ -280,7 +288,6 @@ const ldDefinedTerms = {
   </section>
 
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
-  <script type="application/ld+json" set:html={JSON.stringify(ldSpeakable)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTerms)} />
 </Base>

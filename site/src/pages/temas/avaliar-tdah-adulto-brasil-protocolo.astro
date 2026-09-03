@@ -34,6 +34,10 @@ const faqs = [
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
+  },
   headline: 'Como avaliar TDAH em adulto no Brasil em 2026 — protocolo principal',
   description: 'Protocolo principal de avaliação de TDAH em adulto no Brasil em 2026: critérios DSM-5-TR e CID-11 6A05, escalas validadas (ASRS-18, DIVA-5, BRIEF-A, CAARS), Resolução CFP 31/2022 e custos.',
   author: alexandreAuthorRef,
@@ -41,15 +45,6 @@ const ldArticle = {
   inLanguage: 'pt-BR',
   about: 'TDAH em adulto, avaliação psicológica, neuropsicologia, DSM-5-TR, CID-11',
   datePublished: '2026-05-17'
-};
-
-const ldSpeakable = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
-  }
 };
 
 const ldFaq = {
@@ -62,11 +57,24 @@ const ldFaq = {
   }))
 };
 
+// Onda 5/6 SEO-GEO (03/09/2026): cada DefinedTerm com @id/url por âncora e inDefinedTermSet,
+// mesma função de slug do glossário de autismo (verbeteId).
+const termoSlug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const termSetUrl = SITE.url + '/temas/avaliar-tdah-adulto-brasil-protocolo/';
+const comTermoId = (termos: Array<Record<string, unknown>>) => termos.map(t => ({
+  ...t,
+  '@id': termSetUrl + '#' + termoSlug(String(t.name)),
+  url: termSetUrl + '#' + termoSlug(String(t.name)),
+  inDefinedTermSet: { '@id': termSetUrl + '#glossario' }
+}));
+
 const ldDefinedTerms = {
   '@context': 'https://schema.org',
   '@type': 'DefinedTermSet',
+  '@id': termSetUrl + '#glossario',
+  url: termSetUrl + '#glossario',
   name: 'Glossário — TDAH adulto Brasil 2026',
-  hasDefinedTerm: [
+  hasDefinedTerm: comTermoId([
     {
       '@type': 'DefinedTerm',
       name: 'TDAH',
@@ -92,7 +100,7 @@ const ldDefinedTerms = {
       name: 'BRIEF-A',
       description: 'Behavior Rating Inventory of Executive Function — Adult Version, inventário de 75 itens para avaliar funções executivas no cotidiano de adultos, com normas brasileiras.'
     }
-  ]
+  ])
 };
 ---
 
@@ -276,7 +284,6 @@ const ldDefinedTerms = {
   </section>
 
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
-  <script type="application/ld+json" set:html={JSON.stringify(ldSpeakable)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTerms)} />
 </Base>

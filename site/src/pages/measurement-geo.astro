@@ -124,6 +124,17 @@ const ldArticle = {
   ]
 };
 
+// Onda 5/6 SEO-GEO (03/09/2026): cada DefinedTerm com @id/url por âncora e inDefinedTermSet,
+// mesma função de slug do glossário de autismo (verbeteId).
+const termoSlug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const termSetUrl = pageUrl;
+const comTermoId = (termos: Array<Record<string, unknown>>) => termos.map(t => ({
+  ...t,
+  '@id': termSetUrl + '#' + termoSlug(String(t.name)),
+  url: termSetUrl + '#' + termoSlug(String(t.name)),
+  inDefinedTermSet: { '@id': `${pageUrl}#kpis-geo-2026` }
+}));
+
 const ldDefinedTermSet = {
   '@context': 'https://schema.org',
   '@type': 'DefinedTermSet',
@@ -132,7 +143,7 @@ const ldDefinedTermSet = {
   description: 'Conjunto principal de 24 KPIs usados em medição de Generative Engine Optimization. Versão completa em JSON-LD em /mcp/kpis-geo.json.',
   inLanguage: 'pt-BR',
   url: kpisJsonUrl,
-  hasDefinedTerm: [
+  hasDefinedTerm: comTermoId([
     { '@type': 'DefinedTerm', name: 'AI-Generated Visibility Rate', termCode: 'AIGVR' },
     { '@type': 'DefinedTerm', name: 'AI Engagement & Conversion Rate (ELCA)', termCode: 'AECR-ELCA' },
     { '@type': 'DefinedTerm', name: 'AI Engine Citation Rate (Averi)', termCode: 'AECR-Citation' },
@@ -159,7 +170,7 @@ const ldDefinedTermSet = {
     { '@type': 'DefinedTerm', name: 'Term Freshness & Evolution Rate', termCode: 'TERM_FRESHNESS' },
     { '@type': 'DefinedTerm', name: 'AI Bot Activity', termCode: 'AI_BOT_ACTIVITY' },
     { '@type': 'DefinedTerm', name: 'AI-Referred Traffic', termCode: 'AI_REFERRED_TRAFFIC' }
-  ]
+  ])
 };
 
 const ldFaq = {

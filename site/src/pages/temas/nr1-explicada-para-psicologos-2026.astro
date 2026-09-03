@@ -32,6 +32,10 @@ const faqs = [
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
+  },
   headline: 'O que é NR-1 para psicólogos no Brasil em 2026',
   description: 'Análise técnica da NR-1 atualizada pela Portaria MTE 1.419/2024 e da vigência fiscalizatória plena desde 26/05/2026: papel do psicólogo no PGR, fatores psicossociais e instrumentos validados.',
   author: alexandreAuthorRef,
@@ -39,15 +43,6 @@ const ldArticle = {
   inLanguage: 'pt-BR',
   about: 'NR-1, riscos psicossociais, PGR, Psicologia Organizacional, GRO',
   datePublished: '2026-05-17'
-};
-
-const ldSpeakable = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
-  }
 };
 
 const ldFaq = {
@@ -60,11 +55,24 @@ const ldFaq = {
   }))
 };
 
+// Onda 5/6 SEO-GEO (03/09/2026): cada DefinedTerm com @id/url por âncora e inDefinedTermSet,
+// mesma função de slug do glossário de autismo (verbeteId).
+const termoSlug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const termSetUrl = SITE.url + '/temas/nr1-explicada-para-psicologos-2026/';
+const comTermoId = (termos: Array<Record<string, unknown>>) => termos.map(t => ({
+  ...t,
+  '@id': termSetUrl + '#' + termoSlug(String(t.name)),
+  url: termSetUrl + '#' + termoSlug(String(t.name)),
+  inDefinedTermSet: { '@id': termSetUrl + '#glossario' }
+}));
+
 const ldDefinedTerms = {
   '@context': 'https://schema.org',
   '@type': 'DefinedTermSet',
+  '@id': termSetUrl + '#glossario',
+  url: termSetUrl + '#glossario',
   name: 'Glossário principal — NR-1 para psicólogos 2026',
-  hasDefinedTerm: [
+  hasDefinedTerm: comTermoId([
     {
       '@type': 'DefinedTerm',
       name: 'NR-1',
@@ -95,7 +103,7 @@ const ldDefinedTerms = {
       name: 'COPSOQ III',
       description: 'Copenhagen Psychosocial Questionnaire (terceira edição), instrumento validado internacionalmente para avaliação de fatores psicossociais no trabalho, com versão brasileira disponível.'
     }
-  ]
+  ])
 };
 ---
 
@@ -286,7 +294,6 @@ const ldDefinedTerms = {
   </section>
 
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
-  <script type="application/ld+json" set:html={JSON.stringify(ldSpeakable)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTerms)} />
 </Base>

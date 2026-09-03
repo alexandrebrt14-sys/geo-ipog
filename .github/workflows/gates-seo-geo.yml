@@ -1,0 +1,60 @@
+# Gates bloqueantes de SEO/GEO em PR e em push para main (Onda 6, 03/09/2026).
+#
+# Constrói o site (astro build + gen-sitemap.mjs, com prebuild gerando o manifesto
+# de lastmod por git) e roda scripts/gate-seo-geo.mjs sobre dist/. Sem
+# continue-on-error de propósito: órfão disco×sitemap, canonical divergente,
+# JSON-LD sem campos mínimos, staleness (dateModified ≠ lastmod) e FAQ sem
+# paridade texto↔schema barram o merge.
+#
+# fetch-depth: 0 é obrigatório: o manifesto de lastmod vem do `git log` por
+# arquivo; com checkout raso todo lastmod colapsaria na data do checkout.
+name: "Gates — SEO/GEO (órfão, canonical, JSON-LD, staleness, FAQ)"
+
+on:
+  pull_request:
+    paths:
+      - "site/**"
+      - ".github/workflows/gates-seo-geo.yml"
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/gates-seo-geo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "gates-seo-geo-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  gate-seo-geo:
+    name: "Build + gate-seo-geo"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: "Checkout (histórico completo para lastmod por git)"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Setup Node 20"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "site/package-lock.json"
+
+      - name: "Instalar dependências"
+        working-directory: site
+        run: npm ci
+
+      - name: "Build Astro + sitemap"
+        working-directory: site
+        run: npm run build
+
+      - name: "Gate: órfão, canonical, JSON-LD, staleness e paridade FAQ"
+        working-directory: site
+        run: node scripts/gate-seo-geo.mjs

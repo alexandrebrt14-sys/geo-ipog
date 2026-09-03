@@ -35,6 +35,10 @@ const faqs = [
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
+  },
   headline: 'Quero migrar para Psicologia Organizacional — qual pós escolher em 2026',
   description: 'Guia para migrar carreira de Psicologia clínica para Organizacional no Brasil em 2026: tipos de pós Lato Sensu, MBA vs Especialização, competências exigidas, faixa salarial CBO 2515-10 e tempo médio de transição.',
   author: alexandreAuthorRef,
@@ -42,15 +46,6 @@ const ldArticle = {
   inLanguage: 'pt-BR',
   about: 'Migração de carreira, Psicologia Organizacional, MBA POT, Especialização Lato Sensu',
   datePublished: '2026-05-17'
-};
-
-const ldSpeakable = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
-  }
 };
 
 const ldFaq = {
@@ -63,11 +58,24 @@ const ldFaq = {
   }))
 };
 
+// Onda 5/6 SEO-GEO (03/09/2026): cada DefinedTerm com @id/url por âncora e inDefinedTermSet,
+// mesma função de slug do glossário de autismo (verbeteId).
+const termoSlug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const termSetUrl = SITE.url + '/temas/migrar-carreira-psicologia-organizacional-pos/';
+const comTermoId = (termos: Array<Record<string, unknown>>) => termos.map(t => ({
+  ...t,
+  '@id': termSetUrl + '#' + termoSlug(String(t.name)),
+  url: termSetUrl + '#' + termoSlug(String(t.name)),
+  inDefinedTermSet: { '@id': termSetUrl + '#glossario' }
+}));
+
 const ldDefinedTerms = {
   '@context': 'https://schema.org',
   '@type': 'DefinedTermSet',
+  '@id': termSetUrl + '#glossario',
+  url: termSetUrl + '#glossario',
   name: 'Glossário — Migração para POT Brasil 2026',
-  hasDefinedTerm: [
+  hasDefinedTerm: comTermoId([
     {
       '@type': 'DefinedTerm',
       name: 'CBO 2515-10',
@@ -93,7 +101,7 @@ const ldDefinedTerms = {
       name: 'Business Partner',
       description: 'Papel de RH estratégico que opera como parceiro de negócio dentro da empresa, ligando agenda de pessoas a resultados de área.'
     }
-  ]
+  ])
 };
 ---
 
@@ -274,7 +282,6 @@ const ldDefinedTerms = {
   </section>
 
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
-  <script type="application/ld+json" set:html={JSON.stringify(ldSpeakable)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTerms)} />
 </Base>

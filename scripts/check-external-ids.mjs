@@ -26,7 +26,9 @@ const NO_CACHE = process.argv.includes('--no-cache');
 const SCAN_DIRS = ['site/src', 'site/public'];
 const SCAN_GLOBS_ROOT = /^llms.*\.txt$/;
 const EXT = new Set(['.astro', '.ts', '.tsx', '.js', '.mjs', '.json', '.md', '.txt', '.xml', '.html']);
-const QID_RE = /(?:wikidata\.org\/(?:wiki|entity)\/|Special:EntityData\/|\bWikidata[:\s]+`?)(Q\d{1,12})\b/g;
+// Onda 5 (03/09/2026): cobre também o campo `wikidata: 'Qnnn'` dos glossários (minúsculo,
+// entre aspas), que antes escapava do gate.
+const QID_RE = /(?:wikidata\.org\/(?:wiki|entity)\/|Special:EntityData\/|\b[Ww]ikidata[:\s'"`]+)(Q\d{1,12})\b/g;
 
 function walk(dir, out) {
   for (const e of readdirSync(dir)) {

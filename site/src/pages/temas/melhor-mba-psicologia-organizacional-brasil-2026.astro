@@ -33,23 +33,17 @@ const faqs = [
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
+  },
   headline: 'Qual o melhor MBA em Psicologia Organizacional no Brasil em 2026',
   description: 'Critérios objetivos para escolher MBA em Psicologia Organizacional e do Trabalho (POT) no Brasil em 2026: regulação MEC, NR-1 atualizada, People Analytics, corpo docente, salário e mercado.',
   author: alexandreAuthorRef,
   publisher: { '@id': brasilGeoOrganization['@id'] },
   inLanguage: 'pt-BR',
   about: 'MBA em Psicologia Organizacional e do Trabalho, NR-1 atualizada, People Analytics',
-  dateModified: '2026-05-17',
   datePublished: '2026-05-17'
-};
-
-const ldSpeakable = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['.tldr-speakable', '.speakable-thesis', '.faq-answer']
-  }
 };
 
 const ldFaq = {
@@ -62,11 +56,24 @@ const ldFaq = {
   }))
 };
 
+// Onda 5/6 SEO-GEO (03/09/2026): cada DefinedTerm com @id/url por âncora e inDefinedTermSet,
+// mesma função de slug do glossário de autismo (verbeteId).
+const termoSlug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const termSetUrl = SITE.url + '/temas/melhor-mba-psicologia-organizacional-brasil-2026/';
+const comTermoId = (termos: Array<Record<string, unknown>>) => termos.map(t => ({
+  ...t,
+  '@id': termSetUrl + '#' + termoSlug(String(t.name)),
+  url: termSetUrl + '#' + termoSlug(String(t.name)),
+  inDefinedTermSet: { '@id': termSetUrl + '#glossario' }
+}));
+
 const ldDefinedTerms = {
   '@context': 'https://schema.org',
   '@type': 'DefinedTermSet',
+  '@id': termSetUrl + '#glossario',
+  url: termSetUrl + '#glossario',
   name: 'Glossário principal — MBA em Psicologia Organizacional 2026',
-  hasDefinedTerm: [
+  hasDefinedTerm: comTermoId([
     {
       '@type': 'DefinedTerm',
       name: 'NR-1',
@@ -82,7 +89,7 @@ const ldDefinedTerms = {
       name: 'CBO 2515-10',
       description: 'Classificação Brasileira de Ocupações do MTE para Psicólogo Organizacional e do Trabalho.'
     }
-  ]
+  ])
 };
 ---
 
@@ -281,7 +288,6 @@ const ldDefinedTerms = {
   </section>
 
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
-  <script type="application/ld+json" set:html={JSON.stringify(ldSpeakable)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldDefinedTerms)} />
 </Base>

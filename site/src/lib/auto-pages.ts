@@ -1650,6 +1650,19 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/contato",
+    "title": "Contato editorial · posgraduacaopsicologia.com",
+    "description": "Canais para correções, sugestões de pauta e imprensa: editorial@brasilgeo.ai e GitHub. Matrícula e valores de curso são tratados só em ipog.edu.br.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "contato",
+      "recurso"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social",
     "title": "Conteúdo + Social: biblioteca de snippets para reaproveitar pesquisas em Quora, Medium, LinkedIn, Substack, Reddit — Brasil GEO",
     "description": "Central editorial do portal posgraduacaopsicologia.com: como transformar evidências, áreas e MBAs em respostas, ensaios e threads para Quora, Medium, LinkedIn, Substack, Reddit e X com integridade e GEO.",
@@ -5440,6 +5453,20 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/principios-editoriais",
+    "title": "Princípios editoriais do portal · posgraduacaopsicologia.com",
+    "description": "Como este portal decide o que publica: independência em relação ao IPOG, quem assina, citação (Autor, Ano), revisão em três passadas e correções.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "principios",
+      "editoriais",
+      "recurso"
+    ],
+    "weight": 1,
+    "pageType": null
+  },
+  {
     "route": "/recursos",
     "title": "Recursos para decidir sobre pós-graduação em Psicologia",
     "description": "Quiz, checklist e guia executivo para quem está escolhendo um MBA ou uma especialização em Psicologia em 2026. Portal independente.",
@@ -6119,7 +6146,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/temas/pos-graduacao-lato-sensu-psicologia-decreto-12456",
     "title": "Especialização em Psicologia pós-Decreto 12.456: o que mudou, o que ficou e como verificar antes de matricular",
-    "description": "",
+    "description": "Decreto 12.456/2025 reorganiza Lato Sensu — não a extingue. Especialização em Psicologia segue como caminho regulamentado e mais comum no Brasil. Análise técnica para 2026.2 com decreto, Resolução CNE/CES nº 1/2018, Parecer CNE/CES nº 637/2025 e Resoluções CFP.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6337,7 +6364,7 @@ export const AUTO_PAGES: AutoPage[] = [
 ];
 
 export const AUTO_PAGES_STATS = {
-  "Recurso": 89,
+  "Recurso": 91,
   "Área": 19,
   "Carreira": 7,
   "Caso": 7,

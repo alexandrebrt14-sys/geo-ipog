@@ -1,0 +1,74 @@
+---
+/**
+ * Bloco de FAQ para páginas-hub (Onda 4 SEO/GEO, 03/09/2026).
+ *
+ * O HTML visível e o FAQPage saem do MESMO array `items`, portanto a paridade
+ * texto <-> schema é estrutural (mesmo padrão das páginas de curso e das 39
+ * páginas de /faq/). O nó FAQPage ganha @id próprio por URL (`#faq`) e
+ * isPartOf apontando para o WebSite, para não colidir com o nó de página que
+ * cada hub já declara.
+ */
+import { SITE } from '@lib/data';
+
+interface Item { q: string; a: string; }
+interface Props {
+  items: Item[];
+  titulo?: string;
+  intro?: string;
+  /** Caminho canônico da página (com barra final), usado no @id do FAQPage. */
+  pathname: string;
+  /** Link opcional para o hub agregador /faq/. */
+  linkHub?: boolean;
+  class?: string;
+}
+
+const { items, titulo = 'Perguntas frequentes', intro, pathname, linkHub = true, class: className = '' } = Astro.props;
+const safe = items.filter(f => f && f.q && f.a);
+const pageUrl = SITE.url + (pathname.endsWith('/') ? pathname : pathname + '/');
+
+const ld = safe.length
+  ? JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      '@id': pageUrl + '#faq',
+      url: pageUrl,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': SITE.url + '/#website' },
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+      speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.faq-question', '.faq-answer-text'] },
+      mainEntity: safe.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a }
+      }))
+    })
+  : null;
+---
+{safe.length > 0 && (
+  <section class={`hub-faq ${className}`} aria-labelledby="hub-faq-titulo">
+    <h2 id="hub-faq-titulo" class="section-h text-2xl">{titulo}</h2>
+    {intro && <p class="mt-2 text-ink-700 max-w-prose leading-relaxed">{intro}</p>}
+    <div class="mt-4 divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white overflow-hidden">
+      {safe.map(f => (
+        <details class="group p-5 faq-item">
+          <summary class="flex items-start justify-between gap-4 cursor-pointer list-none rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
+            <span class="faq-question font-semibold text-ink-900 text-pretty min-w-0">{f.q}</span>
+            <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform duration-200 group-open:rotate-180 group-open:text-brand-700" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+          </summary>
+          <p class="faq-answer-text mt-3 max-w-prose text-sm text-ink-700 leading-relaxed text-pretty">{f.a}</p>
+        </details>
+      ))}
+    </div>
+    {linkHub && (
+      <p class="mt-4 text-sm text-ink-600">
+        Mais perguntas, por tema e com fontes, no <a href="/faq/" class="text-brand-700 hover:text-brand-800 font-medium">hub de FAQs do portal</a>.
+      </p>
+    )}
+  </section>
+)}
+{ld && <script type="application/ld+json" set:html={ld} is:inline />}
+
+<style>
+  .faq-item[open] { background-color: #F7F9FC; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+</style>

@@ -60,6 +60,12 @@ jobs:
     steps:
       - name: "Checkout do repositorio"
         uses: actions/checkout@v4
+        with:
+          # Onda 3 SEO/GEO (03/09/2026): historico COMPLETO. O checkout raso
+          # (profundidade 1) fazia `git log -1` devolver a data do merge para
+          # todo arquivo e colapsava 100% dos lastmod do sitemap numa unica data.
+          # scripts/gen-lastmod-manifest.mjs precisa do historico inteiro.
+          fetch-depth: 0
 
       - name: "Setup Node 20"
         uses: actions/setup-node@v4
@@ -81,6 +87,13 @@ jobs:
       - name: "Build Astro + sitemap"
         working-directory: site
         run: npm run build
+
+      # Onda 6 (03/09/2026): mesmo gate bloqueante do gates-seo-geo.yml (PR), repetido
+      # aqui para que o deploy nunca publique orfao, canonical divergente, JSON-LD
+      # sem campos minimos, lastmod diferente do dateModified ou FAQ sem paridade.
+      - name: "Gate: SEO/GEO (orfao, canonical, JSON-LD, staleness, FAQ)"
+        working-directory: site
+        run: npm run gate:seo-geo
 
       - name: "Verificar artefato do site"
         run: |

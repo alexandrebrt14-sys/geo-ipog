@@ -1,6 +1,7 @@
 ---
 import { SITE } from '@lib/data';
 import { alexandrePersonBase, brasilGeoOrganization, larissaPersonBase, ipogEducationalOrganization } from '@lib/schemas';
+import { getRouteDates, resolveModified } from '@lib/lastmod';
 import '@styles/global.css';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
@@ -48,9 +49,18 @@ const {
   searchPrefill = '',
   noindex = false,
   emitWebPage = false,
-  datePublished,
-  dateModified
+  datePublished: datePublishedProp,
+  dateModified: dateModifiedProp
 } = Astro.props;
+
+// Onda 3 SEO/GEO (03/09/2026): datas por git (src/generated/lastmod.json), a mesma
+// fonte do sitemap e da injeção de dateModified no JSON-LD (scripts/seo-postbuild.mjs).
+// datePublished: o declarado pela página vence; sem ele, a data do commit de adição.
+// dateModified: SEMPRE a data do git (nunca anterior ao datePublished); a prop
+// fica como fallback para ambiente sem manifesto.
+const routeDates = getRouteDates(Astro.url.pathname);
+const datePublished = datePublishedProp ?? routeDates?.published;
+const dateModified = routeDates ? resolveModified(routeDates.modified, datePublished) : dateModifiedProp;
 
 // E-E-A-T: rotas do hub /autismo/* têm Larissa Caramaschi como autora canônica.
 // Injeta o Person de Larissa no @graph para que LLMs e Google reconciliem a entidade
@@ -109,6 +119,8 @@ if (emitWebPage) {
     isPartOf: { '@id': SITE.url + '/#website' },
     primaryImageOfPage: { '@type': 'ImageObject', url: ogImage },
     publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+    ...(datePublished ? { datePublished } : {}),
+    ...(dateModified ? { dateModified } : {}),
     speakable: {
       '@type': 'SpeakableSpecification',
       cssSelector: ['h1', '.tldr', '.tldr-resposta', '.faq-question']

@@ -63,7 +63,10 @@ const FALLBACK_LINKS: Record<string, QuickLink[]> = {
 
 function dispatchChange(personaId: string) {
   if (typeof window === 'undefined') return;
-  window.localStorage.setItem('pp_persona', personaId);
+  try {
+    if (personaId) window.localStorage.setItem('pp_persona', personaId);
+    else window.localStorage.removeItem('pp_persona');
+  } catch { /* O perfil permanece disponível durante a sessão. */ }
   window.dispatchEvent(new CustomEvent('pp:persona-change', { detail: { persona: personaId } }));
 }
 
@@ -99,7 +102,7 @@ function PersonaPanel({ card, isActive, onSelect }: PersonaPanelProps) {
   return (
     <article
       aria-current={isActive ? 'true' : undefined}
-      className={`group relative flex h-full flex-col rounded-2xl border bg-white p-5 transition ${isActive ? 'border-brand-500 ring-2 ring-brand-500 ring-offset-2 shadow-soft' : 'border-surface-200 hover:border-brand-400 hover:shadow-soft'}`}
+      className={`min-w-0 group relative flex h-full flex-col rounded-2xl border bg-white p-5 transition ${isActive ? 'border-brand-500 ring-2 ring-brand-500 ring-offset-2 shadow-soft' : 'border-surface-200 hover:border-brand-400 hover:shadow-soft'}`}
     >
       <header className="flex items-start gap-3">
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-800 font-display text-base font-bold text-white">
@@ -174,11 +177,13 @@ export default function PersonaQuickPicker({ variant = 'home' }: Props) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const stored = window.localStorage.getItem('pp_persona');
-    if (stored) setActive(stored);
+    try {
+      const stored = window.localStorage.getItem('pp_persona');
+      if (stored) setActive(stored);
+    } catch { /* A escolha de perfil independe do armazenamento local. */ }
     const handler = (event: Event) => {
       const ce = event as CustomEvent<{ persona: string }>;
-      if (ce.detail?.persona) setActive(ce.detail.persona);
+      if (ce.detail) setActive(ce.detail.persona || null);
     };
     window.addEventListener('pp:persona-change', handler as EventListener);
     return () => window.removeEventListener('pp:persona-change', handler as EventListener);
@@ -203,7 +208,7 @@ export default function PersonaQuickPicker({ variant = 'home' }: Props) {
         {active && (
           <button
             type="button"
-            onClick={() => { setActive(null); if (typeof window !== 'undefined') { window.localStorage.removeItem('pp_persona'); window.dispatchEvent(new CustomEvent('pp:persona-change', { detail: { persona: '' } })); } }}
+            onClick={() => { setActive(null); dispatchChange(''); }}
             className="rounded-sm text-xs font-semibold text-ink-500 hover:text-brand-800"
           >
             Limpar seleção

@@ -75,11 +75,12 @@ function walkHtml(dir, acc = []) {
     if (e.name === 'ipog' || e.name.startsWith('_') || e.name === 'assets') continue;
     const full = path.join(dir, e.name);
     if (e.isDirectory()) walkHtml(full, acc);
-    else if (e.name === 'index.html') acc.push(full);
+    else if (e.name === 'index.html' || e.name === '404.html') acc.push(full);
   }
   return acc;
 }
 function routeOf(file) {
+  if (path.basename(file) === '404.html') return '/404/';
   const rel = path.relative(distDir, path.dirname(file)).replace(/\\/g, '/');
   return rel ? `/${rel}/` : '/';
 }

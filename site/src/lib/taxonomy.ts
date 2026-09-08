@@ -425,7 +425,7 @@ export function getTagsFor(href: string): string[] {
 
   const temaMatch = href.match(/\/temas\/([^/?#]+)/);
   if (temaMatch) {
-    const t = TEMAS.find(x => x.id === temaMatch[1]);
+    const t = TEMAS.find(x => x.id === temaMatch[1] || x.href?.replace(/\/+$/, '') === `/temas/${temaMatch[1]}`);
     if (t && t.area) return TAG_MAP[t.area] || [];
     const e = TEMAS_EMERGENTES_2025_2026.find(x => x.id === temaMatch[1]);
     if (e && e.area) return TAG_MAP[e.area] || [];

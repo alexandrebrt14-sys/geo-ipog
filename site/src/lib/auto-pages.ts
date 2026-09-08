@@ -5520,19 +5520,6 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
-    "route": "/offline",
-    "title": "Você está offline · posgraduacaopsicologia.com",
-    "description": "Sem conexão no momento. Tente novamente quando a internet voltar ou navegue pelo conteúdo já visitado.",
-    "kind": "Recurso",
-    "persona": null,
-    "tags": [
-      "offline",
-      "recurso"
-    ],
-    "weight": 1,
-    "pageType": null
-  },
-  {
     "route": "/para-quem",
     "title": "Para quem — trilhas de pós-graduação em Psicologia por perfil profissional",
     "description": "Psicólogos, RH, líderes ou consultores: a formação muda. Análise técnica de qual MBA ou especialização combina com cada perfil e estágio de carreira.",
@@ -6946,7 +6933,7 @@ export const AUTO_PAGES: AutoPage[] = [
 ];
 
 export const AUTO_PAGES_STATS = {
-  "Recurso": 121,
+  "Recurso": 120,
   "Área": 19,
   "Carreira": 7,
   "Caso": 7,

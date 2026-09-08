@@ -435,8 +435,10 @@ export default function SearchPageClient({
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (!initialPersona) {
-      const stored = window.localStorage.getItem('pp_persona');
-      if (stored) setPersona(stored);
+      try {
+        const stored = window.localStorage.getItem('pp_persona');
+        if (stored) setPersona(stored);
+      } catch { /* A seleção continua disponível sem armazenamento local. */ }
     }
     const handler = (event: Event) => {
       const ce = event as CustomEvent<{ persona: string }>;
@@ -472,9 +474,7 @@ export default function SearchPageClient({
       setRegulatoryLevels(prev => (prev.join(',') === regLevelsParam.join(',') ? prev : regLevelsParam));
       setRegioes(prev => (prev.join(',') === regioesParam.join(',') ? prev : regioesParam));
       setPage(prev => (prev === pageParam ? prev : pageParam));
-      if (qParam && inputRef.current && inputRef.current.value !== qParam) {
-        inputRef.current.value = qParam;
-      }
+
     };
     hydrate();
     window.addEventListener('popstate', hydrate);
@@ -501,7 +501,7 @@ export default function SearchPageClient({
     if (page > 1) params.set('page', String(page));
     const qs = params.toString();
     const next = qs ? `/busca?${qs}` : '/busca';
-    window.history.replaceState({}, '', next);
+    window.history.replaceState(window.history.state, '', next);
   }, [q, kinds, persona, cluster, regulatoryLevels, regioes, page]);
 
   // -------------------------------------------------------------------------
@@ -743,11 +743,9 @@ export default function SearchPageClient({
   };
 
   const handleInputChange = (value: string) => {
-    startTransition(() => {
-      setQ(value);
-      setPage(1);
-      setShowAll(false);
-    });
+    setQ(value);
+    setPage(1);
+    setShowAll(false);
   };
 
   const toggleKind = (k: string) => {
@@ -823,14 +821,12 @@ export default function SearchPageClient({
       source: 'page',
     });
     setQ(dym);
-    if (inputRef.current) inputRef.current.value = dym;
     setPage(1);
   };
 
   const useExpansion = (exp: string) => {
     track('search_concept_clicked', { suggestion: exp, source: 'page' });
     setQ(exp);
-    if (inputRef.current) inputRef.current.value = exp;
     setPage(1);
   };
 
@@ -841,7 +837,6 @@ export default function SearchPageClient({
       source: 'page',
     });
     setQ(c.query);
-    if (inputRef.current) inputRef.current.value = c.query;
     setPage(1);
   };
 
@@ -855,7 +850,7 @@ export default function SearchPageClient({
   // -------------------------------------------------------------------------
   // Render: sidebar facets
   // -------------------------------------------------------------------------
-  const renderFacets = () => (
+  const renderFacets = (surface: 'desktop' | 'mobile') => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="font-display text-sm font-semibold text-ink-900">
@@ -878,6 +873,7 @@ export default function SearchPageClient({
           Perfil
         </legend>
         <select
+          aria-label="Perfil"
           value={persona}
           onChange={e => changePersona(e.target.value)}
           className="mt-2 w-full rounded-md border border-surface-200 bg-white px-3 py-2 text-xs font-medium text-ink-900 hover:border-brand-400"
@@ -933,7 +929,7 @@ export default function SearchPageClient({
               >
                 <input
                   type="radio"
-                  name="cluster"
+                  name={`cluster-${surface}`}
                   checked={cluster === opt.id}
                   onChange={() => changeCluster(opt.id)}
                   className="h-3.5 w-3.5"
@@ -1105,7 +1101,7 @@ export default function SearchPageClient({
           Sua busca
         </label>
         <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-stretch">
-          <div className="flex flex-1 items-center gap-3 rounded-xl border border-surface-200 bg-surface-50 px-4">
+          <div className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-surface-200 bg-surface-50 px-4">
             <svg
               className="h-5 w-5 shrink-0 text-ink-500"
               viewBox="0 0 24 24"
@@ -1121,10 +1117,10 @@ export default function SearchPageClient({
               ref={inputRef}
               id="busca-q"
               type="search"
-              defaultValue={q}
+              value={q}
               onChange={e => handleInputChange(e.target.value)}
               placeholder="Digite: NR-1, burnout, POT, neuropsicologia, supervisor clínico…"
-              className="h-12 w-full bg-transparent text-base outline-none"
+              className="h-12 min-w-0 w-full bg-transparent text-base outline-none"
               aria-label="Campo de busca"
               autoComplete="off"
             />
@@ -1190,19 +1186,19 @@ export default function SearchPageClient({
           {/* Sidebar facets (desktop) */}
           <aside className="hidden lg:block">
             <div className="sticky top-24 rounded-2xl border border-surface-200 bg-white p-5">
-              {renderFacets()}
+              {renderFacets('desktop')}
             </div>
           </aside>
 
           {/* Drawer mobile */}
           {drawerOpen && (
             <aside className="rounded-2xl border border-surface-200 bg-white p-5 lg:hidden">
-              {renderFacets()}
+              {renderFacets('mobile')}
             </aside>
           )}
 
           {/* Coluna principal */}
-          <main className="space-y-5">
+          <section className="min-w-0 space-y-5" aria-label="Resultados da busca">
             {/* Header + status */}
             <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
               <h2
@@ -1319,7 +1315,7 @@ export default function SearchPageClient({
             ) : (
               renderNoResults()
             )}
-          </main>
+          </section>
         </div>
       )}
     </div>

@@ -43,6 +43,7 @@ const navId = 'inpage-nav-' + nonce;
     <div class="lg:hidden">
       <button
         id={buttonId}
+        data-inpage-toggle
         type="button"
         aria-controls={drawerId}
         aria-expanded="false"
@@ -97,92 +98,70 @@ const navId = 'inpage-nav-' + nonce;
       </ul>
     </nav>
 
-    <script is:inline define:vars={{ buttonId, drawerId }}>
-      (function () {
-        const btn = document.getElementById(buttonId);
-        const drawer = document.getElementById(drawerId);
-        const chevron = btn && btn.querySelector('[data-inpage-chevron]');
-        if (btn && drawer) {
-          btn.addEventListener('click', function () {
-            const open = drawer.hasAttribute('hidden') === false;
-            if (open) {
-              drawer.setAttribute('hidden', '');
-              btn.setAttribute('aria-expanded', 'false');
-              if (chevron) chevron.style.transform = '';
-            } else {
-              drawer.removeAttribute('hidden');
-              btn.setAttribute('aria-expanded', 'true');
-              if (chevron) chevron.style.transform = 'rotate(180deg)';
-            }
-          });
-          // Fecha ao clicar em link
-          drawer.querySelectorAll('a[data-inpage-link]').forEach(function (a) {
-            a.addEventListener('click', function () {
-              drawer.setAttribute('hidden', '');
-              btn.setAttribute('aria-expanded', 'false');
-              if (chevron) chevron.style.transform = '';
-            });
-          });
-        }
 
-        // Scrollspy: marca link ativo com classes (border + cor)
-        const links = Array.from(document.querySelectorAll('a[data-inpage-link]'));
-        const targets = links
-          .map(l => l.getAttribute('data-target'))
-          .filter(Boolean)
-          .map(id => document.getElementById(id))
-          .filter(Boolean);
-
-        if (targets.length === 0 || !('IntersectionObserver' in window)) return;
-
-        const linkByTarget = new Map();
-        links.forEach(function (l) {
-          const t = l.getAttribute('data-target');
-          if (!t) return;
-          if (!linkByTarget.has(t)) linkByTarget.set(t, []);
-          linkByTarget.get(t).push(l);
-        });
-
-        function clearActive() {
-          links.forEach(function (l) {
-            l.classList.remove('text-brand-800', 'border-brand-500', 'bg-brand-50');
-            l.removeAttribute('aria-current');
-          });
-        }
-
-        let lastActive = '';
-        function setActive(id) {
-          clearActive();
-          const arr = linkByTarget.get(id) || [];
-          arr.forEach(function (l) {
-            l.classList.add('text-brand-800', 'border-brand-500');
-            l.setAttribute('aria-current', 'location');
-          });
-          // Espelha a seção ativa no hash da URL (sem poluir o histórico),
-          // para que recarregar ou compartilhar caia na seção certa.
-          if (id && id !== lastActive) {
-            lastActive = id;
-            try { history.replaceState(null, '', '#' + id); } catch (e) { /* ignora */ }
-          }
-        }
-
-        const visible = new Set();
-        const observer = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) {
-            if (e.isIntersecting) visible.add(e.target.id);
-            else visible.delete(e.target.id);
-          });
-          // Escolhe o primeiro visível (top-down)
-          for (const t of targets) {
-            if (visible.has(t.id)) {
-              setActive(t.id);
-              return;
-            }
-          }
-        }, { rootMargin: '-20% 0px -65% 0px', threshold: [0, 1] });
-
-        targets.forEach(function (t) { observer.observe(t); });
-      })();
-    </script>
   </>
 )}
+
+<script>
+  let observer: IntersectionObserver | undefined;
+
+  function initInPageNav() {
+    observer?.disconnect();
+    document.querySelectorAll<HTMLButtonElement>('[data-inpage-toggle]').forEach(btn => {
+      if (btn.dataset.inpageBound === '1') return;
+      const drawer = document.getElementById(btn.getAttribute('aria-controls') || '');
+      if (!drawer) return;
+      btn.dataset.inpageBound = '1';
+      const chevron = btn.querySelector<SVGElement>('[data-inpage-chevron]');
+      const setOpen = (open: boolean) => {
+        drawer.hidden = !open;
+        btn.setAttribute('aria-expanded', String(open));
+        if (chevron) chevron.style.transform = open ? 'rotate(180deg)' : '';
+      };
+      btn.addEventListener('click', () => setOpen(drawer.hidden));
+      drawer.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return;
+        setOpen(false);
+        btn.focus();
+      });
+      drawer.querySelectorAll<HTMLAnchorElement>('a[data-inpage-link]').forEach(link => {
+        link.addEventListener('click', () => {
+          setOpen(false);
+          const target = document.getElementById(link.dataset.target || '');
+          if (target) {
+            if (!target.hasAttribute('tabindex')) target.tabIndex = -1;
+            target.focus({ preventScroll: true });
+          }
+        });
+      });
+    });
+
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[data-inpage-link]'));
+    const targetIds = [...new Set(links.map(link => link.dataset.target).filter(Boolean))];
+    const targets = targetIds.map(id => document.getElementById(id!)).filter((el): el is HTMLElement => !!el);
+    if (!targets.length || !('IntersectionObserver' in window)) return;
+    const setActive = (id: string) => {
+      links.forEach(link => {
+        const active = link.dataset.target === id;
+        link.classList.toggle('text-brand-800', active);
+        link.classList.toggle('border-brand-500', active);
+        if (active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    };
+    const visible = new Set<string>();
+    observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) visible.add(entry.target.id);
+        else visible.delete(entry.target.id);
+      });
+      const first = targets.find(target => visible.has(target.id));
+      if (first) setActive(first.id);
+    }, { rootMargin: '-20% 0px -65% 0px', threshold: [0, 1] });
+    targets.forEach(target => observer!.observe(target));
+  }
+
+  initInPageNav();
+  document.addEventListener('astro:page-load', initInPageNav);
+  document.addEventListener('astro:before-swap', () => observer?.disconnect());
+</script>

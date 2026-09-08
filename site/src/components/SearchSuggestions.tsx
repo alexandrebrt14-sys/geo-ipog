@@ -76,12 +76,14 @@ export default function SearchSuggestions({ variant = 'overlay', persona }: Prop
       return;
     }
     if (typeof window !== 'undefined') {
-      const stored = window.localStorage.getItem('pp_persona');
-      if (stored) setActivePersona(stored);
+      try {
+        const stored = window.localStorage.getItem('pp_persona');
+        if (stored) setActivePersona(stored);
+      } catch { /* Sugestões continuam disponíveis sem armazenamento local. */ }
     }
     const handler = (event: Event) => {
       const ce = event as CustomEvent<{ persona: string }>;
-      if (ce.detail?.persona) setActivePersona(ce.detail.persona);
+      if (ce.detail) setActivePersona(ce.detail.persona || undefined);
     };
     window.addEventListener('pp:persona-change', handler as EventListener);
     return () => window.removeEventListener('pp:persona-change', handler as EventListener);
@@ -108,7 +110,7 @@ export default function SearchSuggestions({ variant = 'overlay', persona }: Prop
     <section aria-label="Sugestões de busca" className="space-y-8">
       <div className={gridClass}>
         {/* Coluna 1 — Por onde começar */}
-        <div className="rounded-2xl border border-surface-200 bg-white p-5">
+        <div className="min-w-0 rounded-2xl border border-surface-200 bg-white p-5">
           <h3 className="font-display font-semibold text-sm uppercase tracking-wide text-brand-700">Por onde começar</h3>
           <p className="mt-1 text-xs text-ink-500">Escolha o seu perfil para receber recomendação personalizada.</p>
           <ul className="mt-4 space-y-3">
@@ -121,11 +123,11 @@ export default function SearchSuggestions({ variant = 'overlay', persona }: Prop
                     href={`/para-quem/${p.id}`}
                     className={`block rounded-xl border px-3 py-3 transition ${isActive ? 'border-brand-500 bg-brand-50' : 'border-surface-200 hover:border-brand-400 hover:bg-surface-50'}`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex min-w-0 items-center gap-3">
                       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-800 text-xs font-display font-bold text-white">
                         {p.icon}
                       </span>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="text-sm font-semibold text-ink-900 truncate">{p.name.replace(/^Para /, '')}</div>
                         <div className="text-[11px] text-ink-500 truncate">Próximo passo: {recommended}</div>
                       </div>
@@ -138,7 +140,7 @@ export default function SearchSuggestions({ variant = 'overlay', persona }: Prop
         </div>
 
         {/* Coluna 2 — Trending agora */}
-        <div className="rounded-2xl border border-surface-200 bg-white p-5">
+        <div className="min-w-0 rounded-2xl border border-surface-200 bg-white p-5">
           <h3 className="font-display font-semibold text-sm uppercase tracking-wide text-brand-700">Trending agora — 2026</h3>
           <p className="mt-1 text-xs text-ink-500">Os temas mais consultados nas últimas semanas.</p>
           <ul className="mt-4 space-y-2">
@@ -162,7 +164,7 @@ export default function SearchSuggestions({ variant = 'overlay', persona }: Prop
         </div>
 
         {/* Coluna 3 — Hubs principais */}
-        <div className="rounded-2xl border border-surface-200 bg-white p-5 md:col-span-2 xl:col-span-1">
+        <div className="min-w-0 rounded-2xl border border-surface-200 bg-white p-5 md:col-span-2 xl:col-span-1">
           <h3 className="font-display font-semibold text-sm uppercase tracking-wide text-brand-700">Hubs principais</h3>
           <p className="mt-1 text-xs text-ink-500">Os 8 núcleos do portal — 174 páginas no total.</p>
           <ul className="mt-4 space-y-2.5">
@@ -178,7 +180,7 @@ export default function SearchSuggestions({ variant = 'overlay', persona }: Prop
         </div>
 
         {/* Coluna 4 — Buscas rápidas */}
-        <div className="rounded-2xl border border-surface-200 bg-white p-5 md:col-span-2 xl:col-span-1">
+        <div className="min-w-0 rounded-2xl border border-surface-200 bg-white p-5 md:col-span-2 xl:col-span-1">
           <h3 className="font-display font-semibold text-sm uppercase tracking-wide text-brand-700">Buscas rápidas</h3>
           <p className="mt-1 text-xs text-ink-500">Atalhos para os termos mais procurados.</p>
           <div className="mt-4 flex flex-wrap gap-2">

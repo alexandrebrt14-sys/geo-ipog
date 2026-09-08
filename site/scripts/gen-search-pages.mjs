@@ -22,7 +22,7 @@ const OUT_FILE = path.resolve(__dirname, '..', 'src', 'lib', 'auto-pages.ts');
 // Rotas ignoradas (sao a propria busca ou endpoints).
 const SKIP_DIRS = new Set(['busca', 'api', '_layouts', '_components']);
 // Arquivos ignorados (rotas dinamicas catch-all, raras).
-const SKIP_BASENAMES = new Set(['[slug].astro', '[...slug].astro']);
+const SKIP_BASENAMES = new Set(['[slug].astro', '[...slug].astro', '404.astro', 'offline.astro']);
 
 // Mapa path-segment → DocKind. Path inicia com /<segmento>/...
 const KIND_BY_PREFIX = [

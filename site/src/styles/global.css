@@ -133,7 +133,7 @@
   .btn-sm { @apply px-3 py-1.5 text-sm; }
   .btn-lg { @apply px-7 py-3.5 text-base; }
 
-  .tag { @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sun-500/15 text-amber-800 font-semibold text-xs tracking-wide; }
+  .tag { @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FEF4D9] text-amber-800 font-semibold text-xs tracking-wide; }
   .tag-light { @apply bg-brand-50 text-brand-800; }
   .tag-dark { @apply bg-white/20 text-white; }
 
@@ -151,8 +151,8 @@
   .card-dark { @apply rounded-2xl bg-white/5 border border-white/10 transition-all duration-200 hover:bg-white/10; }
 
   /* Navigation */
-  .nav-link { @apply px-3 py-2 text-sm font-medium text-ink-700 hover:text-brand-800 rounded-lg transition-colors; }
-  .mega-link { @apply flex items-start gap-3 px-3 py-2.5 rounded-xl text-ink-700 hover:bg-surface-50 hover:text-brand-800 transition; }
+  .nav-link { @apply whitespace-nowrap px-3 py-2 text-sm font-medium text-ink-700 hover:text-brand-800 rounded-lg transition-colors; }
+  .mega-link { @apply flex flex-wrap items-start gap-x-3 gap-y-1 px-3 py-2.5 rounded-xl text-ink-700 hover:bg-surface-50 hover:text-brand-800 transition; }
   .mega-link-active { @apply bg-brand-50 text-brand-800; }
 
   /* Section headings */
@@ -365,6 +365,11 @@
   transition: opacity .2s ease, display .2s allow-discrete;
 }
 #kbd-help.is-open { display: flex; opacity: 1; }
+[data-kbd-help-panel] {
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 /* Baseline 2026: anima a entrada a partir de display:none, sem JS extra. */
 @starting-style {
   #kbd-help.is-open { opacity: 0; }
@@ -472,6 +477,7 @@ details.faq-item[open] .faq-answer-text {
 [data-theme="dark"] .text-brand-800,
 [data-theme="dark"] .text-brand-700,
 [data-theme="dark"] .text-brand-600 { color: var(--d-brand-text) !important; }
+[data-theme="dark"] .card .text-emerald-700 { color: #6EE7B7; }
 [data-theme="dark"] .text-amber-800 { color: #FCD34D !important; }
 
 /* Figura SVG. O bloco de texto acima cobre `color`, e `color` não pinta forma:
@@ -519,8 +525,14 @@ details.faq-item[open] .faq-answer-text {
 [data-theme="dark"] .card { background-color: var(--d-card); border-color: var(--d-border); }
 [data-theme="dark"] .btn-ghost { background-color: var(--d-card); border-color: var(--d-border); color: var(--d-ink-700); }
 [data-theme="dark"] .chip { background-color: var(--d-card); border-color: var(--d-border); color: var(--d-ink-700); }
+[data-theme="dark"] .chip-active,
+[data-theme="dark"] .chip-active:hover {
+  background-color: var(--d-brand-text) !important;
+  border-color: var(--d-brand-text) !important;
+  color: var(--d-bg) !important;
+}
 [data-theme="dark"] .kbd { background-color: var(--d-card); border-color: var(--d-border); color: var(--d-ink-700); }
-[data-theme="dark"] .tag { color: #FCD34D; }
+[data-theme="dark"] .tag { background-color: rgb(245 180 0 / .15); color: #FCD34D; }
 [data-theme="dark"] .reg-meter > span { background: #2A3F63; }
 [data-theme="dark"] .card-shine::before { background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .12) 48%, transparent 62%); }
 [data-theme="dark"] ::selection { background: rgba(245, 180, 0, .35); color: #fff; }
@@ -651,7 +663,7 @@ details.faq-item[open] .faq-answer-text {
   to { opacity: 1; transform: none; }
 }
 
-/* Painel/itens que entram deslizando da direita ao surgir na viewport */
+/* A entrada lateral cabe na margem mínima de 16px do container, inclusive antes de aparecer. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .slide-in-right {
@@ -662,7 +674,7 @@ details.faq-item[open] .faq-answer-text {
   }
 }
 @keyframes slideInRight {
-  from { opacity: 0; transform: translateX(26px); }
+  from { opacity: 0; transform: translateX(12px); }
   to { opacity: 1; transform: none; }
 }
 
@@ -761,6 +773,11 @@ details.faq-item[open] .faq-answer-text {
      corretamente e evitar "rios" e buracos grandes.
    - overflow-wrap/word-break protegem URLs e palavras longas.
    ------------------------------------------------------------ */
+/* URLs, referências e termos com barras podem aparecer em qualquer bloco
+   editorial. A quebra só ocorre quando necessária e preserva o texto copiado. */
+.prose,
+main :is(p, h1, h2, h3, h4, h5, h6, li) { overflow-wrap: anywhere; }
+
 .prose p,
 article > p,
 article .prose p {
@@ -919,8 +936,19 @@ nav p {
    a viewport em telas estreitas (largura inline fixa no componente).
    ============================================================ */
 [data-mega-panel] {
-  max-width: calc(100vw - 1.5rem);
+  max-width: calc(100vw - 2rem);
 }
+[data-mega-panel][hidden] { display: none; }
+.mega-panel-content {
+  max-height: var(--mega-panel-height, calc(100dvh - 6rem));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+[data-mega-trigger][aria-expanded="true"] > svg { transform: rotate(180deg); }
+[data-mega-panel] .mega-link > :only-child { min-width: 0; }
+[data-mega-panel] .mega-link > :is(strong, span) + span.block { flex-basis: 100%; }
+nav[aria-label="Navegação mobile"]:focus-within { transform: translateY(0); }
+
 
 /* ============================================================
    ONDA 40 — Motion: microinteracoes aditivas, CSS-first, atras de
@@ -949,6 +977,22 @@ nav p {
    ONDA 41 — Layout: tabelas de conteudo nao quebram o mobile;
    utilitarios opt-in de container query e subgrid para cards.
    ============================================================ */
+/* O conteúdo mínimo das tabelas não pode alargar as colunas editoriais.
+   As páginas usam article, aside e div; os wrappers mantêm a rolagem local. */
+main .grid > * {
+  min-width: 0;
+}
+/* Um cartão fixo com irmãos posteriores cobre os próximos blocos da coluna.
+   A posição fixa fica reservada a blocos únicos ou ao último bloco do aside. */
+main aside > :is(.sticky, .lg\:sticky):not(:last-child) {
+  position: static;
+}
+main .overflow-x-auto {
+  min-width: 0;
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+}
+
 /* Tabelas hand-authored dentro de .prose ganham rolagem horizontal
    no mobile, sem precisar editar dezenas de paginas. So abaixo de 640px. */
 @media (max-width: 640px) {

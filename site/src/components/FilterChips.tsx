@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 
 interface Option { id: string; label: string; }
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
 }
 
 export default function FilterChips({ options, defaultActive = 'all', onChange, label = 'Filtrar' }: Props) {
+  const labelId = useId();
   const [active, setActive] = useState(defaultActive);
   const handle = (id: string) => { setActive(id); onChange?.(id); };
   const chipRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -46,8 +47,8 @@ export default function FilterChips({ options, defaultActive = 'all', onChange, 
 
   return (
     <div className="flex items-center gap-3 overflow-x-auto scroll-fade pb-1">
-      <span id="filter-chips-label" className="text-xs uppercase tracking-wider text-ink-500 font-semibold shrink-0 mr-1">{label}:</span>
-      <div role="group" aria-labelledby="filter-chips-label" className="flex gap-2 shrink-0">
+      <span id={labelId} className="text-xs uppercase tracking-wider text-ink-500 font-semibold shrink-0 mr-1">{label}:</span>
+      <div role="group" aria-labelledby={labelId} className="flex gap-2 shrink-0">
         {options.map((o, i) => (
           <button
             key={o.id}

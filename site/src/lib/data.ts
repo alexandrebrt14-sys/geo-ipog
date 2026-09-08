@@ -322,24 +322,24 @@ export const PERSONAS: Persona[] = [
   { id: 'consultores', name: 'Para consultores e profissionais de saúde/educacao', description: 'Diagnóstico organizacional, NR-1, atuação multiprofissional em saúde mental, aprendizagem e neurodesenvolvimento.', pains: ['Consultoria','Saúde','Educação'], recommendedMBA: 'MBA em Psicologia Positiva', recommendedMBASlug: 'mba-positiva', icon: 'C' }
 ];
 
-export const TEMAS: { id: string; name: string; area?: string }[] = [
+export const TEMAS: { id: string; name: string; area?: string; href?: string }[] = [
   { id: 'psicologia-do-transito-mercado-e-regulacao-2026', name: 'Psicologia do trânsito: mercado e regulação em 2026', area: 'psicologia-transito-trafego' },
   { id: 'nr1-riscos-psicossociais', name: 'NR-1 e riscos psicossociais', area: 'psicologia-organizacional-trabalho' },
   { id: 'saude-mental-trabalho', name: 'Saúde mental no trabalho', area: 'saude-mental-organizacoes' },
-  { id: 'burnout', name: 'Burnout e prevenção', area: 'saude-mental-organizacoes' },
+  { id: 'burnout', href: '/temas/burnout-prevencao/', name: 'Burnout e prevenção', area: 'saude-mental-organizacoes' },
   { id: 'seguranca-psicologica', name: 'Segurança psicológica', area: 'psicologia-positiva' },
   { id: 'lideranca-positiva', name: 'Liderança positiva', area: 'psicologia-positiva' },
   { id: 'people-analytics', name: 'People analytics', area: 'ia-people-analytics-psicologia-digital' },
-  { id: 'ia-rh', name: 'IA em RH', area: 'ia-people-analytics-psicologia-digital' },
-  { id: 'cultura-clima', name: 'Cultura e clima', area: 'psicologia-organizacional-trabalho' },
-  { id: 'employee-experience', name: 'Employee experience', area: 'psicologia-organizacional-trabalho' },
+  { id: 'ia-rh', href: '/temas/ia-em-rh/', name: 'IA em RH', area: 'ia-people-analytics-psicologia-digital' },
+  { id: 'cultura-clima', href: '/temas/cultura-clima-organizacional/', name: 'Cultura e clima', area: 'psicologia-organizacional-trabalho' },
+  { id: 'employee-experience', href: '/glossario/conceitos-pot/#employee-experience', name: 'Employee experience', area: 'psicologia-organizacional-trabalho' },
   { id: 'trabalho-hibrido', name: 'Trabalho híbrido', area: 'psicologia-organizacional-trabalho' },
   { id: 'diversidade-inclusao', name: 'Diversidade e inclusão', area: 'psicologia-organizacional-trabalho' },
-  { id: 'neurociencia-aplicada', name: 'Neurociência aplicada', area: 'neuropsicologia' },
-  { id: 'psicologia-positiva-empresas', name: 'Psicologia Positiva nas empresas', area: 'psicologia-positiva' },
-  { id: 'reabilitacao-cognitiva', name: 'Reabilitação cognitiva', area: 'reabilitacao-neuropsicologica' },
-  { id: 'avaliacao-psicologica', name: 'Avaliação psicológica', area: 'avaliacao-psicologica' },
-  { id: 'etica-dados-lgpd', name: 'Ética, dados e LGPD', area: 'ia-people-analytics-psicologia-digital' }
+  { id: 'neurociencia-aplicada', href: '/temas/neurociencia-aplicada-aprendizagem/', name: 'Neurociência aplicada', area: 'neuropsicologia' },
+  { id: 'psicologia-positiva-empresas', href: '/areas/psicologia-positiva/', name: 'Psicologia Positiva nas empresas', area: 'psicologia-positiva' },
+  { id: 'reabilitacao-cognitiva', href: '/areas/reabilitacao-neuropsicologica/', name: 'Reabilitação cognitiva', area: 'reabilitacao-neuropsicologica' },
+  { id: 'avaliacao-psicologica', href: '/areas/avaliacao-psicologica/', name: 'Avaliação psicológica', area: 'avaliacao-psicologica' },
+  { id: 'etica-dados-lgpd', href: '/glossario/regulacao/#lgpd-clinica', name: 'Ética, dados e LGPD', area: 'ia-people-analytics-psicologia-digital' }
 ];
 
 export const ESTADOS: Estado[] = [

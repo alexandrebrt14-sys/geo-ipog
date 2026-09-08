@@ -73,15 +73,26 @@ export default function MobileBottomNav() {
   const [path, setPath] = useState('/');
   const [hidden, setHidden] = useState(false);
   const reduce = useReducedMotion();
+  const navRef = useRef<HTMLElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const dragStartY = useRef<number | null>(null);
 
   useEffect(() => {
     setPath(window.location.pathname || '/');
-    const onChange = () => setPath(window.location.pathname || '/');
+    const onChange = () => {
+      setPath(window.location.pathname || '/');
+      setMoreOpen(false);
+      setHidden(false);
+    };
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const onResize = () => { if (desktop.matches) setMoreOpen(false); };
     document.addEventListener('astro:after-swap', onChange);
-    return () => document.removeEventListener('astro:after-swap', onChange);
+    desktop.addEventListener('change', onResize);
+    return () => {
+      document.removeEventListener('astro:after-swap', onChange);
+      desktop.removeEventListener('change', onResize);
+    };
   }, []);
 
   // Esconde a barra ao rolar para baixo e revela ao rolar para cima (padrão mobile moderno).
@@ -93,7 +104,8 @@ export default function MobileBottomNav() {
       ticking = true;
       requestAnimationFrame(() => {
         const y = window.scrollY;
-        if (y > lastY + 8 && y > 120) setHidden(true);
+        if (navRef.current?.contains(document.activeElement)) setHidden(false);
+        else if (y > lastY + 8 && y > 120) setHidden(true);
         else if (y < lastY - 8) setHidden(false);
         lastY = y;
         ticking = false;
@@ -106,6 +118,14 @@ export default function MobileBottomNav() {
   useEffect(() => {
     if (!moreOpen) return;
     const previouslyFocused = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    const background = Array.from(document.body.children)
+      .filter((element): element is HTMLElement => element instanceof HTMLElement && !element.contains(dialogRef.current))
+      .map(element => ({ element, inert: element.inert }));
+    const nav = navRef.current;
+    const previousNavInert = nav?.inert ?? false;
+    background.forEach(({ element }) => { element.inert = true; });
+    if (nav) nav.inert = true;
     closeBtnRef.current?.focus();
     document.body.style.overflow = 'hidden';
 
@@ -133,8 +153,10 @@ export default function MobileBottomNav() {
     document.addEventListener('keydown', onKey);
     return () => {
       document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-      previouslyFocused?.focus?.();
+      document.body.style.overflow = previousOverflow;
+      background.forEach(({ element, inert }) => { element.inert = inert; });
+      if (nav) nav.inert = previousNavInert;
+      if (previouslyFocused?.isConnected) previouslyFocused.focus();
     };
   }, [moreOpen]);
 
@@ -154,7 +176,7 @@ export default function MobileBottomNav() {
   const isActive = (href?: string) => {
     if (!href) return false;
     if (href === '/') return path === '/';
-    return path.startsWith(href);
+    return path === href || path.startsWith(href + '/');
   };
 
   const onDragStart = (event: React.TouchEvent) => {
@@ -171,6 +193,8 @@ export default function MobileBottomNav() {
     <>
       <nav
         aria-label="Navegação mobile"
+        ref={navRef}
+        onFocusCapture={() => setHidden(false)}
         className={`fixed bottom-0 inset-x-0 z-30 lg:hidden bg-white border-t border-surface-200 pb-[max(8px,env(safe-area-inset-bottom))] shadow-[0_-1px_8px_rgba(15,37,67,.06)] transition-transform duration-300 ${hidden && !moreOpen ? 'translate-y-full' : 'translate-y-0'}`}>
         <ul className="grid grid-cols-5">
           {items.map(it => {
@@ -192,6 +216,7 @@ export default function MobileBottomNav() {
                   </a>
                 ) : (
                   <button
+                    type="button"
                     onClick={it.action}
                     className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-inset"
                     aria-label={it.label}
@@ -209,7 +234,7 @@ export default function MobileBottomNav() {
       <AnimatePresence>
       {moreOpen && (
         <motion.div
-          className="fixed inset-0 z-40 lg:hidden"
+          className="fixed inset-0 z-50 lg:hidden"
           role="dialog"
           aria-modal="true"
           aria-labelledby="more-drawer-title"
@@ -224,18 +249,20 @@ export default function MobileBottomNav() {
             aria-hidden="true"
           />
           <motion.div
-            className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl pb-[max(16px,env(safe-area-inset-bottom))] max-h-[85vh] overflow-y-auto"
+            className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl pb-[max(16px,env(safe-area-inset-bottom))] max-h-[85dvh] overflow-y-auto overscroll-contain"
             initial={{ y: reduce ? 0 : '100%' }}
             animate={{ y: 0 }}
             exit={{ y: reduce ? 0 : '100%' }}
             transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 320, damping: 34 }}
-            onTouchStart={onDragStart}
-            onTouchEnd={onDragEnd}>
-            <div className="sticky top-0 bg-white pt-3 pb-2 border-b border-surface-200">
+            >
+            <div className="sticky top-0 z-10 bg-white pt-3 pb-2 border-b border-surface-200"
+              onTouchStart={onDragStart}
+              onTouchEnd={onDragEnd}>
               <div className="mx-auto w-12 h-1.5 rounded-full bg-surface-200" aria-hidden="true" />
               <div className="px-5 pt-3 flex items-center justify-between">
                 <h2 id="more-drawer-title" className="font-display font-bold text-lg text-brand-800">Mais</h2>
                 <button
+                  type="button"
                   ref={closeBtnRef}
                   onClick={() => setMoreOpen(false)}
                   className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-surface-200 text-ink-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"

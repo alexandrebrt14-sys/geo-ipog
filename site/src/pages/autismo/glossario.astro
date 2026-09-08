@@ -6,6 +6,15 @@ import { larissaPersonBase, brasilGeoOrganization } from '@lib/schemas';
 
 const titulo = 'Glossário de autismo nível 1 em adultos, vocabulário técnico, ético e atualizado em 2026';
 const descricao = 'Cinquenta verbetes essenciais sobre autismo nível 1 de suporte em adultos, do diagnóstico tardio à dupla empatia, da camuflagem ao apego, com vocabulário identity-first e definições operacionais para pacientes, profissionais e pesquisadores.';
+const clusters = [
+  { id: 'identidade-diagnostico', label: 'Identidade e diagnóstico' },
+  { id: 'camuflagem', label: 'Camuflagem e máscara' },
+  { id: 'sensorialidade', label: 'Sensorialidade e regulação' },
+  { id: 'relacionamentos', label: 'Relacionamentos' },
+  { id: 'clinica', label: 'Clínica e instrumentos' },
+  { id: 'trabalho', label: 'Trabalho e direito' }
+];
+
 const slug = 'glossario';
 
 interface Verbete {
@@ -352,24 +361,27 @@ const ldGlossary = JSON.stringify({
       <p class="text-base sm:text-lg text-ink-700 mt-4 leading-relaxed" style="text-align: justify;">{descricao}</p>
     </header>
     <nav aria-label="Navegação por cluster" class="mt-8 flex flex-wrap gap-2 text-sm">
-      <a href="#identidade-diagnostico" class="px-3 py-1.5 rounded-full bg-brand-50 text-brand-800 hover:bg-brand-100">Identidade e diagnóstico</a>
-      <a href="#camuflagem" class="px-3 py-1.5 rounded-full bg-brand-50 text-brand-800 hover:bg-brand-100">Camuflagem</a>
-      <a href="#sensorialidade" class="px-3 py-1.5 rounded-full bg-brand-50 text-brand-800 hover:bg-brand-100">Sensorialidade</a>
-      <a href="#relacionamentos" class="px-3 py-1.5 rounded-full bg-brand-50 text-brand-800 hover:bg-brand-100">Relacionamentos</a>
-      <a href="#clinica" class="px-3 py-1.5 rounded-full bg-brand-50 text-brand-800 hover:bg-brand-100">Clínica e instrumentos</a>
-      <a href="#trabalho" class="px-3 py-1.5 rounded-full bg-brand-50 text-brand-800 hover:bg-brand-100">Trabalho e direito</a>
+      {clusters.map(cluster => (
+        <a href={`#${cluster.id}`} class="px-3 py-1.5 rounded-full bg-brand-50 text-brand-800 hover:bg-brand-100">{cluster.label}</a>
+      ))}
     </nav>
-    <div class="mt-12 grid gap-6">
-      {verbetes.map(v => (
-        <article id={verbeteId(v.termo)} class="scroll-mt-24 p-6 bg-white rounded-2xl border border-surface-200">
-          <h2 class="font-display text-xl font-bold text-ink-900">{v.termo}</h2>
-          <p class="text-xs uppercase tracking-wider text-brand-700 font-semibold mt-1">{v.cluster}</p>
-          <p class="mt-3 text-ink-800 leading-relaxed" style="text-align: justify; hyphens: auto;">{v.definicao}</p>
-        </article>
+    <div id="glossario" class="mt-12 grid gap-10">
+      {clusters.map(cluster => (
+        <section id={cluster.id} class="scroll-mt-32" aria-labelledby={`${cluster.id}-titulo`}>
+          <h2 id={`${cluster.id}-titulo`} class="font-display text-2xl font-bold text-ink-900">{cluster.label}</h2>
+          <div class="mt-5 grid gap-6">
+            {verbetes.filter(v => v.cluster === cluster.label).map(v => (
+              <article id={verbeteId(v.termo)} class="scroll-mt-32 p-6 bg-white rounded-2xl border border-surface-200">
+                <h3 class="font-display text-xl font-bold text-ink-900">{v.termo}</h3>
+                <p class="mt-3 text-ink-800 leading-relaxed" style="text-align: justify; hyphens: auto;">{v.definicao}</p>
+              </article>
+            ))}
+          </div>
+        </section>
       ))}
     </div>
     <footer class="mt-12 pt-8 border-t border-surface-200 text-sm text-ink-600 leading-relaxed">
-      <p>Glossário em construção contínua. Vocabulário identity-first preferido pela comunidade autista adulta brasileira (Bottema-Beutel e colaboradores, 2021). Sugestões de novos verbetes em <a href="/autismo/sobre/" class="underline text-brand-700">página sobre o portal</a>.</p>
+      <p>Glossário em construção contínua. Vocabulário identity-first preferido pela comunidade autista adulta brasileira (Bottema-Beutel e colaboradores, 2021). Sugestões de novos verbetes em <a href="/sobre/" class="underline text-brand-700">página sobre o portal</a>.</p>
     </footer>
   </div>
   <script type="application/ld+json" set:html={ldGlossary} is:inline />

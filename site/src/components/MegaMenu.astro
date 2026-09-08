@@ -18,7 +18,6 @@ const triggerClass = highlight
   <button
     type="button"
     class={triggerClass}
-    aria-haspopup="true"
     aria-expanded="false"
     aria-controls={`${menuId}-panel`}
     aria-current={active ? 'true' : undefined}
@@ -27,7 +26,7 @@ const triggerClass = highlight
     {badge && (
       <span class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-sun-500 text-brand-900 text-[9px] font-bold uppercase tracking-wider leading-none">{badge}</span>
     )}
-    <svg class="w-3.5 h-3.5 text-ink-500 transition-transform group-hover/menu:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+    <svg class="w-3.5 h-3.5 text-ink-500 transition-transform" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
       <path d="M5.5 7.5 10 12l4.5-4.5z"/>
     </svg>
   </button>
@@ -36,109 +35,131 @@ const triggerClass = highlight
     role="region"
     aria-label={`Menu ${label}`}
     data-mega-panel
-    class="absolute left-0 top-full pt-2 z-40 opacity-0 pointer-events-none translate-y-[-6px] transition-all duration-200 group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto group-hover/menu:translate-y-0 data-[open=true]:opacity-100 data-[open=true]:pointer-events-auto data-[open=true]:translate-y-0"
+    hidden
+    class="absolute left-0 top-full pt-2 z-40"
     style={`width: ${panelWidth}px; max-width: calc(100vw - 2rem);`}>
-    <div class="card shadow-lift p-4 animate-fade-in">
+    <div class="card shadow-lift p-4 animate-fade-in mega-panel-content">
       <slot name="panel" />
     </div>
   </div>
 </div>
 
 <script>
-  // Click-toggle + ESC + click-outside, complementando o hover do CSS para acessibilidade
+  function positionPanel(group: HTMLElement, panel: HTMLElement) {
+    const gutter = 16;
+    const groupLeft = group.getBoundingClientRect().left;
+    const viewportWidth = document.documentElement.clientWidth;
+    const left = Math.max(gutter, Math.min(groupLeft, viewportWidth - panel.offsetWidth - gutter));
+    panel.style.left = `${left - groupLeft}px`;
+    const availableHeight = window.innerHeight - panel.getBoundingClientRect().top - gutter - 8;
+    panel.style.setProperty('--mega-panel-height', `${Math.max(0, availableHeight)}px`);
+  }
+
+  function closeMenu(group: HTMLElement, restoreFocus = false) {
+    const trigger = group.querySelector<HTMLButtonElement>('[data-mega-trigger]');
+    const panel = group.querySelector<HTMLElement>('[data-mega-panel]');
+    if (restoreFocus && panel?.contains(document.activeElement)) trigger?.focus();
+    trigger?.setAttribute('aria-expanded', 'false');
+    if (panel) {
+      panel.hidden = true;
+      panel.removeAttribute('data-open');
+    }
+  }
+
+  function closeAll(except?: HTMLElement, restoreFocus = false) {
+    document.querySelectorAll<HTMLElement>('[data-mega]').forEach(group => {
+      if (group !== except) closeMenu(group, restoreFocus);
+    });
+  }
+
   function initMegaMenus() {
-    const groups = document.querySelectorAll('[data-mega]');
-    groups.forEach(group => {
-      if ((group as HTMLElement).dataset.megaBound === '1') return;
-      (group as HTMLElement).dataset.megaBound = '1';
+    document.querySelectorAll<HTMLElement>('[data-mega]').forEach(group => {
+      if (group.dataset.megaBound === '1') return;
+      group.dataset.megaBound = '1';
       const trigger = group.querySelector<HTMLButtonElement>('[data-mega-trigger]');
       const panel = group.querySelector<HTMLElement>('[data-mega-panel]');
       if (!trigger || !panel) return;
-
       const panelLinks = () => Array.from(panel.querySelectorAll<HTMLAnchorElement>('a[href]'));
+      let openedByPointer = false;
 
-      const setOpen = (open: boolean, focusFirst = false) => {
-        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-        if (open) {
-          panel.setAttribute('data-open', 'true');
-          if (focusFirst) window.setTimeout(() => panelLinks()[0]?.focus(), 30);
-        } else {
-          panel.removeAttribute('data-open');
-        }
+      const openMenu = (focusFirst = false) => {
+        closeAll(group);
+        panel.hidden = false;
+        panel.setAttribute('data-open', 'true');
+        trigger.setAttribute('aria-expanded', 'true');
+        positionPanel(group, panel);
+        if (focusFirst) panelLinks()[0]?.focus();
       };
 
-      trigger.addEventListener('click', (event) => {
-        event.preventDefault();
-        const wasOpen = trigger.getAttribute('aria-expanded') === 'true';
-        // fecha qualquer outro
-        document.querySelectorAll('[data-mega] [data-mega-trigger]').forEach(other => {
-          if (other !== trigger) {
-            other.setAttribute('aria-expanded', 'false');
-            other.parentElement?.querySelector('[data-mega-panel]')?.removeAttribute('data-open');
-          }
-        });
-        setOpen(!wasOpen);
-      });
-
-      // Abrir com Enter/Espaço/Seta-baixo e mover foco para o primeiro link
-      trigger.addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          setOpen(true, true);
+      group.addEventListener('pointerenter', event => {
+        if (event.pointerType === 'mouse' && panel.hidden) {
+          openMenu();
+          openedByPointer = true;
         }
       });
-
-      // Navegação por setas dentro do painel (acessibilidade de teclado)
-      panel.addEventListener('keydown', (event) => {
+      group.addEventListener('pointerleave', event => {
+        if (event.pointerType === 'mouse' && !group.contains(document.activeElement)) closeMenu(group);
+      });
+      group.addEventListener('focusout', event => {
+        if (!(event.relatedTarget instanceof Node) || !group.contains(event.relatedTarget)) closeMenu(group);
+      });
+      trigger.addEventListener('click', () => {
+        if (panel.hidden || openedByPointer) openMenu();
+        else closeMenu(group);
+        openedByPointer = false;
+      });
+      trigger.addEventListener('keydown', event => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          openedByPointer = false;
+          openMenu(event.key === 'ArrowDown');
+          if (event.key === 'ArrowUp') {
+            const links = panelLinks();
+            links[links.length - 1]?.focus();
+          }
+        }
+      });
+      panel.addEventListener('keydown', event => {
         const links = panelLinks();
         if (!links.length) return;
-        const idx = links.indexOf(document.activeElement as HTMLAnchorElement);
+        const index = links.indexOf(document.activeElement as HTMLAnchorElement);
         if (event.key === 'ArrowDown') {
           event.preventDefault();
-          links[(idx + 1) % links.length]?.focus();
+          links[(index + 1) % links.length]?.focus();
         } else if (event.key === 'ArrowUp') {
           event.preventDefault();
-          links[(idx - 1 + links.length) % links.length]?.focus();
+          links[(index - 1 + links.length) % links.length]?.focus();
         } else if (event.key === 'Home') {
           event.preventDefault();
           links[0]?.focus();
         } else if (event.key === 'End') {
           event.preventDefault();
           links[links.length - 1]?.focus();
-        } else if (event.key === 'Escape') {
-          event.preventDefault();
-          setOpen(false);
-          trigger.focus();
         }
       });
-
-      panel.addEventListener('click', (event) => {
-        const target = event.target as HTMLElement;
-        if (target.closest('a')) setOpen(false);
+      panel.addEventListener('click', event => {
+        if (event.target instanceof Element && event.target.closest('a')) closeMenu(group, true);
       });
     });
   }
 
-  function closeAll() {
-    document.querySelectorAll('[data-mega] [data-mega-trigger]').forEach(trigger => {
-      trigger.setAttribute('aria-expanded', 'false');
-    });
-    document.querySelectorAll('[data-mega-panel]').forEach(panel => {
-      panel.removeAttribute('data-open');
-    });
-  }
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeAll();
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeAll(undefined, true);
   });
-
-  document.addEventListener('click', (event) => {
-    const target = event.target as HTMLElement;
-    if (!target.closest('[data-mega]')) closeAll();
+  document.addEventListener('click', event => {
+    if (event.target instanceof Element && !event.target.closest('[data-mega]')) closeAll();
   });
-
+  window.addEventListener('resize', () => {
+    if (window.innerWidth < 1024) {
+      closeAll();
+      return;
+    }
+    document.querySelectorAll<HTMLElement>('[data-mega]').forEach(group => {
+      const panel = group.querySelector<HTMLElement>('[data-mega-panel]');
+      if (panel && !panel.hidden) positionPanel(group, panel);
+    });
+  });
   initMegaMenus();
+  document.addEventListener('astro:before-swap', () => closeAll());
   document.addEventListener('astro:after-swap', initMegaMenus);
-  // Fecha qualquer painel preso ao navegar via View Transitions.
-  document.addEventListener('astro:after-swap', closeAll);
 </script>

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 /**
@@ -329,6 +329,10 @@ export default function QuizQualMBA() {
     () => QUESTIONS.map(() => -1)
   );
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const advanceTimer = useRef<number | undefined>();
+  const focusedQuestion = useRef(-1);
+  const cancelAdvance = () => window.clearTimeout(advanceTimer.current);
+  useEffect(() => () => window.clearTimeout(advanceTimer.current), []);
 
   const total = QUESTIONS.length;
   const answered = useMemo(
@@ -338,17 +342,20 @@ export default function QuizQualMBA() {
   const progress = Math.round((answered / total) * 100);
 
   function start() {
+    cancelAdvance();
+    focusedQuestion.current = -1;
     setAnswers(QUESTIONS.map(() => -1));
     setCurrent(0);
     setView('questions');
   }
 
   function answer(optionIndex: number) {
+    cancelAdvance();
     const next = [...answers];
     next[current] = optionIndex;
     setAnswers(next);
     // pequeno delay visual para feedback de seleção
-    window.setTimeout(() => {
+    advanceTimer.current = window.setTimeout(() => {
       if (current + 1 < total) {
         setCurrent(current + 1);
       } else {
@@ -387,10 +394,13 @@ export default function QuizQualMBA() {
   }
 
   function goPrev() {
+    cancelAdvance();
     if (current > 0) setCurrent(current - 1);
   }
 
   function reset() {
+    cancelAdvance();
+    focusedQuestion.current = -1;
     setAnswers(QUESTIONS.map(() => -1));
     setCurrent(0);
     setView('welcome');
@@ -476,7 +486,7 @@ export default function QuizQualMBA() {
           <motion.div
             className="h-full bg-sun-500"
             initial={false}
-            animate={{ width: `${Math.max(progress, ((current + 1) / total) * 100)}%` }}
+            animate={{ width: `${progress}%` }}
             transition={{ duration: reduce ? 0 : 0.3 }}
           />
         </div>
@@ -490,6 +500,13 @@ export default function QuizQualMBA() {
             transition={{ duration: reduce ? 0 : 0.25, ease: [0.2, 0.8, 0.2, 1] }}>
             <h2
               id={`quiz-q-${q.id}`}
+              tabIndex={-1}
+              ref={element => {
+                if (element && focusedQuestion.current !== current) {
+                  focusedQuestion.current = current;
+                  element.focus({ preventScroll: true });
+                }
+              }}
               className="section-h text-xl sm:text-2xl mt-5">{q.text}</h2>
             {q.helper && (
               <p id={`quiz-help-${q.id}`} className="mt-2 text-sm text-ink-500">{q.helper}</p>

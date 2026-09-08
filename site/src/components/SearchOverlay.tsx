@@ -15,7 +15,7 @@
  * REGRA #0: todo texto visível em português brasileiro com acentuação completa.
  * IDs, URLs e slugs permanecem ASCII.
  *
- * Triggers: cliques em [data-open-search] + atalhos ⌘K / Ctrl+K / `/` / `?`.
+ * Triggers: cliques em [data-open-search] + atalhos ⌘K / Ctrl+K / `/`.
  * Mantém API pública: `<SearchOverlay client:idle />` em Base.astro.
  */
 
@@ -331,18 +331,6 @@ function readUrlQuery(): string {
   }
 }
 
-function writeUrlQuery(q: string): void {
-  if (typeof window === 'undefined') return;
-  try {
-    const u = new URL(window.location.href);
-    if (q) u.searchParams.set('q', q);
-    else u.searchParams.delete('q');
-    window.history.replaceState({}, '', u.toString());
-  } catch {
-    /* ignora */
-  }
-}
-
 function crumbFromHref(href: string): string {
   if (!href) return '';
   const clean = href.split('#')[0].split('?')[0];
@@ -455,6 +443,7 @@ export default function SearchOverlay() {
   const [didYouMeanDismissed, setDidYouMeanDismissed] = useState<string>('');
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const prefetchRef = useRef<Map<string, { el: HTMLLinkElement; expires: number }>>(new Map());
   const hoverTimerRef = useRef<number | null>(null);
@@ -631,53 +620,67 @@ export default function SearchOverlay() {
 
   // ---------- abertura, atalhos, triggers ----------
   useEffect(() => {
-    const triggers = Array.from(document.querySelectorAll<HTMLElement>('[data-open-search]'));
-    const onTrigger = () => setOpen(true);
-    triggers.forEach(el => el.addEventListener('click', onTrigger));
+    const anotherDialogOpen = () => Array.from(document.querySelectorAll<HTMLElement>('[aria-modal="true"]')).some(el => !dialogRef.current?.contains(el) && el.getClientRects().length > 0 && el.getAttribute('aria-hidden') !== 'true');
+    const onTrigger = (event: MouseEvent) => {
+      if (anotherDialogOpen()) return;
+      if (event.target instanceof Element && event.target.closest('[data-open-search]')) {
+        setOpen(true);
+      }
+    };
+    document.addEventListener('click', onTrigger);
 
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || anotherDialogOpen()) return;
       const isMac = navigator.userAgent.includes('Mac');
       if ((isMac ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setOpen(true);
         return;
       }
-      const tag = (document.activeElement as HTMLElement | null)?.tagName;
-      const inField = tag === 'INPUT' || tag === 'TEXTAREA';
-      if (!inField && (e.key === '/' || e.key === '?')) {
+      const active = document.activeElement as HTMLElement | null;
+      const inField = active?.matches('input, textarea, select') || active?.isContentEditable;
+      if (!e.defaultPrevented && !e.altKey && !e.ctrlKey && !e.metaKey && !inField && e.key === '/') {
         e.preventDefault();
         setOpen(true);
       }
     };
     document.addEventListener('keydown', onKey);
     return () => {
-      triggers.forEach(el => el.removeEventListener('click', onTrigger));
+      document.removeEventListener('click', onTrigger);
       document.removeEventListener('keydown', onKey);
     };
   }, []);
 
-  // ---------- ao abrir: lê URL, foca, trava scroll ----------
+  // O diálogo devolve foco e rolagem também se a ilha for desmontada.
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-      const urlQ = readUrlQuery();
-      if (urlQ) setQ(urlQ);
-      setRecent(loadRecent());
-      setTimeout(() => inputRef.current?.focus(), 30);
-    } else {
-      document.body.style.overflow = '';
-    }
+    if (!open) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    const background = Array.from(document.body.children)
+      .filter((el): el is HTMLElement => el instanceof HTMLElement && !el.contains(dialogRef.current))
+      .map(element => ({ element, inert: element.inert }));
+    background.forEach(({ element }) => { element.inert = true; });
+    document.body.style.overflow = 'hidden';
+    const urlQ = readUrlQuery();
+    if (urlQ) setQ(urlQ);
+    setRecent(loadRecent());
+    const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 30);
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = previousOverflow;
+      background.forEach(({ element, inert }) => { element.inert = inert; });
+      if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+    };
   }, [open]);
 
   // ---------- reseta cursor ----------
   useEffect(() => {
     setActiveIdx(0);
-  }, [q, kindFilter]);
+  }, [q, kindFilter, removedEntities]);
 
-  // ---------- atualiza URL ----------
   useEffect(() => {
-    if (open) writeUrlQuery(q);
-  }, [q, open]);
+    setActiveIdx(index => Math.min(index, Math.max(results.length - 1, 0)));
+  }, [results.length]);
 
   // ---------- telemetria de query estabilizada ----------
   useEffect(() => {
@@ -718,9 +721,16 @@ export default function SearchOverlay() {
     return () => window.clearInterval(interval);
   }, [open]);
 
+  useEffect(() => () => {
+    if (hoverTimerRef.current) window.clearTimeout(hoverTimerRef.current);
+    prefetchRef.current.forEach(({ el }) => el.remove());
+    prefetchRef.current.clear();
+  }, []);
+
   // Limpa prefetches quando o overlay fecha
   useEffect(() => {
     if (open) return;
+    if (hoverTimerRef.current) window.clearTimeout(hoverTimerRef.current);
     const map = prefetchRef.current;
     for (const [, entry] of Array.from(map.entries())) {
       try {
@@ -734,12 +744,20 @@ export default function SearchOverlay() {
 
   const close = useCallback(() => {
     setOpen(false);
-    writeUrlQuery('');
     setQ('');
     setKindFilter('all');
     setRemovedEntities([]);
     setDidYouMeanDismissed('');
   }, []);
+
+  useEffect(() => {
+    document.addEventListener('astro:before-preparation', close);
+    document.addEventListener('astro:before-swap', close);
+    return () => {
+      document.removeEventListener('astro:before-preparation', close);
+      document.removeEventListener('astro:before-swap', close);
+    };
+  }, [close]);
 
   const go = useCallback((href: string, query?: string, newTab: boolean = false) => {
     if (query) saveRecent(query);
@@ -827,7 +845,7 @@ export default function SearchOverlay() {
       }
       return;
     }
-    if (e.key === 'Tab' && autocomplete) {
+    if (e.key === 'Tab' && !e.shiftKey && q === debouncedQ && autocomplete) {
       e.preventDefault();
       setQ(q + autocomplete);
     }
@@ -878,7 +896,28 @@ export default function SearchOverlay() {
     <AnimatePresence>
     {open && (
     <motion.div
-      className="fixed inset-0 z-50"
+      ref={dialogRef}
+      className="fixed inset-0 z-[100]"
+      onKeyDown={e => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          close();
+          return;
+        }
+        if (e.key !== 'Tab' || e.defaultPrevented) return;
+        const focusable = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex="0"]'
+        ) || []).filter(el => el.tabIndex >= 0 && el.getClientRects().length > 0);
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }}
       role="dialog"
       aria-modal="true"
       aria-label="Busca do portal"
@@ -901,7 +940,7 @@ export default function SearchOverlay() {
         exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8, scale: 0.98 }}
         transition={{ duration: reduce ? 0 : 0.22, ease: [0.2, 0.8, 0.2, 1] }}
       >
-        <div className="rounded-2xl bg-white shadow-lift border border-surface-200 overflow-hidden">
+        <div className="flex max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-8rem)] flex-col rounded-2xl bg-white shadow-lift border border-surface-200 overflow-hidden">
           {/* Input + autocomplete */}
           <div className="flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-surface-200">
             <svg
@@ -915,7 +954,7 @@ export default function SearchOverlay() {
               <circle cx="11" cy="11" r="7" />
               <path d="m21 21-4.3-4.3" />
             </svg>
-            <div className="relative w-full">
+            <div className="relative min-w-0 w-full">
               <input
                 ref={inputRef}
                 data-search-input
@@ -925,9 +964,10 @@ export default function SearchOverlay() {
                 className="relative z-10 w-full outline-none text-base bg-transparent"
                 placeholder='Buscar áreas, MBAs, guias, FAQs, glossário... (tente "saúde mental" -burnout)'
                 role="combobox"
-                aria-controls={visibleId}
-                aria-expanded={true}
-                aria-activedescendant={docResults[activeIdx] ? `pp-opt-${activeIdx}` : undefined}
+                aria-label="Buscar no portal"
+                aria-controls={!showZero && results.length > 0 ? visibleId : undefined}
+                aria-expanded={!showZero && results.length > 0}
+                aria-activedescendant={!showZero && docResults[activeIdx] ? `pp-opt-${activeIdx}` : undefined}
                 aria-autocomplete="list"
                 autoComplete="off"
                 spellCheck={false}
@@ -1052,7 +1092,7 @@ export default function SearchOverlay() {
           )}
 
           {/* Resultados ou zero-state */}
-          <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-2" id={visibleId} role="listbox">
+          <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto p-2">
             {showZero && (
               <ZeroState
                 recent={recent}
@@ -1125,7 +1165,7 @@ export default function SearchOverlay() {
                 </a>
               ) : (
                 <span>
-                  Atalho global: <span className="kbd">⌘K</span>, <span className="kbd">/</span> ou <span className="kbd">?</span>
+                  Atalho global: <span className="kbd">⌘K</span>, <span className="kbd">/</span>
                 </span>
               )}
             </span>
@@ -1393,7 +1433,7 @@ function NoResults({ q, onTry }: { q: string; onTry: (s: string) => void }) {
         ))}
       </div>
       <p className="mt-4 text-xs text-ink-500">
-        Ou veja a busca completa em <span className="underline">/busca?q={encodeURIComponent(q)}</span>
+        Ou veja a busca completa em <a className="underline text-brand-700" href={`/busca?q=${encodeURIComponent(q)}`}>/busca?q={encodeURIComponent(q)}</a>
       </p>
     </div>
   );
@@ -1427,6 +1467,7 @@ function ResultsList({
 
   return (
     <>
+      <div id="pp-search-listbox" role="listbox" aria-label="Resultados da busca">
       {results.map((r, i) => {
         const d = r.doc;
         return (
@@ -1436,8 +1477,10 @@ function ResultsList({
             data-idx={i}
             href={d.href}
             role="option"
+            tabIndex={-1}
             aria-selected={i === activeIdx}
             onClick={e => {
+              if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
               e.preventDefault();
               onGo(d.href, d.kind);
             }}
@@ -1473,6 +1516,8 @@ function ResultsList({
           </a>
         );
       })}
+
+      </div>
 
       {firstNext && (
         <div className="mt-3 mx-1 px-3 py-2 rounded-lg border border-dashed border-brand-200 bg-brand-50/40 text-xs text-ink-700">

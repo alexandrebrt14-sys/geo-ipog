@@ -21,7 +21,6 @@ import {
   EVIDENCIAS,
   CASOS,
   GUIAS,
-  FAQS,
   FAQS_DEEP,
   GLOSSARIO_CLUSTERS,
   INTERVENCOES,
@@ -207,7 +206,7 @@ export function buildIndex(): SearchDoc[] {
       id: `tema:${t.id}`,
       title: t.name,
       subtitle: t.area ? AREAS.find(a => a.id === t.area)?.short : undefined,
-      href: `/temas/${t.id}`,
+      href: t.href ?? `/temas/${t.id}`,
       kind: 'Tema',
       tags: t.area ? TAG_MAP[t.area] || [] : [],
       keywords: mkKeywords(t.name, t.id.replace(/-/g, ' '), t.area),
@@ -400,7 +399,7 @@ export function buildIndex(): SearchDoc[] {
     { title: 'Especialidades reconhecidas pelo CFP', href: '/regulacao#cfp', sub: 'Regulação', kw: 'cfp conselho federal psicologia especialidades reconhecidas titulo de especialista' },
     { title: 'SATEPSI · testes psicológicos válidos', href: '/regulacao#satepsi', sub: 'Regulação', kw: 'satepsi testes psicologicos validados avaliacao psicologica' },
     { title: 'Níveis editoriais R0 a R4', href: '/regulacao#niveis', sub: 'Regulação', kw: 'nivel regulatorio r0 r1 r2 r3 r4 regulacao' },
-    { title: 'Como escolher uma pós em Psicologia', href: '/regulacao#como-escolher', sub: 'Regulação', kw: 'como escolher pos graduacao psicologia mba criterios' },
+    { title: 'Como escolher uma pós em Psicologia', href: '/recursos/checklist-escolher-pos-psicologia/', sub: 'Regulação', kw: 'como escolher pos graduacao psicologia mba criterios' },
   ];
   for (const r of reg) {
     docs.push({
@@ -412,21 +411,6 @@ export function buildIndex(): SearchDoc[] {
       tags: ['cfp', 'mba-vs-especializacao'],
       keywords: mkKeywords(r.title, r.sub, r.kw),
       weight: 1.1,
-    });
-  }
-
-  // Persona hubs em /para-quem (entry adicional para o âncora antigo)
-  for (const p of PERSONAS) {
-    docs.push({
-      id: `persona-anchor:${p.id}`,
-      title: `${p.name} · home`,
-      subtitle: 'Seção da home',
-      href: `/#${p.id}`,
-      kind: 'Persona',
-      tags: [],
-      keywords: mkKeywords(p.name, p.description, p.pains, p.recommendedMBA),
-      weight: 0.7,
-      persona: [p.id],
     });
   }
 
@@ -495,101 +479,8 @@ export function buildIndex(): SearchDoc[] {
     }
   }
 
-  // -------------------------------------------------------------------------
-  // Subdocs: FAQs originais (5 perguntas curtas da home)
-  // -------------------------------------------------------------------------
-  for (let i = 0; i < FAQS.length; i++) {
-    const f = FAQS[i];
-    docs.push({
-      id: `faq-home:${i}`,
-      title: f.q,
-      subtitle: 'Perguntas frequentes',
-      href: `/#faq`,
-      kind: 'FAQ',
-      tags: [],
-      keywords: mkKeywords(f.q, f.a),
-      weight: 0.9,
-    });
-  }
-
-  // -------------------------------------------------------------------------
-  // Subdocs: comparativos editoriais (1 por área principal)
-  // -------------------------------------------------------------------------
-  const COMP_PAIRS: { title: string; href: string; kw: string }[] = [
-    { title: 'POT vs Psicologia Positiva', href: '/comparativos/pot-vs-positiva', kw: 'comparativo organizacional positiva diferenca' },
-    { title: 'Neuropsicologia vs Reabilitação Neuropsicológica', href: '/comparativos/neuro-vs-reabilitacao', kw: 'comparativo neuropsicologia reabilitacao cognitiva diferenca' },
-    { title: 'TCC vs ACT', href: '/comparativos/tcc-vs-act', kw: 'comparativo tcc act terceira onda diferenca' },
-    { title: 'TCC vs DBT', href: '/comparativos/tcc-vs-dbt', kw: 'comparativo tcc dbt borderline diferenca' },
-    { title: 'MBA em POT vs MBA em Liderança Positiva', href: '/comparativos/mba-pot-vs-lideranca', kw: 'comparativo mbas pot lideranca' },
-    { title: 'Psicologia Clínica vs Psicologia Organizacional', href: '/comparativos/clinica-vs-pot', kw: 'comparativo clinica pot organizacional carreira' },
-    { title: 'Especialização vs MBA', href: '/comparativos/especializacao-vs-mba', kw: 'especializacao mba lato sensu diferenca pos graduacao' },
-    { title: 'Mindfulness vs ACT', href: '/comparativos/mindfulness-vs-act', kw: 'mindfulness act terceira onda diferenca' },
-  ];
-  for (const c of COMP_PAIRS) {
-    docs.push({
-      id: `comp:${c.href}`,
-      title: c.title,
-      subtitle: 'Comparativo editorial',
-      href: c.href,
-      kind: 'Comparativo',
-      tags: [],
-      keywords: mkKeywords(c.title, c.kw),
-      weight: 1.0,
-    });
-  }
-
-  // -------------------------------------------------------------------------
-  // Subdocs: carreira por persona
-  // -------------------------------------------------------------------------
-  const CARREIRA_DOCS: { title: string; href: string; persona: string; kw: string }[] = [
-    { title: 'Transição da clínica para POT', href: '/carreira/transicao-clinica-pot', persona: 'psicologos', kw: 'transicao carreira clinica para pot organizacional mudanca' },
-    { title: 'Trilha de carreira em RH com Psicologia', href: '/carreira/rh-com-psicologia', persona: 'rh', kw: 'rh recursos humanos carreira trilha business partner' },
-    { title: 'Carreira em Neuropsicologia', href: '/carreira/neuropsicologia', persona: 'psicologos', kw: 'neuropsicologia carreira mercado salario trilha' },
-    { title: 'Carreira em Avaliação Psicológica', href: '/carreira/avaliacao-psicologica', persona: 'psicologos', kw: 'avaliacao psicologica carreira psicometria laudos' },
-    { title: 'Salário e mercado de Psicologia Organizacional', href: '/carreira/salario-pot', persona: 'rh', kw: 'salario mercado pot organizacional remuneracao' },
-    { title: 'Consultoria em saúde mental corporativa', href: '/carreira/consultoria-saude-mental', persona: 'consultores', kw: 'consultoria saude mental corporativa nr1 burnout' },
-    { title: 'Carreira em Psicologia Hospitalar', href: '/carreira/hospitalar', persona: 'psicologos', kw: 'hospitalar carreira saude mercado' },
-    { title: 'Carreira em ABA e TEA', href: '/carreira/aba-tea', persona: 'psicologos', kw: 'aba tea autismo carreira mercado' },
-  ];
-  for (const c of CARREIRA_DOCS) {
-    docs.push({
-      id: `carreira:${c.href}`,
-      title: c.title,
-      subtitle: 'Carreira',
-      href: c.href,
-      kind: 'Carreira',
-      tags: [],
-      keywords: mkKeywords(c.title, c.kw),
-      weight: 1.0,
-      persona: [c.persona],
-    });
-  }
-
-  // -------------------------------------------------------------------------
-  // Subdocs: recursos editoriais (templates, checklists, ferramentas)
-  // -------------------------------------------------------------------------
-  const RECURSOS: { title: string; href: string; kw: string }[] = [
-    { title: 'Checklist NR-1 para empresas', href: '/recursos/checklist-nr1', kw: 'checklist nr1 nr-1 implementacao empresa rh' },
-    { title: 'Modelo de plano de bem-estar', href: '/recursos/plano-bem-estar', kw: 'plano bem-estar template modelo rh empresa' },
-    { title: 'Roteiro de entrevista clínica de triagem', href: '/recursos/roteiro-triagem', kw: 'roteiro triagem entrevista clinica psicologo' },
-    { title: 'Mapa de instrumentos SATEPSI', href: '/recursos/mapa-satepsi', kw: 'satepsi instrumentos testes psicologicos mapa' },
-    { title: 'Glossário express para gestores', href: '/recursos/glossario-gestores', kw: 'glossario gestores lider executivo termos basicos' },
-    { title: 'Calendário de saúde mental no trabalho', href: '/recursos/calendario-saude-mental', kw: 'calendario saude mental trabalho campanhas datas' },
-    { title: 'Modelo de laudo neuropsicológico', href: '/recursos/modelo-laudo-neuro', kw: 'laudo neuropsicologico modelo template avaliacao' },
-    { title: 'Checklist de uso ético de IA em clínica', href: '/recursos/checklist-ia-clinica', kw: 'ia inteligencia artificial clinica etica lgpd checklist' },
-  ];
-  for (const r of RECURSOS) {
-    docs.push({
-      id: `recurso:${r.href}`,
-      title: r.title,
-      subtitle: 'Recurso prático',
-      href: r.href,
-      kind: 'Recurso',
-      tags: [],
-      keywords: mkKeywords(r.title, r.kw),
-      weight: 0.95,
-    });
-  }
+  // Comparativos, carreira e recursos vêm das páginas reais abaixo.
+  // As antigas listas manuais continham rotas e âncoras que não existem mais.
 
   // -------------------------------------------------------------------------
   // Merge auto-discovered pages (gerado por scripts/gen-search-pages.mjs).

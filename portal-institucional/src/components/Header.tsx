@@ -48,10 +48,58 @@ export function Header() {
 
   // Trava a rolagem do corpo enquanto o painel mobile estiver aberto.
   useEffect(() => {
-    document.body.style.overflow = menuAberto ? "hidden" : "";
+    if (!menuAberto) return;
+    const anterior = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const fundo = Array.from(document.body.children).filter(
+      (elemento): elemento is HTMLElement =>
+        elemento instanceof HTMLElement && !elemento.contains(barraRef.current),
+    );
+    const estados = fundo.map((elemento) => elemento.inert);
+    fundo.forEach((elemento) => { elemento.inert = true; });
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = anterior;
+      fundo.forEach((elemento, indice) => { elemento.inert = estados[indice]; });
     };
+  }, [menuAberto]);
+
+  // Ao mudar de breakpoint, o estado acompanha a navegação visível.
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 64rem)");
+    const aoRedimensionar = () => {
+      const focoNaBarra = barraRef.current?.contains(document.activeElement);
+      setMenuAberto(false);
+      setGrupoAberto(null);
+      if (focoNaBarra) {
+        requestAnimationFrame(() => {
+          if (desktop.matches) barraRef.current?.querySelector<HTMLAnchorElement>('a[href]')?.focus();
+          else botaoRef.current?.focus();
+        });
+      }
+    };
+    desktop.addEventListener("change", aoRedimensionar);
+    return () => desktop.removeEventListener("change", aoRedimensionar);
+  }, []);
+
+  useEffect(() => {
+    if (!menuAberto) return;
+    const aoTabular = (evento: KeyboardEvent) => {
+      if (evento.key !== "Tab") return;
+      const alvos = Array.from(barraRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex="0"]',
+      ) ?? []).filter((elemento) => elemento.getClientRects().length > 0);
+      const primeiro = alvos[0];
+      const ultimo = alvos.at(-1);
+      if (evento.shiftKey && document.activeElement === primeiro) {
+        evento.preventDefault();
+        ultimo?.focus();
+      } else if (!evento.shiftKey && document.activeElement === ultimo) {
+        evento.preventDefault();
+        primeiro?.focus();
+      }
+    };
+    document.addEventListener("keydown", aoTabular);
+    return () => document.removeEventListener("keydown", aoTabular);
   }, [menuAberto]);
 
   // Escape fecha o que estiver aberto e devolve o foco a quem abriu.
@@ -133,7 +181,9 @@ export function Header() {
               const idSubmenu = `submenu-${slug(grupo.label)}`;
 
               return (
-                <li key={grupo.label} className="relative">
+                <li key={grupo.label} className="relative" onBlur={(evento) => {
+                  if (!evento.currentTarget.contains(evento.relatedTarget as Node | null)) setGrupoAberto(null);
+                }}>
                   <button
                     type="button"
                     id={`gatilho-${slug(grupo.label)}`}
@@ -246,7 +296,7 @@ export function Header() {
              clássico continuaria contando a altura antiga, deixando o último
              item do menu abaixo da dobra. `respiro-inferior` afasta esse mesmo
              item da barra de gestos. */
-          className="respiro-lateral respiro-inferior max-h-[calc(100dvh-4rem)] overflow-y-auto py-4"
+          className="respiro-lateral respiro-inferior max-h-[calc(100dvh-4rem)] sm:max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain py-4"
         >
           {menuPrincipal.map((grupo) => (
             <section key={grupo.label} className="mb-4 last:mb-0">

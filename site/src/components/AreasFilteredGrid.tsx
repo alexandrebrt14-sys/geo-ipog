@@ -18,7 +18,8 @@ const REGULATORY = [
 
 function regulatoryMatch(area: PsychologyArea, filter: string) {
   if (filter === 'all') return true;
-  return area.regulatoryLevel.startsWith(filter);
+  const levels = area.regulatoryLevel.split('/');
+  return filter === 'R0' ? levels.some(level => level === 'R0' || level === 'R1') : levels.includes(filter);
 }
 
 export default function AreasFilteredGrid({ initial = AREAS }: { initial?: PsychologyArea[] }) {
@@ -39,18 +40,19 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
   };
 
   const results = useMemo(() => {
-    const term = q.trim().toLowerCase();
+    const normalize = (value: string) => value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+    const term = normalize(q.trim());
     return initial
       .filter(a => cluster === 'all' || a.cluster === cluster)
       .filter(a => regulatoryMatch(a, reg))
-      .filter(a => !term || (a.name.toLowerCase().includes(term) || a.subareas.join(' ').toLowerCase().includes(term)));
+      .filter(a => !term || (normalize(a.name).includes(term) || normalize(a.subareas.join(' ')).includes(term)));
   }, [cluster, reg, q, initial]);
 
   return (
     <div>
       <div className="flex flex-col gap-3 mb-6">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="relative flex-1 min-w-[240px]">
+          <div className="relative flex-1 min-w-0">
             <label htmlFor={searchId} className="sr-only">Filtrar áreas por nome ou subárea</label>
             <svg aria-hidden="true" focusable="false" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
             <input
@@ -79,7 +81,7 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <p className="text-xs text-ink-500" aria-live="polite" role="status">{results.length} de {AREAS.length} áreas</p>
+          <p className="text-xs text-ink-500" aria-live="polite" role="status">{results.length} de {initial.length} áreas</p>
           {hasActiveFilters && (
             <button
               type="button"

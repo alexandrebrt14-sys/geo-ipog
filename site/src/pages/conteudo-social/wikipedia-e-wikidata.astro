@@ -1,0 +1,594 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import InPageNav from '@components/InPageNav.astro';
+import { SITE } from '@lib/data';
+import { alexandreAuthorRef } from '@lib/schemas';
+
+const title = 'Wikipédia e Wikidata para um portal de Psicologia: a via documental que sustenta o domínio';
+const description = 'Como participar da Wikipédia e do Wikidata com integridade: conflito de interesse declarado, proposta na página de discussão, notabilidade do item e QID no sameAs só depois de consolidado.';
+const datePublished = '2026-09-07';
+const pageUrl = `${SITE.url}/conteudo-social/wikipedia-e-wikidata/`;
+
+const headings = [
+  { id: 'contrato-do-canal', text: 'Contrato do canal', level: 2 },
+  { id: 'conflito-de-interesse', text: 'Conflito de interesse e edição remunerada', level: 2 },
+  { id: 'fluxo-de-decisao', text: 'O fluxo que separa contribuição de link building', level: 2 },
+  { id: 'notabilidade-e-fonte', text: 'Notabilidade e fonte confiável', level: 2 },
+  { id: 'pagina-de-discussao', text: 'Propor uma fonte pela página de discussão', level: 2 },
+  { id: 'wikidata-itens-propriedades', text: 'Itens, propriedades e identificadores', level: 2 },
+  { id: 'qid-apagado', text: 'O QID apagado que envenena o JSON-LD', level: 2 },
+  { id: 'orcid-ror-doi', text: 'ORCID, ROR e DOI', level: 2 },
+  { id: 'etica-cfp', text: 'Ética profissional nesta superfície', level: 2 },
+  { id: 'do-portal-para-o-canal', text: 'Do portal para o canal', level: 2 },
+  { id: 'checklist', text: 'Checklist antes de tocar num verbete', level: 2 },
+  { id: 'perguntas-frequentes', text: 'Perguntas frequentes', level: 2 }
+];
+
+const contrato = [
+  {
+    campo: 'Público real',
+    valor: 'Editores voluntários, jornalistas, bibliotecários, pesquisadores e os rastreadores que montam grafo de conhecimento. Ninguém ali procura a opinião de uma marca.'
+  },
+  {
+    campo: 'Formato canônico',
+    valor: 'Proposta escrita na página de discussão do verbete, apoiada por um dossiê de fontes independentes guardado no repositório do portal em arquivo .md. Item no Wikidata apenas quando a entidade for identificável e tiver referência pública séria.'
+  },
+  {
+    campo: 'Gancho de abertura',
+    valor: 'A distinção regulatória entre as modalidades de pós-graduação em Psicologia circula misturada em página comercial, e ela pode ser documentada com fonte pública verificável.'
+  },
+  {
+    campo: 'Regra que quebra a conta',
+    valor: 'Os Termos de Uso da Wikimedia, em vigor desde 7 de junho de 2023, obrigam quem recebe ou espera receber pagamento a divulgar "each and any employer, client, intended beneficiary and affiliation", no perfil de usuário, na página de discussão que acompanha a contribuição ou no resumo de edição. O guia de ligações externas da Wikipédia anglófona pede que você evite ligar para site que possui, mantém ou representa.'
+  },
+  {
+    campo: 'Erro clássico',
+    valor: 'Inserir o link do portal em verbete temático por conta própria. O guia de conflito de interesse trata acumular referências ao próprio trabalho, sem nenhuma referência de outros pesquisadores, como forma de spam.'
+  },
+  {
+    campo: 'Métrica honesta',
+    valor: 'Proposta aceita por editor voluntário independente e edição que sobrevive à vigilância da página. Entidade resolvida corretamente no grafo público conta mais que qualquer link. Link do portal na enciclopédia não é meta.'
+  }
+];
+
+const propriedades = [
+  { id: 'P31', rotulo: 'instance of', pt: 'instância de', uso: 'Diz o que a coisa é. Sem essa declaração, o item fica solto no grafo e não responde a consulta estruturada.' },
+  { id: 'P496', rotulo: 'ORCID iD', pt: 'ORCID', uso: 'Liga o item de pessoa ao identificador de pesquisador. É o que separa o autor do homônimo.' },
+  { id: 'P214', rotulo: 'VIAF cluster ID', pt: 'identificador de grupo do VIAF', uso: 'Liga o item ao registro de autoridade das bibliotecas nacionais, que responde por obra catalogada.' },
+  { id: 'P6782', rotulo: 'ROR ID', pt: 'identificador ROR', uso: 'Identificador global da organização de pesquisa. O GRID, em P2427, é o registro anterior que o ROR passou a substituir.' },
+  { id: 'P6204', rotulo: 'CNPJ', pt: 'CNPJ', uso: 'Ancora a pessoa jurídica brasileira no registro da Secretaria da Receita Federal do Brasil.' },
+  { id: 'P356', rotulo: 'DOI', pt: 'DOI', uso: 'Identificador do objeto publicado. É o que transforma um relatório em item citável dentro do grafo.' }
+];
+
+const passos = [
+  {
+    nome: 'Declare o vínculo antes de escrever qualquer conteúdo',
+    texto: 'Crie a página de usuário e escreva ali quem paga, em nome de quem a edição é feita e qual é a afiliação. Os Termos de Uso da Wikimedia aceitam essa declaração no perfil, na página de discussão que acompanha a contribuição ou no resumo de edição, e a divulgação vem antes do primeiro caractere de conteúdo.'
+  },
+  {
+    nome: 'Monte o dossiê de fontes independentes',
+    texto: 'Reúna de três a cinco fontes que não pertencem ao portal nem ao cliente: resolução de conselho, portaria, censo, artigo revisado por pares, cobertura de veículo com corpo editorial. Registre autor, ano, título e URL. Proposta que chega sem fonte independente é recusada por verificabilidade, e a recusa fica no histórico público.'
+  },
+  {
+    nome: 'Escreva a proposta na página de discussão do verbete',
+    texto: 'Abra um tópico com título descritivo, declare o conflito de interesse na primeira linha, apresente a frase exata que você sugere e cole a referência que a sustenta. Peça a inclusão em ponto de vista neutro, sem adjetivo de marca e sem número que a fonte não sustente.'
+  },
+  {
+    nome: 'Marque o pedido com a predefinição de pedido de edição',
+    texto: 'Na Wikipédia anglófona, o guia de conflito de interesse indica propor mudanças na página de discussão com a predefinição edit COI, para que a sugestão entre na fila de revisão por pares. [FALTA EVIDENCIA: qual predefinição de pedido de edição a Wikipédia lusófona usa hoje para o mesmo fluxo; a política de conflito de interesse de lá cita apenas o aviso de conflito de interesses.]'
+  },
+  {
+    nome: 'Aceite a decisão do editor voluntário',
+    texto: 'Quem decide é um editor sem vínculo com a entidade. Recusa não se contorna por edição direta nem por segunda conta, e o guia de ligações externas orienta levar a dúvida à página de discussão e deixar outro editor decidir. Insistência é o comportamento que aciona filtro de spam e bloqueio de conta.'
+  },
+  {
+    nome: 'Registre o desfecho no dossiê interno',
+    texto: 'Anote a data, o diff, o nome do editor que decidiu e o texto final que entrou. Esse registro é o que permite auditar a participação do portal um ano depois, e é a prova de que a via foi documental.'
+  }
+];
+
+const checklist = [
+  'A página de usuário declara quem paga, em nome de quem a edição é feita e a afiliação, conforme os Termos de Uso da Wikimedia de 7 de junho de 2023.',
+  'Nenhuma edição direta foi feita em verbete que trate do portal, da Brasil GEO, da instituição de ensino ou do autor.',
+  'A proposta está na página de discussão, com o conflito de interesse declarado na primeira linha.',
+  'Cada frase sugerida tem uma fonte independente do portal, com autor, ano e URL.',
+  'Nenhum link do portal foi inserido por conta própria em verbete temático.',
+  'O item do Wikidata cumpre pelo menos um dos três critérios de notabilidade: sitelink válido, entidade identificável com referência pública séria, ou necessidade estrutural.',
+  'Cada número de propriedade do Wikidata usado no texto foi conferido na própria propriedade, e não copiado de dossiê ou de resumo.',
+  'Nenhum QID entrou no sameAs do JSON-LD do portal antes de o item ter referência externa e sobreviver a proposta de eliminação.',
+  'Os identificadores do sameAs resolvem hoje: ORCID, ROR e perfil oficial foram abertos no navegador na data registrada.',
+  'O dossiê interno registra data, diff e editor responsável por cada desfecho.'
+];
+
+const faqs = [
+  {
+    q: 'O portal pode ser citado como fonte dentro de um verbete da Wikipédia?',
+    a: 'Pode ser proposto, e a decisão pertence a um editor voluntário sem vínculo com o portal. O guia de ligações externas da Wikipédia anglófona diz que você deve evitar ligar para um site que possui, mantém ou representa, e orienta levar a dúvida à página de discussão para que outro editor decida. O guia de conflito de interesse acrescenta que acumular referências a trabalho publicado por você mesmo, sem nenhuma referência de outros pesquisadores, é considerado uma forma de spam. A leitura prática é direta: o portal entra como fonte quando um terceiro julga que ele sustenta a frase, e nunca por inserção própria.'
+  },
+  {
+    q: 'Preciso declarar que sou pago para editar mesmo escrevendo só na página de discussão?',
+    a: 'Sim. Os Termos de Uso da Wikimedia, em vigor desde 7 de junho de 2023, exigem divulgar "each and any employer, client, intended beneficiary and affiliation" em qualquer contribuição pela qual você receba ou espere receber compensação, e uma proposta escrita na discussão é uma contribuição. A política aceita a declaração em três lugares: uma declaração na página de usuário, uma declaração na página de discussão que acompanha a contribuição paga, ou uma declaração no resumo de edição. A política de conflito de interesse da Wikipédia lusófona, classificada como política oficial e decidida na Esplanada em setembro de 2008, é ainda mais dura no ponto vizinho: registra que edições de conflito de interesse são extremamente desencorajadas, que edições no interesse de relações públicas são particularmente malvistas, e que a perturbação pode levar ao bloqueio das contas e a embaraços para os indivíduos ou grupos que foram promovidos.'
+  },
+  {
+    q: 'Quando um item do Wikidata pode entrar no sameAs do JSON-LD do portal?',
+    a: 'Depois que o item passa a ter referência externa própria e sobrevive ao escrutínio da comunidade. A política de notabilidade do Wikidata aceita o item quando ele cumpre pelo menos um de três critérios: conter ao menos um sitelink válido para uma página da Wikipédia, Wikivoyage, Wikisource e projetos irmãos; ser instância de uma entidade conceitual ou material claramente identificável, que possa ser descrita com referências sérias e publicamente disponíveis; ou cumprir uma necessidade estrutural, por exemplo quando é necessário para tornar mais úteis declarações feitas em outros itens. Item que não cumpre nenhum deles vai a pedido de eliminação, e o QID que já estava no seu schema passa a apontar para um nó morto.'
+  },
+  {
+    q: 'Qual é a propriedade do Wikidata para CNPJ?',
+    a: 'É a P6204, conferida na API do Wikidata em 7 de setembro de 2026, com rótulo CNPJ e descrição de número de identificação atribuído às empresas brasileiras pela Secretaria da Receita Federal do Brasil. O registro importa porque o dossiê de pesquisa que originou esta página trazia P3186 como propriedade de CNPJ, e a consulta à mesma API devolve, para P3186, o rótulo TAXREF ID, que é identificador de taxonomia biológica. Número de propriedade se confere na propriedade, sempre, porque identificador errado se propaga sozinho para tudo o que for derivado dele.'
+  },
+  {
+    q: 'ORCID resolve homonímia de autor de verdade?',
+    a: 'Resolve na infraestrutura que consome metadados, e o efeito depende de o identificador estar declarado nos dois lados. No item de pessoa do Wikidata, a propriedade é a P496, com rótulo ORCID iD; no portal, o mesmo identificador entra no sameAs do nó Person. Sem isso, o nome em texto plano precisa ser desambiguado por contexto, que é exatamente o trabalho que um extrator automático faz mal. A divisão com os vizinhos ajuda a decidir: o VIAF, propriedade P214, cobre registro de autoridade de biblioteca e responde por obra catalogada, enquanto o ORCID responde por produção acadêmica corrente.'
+  },
+  {
+    q: 'Vale a pena tentar criar um verbete sobre o portal ou sobre a instituição de ensino?',
+    a: 'A conta raramente fecha, e o custo de errar é alto. A política lusófona de conflito de interesse registra que não é recomendado escrever um artigo sobre si mesmo e que produzir artigos promocionais para a Wikipédia em nome de clientes é estritamente proibido; a anglófona desaconselha fortemente a edição direta de artigo afetado por conflito. O trabalho com retorno real é outro: melhorar verbete temático de Psicologia com fonte independente e manter corretos os identificadores das entidades que já existem no Wikidata. Quem procura formação encontra o catálogo do IPOG a partir da página de tipos de pós-graduação do portal.'
+  }
+];
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: 'Wikipédia e Wikidata para um portal de Psicologia: a via documental',
+      description,
+      datePublished,
+      author: alexandreAuthorRef,
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      mainEntityOfPage: pageUrl,
+      articleSection: 'Conteúdo e Social',
+      keywords: 'Wikipédia, Wikidata, conflito de interesse, edição remunerada, notabilidade, ORCID, ROR, DOI, sameAs, JSON-LD'
+    },
+    {
+      '@type': 'HowTo',
+      '@id': `${pageUrl}#howto`,
+      name: 'Propor uma fonte do portal pela página de discussão da Wikipédia',
+      description: 'Fluxo documental de seis passos para sugerir uma fonte em verbete da Wikipédia com conflito de interesse declarado.',
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      author: alexandreAuthorRef,
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+      step: passos.map((p, i) => ({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: p.nome,
+        text: p.texto,
+        url: `${pageUrl}#pagina-de-discussao`
+      }))
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${pageUrl}#faq`,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a }
+      }))
+    }
+  ]
+};
+---
+
+<Base title={title} description={description} pageType="article" datePublished={datePublished}>
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Conteúdo e Social', href: '/conteudo-social' },
+        { label: 'Wikipédia e Wikidata' }
+      ]} />
+      <span class="section-eyebrow mt-3">Por canal · Infraestrutura de conhecimento</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Wikipédia e Wikidata: a via documental que sustenta o domínio</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        A enciclopédia funciona como âncora factual para os motores generativos, e o Wikidata alimenta o grafo em que esses motores reconciliam entidade. A via de participação que sobrevive ali é lenta, escrita e assinada. A via rápida aciona filtro de spam, deixa registro público permanente e leva junto o domínio que ela deveria promover.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-8">
+    <TLDR
+      resposta="Um portal editorial participa da Wikipédia declarando o vínculo pelos Termos de Uso da Wikimedia, propondo a frase na página de discussão e deixando um editor voluntário decidir. No Wikidata, o item precisa cumprir um dos três critérios de notabilidade antes de o QID entrar no sameAs do JSON-LD, porque item apagado transforma o schema do portal em ponteiro para nó inexistente."
+      fontes={['Wikimedia Terms of Use, em vigor desde 07/06/2023', 'Wikipedia:Conflict of interest e Wikipedia:External links', 'Wikipedia:Conflito de interesse, política oficial lusófona', 'Wikidata:Notability', 'API do Wikidata, consulta de 07/09/2026']}
+    />
+  </section>
+
+  <section class="container-page pb-12 grid lg:grid-cols-12 gap-10">
+    <aside class="lg:col-span-3 order-first">
+      <InPageNav headings={headings} />
+    </aside>
+
+    <article class="lg:col-span-9 space-y-12">
+
+      <div>
+        <h2 id="contrato-do-canal" class="section-h text-2xl">Contrato do canal</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">
+          A Wikipédia não é canal de publicação do portal. Ela é infraestrutura pública de conhecimento, e a única contribuição que se sustenta ali é a que um editor sem vínculo com você assinaria. O contrato abaixo fixa o que vale a pena tentar e o que custa caro.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 w-56">Cláusula</th>
+                <th class="text-left px-4 py-3">O que ela obriga</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {contrato.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{c.campo}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{c.valor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="conflito-de-interesse" class="section-h text-2xl">Conflito de interesse e edição remunerada</h2>
+        <p>
+          Quem escreve para um portal financiado por uma instituição tem conflito de interesse declarável em qualquer verbete que toque nessa instituição, no portal ou no próprio autor. Os Termos de Uso da Wikimedia, em vigor desde 7 de junho de 2023, obrigam a divulgar "each and any employer, client, intended beneficiary and affiliation" em relação a qualquer contribuição pela qual a pessoa receba ou espere receber compensação. A política aceita a declaração em três lugares: uma declaração na página de usuário, uma declaração na página de discussão que acompanha a contribuição paga, ou uma declaração no resumo de edição.
+        </p>
+        <p>
+          O guia de conflito de interesse da Wikipédia anglófona desaconselha fortemente que editores nessa condição editem diretamente os artigos afetados, e indica propor as mudanças na página de discussão, com a predefinição de pedido de edição por conflito de interesse, para que a sugestão seja revisada por pares. O mesmo guia registra que acumular referências a trabalho publicado por você mesmo, sem nenhuma referência de outros pesquisadores, é considerado uma forma de spam. O guia de ligações externas fecha o cerco no ponto que mais tenta quem trabalha com conteúdo: você deve evitar ligar para um site que possui, mantém ou representa, e, na dúvida, leva o caso à página de discussão para que outro editor decida.
+        </p>
+        <p>
+          A Wikipédia lusófona trata o assunto como política oficial, sob o título Wikipedia:Conflito de interesse, decidida na Esplanada em setembro de 2008. O texto registra que edições de conflito de interesse são extremamente desencorajadas, que edições no interesse de relações públicas são particularmente malvistas, e que a perturbação da enciclopédia pode levar ao bloqueio das contas e a embaraços para os indivíduos ou grupos que foram promovidos. A menção ao embaraço é a linha mais útil do documento inteiro para quem administra reputação: o histórico da Wikipédia é público, permanente e indexado, e uma tentativa malfeita de promoção fica legível para sempre ao lado do nome de quem tentou.
+        </p>
+      </div>
+
+      <figure>
+        <h2 id="fluxo-de-decisao" class="section-h text-2xl">O fluxo que separa contribuição de link building</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="wiki-fluxo-titulo wiki-fluxo-desc" viewBox="0 0 720 330" width="720" height="330" style="min-width:720px" class="block">
+            <title id="wiki-fluxo-titulo">Fluxo de quatro etapas para propor alteração em verbete quando existe conflito de interesse</title>
+            <desc id="wiki-fluxo-desc">Quatro caixas ligadas por setas da esquerda para a direita. A primeira caixa constata que existe vínculo econômico ou institucional com a entidade tratada no verbete. A segunda caixa manda declarar quem paga, em nome de quem a edição é feita e qual é a afiliação, no perfil de usuário, na página de discussão que acompanha a contribuição ou no resumo de edição, conforme os Termos de Uso da Wikimedia em vigor desde 7 de junho de 2023. A terceira caixa manda escrever a proposta na página de discussão do verbete, com a frase sugerida e a fonte independente que a sustenta, marcada com a predefinição de pedido de edição por conflito de interesse na Wikipédia anglófona. A quarta caixa registra que um editor voluntário sem vínculo decide, e que a decisão dele encerra o assunto, inclusive quando é recusa. Abaixo das quatro caixas, uma faixa tracejada separada marca o caminho vetado: editar o verbete diretamente ou inserir o link do próprio site sem passar pela discussão, comportamento que o guia de ligações externas pede que se evite e que o guia de conflito de interesse trata como forma de spam quando vira acúmulo de autorreferência.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">Da intenção de contribuir até a edição publicada</text>
+
+            <g class="stroke-current text-brand-700" fill="none" stroke-width="1.6">
+              <rect x="16" y="48" width="150" height="132" rx="12" />
+              <rect x="196" y="48" width="150" height="132" rx="12" />
+              <rect x="376" y="48" width="150" height="132" rx="12" />
+              <rect x="556" y="48" width="148" height="132" rx="12" />
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" fill="none">
+              <path d="M166 114 H196" />
+              <path d="M346 114 H376" />
+              <path d="M526 114 H556" />
+            </g>
+            <g class="fill-current text-ink-500">
+              <path d="M188 108 L196 114 L188 120 Z" />
+              <path d="M368 108 L376 114 L368 120 Z" />
+              <path d="M548 108 L556 114 L548 120 Z" />
+            </g>
+
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="30" y="76" font-size="11" font-weight="700" class="fill-current text-brand-700">PASSO 1</text>
+              <text x="30" y="98">Existe vínculo</text>
+              <text x="30" y="116">econômico ou</text>
+              <text x="30" y="134">institucional com</text>
+              <text x="30" y="152">a entidade tratada</text>
+              <text x="30" y="170">no verbete.</text>
+
+              <text x="210" y="76" font-size="11" font-weight="700" class="fill-current text-brand-700">PASSO 2</text>
+              <text x="210" y="98">Declare quem paga,</text>
+              <text x="210" y="116">em nome de quem</text>
+              <text x="210" y="134">e qual afiliação.</text>
+              <text x="210" y="152">Perfil, discussão</text>
+              <text x="210" y="170">ou resumo de edição.</text>
+
+              <text x="390" y="76" font-size="11" font-weight="700" class="fill-current text-brand-700">PASSO 3</text>
+              <text x="390" y="98">Escreva a proposta</text>
+              <text x="390" y="116">na discussão, com</text>
+              <text x="390" y="134">a frase sugerida e</text>
+              <text x="390" y="152">a fonte independente</text>
+              <text x="390" y="170">que a sustenta.</text>
+
+              <text x="570" y="76" font-size="11" font-weight="700" class="fill-current text-brand-700">PASSO 4</text>
+              <text x="570" y="98">Um editor sem</text>
+              <text x="570" y="116">vínculo decide.</text>
+              <text x="570" y="134">A decisão dele</text>
+              <text x="570" y="152">encerra o assunto,</text>
+              <text x="570" y="170">inclusive a recusa.</text>
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" stroke-dasharray="6 5" fill="none">
+              <rect x="16" y="216" width="688" height="94" rx="12" />
+            </g>
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="34" y="244" font-size="11" font-weight="700" class="fill-current text-ink-900">CAMINHO VETADO</text>
+              <text x="34" y="266">Editar o verbete diretamente ou inserir o link do próprio site sem passar pela discussão.</text>
+              <text x="34" y="286">O guia de ligações externas pede que se evite ligar para site que você possui, mantém ou representa.</text>
+              <text x="34" y="304">O guia de conflito de interesse trata o acúmulo de autorreferência como forma de spam.</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          As quatro etapas e a faixa vetada saem de três documentos oficiais consultados em 7 de setembro de 2026: os Termos de Uso da Wikimedia em vigor desde 7 de junho de 2023, o guia Wikipedia:Conflict of interest e o guia Wikipedia:External links.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="notabilidade-e-fonte" class="section-h text-2xl">Notabilidade e fonte confiável</h2>
+        <p>
+          Notabilidade decide se a entidade merece registro próprio. Confiabilidade decide se um texto pode sustentar uma frase dentro de um registro que já existe. As duas perguntas são independentes, e confundi-las produz o pedido mais comum e mais malsucedido que chega às páginas de discussão: alguém pede um verbete para a própria organização quando o que tinha em mãos era, no máximo, uma fonte utilizável num verbete temático.
+        </p>
+        <p>
+          No Wikidata, a régua está escrita. A política de notabilidade aceita um item quando ele cumpre pelo menos um de três critérios: conter ao menos um sitelink válido para uma página da Wikipédia, Wikivoyage, Wikisource e projetos irmãos; ser instância de uma entidade conceitual ou material claramente identificável, que possa ser descrita com referências sérias e publicamente disponíveis; ou cumprir uma necessidade estrutural, por exemplo quando o item é necessário para tornar mais úteis declarações feitas em outros itens. A própria política reconhece que os critérios são deliberadamente abertos e que a comunidade resolve divergência por pedido de eliminação.
+        </p>
+        <p>
+          Para um portal editorial de Psicologia, a leitura prática dessas regras vira ordem de trabalho. A entidade que tem chance real de sobreviver é a que já existe fora do portal: o conselho profissional, a resolução, o instrumento psicométrico, o programa de pós-graduação registrado. A entidade que só existe porque o portal a descreve fica exposta a pedido de eliminação, e é justamente essa a que costuma ser criada com pressa. O critério de decisão é curto: se a única referência séria disponível é uma página do próprio portal, o item ainda não é para ser criado.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="pagina-de-discussao" class="section-h text-2xl">Propor uma fonte pela página de discussão</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">
+          Seis passos, na ordem, com a declaração de vínculo antes de qualquer conteúdo. O ganho desse fluxo é o registro: cada etapa deixa prova pública de que a participação foi documental.
+        </p>
+        <ol class="mt-5 space-y-4">
+          {passos.map((p, i) => (
+            <li class="card p-5 border-surface-200">
+              <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">Passo {i + 1}</p>
+              <h3 class="font-display font-semibold text-lg mt-1 text-ink-900">{p.nome}</h3>
+              <p class="mt-2 text-sm text-ink-700 leading-relaxed">{p.texto}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div>
+        <h2 id="wikidata-itens-propriedades" class="section-h text-2xl">Itens, propriedades e identificadores no Wikidata</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">
+          O Wikidata guarda itens, que recebem identificador iniciado por Q, e propriedades, que recebem identificador iniciado por P. A tabela abaixo lista as seis propriedades que interessam a um portal editorial, com rótulo em inglês e em português conferido na API do Wikidata em 7 de setembro de 2026.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 w-24">Propriedade</th>
+                <th class="text-left px-4 py-3 w-56">Rótulo oficial</th>
+                <th class="text-left px-4 py-3">Para que serve no grafo</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {propriedades.map(p => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{p.id}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{p.rotulo} ({p.pt})</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{p.uso}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-ink-700 leading-relaxed max-w-3xl">
+          Vale registrar como esta tabela foi montada, porque o método importa mais que o conteúdo dela. O dossiê de pesquisa que abriu esta onda afirmava que a propriedade de CNPJ era a P3186. A consulta à API do Wikidata em 7 de setembro de 2026 devolve, para P3186, o rótulo TAXREF ID, que é identificador de taxonomia biológica; o CNPJ mora em P6204. Um número de propriedade copiado de resumo entra no texto com aparência de rigor e sai dele como erro público.
+        </p>
+      </div>
+
+      <figure>
+        <h2 id="qid-apagado" class="section-h text-2xl">O QID apagado que envenena o JSON-LD</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="wiki-qid-titulo wiki-qid-desc" viewBox="0 0 720 300" width="720" height="300" style="min-width:720px" class="block">
+            <title id="wiki-qid-titulo">Linha do tempo de um item do Wikidata e o momento seguro para publicar o QID no sameAs</title>
+            <desc id="wiki-qid-desc">Uma linha do tempo horizontal com cinco marcos. O primeiro marco é a criação do item, quando o QID já existe e ainda não tem referência externa. O segundo marco é a adição de identificadores externos, como ORCID pela propriedade P496 para pessoa e ROR pela propriedade P6782 para organização. O terceiro marco é a janela de pedido de eliminação, em que a comunidade avalia se o item cumpre um dos três critérios de notabilidade e pode apagá-lo. O quarto marco é o item estável, com referência pública séria e sem pedido de eliminação em aberto. O quinto marco, e apenas ele, é o momento em que o QID pode entrar na propriedade sameAs do JSON-LD do portal. Abaixo da linha, um ramo tracejado sai do terceiro marco e leva ao desfecho ruim: quando o item é apagado depois de o QID já estar publicado no schema, o portal passa a declarar equivalência com um nó que não existe, e essa declaração continua servida no HTML até alguém revisar.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">Ciclo de vida do item e o único momento seguro de publicar o QID</text>
+
+            <line x1="40" y1="120" x2="690" y2="120" stroke-width="2" class="stroke-current text-ink-500" />
+
+            <g class="fill-current text-brand-700">
+              <circle cx="70" cy="120" r="8" />
+              <circle cx="222" cy="120" r="8" />
+              <circle cx="374" cy="120" r="8" />
+              <circle cx="526" cy="120" r="8" />
+              <circle cx="656" cy="120" r="11" />
+            </g>
+
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="44" y="60" font-weight="700" font-size="11" class="fill-current text-ink-900">1. ITEM CRIADO</text>
+              <text x="44" y="80">QID existe,</text>
+              <text x="44" y="98">sem referência.</text>
+
+              <text x="196" y="60" font-weight="700" font-size="11" class="fill-current text-ink-900">2. IDENTIFICADORES</text>
+              <text x="196" y="80">ORCID em P496,</text>
+              <text x="196" y="98">ROR em P6782.</text>
+
+              <text x="348" y="60" font-weight="700" font-size="11" class="fill-current text-ink-900">3. ELIMINAÇÃO</text>
+              <text x="348" y="80">Comunidade avalia</text>
+              <text x="348" y="98">a notabilidade.</text>
+
+              <text x="500" y="60" font-weight="700" font-size="11" class="fill-current text-ink-900">4. ITEM ESTÁVEL</text>
+              <text x="500" y="80">Referência séria,</text>
+              <text x="500" y="98">sem pedido aberto.</text>
+
+              <text x="588" y="162" font-weight="700" font-size="11" class="fill-current text-brand-700">5. SÓ AGORA</text>
+              <text x="588" y="182">O QID entra</text>
+              <text x="588" y="200">no sameAs.</text>
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" stroke-dasharray="6 5" fill="none">
+              <path d="M374 128 V214 H60" />
+              <rect x="16" y="222" width="460" height="66" rx="12" />
+            </g>
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="32" y="246" font-weight="700" font-size="11" class="fill-current text-ink-900">DESFECHO RUIM</text>
+              <text x="32" y="266">Item apagado com o QID já publicado no schema do portal.</text>
+              <text x="32" y="284">O sameAs passa a declarar equivalência com um nó inexistente.</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          Os marcos 1 a 4 seguem a política Wikidata:Notability, consultada em 7 de setembro de 2026, que admite pedido de eliminação como forma de resolver divergência sobre notabilidade. Os números de propriedade P496 e P6782 foram conferidos na API do Wikidata na mesma data.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <p>
+          O erro é caro porque é silencioso. Uma propriedade sameAs apontando para um item apagado continua servindo HTML válido, continua passando em qualquer validador de sintaxe e só revela o problema quando alguém abre o link. Enquanto isso, o portal declara ao grafo público que sua entidade equivale a um nó que a comunidade decidiu que não deveria existir. A regra operacional que evita a classe inteira de problema cabe numa linha: nenhum identificador externo entra no sameAs sem ter sido aberto no navegador, na data em que entrou, e sem essa data ficar registrada no repositório.
+        </p>
+        <p>
+          Há precedente doméstico para essa disciplina. Em 27 de agosto de 2026, uma auditoria dos sites desta rede encontrou um item do Wikidata apagado em julho ainda publicado como identificador de entidade em produção, e a correção exigiu varredura nos quatro repositórios. O aprendizado vale para qualquer identificador persistente: publicar é fácil, e conferir de novo, meses depois, é o trabalho que ninguém agenda.
+        </p>
+      </div>
+
+      <figure>
+        <h2 id="orcid-ror-doi" class="section-h text-2xl">ORCID, ROR e DOI: quando cada um muda a autoria</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="wiki-ids-titulo wiki-ids-desc" viewBox="0 0 720 320" width="720" height="320" style="min-width:720px" class="block">
+            <title id="wiki-ids-titulo">Mapa de três tipos de entidade do portal e os identificadores persistentes que cada uma aceita</title>
+            <desc id="wiki-ids-desc">Três colunas, uma por tipo de entidade. A coluna da pessoa lista ORCID, que responde por produção acadêmica corrente e ocupa a propriedade P496 do Wikidata, e VIAF, que responde por registro de autoridade das bibliotecas e ocupa a propriedade P214. A coluna da organização lista ROR, identificador aberto de organização de pesquisa na propriedade P6782, e CNPJ, registro da pessoa jurídica brasileira na propriedade P6204. A coluna do documento lista DOI, identificador do objeto publicado na propriedade P356, que sobrevive à mudança de URL e torna o relatório citável em bibliografia formal. Uma faixa inferior atravessa as três colunas e registra a regra comum: identificador externo entra na propriedade sameAs do JSON-LD do portal depois de aberto e conferido, com a data registrada, enquanto o identificador interno permanece na propriedade arroba id, com um único valor por entidade em todo o site.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">Qual identificador resolve qual ambiguidade</text>
+
+            <g class="stroke-current text-brand-700" fill="none" stroke-width="1.6">
+              <rect x="16" y="48" width="220" height="176" rx="12" />
+              <rect x="252" y="48" width="220" height="176" rx="12" />
+              <rect x="488" y="48" width="216" height="176" rx="12" />
+            </g>
+
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="32" y="74" font-size="13" font-weight="700" class="fill-current text-ink-900">Pessoa</text>
+              <text x="32" y="100" font-weight="700">ORCID, P496</text>
+              <text x="32" y="118">Produção acadêmica corrente.</text>
+              <text x="32" y="136">Separa o autor do homônimo.</text>
+              <text x="32" y="164" font-weight="700">VIAF, P214</text>
+              <text x="32" y="182">Autoridade de biblioteca.</text>
+              <text x="32" y="200">Responde por obra catalogada.</text>
+
+              <text x="268" y="74" font-size="13" font-weight="700" class="fill-current text-ink-900">Organização</text>
+              <text x="268" y="100" font-weight="700">ROR, P6782</text>
+              <text x="268" y="118">Registro aberto de organização</text>
+              <text x="268" y="136">de pesquisa. Fixa a afiliação.</text>
+              <text x="268" y="164" font-weight="700">CNPJ, P6204</text>
+              <text x="268" y="182">Pessoa jurídica brasileira</text>
+              <text x="268" y="200">na Receita Federal.</text>
+
+              <text x="504" y="74" font-size="13" font-weight="700" class="fill-current text-ink-900">Documento</text>
+              <text x="504" y="100" font-weight="700">DOI, P356</text>
+              <text x="504" y="118">Identificador do objeto</text>
+              <text x="504" y="136">publicado. Sobrevive à</text>
+              <text x="504" y="154">mudança de URL e torna</text>
+              <text x="504" y="172">o relatório citável em</text>
+              <text x="504" y="190">bibliografia formal.</text>
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" fill="none">
+              <rect x="16" y="242" width="688" height="62" rx="12" />
+            </g>
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="32" y="266" font-weight="700" font-size="11" class="fill-current text-ink-900">REGRA COMUM AO JSON-LD DO PORTAL</text>
+              <text x="32" y="288">Identificador externo entra em sameAs depois de aberto e conferido, com a data registrada. O identificador interno fica em arroba id, com um valor único por entidade em todo o site.</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          Os seis números de propriedade foram conferidos individualmente na API do Wikidata em 7 de setembro de 2026. A regra de identificador interno único por entidade evita nó duplicado no grafo que o motor monta a partir do site.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <p>
+          A pergunta prática é quando cada identificador muda alguma coisa. O ORCID muda a atribuição quando o autor publica em mais de um lugar e o nome dele é comum, porque o extrator que lê apenas texto tende a fundir homônimos ou a partir a mesma pessoa em duas. O ROR muda a proveniência, ao dizer qual organização responde pelo trabalho, o que interessa quando o portal é editorial e independente e a instituição de ensino é assunto do texto. O DOI muda o estatuto do documento, porque transforma um arquivo que depende de uma URL viva num registro citável que sobrevive à reorganização do site. Nenhum dos três compra autoridade. Os três removem ambiguidade, que é um problema diferente e bem mais barato de resolver.
+        </p>
+        <p>
+          A ordem de adoção que faz sentido para um portal pequeno começa pelo mais barato e mais estável. Primeiro o ORCID de cada autor assinante, porque o registro é gratuito e imediato. Depois o DOI dos relatórios, que sai do depósito em repositório acadêmico, assunto da página irmã sobre <a href="/conteudo-social/repositorios-academicos">repositórios acadêmicos e preprints</a>. O ROR vem por último, porque depende de a organização existir como entidade de pesquisa reconhecida, e forçar esse registro produz exatamente o tipo de item frágil que a comunidade apaga.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="etica-cfp" class="section-h text-2xl">Ética profissional nesta superfície</h2>
+        <p>
+          O Código de Ética Profissional do Psicólogo, do Conselho Federal de Psicologia, veda sensacionalismo, promessa de cura e diagnóstico a distância na comunicação pública. Numa superfície enciclopédica, essas três vedações viram restrições concretas de redação, e a mais frequente é a menos óbvia: a Wikipédia exige ponto de vista neutro, verificabilidade e ausência de pesquisa inédita, então uma frase que um psicólogo escreveria com prudência clínica ainda pode ser recusada por não ter fonte secundária que a sustente.
+        </p>
+        <p>
+          Sensacionalismo, aqui, aparece como escolha de adjetivo e de número. Escrever que um transtorno explodiu no Brasil, ou usar prevalência de estudo internacional para descrever a população brasileira, produz um texto que soa técnico e não sobrevive à checagem. A alternativa é a frase com denominador colado: quantos participantes, medidos por quem, em qual janela, em qual país.
+        </p>
+        <p>
+          Promessa de cura raramente entra por afirmação direta num verbete; ela entra por seleção. Descrever uma abordagem terapêutica listando apenas desfechos positivos, sem o comparador e sem a limitação declarada pelos próprios autores, é editorialmente parcial e clinicamente enganoso. O portal pratica o oposto disso no <a href="/comparativos/act-vs-tcc-dor-cronica">comparativo entre ACT e TCC para dor crônica</a>, em que o tamanho de efeito aparece sempre colado ao comparador que o produziu, e é esse padrão que deve viajar para a proposta de discussão.
+        </p>
+        <p>
+          Diagnóstico a distância é a vedação mais fácil de respeitar e a mais fácil de esquecer no exemplo. Verbete não descreve pessoa identificável, e proposta de edição que use um caso real como ilustração cria risco para o paciente e para o profissional. Quando o exemplo é necessário, ele vem declaradamente construído para a didática, e a declaração fica colada ao exemplo.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="do-portal-para-o-canal" class="section-h text-2xl">Do portal para o canal</h2>
+        <p>
+          A peça do portal não vira contribuição por recorte. Ela vira insumo de duas coisas separadas: a frase neutra que alguém pode aceitar, e a lista de fontes independentes que sustenta essa frase. O texto do portal costuma ficar de fora das duas, e essa perda aparente é o preço da via documental.
+        </p>
+        <p>
+          O reaproveitamento tem quatro movimentos. O primeiro é extrair a distinção verificável, do tipo diferença de carga horária, de exigência de supervisão ou de órgão certificador entre modalidades de pós-graduação, material que o portal organiza em <a href="/tipos-de-pos-graduacao">tipos de pós-graduação</a>. O segundo é rastrear a fonte primária de cada distinção, porque a resolução, a portaria ou o censo é que entra na referência, com o portal fora dela. O terceiro é escrever a frase em ponto de vista neutro, sem adjetivo e sem o vocabulário de venda que sobrevive por hábito. O quarto é levar a proposta à discussão com o vínculo declarado.
+        </p>
+        <p>
+          O mesmo material tem uso paralelo no Wikidata, e ele é bem menos disputado. Corrigir a data de uma resolução, acrescentar o identificador que faltava a uma entidade que já existe, ligar o item de um instrumento psicométrico ao item da entidade que o certifica: essas edições melhoram o grafo, não beneficiam ninguém em particular e por isso passam. Quem quiser ver como o portal registra a própria disciplina de publicação encontra o desenho em <a href="/principios-editoriais">princípios editoriais</a>, e o inventário de perguntas que os motores respondem sobre a área está em <a href="/conteudo-social/perguntas-que-a-ia-responde">perguntas que a IA responde</a>.
+        </p>
+        <p>
+          Há um número que costuma justificar esse esforço, e ele precisa vir com etiqueta. Painéis comerciais de 2025 estimam a Wikipédia entre 5% e 6% das citações exibidas em respostas geradas do Google, e a apontam como fonte dominante em respostas factuais do ChatGPT com navegação. São estimativas de fornecedor, obtidas por rastreio de respostas, sem denominador publicado e sem revisão por pares, e variam de painel para painel. O que é fato verificável, e mais estável que qualquer percentual, é o movimento institucional: em 15 de janeiro de 2026, no aniversário de 25 anos da enciclopédia, a Wikimedia Foundation anunciou acordos de Wikimedia Enterprise com Amazon, Meta, Microsoft, Mistral, Perplexity e outras empresas, para reuso e distribuição em escala do conteúdo dos projetos.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="checklist" class="section-h text-2xl">Checklist antes de tocar num verbete</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">Dez itens verificáveis. Cada um se responde abrindo um arquivo, um diff ou uma URL, e nenhum depende de julgamento.</p>
+        <ul class="mt-5 space-y-3">
+          {checklist.map((item, i) => (
+            <li class="flex gap-3 items-start rounded-xl border border-surface-200 bg-surface-50 p-4">
+              <span class="shrink-0 w-7 h-7 rounded-full bg-brand-100 text-brand-800 text-xs font-bold inline-flex items-center justify-center">{i + 1}</span>
+              <span class="text-sm text-ink-700 leading-relaxed">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none min-h-[44px]">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer-text">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <nav aria-label="Navegação entre páginas de canal" class="rounded-2xl border border-surface-200 bg-surface-50 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-4">Continuar pelo menu Conteúdo e Social</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <a href="/conteudo-social/comunidades" class="card-lift block p-4 min-h-[44px]">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">Página anterior</span>
+            <span class="block font-display font-semibold text-ink-900 mt-1">Comunidades fechadas</span>
+          </a>
+          <a href="/conteudo-social/repositorios-academicos" class="card-lift block p-4 min-h-[44px]">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">Próxima página</span>
+            <span class="block font-display font-semibold text-ink-900 mt-1">Repositórios acadêmicos</span>
+          </a>
+          <a href="/conteudo-social" class="card-lift block p-4 min-h-[44px]">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">Voltar</span>
+            <span class="block font-display font-semibold text-ink-900 mt-1">Hub Conteúdo e Social</span>
+          </a>
+        </div>
+      </nav>
+
+    </article>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

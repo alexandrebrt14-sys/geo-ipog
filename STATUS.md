@@ -6,6 +6,54 @@
 
 ---
 
+## W26 — Sessão 07/09/2026 — cinco ondas complementares no menu Conteúdo e social, 30 páginas novas
+
+### Páginas no ar
+**424 páginas** construídas (era 392 na W25). Sitemap principal com 421 URLs em 20 sitemaps; `sitemap-conteudo-social.xml` passa de 57 para 87 URLs. `astro check` com 0 erros e 0 warnings em 484 arquivos; `npm run build` completo.
+
+### Contexto
+Demanda do CEO Alexandre Caramaschi: cinco ondas complementares com agentes especialistas em paralelo, com profundidade e relevância, boa navegabilidade em mobile e desktop, técnicas de GEO, referência sutil ao IPOG, tom do curso-factory e do Escrita-Empresarial, papers recentes de 2026 do mundo todo, uso forçado dos cinco LLMs orquestrados e foco num menu ligado a redes sociais com conteúdo reaproveitável em Quora, Medium e portais afins.
+
+### Método: cinco provedores, cada um no papel em que a vantagem é real
+- **Perplexity `sonar-pro`**: seis dossiês com citação viva (papers de 2026, comportamento de citação dos motores, psicologia organizacional e NR-1, neuropsicologia e avaliação, metadados e psicoterapia humana, mercado e formação no Brasil).
+- **OpenAI `gpt-5.5` pelo Codex CLI**: contrato editorial das seis superfícies novas, com política oficial de plataforma linkada.
+- **Google `gemini-3.1-pro-preview`**: superfícies de conhecimento (Wikipédia, Wikidata, preprints, ORCID, ROR, DOI).
+- **xAI `grok-4.6`**: escuta social, vernáculo, dores e controvérsias.
+- **Anthropic Claude Opus 5**: redação das 30 páginas, arquitetura de informação e revisão, em seis agentes paralelos.
+
+### Descobertas de infraestrutura que valem para a próxima rodada
+- As chaves de **API** da OpenAI e da Anthropic estão **sem crédito** (`insufficient_quota` e `credit balance is too low`). O papel da OpenAI foi cumprido pelo **Codex CLI sobre a assinatura**; o da Anthropic, pelos agentes do Claude Code. API, assinatura web e assinatura premium são fontes distintas e não se substituem sozinhas.
+- O modelo padrão do Codex nesta máquina (`gpt-6-astra`) exige CLI mais nova e devolve `400`. A execução precisa fixar `-m gpt-5.5`.
+- O Perplexity devolve `429` com quatro chamadas simultâneas. Serializar com intervalo.
+
+### Entregas
+1. **Seis superfícies novas de distribuição** (o menu vai de 8 para 14): `podcast-e-audio`, `comunidades`, `wikipedia-e-wikidata`, `repositorios-academicos`, `documentos-e-apresentacoes`, `google-discover-e-noticias`. Cada uma com contrato de canal, regra oficial linkada e conferida, seção de ética profissional, passo a passo do portal para o canal, checklist verificável, 2 a 3 figuras SVG, navegação entre irmãs e `@graph` com `Article`, `HowTo` e `FAQPage`.
+2. **Quatro páginas de inteligência editorial**: `papers-2026` (19 estudos, com a seção "o que este radar não sustenta"), `onde-a-ia-busca` (fonte por motor com rótulo de método), `controversias-com-dois-lados` (cinco tensões com o melhor argumento de cada lado) e `etica-na-divulgacao` (tabela de decisão de dez situações).
+3. **Vinte peças novas na biblioteca**, que passa de 64 para 84 trechos em 35 temas e oito destinos, com dois destinos inéditos: roteiro de podcast e documento citável.
+4. **Mega menu reestruturado** de duas para três colunas, com painel clampado ao viewport; hub com a seção Inteligência editorial; mapa do site, `llms.txt` e `llms-full.txt` atualizados. O `llms.txt` **não citava nenhuma página do menu**; agora lista as 24 principais.
+5. **Gate mecânico novo**: `scripts/lint-conteudo-social.py`.
+
+### Dois defeitos sistêmicos encontrados e corrigidos na raiz
+- **Figura SVG ilegível no tema escuro.** `[data-theme="dark"]` sobrescrevia `text-*` mas não `fill-*` nem `stroke-*`, e `color` não pinta forma. Toda figura com `fill-ink-900` sumia no escuro. Corrigido com 18 seletores em `global.css`, o que conserta as 11 páginas com figura de uma vez, em vez de reescrever cada SVG.
+- **Travessão em prosa**, vetado pela diretriz, em 52 arquivos do menu: 390 ocorrências normalizadas. O sufixo de marca em `title` e `description` foi preservado com ponto médio, porque é convenção de interface e não prosa.
+
+### Erros dos dossiês que a redação pegou
+- O **Gemini** afirmou que CNPJ no Wikidata é **P3186**; a API devolve TAXREF ID para P3186. CNPJ é **P6204**.
+- O **GPT-5.5** apontou a política de desinformação do YouTube (`answer/10834785`) como a regra de saúde; ela **não cobre saúde**. A que vale é `answer/13813322`.
+- A proporção **"2,3 a 3,1 vezes o owned"**, que circula em material interno como sendo do arXiv:2509.08919, **não está no resumo nem no HTML do paper**. Não foi publicada.
+- Os dossiês entregaram vários estudos de 2026 **sem autoria**. A redação resolveu os metadados por **Europe PMC e Crossref** em vez de citar por veículo e número de artigo.
+
+### Limite de método declarado
+A escuta social do Grok **não é captura ao vivo**: o próprio provedor declarou que não havia crawl verificável, e as vinte perguntas são reconstrução do registro em que o público escreve. Elas entraram como pauta e vernáculo. Nenhuma página afirma "ouvimos no X em 2026". Fechar essas URLs com data e canal é a primeira pendência do dossiê.
+
+### Verificação
+- `python scripts/lint-conteudo-social.py site/src/pages/conteudo-social/`: **88 arquivos, 0 erros**.
+- `npx astro check`: **484 arquivos, 0 erros, 0 warnings**.
+- `npm run build`: 424 páginas, 20 sitemaps.
+- Dossiê da rodada em `docs/research/conteudo-social-ondas-2026-09-07.md`.
+
+---
+
 ## W25 — Sessão 27/08/2026 — 5 waves complementares, 31 páginas inéditas e dois gates mecânicos
 
 ### Páginas no ar

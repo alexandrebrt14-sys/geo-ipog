@@ -1,0 +1,449 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import InPageNav from '@components/InPageNav.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE } from '@lib/data';
+import { brasilGeoOrganization, alexandreAuthorRef } from '@lib/schemas';
+
+const title = 'Ética na divulgação em Psicologia: o que pode ir para o post e o que muda a peça antes de publicar';
+const description = 'Dez situações de divulgação profissional em Psicologia, a regra do Código de Ética que se aplica a cada uma e a versão da peça que sobrevive à conferência antes de publicar.';
+
+const datePublished = '2026-09-07';
+
+// Base normativa desta página, conferida em fonte primária em 07/09/2026:
+// - Código de Ética Profissional do Psicólogo, Resolução CFP nº 010/05, em vigor
+//   desde 27/08/2005 (PDF oficial em site.cfp.org.br).
+// - Resolução CFP nº 11, de 11 de maio de 2018 (PDF oficial em site.cfp.org.br).
+// - Resolução CFP nº 23/2022, registro de especialista, vigente desde 02/01/2023
+//   (página de serviço e notícia oficiais em site.cfp.org.br).
+// Fora dessa lista, nenhum número de norma é citado. Onde falta confirmação, entra marcador.
+
+const matriz = [
+  {
+    quer: 'Publicar um caso clínico para mostrar como o trabalho funciona',
+    erro: 'A pessoa some do texto, mas fica reconhecível pelo conjunto: cidade pequena, profissão, idade, diagnóstico e mês do desfecho. Quem convive com ela identifica em duas linhas.',
+    regra: 'O artigo 9º do Código de Ética faz do sigilo um dever, e o artigo 2º, alínea q, veda divulgar procedimentos ou apresentar resultados de serviços psicológicos em meios de comunicação de forma a expor pessoas, grupos ou organizações.',
+    saida: 'Um composto ilustrativo, rotulado como tal na mesma tela, montado a partir de padrões que se repetem em vários atendimentos, sem nenhum detalhe que só pertença a uma pessoa. O rótulo viaja com o exemplo, porque o print viaja sem o cabeçalho.'
+  },
+  {
+    quer: 'Publicar o print de uma conversa com quem procurou atendimento',
+    erro: 'O print carrega horário, foto, primeiro nome e o texto de alguém em sofrimento, e a tarja preta some quando o arquivo é recortado ou reencaminhado.',
+    regra: 'Mesmo dever de sigilo do artigo 9º. O artigo 16, alínea c, obriga a garantir o anonimato quando a divulgação nasce de estudo ou pesquisa, salvo interesse manifesto de quem participou.',
+    saida: 'A pergunta reescrita por você, no vernáculo em que ela costuma chegar, sem imagem e sem transcrição. O ganho editorial estava na pergunta, e a pergunta não precisa do print.'
+  },
+  {
+    quer: 'Publicar o depoimento de quem foi atendido, com autorização assinada',
+    erro: 'A autorização resolve o consentimento e não resolve a assimetria: quem está em atendimento tem dificuldade real de recusar um pedido do próprio terapeuta, e o depoimento vira prova de resultado.',
+    regra: 'O artigo 2º, alínea j, veda estabelecer com a pessoa atendida relação que possa interferir negativamente nos objetivos do serviço prestado, e a alínea i veda induzir qualquer pessoa a recorrer a seus serviços. O artigo 20, alínea e, veda previsão taxativa de resultados. [FALTA EVIDENCIA: verificar se algum CRP publicou orientação específica sobre depoimento de pessoa atendida em rede social, e qual]',
+    saida: 'A descrição do serviço no lugar do elogio ao serviço: o que você faz, em quantas sessões, com qual método, para qual queixa, e onde o método tem lastro. Isso informa a decisão de quem lê sem transformar paciente em peça de campanha.'
+  },
+  {
+    quer: 'Publicar um antes e depois, com escala aplicada no início e no fim',
+    erro: 'O formato promete que o próximo caso terá o mesmo desfecho, e é lido assim mesmo quando o texto diz o contrário em letra pequena.',
+    regra: 'O artigo 20, alínea e, veda previsão taxativa de resultados, e a alínea h veda divulgação sensacionalista das atividades profissionais. O artigo 2º, alínea q, alcança a apresentação de resultados em meios de comunicação que exponha a pessoa.',
+    saida: 'O dado agregado da literatura, com origem, ano, número de participantes e comparador na mesma frase, no lugar do resultado individual. Efeito médio de um ensaio informa; escore de uma pessoa identificável só expõe.'
+  },
+  {
+    quer: 'Prometer um resultado para vender a agenda que está vazia',
+    erro: 'A promessa converte no primeiro mês e cobra depois, quando o resultado não chega e quem pagou entende que foi enganado.',
+    regra: 'O artigo 20, alínea e, é literal: o psicólogo não fará previsão taxativa de resultados. A transgressão dos preceitos do Código constitui infração disciplinar, com penalidades listadas no artigo 21, que vão de advertência a cassação do exercício profissional.',
+    saida: 'A promessa de processo no lugar da promessa de desfecho: com que frequência você atende, o que a pessoa faz entre as sessões, quando vocês revisam o plano e em que ponto você encaminha. Processo é verificável e sobrevive ao contraditório.'
+  },
+  {
+    quer: 'Escrever especialista em alguma coisa na bio do perfil',
+    erro: 'Curso livre, especialização lato sensu e registro de especialista pelo Conselho viram a mesma palavra na bio, e a palavra é a que o Conselho fiscaliza.',
+    regra: 'O artigo 20, alínea b, manda fazer referência apenas a títulos ou qualificações profissionais que se possua, e a alínea c manda divulgar somente qualificações, atividades e recursos relativos a técnicas e práticas reconhecidas ou regulamentadas pela profissão. A alínea a obriga a informar nome completo, o CRP e o número de registro em toda promoção pública de serviços.',
+    saida: 'O nome do curso, a instituição e a carga horária escritos por extenso, sem a palavra que você ainda não pode usar. Quem tem o registro do artigo 20 pode nomeá-lo; quem tem a formação e não tem o registro descreve a formação.'
+  },
+  {
+    quer: 'Anunciar o valor da sessão, ou um valor promocional de primeira consulta',
+    erro: 'Informar preço a quem pergunta e usar preço como argumento de campanha são duas coisas, e a segunda é a que aparece no post patrocinado.',
+    regra: 'O artigo 20, alínea d, veda utilizar o preço do serviço como forma de propaganda. O artigo 4º, alínea b, manda estipular o valor de acordo com as características da atividade e comunicá-lo a quem vai receber o serviço antes do início do trabalho.',
+    saida: 'A conversa de valor no canal privado, antes do primeiro encontro, como o artigo 4º pede. No público fica a faixa de atendimento, a modalidade e a política de cancelamento, que é o que a pessoa precisa para decidir se entra em contato.'
+  },
+  {
+    quer: 'Sortear sessões gratuitas ou distribuir cupom para aumentar o alcance',
+    erro: 'O mecanismo pede curtida e marcação em troca de atendimento, e converte um serviço de saúde em prêmio de engajamento.',
+    regra: 'O artigo 20, alínea d, alcança o preço como propaganda, e o artigo 2º, alínea i, veda induzir qualquer pessoa ou organização a recorrer a seus serviços. A alínea h do artigo 20 veda a divulgação sensacionalista.',
+    saida: 'Atendimento social com critério publicado: quantas vagas, para quem, por qual porta de entrada e por quanto tempo. Acesso ampliado por critério é política de consultório; acesso ampliado por sorteio é campanha.'
+  },
+  {
+    quer: 'Publicar texto, roteiro ou imagem gerados por inteligência artificial',
+    erro: 'O rascunho da máquina chega com afirmação clínica sem fonte, referência inventada e o tom categórico que o assunto não sustenta, e a revisão de dez segundos não pega nada disso.',
+    regra: 'O artigo 1º, alínea b, admite responsabilidade profissional apenas por atividades para as quais a pessoa esteja capacitada, e o artigo 19 manda zelar, ao participar de veículos de comunicação, para que as informações disseminem conhecimento sobre as atribuições, a base científica e o papel social da profissão. [FALTA EVIDENCIA: norma ou nota técnica do CFP especificamente sobre conteúdo gerado por inteligência artificial na divulgação profissional, vigente em 07/09/2026]',
+    saida: 'Rascunho da máquina, conferência humana de cada afirmação contra a fonte primária, reescrita na sua voz e declaração de assistência quando a plataforma exigir. A assinatura continua sendo sua, e a responsabilidade também.'
+  },
+  {
+    quer: 'Iniciar atendimento por mensagem direta, porque a pessoa já escreveu por ali',
+    erro: 'A caixa de entrada não tem contrato, não tem horário, não tem registro e não tem rota de emergência, e a conversa vira plantão informal de vinte e quatro horas.',
+    regra: 'A Resolução CFP nº 11, de 11 de maio de 2018, condiciona a prestação de serviços psicológicos por tecnologias da informação e comunicação a cadastro prévio no Conselho Regional (artigo 3º), e o artigo 4º diz que manter esses serviços sem cadastramento constitui falta disciplinar. O artigo 2º, parágrafo 2º, obriga a especificar os recursos tecnológicos usados para garantir o sigilo e a esclarecer o cliente sobre eles. Os artigos 7º e 8º vedam o atendimento por esses meios em situação de emergência e desastre e em situação de violação de direitos ou de violência.',
+    saida: 'A mensagem direta como porta de contato e nunca como setting: resposta curta, oferta de agendamento, contrato assinado e atendimento no canal cadastrado. Em risco imediato, o encaminhamento é para serviço presencial, e o CVV atende pelo 188, gratuito e 24 horas.'
+  }
+];
+
+const checklist = [
+  { nome: 'Procurar a pessoa dentro da peça', texto: 'Leia a peça imaginando que quem foi atendido vai abrir esse post hoje. Se existir uma combinação de cidade, idade, ocupação, diagnóstico e data que devolva uma pessoa só, o exemplo ainda não está pronto para sair.' },
+  { nome: 'Rotular o exemplo na mesma tela', texto: 'Composto ilustrativo, cenário hipotético e caso real com autorização são três coisas diferentes. O rótulo fica colado ao exemplo, e não no rodapé, porque o recorte que circula raramente leva o rodapé junto.' },
+  { nome: 'Conferir o título que você escreveu', texto: 'Compare o que está na bio com o que está no certificado. Curso livre, especialização lato sensu e registro de especialista pelo Conselho pedem palavras distintas, conforme o artigo 20, alíneas b e c.' },
+  { nome: 'Colocar nome, CRP e número de registro', texto: 'O artigo 20, alínea a, obriga a informar nome completo, o CRP e o número de registro em toda promoção pública de serviços, individual ou coletiva. Perfil profissional sem isso já nasce em falta.' },
+  { nome: 'Procurar a promessa de desfecho', texto: 'Varra o texto atrás de verbo que garanta resultado. Cura, garante, resolve, elimina e livra caem na vedação de previsão taxativa de resultados do artigo 20, alínea e. Troque por descrição de processo.' },
+  { nome: 'Tirar o preço do argumento', texto: 'Preço informado a quem pergunta cumpre o artigo 4º, alínea b. Preço como chamada de campanha cai na vedação do artigo 20, alínea d. A diferença está em quem puxou o assunto.' },
+  { nome: 'Verificar cada número contra a fonte', texto: 'Todo número publicado precisa de origem, ano, tamanho de amostra e comparador na mesma frase ou na seguinte. Número sem denominador não informa, e número emprestado sem fonte contamina o que você publicou antes.' },
+  { nome: 'Declarar o que a máquina escreveu', texto: 'Se houve rascunho gerado por inteligência artificial, confira cada afirmação contra a fonte primária, reescreva na sua voz e declare a assistência onde a plataforma exigir. Referência inventada é o defeito mais caro que uma peça de saúde pode carregar.' },
+  { nome: 'Testar o parágrafo solto', texto: 'Recorte a frase mais forte da peça e leia sozinha, sem o contexto. Se, isolada, ela virar promessa, diagnóstico à distância ou exposição de alguém, reescreva a frase, porque é ela que vai circular.' },
+  { nome: 'Deixar a rota de cuidado visível', texto: 'Peça que toca sofrimento psíquico carrega o aviso de que o conteúdo é educacional e a indicação de onde buscar ajuda. O CVV atende pelo telefone 188, gratuito e 24 horas, e a emergência é o serviço presencial mais próximo.' }
+];
+
+const titulos = [
+  { tipo: 'Curso livre', oque: 'Formação de duração variável, sem exigência regulatória de carga horária mínima nem de vínculo com instituição credenciada.', anuncio: 'Nome do curso, instituição e carga horária. A palavra especialista não se aplica.' },
+  { tipo: 'Especialização lato sensu', oque: 'Pós-graduação com carga horária mínima definida pelo Ministério da Educação, ofertada por instituição credenciada. É a família em que moram as especializações e os MBAs, conforme a página de regulação deste portal.', anuncio: 'Pós-graduação lato sensu em determinada área, com a instituição nomeada.' },
+  { tipo: 'Registro de especialista pelo Conselho', oque: 'Registro concedido pelo Conselho Regional de Psicologia nas condições da Resolução CFP nº 23/2022, vigente desde 2 de janeiro de 2023, que reconhece treze especialidades. O CFP informa que o registro exige comprovação cumulativa de dois anos de efetivo exercício profissional e de conhecimento teórico-metodológico, por curso credenciado pelo MEC ou por aprovação em concurso de provas e títulos do próprio CFP, com até duas especialidades registradas na Carteira de Identidade Profissional.', anuncio: 'A palavra especialista, com a especialidade nomeada, para quem tem o registro. O próprio CFP registra que ele não é condição obrigatória para o exercício profissional.' },
+  { tipo: 'Nicho de marketing', oque: 'Recorte de público escolhido para comunicação. Não é título, não é formação e não é reconhecido por nenhuma instância.', anuncio: 'Descrição de quem você atende e do que você trata, sem palavra que sugira credencial que não existe.' }
+];
+
+const ldArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${SITE.url}/conteudo-social/etica-na-divulgacao#article`,
+  headline: 'Ética na divulgação em Psicologia: o que pode ir para o post e o que muda a peça antes de publicar',
+  description,
+  datePublished,
+  inLanguage: 'pt-BR',
+  isPartOf: { '@id': `${SITE.url}/#website` },
+  author: alexandreAuthorRef,
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  about: 'Ética profissional na divulgação de serviços de Psicologia em redes sociais e plataformas de conteúdo',
+  citation: [
+    { '@type': 'CreativeWork', name: 'Código de Ética Profissional do Psicólogo, Resolução CFP nº 010/05', url: 'https://site.cfp.org.br/legislacao/codigo-de-etica/' },
+    { '@type': 'CreativeWork', name: 'Resolução CFP nº 11, de 11 de maio de 2018', url: 'https://site.cfp.org.br/wp-content/uploads/2018/05/RESOLU%C3%87%C3%83O-N%C2%BA-11-DE-11-DE-MAIO-DE-2018.pdf' },
+    { '@type': 'CreativeWork', name: 'Resolução CFP nº 23/2022, registro de especialista', url: 'https://site.cfp.org.br/servicos/titulo-de-especialista/' }
+  ]
+};
+
+const ldHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  '@id': `${SITE.url}/conteudo-social/etica-na-divulgacao#howto`,
+  name: 'Checklist de dez itens antes de publicar uma peça sobre Psicologia',
+  description: 'Dez conferências que um psicólogo faz na peça antes de publicá-la, ancoradas nos artigos do Código de Ética Profissional do Psicólogo.',
+  inLanguage: 'pt-BR',
+  totalTime: 'PT20M',
+  author: alexandreAuthorRef,
+  publisher: { '@id': brasilGeoOrganization['@id'] },
+  step: checklist.map((c, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: c.nome,
+    text: c.texto,
+    url: `${SITE.url}/conteudo-social/etica-na-divulgacao#checklist`
+  }))
+};
+
+const ldGraph = { '@context': 'https://schema.org', '@graph': [ldArticle, ldHowTo] };
+
+const navHeadings = [
+  { id: 'o-que-esta-pagina-e', text: 'O que esta página é, e o que ela não é', level: 2 },
+  { id: 'tabela-de-decisao', text: 'Dez situações, e a versão que sobrevive', level: 2 },
+  { id: 'publicar-ou-nao', text: 'O fluxo de decisão antes de publicar', level: 2 },
+  { id: 'titulos-e-nicho', text: 'Curso, especialização, título e nicho', level: 2 },
+  { id: 'quem-responde', text: 'Quem responde pelo quê', level: 2 },
+  { id: 'conteudo-gerado-por-ia', text: 'Conteúdo gerado por IA nas plataformas', level: 2 },
+  { id: 'checklist', text: 'Checklist de dez itens antes de publicar', level: 2 }
+];
+---
+
+<Base title={title} description={description} pageType="article" datePublished={datePublished}>
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Conteúdo & Social', href: '/conteudo-social' },
+        { label: 'Ética na divulgação' }
+      ]} />
+      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <span class="section-eyebrow">Conteúdo & Social · Inteligência editorial</span>
+          <h1 class="section-h text-3xl sm:text-4xl mt-2">O que o psicólogo pode publicar, e o que muda na peça antes de ela sair</h1>
+          <p class="mt-3 text-ink-700 text-base sm:text-lg">
+            Dez situações que aparecem toda semana na produção de conteúdo de consultório, com a regra que se aplica a cada uma e a versão da peça que passa pela conferência sem perder o argumento.
+          </p>
+        </div>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
+          Ver MBAs no IPOG
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+
+    <div class="lg:col-span-3 order-first">
+      <InPageNav headings={navHeadings} />
+    </div>
+
+    <article class="lg:col-span-9 space-y-10">
+
+      <TLDR
+        resposta="O que reprova uma peça de divulgação em Psicologia costuma ser um detalhe de forma: um dado que devolve uma pessoa identificável, uma palavra que promete desfecho ou uma credencial escrita maior do que o certificado. O Código de Ética Profissional do Psicólogo, aprovado pela Resolução CFP nº 010/05 e em vigor desde 27 de agosto de 2005, resolve oito das dez situações desta página em dois artigos: o 9º, que faz do sigilo um dever, e o 20, que lista o que a promoção pública de serviços precisa ter e o que ela não pode fazer. As duas restantes vivem na Resolução CFP nº 11, de 11 de maio de 2018, sobre serviços prestados por tecnologias da informação e comunicação."
+        fontes={['Código de Ética Profissional do Psicólogo, Resolução CFP nº 010/05 (CFP, vigente desde 27/08/2005)', 'Resolução CFP nº 11, de 11 de maio de 2018 (CFP)', 'Resolução CFP nº 23/2022, registro de especialista (CFP, vigente desde 02/01/2023)']}
+      />
+
+      <YMYLDisclaimer domain="saude-mental" reviewerName="Larissa Caramaschi" reviewerHref="/autismo/sobre-larissa/" lastReviewed="2026-09-07" />
+
+      <div class="prose prose-ink max-w-none">
+        <p>
+          Rafaela atende em consultório particular em Maringá há quatro anos e escreve os próprios posts na hora do almoço. Numa terça de agosto, ela terminou um texto sobre luto que estava bom: tinha o mecanismo, tinha o que fazer no primeiro mês, tinha o limite do que a psicoterapia resolve. O que a fez apagar tudo foi o exemplo de abertura, com a idade da pessoa, a profissão dela e o mês em que o pai morreu. Numa cidade em que o consultório fica a três quadras da praça central, aquele conjunto de três dados devolvia uma pessoa só. Rafaela é um composto ilustrativo, montado a partir de padrões que se repetem, e não uma pessoa real; o problema que ela descreve é o mais comum de todos.
+        </p>
+        <p>
+          A dor que sustenta esta página é operacional antes de ser jurídica. O medo de responder a um processo ético por causa de um post aparece na escuta social brasileira em registro literal, do tipo posso anunciar especialista em se a pós não é reconhecida, ou vi gente tomando processo e agora estou paranoico. O efeito prático desse medo é o silêncio: o profissional que sabe do assunto deixa de escrever, e o espaço fica para quem não tem registro nenhum a perder. As dez situações abaixo existem para desfazer isso, porque quase todas têm uma versão publicável que preserva o argumento inteiro.
+        </p>
+        <p>
+          A conferência é mais barata do que parece. O Código de Ética tem 25 artigos, e a divulgação profissional cabe em três deles: o 9º, que institui o sigilo como dever; o 19, sobre participação em veículos de comunicação; e o 20, que trata da promoção pública de serviços, com oito alíneas que funcionam como lista de conferência. Ler os três leva menos tempo do que refazer uma peça reprovada.
+        </p>
+      </div>
+
+      <div id="o-que-esta-pagina-e" class="scroll-mt-24 rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <h2 class="section-h text-2xl">O que esta página é, e o que ela não é</h2>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          Esta é uma orientação editorial, escrita por quem produz conteúdo, sobre como uma peça de divulgação chega ao público sem contradizer a norma da profissão. Ela não é parecer jurídico, não é consulta ao Conselho e não decide caso concreto. A fonte normativa da profissão é o Conselho Federal de Psicologia e os Conselhos Regionais, e é neles que se confere o texto vigente, se faz consulta formal e se resolve dúvida sobre uma peça específica. Onde esta página não conseguiu confirmar uma regra em fonte primária no dia 7 de setembro de 2026, ela diz isso em texto, com o marcador de falta de evidência, em vez de citar um número de resolução de memória.
+        </p>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          Todas as citações de artigo abaixo vêm do texto do Código de Ética Profissional do Psicólogo publicado pelo próprio CFP e das resoluções indicadas no fim da página. O portal é editorial e independente. A visão que ele já publica sobre regulação, especialidades e o que o registro de especialista significa está em <a href="/regulacao" class="text-brand-700 hover:text-brand-800 font-semibold">Regulação, ética e escopo profissional</a>, e esta página não a contradiz.
+        </p>
+        <p class="mt-4">
+          <a href="https://site.cfp.org.br/legislacao/codigo-de-etica/" target="_blank" rel="noopener external" class="btn btn-ghost h-11">Ler o Código de Ética no site do CFP</a>
+        </p>
+      </div>
+
+      <div id="tabela-de-decisao" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Dez situações de divulgação, e a versão da peça que sobrevive</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A coluna da direita é a que interessa. Em nenhuma das dez linhas a saída é publicar menos: em todas ela é publicar outra coisa, que costuma informar melhor do que a versão reprovada. Leia a linha da regra antes da linha da versão, porque o motivo explica o formato.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold text-left">
+              <tr>
+                <th class="px-4 py-3 w-56">O que a pessoa quer publicar</th>
+                <th class="px-4 py-3">O que costuma dar errado</th>
+                <th class="px-4 py-3">A regra que se aplica</th>
+                <th class="px-4 py-3">A versão que sobrevive</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200 bg-white">
+              {matriz.map(d => (
+                <tr class="align-top">
+                  <td class="px-4 py-3 font-semibold text-ink-900">{d.quer}</td>
+                  <td class="px-4 py-3 text-ink-700">{d.erro}</td>
+                  <td class="px-4 py-3 text-ink-700">{d.regra}</td>
+                  <td class="px-4 py-3 text-ink-700">{d.saida}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-sm text-ink-500">
+          Artigos citados conforme o Código de Ética Profissional do Psicólogo, aprovado pela Resolução CFP nº 010/05 e em vigor desde 27 de agosto de 2005, e conforme a Resolução CFP nº 11, de 11 de maio de 2018. O artigo 21 do Código lista as penalidades aplicáveis à transgressão: advertência, multa, censura pública, suspensão do exercício profissional por até trinta dias e cassação do exercício profissional, as duas últimas ad referendum do CFP.
+        </p>
+      </div>
+
+      <figure id="publicar-ou-nao" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">O fluxo de decisão antes de publicar</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Quatro perguntas em sequência resolvem a maior parte dos casos, e a ordem importa: identificação primeiro, porque nenhuma correção de linguagem conserta um exemplo que devolve uma pessoa.
+        </p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="etica-fluxo-titulo etica-fluxo-desc"
+               viewBox="0 0 720 380" width="720" height="380" style="min-width:720px" class="block">
+            <title id="etica-fluxo-titulo">Fluxo de quatro perguntas que decide se a peça sai como está, sai reescrita ou não sai</title>
+            <desc id="etica-fluxo-desc">Fluxo vertical com quatro decisões em sequência e uma saída ao lado de cada uma. A primeira pergunta é se alguma pessoa fica identificável pelo conjunto de dados da peça; se sim, a saída é substituir por composto ilustrativo rotulado, conforme o artigo 9º e o artigo 2º alínea q do Código de Ética. A segunda pergunta é se a peça promete desfecho; se sim, a saída é trocar promessa de resultado por descrição de processo, conforme o artigo 20 alínea e. A terceira pergunta é se a credencial escrita corresponde ao certificado que a pessoa tem; se não corresponde, a saída é escrever o nome do curso e a instituição por extenso, conforme o artigo 20 alíneas b e c. A quarta pergunta é se o preço aparece como argumento de campanha; se sim, a saída é levar a conversa de valor para o canal privado antes do primeiro encontro, conforme o artigo 20 alínea d e o artigo 4º alínea b. Quem passa pelas quatro chega ao bloco final, que exige nome completo, CRP e número de registro na peça, conforme o artigo 20 alínea a, e então a peça pode ser publicada.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">Quatro conferências, nesta ordem, antes de publicar</text>
+
+            <rect x="16" y="44" width="330" height="56" rx="12" fill="none" stroke-width="2" class="stroke-current text-ink-300" />
+            <text x="32" y="68" font-size="14" font-weight="600" class="fill-current text-ink-900">1. Alguém fica identificável pelo conjunto?</text>
+            <text x="32" y="88" font-size="13" class="fill-current text-ink-500">Cidade, idade, ocupação, diagnóstico, data</text>
+            <rect x="386" y="44" width="318" height="56" rx="12" fill="none" stroke-width="2" class="stroke-current text-brand-400" />
+            <text x="402" y="68" font-size="14" font-weight="600" class="fill-current text-brand-700">Composto ilustrativo, rotulado na tela</text>
+            <text x="402" y="88" font-size="13" class="fill-current text-ink-500">Artigo 9º e artigo 2º, alínea q</text>
+            <line x1="346" y1="72" x2="386" y2="72" stroke-width="2" class="stroke-current text-ink-500" />
+
+            <line x1="181" y1="100" x2="181" y2="124" stroke-width="2" class="stroke-current text-ink-500" />
+
+            <rect x="16" y="124" width="330" height="56" rx="12" fill="none" stroke-width="2" class="stroke-current text-ink-300" />
+            <text x="32" y="148" font-size="14" font-weight="600" class="fill-current text-ink-900">2. A peça promete desfecho?</text>
+            <text x="32" y="168" font-size="13" class="fill-current text-ink-500">Cura, garante, resolve, elimina, livra</text>
+            <rect x="386" y="124" width="318" height="56" rx="12" fill="none" stroke-width="2" class="stroke-current text-brand-400" />
+            <text x="402" y="148" font-size="14" font-weight="600" class="fill-current text-brand-700">Descrição de processo no lugar</text>
+            <text x="402" y="168" font-size="13" class="fill-current text-ink-500">Artigo 20, alínea e</text>
+            <line x1="346" y1="152" x2="386" y2="152" stroke-width="2" class="stroke-current text-ink-500" />
+
+            <line x1="181" y1="180" x2="181" y2="204" stroke-width="2" class="stroke-current text-ink-500" />
+
+            <rect x="16" y="204" width="330" height="56" rx="12" fill="none" stroke-width="2" class="stroke-current text-ink-300" />
+            <text x="32" y="228" font-size="14" font-weight="600" class="fill-current text-ink-900">3. A credencial bate com o certificado?</text>
+            <text x="32" y="248" font-size="13" class="fill-current text-ink-500">Curso livre, lato sensu, registro do Conselho</text>
+            <rect x="386" y="204" width="318" height="56" rx="12" fill="none" stroke-width="2" class="stroke-current text-brand-400" />
+            <text x="402" y="228" font-size="14" font-weight="600" class="fill-current text-brand-700">Curso e instituição por extenso</text>
+            <text x="402" y="248" font-size="13" class="fill-current text-ink-500">Artigo 20, alíneas b e c</text>
+            <line x1="346" y1="232" x2="386" y2="232" stroke-width="2" class="stroke-current text-ink-500" />
+
+            <line x1="181" y1="260" x2="181" y2="284" stroke-width="2" class="stroke-current text-ink-500" />
+
+            <rect x="16" y="284" width="330" height="56" rx="12" fill="none" stroke-width="2" class="stroke-current text-ink-300" />
+            <text x="32" y="308" font-size="14" font-weight="600" class="fill-current text-ink-900">4. O preço virou argumento de campanha?</text>
+            <text x="32" y="328" font-size="13" class="fill-current text-ink-500">Promoção, cupom, sorteio, primeira sessão</text>
+            <rect x="386" y="284" width="318" height="56" rx="12" fill="none" stroke-width="2" class="stroke-current text-brand-400" />
+            <text x="402" y="308" font-size="14" font-weight="600" class="fill-current text-brand-700">Valor no canal privado, antes de começar</text>
+            <text x="402" y="328" font-size="13" class="fill-current text-ink-500">Artigo 20, alínea d, e artigo 4º, alínea b</text>
+            <line x1="346" y1="312" x2="386" y2="312" stroke-width="2" class="stroke-current text-ink-500" />
+
+            <rect x="16" y="352" width="688" height="20" rx="8" fill="none" stroke-width="2" class="stroke-current text-brand-700" />
+            <text x="32" y="367" font-size="13" font-weight="600" class="fill-current text-brand-700">Passou nas quatro: nome completo, CRP e número de registro na peça, conforme o artigo 20, alínea a</text>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          Os quatro filtros e as saídas correspondem às alíneas do artigo 20 e ao artigo 9º do Código de Ética Profissional do Psicólogo, Resolução CFP nº 010/05. A ordem foi escolhida por custo de correção: identificação exige refazer o exemplo, e as três seguintes se resolvem na linha.
+        </figcaption>
+      </figure>
+
+      <div id="titulos-e-nicho" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Curso livre, especialização, título pelo Conselho e nicho de marketing</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Esta é a confusão número um da escuta social brasileira, e ela tem um motivo estrutural: quatro coisas com naturezas diferentes disputam a mesma palavra na bio do perfil. O artigo 20, alínea b, resolve a disputa em uma linha, mandando fazer referência apenas a títulos ou qualificações profissionais que se possua. O que a tabela abaixo acrescenta é o que cada linha autoriza dizer.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold text-left">
+              <tr>
+                <th class="px-4 py-3 w-52">Categoria</th>
+                <th class="px-4 py-3">O que é</th>
+                <th class="px-4 py-3">O que ela autoriza anunciar</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200 bg-white">
+              {titulos.map(t => (
+                <tr class="align-top">
+                  <td class="px-4 py-3 font-semibold text-ink-900">{t.tipo}</td>
+                  <td class="px-4 py-3 text-ink-700">{t.oque}</td>
+                  <td class="px-4 py-3 text-ink-700">{t.anuncio}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-ink-700 leading-relaxed">
+          Duas consequências práticas saem daí. A primeira é que cursar uma especialização lato sensu e obter o registro de especialista pelo Conselho são etapas distintas, com requisitos distintos, e a primeira sozinha não autoriza a palavra da segunda. A segunda é que a escolha entre os formatos de pós-graduação continua sendo uma decisão de carreira legítima, tratada em <a href="/comparativos/mba-vs-especializacao" class="text-brand-700 hover:text-brand-800 font-semibold">MBA e especialização lado a lado</a> e em <a href="/tipos-de-pos-graduacao" class="text-brand-700 hover:text-brand-800 font-semibold">tipos de pós-graduação</a>. O que muda com esta seção é apenas a palavra que vai para o público.
+        </p>
+      </div>
+
+      <figure id="quem-responde" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Quem responde pelo quê</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          Boa parte da paranoia vem de imaginar uma instância única julgando tudo. São três, com jurisdições que não se sobrepõem, e reconhecer isso muda o que se confere e com quem se resolve cada problema.
+        </p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="etica-raias-titulo etica-raias-desc"
+               viewBox="0 0 720 300" width="720" height="300" style="min-width:720px" class="block">
+            <title id="etica-raias-titulo">Três raias mostrando o que cabe ao profissional, à plataforma e ao Conselho em uma peça publicada</title>
+            <desc id="etica-raias-desc">Diagrama de três raias horizontais para a mesma peça publicada. A raia do profissional cobre o conteúdo da peça: o sigilo de quem foi atendido, o rótulo do exemplo, a exatidão da credencial anunciada, a ausência de promessa de desfecho e a presença de nome completo, CRP e número de registro; a sanção possível é disciplinar, com advertência, multa, censura pública, suspensão de até trinta dias ou cassação, conforme o artigo 21 do Código de Ética. A raia da plataforma cobre a permanência da peça no ar: regra de autopromoção, exigência de declaração de conteúdo assistido por inteligência artificial, spam e originalidade; a sanção possível é remoção da peça, perda de alcance ou suspensão da conta, decidida pela própria plataforma e sem recurso externo. A raia do Conselho cobre a norma e o julgamento do caso concreto: o texto vigente do Código de Ética e das resoluções, a concessão do registro de especialista, o cadastro para atendimento por tecnologias da informação e a apuração de denúncia; ela não edita a peça nem revisa o texto antes da publicação. As três raias atuam sobre a mesma peça e em momentos diferentes: o profissional antes de publicar, a plataforma no momento da publicação e o Conselho depois, mediante denúncia.</desc>
+
+            <text x="16" y="24" font-size="15" font-weight="600" class="fill-current text-ink-900">A mesma peça, três jurisdições, três momentos</text>
+
+            <rect x="16" y="40" width="688" height="72" rx="12" fill="none" stroke-width="2" class="stroke-current text-brand-700" />
+            <text x="32" y="64" font-size="14" font-weight="700" class="fill-current text-brand-700">Profissional</text>
+            <text x="32" y="84" font-size="13" class="fill-current text-ink-900">Sigilo, rótulo do exemplo, credencial exata, ausência de promessa, nome e CRP na peça</text>
+            <text x="32" y="103" font-size="13" class="fill-current text-ink-500">Age antes de publicar. Sanção possível: disciplinar, do artigo 21 do Código de Ética</text>
+
+            <rect x="16" y="124" width="688" height="72" rx="12" fill="none" stroke-width="2" class="stroke-current text-ink-300" />
+            <text x="32" y="148" font-size="14" font-weight="700" class="fill-current text-ink-900">Plataforma</text>
+            <text x="32" y="168" font-size="13" class="fill-current text-ink-900">Autopromoção, declaração de conteúdo assistido por IA, spam, originalidade</text>
+            <text x="32" y="187" font-size="13" class="fill-current text-ink-500">Age no momento da publicação. Sanção possível: remoção, perda de alcance, suspensão da conta</text>
+
+            <rect x="16" y="208" width="688" height="72" rx="12" fill="none" stroke-width="2" class="stroke-current text-brand-400" />
+            <text x="32" y="232" font-size="14" font-weight="700" class="fill-current text-brand-700">Conselho Federal e Conselhos Regionais</text>
+            <text x="32" y="252" font-size="13" class="fill-current text-ink-900">Norma vigente, registro de especialista, cadastro para atendimento por tecnologias, apuração</text>
+            <text x="32" y="271" font-size="13" class="fill-current text-ink-500">Age depois, mediante denúncia. Não revisa peça antes da publicação</text>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          As penalidades da primeira raia são as do artigo 21 do Código de Ética Profissional do Psicólogo, Resolução CFP nº 010/05. As competências da terceira raia vêm da mesma resolução, da Resolução CFP nº 23/2022 sobre registro de especialista e da Resolução CFP nº 11, de 11 de maio de 2018, sobre serviços por tecnologias da informação e comunicação. As regras da segunda raia são políticas privadas de cada plataforma, e o portal registra as vigentes em <a href="/conteudo-social/dores-que-o-publico-descreve-2026" class="text-brand-700 hover:text-brand-800 font-medium">dores que o público descreve em 2026</a>.
+        </figcaption>
+      </figure>
+
+      <div id="conteudo-gerado-por-ia" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Conteúdo gerado por inteligência artificial nas plataformas</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          As plataformas onde este conteúdo circula têm política própria sobre texto gerado por máquina, e ela é anterior a qualquer discussão sobre ética profissional: uma peça removida por spam não chega a ser julgada por mérito. O portal já mantém o registro de cada regra vigente por canal, com Quora exigindo que a resposta se sustente inteira dentro da plataforma, Medium tratando como plágio a reformulação automática de conteúdo existente e pedindo rótulo de assistência nos dois primeiros parágrafos, e Reddit publicando a régua de dez por cento para autopromoção. Esse mapa está em <a href="/conteudo-social/dores-que-o-publico-descreve-2026" class="text-brand-700 hover:text-brand-800 font-semibold">dores que o público descreve em 2026</a> e não se repete aqui.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          O que interessa nesta página é a consequência sobre o fluxo de produção, e ela é concreta. A exigência de edição humana desloca o trabalho: em vez de revisar o texto pronto procurando erro de português, você confere cada afirmação material contra a fonte primária, reescreve as passagens em que a máquina generalizou e assume a autoria do resultado. Em saúde mental isso deixa de ser preferência estética por um motivo verificável: rascunho de modelo produz referência que não existe e afirmação clínica categórica sem lastro, e uma citação inventada publicada por profissional com CRP na bio contamina retroativamente tudo o que aquele perfil publicou antes.
+        </p>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A regra prática cabe em uma frase: a máquina pode escrever o rascunho, e a assinatura continua respondendo pelo conteúdo. O artigo 1º, alínea b, do Código de Ética admite responsabilidade profissional apenas por atividades para as quais a pessoa esteja capacitada pessoal, teórica e tecnicamente, e o artigo 19 pede que a participação em veículos de comunicação dissemine conhecimento sobre a base científica da profissão. Nenhum dos dois foi escrito pensando em modelo de linguagem, e os dois alcançam o problema. Como o uso clínico de ferramentas de IA tem exigências próprias, que vão além da divulgação, o portal trata delas em <a href="/guias/uso-etico-ia-clinica" class="text-brand-700 hover:text-brand-800 font-semibold">uso ético de IA na clínica</a>.
+        </p>
+      </div>
+
+      <div id="checklist" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Checklist de dez itens antes de publicar</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed">
+          A ordem segue o custo de correção. Os dois primeiros itens podem obrigar a refazer a peça, e por isso vêm antes. Do terceiro em diante, tudo se resolve na linha.
+        </p>
+        <ol class="mt-5 space-y-3">
+          {checklist.map((c, i) => (
+            <li class="flex gap-4 items-start rounded-2xl border border-surface-200 bg-white p-5">
+              <span class="shrink-0 w-11 h-11 rounded-xl bg-brand-50 text-brand-700 font-display font-bold inline-flex items-center justify-center">{i + 1}</span>
+              <span>
+                <strong class="block text-ink-900 font-semibold">{c.nome}</strong>
+                <span class="block text-sm text-ink-700 mt-1 leading-relaxed">{c.texto}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">O que Rafaela publicou na semana seguinte</h2>
+        <p>
+          O texto sobre luto voltou ao ar sem o exemplo que devolvia uma pessoa. No lugar dele entrou um composto ilustrativo rotulado na mesma tela, montado a partir do que se repete em vários atendimentos, e o argumento sobre o primeiro mês continuou inteiro, porque ele nunca dependeu daquela pessoa em particular. A bio trocou uma palavra: onde havia especialista, passou a constar o nome da pós-graduação e a instituição por extenso. O valor da sessão saiu do post e voltou para a primeira conversa, onde o artigo 4º manda que ele apareça. A peça ficou mais longa em dois parágrafos e mais fácil de defender diante de qualquer instância.
+        </p>
+        <p>
+          A conferência entrega isso: uma peça que continua dizendo a mesma coisa depois de passar por ela. Escolha uma publicação que já está no ar hoje, rode os dez itens do checklist nela e conte quantos passam. Esse número, e não a intuição sobre risco, é o diagnóstico do seu processo de publicação.
+        </p>
+        <p>
+          Quem produz conteúdo sobre saúde mental com respaldo técnico costuma precisar de duas competências ao mesmo tempo: leitura de evidência com atenção ao comparador e domínio do recorte clínico ou organizacional sobre o qual escreve. As pós-graduações em Psicologia do IPOG cobrem essas frentes em modalidades distintas, e a grade vigente fica no site da instituição.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="section-h text-2xl">Continuar por aqui</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/conteudo-social/controversias-com-dois-lados" class="text-brand-700 hover:text-brand-800 font-medium">Próxima · cinco controvérsias vivas, com os dois lados sustentáveis</a></li>
+          <li><a href="/conteudo-social/perguntas-que-a-ia-responde" class="text-brand-700 hover:text-brand-800 font-medium">Banco de perguntas que os motores generativos respondem</a></li>
+          <li><a href="/conteudo-social/dores-que-o-publico-descreve-2026" class="text-brand-700 hover:text-brand-800 font-medium">Dores que o público descreve em 2026, com a regra de cada canal</a></li>
+          <li><a href="/regulacao" class="text-brand-700 hover:text-brand-800 font-medium">Regulação, ética e escopo profissional em Psicologia</a></li>
+          <li><a href="/principios-editoriais" class="text-brand-700 hover:text-brand-800 font-medium">Princípios editoriais do portal</a></li>
+          <li><a href="/conteudo-social" class="text-brand-700 hover:text-brand-800 font-medium">Voltar para a central de Conteúdo e Social</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes normativas desta página</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://site.cfp.org.br/legislacao/codigo-de-etica/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Código de Ética Profissional do Psicólogo, Resolução CFP nº 010/05 (CFP)</a></li>
+          <li><a href="https://site.cfp.org.br/wp-content/uploads/2018/05/RESOLU%C3%87%C3%83O-N%C2%BA-11-DE-11-DE-MAIO-DE-2018.pdf" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Resolução CFP nº 11, de 11 de maio de 2018 (CFP)</a></li>
+          <li><a href="https://site.cfp.org.br/servicos/titulo-de-especialista/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Registro de especialista e Resolução CFP nº 23/2022 (CFP)</a></li>
+          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI, sistema de avaliação de testes psicológicos (CFP)</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-3 italic">Conferido em fonte primária no dia 7 de setembro de 2026. Orientação editorial, sem valor de parecer jurídico. Portal editorial independente, sem vínculo institucional com os órgãos citados.</p>
+      </div>
+
+    </article>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

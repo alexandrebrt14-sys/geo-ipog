@@ -1,0 +1,536 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import InPageNav from '@components/InPageNav.astro';
+import { SITE } from '@lib/data';
+import { alexandrePersonBase, brasilGeoOrganization, alexandreAuthorRef } from '@lib/schemas';
+
+const title = 'Comunidades fechadas em Psicologia: WhatsApp, Telegram e Discord servem para escutar · Brasil GEO';
+const description = 'Grupo fechado de psicólogos não gera citação por IA porque não é indexado. O que ele entrega: teste de linguagem, vernáculo real, regras antispam de cada plataforma e o limite do sigilo.';
+
+const datePublished = '2026-09-07';
+const pagePath = '/conteudo-social/comunidades';
+
+const headings = [
+  { id: 'contrato', text: 'Contrato do canal', level: 2 },
+  { id: 'indexacao', text: 'Por que o conteúdo fechado fica fora do índice', level: 2 },
+  { id: 'regras', text: 'As regras antispam de cada plataforma', level: 2 },
+  { id: 'sigilo', text: 'O risco específico da profissão', level: 2 },
+  { id: 'o-que-circula', text: 'O que pode e o que não pode circular', level: 2 },
+  { id: 'metrica', text: 'A métrica honesta', level: 2 },
+  { id: 'da-escuta', text: 'Da escuta à pauta pública sem expor ninguém', level: 2 },
+  { id: 'checklist', text: 'Checklist antes de postar no grupo', level: 2 },
+  { id: 'perguntas', text: 'Perguntas frequentes', level: 2 }
+];
+
+const contrato = [
+  {
+    item: 'Público real',
+    texto: 'Psicólogo que confia mais em par do que em buscador, aluno em grupo de turma, supervisor, docente e recém-formado que pergunta em ambiente fechado antes de se expor em rede aberta.'
+  },
+  {
+    item: 'Formato canônico',
+    texto: 'Mensagem curta redigida antes em .md para moderação interna, versão nativa em texto no WhatsApp ou no Telegram, enquete simples quando a comunidade já usa enquete, e áudio curto apenas onde a voz já é a norma do grupo.'
+  },
+  {
+    item: 'Gancho de abertura',
+    texto: 'Uma distinção útil que resolve uma dúvida repetida. Exemplo de abertura: alguém pergunta se especialização clínica e pós lato sensu são a mesma coisa, e a resposta curta evita uma escolha cara de curso.'
+  },
+  {
+    item: 'Regra que quebra a conta',
+    texto: 'WhatsApp veda contato repetido indesejado, disparo em massa, automação de mensagem, cliente não oficial e raspagem de dados. Telegram veda spam e golpe nos termos de uso. Discord veda mensagem em massa não solicitada, conta operada por robô e inflação artificial de participação.'
+  },
+  {
+    item: 'Erro clássico',
+    texto: 'Entrar no grupo para plantar link. Em comunidade fechada, link antes de utilidade é lido como captura de contato, e o custo é a expulsão somada à perda de reputação entre pares.'
+  },
+  {
+    item: 'Métrica honesta',
+    texto: 'Respostas qualificadas, pedidos de esclarecimento, convite para explicar o tema em outro espaço e número de dúvidas reais que viram pauta pública. Contato privado obtido sem consentimento fica fora da contagem.'
+  }
+];
+
+const plataformas = [
+  {
+    nome: 'WhatsApp',
+    documento: 'Messaging Guidelines',
+    href: 'https://www.whatsapp.com/legal/messaging-guidelines',
+    veda: 'Fraude e spam, incluindo contato repetido indesejado. Também veda comportamento adversarial: raspagem de dados, cliente não oficial, disparo em massa, mensagem automática e discagem automática.',
+    leitura: 'Lista de transmissão montada com números coletados em grupo cai na descrição de contato repetido indesejado. O caminho legítimo é a pessoa pedir para receber.'
+  },
+  {
+    nome: 'Telegram',
+    documento: 'Terms of Service',
+    href: 'https://telegram.org/tos',
+    veda: 'Usar o serviço para enviar spam ou para aplicar golpes nos usuários, em cláusula curta e direta na abertura dos termos.',
+    leitura: 'Canal de Telegram com publicação editorial regular e assinatura voluntária fica dentro da regra. Adição de contato sem pedido, fora.'
+  },
+  {
+    nome: 'Discord',
+    documento: 'Community Guidelines',
+    href: 'https://discord.com/guidelines',
+    veda: 'Mensagem em massa não solicitada e as ferramentas que a viabilizam, conta operada por robô no lugar de pessoa, inflação artificial de participação e venda de engajamento, e conteúdo falso ou enganoso com risco relevante de dano físico ou social.',
+    leitura: 'A regra de conteúdo enganoso com risco de dano alcança tema de saúde. Servidor de estudo em Psicologia responde por ela como qualquer outro.'
+  },
+  {
+    nome: 'Grupo profissional fechado',
+    documento: 'Regulamento próprio de moderação',
+    href: '',
+    veda: 'Cada grupo de conselho regional, de sindicato, de turma ou de serviço tem regra local sobre divulgação, indicação comercial e circulação de caso.',
+    leitura: 'Ler o regulamento do grupo antes da primeira mensagem. [FALTA EVIDÊNCIA: regulamento vigente de cada grupo profissional, que precisa ser lido e datado antes de qualquer publicação]'
+  }
+];
+
+const circulacao = [
+  {
+    pode1: 'Distinção regulatória entre modalidades,',
+    pode2: 'com a fonte no corpo da mensagem.',
+    nao1: 'Relato de caso com detalhe que',
+    nao2: 'permita reconhecimento, mesmo sem nome.'
+  },
+  {
+    pode1: 'Resposta em duas camadas: o que a norma',
+    pode2: 'diz e o que o mercado pratica.',
+    nao1: 'Hipótese diagnóstica sobre pessoa',
+    nao2: 'descrita por terceiro na conversa.'
+  },
+  {
+    pode1: 'Critério de decisão para escolher',
+    pode2: 'supervisão, com o custo declarado.',
+    nao1: 'Print de conversa com paciente, de',
+    nao2: 'prontuário ou de laudo, mesmo borrado.'
+  },
+  {
+    pode1: 'Link para a página do portal depois da',
+    pode2: 'resposta completa, se alguém pedir.',
+    nao1: 'Coleta de telefone, disparo em lista e',
+    nao2: 'convite automático para funil.'
+  },
+  {
+    pode1: 'Pergunta honesta de quem aprende,',
+    pode2: 'inclusive sobre o próprio limite.',
+    nao1: 'Medo de ficar para trás usado como',
+    nao2: 'argumento de venda de curso.'
+  }
+];
+
+const passos = [
+  {
+    nome: 'Registrar a dúvida no vocabulário em que ela foi dita',
+    texto: 'Anote a pergunta com as palavras da pessoa, sem traduzir para o registro institucional. Quem escreve pós de prateleira está dizendo outra coisa de quem escreve especialização lato sensu, e a diferença é a pauta.'
+  },
+  {
+    nome: 'Esperar a terceira ocorrência antes de considerar padrão',
+    texto: 'Uma pergunta isolada é caso. A mesma dúvida vinda de três pessoas diferentes, em grupos diferentes, é padrão editorial. Só a partir daí ela vira candidata a pauta pública.'
+  },
+  {
+    nome: 'Descartar todo elemento que identifique alguém',
+    texto: 'Some quem perguntou, quando perguntou, em qual grupo, de qual cidade, com qual detalhe de caso. Se a pauta deixar de fazer sentido depois desse descarte, ela era relato privado e para por aqui.'
+  },
+  {
+    nome: 'Reescrever a dúvida como pergunta pública genérica',
+    texto: 'A pergunta pública descreve a decisão, e não a pessoa. Sai a história de quem perguntou; entra a categoria de profissional que enfrenta aquela escolha e o que está em jogo nela.'
+  },
+  {
+    nome: 'Levantar a evidência antes de responder em público',
+    texto: 'A resposta que serve no grupo pode ser opinião fundamentada. A resposta que vai ao portal precisa de fonte com data, origem e limite, porque ela será lida fora do contexto da conversa.'
+  },
+  {
+    nome: 'Publicar no portal e devolver o link ao grupo uma vez',
+    texto: 'Publique a página, avise no grupo em que a dúvida nasceu, uma única vez e sem repetir em outros grupos. O crédito volta como reputação, e a repetição volta como spam.'
+  }
+];
+
+const checklist = [
+  'Você leu o regulamento do grupo antes da primeira mensagem, e sabe se ele permite indicação de conteúdo próprio.',
+  'A mensagem responde à dúvida por inteiro dentro do grupo, sem exigir clique para fazer sentido.',
+  'O link para o portal aparece depois da resposta completa, e apenas quando alguém pediu aprofundamento.',
+  'Nenhum trecho descreve caso clínico com detalhe que permita reconhecimento de paciente.',
+  'Nenhum trecho oferece hipótese diagnóstica sobre pessoa mencionada por terceiro na conversa.',
+  'Nenhum contato foi coletado do grupo para lista de disparo, e nenhuma automação de mensagem está em uso.',
+  'A mesma mensagem não foi replicada em vários grupos no mesmo dia.',
+  'Toda afirmação sobre norma profissional traz a referência dentro da mensagem, e não na bio.',
+  'A dúvida que virou pauta pública passou pelo descarte de elementos identificadores antes da publicação.',
+  'A contagem de resultado exclui contato privado obtido sem consentimento explícito.'
+];
+
+const faqs = [
+  {
+    q: 'Grupo fechado gera citação por mecanismo generativo?',
+    a: 'Conteúdo publicado em grupo fechado de WhatsApp, em canal privado de Telegram, em servidor de Discord com convite ou em grupo profissional com aprovação de entrada fica fora do índice público, porque o rastreador precisa de uma página acessível sem credencial para recuperar e atribuir. Esse conteúdo não vira citação, e a estratégia correta é usar o grupo para outra função: escutar a dúvida no vernáculo e testar a formulação antes de publicar em superfície aberta.'
+  },
+  {
+    q: 'Então por que o Reddit é citado e o grupo de WhatsApp não?',
+    a: 'Porque o Reddit é aberto e indexável, e por isso entra na conta dos monitoramentos de citação. Em varredura de mais de 36 milhões de resumos gerados pelo Google e 46 milhões de citações entre março e agosto de 2025, o Reddit aparece com 21% das citações contadas naquela amostra. O número é estimativa de fornecedor, sem revisão por pares, e o denominador é o total de links citados na amostra rastreada. A diferença entre as duas superfícies é a permissão de leitura, e não a qualidade da conversa.'
+  },
+  {
+    q: 'O que exatamente o WhatsApp proíbe para quem divulga conteúdo?',
+    a: 'As Messaging Guidelines do WhatsApp vedam fraude e spam, com menção expressa a contato repetido indesejado, e vedam comportamento adversarial que inclui raspagem de dados, uso de cliente não oficial, disparo em massa, mensagem automática e discagem automática. Na prática editorial, montar lista de transmissão com números coletados em grupo se encaixa na descrição de contato indesejado. O caminho compatível é a pessoa pedir para receber.'
+  },
+  {
+    q: 'Posso comentar um caso clínico em grupo de psicólogos?',
+    a: 'Sigilo é obrigação legal do psicólogo, e o grupo fechado não é ambiente de supervisão só porque todo mundo tem registro profissional. Discussão de caso pede enquadre próprio, com supervisor identificado, consentimento e material desidentificado. Em grupo de mensagem instantânea, qualquer participante pode capturar a tela, encaminhar e reconstruir a identidade a partir de detalhes que pareciam inofensivos separados.'
+  },
+  {
+    q: 'Como medir se a presença em comunidade está funcionando?',
+    a: 'Conte resposta qualificada, pedido de esclarecimento, convite para explicar o tema em outro espaço e dúvida real que virou pauta publicada. Essas quatro medidas descrevem confiança e alimentam o calendário editorial. Número de membros no grupo, número de mensagens enviadas e contato privado obtido sem consentimento descrevem atividade, e atividade é fácil de fabricar.'
+  },
+  {
+    q: 'Vale a pena criar a própria comunidade em vez de participar das existentes?',
+    a: 'Depende do que você tem para sustentar. Comunidade própria exige moderação contínua, regra escrita, resposta a dúvida no mesmo dia e alguém responsável por conflito, e sem isso o grupo vira mural de link. Participar de comunidade existente custa menos e entrega mais escuta, que é o ativo principal desta superfície. Quem quer aprofundar a formação em comunicação e gestão encontra opções no catálogo de pós-graduação do IPOG, em ipog.edu.br.'
+  }
+];
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${SITE.url}${pagePath}/#article`,
+      url: `${SITE.url}${pagePath}/`,
+      headline: 'Comunidades fechadas em Psicologia: WhatsApp, Telegram e Discord servem para escutar',
+      description,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      datePublished,
+      dateModified: datePublished,
+      articleSection: 'Conteúdo e Social',
+      about: 'Comunidades fechadas, WhatsApp, Telegram, Discord, sigilo profissional, escuta social',
+      author: alexandreAuthorRef,
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' }
+    },
+    {
+      '@type': 'HowTo',
+      '@id': `${SITE.url}${pagePath}/#howto`,
+      name: 'Transformar escuta de comunidade fechada em pauta pública sem expor ninguém',
+      description: 'Seis passos que levam uma dúvida ouvida em grupo até uma página publicada, com descarte de todo elemento identificador no meio do caminho.',
+      inLanguage: 'pt-BR',
+      totalTime: 'PT4H',
+      step: passos.map((p, i) => ({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: p.nome,
+        text: p.texto
+      }))
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${SITE.url}${pagePath}/#faq`,
+      inLanguage: 'pt-BR',
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a }
+      }))
+    }
+  ]
+};
+
+const breadcrumbs = [
+  { label: 'Início', href: '/' },
+  { label: 'Conteúdo e Social', href: '/conteudo-social' },
+  { label: 'Comunidades fechadas' }
+];
+---
+
+<Base title={title} description={description}>
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={breadcrumbs} />
+      <span class="section-eyebrow mt-3">Conteúdo e Social · Canal fechado</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Comunidades fechadas em Psicologia: onde a escuta vale mais do que a citação</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Grupo de WhatsApp, canal privado de Telegram, servidor de Discord com convite e grupo profissional de psicólogos ficam fora do índice público. Nenhum deles vai aparecer em resposta gerada. O que eles entregam é anterior à publicação: a dúvida no vocabulário de quem tem a dúvida.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-8 grid lg:grid-cols-12 gap-10">
+    <div class="lg:col-span-8 space-y-10">
+
+      <TLDR
+        resposta="Comunidade fechada fica fora do índice público e por isso não gera citação por mecanismo generativo. A função dela é testar a formulação antes de publicar e ouvir a dor no vernáculo. As três plataformas vedam disparo em massa e contato indesejado por escrito, e a profissão acrescenta um limite mais duro: sigilo é obrigação legal, e grupo de psicólogos não é enquadre de supervisão."
+        fontes={['WhatsApp Messaging Guidelines', 'Telegram Terms of Service', 'Discord Community Guidelines']}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <p>
+          Uma psicóloga recém-formada pergunta em um grupo de turma se dá para fazer pós em clínica a distância e atender depois, ou se o conselho barra. A pergunta chega escrita em letra minúscula, com abreviação e com medo real embutido. Nenhuma versão dessa conversa vai alimentar uma resposta gerada por mecanismo, porque o grupo é fechado e o rastreador precisa de página acessível sem credencial. O valor daquela mensagem está inteiro em outro lugar.
+        </p>
+        <p>
+          Compare com o Reddit, que é aberto. Em varredura de mais de 36 milhões de resumos gerados pelo Google e 46 milhões de citações, feita entre março e agosto de 2025 por fornecedor de monitoramento, o Reddit apareceu com 21% de todas as citações contadas naquela amostra. O denominador é o total de 46 milhões de links citados, e o número é estimativa de fornecedor, sem revisão por pares. A diferença entre Reddit e grupo de WhatsApp não está na qualidade da conversa; está na permissão de leitura.
+        </p>
+        <p>
+          A consequência editorial é confortável, porque libera a comunidade de uma cobrança que ela nunca poderia cumprir. Ninguém precisa medir alcance de grupo fechado nem transformar conversa entre pares em métrica de marketing. O grupo passa a valer por duas entregas verificáveis: ele mostra como a pessoa formula a dúvida antes de ser corrigida pelo vocabulário institucional, e ele permite testar uma resposta com um público exigente antes de ela virar página pública. A <a href="/conteudo-social/dores-que-o-publico-descreve-2026">página de dores que o público descreve</a> nasceu desse tipo de escuta.
+        </p>
+      </div>
+
+      <section id="contrato" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Contrato do canal</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed">Seis linhas que decidem se vale entrar no grupo. A linha da regra de plataforma vem antes da linha de formato.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 w-52">Item do contrato</th>
+                <th class="text-left px-4 py-3">O que ele exige</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {contrato.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{c.item}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top">{c.texto}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <figure id="indexacao" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Por que o conteúdo fechado fica fora do índice</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed">A linha divisória é a permissão de leitura. A figura separa o que um rastreador alcança do que ele nunca vê, e diz qual função cabe a cada lado.</p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="com-index-titulo com-index-desc" viewBox="0 0 660 320" width="660" height="320" style="min-width:660px" class="block">
+            <title id="com-index-titulo">O que o rastreador alcança e o que fica atrás da credencial</title>
+            <desc id="com-index-desc">A figura tem duas colunas separadas por uma linha vertical tracejada no meio. A coluna da esquerda se chama Aberto e indexável e reúne quatro itens: fórum público, Reddit, Quora e página do portal. Abaixo deles, a coluna registra que essa é a superfície que pode virar citação em resposta gerada, e traz o dado de que o Reddit apareceu com vinte e um por cento das citações contadas em uma amostra de quarenta e seis milhões de citações rastreadas por fornecedor entre março e agosto de dois mil e vinte e cinco, estimativa de fornecedor sem revisão por pares. A coluna da direita se chama Fechado, atrás de credencial, e reúne quatro itens: grupo de WhatsApp, canal privado de Telegram, servidor de Discord com convite e grupo profissional com aprovação. Abaixo deles, a coluna registra que essa é a superfície de escuta e de teste de linguagem, sem citação possível. No rodapé, uma seta sai do lado fechado para o lado aberto, indicando que a dúvida ouvida no grupo atravessa a linha apenas depois de ser reescrita como pergunta pública.</desc>
+            <text x="20" y="28" font-size="15" font-weight="600" class="fill-ink-900">A linha divisória é a permissão de leitura</text>
+            <line x1="330" y1="44" x2="330" y2="250" stroke-width="2" stroke-dasharray="6 6" class="stroke-ink-500" />
+            <text x="20" y="66" font-size="14" font-weight="600" class="fill-brand-700">Aberto e indexável</text>
+            <rect x="20" y="78" width="290" height="112" rx="10" class="fill-brand-50 stroke-brand-300" stroke-width="1.5" />
+            <text x="36" y="102" font-size="13" class="fill-ink-900">Fórum público</text>
+            <text x="36" y="124" font-size="13" class="fill-ink-900">Reddit</text>
+            <text x="36" y="146" font-size="13" class="fill-ink-900">Quora</text>
+            <text x="36" y="168" font-size="13" class="fill-ink-900">Página do portal</text>
+            <text x="20" y="214" font-size="13" class="fill-ink-700">Pode virar citação em resposta gerada.</text>
+            <text x="20" y="234" font-size="12" class="fill-ink-500">Reddit com 21% das citações em amostra de 46 milhões,</text>
+            <text x="20" y="250" font-size="12" class="fill-ink-500">mar. a ago. de 2025, estimativa de fornecedor.</text>
+            <text x="350" y="66" font-size="14" font-weight="600" class="fill-ink-900">Fechado, atrás de credencial</text>
+            <rect x="350" y="78" width="290" height="112" rx="10" class="fill-surface-100 stroke-surface-200" stroke-width="1.5" />
+            <text x="366" y="102" font-size="13" class="fill-ink-900">Grupo de WhatsApp</text>
+            <text x="366" y="124" font-size="13" class="fill-ink-900">Canal privado de Telegram</text>
+            <text x="366" y="146" font-size="13" class="fill-ink-900">Servidor de Discord com convite</text>
+            <text x="366" y="168" font-size="13" class="fill-ink-900">Grupo profissional com aprovação</text>
+            <text x="350" y="214" font-size="13" class="fill-ink-700">Escuta e teste de linguagem.</text>
+            <text x="350" y="234" font-size="12" class="fill-ink-500">Sem citação possível, em qualquer motor.</text>
+            <line x1="470" y1="278" x2="180" y2="278" stroke-width="2" class="stroke-brand-600" />
+            <text x="180" y="300" font-size="13" class="fill-ink-700">A dúvida atravessa a linha só depois de virar pergunta pública, sem elemento identificador.</text>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">Classificação por permissão de leitura. O percentual do Reddit vem de monitoramento de fornecedor sobre 46 milhões de citações rastreadas entre março e agosto de 2025, é estimativa comercial e não passou por revisão por pares.</figcaption>
+      </figure>
+
+      <section id="regras" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">As regras antispam de cada plataforma</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed">Quatro documentos, com a leitura operacional colada em cada um. Regra sem endereço oficial fica de fora desta tabela.</p>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 w-32">Plataforma</th>
+                <th class="text-left px-4 py-3 w-40">Documento</th>
+                <th class="text-left px-4 py-3">O que ele veda</th>
+                <th class="text-left px-4 py-3">Leitura operacional</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {plataformas.map(p => (
+                <tr class="align-top">
+                  <td class="px-4 py-3 font-semibold text-ink-900">{p.nome}</td>
+                  <td class="px-4 py-3 text-ink-700">
+                    {p.href ? (
+                      <a href={p.href} target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">{p.documento}</a>
+                    ) : (
+                      <span>{p.documento}</span>
+                    )}
+                  </td>
+                  <td class="px-4 py-3 text-ink-700">{p.veda}</td>
+                  <td class="px-4 py-3 text-ink-700">{p.leitura}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-ink-700 mt-4 leading-relaxed max-w-3xl">
+          As três regras convergem em um ponto que resolve a maior parte das dúvidas de conduta: elas punem o envio que a pessoa não pediu. Presença útil em comunidade é lenta por construção, e quem trata o grupo como canal de distribuição está usando a ferramenta errada. Para distribuição aberta existe o <a href="/conteudo-social/reddit-x">caminho de fórum público</a>, com outras regras e outro retorno.
+        </p>
+      </section>
+
+      <section id="sigilo" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">O risco específico da profissão</h2>
+        <div class="prose prose-ink max-w-none mt-3">
+          <p>
+            Grupo de psicólogos discute caso. Essa é a diferença entre esta superfície e qualquer outra tratada neste menu, e ela cria um risco que nenhuma política de plataforma cobre. Sigilo profissional é obrigação legal do psicólogo, e o Código de Ética Profissional do Psicólogo veda sensacionalismo, promessa de cura e diagnóstico a distância. <span class="text-ink-500">[FALTA EVIDÊNCIA: artigos do Código de Ética Profissional do Psicólogo e resolução vigente sobre sigilo em ambiente digital, para citar com número e data]</span>
+          </p>
+          <p>
+            O mecanismo do vazamento em grupo é banal, e é por isso que ele funciona. Ninguém publica o nome do paciente. Publica-se a idade aproximada, a profissão, a cidade, o motivo da procura e uma frase marcante que a pessoa disse. Cada item isolado parece inofensivo, e a soma reconstrói a identidade para qualquer participante que conheça o serviço, a escola ou o bairro. Grupo de mensagem instantânea guarda histórico, permite captura de tela e permite encaminhamento para fora, sem registro de quem levou.
+          </p>
+          <p>
+            Discussão de caso pede enquadre próprio: supervisor identificado, consentimento, material desidentificado e um espaço em que a fala não fica gravada para sempre. O fato de todo mundo no grupo ter registro profissional não converte o grupo em supervisão, do mesmo modo que reunião de médicos em aplicativo de mensagem não vira sessão clínica. Quando a dúvida do grupo for realmente sobre conduta técnica, a resposta correta costuma ser levar o caso para supervisão, e a página sobre <a href="/guias/escolher-supervisor-clinico">como escolher supervisor clínico</a> trata desse encaminhamento.
+          </p>
+          <p>
+            Há um segundo risco, menos discutido e igualmente caro: o profissional que pede ajuda no grupo expõe o próprio limite técnico diante de colegas que podem ser concorrentes locais. Comunidade saudável protege quem pergunta. Quem participa como marca precisa entender que responder bem ali vale mais do que aparecer, e que capturar a dúvida de alguém para virar peça de conteúdo com o relato reconhecível quebra a confiança do grupo inteiro de uma vez só.
+          </p>
+        </div>
+      </section>
+
+      <figure id="o-que-circula" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">O que pode e o que não pode circular</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed">Cinco pares lado a lado. A coluna da direita reúne o que reprova a participação, por ética profissional ou por regra de plataforma.</p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="com-circula-titulo com-circula-desc" viewBox="0 0 680 350" width="680" height="350" style="min-width:680px" class="block">
+            <title id="com-circula-titulo">Cinco pares do que circula e do que fica de fora em grupo profissional</title>
+            <desc id="com-circula-desc">Duas colunas com cinco linhas. A coluna da esquerda, intitulada Circula, traz: distinção regulatória entre modalidades com a fonte na mensagem; resposta à dúvida do grupo em duas camadas, o que a norma diz e o que o mercado pratica; critério de decisão para escolher supervisão com o custo declarado; link para a página do portal depois da resposta completa, quando alguém pede aprofundamento; e pergunta honesta de quem está aprendendo. A coluna da direita, intitulada Fica de fora, traz: relato de caso com detalhe que permita reconhecimento; hipótese diagnóstica sobre pessoa descrita por terceiro; print de conversa com paciente, de prontuário ou de laudo, mesmo borrado; coleta de telefone, disparo em lista e convite automático para funil de matrícula; e uso do medo de ficar para trás como argumento de venda de curso.</desc>
+            <text x="20" y="28" font-size="15" font-weight="600" class="fill-ink-900">Circula</text>
+            <text x="360" y="28" font-size="15" font-weight="600" class="fill-ink-900">Fica de fora</text>
+            <line x1="345" y1="40" x2="345" y2="336" stroke-width="1.5" class="stroke-ink-500" />
+            {circulacao.map((c, i) => (
+              <g>
+                <rect x="20" y={46 + i * 60} width="310" height="52" rx="8" class="fill-brand-50" />
+                <text x="34" y={68 + i * 60} font-size="12" class="fill-ink-900">{c.pode1}</text>
+                <text x="34" y={86 + i * 60} font-size="12" class="fill-ink-700">{c.pode2}</text>
+                <rect x="360" y={46 + i * 60} width="300" height="52" rx="8" class="fill-surface-100" />
+                <text x="374" y={68 + i * 60} font-size="12" class="fill-ink-900">{c.nao1}</text>
+                <text x="374" y={86 + i * 60} font-size="12" class="fill-ink-700">{c.nao2}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">Pares derivados do contrato de canal de setembro de 2026, das diretrizes de WhatsApp, Telegram e Discord citadas nesta página e da obrigação de sigilo profissional do psicólogo.</figcaption>
+      </figure>
+
+      <section id="metrica" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">A métrica honesta</h2>
+        <div class="prose prose-ink max-w-none mt-3">
+          <p>
+            Quatro medidas descrevem se a presença está funcionando, e todas elas dependem da reação de outra pessoa. Resposta qualificada, quando alguém acrescenta informação em vez de agradecer. Pedido de esclarecimento, que mostra que a mensagem foi lida até o fim. Convite para explicar o tema em outro espaço, que é a forma mais confiável de reputação entre pares. E dúvida real que virou pauta publicada, que é a única medida que conecta a comunidade ao portal.
+          </p>
+          <p>
+            Três números ficam fora da contagem, por motivos diferentes. Número de membros do grupo descreve o grupo, e não o seu trabalho. Número de mensagens enviadas descreve esforço, e esforço é fácil de fabricar. Contato privado obtido sem consentimento explícito descreve uma infração, e contabilizá-lo como resultado transforma a régua em incentivo para repetir a infração. O portal mede a comunidade pelo que ela devolve em pauta, e a lista de pautas correntes está em <a href="/conteudo-social/perguntas-que-a-ia-responde">perguntas que a IA responde</a>.
+          </p>
+        </div>
+      </section>
+
+      <figure id="da-escuta" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Da escuta à pauta pública sem expor ninguém</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed">Seis passos, com um filtro no meio que descarta a pauta quando ela depende de alguém identificável.</p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="com-funil-titulo com-funil-desc" viewBox="0 0 660 300" width="660" height="300" style="min-width:660px" class="block">
+            <title id="com-funil-titulo">Percurso da dúvida ouvida em grupo até a página publicada</title>
+            <desc id="com-funil-desc">Um percurso de cinco etapas em sequência vertical e horizontal. A primeira etapa, no alto à esquerda, é Dúvida no vernáculo, registrada com as palavras da pessoa. Uma seta leva à segunda etapa, Terceira ocorrência, que exige a mesma dúvida vinda de três pessoas em grupos diferentes antes de virar padrão. Uma seta leva à terceira etapa, desenhada como um losango de decisão e chamada Descarte de identificadores, que remove quem perguntou, quando, em qual grupo, de qual cidade e qual detalhe de caso. Do losango saem duas saídas. A saída rotulada Deixa de fazer sentido leva a uma caixa final chamada Para aqui, era relato privado. A saída rotulada Continua de pé leva à quarta etapa, Pergunta pública genérica, que descreve a decisão em vez da pessoa. Da quarta etapa uma seta leva à quinta, Página publicada com fonte, data e limite, seguida do aviso único ao grupo de origem.</desc>
+            <text x="20" y="28" font-size="15" font-weight="600" class="fill-ink-900">A dúvida atravessa um filtro antes de virar página</text>
+            <rect x="20" y="52" width="150" height="60" rx="10" class="fill-brand-50 stroke-brand-300" stroke-width="1.5" />
+            <text x="34" y="76" font-size="13" font-weight="600" class="fill-ink-900">Dúvida no vernáculo</text>
+            <text x="34" y="96" font-size="12" class="fill-ink-700">nas palavras da pessoa</text>
+            <line x1="170" y1="82" x2="200" y2="82" stroke-width="2" class="stroke-ink-500" />
+            <rect x="200" y="52" width="150" height="60" rx="10" class="fill-brand-50 stroke-brand-300" stroke-width="1.5" />
+            <text x="214" y="76" font-size="13" font-weight="600" class="fill-ink-900">Terceira ocorrência</text>
+            <text x="214" y="96" font-size="12" class="fill-ink-700">três pessoas, três grupos</text>
+            <line x1="350" y1="82" x2="380" y2="82" stroke-width="2" class="stroke-ink-500" />
+            <rect x="380" y="46" width="180" height="72" rx="10" class="fill-brand-100 stroke-brand-600" stroke-width="2" />
+            <text x="394" y="72" font-size="13" font-weight="600" class="fill-ink-900">Descarte de</text>
+            <text x="394" y="90" font-size="13" font-weight="600" class="fill-ink-900">identificadores</text>
+            <text x="394" y="108" font-size="12" class="fill-ink-700">quem, quando, onde, detalhe</text>
+            <line x1="470" y1="118" x2="470" y2="152" stroke-width="2" class="stroke-ink-500" />
+            <text x="480" y="142" font-size="12" class="fill-ink-500">deixa de fazer sentido</text>
+            <rect x="380" y="152" width="180" height="50" rx="10" class="fill-surface-100 stroke-surface-200" stroke-width="1.5" />
+            <text x="394" y="174" font-size="13" font-weight="600" class="fill-ink-900">Para aqui</text>
+            <text x="394" y="192" font-size="12" class="fill-ink-700">era relato privado</text>
+            <line x1="380" y1="82" x2="340" y2="82" stroke-width="0" class="stroke-ink-500" />
+            <line x1="380" y1="230" x2="350" y2="230" stroke-width="2" class="stroke-brand-600" />
+            <text x="380" y="248" font-size="12" class="fill-ink-500">continua de pé</text>
+            <line x1="470" y1="202" x2="470" y2="230" stroke-width="2" class="stroke-brand-600" />
+            <line x1="470" y1="230" x2="380" y2="230" stroke-width="2" class="stroke-brand-600" />
+            <rect x="200" y="204" width="150" height="60" rx="10" class="fill-brand-50 stroke-brand-300" stroke-width="1.5" />
+            <text x="214" y="228" font-size="13" font-weight="600" class="fill-ink-900">Pergunta pública</text>
+            <text x="214" y="248" font-size="12" class="fill-ink-700">descreve a decisão</text>
+            <line x1="200" y1="234" x2="170" y2="234" stroke-width="2" class="stroke-brand-600" />
+            <rect x="20" y="204" width="150" height="60" rx="10" class="fill-brand-50 stroke-brand-300" stroke-width="1.5" />
+            <text x="34" y="228" font-size="13" font-weight="600" class="fill-ink-900">Página publicada</text>
+            <text x="34" y="248" font-size="12" class="fill-ink-700">fonte, data e limite</text>
+            <text x="20" y="288" font-size="13" class="fill-ink-500">Aviso ao grupo de origem uma vez, sem replicar em outros grupos.</text>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">Fluxo editorial do portal, versão de setembro de 2026, construído para cumprir a obrigação de sigilo do psicólogo e as vedações de disparo em massa das três plataformas citadas.</figcaption>
+      </figure>
+
+      <section class="scroll-mt-24">
+        <div class="space-y-4">
+          {passos.map((p, i) => (
+            <div class="rounded-2xl border border-surface-200 bg-white p-6">
+              <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">Passo {i + 1}</p>
+              <h3 class="font-display font-semibold text-lg mt-1 text-ink-900">{p.nome}</h3>
+              <p class="mt-2 text-sm text-ink-700 leading-relaxed">{p.texto}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="checklist" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Checklist antes de postar no grupo</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed">Dez itens verificáveis. Item que você não consegue apontar na mensagem reprova o envio.</p>
+        <ul class="mt-4 space-y-3 text-sm text-ink-800">
+          {checklist.map(c => (
+            <li class="flex gap-3 min-h-11 items-start">
+              <span class="text-brand-700 font-bold mt-0.5">✓</span>
+              <span class="text-ink-700">{c}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section id="perguntas" class="scroll-mt-24">
+        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none min-h-11">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer-text">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <nav aria-label="Navegação entre canais" class="rounded-2xl border border-surface-200 bg-surface-50 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-3">Continuar pelo menu</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/conteudo-social/podcast-e-audio" class="btn btn-ghost h-11">Anterior: podcast e áudio</a>
+          <a href="/conteudo-social/wikipedia-e-wikidata" class="btn btn-primary h-11">Próxima: Wikipédia e Wikidata</a>
+          <a href="/conteudo-social" class="btn btn-ghost h-11">Voltar ao hub</a>
+        </div>
+      </nav>
+
+    </div>
+
+    <aside class="lg:col-span-4 space-y-6">
+      <InPageNav headings={headings} />
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Políticas citadas nesta página</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.whatsapp.com/legal/messaging-guidelines" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">WhatsApp Messaging Guidelines</a></li>
+          <li><a href="https://telegram.org/tos" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Telegram Terms of Service</a></li>
+          <li><a href="https://discord.com/guidelines" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Discord Community Guidelines</a></li>
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Onde a escuta vira página</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/conteudo-social/dores-que-o-publico-descreve-2026" class="text-brand-700 hover:text-brand-800 font-medium">Dores que o público descreve</a></li>
+          <li><a href="/tipos-de-pos-graduacao" class="text-brand-700 hover:text-brand-800 font-medium">As modalidades de pós-graduação</a></li>
+          <li><a href="/regulacao" class="text-brand-700 hover:text-brand-800 font-medium">Regulação profissional</a></li>
+        </ul>
+        <p class="text-xs text-ink-500 mt-4 italic">Portal editorial e independente, sem vínculo institucional com escola de pós-graduação.</p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-3 w-full h-11">Ver pós-graduações no IPOG</a>
+      </div>
+    </aside>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

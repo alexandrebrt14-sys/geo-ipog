@@ -1,0 +1,575 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import InPageNav from '@components/InPageNav.astro';
+import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
+import { SITE } from '@lib/data';
+import { alexandreAuthorRef } from '@lib/schemas';
+
+const title = 'Papers de 2026: o que a literatura mudou na pauta do psicólogo brasileiro';
+const description = 'Dezenove estudos e marcos de 2025 e 2026 em IA, psicoterapia, trabalho, neuropsicologia e desenvolvimento, com achado numérico, limitação ignorada e a pauta que cada um gera.';
+
+const datePublished = '2026-09-07';
+
+// Cada linha foi conferida em fonte primaria por WebFetch/WebSearch em 07/09/2026.
+// Identificador (DOI, PMID, PMC ou numero de processo) sempre presente. Autoria so
+// aparece quando foi resolvida na fonte; caso contrario, cita-se veiculo, ano e id.
+type Estudo = {
+  eixo: string;
+  veiculo: string;
+  ano: string;
+  desenho: string;
+  achado: string;
+  limite: string;
+  pauta: string;
+};
+
+const estudos: Estudo[] = [
+  // ---------- Eixo 1: IA em saude mental ----------
+  {
+    eixo: 'IA em saúde mental',
+    veiculo: 'JAMA Network Open 2026;9(4):e266713. DOI 10.1001/jamanetworkopen.2026.6713. PMID 41979879. Shoshani e colaboradores, Reichman University, Israel.',
+    ano: '14/04/2026',
+    desenho: 'Ensaio clínico randomizado, 995 universitários israelenses com sofrimento psicológico, alocação 1:1:1 entre plataforma de IA (336), terapia de grupo presencial (331) e lista de espera (328). Doze semanas de intervenção e reavaliação três meses depois.',
+    achado: 'Ansiedade no GAD-7, escala de 0 a 21: IA contra terapia de grupo, diferença média de -2,17 (IC 95% -2,67 a -1,67); IA contra lista de espera, -2,15 (IC 95% -2,65 a -1,65). Bem-estar no WHO-5, escala de 0 a 100: +9,16 contra lista de espera (IC 95% 6,14 a 12,18).',
+    limite: 'Depressão contra a terapia de grupo ficou em -0,68 (IC 95% -1,32 a -0,04) e perdeu significância após correção para comparações múltiplas. Em sintomas de TEPT não houve diferença entre os três braços. Desfechos autorrelatados, sem avaliador clínico. Aos três meses o atrito chegou a 35,4%, e 61,0% (205 de 336) seguiam ativos na semana 12.',
+    pauta: 'O ganho da IA se concentra em sofrimento difuso de estudante. Em trauma, o número desaparece.'
+  },
+  {
+    eixo: 'IA em saúde mental',
+    veiculo: 'JMIR Mental Health 2026;13:e82642. DOI 10.2196/82642. Kuta e colaboradores.',
+    ano: '22/04/2026',
+    desenho: 'Ensaio randomizado de viabilidade com três braços em adultos recrutados online: aplicativo de terapia estruturada em terapia focada em soluções (44), ChatGPT genérico (60) e avaliação apenas (43). Três semanas, nove sessões previstas.',
+    achado: 'Sintomas depressivos no PHQ-9 contra o braço de avaliação apenas: aplicativo estruturado com d de -0,47 (p = 0,006) e ChatGPT com d de -0,44 (p = 0,02).',
+    limite: 'Ansiedade e bem-estar não se moveram em nenhum dos dois braços: GAD-7 com d de -0,37 (p = 0,11) e -0,27 (p = 0,22); WHO-5 com d de 0,12 (p = 0,53) e 0,20 (p = 0,29). A conclusão do protocolo caiu para 39% no braço estruturado (17 de 44) e 62% no ChatGPT (38 de 60). Três semanas, amostra recrutada online e digitalmente letrada.',
+    pauta: 'O comparador genérico empatou com o protocolo estruturado no único desfecho que se moveu.'
+  },
+  {
+    eixo: 'IA em saúde mental',
+    veiculo: 'Journal of Medical Internet Research 2026;28:e82677. DOI 10.2196/82677. PMID 42101333. Gong e colaboradores.',
+    ano: '08/05/2026',
+    desenho: 'Revisão sistemática e meta-análise de 29 ensaios randomizados de chatbots orientados por terapia cognitivo-comportamental em adultos com sintomas depressivos ou ansiosos, somando 5.686 participantes. Busca em nove bases até fevereiro de 2026.',
+    achado: 'Depressão pós-intervenção com g de Hedges de -0,55 (IC 95% -0,70 a -0,40). Ansiedade com g de -0,26 (IC 95% -0,37 a -0,14). No seguimento, depressão cai para -0,32 (IC 95% -0,55 a -0,09) e ansiedade para -0,19 (IC 95% -0,43 a 0,04), sem significância.',
+    limite: 'A certeza da evidência foi classificada de muito baixa a baixa. A heterogeneidade em depressão chegou a I² de 77,8%, e o intervalo de predição de 95% vai de -1,23 a 0,13, ou seja, um estudo novo pode devolver efeito nulo. Em ansiedade o intervalo de predição vai de -0,67 a 0,15.',
+    pauta: 'O número que responde se aquilo vai funcionar no seu serviço é o intervalo de predição, e ele quase nunca aparece na cobertura.'
+  },
+  {
+    eixo: 'IA em saúde mental',
+    veiculo: 'npj Digital Medicine 2026. DOI 10.1038/s41746-026-02566-w. Sohn, Ha, Park, Kim, Lee, Oh, Lee e Kim.',
+    ano: '25/03/2026',
+    desenho: 'Revisão sistemática e meta-análise independente de 39 ensaios randomizados de chatbots em sintomas depressivos e ansiosos, com 7.401 participantes na análise de depressão e 7.621 na de ansiedade.',
+    achado: 'Depressão com g de 0,31 (IC 95% 0,17 a 0,46) e ansiedade com g de 0,28 (IC 95% 0,05 a 0,51). O efeito foi maior em população clínica e subclínica do que em população não clínica (p = 0,001).',
+    limite: '35 dos 39 estudos foram classificados como de alto risco de viés, houve viés de publicação detectado em depressão, a heterogeneidade ficou em I² de 85,34% em depressão e 94,32% em ansiedade, e apenas 16 dos 39 estudos registraram eventos adversos de forma sistemática.',
+    pauta: 'Duas meta-análises do mesmo objeto, publicadas com seis semanas de diferença, discordam em 0,24 de g em depressão. A discordância mora nos critérios de inclusão.'
+  },
+  {
+    eixo: 'IA em saúde mental',
+    veiculo: 'Communications Medicine. DOI 10.1038/s43856-025-01321-8. Registro NCT06459128.',
+    ano: '15/01/2026',
+    desenho: 'Ensaio randomizado pré-registrado, dois braços, 540 adultos residentes nos Estados Unidos com GAD-7 igual ou acima de 7 ou PHQ-9 igual ou acima de 9. Aplicativo de terapia cognitivo-comportamental com IA generativa contra apostilas digitais estáticas em PDF.',
+    achado: 'O braço com IA generativa foi usado 2,4 vezes mais em frequência e por 3,8 vezes mais tempo. A eficácia sobre sintomas ficou semelhante entre os dois braços.',
+    limite: 'O desfecho que se moveu foi engajamento, e engajamento não é desfecho clínico. Amostra autosselecionada de pessoas dispostas a usar terapia cognitivo-comportamental autoaplicada. Sem seguimento longo.',
+    pauta: 'Mais tempo de tela terapêutica sem ganho clínico adicional é o resultado que separa métrica de produto de métrica de saúde.'
+  },
+  {
+    eixo: 'IA em saúde mental',
+    veiculo: 'Journal of Affective Disorders 2026. PMID 41633449. Ensaio do aplicativo PATH.',
+    ano: '2026',
+    desenho: 'Ensaio randomizado exploratório com 316 participantes britânicos de 19 a 70 anos, comparando aplicativo com IA contra o site oficial de autoajuda do NHS. GAD-7 e PHQ-9 medidos no início e em 2, 8 e 12 semanas.',
+    achado: '235 dos 316 randomizados completaram a avaliação pós-intervenção, com atrito de 33,0% no braço do aplicativo.',
+    limite: 'Ensaio declarado como exploratório, não desenhado para decisão regulatória. O comparador é um site de autoajuda, portanto o estudo não responde à pergunta sobre IA contra psicoterapia. Quem permanece usando o aplicativo é quem se beneficia, o que infla o resultado do seguimento.',
+    pauta: 'Um terço de abandono no braço da tecnologia é o dado operacional que decide se aquilo cabe num serviço público.'
+  },
+
+  // ---------- Eixo 2: psicoterapia humana ----------
+  {
+    eixo: 'Psicoterapia humana',
+    veiculo: 'Meta-análise multinível de correlação sobre aliança em intervenções pela internet. PMID 42080859.',
+    ano: '04/2026',
+    desenho: 'Revisão sistemática com 82 tamanhos de efeito aninhados em 40 amostras independentes, somando 2.864 participantes de intervenções psicológicas pela internet.',
+    achado: 'Associação global entre aliança e desfecho de r igual a 0,21. Por subescala, tarefa com r de 0,25 e meta com r de 0,19 predizem melhor o desfecho do que vínculo, com r de 0,12.',
+    limite: 'Correlação entre aliança e desfecho não estabelece direção causal: paciente que melhora tende a relatar aliança melhor. Nenhum dos moderadores testados (diagnóstico, quem avalia a aliança, contato presencial, abordagem, ano e país) influenciou sistematicamente o efeito.',
+    pauta: 'No ambiente digital, o que prediz desfecho é acordo sobre tarefa e meta. O vínculo afetivo pesa menos do que a conversa pública sugere.'
+  },
+  {
+    eixo: 'Psicoterapia humana',
+    veiculo: 'BMJ Open 2025. PMID 40669917. PMC12273124. Protocolo do MAFT-D, treinamento modificado focado em aliança com a técnica do duplo.',
+    ano: '16/07/2025',
+    desenho: 'Protocolo de ensaio randomizado multicêntrico, cego para paciente e avaliador, com 120 terapeutas em formação e 240 pacientes com transtorno depressivo, em 17 centros de formação em terapia cognitivo-comportamental ou psicodinâmica.',
+    achado: 'Nenhum. As duas hipóteses primárias, redução maior de sintomas depressivos e taxa menor de abandono do início até 20 semanas, ainda serão testadas.',
+    limite: 'É protocolo. Todo número associado a este estudo em texto de divulgação é hipótese de cálculo amostral, e não resultado medido. Confundir os dois transforma expectativa em achado.',
+    pauta: 'A pauta honesta aqui é sobre o desenho, não sobre o efeito: por que o campo levou tanto tempo para randomizar treinamento de reparo de ruptura.'
+  },
+  {
+    eixo: 'Psicoterapia humana',
+    veiculo: 'Journal of Clinical Psychology: In Session. DOI 10.1002/jclp.70043. Nissen-Lie.',
+    ano: '30/08/2025',
+    desenho: 'Comentário sobre prática deliberada aplicada à supervisão em psicoterapia. Sem amostra e sem desfecho medido.',
+    achado: 'A peça argumenta que a supervisão tradicional deixa passar a oportunidade de praticar habilidades clínicas específicas e de converter reflexão em ação.',
+    limite: 'Comentário editorial em número temático não sustenta afirmação de eficácia. Citá-lo como se fosse evidência de efeito é o erro de proveniência mais comum em conteúdo sobre formação clínica.',
+    pauta: 'O gênero do texto que você cita muda o peso da sua frase. Comentário sustenta pergunta, não conclusão.'
+  },
+
+  // ---------- Eixo 3: trabalho e riscos psicossociais ----------
+  {
+    eixo: 'Trabalho e riscos psicossociais',
+    veiculo: 'Ministério da Previdência Social, dados de 2025 divulgados em 26/01/2026 e apurados pelo G1.',
+    ano: '26/01/2026',
+    desenho: 'Registro administrativo de benefícios por incapacidade temporária concedidos pelo INSS ao longo de 2025, com recorte por código diagnóstico e por sexo.',
+    achado: '546.254 benefícios por transtornos mentais e comportamentais em 2025, alta de 15% sobre 2024 e segundo recorde consecutivo. Transtornos de ansiedade somaram 166.489 e depressão 126.608. Mulheres respondem por mais de 60% do total.',
+    limite: 'O registro só alcança afastamento acima de 15 dias que chega ao INSS. Fica de fora licença curta, trabalhador informal, servidor com regime próprio e presenteísmo. A série depende da codificação diagnóstica feita pela perícia, o que abre espaço para viés de classificação. Concessão de benefício não é diagnóstico de nexo com o trabalho.',
+    pauta: 'A curva pode estar medindo reconhecimento institucional crescente tanto quanto adoecimento crescente. As duas leituras cabem no mesmo número.'
+  },
+  {
+    eixo: 'Trabalho e riscos psicossociais',
+    veiculo: 'Ministério da Previdência Social, dados de 2025 divulgados em 26/01/2026 e apurados pelo G1.',
+    ano: '26/01/2026',
+    desenho: 'Mesmo registro administrativo, agora no total de benefícios por incapacidade temporária de todas as causas em 2025.',
+    achado: 'Mais de 4,1 milhões de benefícios por incapacidade temporária em 2025, o maior número em cinco anos e alta de 17,1% sobre 2024. Transtornos mentais aparecem como segunda causa, atrás de doenças da coluna.',
+    limite: 'O custo de R$ 3,5 bilhões que circulou junto com a notícia é estimativa da reportagem, calculada por afastamento médio de três meses a cerca de R$ 2.140 por benefício. Não é número oficial da Previdência e não deve ser citado como se fosse.',
+    pauta: 'Quando o total sobe 17,1% e a saúde mental sobe 15%, a participação relativa cai. Essa conta raramente aparece na cobertura.'
+  },
+  {
+    eixo: 'Trabalho e riscos psicossociais',
+    veiculo: 'Observatório de Segurança e Saúde no Trabalho do SmartLab, iniciativa do Ministério Público do Trabalho com a Organização Internacional do Trabalho, sobre registros do INSS. Divulgação da ONU Brasil em 17/04/2025.',
+    ano: '17/04/2025',
+    desenho: 'Série histórica de benefícios por incapacidade associados a transtornos mentais, com comparação entre 2022 e 2024.',
+    achado: 'Passagem de 201.000 benefícios em 2022 para 472.000 em 2024, alta de 134% em dois anos. Entre afastamentos de natureza acidentária, reações ao estresse responderam por 28,6%, ansiedade por 27,4% e episódios depressivos por 25,1%.',
+    limite: 'A janela escolhida começa em 2022, ano ainda deprimido pela pandemia, o que amplifica a variação percentual. A série não separa transtorno com nexo ocupacional reconhecido de transtorno de causa múltipla, e não ajusta por mudança na composição da força de trabalho.',
+    pauta: 'Percentual de dois anos com base pandêmica pede a série longa ao lado. Sem ela, a manchete cresce sozinha.'
+  },
+  {
+    eixo: 'Trabalho e riscos psicossociais',
+    veiculo: 'Norma Regulamentadora 1. Portaria MTE nº 1.419, de 27/08/2024, e Portaria MTE nº 765, de 15/05/2025.',
+    ano: '26/05/2026',
+    desenho: 'Alteração normativa que inclui expressamente os fatores de riscos psicossociais relacionados ao trabalho no Gerenciamento de Riscos Ocupacionais, aplicável ao universo de empregadores regidos pela CLT.',
+    achado: 'A fase de fiscalização com possibilidade de sanção começou em 26 de maio de 2026, após a prorrogação dada pela Portaria nº 765. O Ministério confirmou o critério de dupla visita nos 90 dias seguintes, com atuação de caráter orientador.',
+    limite: 'A norma exige gerenciamento e não fixa metodologia, instrumento nem lista de verificação nacional para risco psicossocial. Isso abre espaço para consultoria superficial e para inventário de risco montado como defesa jurídica.',
+    pauta: 'A ausência de método padronizado é a vaga real da psicologia organizacional nesse ciclo, e também o risco de captura.'
+  },
+  {
+    eixo: 'Trabalho e riscos psicossociais',
+    veiculo: 'Supremo Tribunal Federal, ADPF 1316, relator ministro André Mendonça, proposta pela Confederação Nacional dos Estabelecimentos de Ensino.',
+    ano: '18/08/2026',
+    desenho: 'Liminar de 25 de junho de 2026 suspendendo por 90 dias multas e demais sanções ligadas à obrigatoriedade de identificar, avaliar e gerenciar riscos psicossociais, referendada por unanimidade em sessão virtual do Plenário encerrada em 18 de agosto de 2026.',
+    achado: 'As diretrizes da NR-1 continuam válidas. As punições por descumprimento estão suspensas enquanto durar a negociação, com mesa de conciliação aberta entre governo, empregadores e trabalhadores.',
+    limite: 'Muita comunicação de mercado ainda vende adequação à NR-1 com o argumento da multa. A multa está suspensa, e a obrigação permanece. Os dois fatos convivem e precisam aparecer juntos.',
+    pauta: 'O argumento de venda por multa perdeu a base em agosto de 2026. O argumento por dever legal e por dado de afastamento continua de pé.'
+  },
+
+  // ---------- Eixo 4: neuropsicologia e avaliacao ----------
+  {
+    eixo: 'Neuropsicologia e avaliação',
+    veiculo: 'Autism Research 2025;18:1651-1663. DOI 10.1002/aur.70073. PMID 40546237. Diemer e colaboradores.',
+    ano: '2025',
+    desenho: 'Estudo comparativo observacional com 1.424 mulheres autistas adultas, contrastando quem recebeu diagnóstico na infância com quem recebeu na vida adulta.',
+    achado: 'No grupo com diagnóstico adulto: ansiedade em 69,87%, depressão em 61,79%, transtorno alimentar em 17,28% e uso de substâncias em 8,85%, todos acima do grupo com diagnóstico infantil. A idade média de diagnóstico foi 9,6 anos no primeiro grupo e 31,8 anos no segundo. Na amostra completa, 34% relataram ideação suicida e 21% automutilação.',
+    limite: 'Viés de seleção forte, sem ajuste por uso prévio de serviços de saúde. Quem chega ao diagnóstico aos 31,8 anos passou por duas décadas de encaminhamentos, e parte da comorbidade medida pode ser consequência desse percurso, e não característica do quadro.',
+    pauta: 'Comorbidade alta em diagnóstico tardio pode estar medindo o tempo de exposição a serviço inadequado.'
+  },
+  {
+    eixo: 'Neuropsicologia e avaliação',
+    veiculo: 'Diretriz de prática clínica da Alzheimer’s Association sobre biomarcadores em sangue, publicada em Alzheimer’s & Dementia. DOI 10.1002/alz.70535. Apresentada na AAIC de julho de 2025.',
+    ano: '07/2025',
+    desenho: 'Primeira diretriz de prática clínica da entidade sobre uso de biomarcadores plasmáticos na investigação diagnóstica de suspeita de doença de Alzheimer, restrita a serviço especializado.',
+    achado: 'Recomendação por desempenho, sem marca: uso como triagem exige sensibilidade igual ou acima de 90% e especificidade igual ou acima de 75% para descartar patologia; uso confirmatório, no lugar de PET amiloide ou de biomarcador liquórico, exige 90% nos dois parâmetros.',
+    limite: 'A diretriz não cobre rastreio populacional, não cobre uso fora de serviço especializado e não cobre pessoa sem queixa cognitiva ou com queixa apenas subjetiva. Traz declaração de boa prática segundo a qual o exame vem depois da avaliação clínica completa, jamais no lugar dela.',
+    pauta: 'O exame de sangue entra depois da avaliação neuropsicológica, e apenas em serviço especializado. A cobertura de imprensa costuma inverter a ordem.'
+  },
+  {
+    eixo: 'Neuropsicologia e avaliação',
+    veiculo: 'Estudo de composto cognitivo otimizado breve (BOCC) contra o MoCA. PMC12742428.',
+    ano: '2025',
+    desenho: 'Desenvolvimento e validação de composto cognitivo de quatro itens, com aplicação em 4 a 5 minutos, comparado ao MoCA, que leva de 10 a 14 minutos, para detecção de comprometimento cognitivo leve e demência inicial.',
+    achado: 'Para predizer conversão para demência em seis anos, o composto atingiu área sob a curva de 0,95, contra 0,88 do diagnóstico clínico de especialistas. Na detecção de demência leve, 0,99 contra 0,95 do MoCA.',
+    limite: 'A coorte de derivação e a de validação não ficaram identificadas na conferência feita para esta página, portanto a área sob a curva não viaja para fora do contexto original. Área sob a curva alta em amostra com prevalência alta de comprometimento não se traduz em valor preditivo positivo alto em população geral.',
+    pauta: 'Sensibilidade e especificidade não dependem da prevalência. Valor preditivo positivo depende, e é ele que decide o que você diz ao paciente.'
+  },
+
+  // ---------- Eixo 5: desenvolvimento e envelhecimento ----------
+  {
+    eixo: 'Desenvolvimento e envelhecimento',
+    veiculo: 'JAMA 2025;334(21):1948-1950. DOI 10.1001/jama.2025.16613. PMID 41082212. Nagata e colaboradores.',
+    ano: '13/10/2025',
+    desenho: 'Análise longitudinal de 6.554 adolescentes de 9 a 13 anos do estudo ABCD, com trajetórias de uso de redes sociais e testes cognitivos dois anos depois.',
+    achado: 'Três trajetórias: sem uso ou uso muito baixo em 57,6% da amostra (+0,3 hora por dia aos 13 anos), uso baixo crescente em 36,6% (+1,3 hora) e uso alto crescente em 5,8% (+3,0 horas). Comparando alto crescente com baixo crescente, em escalas de média 100: memória de sequência de figuras -2,48 pontos (103,0 contra 105,4), vocabulário por figuras -1,84 (100,3 contra 102,1), leitura oral -0,29 (100,5 contra 100,8) e composto total -1,0 (101,8 contra 102,8).',
+    limite: 'Os próprios autores listam uso autorrelatado, confundimento residual e desenho observacional que impede afirmar que a trajetória causa o desempenho pior. As diferenças ficam entre 0,3 e 2,5 pontos em escalas cuja média é 100 e cujo desvio padrão típico é 15.',
+    pauta: 'A magnitude é a notícia. Uma diferença de 1 ponto num composto de média 100 não sustenta manchete de colapso cognitivo.'
+  },
+  {
+    eixo: 'Desenvolvimento e envelhecimento',
+    veiculo: 'Pediatrics Open Science 2026;2(1):1. DOI 10.1542/pedsos.2025-000922. Nivins, Mooney, Nigg e Klingberg.',
+    ano: '03/2026',
+    desenho: 'Estudo longitudinal com 8.324 crianças do estudo ABCD, 53% meninos, idade média de 9,9 anos no início, com quatro seguimentos anuais e incorporação de escore genético.',
+    achado: 'O uso médio diário de redes sociais sobe de cerca de 30 minutos aos 9 anos para cerca de 2,5 horas aos 13. A associação com sintomas de desatenção aparece de forma consistente ao longo dos quatro anos, e os autores a descrevem como pequena no nível individual, com possível relevância no nível populacional.',
+    limite: 'Associação pequena, medida por autorrelato, sem randomização. A direção causal não está resolvida: criança com mais desatenção também pode migrar mais para redes sociais. O escore genético entra como covariável, e não como prova de mecanismo.',
+    pauta: 'Efeito pequeno no indivíduo com efeito possível na população é uma distinção estatística que quase nunca sobrevive à manchete.'
+  }
+];
+
+const eixos = [
+  'IA em saúde mental',
+  'Psicoterapia humana',
+  'Trabalho e riscos psicossociais',
+  'Neuropsicologia e avaliação',
+  'Desenvolvimento e envelhecimento'
+];
+
+// ---- Figura 1: tamanhos de efeito com o comparador ao lado ----
+const efeitos = [
+  { rot: 'Chatbot de TCC, depressão', comp: 'Contra controles mistos, 29 ECR, 5.686 pessoas (JMIR, 2026)', val: 0.55, serie: 'a' },
+  { rot: 'App estruturado, depressão', comp: 'Contra avaliação apenas, 44 contra 43 pessoas (JMIR Ment Health, 2026)', val: 0.47, serie: 'b' },
+  { rot: 'ChatGPT genérico, depressão', comp: 'Contra avaliação apenas, 60 contra 43 pessoas (JMIR Ment Health, 2026)', val: 0.44, serie: 'b' },
+  { rot: 'Chatbot, depressão', comp: 'Contra controles mistos, 39 ECR, 7.401 pessoas (npj Digital Medicine, 2026)', val: 0.31, serie: 'a' },
+  { rot: 'Chatbot, ansiedade', comp: 'Contra controles mistos, 39 ECR, 7.621 pessoas (npj Digital Medicine, 2026)', val: 0.28, serie: 'a' },
+  { rot: 'Chatbot de TCC, ansiedade', comp: 'Contra controles mistos, 29 ECR, 5.686 pessoas (JMIR, 2026)', val: 0.26, serie: 'a' }
+];
+const X0 = 330;
+const XMAX = 900;
+const escalaEfeito = (v: number) => X0 + (v / 0.6) * (XMAX - X0);
+
+// ---- Figura 2: linha do tempo ----
+const linhaDoTempo = [
+  { data: '17/04/2025', texto: 'ONU Brasil divulga a série do SmartLab: benefícios por transtorno mental passam de 201 mil em 2022 para 472 mil em 2024.' },
+  { data: '07/2025', texto: 'A Alzheimer’s Association publica a primeira diretriz de biomarcadores em sangue, restrita a serviço especializado.' },
+  { data: '16/07/2025', texto: 'BMJ Open publica o protocolo do MAFT-D, com 120 terapeutas e 240 pacientes. Nenhum resultado ainda.' },
+  { data: '13/10/2025', texto: 'JAMA publica as trajetórias de redes sociais e cognição em 6.554 adolescentes do ABCD.' },
+  { data: '15/01/2026', texto: 'Communications Medicine mostra engajamento 2,4 vezes maior com IA generativa e eficácia semelhante, em 540 adultos.' },
+  { data: '26/01/2026', texto: 'A Previdência divulga 546.254 benefícios por transtornos mentais em 2025, dentro de 4,1 milhões no total.' },
+  { data: '03/2026', texto: 'Pediatrics Open Science publica o seguimento de quatro anos de 8.324 crianças sobre mídia digital e desatenção.' },
+  { data: '14/04/2026', texto: 'JAMA Network Open publica o ensaio com 995 universitários: IA acima da terapia de grupo em ansiedade, empate em TEPT.' },
+  { data: '22/04/2026', texto: 'JMIR Mental Health publica o ensaio de viabilidade de três braços: ChatGPT empata com o app estruturado em depressão.' },
+  { data: '08/05/2026', texto: 'JMIR publica a meta-análise de 29 ensaios, com certeza de evidência muito baixa a baixa.' },
+  { data: '26/05/2026', texto: 'A NR-1 entra em fase de fiscalização com possibilidade de sanção sobre riscos psicossociais.' },
+  { data: '18/08/2026', texto: 'O Plenário do STF referenda a suspensão das sanções da NR-1 na ADPF 1316. As diretrizes seguem válidas.' }
+];
+
+// ---- Figura 3: matriz forca de evidencia contra ruido de imprensa ----
+// Classificacao editorial deste portal, com criterio declarado no figcaption.
+const matriz = [
+  { rot: 'INSS 2025', x: 78, y: 88, nota: 'Registro administrativo completo, cobertura nacional intensa' },
+  { rot: 'JAMA, ABCD', x: 82, y: 80, nota: 'Coorte grande, efeito pequeno, cobertura intensa' },
+  { rot: 'JAMA Netw Open, IA', x: 72, y: 72, nota: 'ECR de 995, cobertura intensa' },
+  { rot: 'JMIR, 29 ECR', x: 60, y: 30, nota: 'Meta-análise com certeza baixa, cobertura discreta' },
+  { rot: 'npj, 39 ECR', x: 58, y: 22, nota: 'Meta-análise independente, cobertura discreta' },
+  { rot: 'Diretriz de biomarcador', x: 86, y: 40, nota: 'Diretriz formal, cobertura média' },
+  { rot: 'MAFT-D, protocolo', x: 18, y: 18, nota: 'Sem resultado, cobertura mínima' },
+  { rot: 'BOCC contra MoCA', x: 30, y: 34, nota: 'Coorte não identificada na conferência' }
+];
+
+const decisoes = [
+  {
+    pergunta: 'O texto vai citar um percentual?',
+    criterio: 'Escreva origem, data, método e denominador na mesma frase. Sem os quatro, o percentual sai e a afirmação encolhe até o tamanho do que se sabe.'
+  },
+  {
+    pergunta: 'O estudo é protocolo, comentário ou editorial?',
+    criterio: 'Use para levantar pergunta e para descrever o desenho. Nunca para sustentar conclusão de efeito. O MAFT-D e o comentário de Nissen-Lie estão nesta faixa.'
+  },
+  {
+    pergunta: 'Existe intervalo de predição publicado?',
+    criterio: 'Cite o intervalo de predição junto com o de confiança. Em depressão, a meta-análise de 29 ensaios vai de -1,23 a 0,13, e essa faixa responde à pergunta que o leitor tem.'
+  },
+  {
+    pergunta: 'A comparação é contra lista de espera ou contra tratamento ativo?',
+    criterio: 'Diga o comparador antes de dizer o número. A mesma intervenção muda de tamanho quando a régua muda, e a régua é a informação clínica.'
+  }
+];
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${SITE.url}/conteudo-social/papers-2026/#article`,
+      url: `${SITE.url}/conteudo-social/papers-2026/`,
+      headline: 'Papers de 2026: o que a literatura mudou na pauta do psicólogo brasileiro',
+      description,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      author: alexandreAuthorRef,
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+      datePublished,
+      about: 'Produção científica recente em psicologia, saúde mental e IA, com limitação declarada e pauta editorial',
+      mainEntity: { '@id': `${SITE.url}/conteudo-social/papers-2026/#lista-estudos` }
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${SITE.url}/conteudo-social/papers-2026/#lista-estudos`,
+      name: 'Estudos e marcos de 2025 e 2026 que mudaram a pauta',
+      description: 'Dezenove estudos, diretrizes e decisões, cada um com identificador verificável, achado numérico, limitação e pauta.',
+      inLanguage: 'pt-BR',
+      numberOfItems: estudos.length,
+      itemListOrder: 'https://schema.org/ItemListUnordered',
+      itemListElement: estudos.map((e, i) => ({
+        '@type': 'ListItem',
+        '@id': `${SITE.url}/conteudo-social/papers-2026/#estudo-${i + 1}`,
+        position: i + 1,
+        name: e.veiculo,
+        description: e.achado
+      }))
+    }
+  ]
+};
+
+const navHeadings = [
+  { id: 'tese', text: 'A tese: o comparador mudou, o aparelho quase não', level: 2 },
+  { id: 'radar', text: 'Dezenove estudos, por eixo', level: 2 },
+  { id: 'efeitos', text: 'Tamanho de efeito com o comparador ao lado', level: 2 },
+  { id: 'linha-do-tempo', text: 'Dezesseis meses em ordem', level: 2 },
+  { id: 'nao-sustenta', text: 'O que este radar não sustenta', level: 2 },
+  { id: 'matriz', text: 'Força de evidência contra ruído de imprensa', level: 2 },
+  { id: 'segunda-feira', text: 'O que fazer com isso na segunda-feira', level: 2 },
+  { id: 'continuar', text: 'Continuar por aqui', level: 2 }
+];
+---
+
+<Base title={title} description={description} pageType="article" datePublished={datePublished}>
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Conteúdo & Social', href: '/conteudo-social/' },
+        { label: 'Papers de 2026' }
+      ]} />
+      <span class="section-eyebrow mt-3">Inteligência editorial · Radar de produção científica</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Papers de 2026: o que a literatura mudou na pauta do psicólogo brasileiro</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Dezenove estudos, diretrizes e decisões de 2025 e 2026, com o identificador conferido, o achado numérico, a limitação que a cobertura costuma deixar de fora e a pauta que cada um libera. A conversão de achado em ângulo por canal está no <a href="/conteudo-social/radar-de-evidencias/" class="text-brand-700 hover:text-brand-800 font-semibold">Radar de evidências</a>, que esta página não repete.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <div class="lg:col-span-3 order-2 lg:order-1">
+      <InPageNav headings={navHeadings} />
+    </div>
+
+    <article class="lg:col-span-9 order-1 lg:order-2 space-y-12">
+
+      <YMYLDisclaimer domain="saude-mental" reviewerName="Larissa Caramaschi" reviewerHref="/autismo/sobre-larissa/" lastReviewed="2026-09-07" />
+
+      <TLDR
+        resposta="Dois ensaios publicados com oito dias de diferença em abril de 2026 sustentam leituras opostas sobre a mesma pergunta, e a diferença está no comparador. Em 14 de abril, o JAMA Network Open registrou uma plataforma de IA acima da terapia de grupo presencial em ansiedade, com diferença média de -2,17 pontos no GAD-7 entre 995 universitários. Em 22 de abril, o JMIR Mental Health registrou o ChatGPT genérico empatando com um aplicativo de terapia estruturada em depressão, com d de -0,44 contra -0,47, os dois contra um braço de avaliação apenas."
+        fontes={['JAMA Network Open 2026;9(4):e266713, DOI 10.1001/jamanetworkopen.2026.6713', 'JMIR Mental Health 2026;13:e82642, DOI 10.2196/82642']}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="tese" class="section-h text-2xl">A tese: o comparador mudou, o aparelho quase não</h2>
+        <p>
+          Em 14 de abril de 2026, o JAMA Network Open publicou um ensaio randomizado com 995 universitários israelenses em sofrimento psicológico, alocados um para um para um entre plataforma de IA, terapia de grupo presencial e lista de espera. A plataforma superou a terapia de grupo em ansiedade, com diferença média de -2,17 pontos no GAD-7, escala de 0 a 21 (IC 95% -2,67 a -1,67). Oito dias depois, o JMIR Mental Health publicou um ensaio de viabilidade de três braços com adultos recrutados online, no qual o ChatGPT sem protocolo clínico produziu d de -0,44 em sintomas depressivos e o aplicativo de terapia estruturada produziu -0,47, os dois contra o mesmo braço de avaliação apenas, em 44 e 60 participantes contra 43.
+        </p>
+        <p>
+          Os dois estudos foram lidos na imprensa como a mesma notícia. Eles medem coisas diferentes. O primeiro comparou a IA com uma intervenção humana de baixa intensidade e ganhou em ansiedade; o segundo comparou dois usos de IA entre si e não achou diferença. O que separa os números é a régua contra a qual cada um foi medido, e o campo mudou essa régua duas vezes em dezoito meses.
+        </p>
+        <p>
+          A consequência prática aparece quando as duas melhores sínteses do ano se encontram. A meta-análise publicada no Journal of Medical Internet Research em 8 de maio de 2026, com 29 ensaios randomizados e 5.686 participantes, registrou g de -0,55 em depressão (IC 95% -0,70 a -0,40). A meta-análise publicada em npj Digital Medicine em 25 de março de 2026, com 39 ensaios e 7.401 participantes na análise de depressão, registrou g de 0,31 (IC 95% 0,17 a 0,46). Mesmo objeto, seis semanas de distância, diferença de 0,24 em g. Nenhuma das duas está errada. As duas usaram critérios de inclusão distintos, e é isso que o leitor precisa saber antes de repetir qualquer um dos dois números.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="radar" class="section-h text-2xl">Dezenove estudos, por eixo</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed max-w-3xl">
+          Cada linha traz o identificador que permite abrir a fonte, o desenho com o denominador, o achado numérico, a limitação que costuma sumir na cobertura e a pauta editorial que o estudo libera. Vários artigos do levantamento de origem estavam sem autoria resolvida; nesses casos a citação usa veículo, ano e identificador do artigo, e nenhum nome foi atribuído sem confirmação na fonte.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold text-left">
+              <tr>
+                <th class="px-4 py-3 w-64">Veículo e identificador</th>
+                <th class="px-4 py-3 w-24">Data</th>
+                <th class="px-4 py-3 w-72">Desenho e N</th>
+                <th class="px-4 py-3 w-80">Achado numérico principal</th>
+                <th class="px-4 py-3 w-80">A limitação que a imprensa ignora</th>
+                <th class="px-4 py-3 w-64">A pauta que ele gera</th>
+              </tr>
+            </thead>
+            {eixos.map(eixo => (
+              <tbody class="divide-y divide-surface-200">
+                <tr class="bg-brand-50/40">
+                  <th colspan="6" scope="colgroup" class="px-4 py-2 text-left text-xs uppercase tracking-wider font-bold text-brand-800">{eixo}</th>
+                </tr>
+                {estudos.filter(e => e.eixo === eixo).map(e => (
+                  <tr class="align-top">
+                    <td class="px-4 py-3 font-semibold text-ink-900">{e.veiculo}</td>
+                    <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{e.ano}</td>
+                    <td class="px-4 py-3 text-ink-700">{e.desenho}</td>
+                    <td class="px-4 py-3 text-ink-700">{e.achado}</td>
+                    <td class="px-4 py-3 text-ink-700">{e.limite}</td>
+                    <td class="px-4 py-3 text-ink-700">{e.pauta}</td>
+                  </tr>
+                ))}
+              </tbody>
+            ))}
+          </table>
+        </div>
+      </div>
+
+      <figure>
+        <h2 id="efeitos" class="section-h text-2xl">Tamanho de efeito com o comparador ao lado</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed max-w-3xl">O número sozinho não informa. A barra traz o valor absoluto do tamanho de efeito, e a linha abaixo dela traz contra o que aquele efeito foi medido e em quantas pessoas.</p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="papers-efeitos-titulo papers-efeitos-desc"
+               viewBox="0 0 960 420" width="960" height="420" style="min-width:960px" class="block">
+            <title id="papers-efeitos-titulo">Tamanhos de efeito de intervenções digitais em depressão e ansiedade, com o comparador de cada um</title>
+            <desc id="papers-efeitos-desc">Seis barras horizontais com o valor absoluto do tamanho de efeito, em escala de zero a zero vírgula seis. Chatbot de terapia cognitivo-comportamental em depressão aparece em zero vírgula cinquenta e cinco, medido contra controles mistos em vinte e nove ensaios randomizados com cinco mil seiscentas e oitenta e seis pessoas, segundo a meta-análise do Journal of Medical Internet Research de 2026. Aplicativo estruturado em depressão aparece em zero vírgula quarenta e sete, medido contra um braço de avaliação apenas com quarenta e quatro pessoas contra quarenta e três, segundo o ensaio do JMIR Mental Health de 2026. ChatGPT genérico em depressão aparece em zero vírgula quarenta e quatro, medido contra o mesmo braço de avaliação apenas com sessenta pessoas contra quarenta e três, no mesmo ensaio. Chatbot em depressão aparece em zero vírgula trinta e um, medido contra controles mistos em trinta e nove ensaios com sete mil quatrocentas e uma pessoas, segundo a meta-análise de npj Digital Medicine de 2026. Chatbot em ansiedade aparece em zero vírgula vinte e oito, medido contra controles mistos em trinta e nove ensaios com sete mil seiscentas e vinte e uma pessoas, na mesma meta-análise. Chatbot de terapia cognitivo-comportamental em ansiedade aparece em zero vírgula vinte e seis, medido contra controles mistos em vinte e nove ensaios com cinco mil seiscentas e oitenta e seis pessoas, na meta-análise do Journal of Medical Internet Research. As barras de meta-análise usam um tom e as barras do ensaio de viabilidade usam outro, e a leitura pretendida é que efeitos medidos contra braço de avaliação apenas ficam no meio da faixa, entre os dois valores de meta-análise, apesar de terem base amostral muito menor.</desc>
+            <text x="20" y="30" font-size="16" font-weight="600" class="text-ink-900" fill="currentColor">Tamanho de efeito, valor absoluto, com o comparador declarado</text>
+            <line x1={X0} y1="52" x2={X0} y2="378" stroke-width="1.5" class="text-ink-500" stroke="currentColor" />
+            <text x={X0} y="400" font-size="13" class="text-ink-500" fill="currentColor">0,00</text>
+            <text x={escalaEfeito(0.3)} y="400" font-size="13" text-anchor="middle" class="text-ink-500" fill="currentColor">0,30</text>
+            <text x={XMAX} y="400" font-size="13" text-anchor="end" class="text-ink-500" fill="currentColor">0,60</text>
+            {efeitos.map((b, i) => (
+              <g>
+                <text x={X0 - 12} y={70 + i * 52} font-size="14" font-weight="600" text-anchor="end" class="text-ink-900" fill="currentColor">{b.rot}</text>
+                <text x={X0 - 12} y={86 + i * 52} font-size="12" text-anchor="end" class="text-ink-500" fill="currentColor">{b.comp}</text>
+                <rect x={X0} y={58 + i * 52} width={escalaEfeito(b.val) - X0} height="24" rx="4"
+                      class={b.serie === 'a' ? 'text-brand-700' : 'text-sun-500'} fill="currentColor" />
+                <text x={escalaEfeito(b.val) + 8} y={76 + i * 52} font-size="14" font-weight="600" class="text-ink-900" fill="currentColor">{b.val.toFixed(2).replace('.', ',')}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          Barras em tom de marca vêm de meta-análise; barras em tom de destaque vêm do ensaio de viabilidade de três braços. Os dois valores do ensaio de viabilidade caem entre os dois valores de meta-análise em depressão, com base amostral de 44 e 60 pessoas contra 5.686 e 7.401. Fontes: Journal of Medical Internet Research 2026;28:e82677, npj Digital Medicine 2026 (DOI 10.1038/s41746-026-02566-w) e JMIR Mental Health 2026;13:e82642.
+        </figcaption>
+      </figure>
+
+      <figure>
+        <h2 id="linha-do-tempo" class="section-h text-2xl">Dezesseis meses em ordem</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed max-w-3xl">A sequência importa porque três dos doze marcos mudam a leitura dos anteriores. O último deles, a decisão do Supremo em agosto de 2026, altera o argumento comercial que boa parte do mercado de saúde mental corporativa ainda usa.</p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="papers-timeline-titulo papers-timeline-desc"
+               viewBox="0 0 900 640" width="900" height="640" style="min-width:900px" class="block">
+            <title id="papers-timeline-titulo">Linha do tempo dos doze marcos de abril de 2025 a agosto de 2026</title>
+            <desc id="papers-timeline-desc">Linha do tempo vertical com doze marcos em ordem cronológica. Em 17 de abril de 2025, a ONU Brasil divulga a série do SmartLab, na qual os benefícios por transtorno mental passam de duzentos e um mil em 2022 para quatrocentos e setenta e dois mil em 2024. Em julho de 2025, a Alzheimer's Association publica a primeira diretriz de biomarcadores em sangue, restrita a serviço especializado. Em 16 de julho de 2025, o BMJ Open publica o protocolo do estudo MAFT-D, com cento e vinte terapeutas e duzentos e quarenta pacientes, sem nenhum resultado ainda. Em 13 de outubro de 2025, o JAMA publica as trajetórias de uso de redes sociais e desempenho cognitivo em seis mil quinhentos e cinquenta e quatro adolescentes do estudo ABCD. Em 15 de janeiro de 2026, a Communications Medicine mostra engajamento duas vírgula quatro vezes maior com inteligência artificial generativa e eficácia semelhante, em quinhentos e quarenta adultos. Em 26 de janeiro de 2026, a Previdência divulga quinhentos e quarenta e seis mil duzentos e cinquenta e quatro benefícios por transtornos mentais em 2025, dentro de quatro vírgula um milhões de benefícios no total. Em março de 2026, a Pediatrics Open Science publica o seguimento de quatro anos de oito mil trezentas e vinte e quatro crianças sobre mídia digital e desatenção. Em 14 de abril de 2026, o JAMA Network Open publica o ensaio com novecentos e noventa e cinco universitários, no qual a inteligência artificial fica acima da terapia de grupo em ansiedade e empata em transtorno de estresse pós-traumático. Em 22 de abril de 2026, o JMIR Mental Health publica o ensaio de viabilidade de três braços, no qual o ChatGPT empata com o aplicativo estruturado em depressão. Em 8 de maio de 2026, o JMIR publica a meta-análise de vinte e nove ensaios, com certeza de evidência muito baixa a baixa. Em 26 de maio de 2026, a Norma Regulamentadora 1 entra em fase de fiscalização com possibilidade de sanção sobre riscos psicossociais. Em 18 de agosto de 2026, o Plenário do Supremo Tribunal Federal referenda a suspensão das sanções da Norma Regulamentadora 1 na ADPF 1316, mantendo as diretrizes válidas.</desc>
+            <line x1="150" y1="40" x2="150" y2="612" stroke-width="2" class="text-ink-500" stroke="currentColor" />
+            {linhaDoTempo.map((m, i) => (
+              <g>
+                <text x="132" y={53 + i * 48} font-size="14" font-weight="600" text-anchor="end" class="text-ink-900" fill="currentColor">{m.data}</text>
+                <circle cx="150" cy={48 + i * 48} r="6" class="text-brand-700" fill="currentColor" />
+                <text x="172" y={53 + i * 48} font-size="13.5" class="text-ink-700" fill="currentColor">{m.texto}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">Ordem cronológica dos doze marcos citados na tabela acima, cada um com a data da publicação ou da decisão. Fontes por marco: ONU Brasil e SmartLab, Alzheimer’s & Dementia, BMJ Open, JAMA, Communications Medicine, Ministério da Previdência Social, Pediatrics Open Science, JAMA Network Open, JMIR Mental Health, Journal of Medical Internet Research, Ministério do Trabalho e Emprego e Supremo Tribunal Federal.</figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="nao-sustenta" class="section-h text-2xl">O que este radar não sustenta</h2>
+        <p>
+          Toda a lista acima já foi usada em cobertura de imprensa e em conteúdo de rede social para sustentar afirmações que os estudos não fazem. Oito delas aparecem com frequência suficiente para merecer o desmentido explícito, com o número que o desmonta ao lado.
+        </p>
+        <ol>
+          <li>
+            <strong>Que a IA supere a psicoterapia humana.</strong> O ensaio do JAMA Network Open comparou a plataforma com terapia de grupo presencial em universitários, e o ganho ficou em ansiedade. Em depressão, a diferença contra a terapia de grupo foi de -0,68 (IC 95% -1,32 a -0,04) e perdeu significância após correção para comparações múltiplas. Em sintomas de TEPT não houve diferença entre os três braços.
+          </li>
+          <li>
+            <strong>Que o efeito de chatbot se transfira para o seu serviço.</strong> A meta-análise de 29 ensaios publicada no JMIR em 8 de maio de 2026 traz intervalo de predição de 95% que vai de -1,23 a 0,13 em depressão. Um estudo novo em população nova pode devolver zero. A certeza da evidência foi classificada de muito baixa a baixa, com I² de 77,8%.
+          </li>
+          <li>
+            <strong>Que exista consenso sobre a magnitude.</strong> Duas meta-análises de 2026 sobre o mesmo objeto, com 29 e 39 ensaios, chegaram a 0,55 e 0,31 em depressão. Quem cita apenas uma das duas está reportando um recorte de critério de inclusão como se fosse o estado da arte.
+          </li>
+          <li>
+            <strong>Que engajamento seja desfecho clínico.</strong> O ensaio da Communications Medicine, com 540 adultos e registro NCT06459128, mediu uso 2,4 vezes mais frequente e 3,8 vezes mais longo, com eficácia semelhante sobre sintomas. Tempo de uso é métrica de produto.
+          </li>
+          <li>
+            <strong>Que rede social derrube a cognição do adolescente.</strong> No estudo do JAMA com 6.554 adolescentes do ABCD, a trajetória de uso alto crescente reúne 5,8% da amostra, e a diferença contra a trajetória de uso baixo crescente ficou entre 0,29 e 2,48 pontos em escalas de média 100. Os próprios autores registram desenho observacional, uso autorrelatado e confundimento residual.
+          </li>
+          <li>
+            <strong>Que a mulher autista adulta seja mais vulnerável por natureza.</strong> Os 69,87% de ansiedade no grupo com diagnóstico adulto, dentro de 1.424 mulheres, vêm de uma amostra sem ajuste por uso prévio de serviços. Entre a idade média de diagnóstico infantil, 9,6 anos, e a adulta, 31,8 anos, cabem duas décadas de encaminhamento e de tratamento errado.
+          </li>
+          <li>
+            <strong>Que o exame de sangue substitua a avaliação neuropsicológica.</strong> A diretriz da Alzheimer’s Association de julho de 2025 vale para serviço especializado, em pessoa que já tem comprometimento cognitivo, e traz declaração de boa prática segundo a qual o teste vem depois da avaliação clínica completa. Ela não cobre rastreio populacional nem uso fora de serviço especializado.
+          </li>
+          <li>
+            <strong>Que a NR-1 esteja multando empresa por risco psicossocial.</strong> A fiscalização com sanção começou em 26 de maio de 2026, e o Plenário do STF referendou em 18 de agosto de 2026, na ADPF 1316, a liminar do ministro André Mendonça que suspendeu multas e sanções por 90 dias, com mesa de conciliação aberta. As diretrizes da norma continuam válidas. As duas coisas precisam viajar na mesma frase, porque a metade de cada uma vira propaganda enganosa.
+          </li>
+        </ol>
+        <p>
+          Existe uma nona leitura, mais silenciosa e mais cara. O protocolo do MAFT-D, publicado no BMJ Open em 16 de julho de 2025 com 120 terapeutas e 240 pacientes em 17 centros, aparece em texto de divulgação como se já tivesse resultado sobre abandono. Ele é um protocolo. O desfecho será medido 20 semanas após a linha de base, e ainda não existe. Número de cálculo amostral apresentado como achado é o defeito de proveniência que contamina tudo o que o autor publicou antes.
+        </p>
+      </div>
+
+      <figure>
+        <h2 id="matriz" class="section-h text-2xl">Força de evidência contra ruído de imprensa</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed max-w-3xl">O quadrante que interessa ao editor é o inferior direito: estudo forte que quase ninguém cobriu. O quadrante superior esquerdo é o de risco: cobertura alta sobre base fraca.</p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="papers-matriz-titulo papers-matriz-desc"
+               viewBox="0 0 820 560" width="820" height="560" style="min-width:820px" class="block">
+            <title id="papers-matriz-titulo">Matriz de força de evidência contra intensidade de cobertura de imprensa, com oito itens do radar</title>
+            <desc id="papers-matriz-desc">Matriz de dois eixos. O eixo horizontal mede força de evidência, da esquerda, mais fraca, para a direita, mais forte, considerando desenho, denominador e certeza declarada. O eixo vertical mede intensidade de cobertura de imprensa, de baixo, discreta, para cima, intensa. Oito itens estão posicionados. No quadrante de evidência forte e cobertura intensa, aparecem o registro do INSS de 2025, com cobertura nacional; o estudo do JAMA sobre o ABCD, coorte grande com efeito pequeno e cobertura intensa; e o ensaio do JAMA Network Open sobre inteligência artificial, ensaio randomizado com novecentos e noventa e cinco pessoas e cobertura intensa. No quadrante de evidência forte e cobertura discreta, aparecem a meta-análise de vinte e nove ensaios do JMIR, com certeza baixa e cobertura discreta; a meta-análise independente de trinta e nove ensaios da npj Digital Medicine, com cobertura discreta; e a diretriz de biomarcador em sangue, documento formal com cobertura média. No quadrante de evidência fraca e cobertura discreta, aparecem o protocolo do MAFT-D, que ainda não tem resultado e teve cobertura mínima, e o estudo do composto cognitivo breve contra o MoCA, cuja coorte não foi identificada na conferência feita para esta página. Nenhum item do radar caiu no quadrante de evidência fraca com cobertura intensa, que é o quadrante de risco editorial. A classificação é editorial deste portal, com critério declarado na legenda.</desc>
+            <rect x="90" y="40" width="640" height="440" rx="8" class="text-ink-500" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <line x1="410" y1="40" x2="410" y2="480" stroke-width="1" stroke-dasharray="6 5" class="text-ink-500" stroke="currentColor" />
+            <line x1="90" y1="260" x2="730" y2="260" stroke-width="1" stroke-dasharray="6 5" class="text-ink-500" stroke="currentColor" />
+            <text x="106" y="62" font-size="12.5" font-weight="600" class="text-sun-500" fill="currentColor">Risco editorial: cobertura alta, base fraca</text>
+            <text x="714" y="62" font-size="12.5" font-weight="600" text-anchor="end" class="text-ink-500" fill="currentColor">Consenso ruidoso</text>
+            <text x="106" y="470" font-size="12.5" font-weight="600" class="text-ink-500" fill="currentColor">Ainda não é pauta</text>
+            <text x="714" y="470" font-size="12.5" font-weight="600" text-anchor="end" class="text-brand-700" fill="currentColor">Oportunidade: forte e pouco coberto</text>
+            <text x="410" y="512" font-size="14" text-anchor="middle" class="text-ink-900" fill="currentColor">Força de evidência: desenho, denominador e certeza declarada</text>
+            <text x="40" y="260" font-size="14" text-anchor="middle" transform="rotate(-90 40 260)" class="text-ink-900" fill="currentColor">Intensidade da cobertura de imprensa</text>
+            {matriz.map(m => (
+              <g>
+                <circle cx={90 + (m.x / 100) * 640} cy={480 - (m.y / 100) * 440} r="8" class="text-brand-700" fill="currentColor" />
+                <text x={90 + (m.x / 100) * 640} y={480 - (m.y / 100) * 440 - 14} font-size="13" font-weight="600" text-anchor="middle" class="text-ink-900" fill="currentColor">{m.rot}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          Classificação editorial deste portal, com o critério declarado: força de evidência combina desenho, denominador e certeza declarada pelos autores; intensidade de cobertura observa presença em veículo nacional entre abril de 2025 e agosto de 2026. Os pontos são posições relativas atribuídas por julgamento editorial, não medidas. Os identificadores de cada item estão na tabela acima.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="segunda-feira" class="section-h text-2xl">O que fazer com isso na segunda-feira</h2>
+        <p>
+          A tese abre com dois ensaios que se contradizem por causa do comparador, e fecha aqui: o comparador é a primeira coisa que entra no seu texto, antes do número. Quatro critérios resolvem a maior parte das decisões editoriais que este radar impõe.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {decisoes.map(d => (
+          <div class="card p-5 border-surface-200">
+            <h3 class="font-display font-semibold text-base text-ink-900">{d.pergunta}</h3>
+            <p class="text-sm text-ink-700 mt-2 leading-relaxed">{d.criterio}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Limites deste radar</p>
+        <p class="text-ink-700 leading-relaxed">
+          Dezenove itens não descrevem a produção do período, e sim o recorte que sustenta pauta editorial neste portal, escolhido por identificador verificável e por relevância para a prática brasileira. Nenhum dos ensaios de IA em saúde mental listados foi conduzido no Brasil, e nenhum incluiu amostra brasileira declarada, o que limita a transposição para o SUS e para clínica privada nacional. Os dados de afastamento vêm de registro administrativo do INSS, que só alcança quem passou pela perícia. A conferência de identificadores foi feita em 7 de setembro de 2026; para o estudo do composto cognitivo breve, a coorte de derivação não ficou identificada, e o achado aparece com essa ressalva colada.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="continuar" class="section-h text-2xl">Continuar por aqui</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/conteudo-social/radar-de-evidencias/" class="text-brand-700 hover:text-brand-800 font-medium">Radar de evidências: o mesmo material convertido em ângulo por canal</a></li>
+          <li><a href="/conteudo-social/onde-a-ia-busca/" class="text-brand-700 hover:text-brand-800 font-medium">Onde os motores generativos buscam a resposta</a></li>
+          <li><a href="/conteudo-social/kit-de-repurposing/" class="text-brand-700 hover:text-brand-800 font-medium">Kit de repurposing: do paper à peça sem distorcer o achado</a></li>
+          <li><a href="/evidencias/ia-generativa-saude-mental/" class="text-brand-700 hover:text-brand-800 font-medium">Evidência: IA generativa em saúde mental</a></li>
+          <li><a href="/evidencias/nr1-riscos-psicossociais-2026/" class="text-brand-700 hover:text-brand-800 font-medium">Evidência: NR-1 e riscos psicossociais</a></li>
+          <li><a href="/guias/avaliacao-tea-mulheres-adultas/" class="text-brand-700 hover:text-brand-800 font-medium">Guia: avaliação de TEA em mulheres adultas</a></li>
+          <li><a href="/guias/biomarcadores-plasma-alzheimer-protocolo-neuropsi-2026/" class="text-brand-700 hover:text-brand-800 font-medium">Guia: biomarcadores em plasma no protocolo neuropsicológico</a></li>
+          <li><a href="/guias/haidt-2026-update-evidencia-adolescencia-digital/" class="text-brand-700 hover:text-brand-800 font-medium">Guia: o que a evidência sobre adolescência digital sustenta</a></li>
+          <li><a href="/temas/ia-psicologia-2026/papers-2025-2026-saude-mental-ia/" class="text-brand-700 hover:text-brand-800 font-medium">Síntese técnica com DOI dos cinco papers que mudaram a leitura de IA em saúde mental</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6">
+        <p class="text-ink-700 leading-relaxed">
+          Ler comparador, denominador e intervalo de predição antes de citar um número é competência de formação. Quem trabalha com avaliação, com clínica ou com risco psicossocial encontra essa leitura crítica dentro das pós-graduações em Psicologia do IPOG, que mantém MBAs correlatos nas áreas cobertas por este radar. Este portal é editorial e independente, sem vínculo com o site oficial da instituição.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

@@ -1,0 +1,472 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import InPageNav from '@components/InPageNav.astro';
+import { SITE } from '@lib/data';
+import { alexandreAuthorRef } from '@lib/schemas';
+
+const title = 'Onde a IA busca a resposta: a superfície de terceiros e o que ela muda na sua distribuição';
+const description = 'Domínio mais citado por motor generativo, com a data da medição e o rótulo de estimativa de fornecedor, o que falta saber em português e o critério por tipo de página.';
+
+const datePublished = '2026-09-07';
+
+// Todos os percentuais desta pagina foram conferidos em 07/09/2026 na fonte que os
+// publicou. Nenhum deles vem de estudo revisado por pares: sao rastreios proprios de
+// fornecedor. O rotulo se repete no texto, na tabela e nas figuras, de proposito.
+type Motor = {
+  motor: string;
+  dominio: string;
+  share: string;
+  medicao: string;
+  fonte: string;
+  natureza: string;
+};
+
+const motores: Motor[] = [
+  {
+    motor: 'ChatGPT',
+    dominio: 'reddit.com',
+    share: 'Ordem de grandeza de 17% da participação de menção entre os domínios de topo (16,8%). Wikipédia em inglês aparece em 7,0%, Consumer Reports em 3,7% e Forbes em 3,1%.',
+    medicao: 'Edição de setembro de 2026, com atualização mensal',
+    fonte: 'Ahrefs Brand Radar, rastreio próprio sobre amostra ampla de consultas nos Estados Unidos',
+    natureza: 'Estimativa de fornecedor, obtida por rastreio proprietário. Não é estudo revisado por pares.'
+  },
+  {
+    motor: 'Google AI Overviews',
+    dominio: 'youtube.com',
+    share: 'Ordem de grandeza de 23% (22,9%). Reddit em 18,5%, Facebook em 10,1%, google.com em 8,8% e Instagram em 5,6%.',
+    medicao: 'Edição de setembro de 2026',
+    fonte: 'Ahrefs Brand Radar, mais de 3 milhões de consultas nos Estados Unidos',
+    natureza: 'Estimativa de fornecedor. O modo AI Mode do Google não tem painel público separado nas fontes conferidas.'
+  },
+  {
+    motor: 'Perplexity',
+    dominio: 'reddit.com',
+    share: 'Ordem de grandeza de 22% (21,6%). YouTube em 20,8%, Wikipédia em 6,3%, Facebook em 4,5% e Amazon em 3,6%.',
+    medicao: 'Edição de setembro de 2026',
+    fonte: 'Ahrefs Brand Radar, mais de 3,1 milhões de consultas nos Estados Unidos',
+    natureza: 'Estimativa de fornecedor. O próprio relatório descreve o caso como a concentração de fonte de topo mais alta entre os assistentes que mede.'
+  },
+  {
+    motor: 'Claude',
+    dominio: 'PubMed Central',
+    share: 'Participação por domínio não publicada. O que existe é a taxa de resposta com citação: 55%, a mais seletiva dos três modelos medidos, com cerca de 13 citações em cada resposta que cita.',
+    medicao: 'Edição de maio de 2026 do estudo, publicada em 07/05/2026',
+    fonte: 'Muck Rack, Generative Pulse, "What Is AI Reading?", mais de 25 milhões de links citados por ChatGPT, Claude e Gemini',
+    natureza: 'Estudo proprietário de fornecedor, não revisado por pares.'
+  },
+  {
+    motor: 'Microsoft Copilot',
+    dominio: 'amazon.com',
+    share: 'Ordem de grandeza de 17% (16,8%). Walmart em 12,6% e Wikipédia em inglês em 7,6%.',
+    medicao: 'Edição de setembro de 2026',
+    fonte: 'Ahrefs Brand Radar, mais de 3 milhões de consultas nos Estados Unidos',
+    natureza: 'Estimativa de fornecedor. A mistura de consultas medida é de todos os assuntos e mercado americano, portanto pesada em intenção comercial.'
+  },
+  {
+    motor: 'Gemini',
+    dominio: 'reddit.com',
+    share: 'Ordem de grandeza de 29% (28,5%). YouTube em 14,6%, Wikipédia em 8,8%, Walmart em 2,8% e Forbes em 2,7%.',
+    medicao: 'Edição de setembro de 2026',
+    fonte: 'Ahrefs Brand Radar, mais de 3 milhões de consultas nos Estados Unidos. A edição de maio de 2026 da Muck Rack também aponta o Reddit como domínio de topo do Gemini, com citação em 82% das respostas.',
+    natureza: 'Estimativa de fornecedor nas duas medições.'
+  }
+];
+
+// ---- Figura 1: share por dominio, com rotulo de fonte dentro da figura ----
+const barrasShare = [
+  { motor: 'Gemini', dominio: 'reddit.com', val: 28.5 },
+  { motor: 'Google AI Overviews', dominio: 'youtube.com', val: 22.9 },
+  { motor: 'Perplexity', dominio: 'reddit.com', val: 21.6 },
+  { motor: 'ChatGPT', dominio: 'reddit.com', val: 16.8 },
+  { motor: 'Microsoft Copilot', dominio: 'amazon.com', val: 16.8 }
+];
+const BX0 = 300;
+const BXMAX = 820;
+const escalaShare = (v: number) => BX0 + (v / 30) * (BXMAX - BX0);
+
+// ---- Figura 2: hub e satelites das superficies por motor ----
+const satelites = [
+  { rot: 'Reddit', detalhe: 'Topo em ChatGPT, Perplexity e Gemini', ang: -90 },
+  { rot: 'YouTube', detalhe: 'Topo em AI Overviews, segundo em Perplexity', ang: -30 },
+  { rot: 'Wikipédia', detalhe: 'Entre 6% e 9% em quatro motores', ang: 30 },
+  { rot: 'Comércio', detalhe: 'Amazon e Walmart lideram no Copilot', ang: 90 },
+  { rot: 'Jornalismo', detalhe: '27% dos links, com mais de 20 mil veículos', ang: 150 },
+  { rot: 'Literatura científica', detalhe: 'PubMed Central é o topo do Claude', ang: 210 }
+];
+
+// ---- Figura 3: escada de decisao ----
+const escada = [
+  { nivel: 'Página de guia clínico ou de evidência', acao: 'Publique no portal e busque citação acadêmica e institucional. O Claude cita PubMed Central no topo.' },
+  { nivel: 'Pergunta prática do público', acao: 'Resposta longa em comunidade e vídeo com capítulos. Reddit e YouTube lideram em quatro dos seis motores.' },
+  { nivel: 'Definição e entidade estável', acao: 'Verbete e ficha estruturada. A Wikipédia fica entre 6% e 9% em quatro motores.' },
+  { nivel: 'Tese autoral e opinião', acao: 'Ensaio assinado em veículo de terceiro. Earned media responde por 84% das citações.' },
+  { nivel: 'Anúncio pago', acao: 'Não entra nesta conta. Conteúdo pago e advertorial responde por 0,3% das citações.' }
+];
+
+const faqs = [
+  {
+    q: 'Qual site os motores generativos mais citam?',
+    a: 'Depende do motor e de quem mediu. No painel do Ahrefs Brand Radar da edição de setembro de 2026, construído sobre mais de 3 milhões de consultas nos Estados Unidos, o Reddit é o domínio mais citado em ChatGPT (16,8% da participação de menção entre os domínios de topo), em Perplexity (21,6%) e em Gemini (28,5%), enquanto o YouTube lidera nas AI Overviews do Google (22,9%) e a Amazon lidera no Microsoft Copilot (16,8%). Todos esses números são estimativa de fornecedor obtida por rastreio próprio, e nenhum deles passou por revisão por pares. Na edição de maio de 2026 do estudo da Muck Rack, publicada em 7 de maio de 2026 sobre mais de 25 milhões de links, o domínio de topo do ChatGPT aparece como Wikipédia. Dois fornecedores, o mesmo motor, respostas diferentes.'
+  },
+  {
+    q: 'Esses percentuais de citação são estudo científico?',
+    a: 'Quase nenhum é. Os números de participação por domínio vêm de rastreios proprietários de empresas que vendem ferramenta de monitoramento, publicados sem revisão por pares e sem protocolo aberto. O que existe de trabalho acadêmico nesta área é o preprint de Chen, Wang, Chen e Koudas, "Generative Engine Optimization: How to Dominate AI Search", arXiv:2509.08919, submetido em 10 de setembro de 2025, cujo resumo afirma que a busca por IA exibe viés sistemático e acentuado por mídia conquistada de terceiros sobre conteúdo próprio de marca e conteúdo social. Preprint em arXiv também não passou por revisão por pares. A regra de uso é citar o número com o nome de quem mediu, a data e o método na mesma frase.'
+  },
+  {
+    q: 'Vale a pena publicar no Reddit para ser citado pela IA?',
+    a: 'A presença do Reddit no topo de três motores no painel do Ahrefs de setembro de 2026 sugere que sim para pergunta prática e comparativa. Duas ressalvas mudam a decisão: a amostra medida é de consultas em inglês no mercado americano, onde o Reddit tem densidade muito maior do que em português do Brasil, e a maioria das comunidades remove autopromoção. O caminho que sobrevive é participação com histórico, resposta longa que resolve a pergunta e link para a fonte apenas quando ele acrescenta. O contrato editorial de cada canal está detalhado em Reddit e X dentro desta central.'
+  },
+  {
+    q: 'Existe medição desses percentuais em português do Brasil?',
+    a: 'Nenhuma das fontes conferidas em 7 de setembro de 2026 publica participação por domínio estratificada por idioma. O painel do Ahrefs declara amostra de consultas nos Estados Unidos, e o estudo da Muck Rack não separa idioma. O que se pode afirmar é que a amostra é anglófona, portanto os percentuais descrevem o comportamento dos motores em inglês. Tratar esses números como descrição do português do Brasil é extrapolação, e a página marca isso como lacuna aberta.'
+  },
+  {
+    q: 'O que isso muda para uma página de guia clínico do portal?',
+    a: 'Muda a ordem do trabalho. A página do portal continua sendo a versão canônica, com a fonte datada e o denominador colado ao número, porque é ela que sustenta a afirmação. O que decide a citação, segundo o estudo da Muck Rack de maio de 2026, é a superfície de terceiros: earned media responde por 84% das citações de IA, com faixa de 82% a 89% nas três edições da série desde julho de 2025, e jornalismo sozinho responde por 27% dos links. Publicar a mesma tese em veículo de terceiro, em comunidade e em base acadêmica cobre a superfície que os motores leem, sem transformar o portal em réplica do que já está fora dele.'
+  }
+];
+
+const criteriosPagina = [
+  {
+    tipo: 'Guia clínico e página de evidência',
+    criterio: 'Prioridade para citação acadêmica e institucional, porque o Claude tem PubMed Central como domínio de topo e cita em apenas 55% das respostas, com seletividade alta. O trabalho aqui é depositar o dado com identificador e conseguir referência de terceiro com autoridade formal.',
+    prova: 'Muck Rack, edição de maio de 2026'
+  },
+  {
+    tipo: 'FAQ e página de pergunta prática',
+    criterio: 'Prioridade para comunidade e vídeo estruturado. Reddit lidera em três motores no painel de setembro de 2026 e o YouTube lidera nas AI Overviews com 22,9%. A resposta precisa existir onde a pergunta é feita, além de existir no portal.',
+    prova: 'Ahrefs Brand Radar, edição de setembro de 2026'
+  },
+  {
+    tipo: 'Glossário e verbete de entidade',
+    criterio: 'Prioridade para superfície enciclopédica e para dado estruturado. A Wikipédia aparece entre 6,3% e 8,8% em quatro dos seis motores medidos, com papel maior em pergunta de definição do que a participação bruta sugere.',
+    prova: 'Ahrefs Brand Radar, edição de setembro de 2026'
+  },
+  {
+    tipo: 'Peça autoral e tese editorial',
+    criterio: 'Prioridade para veículo de terceiro. Earned media responde por 84% das citações e jornalismo por 27% dos links, distribuídos entre mais de 20 mil veículos. Conteúdo pago responde por 0,3%, o que retira a mídia paga desta conta.',
+    prova: 'Muck Rack, edição de maio de 2026'
+  },
+  {
+    tipo: 'Página comercial de curso',
+    criterio: 'Nenhuma prioridade de citação. A superfície própria de marca é a menos citada nos três recortes verticais do preprint de Chen e colaboradores, e a mídia paga não entra. O papel dessa página é conversão de quem já chegou.',
+    prova: 'arXiv:2509.08919, versão em HTML'
+  }
+];
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${SITE.url}/conteudo-social/onde-a-ia-busca/#article`,
+      url: `${SITE.url}/conteudo-social/onde-a-ia-busca/`,
+      headline: 'Onde os motores generativos buscam a resposta, e o que isso muda na sua distribuição',
+      description,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      author: alexandreAuthorRef,
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+      datePublished,
+      about: 'Superfícies de citação dos motores generativos, com rótulo de estimativa de fornecedor',
+      mainEntity: { '@id': `${SITE.url}/conteudo-social/onde-a-ia-busca/#faq` }
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${SITE.url}/conteudo-social/onde-a-ia-busca/#faq`,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.faq-answer-text', 'h1', 'h2'] },
+      mainEntity: faqs.map((f, i) => ({
+        '@type': 'Question',
+        '@id': `${SITE.url}/conteudo-social/onde-a-ia-busca/#pergunta-${i + 1}`,
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a }
+      }))
+    }
+  ]
+};
+
+const navHeadings = [
+  { id: 'tese', text: 'A tese: cada motor lê uma superfície diferente', level: 2 },
+  { id: 'por-motor', text: 'Domínio de topo por motor', level: 2 },
+  { id: 'figura-share', text: 'A concentração da fonte de topo', level: 2 },
+  { id: 'rotulo', text: 'Por que quase nada disso é ciência', level: 2 },
+  { id: 'earned', text: 'A conta da mídia conquistada', level: 2 },
+  { id: 'superficies', text: 'As seis superfícies que os motores leem', level: 2 },
+  { id: 'portugues', text: 'Português do Brasil e inglês: o que falta saber', level: 2 },
+  { id: 'o-que-fazer', text: 'O que fazer com isso, por tipo de página', level: 2 },
+  { id: 'faq', text: 'Perguntas frequentes', level: 2 },
+  { id: 'continuar', text: 'Continuar por aqui', level: 2 }
+];
+---
+
+<Base title={title} description={description} pageType="article" datePublished={datePublished}>
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Conteúdo & Social', href: '/conteudo-social/' },
+        { label: 'Onde a IA busca' }
+      ]} />
+      <span class="section-eyebrow mt-3">Inteligência editorial · Superfícies de citação</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Onde os motores generativos buscam a resposta, e o que isso muda na sua distribuição</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Seis motores, seis superfícies de leitura distintas, e uma advertência que se repete em cada seção desta página: quase todo número de participação por domínio publicado hoje é estimativa de fornecedor obtida por rastreio próprio, sem revisão por pares.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+    <div class="lg:col-span-3 order-2 lg:order-1">
+      <InPageNav headings={navHeadings} />
+    </div>
+
+    <article class="lg:col-span-9 order-1 lg:order-2 space-y-12">
+
+      <TLDR
+        resposta="A superfície de terceiros pesa mais que o conteúdo próprio: no estudo da Muck Rack de maio de 2026, sobre mais de 25 milhões de links citados por ChatGPT, Claude e Gemini, a mídia conquistada responde por 84% das citações e o conteúdo pago por 0,3%. Cada motor, porém, lê uma superfície diferente. No painel do Ahrefs Brand Radar de setembro de 2026, o Reddit é o domínio de topo em ChatGPT, Perplexity e Gemini, o YouTube lidera nas AI Overviews e a Amazon lidera no Copilot. Os dois conjuntos são estimativa de fornecedor, não estudo revisado por pares."
+        fontes={['Muck Rack, Generative Pulse, "What Is AI Reading?", edição de maio de 2026', 'Ahrefs Brand Radar, edição de setembro de 2026', 'Chen, Wang, Chen e Koudas, arXiv:2509.08919 (10/09/2025)']}
+      />
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="tese" class="section-h text-2xl">A tese: cada motor lê uma superfície diferente</h2>
+        <p>
+          Dois fornecedores mediram o ChatGPT em 2026 e chegaram a domínios de topo diferentes. A Muck Rack, no estudo "What Is AI Reading?" publicado em 7 de maio de 2026 sobre mais de 25 milhões de links citados por ChatGPT, Claude e Gemini, aponta a Wikipédia como o domínio de topo do ChatGPT. O Ahrefs, no painel Brand Radar da edição de setembro de 2026, construído sobre uma amostra ampla de consultas nos Estados Unidos, aponta o Reddit em 16,8% da participação de menção entre os domínios de topo, com a Wikipédia em 7,0%. As duas medições são rastreio proprietário, e nenhuma delas passou por revisão por pares.
+        </p>
+        <p>
+          A divergência tem valor de informação. Ela mostra que a resposta a "qual site a IA mais cita" depende da mistura de consultas que o fornecedor rastreou, do recorte de mercado e do momento da medição, e que citar um desses números sem o nome de quem mediu e sem a data transforma um recorte comercial em fato do mundo. Quem publica conteúdo em saúde mental no Brasil precisa das duas coisas: o número e o tamanho do que ele descreve.
+        </p>
+        <p>
+          O achado que sobrevive à divergência é o de superfície. No mesmo estudo da Muck Rack, a mídia conquistada responde por 84% das citações de IA, com faixa de 82% a 89% ao longo das três edições da série desde julho de 2025, o jornalismo sozinho responde por 27% dos links, com faixa de 25% a 27%, e o conteúdo pago e advertorial responde por 0,3%. O preprint de Chen, Wang, Chen e Koudas, arXiv:2509.08919, submetido em 10 de setembro de 2025, chega ao mesmo lugar por outro caminho: a busca por IA exibe viés sistemático e acentuado por mídia conquistada de terceiros sobre conteúdo próprio de marca e conteúdo social.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="por-motor" class="section-h text-2xl">Domínio de topo por motor</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed max-w-3xl">
+          Seis motores, com o domínio mais citado, a ordem de grandeza da participação, a data da medição, quem mediu e a natureza da fonte. A última coluna existe porque ela é o dado mais importante da tabela.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold text-left">
+              <tr>
+                <th class="px-4 py-3 w-40">Motor</th>
+                <th class="px-4 py-3 w-40">Domínio mais citado</th>
+                <th class="px-4 py-3 w-80">Ordem de grandeza da participação</th>
+                <th class="px-4 py-3 w-44">Data da medição</th>
+                <th class="px-4 py-3 w-72">Quem mediu e como</th>
+                <th class="px-4 py-3 w-72">Natureza da fonte</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {motores.map(m => (
+                <tr class="align-top">
+                  <td class="px-4 py-3 font-semibold text-ink-900">{m.motor}</td>
+                  <td class="px-4 py-3 text-ink-900 font-medium">{m.dominio}</td>
+                  <td class="px-4 py-3 text-ink-700">{m.share}</td>
+                  <td class="px-4 py-3 text-ink-700">{m.medicao}</td>
+                  <td class="px-4 py-3 text-ink-700">{m.fonte}</td>
+                  <td class="px-4 py-3 text-ink-700">{m.natureza}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <figure>
+        <h2 id="figura-share" class="section-h text-2xl">A concentração da fonte de topo</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed max-w-3xl">A altura da barra mede o quanto o motor depende de um único domínio. O rótulo de fonte está dentro da figura, porque a figura viaja sozinha quando alguém tira um print.</p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="ia-share-titulo ia-share-desc"
+               viewBox="0 0 880 400" width="880" height="400" style="min-width:880px" class="block">
+            <title id="ia-share-titulo">Participação do domínio mais citado em cada motor generativo, segundo rastreio de fornecedor</title>
+            <desc id="ia-share-desc">Cinco barras horizontais com a participação de menção do domínio mais citado em cada motor, em escala de zero a trinta por cento. Gemini aparece com reddit.com em vinte e oito vírgula cinco por cento. Google AI Overviews aparece com youtube.com em vinte e dois vírgula nove por cento. Perplexity aparece com reddit.com em vinte e um vírgula seis por cento. ChatGPT aparece com reddit.com em dezesseis vírgula oito por cento. Microsoft Copilot aparece com amazon.com em dezesseis vírgula oito por cento. Todos os cinco valores vêm do painel Ahrefs Brand Radar, edição de setembro de 2026, construído sobre mais de três milhões de consultas no mercado dos Estados Unidos. Trata-se de estimativa de fornecedor obtida por rastreio proprietário, sem revisão por pares. O Claude não aparece na figura porque nenhuma das fontes conferidas publica participação por domínio para ele.</desc>
+            <text x="20" y="30" font-size="16" font-weight="600" class="text-ink-900" fill="currentColor">Participação de menção do domínio mais citado, por motor</text>
+            <line x1={BX0} y1="52" x2={BX0} y2="318" stroke-width="1.5" class="text-ink-500" stroke="currentColor" />
+            <text x={BX0} y="340" font-size="13" class="text-ink-500" fill="currentColor">0%</text>
+            <text x={escalaShare(15)} y="340" font-size="13" text-anchor="middle" class="text-ink-500" fill="currentColor">15%</text>
+            <text x={BXMAX} y="340" font-size="13" text-anchor="end" class="text-ink-500" fill="currentColor">30%</text>
+            {barrasShare.map((b, i) => (
+              <g>
+                <text x={BX0 - 12} y={76 + i * 52} font-size="14" font-weight="600" text-anchor="end" class="text-ink-900" fill="currentColor">{b.motor}</text>
+                <text x={BX0 - 12} y={92 + i * 52} font-size="12" text-anchor="end" class="text-ink-500" fill="currentColor">{b.dominio}</text>
+                <rect x={BX0} y={62 + i * 52} width={escalaShare(b.val) - BX0} height="26" rx="4" class="text-brand-700" fill="currentColor" />
+                <text x={escalaShare(b.val) + 8} y={81 + i * 52} font-size="14" font-weight="600" class="text-ink-900" fill="currentColor">{b.val.toFixed(1).replace('.', ',')}%</text>
+              </g>
+            ))}
+            <text x="20" y="368" font-size="13" font-weight="600" class="text-sun-500" fill="currentColor">Fonte: Ahrefs Brand Radar, edição de setembro de 2026, consultas nos Estados Unidos.</text>
+            <text x="20" y="388" font-size="13" font-weight="600" class="text-sun-500" fill="currentColor">Estimativa de fornecedor obtida por rastreio próprio. Não é estudo revisado por pares.</text>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">O Claude fica de fora da figura porque nenhuma das fontes conferidas em 7 de setembro de 2026 publica participação por domínio para ele. O que existe sobre o Claude é a taxa de resposta com citação, 55%, medida pela Muck Rack em maio de 2026, também por rastreio de fornecedor.</figcaption>
+      </figure>
+
+      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
+        <h2 id="rotulo" class="section-h text-2xl">Por que quase nada disso é ciência</h2>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          Todo percentual de participação por domínio desta página vem de rastreio proprietário de empresa que vende ferramenta de monitoramento de citação. Os painéis não publicam protocolo aberto, não passam por revisão por pares, mudam de valor entre edições mensais e descrevem uma mistura de consultas que a própria empresa escolheu. O painel do Ahrefs declara amostra de consultas nos Estados Unidos, de todos os assuntos, o que explica a Amazon e o Walmart no topo do Copilot: a mistura carrega muita intenção de compra.
+        </p>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          O trabalho acadêmico que existe nesta área é escasso e também não passou por revisão por pares. Chen, Wang, Chen e Koudas publicaram "Generative Engine Optimization: How to Dominate AI Search" em arXiv:2509.08919, com submissão em 10 de setembro de 2025. O resumo afirma o viés sistemático por mídia conquistada de terceiros sobre conteúdo próprio de marca e conteúdo social. A versão em HTML do preprint traz o método, mil comandos de ranqueamento de consumidor divididos em dez categorias, nos Estados Unidos e no Canadá, e reporta a distribuição por vertical: em automóveis no Canadá, 69,1% de mídia conquistada contra 30,9% de conteúdo de marca e 0% de conteúdo social no motor de IA; em eletrônicos de consumo nos Estados Unidos, 92,1% contra 7,9%; em produtos de software no Canadá, 74,2% contra 25,8%. Um preprint com verticais de consumo não descreve saúde mental em português, e essa distância precisa ficar dita.
+        </p>
+        <p class="text-ink-700 leading-relaxed mt-3">
+          A regra prática que este portal aplica: percentual de citação por domínio entra no texto com o nome de quem mediu, a data da edição, o tamanho e o mercado da amostra, e a frase que diz que aquilo é estimativa de fornecedor. Sem os cinco, o número sai. Uma página que apresenta estimativa comercial como se fosse ciência perde mais autoridade do que ganha com a precisão aparente do número.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="earned" class="section-h text-2xl">A conta da mídia conquistada</h2>
+        <p>
+          A Muck Rack publicou em 7 de maio de 2026 a terceira edição do estudo "What Is AI Reading?", sob a marca Generative Pulse, com análise de mais de 25 milhões de links citados por ChatGPT, Claude e Gemini. A mídia conquistada, que na definição do estudo reúne jornalismo, pesquisa acadêmica, fontes governamentais, sites enciclopédicos e conteúdo corporativo de terceiros, responde por 84% das citações. Ao longo das três edições, desde julho de 2025, a faixa foi de 82% a 89%. O jornalismo sozinho responde por 27% dos links, com faixa de 25% a 27% nas três edições. Conteúdo pago e advertorial responde por 0,3%.
+        </p>
+        <p>
+          O mesmo estudo mede o comportamento de citação por modelo e encontra três padrões distintos: o ChatGPT cita fonte em 96% das respostas, com cerca de 5 citações por resposta; o Gemini cita em 82%, com cerca de 8; o Claude cita em 55%, com cerca de 13 citações nas respostas em que cita. A leitura editorial dessa diferença é operacional. Um modelo que cita pouco e cita muito de cada vez concentra em fontes de autoridade formal, e o domínio de topo do Claude no estudo é o PubMed Central.
+        </p>
+        <p>
+          O reforço cruzado que a literatura oferece é qualitativo. O preprint de Chen e colaboradores confirma a direção do viés e traz percentuais por vertical de consumo, com mídia conquistada entre 69,1% e 92,1% das citações do motor de IA nas três verticais reportadas. A proporção de 2,3 a 3,1 vezes entre conquistada e própria, que circula em material de mercado atribuída a esse preprint, não foi localizada no resumo nem na versão em HTML durante a conferência de 7 de setembro de 2026, e por isso não aparece nesta página.
+        </p>
+      </div>
+
+      <figure>
+        <h2 id="superficies" class="section-h text-2xl">As seis superfícies que os motores leem</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed max-w-3xl">O centro é a resposta que o motor monta. Ao redor, as seis superfícies que aparecem no topo de pelo menos um dos motores medidos, com a marcação de onde cada uma pesa.</p>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="ia-hub-titulo ia-hub-desc"
+               viewBox="0 0 820 560" width="820" height="560" style="min-width:820px" class="block">
+            <title id="ia-hub-titulo">Hub e satélites das seis superfícies que aparecem no topo das citações dos motores generativos</title>
+            <desc id="ia-hub-desc">Diagrama de centro e satélites. No centro, a resposta montada pelo motor generativo. Seis satélites se ligam a ele. Reddit é topo em ChatGPT, Perplexity e Gemini. YouTube é topo nas AI Overviews do Google e segundo colocado no Perplexity. Wikipédia aparece entre seis e nove por cento em quatro motores. Comércio, com Amazon e Walmart, lidera no Microsoft Copilot. Jornalismo responde por vinte e sete por cento dos links citados, distribuídos entre mais de vinte mil veículos. Literatura científica aparece como topo do Claude, na forma do PubMed Central. As posições dos satélites são apenas de leiaute e não carregam valor. As fontes são o painel Ahrefs Brand Radar de setembro de 2026 e o estudo da Muck Rack de maio de 2026, os dois estimativas de fornecedor.</desc>
+            <text x="20" y="30" font-size="16" font-weight="600" class="text-ink-900" fill="currentColor">Superfícies que aparecem no topo de pelo menos um motor</text>
+            <circle cx="410" cy="290" r="78" class="text-brand-700" fill="none" stroke="currentColor" stroke-width="3" />
+            <text x="410" y="284" font-size="14" font-weight="700" text-anchor="middle" class="text-ink-900" fill="currentColor">Resposta</text>
+            <text x="410" y="304" font-size="14" font-weight="700" text-anchor="middle" class="text-ink-900" fill="currentColor">gerada</text>
+            {satelites.map(s => (
+              <g>
+                <line x1={410 + Math.cos(s.ang * Math.PI / 180) * 78}
+                      y1={290 + Math.sin(s.ang * Math.PI / 180) * 78}
+                      x2={410 + Math.cos(s.ang * Math.PI / 180) * 178}
+                      y2={290 + Math.sin(s.ang * Math.PI / 180) * 178}
+                      stroke-width="1.5" class="text-ink-500" stroke="currentColor" />
+                <circle cx={410 + Math.cos(s.ang * Math.PI / 180) * 200}
+                        cy={290 + Math.sin(s.ang * Math.PI / 180) * 200}
+                        r="22" class="text-sun-500" fill="currentColor" />
+                <text x={410 + Math.cos(s.ang * Math.PI / 180) * 200}
+                      y={290 + Math.sin(s.ang * Math.PI / 180) * 200 - 32}
+                      font-size="14" font-weight="600" text-anchor="middle" class="text-ink-900" fill="currentColor">{s.rot}</text>
+                <text x={410 + Math.cos(s.ang * Math.PI / 180) * 200}
+                      y={290 + Math.sin(s.ang * Math.PI / 180) * 200 + 40}
+                      font-size="12" text-anchor="middle" class="text-ink-500" fill="currentColor">{s.detalhe}</text>
+              </g>
+            ))}
+            <text x="20" y="540" font-size="12.5" font-weight="600" class="text-sun-500" fill="currentColor">Fontes: Ahrefs Brand Radar (09/2026) e Muck Rack (05/2026). Estimativas de fornecedor, sem revisão por pares.</text>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">A posição de cada satélite é de leiaute e não carrega valor. O que carrega valor é o rótulo abaixo de cada um, que diz em qual motor aquela superfície aparece no topo. Fontes: painel Ahrefs Brand Radar da edição de setembro de 2026 e estudo da Muck Rack de 7 de maio de 2026.</figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="portugues" class="section-h text-2xl">Português do Brasil e inglês: o que falta saber</h2>
+        <p>
+          O que se sabe cabe em duas frases. Todas as medições citadas nesta página declaram amostra em mercado de língua inglesa: o painel do Ahrefs descreve consultas nos Estados Unidos, e o estudo da Muck Rack não separa idioma no recorte publicado. Nenhuma das fontes conferidas em 7 de setembro de 2026 publica participação por domínio estratificada por idioma, e por isso não existe, nas fontes públicas, um número de participação do Reddit ou da Wikipédia em respostas geradas em português do Brasil.
+        </p>
+        <p>
+          O que falta saber é maior do que o que se sabe, e vale enumerar para que a lacuna fique verificável. Falta a participação por domínio em consultas em português do Brasil, por motor. Falta saber se o motor recupera a Wikipédia em português ou traduz a versão em inglês quando a primeira é mais rasa sobre o tema. Falta saber quanto do corpus brasileiro em saúde mental é recuperável, considerando que parte relevante da produção nacional vive em SciELO, em repositório institucional e em PDF de conselho profissional, formatos com histórico de indexação irregular. E falta saber se plataformas com densidade baixa em português, como Substack e Quora, mantêm o mesmo peso relativo que têm em inglês.
+        </p>
+        <p>
+          Diante disso, a decisão editorial defensável é tratar os percentuais como descrição do comportamento dos motores em inglês, usá-los para escolher tipo de superfície, sem transformá-los em promessa de resultado em português. O tipo de superfície que aparece no topo, comunidade, vídeo, enciclopédia, jornalismo e base científica, tende a ser estável entre idiomas porque decorre da arquitetura de recuperação. O tamanho de cada fatia não é estável, e ninguém publicou o tamanho brasileiro.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="o-que-fazer" class="section-h text-2xl">O que fazer com isso, por tipo de página</h2>
+        <p class="text-ink-700 mt-2 leading-relaxed max-w-3xl">Cinco tipos de página do portal, com o critério de decisão e a prova que sustenta cada critério. A escada abaixo resume a mesma decisão em forma visual.</p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold text-left">
+              <tr>
+                <th class="px-4 py-3 w-52">Tipo de página</th>
+                <th class="px-4 py-3">Critério de decisão</th>
+                <th class="px-4 py-3 w-56">Prova que sustenta</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {criteriosPagina.map(c => (
+                <tr class="align-top">
+                  <td class="px-4 py-3 font-semibold text-ink-900">{c.tipo}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.criterio}</td>
+                  <td class="px-4 py-3 text-ink-700">{c.prova}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <figure>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="ia-escada-titulo ia-escada-desc"
+               viewBox="0 0 900 420" width="900" height="420" style="min-width:900px" class="block">
+            <title id="ia-escada-titulo">Escada de decisão sobre onde publicar cada tipo de conteúdo do portal</title>
+            <desc id="ia-escada-desc">Escada com cinco degraus, do mais alto ao mais baixo em prioridade de citação. Primeiro degrau: página de guia clínico ou de evidência, que deve ser publicada no portal e buscar citação acadêmica e institucional, porque o Claude cita PubMed Central no topo. Segundo degrau: pergunta prática do público, que pede resposta longa em comunidade e vídeo com capítulos, porque Reddit e YouTube lideram em quatro dos seis motores medidos. Terceiro degrau: definição e entidade estável, que pede verbete e ficha estruturada, porque a Wikipédia fica entre seis e nove por cento em quatro motores. Quarto degrau: tese autoral e opinião, que pede ensaio assinado em veículo de terceiro, porque a mídia conquistada responde por oitenta e quatro por cento das citações. Quinto degrau: anúncio pago, que não entra nesta conta, porque conteúdo pago e advertorial responde por zero vírgula três por cento das citações. As fontes são o painel Ahrefs Brand Radar de setembro de 2026 e o estudo da Muck Rack de maio de 2026, os dois estimativas de fornecedor.</desc>
+            <text x="20" y="30" font-size="16" font-weight="600" class="text-ink-900" fill="currentColor">Escada de decisão: o que publicar onde</text>
+            {escada.map((e, i) => (
+              <g>
+                <rect x={30 + i * 14} y={56 + i * 68} width="840" height="58" rx="8"
+                      class={i === 4 ? 'text-ink-500' : 'text-brand-700'} fill="none" stroke="currentColor" stroke-width="1.5" />
+                <rect x={30 + i * 14} y={56 + i * 68} width="8" height="58" rx="4"
+                      class={i === 4 ? 'text-ink-500' : 'text-brand-700'} fill="currentColor" />
+                <text x={56 + i * 14} y={80 + i * 68} font-size="14.5" font-weight="700" class="text-ink-900" fill="currentColor">{e.nivel}</text>
+                <text x={56 + i * 14} y={100 + i * 68} font-size="13" class="text-ink-700" fill="currentColor">{e.acao}</text>
+              </g>
+            ))}
+            <text x="20" y="408" font-size="12.5" font-weight="600" class="text-sun-500" fill="currentColor">Fontes: Ahrefs Brand Radar (09/2026) e Muck Rack (05/2026). Estimativas de fornecedor, sem revisão por pares.</text>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">A ordem dos degraus segue a prioridade de citação. A prioridade comercial fica fora desta conta. O último degrau existe para deixar explícito que a mídia paga responde por 0,3% das citações no estudo da Muck Rack de maio de 2026 e, portanto, não participa desta decisão.</figcaption>
+      </figure>
+
+      <div>
+        <h2 id="faq" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none min-h-[44px]">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer-text">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 id="continuar" class="section-h text-2xl">Continuar por aqui</h2>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/conteudo-social/papers-2026/" class="text-brand-700 hover:text-brand-800 font-medium">Papers de 2026: o que a literatura mudou na pauta</a></li>
+          <li><a href="/conteudo-social/radar-de-evidencias/" class="text-brand-700 hover:text-brand-800 font-medium">Radar de evidências: do achado ao ângulo por canal</a></li>
+          <li><a href="/conteudo-social/reddit-x/" class="text-brand-700 hover:text-brand-800 font-medium">Playbook de Reddit e X, com o contrato de cada comunidade</a></li>
+          <li><a href="/conteudo-social/youtube/" class="text-brand-700 hover:text-brand-800 font-medium">Playbook de YouTube: descrição e capítulos que predizem citação</a></li>
+          <li><a href="/conteudo-social/perguntas-que-a-ia-responde/" class="text-brand-700 hover:text-brand-800 font-medium">Perguntas que a IA responde, com a página do portal que já responde</a></li>
+          <li><a href="/estado-da-arte-geo-2026/" class="text-brand-700 hover:text-brand-800 font-medium">Estado da arte de GEO em 2026</a></li>
+          <li><a href="/measurement-geo/" class="text-brand-700 hover:text-brand-800 font-medium">Como este portal mede presença em motores generativos</a></li>
+          <li><a href="/principios-editoriais/" class="text-brand-700 hover:text-brand-800 font-medium">Princípios editoriais e regra de proveniência de número</a></li>
+        </ul>
+      </div>
+
+      <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6">
+        <p class="text-ink-700 leading-relaxed">
+          Separar estimativa de fornecedor de evidência revisada por pares é a mesma competência que separa comparador de tamanho de efeito na leitura de um ensaio clínico. Quem quiser exercitar isso dentro de um programa formal encontra os MBAs correlatos do IPOG nas áreas de gestão, saúde mental e organizações. Este portal é editorial e independente da instituição.
+        </p>
+        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4 h-11">Ver MBAs no IPOG</a>
+      </div>
+
+    </article>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

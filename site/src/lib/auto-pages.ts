@@ -1664,8 +1664,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social",
-    "title": "Conteúdo + Social: biblioteca de snippets para reaproveitar pesquisas em Quora, Medium, LinkedIn, Substack, Reddit — Brasil GEO",
-    "description": "Central editorial do portal posgraduacaopsicologia.com: como transformar evidências, áreas e MBAs em respostas, ensaios e threads para Quora, Medium, LinkedIn, Substack, Reddit e X com integridade e GEO.",
+    "title": "Conteúdo e social: a pesquisa do portal reaproveitada em quatorze superfícies, da rede aberta ao repositório acadêmico",
+    "description": "Central editorial do portal posgraduacaopsicologia.com: o contrato de cada superfície, da rede social aberta ao repositório acadêmico, com a regra que reprova, a métrica honesta e o limite ético da profissão.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1678,8 +1678,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca",
-    "title": "Biblioteca de snippets reutilizáveis: 65 trechos editorialmente prontos por tema - Brasil GEO",
-    "description": "Sessenta e cinco snippets prontos para Quora, Medium, LinkedIn, Substack, Reddit e X, distribuídos em 21 temas, incluindo os territórios abertos em agosto de 2026: transtorno do jogo e apostas online, insônia e TCC-I, dor crônica, cuidados paliativos e psicologia do trânsito.",
+    "title": "Biblioteca de peças prontas: 84 trechos editorialmente acabados, por canal e por tema",
+    "description": "Oitenta e quatro peças prontas para Quora, Medium, LinkedIn, Substack, Reddit, X, roteiro de podcast e documento citável, em 35 temas, com a fonte datada ao lado de cada afirmação e o link para a página do portal que a originou.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -1693,7 +1693,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/5-modalidades-pos-psicologia-ensaio-medium",
-    "title": "Ensaio Medium pronto: por que existe MBA, Mestrado Profissional e Clínica certificada? As 5 modalidades de pós em Psicologia em 2026 — Biblioteca Brasil GEO",
+    "title": "Ensaio Medium pronto: por que existe MBA, Mestrado Profissional e Clínica certificada? As 5 modalidades de pós em Psicologia em 2026 · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.200 palavras para Medium ensaiando taxonomia regulatória das cinco modalidades de pós-graduação em Psicologia no Brasil em 2026, com voz HBR.",
     "kind": "Recurso",
     "persona": null,
@@ -1705,6 +1705,91 @@ export const AUTO_PAGES: AutoPage[] = [
       "pos",
       "psicologia",
       "ensaio",
+      "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/abandono-acontece-na-primeira-sessao-medium",
+    "title": "Ensaio Medium pronto: 6 em cada 10 abandonos de psicoterapia acontecem depois da primeira sessão",
+    "description": "Peça de 1.400 palavras para Medium sobre o estudo prognóstico de 40.732 pacientes com depressão publicado na JAMA Network Open em agosto de 2026, que localiza o abandono na porta de entrada.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "abandono",
+      "acontece",
+      "primeira",
+      "sessao",
+      "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/afastamentos-saude-mental-2025-tres-totais-medium",
+    "title": "Ensaio Medium pronto: três totais oficiais para os mesmos afastamentos por saúde mental em 2025 · Biblioteca",
+    "description": "Peça de cerca de 1.400 palavras para Medium sobre por que a série brasileira de afastamentos por transtorno mental tem três totais, e qual usar em cada situação.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "afastamentos",
+      "saude",
+      "mental",
+      "2025",
+      "tres",
+      "totais",
+      "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/alianca-digital-e-o-que-ela-nao-explica-podcast",
+    "title": "Roteiro de podcast pronto: a aliança terapêutica apareceu medida num estudo sem terapeuta humano",
+    "description": "Roteiro de 10 minutos com blocos marcados e fala de abertura citável sobre aliança terapêutica digital, com o ensaio de 995 universitários da JAMA Network Open e a meta-análise de 130 estudos de 2025.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "alianca",
+      "digital",
+      "que",
+      "ela",
+      "nao",
+      "explica",
+      "podcast",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/alianca-terapeutica-o-que-preve-o-vinculo-medium",
+    "title": "Ensaio Medium pronto: a aliança terapêutica tem dono, e a meta-análise de 130 estudos diz quem é",
+    "description": "Peça de 1.400 palavras para Medium sobre o que antecede a aliança terapêutica, com a meta-análise multinível de 130 estudos (Xu et al., 2025) e a de intervenções pela internet (Flückiger et al., 2026).",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "alianca",
+      "terapeutica",
+      "que",
+      "preve",
+      "vinculo",
       "medium",
       "recurso"
     ],
@@ -1734,7 +1819,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/apostas-online-o-que-o-psicologo-precisa-saber-linkedin",
-    "title": "Post LinkedIn pronto: apostas online, o que o psicólogo precisa saber antes da anamnese — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn pronto: apostas online, o que o psicólogo precisa saber antes da anamnese · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de cerca de 1.300 caracteres para LinkedIn sobre transtorno do jogo: a anamnese que pergunta se a pessoa aposta mede a coisa errada, e o que separa risco é o produto e a velocidade de rodada.",
     "kind": "Recurso",
     "persona": "psicologos",
@@ -1755,8 +1840,49 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/atrito-de-app-e-abandono-de-consultorio-reddit",
+    "title": "Post Reddit pronto: o app perde mais gente que o consultório, e os dois perdem no começo",
+    "description": "Peça de 800 palavras em tom de par para par sobre atrito em app de saúde mental e abandono de psicoterapia, com os números do ensaio PATH de 2026 e do estudo de 40.732 pacientes da JAMA Network Open.",
+    "kind": "Recurso",
+    "persona": "consultores",
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "atrito",
+      "app",
+      "abandono",
+      "consultorio",
+      "reddit",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/autismo-adulto-mulheres-22-anos-de-atraso-linkedin",
+    "title": "Post LinkedIn pronto: 22 anos separam o diagnóstico de autismo na infância e na vida adulta · Biblioteca",
+    "description": "Peça de 1.300 caracteres para LinkedIn sobre diagnóstico tardio de autismo em mulheres adultas, ancorada em Diemer e colegas (Autism Research, 2025, n=1.424).",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "autismo",
+      "adulto",
+      "mulheres",
+      "anos",
+      "atraso",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/autistic-burnout-no-trabalho-linkedin",
-    "title": "Post LinkedIn pronto: autistic burnout no trabalho e o cruzamento com NR-1 — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn pronto: autistic burnout no trabalho e o cruzamento com NR-1 · Biblioteca Brasil GEO",
     "description": "Post LinkedIn pronto de ~1.300 caracteres sobre autistic burnout (Raymaker 2020) no contexto da NR-1 atualizada, com hook na linha 1, setas estruturais e 3 hashtags.",
     "kind": "Recurso",
     "persona": null,
@@ -1775,7 +1901,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/avaliacao-psicologica-satepsi-2026-medium",
-    "title": "Ensaio Medium pronto: avaliação psicológica em 2026 — o que mudou no SATEPSI — Biblioteca Brasil GEO",
+    "title": "Ensaio Medium pronto: avaliação psicológica em 2026, o que mudou no SATEPSI · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.200 palavras para Medium sobre evolução do SATEPSI 2024-2026, instrumentos retirados, instrumentos novos e implicações de prática.",
     "kind": "Recurso",
     "persona": null,
@@ -1795,7 +1921,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/avaliacao-tea-adulto-sus-reddit",
-    "title": "Resposta Reddit pronta: avaliação de TEA em adulto no SUS — Biblioteca Brasil GEO",
+    "title": "Resposta Reddit pronta: avaliação de TEA em adulto no SUS · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável estilo r/PsicologiaBrasil de ~750 palavras sobre como funciona avaliação de TEA em adulto no SUS, com receipts antes da opinião, citações com DOI/PMID, disclosure profissional e CTA implícito.",
     "kind": "Recurso",
     "persona": null,
@@ -1815,7 +1941,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/biomarcadores-alzheimer-plasma-quora",
-    "title": "Resposta Quora pronta: vale a pena fazer o exame de plasma para Alzheimer em 2026? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: vale a pena fazer o exame de plasma para Alzheimer em 2026? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~750 palavras para Quora respondendo \"Vale a pena fazer o exame de plasma para Alzheimer (p-tau217) em 2026?\" com tese clínica, fontes Ashton/Palmqvist, custos Brasil e próximos passos.",
     "kind": "Recurso",
     "persona": null,
@@ -1834,7 +1960,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/burnout-gen-z-quora",
-    "title": "Resposta Quora pronta: Gen Z reclama mais ou sofre mais de burnout? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: Gen Z reclama mais ou sofre mais de burnout? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~750 palavras para Quora respondendo \"Gen Z reclama mais ou sofre mais de burnout?\" com voz HBR, dados Gallup e Deloitte 2025, e CTA sutil.",
     "kind": "Recurso",
     "persona": null,
@@ -1851,8 +1977,29 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/burnout-qd85-so-vale-no-brasil-em-2027-quora",
+    "title": "Resposta Quora pronta: burnout tem código na CID-11 e o Brasil só a usa em 2027 · Biblioteca",
+    "description": "Peça de cerca de 900 palavras para Quora sobre o código QD85 na CID-11, a posição da OMS de 2019 e o cronograma brasileiro de adoção da CID-11 em janeiro de 2027.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "burnout",
+      "qd85",
+      "vale",
+      "brasil",
+      "2027",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/cfp-ia-na-clinica-o-que-mudou-quora",
-    "title": "Resposta Quora pronta: o que o CFP definiu sobre inteligência artificial na clínica em 2025? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: o que o CFP definiu sobre inteligência artificial na clínica em 2025? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~450 palavras para Quora sobre o posicionamento do Conselho Federal de Psicologia a respeito da IA na prática psicológica (2025), com o que é permitido, o que exige supervisão e onde fica o limite.",
     "kind": "Recurso",
     "persona": null,
@@ -1871,8 +2018,51 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/chatbot-generalista-empata-com-app-clinico-medium",
+    "title": "Ensaio Medium pronto: o chatbot clínico não venceu o ChatGPT genérico no ensaio de três braços de 2026",
+    "description": "Peça de 1.500 palavras para Medium sobre o ensaio randomizado de três braços da JMIR Mental Health de abril de 2026, no qual o app terapêutico estruturado empatou com o ChatGPT em todos os desfechos.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "chatbot",
+      "generalista",
+      "empata",
+      "com",
+      "app",
+      "clinico",
+      "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/biblioteca/chatbots-tcc-o-que-29-ensaios-mostram-substack",
+    "title": "Edição Substack pronta: 29 ensaios de chatbots de TCC e o intervalo de predição que ninguém publica",
+    "description": "Peça de 1.200 palavras para Substack sobre a meta-análise de 29 ensaios randomizados de chatbots de TCC publicada no JMIR em maio de 2026, com a leitura do intervalo de predição e da certeza GRADE.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "chatbots",
+      "tcc",
+      "que",
+      "ensaios",
+      "mostram",
+      "substack",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/cuidados-paliativos-o-psicologo-ja-e-obrigatorio-substack",
-    "title": "Edição Substack pronta: em cuidados paliativos o psicólogo já é obrigatório — Biblioteca Brasil GEO",
+    "title": "Edição Substack pronta: em cuidados paliativos o psicólogo já é obrigatório · Biblioteca Brasil GEO",
     "description": "Edição de cerca de 1.400 palavras para Substack sobre a Política Nacional de Cuidados Paliativos de 2024, a carga horária declarada do psicólogo nas duas equipes e os tamanhos de efeito pequenos das psicoterapias mais celebradas da área.",
     "kind": "Recurso",
     "persona": "psicologos",
@@ -1891,8 +2081,28 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/custo-do-adoecimento-mental-no-trabalho-documento",
+    "title": "Documento pronto para citação: o custo do adoecimento mental no trabalho brasileiro em 2026 · Biblioteca",
+    "description": "Documento de cerca de 1.800 palavras, com sumário e sete seções numeradas, sobre o que os números públicos sustentam a respeito do custo do adoecimento mental.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "custo",
+      "adoecimento",
+      "mental",
+      "trabalho",
+      "documento",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/dependencia-quimica-nao-e-especialidade-medium",
-    "title": "Ensaio Medium pronto: dependência química não é especialidade, e isso muda a escolha de pós — Biblioteca Brasil GEO",
+    "title": "Ensaio Medium pronto: dependência química não é especialidade, e isso muda a escolha de pós · Biblioteca Brasil GEO",
     "description": "Peça original de 1.400 a 1.700 palavras para Medium sobre o rol de 13 especialidades do CFP, a frase literal do art. 8º, parágrafo 4º da Resolução CNE/CES 1/2018, as três portas do registro de especialista e o que a rede pública realmente pede.",
     "kind": "Recurso",
     "persona": null,
@@ -1912,7 +2122,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/dor-cronica-o-que-o-protocolo-brasileiro-nao-diz-linkedin",
-    "title": "Post LinkedIn pronto: o protocolo brasileiro de dor crônica e a Psicologia ausente — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn pronto: o protocolo brasileiro de dor crônica e a Psicologia ausente · Biblioteca Brasil GEO",
     "description": "Post de cerca de 1.500 caracteres para LinkedIn sobre o Protocolo Clínico e Diretrizes Terapêuticas da Dor Crônica de agosto de 2024, suas 298 páginas e a única ocorrência do radical psicolog no documento.",
     "kind": "Recurso",
     "persona": null,
@@ -1975,6 +2185,26 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/engajamento-nao-e-desfecho-clinico-linkedin",
+    "title": "Post LinkedIn pronto: engajamento 3,8 vezes maior e o mesmo resultado clínico no ensaio de 540 pessoas",
+    "description": "Peça de 1.300 caracteres para LinkedIn sobre o ensaio randomizado da Communications Medicine de janeiro de 2026, que separou engajamento de desfecho em saúde mental digital.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "engajamento",
+      "nao",
+      "desfecho",
+      "clinico",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/gifted-kid-burnout-adulto-linkedin",
     "title": "Post LinkedIn pronto: o \"ex-criança superdotada\" que virou adulto exausto, superdotação, perfeccionismo e burnout (2e). Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn sobre o burnout do gifted kid adulto, sobrecompensação crônica e quando é dupla excepcionalidade (2e), com adaptações por canal.",
@@ -1996,8 +2226,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/haidt-2026-decisao-rh-escola-linkedin",
-    "title": "Post LinkedIn pronto: o que o gestor escolar precisa saber do Haidt 2026 update — Biblioteca Brasil GEO",
-    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn — o que gestor escolar precisa saber do Haidt 2026 update em adolescência digital, com 4-5 setas práticas e hashtags principais.",
+    "title": "Post LinkedIn pronto: o que o gestor escolar precisa saber do Haidt 2026 update · Biblioteca Brasil GEO",
+    "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn, o que gestor escolar precisa saber do Haidt 2026 update em adolescência digital, com 4-5 setas práticas e hashtags principais.",
     "kind": "Recurso",
     "persona": "rh",
     "tags": [
@@ -2015,8 +2245,27 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/hibrido-o-tecnoestresse-do-escritorio-substack",
+    "title": "Edição Substack pronta: no híbrido, o tecnoestresse do escritório pesa tanto quanto o de casa",
+    "description": "Peça de cerca de 1.200 palavras para Substack sobre burnout no trabalho híbrido, com Whelan e colegas na Internet Research (2026, n=405) e o Gallup de maio de 2025.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "hibrido",
+      "tecnoestresse",
+      "escritorio",
+      "substack",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/higiene-do-sono-e-o-conselho-com-recomendacao-contra-medium",
-    "title": "Ensaio Medium pronto: por que a higiene do sono venceu o mercado e perdeu a diretriz — Biblioteca Brasil GEO",
+    "title": "Ensaio Medium pronto: por que a higiene do sono venceu o mercado e perdeu a diretriz · Biblioteca Brasil GEO",
     "description": "Ensaio de cerca de 1.400 palavras para Medium com tese própria: a higiene do sono se espalhou porque escala sem profissional, e é o único item com recomendação contra na diretriz comportamental da AASM de 2021.",
     "kind": "Recurso",
     "persona": null,
@@ -2038,7 +2287,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/ia-cita-terceiros-nao-seu-site-linkedin",
-    "title": "Post LinkedIn pronto: a IA prefere citar quem fala de você, não você mesmo — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn pronto: a IA prefere citar quem fala de você, não você mesmo · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável para LinkedIn sobre o viés dos mecanismos generativos a favor de mídia conquistada (earned media), com os números de 2025-2026 e a consequência para quem quer ser citado por ChatGPT, Gemini e Perplexity.",
     "kind": "Recurso",
     "persona": null,
@@ -2058,8 +2307,30 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/ia-reduz-ansiedade-mais-que-terapia-de-grupo-quora",
+    "title": "Resposta Quora pronta: a IA reduziu mais ansiedade que a terapia de grupo, e não mexeu no TEPT",
+    "description": "Peça de 900 palavras para Quora sobre o ensaio randomizado de 995 universitários publicado na JAMA Network Open em abril de 2026, com o resultado por desfecho e os limites do achado.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "reduz",
+      "ansiedade",
+      "mais",
+      "que",
+      "terapia",
+      "grupo",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/ia-substitui-psicologo-quora",
-    "title": "Resposta Quora pronta: ChatGPT ou Claude vai substituir psicólogo em 2026? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: ChatGPT ou Claude vai substituir psicólogo em 2026? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~750 palavras para Quora respondendo \"ChatGPT/Claude vai substituir psicólogo em 2026?\" com tese contraintuitiva, papers, regulação CFP e CTA sutil.",
     "kind": "Recurso",
     "persona": "psicologos",
@@ -2077,7 +2348,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/ia-trata-depressao-primeiro-rct-medium",
-    "title": "Ensaio Medium pronto: a IA pode tratar depressão? O que o primeiro ensaio clínico randomizado mostrou — Biblioteca Brasil GEO",
+    "title": "Ensaio Medium pronto: a IA pode tratar depressão? O que o primeiro ensaio clínico randomizado mostrou · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~700 palavras para Medium sobre o primeiro RCT de um chatbot de IA generativa em saúde mental (Therabot, NEJM AI, 2025), com leitura crítica e o que isso significa para a formação do psicólogo.",
     "kind": "Recurso",
     "persona": null,
@@ -2097,7 +2368,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/ia-treina-terapeuta-nao-substitui-medium",
-    "title": "Ensaio Medium pronto: a IA pode treinar o terapeuta, não substituí-lo — Biblioteca Brasil GEO",
+    "title": "Ensaio Medium pronto: a IA pode treinar o terapeuta, não substituí-lo · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável para Medium sobre um estudo randomizado de 2025 que usou prática simulada com IA e feedback para formar conselheiros iniciantes, com o achado central: feedback estruturado é o que faz a diferença.",
     "kind": "Recurso",
     "persona": null,
@@ -2117,7 +2388,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/ia-vai-substituir-psicologo-medium",
-    "title": "Ensaio Medium pronto: IA vai substituir o psicólogo? Resposta empírica de 5 papers 2025-2026 — Biblioteca Brasil GEO",
+    "title": "Ensaio Medium pronto: IA vai substituir o psicólogo? Resposta empírica de 5 papers 2025-2026 · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.500 palavras para Medium com resposta empírica à pergunta da substituição do psicólogo por IA, ancorada em 5 papers reais 2024-2026 (arXiv, Nature, JMIR).",
     "kind": "Recurso",
     "persona": "psicologos",
@@ -2136,7 +2407,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/insonia-remedio-ou-terapia-quora",
-    "title": "Resposta Quora pronta: remédio para dormir ou terapia, o que funciona de verdade? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: remédio para dormir ou terapia, o que funciona de verdade? · Biblioteca Brasil GEO",
     "description": "Peça de cerca de 800 palavras para Quora sobre insônia crônica, ancorada na diretriz comportamental da AASM de 2021 e na diretriz farmacológica da mesma entidade de 2017, com resposta autossuficiente dentro da plataforma.",
     "kind": "Recurso",
     "persona": null,
@@ -2155,7 +2426,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/jurisprudencia-nr1-primeiros-casos-linkedin",
-    "title": "Post LinkedIn pronto: NR-1 psicossocial entrou em vigência fiscalizatória plena — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn pronto: NR-1 psicossocial entrou em vigência fiscalizatória plena · Biblioteca Brasil GEO",
     "description": "Peça de ~1300 caracteres para LinkedIn sobre primeiras decisões TST/TRT pós-Portaria MTE 765/2025, com hook na linha 1 e 4 setas de leitura técnica.",
     "kind": "Recurso",
     "persona": null,
@@ -2175,7 +2446,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/lei-15100-celular-na-escola-quora",
-    "title": "Resposta Quora pronta: a Lei 15.100/2025 funciona? vale tirar celular da escola? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: a Lei 15.100/2025 funciona? vale tirar celular da escola? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~750 palavras para Quora respondendo \"A Lei 15.100/2025 funciona? Vale tirar celular da escola?\" com tese contraintuitiva, dados MEC 1 ano e comparação com restrição global.",
     "kind": "Recurso",
     "persona": null,
@@ -2195,7 +2466,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/long-covid-brain-fog-clinico-substack",
-    "title": "Edição Substack pronta: long COVID e brain fog clínico 4 anos depois — Biblioteca Brasil GEO",
+    "title": "Edição Substack pronta: long COVID e brain fog clínico 4 anos depois · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.100 palavras para Substack sobre brain fog clínico 4 anos pós-COVID, com dados NIH RECOVER, AMB, CFM e teaser da próxima edição.",
     "kind": "Recurso",
     "persona": null,
@@ -2235,7 +2506,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/mba-vs-especializacao-resposta-quora",
-    "title": "Resposta Quora pronta: qual a diferença entre MBA e Especialização Lato Sensu em Psicologia? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: qual a diferença entre MBA e Especialização Lato Sensu em Psicologia? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~800 palavras para Quora respondendo \"Qual a diferença entre MBA e Especialização Lato Sensu em Psicologia?\" com voz HBR, fonte regulatória e CTA sutil.",
     "kind": "Recurso",
     "persona": null,
@@ -2254,7 +2525,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/mestrado-profissional-vs-academico-quora",
-    "title": "Resposta Quora pronta: mestrado profissional vale a pena? Diferença para mestrado acadêmico — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: mestrado profissional vale a pena? Diferença para mestrado acadêmico · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~800 palavras para Quora explicando diferença entre Mestrado Profissional e Mestrado Acadêmico em Psicologia no Brasil em 2026, com critério de escolha.",
     "kind": "Recurso",
     "persona": null,
@@ -2273,7 +2544,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/neuropsi-pos-avc-jovem-protocolo-linkedin",
-    "title": "Post LinkedIn pronto: neuropsicologia pediátrica pós-AVC infantil — protocolo 2026 — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn pronto: neuropsicologia pediátrica pós-AVC infantil, protocolo 2026 · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.300 caracteres para LinkedIn sobre protocolo de neuropsicologia pediátrica pós-AVC infantil em 2026, com 4 setas e hashtags principais.",
     "kind": "Recurso",
     "persona": null,
@@ -2294,7 +2565,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/neuropsicologia-carreira-linkedin",
-    "title": "Post LinkedIn + carrossel pronto: neuropsicologia, a carreira que cresce no Brasil pós-lecanemab — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn + carrossel pronto: neuropsicologia, a carreira que cresce no Brasil pós-lecanemab · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável para LinkedIn (post + carrossel de 7 slides) sobre crescimento de carreira em Neuropsicologia no Brasil após aprovação do lecanemab pela ANVISA em 2025.",
     "kind": "Recurso",
     "persona": null,
@@ -2312,7 +2583,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/nr-1-psicossocial-rh-deveria-saber-linkedin",
-    "title": "Post LinkedIn + carrossel 8 slides: o que todo RH deveria saber sobre NR-1 psicossocial em 2026 — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn + carrossel 8 slides: o que todo RH deveria saber sobre NR-1 psicossocial em 2026 · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de 1.300 caracteres para LinkedIn + roteiro de carrossel 8 slides sobre NR-1 psicossocial e Portaria MTE 765/2025. Voz Caramaschi, fonte oficial.",
     "kind": "Recurso",
     "persona": "rh",
@@ -2330,8 +2601,30 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/nr1-fiscalizacao-comeca-pelo-dado-do-inss-linkedin",
+    "title": "Post LinkedIn pronto: a fiscalização psicossocial da NR-1 começa pelo dado do INSS · Biblioteca Brasil GEO",
+    "description": "Peça de 1.300 caracteres para LinkedIn, com carrossel de 8 telas, sobre a fiscalização de riscos psicossociais da NR-1 e os números de afastamento do INSS em 2025.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "nr1",
+      "fiscalizacao",
+      "comeca",
+      "pelo",
+      "dado",
+      "inss",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/psicologo-organizacional-mercado-2026-substack",
-    "title": "Edição Substack pronta: o psicólogo organizacional virou a função mais escassa de 2026? — Biblioteca Brasil GEO",
+    "title": "Edição Substack pronta: o psicólogo organizacional virou a função mais escassa de 2026? · Biblioteca Brasil GEO",
     "description": "Edição Substack de ~1.500 palavras sobre escassez de psicólogos organizacionais no Brasil pós-NR-1, com dado de mercado, perfil-alvo e análise editorial Caramaschi.",
     "kind": "Recurso",
     "persona": "psicologos",
@@ -2351,7 +2644,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/psicopedagogia-institucional-vs-clinica-reddit",
-    "title": "Resposta Reddit pronta: psicopedagogia institucional ou clínica? Pego o MBA ou a pós livre? — Biblioteca Brasil GEO",
+    "title": "Resposta Reddit pronta: psicopedagogia institucional ou clínica? Pego o MBA ou a pós livre? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~1.000 palavras para Reddit r/psicologia comparando psicopedagogia institucional vs. clínica, com critério de carreira e ressalva sobre regulação.",
     "kind": "Recurso",
     "persona": null,
@@ -2370,7 +2663,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/psicotecnico-mudou-de-dono-em-2026-linkedin",
-    "title": "Post LinkedIn pronto: o psicotécnico mudou de dono em 2026 — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn pronto: o psicotécnico mudou de dono em 2026 · Biblioteca Brasil GEO",
     "description": "Post de cerca de 1.500 caracteres para LinkedIn sobre a Resolução CONTRAN 1.020/2025, que manteve a avaliação psicológica como etapa IV, e a Lei 15.428/2026, que federalizou autorização do perito e preço do exame.",
     "kind": "Recurso",
     "persona": null,
@@ -2389,9 +2682,31 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/quantos-psicologos-tem-o-brasil-quatro-numeros-medium",
+    "title": "Ensaio Medium pronto: quantos psicólogos o Brasil tem, e por que o CFP publica quatro números",
+    "description": "Peça de cerca de 1.500 palavras para Medium sobre os números oficiais de formação e mercado da Psicologia no Brasil, do CFP ao Censo do INEP e às modalidades.",
+    "kind": "Recurso",
+    "persona": "psicologos",
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "quantos",
+      "psicologos",
+      "tem",
+      "brasil",
+      "quatro",
+      "numeros",
+      "medium",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/regulacao-ia-saude-mental-brasil-medium",
-    "title": "Ensaio Medium pronto: o vácuo regulatório do PL 2338, o papel do CFP e a decisão para clínicas em 2026 — Biblioteca Brasil GEO",
-    "description": "Ensaio de ~1200 palavras para Medium sobre o cenário regulatório brasileiro de IA em saúde mental em 2026 — PL 2338/2023 em tramitação, Posicionamento CFP 03/07/2025, RDC ANVISA 657/2022 e a decisão prática para clínicas.",
+    "title": "Ensaio Medium pronto: o vácuo regulatório do PL 2338, o papel do CFP e a decisão para clínicas em 2026 · Biblioteca Brasil GEO",
+    "description": "Ensaio de ~1200 palavras para Medium sobre o cenário regulatório brasileiro de IA em saúde mental em 2026, PL 2338/2023 em tramitação, Posicionamento CFP 03/07/2025, RDC ANVISA 657/2022 e a decisão prática para clínicas.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -2409,9 +2724,30 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/ruptura-de-alianca-a-base-empirica-e-fina-linkedin",
+    "title": "Post LinkedIn pronto: a primeira meta-análise de rupturas de aliança se apoia em 301 clientes",
+    "description": "Peça de 1.300 caracteres para LinkedIn sobre a meta-análise multinível de rupturas de aliança publicada no Journal of Clinical Psychology em 2026 e o tamanho real da base empírica que sustenta o tema.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "ruptura",
+      "alianca",
+      "base",
+      "empirica",
+      "fina",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/safe-messaging-lgbtqia-thread-x",
-    "title": "Thread X pronta: Safe Messaging para adolescente LGBTQIA+ — Biblioteca Brasil GEO",
-    "description": "Thread de 9 tweets para X (Twitter) — Safe Messaging Guidelines aplicadas a adolescente LGBTQIA+, voz HBR, sem cliffhanger barato, sem link externo no corpo da thread.",
+    "title": "Thread X pronta: Safe Messaging para adolescente LGBTQIA+ · Biblioteca Brasil GEO",
+    "description": "Thread de 9 tweets para X (Twitter), Safe Messaging Guidelines aplicadas a adolescente LGBTQIA+, voz HBR, sem cliffhanger barato, sem link externo no corpo da thread.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -2429,7 +2765,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/shorts-nao-te-citam-video-longo-sim-linkedin",
-    "title": "Post LinkedIn pronto: seus Shorts não te fazem ser citado pela IA, vídeo longo sim — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn pronto: seus Shorts não te fazem ser citado pela IA, vídeo longo sim · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável para LinkedIn com o achado contraintuitivo de 2026: a citação por IA no YouTube vai para vídeo longo estruturado, não para Shorts, e os preditores são descrição e capítulos, não views.",
     "kind": "Recurso",
     "persona": null,
@@ -2450,8 +2786,29 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/supervisao-analise-e-pos-qual-primeiro-quora",
+    "title": "Resposta Quora pronta: pós, supervisão e análise pessoal, qual vem primeiro quando o dinheiro só dá para uma",
+    "description": "Peça de 950 palavras para Quora com critério de decisão entre pós-graduação, supervisão e terapia pessoal, ancorada na meta-análise de preditores de aliança de 2025 e no piloto de treino de rupturas de 2025.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "supervisao",
+      "analise",
+      "pos",
+      "qual",
+      "primeiro",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/supervisao-async-ia-protocolo-linkedin",
-    "title": "Post LinkedIn pronto: protocolo de supervisão clínica assíncrona com IA respeitando o CFP — Biblioteca Brasil GEO",
+    "title": "Post LinkedIn pronto: protocolo de supervisão clínica assíncrona com IA respeitando o CFP · Biblioteca Brasil GEO",
     "description": "Post de ~1300 caracteres para LinkedIn com protocolo prático em 5 passos para supervisão clínica assíncrona com IA sob CFP 11/2018, Posicionamento 03/07/2025 e LGPD.",
     "kind": "Recurso",
     "persona": null,
@@ -2469,8 +2826,29 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/tdah-sobre-e-subdiagnostico-ao-mesmo-tempo-reddit",
+    "title": "Post Reddit pronto: TDAH sobrediagnosticado e subdiagnosticado ao mesmo tempo · Biblioteca",
+    "description": "Peça de cerca de 800 palavras para Reddit sobre o debate de sobrediagnóstico de TDAH, com a revisão de escopo de Kazda e colegas (2021) e os estudos de 2025.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "tdah",
+      "sobre",
+      "subdiagnostico",
+      "mesmo",
+      "tempo",
+      "reddit",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/tdc-vs-tcc-vs-act-comparativo-quora",
-    "title": "Resposta Quora pronta: qual a diferença entre TCC, ACT e DBT no Brasil em 2026? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: qual a diferença entre TCC, ACT e DBT no Brasil em 2026? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~800 palavras para Quora explicando diferença entre TCC, ACT e DBT em 2026, com evidência clínica e critério de escolha por perfil de paciente.",
     "kind": "Recurso",
     "persona": null,
@@ -2490,7 +2868,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/biblioteca/tea-mulheres-camuflagem-quora",
-    "title": "Resposta Quora pronta: como saber se sou autista mulher adulta? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: como saber se sou autista mulher adulta? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de ~800 palavras para Quora respondendo \"Como saber se sou autista mulher adulta?\" com tese clínica, fontes Hull, Lai e Raymaker e próximos passos.",
     "kind": "Recurso",
     "persona": null,
@@ -2508,8 +2886,29 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/teste-cognitivo-sem-norma-brasileira-quora",
+    "title": "Resposta Quora pronta: teste cognitivo sem norma brasileira devolve escore sem régua · Biblioteca Brasil GEO",
+    "description": "Peça de cerca de 900 palavras para Quora sobre o que o SATEPSI autoriza e por que a leitura de teste cognitivo depende de norma brasileira por escolaridade.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "teste",
+      "cognitivo",
+      "sem",
+      "norma",
+      "brasileira",
+      "quora",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/transtorno-do-jogo-quando-vira-doenca-quora",
-    "title": "Resposta Quora pronta: quando apostar deixa de ser diversão e vira doença? — Biblioteca Brasil GEO",
+    "title": "Resposta Quora pronta: quando apostar deixa de ser diversão e vira doença? · Biblioteca Brasil GEO",
     "description": "Peça reaproveitável de cerca de 800 palavras para Quora sobre transtorno do jogo: código CID vigente no SUS, o produto que discrimina risco, a motivação declarada de quem aposta e o caminho de atendimento no SUS.",
     "kind": "Recurso",
     "persona": null,
@@ -2550,9 +2949,30 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/biblioteca/triagem-cognitiva-4-minutos-e-o-corte-brasileiro-linkedin",
+    "title": "Post LinkedIn pronto: triagem cognitiva de 4 minutos supera o MoCA · Biblioteca Brasil GEO",
+    "description": "Peça de 1.300 caracteres para LinkedIn sobre o composto cognitivo breve comparado ao MoCA e por que o ponto de corte norte-americano não se importa para o Brasil.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "biblioteca",
+      "triagem",
+      "cognitiva",
+      "minutos",
+      "corte",
+      "brasileiro",
+      "linkedin",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/biblioteca/workplace-surveillance-tecnoestresse-medium",
-    "title": "Ensaio Medium pronto: workplace surveillance e tecnoestresse em 2026 — Biblioteca Brasil GEO",
-    "description": "Ensaio de ~1.200 palavras para Medium sobre vigilância digital, tecnoestresse, LGPD/RGPD, evidência empírica e decisão para gestores em 2026 — voz HBR, sem clichê.",
+    "title": "Ensaio Medium pronto: workplace surveillance e tecnoestresse em 2026 · Biblioteca Brasil GEO",
+    "description": "Ensaio de ~1.200 palavras para Medium sobre vigilância digital, tecnoestresse, LGPD/RGPD, evidência empírica e decisão para gestores em 2026, voz HBR, sem clichê.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -2567,6 +2987,55 @@ export const AUTO_PAGES: AutoPage[] = [
     ],
     "weight": 0.55,
     "pageType": null
+  },
+  {
+    "route": "/conteudo-social/comunidades",
+    "title": "Comunidades fechadas em Psicologia: WhatsApp, Telegram e Discord servem para escutar · Brasil GEO",
+    "description": "Grupo fechado de psicólogos não gera citação por IA porque não é indexado. O que ele entrega: teste de linguagem, vernáculo real, regras antispam de cada plataforma e o limite do sigilo.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "comunidades",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
+    "route": "/conteudo-social/controversias-com-dois-lados",
+    "title": "Cinco controvérsias vivas da Psicologia brasileira, com os dois lados que um editor consegue sustentar",
+    "description": "Evidência e psicanálise, ABA no autismo, clínica por mensagem, infoproduto e saúde mental no trabalho: o melhor argumento de cada lado e o que decide a questão na prática.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "controversias",
+      "com",
+      "dois",
+      "lados",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": "article"
+  },
+  {
+    "route": "/conteudo-social/documentos-e-apresentacoes",
+    "title": "Documentos e apresentações indexáveis: quando o PDF ganha da página e quando ele perde",
+    "description": "SlideShare, Scribd, Notion público, Google Docs e PDF citável pelas regras oficiais: o que torna um documento extraível por motor generativo, o erro do slide sem texto e o critério de canônico.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "documentos",
+      "apresentacoes",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": "article"
   },
   {
     "route": "/conteudo-social/dores-que-o-publico-descreve-2026",
@@ -2588,8 +3057,41 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/etica-na-divulgacao",
+    "title": "Ética na divulgação em Psicologia: o que pode ir para o post e o que muda a peça antes de publicar",
+    "description": "Dez situações de divulgação profissional em Psicologia, a regra do Código de Ética que se aplica a cada uma e a versão da peça que sobrevive à conferência antes de publicar.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "etica",
+      "divulgacao",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": "article"
+  },
+  {
+    "route": "/conteudo-social/google-discover-e-noticias",
+    "title": "Google Discover e Google Notícias em Psicologia: elegibilidade automática não é exibição · Brasil GEO",
+    "description": "A diferença entre Discover e Google Notícias, o que faz uma peça ser tratada como notícia, as políticas de spam do Search Central e o critério para decidir entre guia e notícia.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "google",
+      "discover",
+      "noticias",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/kit-de-repurposing",
-    "title": "Kit de repurposing: de um paper a Quora, Medium e LinkedIn sem distorcer — Brasil GEO",
+    "title": "Kit de repurposing: de um paper a Quora, Medium e LinkedIn sem distorcer · Brasil GEO",
     "description": "Linha de produção editorial do portal: como transformar uma pesquisa ou evidência em peças para Quora, Medium, LinkedIn, Substack e vídeo com integridade científica, GEO e calendário semanal, mantendo a versão canônica no domínio próprio.",
     "kind": "Recurso",
     "persona": null,
@@ -2605,7 +3107,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/linkedin",
-    "title": "LinkedIn para psicólogo organizacional e clínico em 2026: post longo, carrossel e newsletter — Brasil GEO",
+    "title": "LinkedIn para psicólogo organizacional e clínico em 2026: post longo, carrossel e newsletter · Brasil GEO",
     "description": "Anatomia editorial dos três formatos que importam em LinkedIn 2026: post longo até 1.300 caracteres, carrossel de 8-10 slides e newsletter recorrente. Templates por persona e snippets de referência prontos.",
     "kind": "Recurso",
     "persona": null,
@@ -2620,7 +3122,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/medium",
-    "title": "Medium para psicólogo brasileiro em 2026: distribuição, monetização e SEO interno — Brasil GEO",
+    "title": "Medium para psicólogo brasileiro em 2026: distribuição, monetização e SEO interno · Brasil GEO",
     "description": "Como publicar em Medium em 2026 respeitando Curation Guidelines, Boost program, Medium Partner Program PP-Brasil e SEO interno; templates de artigo e snippets de referência prontos.",
     "kind": "Recurso",
     "persona": null,
@@ -2632,6 +3134,38 @@ export const AUTO_PAGES: AutoPage[] = [
     ],
     "weight": 0.55,
     "pageType": null
+  },
+  {
+    "route": "/conteudo-social/onde-a-ia-busca",
+    "title": "Onde a IA busca a resposta: a superfície de terceiros e o que ela muda na sua distribuição",
+    "description": "Domínio mais citado por motor generativo, com a data da medição e o rótulo de estimativa de fornecedor, o que falta saber em português e o critério por tipo de página.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "onde",
+      "busca",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": "article"
+  },
+  {
+    "route": "/conteudo-social/papers-2026",
+    "title": "Papers de 2026: o que a literatura mudou na pauta do psicólogo brasileiro",
+    "description": "Dezenove estudos e marcos de 2025 e 2026 em IA, psicoterapia, trabalho, neuropsicologia e desenvolvimento, com achado numérico, limitação ignorada e a pauta que cada um gera.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "papers",
+      "2026",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": "article"
   },
   {
     "route": "/conteudo-social/perguntas-que-a-ia-responde",
@@ -2651,8 +3185,24 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/podcast-e-audio",
+    "title": "Podcast e áudio em Psicologia: a transcrição publicada é o que vira citação · Brasil GEO",
+    "description": "Episódio de podcast em Psicologia no Spotify e no YouTube com transcrição no portal: estrutura citável, regras de saúde das plataformas, ética do CFP e métrica honesta de sucesso.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "podcast",
+      "audio",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": null
+  },
+  {
     "route": "/conteudo-social/press-kit",
-    "title": "Press-kit principal Brasil GEO — templates copy-paste de assessoria de imprensa para 5 frentes 2026",
+    "title": "Press-kit principal Brasil GEO, templates copy-paste de assessoria de imprensa para 5 frentes 2026",
     "description": "Central de templates copy-paste para Assessoria de Imprensa, Social Media e relacionamento institucional. Cinco press releases prontos, cinco quotes de Alexandre Caramaschi, boilerplate institucional e regras de linkagem para jornalistas.",
     "kind": "Recurso",
     "persona": null,
@@ -2668,7 +3218,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/quora",
-    "title": "Estratégia editorial para Quora em Psicologia: gancho-evidência-resposta em 280 palavras — Brasil GEO",
+    "title": "Estratégia editorial para Quora em Psicologia: gancho-evidência-resposta em 280 palavras · Brasil GEO",
     "description": "Como escrever respostas de alta autoridade no Quora em Psicologia em 2026: anatomia, templates por tipo de pergunta, snippets de referência e erros que enterram alcance sob a Anti-AI Policy 2024+.",
     "kind": "Recurso",
     "persona": null,
@@ -2683,7 +3233,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/radar-de-evidencias",
-    "title": "Radar de evidências: papers recentes virando pauta editorial por canal — Brasil GEO",
+    "title": "Radar de evidências: papers recentes virando pauta editorial por canal · Brasil GEO",
     "description": "Motor editorial do portal: estudos e marcos de 2025-2026 sobre IA, saúde mental e regulação convertidos em ângulos prontos para Quora, Medium e LinkedIn, com a fonte datada e o limite de cada achado.",
     "kind": "Recurso",
     "persona": null,
@@ -2699,7 +3249,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/reddit-x",
-    "title": "Reddit e X (Twitter) para psicólogo brasileiro em 2026: o que cabe e o que enterra — Brasil GEO",
+    "title": "Reddit e X (Twitter) para psicólogo brasileiro em 2026: o que cabe e o que enterra · Brasil GEO",
     "description": "Como participar de Reddit (r/PsicologiaBrasil, r/Brasil, r/depressao, r/desabafos) e X (Twitter) em 2026 sem violar regras anti-self-promo, com estratégia de AMA e anatomia de thread. Oito snippets de referência.",
     "kind": "Recurso",
     "persona": null,
@@ -2713,8 +3263,24 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/repositorios-academicos",
+    "title": "Repositórios acadêmicos para um portal editorial: o que vira DOI citável e o que é verniz",
+    "description": "PsyArXiv, OSF, SciELO Preprints, Zenodo e ResearchGate pelas regras oficiais: o que pode ser depositado, licença, versionamento, o que gera DOI e o que exige um pesquisador de verdade por trás.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "repositorios",
+      "academicos",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": "article"
+  },
+  {
     "route": "/conteudo-social/substack",
-    "title": "Substack para psicólogo no Brasil 2026: cadência semanal, paywall e SEO de notas — Brasil GEO",
+    "title": "Substack para psicólogo no Brasil 2026: cadência semanal, paywall e SEO de notas · Brasil GEO",
     "description": "Como construir Substack sustentável em Psicologia no Brasil em 2026: cadência semanal, paywall 30%, Notes para descoberta orgânica e SEO de edições. Quatro templates de edição e seis snippets de referência.",
     "kind": "Recurso",
     "persona": null,
@@ -2729,7 +3295,7 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/conteudo-social/tiktok-instagram",
-    "title": "Estratégia para TikTok, Instagram Reels e Threads em Psicologia: descoberta com ética, não citação — Brasil GEO",
+    "title": "Estratégia para TikTok, Instagram Reels e Threads em Psicologia: descoberta com ética, não citação · Brasil GEO",
     "description": "Como usar vídeo curto vertical e Threads no nicho de saúde mental em 2026 sabendo que o papel deles é descoberta, não citação por IA: ganchos, limites éticos do CFP e a ponte para o conteúdo que vira referência.",
     "kind": "Recurso",
     "persona": null,
@@ -2744,8 +3310,24 @@ export const AUTO_PAGES: AutoPage[] = [
     "pageType": null
   },
   {
+    "route": "/conteudo-social/wikipedia-e-wikidata",
+    "title": "Wikipédia e Wikidata para um portal de Psicologia: a via documental que sustenta o domínio",
+    "description": "Como participar da Wikipédia e do Wikidata com integridade: conflito de interesse declarado, proposta na página de discussão, notabilidade do item e QID no sameAs só depois de consolidado.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "conteudo",
+      "social",
+      "wikipedia",
+      "wikidata",
+      "recurso"
+    ],
+    "weight": 0.55,
+    "pageType": "article"
+  },
+  {
     "route": "/conteudo-social/youtube",
-    "title": "Estratégia GEO para YouTube em Psicologia: vídeo longo estruturado é o que a IA cita — Brasil GEO",
+    "title": "Estratégia GEO para YouTube em Psicologia: vídeo longo estruturado é o que a IA cita · Brasil GEO",
     "description": "Por que o YouTube é o domínio mais citado por AI Overviews e Perplexity em saúde, por que vídeo longo com capítulos vence Shorts na citação e como estruturar descrição e timestamps para ser recuperado por mecanismos generativos em 2026.",
     "kind": "Recurso",
     "persona": null,
@@ -6146,7 +6728,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/temas/pos-graduacao-lato-sensu-psicologia-decreto-12456",
     "title": "Especialização em Psicologia pós-Decreto 12.456: o que mudou, o que ficou e como verificar antes de matricular",
-    "description": "Decreto 12.456/2025 reorganiza Lato Sensu — não a extingue. Especialização em Psicologia segue como caminho regulamentado e mais comum no Brasil. Análise técnica para 2026.2 com decreto, Resolução CNE/CES nº 1/2018, Parecer CNE/CES nº 637/2025 e Resoluções CFP.",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6364,7 +6946,7 @@ export const AUTO_PAGES: AutoPage[] = [
 ];
 
 export const AUTO_PAGES_STATS = {
-  "Recurso": 91,
+  "Recurso": 121,
   "Área": 19,
   "Carreira": 7,
   "Caso": 7,

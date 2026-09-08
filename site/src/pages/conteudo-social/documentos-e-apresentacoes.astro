@@ -1,0 +1,603 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import InPageNav from '@components/InPageNav.astro';
+import { SITE } from '@lib/data';
+import { alexandreAuthorRef } from '@lib/schemas';
+
+const title = 'Documentos e apresentações indexáveis: quando o PDF ganha da página e quando ele perde';
+const description = 'SlideShare, Scribd, Notion público, Google Docs e PDF citável pelas regras oficiais: o que torna um documento extraível por motor generativo, o erro do slide sem texto e o critério de canônico.';
+const datePublished = '2026-09-07';
+const pageUrl = `${SITE.url}/conteudo-social/documentos-e-apresentacoes/`;
+
+const headings = [
+  { id: 'contrato-do-canal', text: 'Contrato do canal', level: 2 },
+  { id: 'pdf-ou-html', text: 'Quando o PDF ganha da página, e quando perde', level: 2 },
+  { id: 'o-que-torna-citavel', text: 'O que torna um documento citável', level: 2 },
+  { id: 'slide-sem-texto', text: 'O slide sem texto selecionável', level: 2 },
+  { id: 'acessibilidade', text: 'Acessibilidade do documento', level: 2 },
+  { id: 'onde-publicar', text: 'Portal, terceiro, ou os dois com canônico', level: 2 },
+  { id: 'plataformas', text: 'O que cada plataforma exige em troca', level: 2 },
+  { id: 'etica-cfp', text: 'Ética profissional nesta superfície', level: 2 },
+  { id: 'do-portal-para-o-canal', text: 'Do portal para o canal', level: 2 },
+  { id: 'checklist', text: 'Checklist antes de publicar o arquivo', level: 2 },
+  { id: 'perguntas-frequentes', text: 'Perguntas frequentes', level: 2 }
+];
+
+const contrato = [
+  {
+    campo: 'Público real',
+    valor: 'Coordenadores de curso, profissionais de recursos humanos, professores, jornalistas e psicólogos que salvam material para consultar depois. Sistemas generativos leem o mesmo arquivo pelo texto extraível, sem enxergar o layout.'
+  },
+  {
+    campo: 'Formato canônico',
+    valor: 'Documento citável em .pdf com texto selecionável, apresentação em .pdf acompanhada do .pptx quando alguém precisar reaproveitar, página pública do Notion como índice vivo. A peça precisa ser autocontida: título, autoria, data, versão, fontes e a URL canônica impressa nela.'
+  },
+  {
+    campo: 'Gancho de abertura',
+    valor: 'Antes de escolher uma pós-graduação em Psicologia, compare a modalidade pela credencial que ela entrega e pela decisão profissional que essa credencial resolve.'
+  },
+  {
+    campo: 'Regra que quebra a conta',
+    valor: 'O Acordo de Uploader do Scribd e do SlideShare exige que quem envia seja o criador e proprietário do conteúdo, ou tenha as licenças, direitos, consentimentos, liberações e permissões necessários, e concede à plataforma licença mundial, não exclusiva, transferível, cedível, integralmente paga e isenta de royalties para hospedar, reproduzir, adaptar, distribuir, monetizar, cobrar por e treinar aprendizado de máquina sobre o conteúdo enviado.'
+  },
+  {
+    campo: 'Erro clássico',
+    valor: 'Subir carrossel de rede social como PDF. Documento citável carrega o argumento inteiro, com fonte verificável e contexto suficiente para sobreviver fora do post que o gerou.'
+  },
+  {
+    campo: 'Métrica honesta',
+    valor: 'Links recebidos, incorporações em outros sites, citações em ementa de disciplina e aparição do arquivo como página de entrada no relatório de desempenho do site. Visualização dentro da plataforma de documentos infla por navegação acidental.'
+  }
+];
+
+const plataformas = [
+  {
+    nome: 'PDF no domínio do portal',
+    controle: 'Total. O arquivo fica no domínio, com URL estável, e o cabeçalho X-Robots-Tag controla indexação, porque o meta robots em HTML não existe dentro de um PDF.',
+    custo: 'Manutenção. Arquivo desatualizado continua servido e continua citável até alguém removê-lo ou marcá-lo.',
+    quando: 'Quando o documento precisa ser citado, arquivado ou impresso e a versão importa.'
+  },
+  {
+    nome: 'SlideShare e Scribd',
+    controle: 'Baixo. O suporte do SlideShare redireciona para o suporte do Scribd, e o mesmo Acordo de Uploader governa as duas plataformas.',
+    custo: 'A licença concedida inclui monetizar, cobrar por e treinar aprendizado de máquina sobre o conteúdo enviado, e o remetente responde por ter todos os direitos.',
+    quando: 'Quando o material tem direitos claros, é próprio e o objetivo é alcance dentro do público que já usa a plataforma.'
+  },
+  {
+    nome: 'Notion público',
+    controle: 'Médio. A indexação depende de ativar o controle de indexação por buscadores e marcar a opção que torna o site descoberto na web.',
+    custo: 'Os metadados da página publicada incluem nome, foto de perfil e endereço de correio eletrônico de quem contribuiu. A edição de título e descrição para busca fica nos planos pagos, e o site pode levar até quatro semanas para ser indexado.',
+    quando: 'Quando o material é índice vivo, muda toda semana e ninguém precisa arquivar a versão.'
+  },
+  {
+    nome: 'Google Docs publicado',
+    controle: 'Baixo. A publicação torna o arquivo visível para todos na web, para a organização ou para um grupo, conforme a configuração da conta.',
+    custo: 'A documentação alerta para o cuidado ao publicar informação privada ou sensível. [FALTA EVIDENCIA: se e como documento publicado pelo Google Docs é indexado por buscadores.]',
+    quando: 'Quando a colaboração ao vivo vale mais que a permanência, como em rascunho aberto a comentário.'
+  }
+];
+
+const passos = [
+  {
+    nome: 'Descreva o uso que o leitor vai dar ao arquivo',
+    texto: 'Escreva numa frase o que a pessoa faz com o documento na semana seguinte: cita numa ementa, leva para uma reunião, imprime para anotar, ou consulta e fecha. Uso de consulta rápida pede página; uso de citação, arquivo ou impressão pede documento com versão.'
+  },
+  {
+    nome: 'Decida o formato pela frequência de mudança',
+    texto: 'Conteúdo que muda a cada semana vive melhor em HTML, porque a correção chega a todo mundo ao mesmo tempo. Conteúdo que precisa ficar igual ao que foi citado vive melhor em PDF versionado, porque a permanência é o ponto.'
+  },
+  {
+    nome: 'Escreva a primeira página como se fosse a única lida',
+    texto: 'Título em fonte grande no topo, autoria em linha própria logo abaixo, data e número de versão, resumo de três a cinco frases, e a URL canônica impressa. As diretrizes de inclusão do Google Scholar pedem exatamente o título em fonte grande no topo da primeira página e os autores em linha separada abaixo dele.'
+  },
+  {
+    nome: 'Garanta que todo o texto seja texto',
+    texto: 'O Google declara indexar o conteúdo da maioria dos arquivos baseados em texto e de certos formatos codificados de documento, entre eles PDF, arquivos do Office e do OpenOffice. Palavra que existe apenas dentro de uma imagem fica fora dessa extração, e o gráfico precisa de legenda escrita com os valores.'
+    },
+  {
+    nome: 'Publique primeiro no domínio do portal',
+    texto: 'A cópia de referência mora no seu domínio, com URL estável, para que o link que circula aponte para o lugar que você controla. O controle de indexação de arquivo que não é HTML se faz pelo cabeçalho X-Robots-Tag, e uma regra de robots.txt que bloqueia o rastreamento impede que qualquer instrução de indexação seja lida.'
+  },
+  {
+    nome: 'Decida a cópia em terceiro pela regra de duplicação',
+    texto: 'Quando a mesma peça for para plataforma de terceiro, combine antes o que a cópia faz. A documentação de canonicalização do Google registra que o elemento canônico não é recomendado para quem quer evitar duplicação por parceiros de sindicação, porque as páginas costumam ser bastante diferentes; o caminho previsto é o parceiro bloquear a indexação da cópia dele.'
+  }
+];
+
+const checklist = [
+  'O documento declara título, autoria, data, número de versão e a URL canônica na primeira página.',
+  'Todo o texto do arquivo é selecionável, incluindo números que aparecem dentro de gráfico.',
+  'Cada figura tem legenda escrita com os valores que ela mostra, legível sem ver a imagem.',
+  'O arquivo em PDF tem título em fonte grande no topo da primeira página e autores em linha separada abaixo, conforme as diretrizes de inclusão do Google Scholar.',
+  'O arquivo tem menos de 5 MB, limite por arquivo declarado nas mesmas diretrizes.',
+  'A cópia de referência está no domínio do portal, com URL estável que não muda a cada revisão.',
+  'A indexação de arquivo que não é HTML está controlada por cabeçalho X-Robots-Tag, e nenhuma regra de robots.txt impede a leitura dessa instrução.',
+  'O documento tem título de documento preenchido nos metadados do arquivo, além do título visível na página.',
+  'A ordem de leitura, o idioma e a estrutura de títulos do arquivo foram conferidos para leitor de tela.',
+  'Antes de subir a plataforma de terceiro, o direito sobre cada elemento do arquivo foi conferido, incluindo imagens e citações longas.',
+  'A decisão sobre a cópia em terceiro está escrita: publicação exclusiva no portal, publicação em terceiro com bloqueio de indexação da cópia, ou publicação nos dois com o papel de cada um registrado.'
+];
+
+const faqs = [
+  {
+    q: 'Quando um PDF é melhor que uma página HTML?',
+    a: 'Quando a permanência da versão vale mais que a facilidade de corrigir. Documento que alguém vai citar numa ementa, levar impresso para uma reunião ou anexar a um processo precisa ficar idêntico ao que foi citado, e a numeração de versão é parte do valor. Página HTML ganha quando o conteúdo muda com frequência, porque a correção chega a todos os leitores ao mesmo tempo e o histórico fica com quem publica. Um sinal prático ajuda a decidir: se você prevê editar o material mais de duas vezes nos próximos seis meses, ele nasceu como página.'
+  },
+  {
+    q: 'O que faz um documento ser extraível por motor generativo?',
+    a: 'Texto de verdade, título honesto, resumo no começo e URL estável. O Google declara indexar o conteúdo da maioria dos arquivos baseados em texto e de certos formatos codificados de documento, e a lista inclui PDF, PostScript, EPUB, arquivos do Word, do Excel e do PowerPoint, formatos do OpenOffice e RTF, além de arquivos de texto simples como CSV, HTML, XML e TXT. A determinação do tipo depende do cabeçalho de resposta Content-Type, com o nome do arquivo como recurso secundário quando o cabeçalho falta ou está errado. O que fica fora dessa extração é o que virou imagem: palavra desenhada, número dentro de gráfico e tabela exportada como figura.'
+  },
+  {
+    q: 'Como impedir que um PDF apareça na busca?',
+    a: 'Pelo cabeçalho de resposta X-Robots-Tag, e não pela etiqueta meta, que só existe dentro de HTML. A documentação do Google indica usar o cabeçalho X-Robots-Tag para arquivos que não são HTML, e define a instrução noindex como a que faz a página, mídia ou recurso não aparecer nos resultados de busca. Há uma armadilha frequente nesse ponto, escrita na mesma documentação: se uma página está bloqueada para rastreamento pelo arquivo robots.txt, qualquer informação sobre regras de indexação ou de exibição não será encontrada e portanto será ignorada. Bloquear no robots.txt e esperar remoção da busca é o erro que mantém o arquivo indexado.'
+  },
+  {
+    q: 'Publicar o mesmo material no portal e no SlideShare prejudica o site?',
+    a: 'O risco maior está no contrato, e não na duplicação. O Acordo de Uploader que governa o Scribd e o SlideShare exige que quem envia seja o criador e proprietário do conteúdo, ou tenha as licenças, direitos, consentimentos, liberações e permissões necessários, e concede à plataforma licença mundial, não exclusiva, transferível, cedível, integralmente paga e isenta de royalties para hospedar, exibir, reproduzir, traduzir, adaptar, distribuir, monetizar, cobrar por e treinar aprendizado de máquina sobre o conteúdo. Os Termos de Uso globais ainda vedam material que inclua publicidade não solicitada, material promocional ou de solicitação, publicidade comercial em massa e spam. Sobre a parte de busca, a documentação de canonicalização do Google registra que o elemento canônico não é recomendado para evitar duplicação por parceiros de sindicação, porque as páginas costumam ser bastante diferentes, e aponta o bloqueio de indexação pelo parceiro como caminho.'
+  },
+  {
+    q: 'Página pública do Notion aparece na busca?',
+    a: 'Aparece quando o controle de indexação por buscadores é ativado, e a documentação da plataforma descreve o passo com esse nome, junto com a opção que torna o site descoberto na web. Dois detalhes mudam o planejamento. O primeiro é o prazo: a documentação registra que um site do Notion pode levar até quatro semanas para ser indexado e aparecer nos resultados. O segundo é a exposição de dados: os metadados da página publicada incluem nomes, fotos de perfil e endereços de correio eletrônico associados a quem contribuiu com a página, o que desaconselha publicar assim material produzido em espaço interno compartilhado.'
+  },
+  {
+    q: 'Qual é o critério para decidir entre portal, plataforma de terceiro e os dois?',
+    a: 'Três perguntas em ordem resolvem quase todos os casos. Primeira: você tem direito sobre cada elemento do arquivo, incluindo imagens e citações longas? Sem isso, não há decisão a tomar. Segunda: o material precisa ficar citável e igual ao longo do tempo? Se sim, a cópia de referência mora no domínio do portal, com URL estável e versão declarada. Terceira: a plataforma de terceiro traz público que não chegaria de outro jeito, e o preço dessa licença é aceitável? Sendo sim nas três, publique nos dois lugares com papéis escritos: a cópia do portal é a citável, a do terceiro é a de alcance, e a decisão fica registrada junto com o arquivo. O portal aplica esse mesmo raciocínio nas peças curtas descritas no kit de reaproveitamento, e a mesma matriz de comparação de modalidades que serve de exemplo aqui é a que lista o IPOG entre as instituições que oferecem MBA correlato à Psicologia.'
+  }
+];
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: 'Documentos e apresentações indexáveis: quando o PDF ganha da página',
+      description,
+      datePublished,
+      author: alexandreAuthorRef,
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      mainEntityOfPage: pageUrl,
+      articleSection: 'Conteúdo e Social',
+      keywords: 'PDF citável, SlideShare, Scribd, Notion, Google Docs, X-Robots-Tag, canônico, acessibilidade de documento'
+    },
+    {
+      '@type': 'HowTo',
+      '@id': `${pageUrl}#howto`,
+      name: 'Decidir formato e lugar de publicação de um documento do portal',
+      description: 'Seis passos para escolher entre página HTML, PDF citável e plataforma de terceiro, com o controle de indexação e o papel de cada cópia definidos antes da publicação.',
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      author: alexandreAuthorRef,
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+      step: passos.map((p, i) => ({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: p.nome,
+        text: p.texto,
+        url: `${pageUrl}#onde-publicar`
+      }))
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${pageUrl}#faq`,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a }
+      }))
+    }
+  ]
+};
+---
+
+<Base title={title} description={description} pageType="article" datePublished={datePublished}>
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Conteúdo e Social', href: '/conteudo-social' },
+        { label: 'Documentos e apresentações' }
+      ]} />
+      <span class="section-eyebrow mt-3">Por canal · Documentos indexáveis</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Documentos e apresentações: quando o PDF ganha da página, e quando perde</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Um arquivo publicado carrega duas promessas ao mesmo tempo: ficar igual para quem citou e continuar legível para quem extrai texto. O formato que cumpre as duas é decidido antes do design, e a decisão errada aparece meses depois, quando o material está desatualizado, ilegível para leitor de tela e servindo de fonte para uma resposta gerada.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-8">
+    <TLDR
+      resposta="O PDF ganha quando a versão precisa ficar idêntica ao que foi citado, e perde quando o conteúdo muda com frequência. O documento se torna extraível quando o texto é texto, o título é honesto, o resumo abre a primeira página e a URL é estável. O Google indexa a maioria dos arquivos baseados em texto, e o controle de indexação de arquivo que não é HTML se faz pelo cabeçalho X-Robots-Tag."
+      fontes={['Google Search Central, tipos de arquivo indexáveis', 'Google Search Central, etiquetas robots e X-Robots-Tag', 'Google Search Central, canonicalização', 'Google Scholar, diretrizes de inclusão', 'Acordo de Uploader do Scribd e SlideShare', 'Notion, páginas públicas e publicação na web']}
+    />
+  </section>
+
+  <section class="container-page pb-12 grid lg:grid-cols-12 gap-10">
+    <aside class="lg:col-span-3 order-first">
+      <InPageNav headings={headings} />
+    </aside>
+
+    <article class="lg:col-span-9 space-y-12">
+
+      <div>
+        <h2 id="contrato-do-canal" class="section-h text-2xl">Contrato do canal</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">
+          Documento indexável é a superfície em que o portal empacota um argumento inteiro num objeto que viaja sozinho. O contrato abaixo diz o que essa autonomia exige.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 w-56">Cláusula</th>
+                <th class="text-left px-4 py-3">O que ela obriga</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {contrato.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{c.campo}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{c.valor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <figure>
+        <h2 id="pdf-ou-html" class="section-h text-2xl">Quando o PDF ganha da página, e quando perde</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="doc-matriz-titulo doc-matriz-desc" viewBox="0 0 700 380" width="700" height="380" style="min-width:700px" class="block">
+            <title id="doc-matriz-titulo">Matriz de decisão entre página HTML, PDF citável e as duas formas juntas</title>
+            <desc id="doc-matriz-desc">Uma matriz de dois por dois. O eixo horizontal mede a frequência de mudança do conteúdo, da esquerda, onde o conteúdo é estável, para a direita, onde ele muda toda semana. O eixo vertical mede a necessidade de o leitor levar o arquivo consigo, de baixo, onde a consulta é feita na tela e encerrada ali, para cima, onde o leitor cita, imprime ou anexa o documento. O quadrante superior esquerdo, com conteúdo estável e necessidade de levar o arquivo, indica PDF citável com versão declarada. O quadrante superior direito, com conteúdo que muda e necessidade de levar o arquivo, indica página HTML como fonte de verdade mais uma exportação datada em PDF, gerada a cada revisão. O quadrante inferior esquerdo, com conteúdo estável e consulta na tela, indica página HTML, porque o arquivo separado só acrescenta manutenção. O quadrante inferior direito, com conteúdo que muda e consulta na tela, indica página HTML e desaconselha qualquer arquivo, porque um PDF ali envelhece mais rápido do que alguém consegue substituir.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">O que decide o formato: permanência e frequência de revisão</text>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" fill="none">
+              <line x1="70" y1="330" x2="670" y2="330" />
+              <line x1="70" y1="50" x2="70" y2="330" />
+              <line x1="370" y1="50" x2="370" y2="330" />
+              <line x1="70" y1="190" x2="670" y2="190" />
+            </g>
+
+            <g font-size="12" class="fill-current text-ink-500">
+              <text x="76" y="350">Conteúdo estável</text>
+              <text x="560" y="350">Muda toda semana</text>
+              <text x="16" y="62">Cita,</text>
+              <text x="16" y="78">imprime</text>
+              <text x="16" y="94">ou anexa</text>
+              <text x="16" y="300">Consulta</text>
+              <text x="16" y="316">e fecha</text>
+            </g>
+
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="90" y="82" font-size="13" font-weight="700" class="fill-current text-brand-700">PDF citável</text>
+              <text x="90" y="104">Versão declarada na capa,</text>
+              <text x="90" y="122">URL canônica impressa,</text>
+              <text x="90" y="140">texto todo selecionável.</text>
+              <text x="90" y="164" font-size="11" class="fill-current text-ink-500">Exemplo: matriz de comparação de modalidades.</text>
+
+              <text x="390" y="82" font-size="13" font-weight="700" class="fill-current text-brand-700">Página mais exportação</text>
+              <text x="390" y="104">O HTML é a fonte de verdade.</text>
+              <text x="390" y="122">O PDF datado sai a cada</text>
+              <text x="390" y="140">revisão, com a data na capa.</text>
+              <text x="390" y="164" font-size="11" class="fill-current text-ink-500">Exemplo: relatório trimestral de indicadores.</text>
+
+              <text x="90" y="224" font-size="13" font-weight="700" class="fill-current text-ink-900">Página HTML</text>
+              <text x="90" y="246">Arquivo separado só</text>
+              <text x="90" y="264">acrescenta manutenção.</text>
+
+              <text x="390" y="224" font-size="13" font-weight="700" class="fill-current text-ink-900">Página HTML, sem arquivo</text>
+              <text x="390" y="246">Um PDF aqui envelhece mais</text>
+              <text x="390" y="264">rápido do que alguém troca,</text>
+              <text x="390" y="282">e continua sendo citado velho.</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          A matriz cruza dois critérios operacionais, permanência exigida pelo leitor e frequência de revisão prevista. Ela não descreve medição externa: é regra de decisão editorial deste portal, escrita em 7 de setembro de 2026.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <p>
+          O argumento a favor do PDF costuma ser confundido com estética. O ganho real é outro, e ele se enuncia em uma frase: o arquivo continua idêntico ao que alguém citou. Numa área regulada, essa estabilidade pesa. Quando uma coordenação cita a carga horária mínima descrita num documento e a página muda no mês seguinte, a citação passa a apontar para um texto que não existe mais, e nenhuma das duas partes percebe.
+        </p>
+        <p>
+          O argumento contra o PDF também é operacional. Arquivo desatualizado permanece servido, permanece encontrável e continua alimentando sistemas de extração até alguém removê-lo. A página HTML corrige para todo mundo ao mesmo tempo e mantém o histórico com quem publica. O critério de decisão que resolve os dois lados é a previsão de revisões: material com mais de duas revisões previstas em seis meses nasce como página, e a exportação em PDF vira derivada datada, gerada a cada revisão, com a data na capa.
+        </p>
+      </div>
+
+      <figure>
+        <h2 id="o-que-torna-citavel" class="section-h text-2xl">O que torna um documento citável</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="doc-capa-titulo doc-capa-desc" viewBox="0 0 700 360" width="700" height="360" style="min-width:700px" class="block">
+            <title id="doc-capa-titulo">Anatomia da primeira página de um documento citável</title>
+            <desc id="doc-capa-desc">Um retângulo representa a primeira página do documento, dividido em seis faixas de cima para baixo, cada uma com uma anotação à direita. A primeira faixa é o título em fonte grande no topo da página, exigência escrita nas diretrizes de inclusão do Google Scholar. A segunda faixa traz os autores em linha separada logo abaixo do título, também exigida por essas diretrizes. A terceira faixa traz data de publicação e número de versão, que permitem citar uma versão específica. A quarta faixa é o resumo de três a cinco frases, que responde sozinho à pergunta do título e é o trecho que um extrator recorta primeiro. A quinta faixa é o corpo do documento em texto selecionável, com figuras acompanhadas de legenda escrita que repete os valores. A sexta faixa traz a URL canônica impressa e a seção final de referências, chamada References ou Bibliography quando o destino é indexação acadêmica. Uma anotação lateral registra que o arquivo deve ter menos de 5 megabytes, limite por arquivo declarado nas mesmas diretrizes.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">A primeira página faz o trabalho de citação</text>
+
+            <g class="stroke-current text-brand-700" fill="none" stroke-width="1.6">
+              <rect x="20" y="44" width="300" height="296" rx="10" />
+            </g>
+            <g class="stroke-current text-ink-500" fill="none" stroke-width="1.2">
+              <line x1="20" y1="98" x2="320" y2="98" />
+              <line x1="20" y1="130" x2="320" y2="130" />
+              <line x1="20" y1="160" x2="320" y2="160" />
+              <line x1="20" y1="216" x2="320" y2="216" />
+              <line x1="20" y1="296" x2="320" y2="296" />
+            </g>
+
+            <g class="fill-current text-ink-700" font-size="12">
+              <text x="36" y="76" font-size="16" font-weight="700" class="fill-current text-ink-900">Título em fonte grande</text>
+              <text x="36" y="118">Autoria em linha própria</text>
+              <text x="36" y="150">Data e versão</text>
+              <text x="36" y="182">Resumo de três a cinco frases</text>
+              <text x="36" y="200">que responde ao título sozinho</text>
+              <text x="36" y="240">Corpo em texto selecionável,</text>
+              <text x="36" y="258">com legenda escrita em cada</text>
+              <text x="36" y="276">figura, repetindo os valores</text>
+              <text x="36" y="318">URL canônica e referências</text>
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.2" fill="none">
+              <path d="M320 70 H360" />
+              <path d="M320 118 H360" />
+              <path d="M320 150 H360" />
+              <path d="M320 190 H360" />
+              <path d="M320 256 H360" />
+              <path d="M320 316 H360" />
+            </g>
+
+            <g class="fill-current text-ink-700" font-size="12.5">
+              <text x="368" y="74">Exigido pelas diretrizes do Google Scholar.</text>
+              <text x="368" y="122">Autores em linha separada abaixo do título.</text>
+              <text x="368" y="154">Permite citar uma versão específica.</text>
+              <text x="368" y="186">É o trecho que um extrator recorta primeiro,</text>
+              <text x="368" y="204">e o que decide se o documento é entendido.</text>
+              <text x="368" y="252">Palavra dentro de imagem fica fora da</text>
+              <text x="368" y="270">extração de texto do buscador.</text>
+              <text x="368" y="320">Seção final chamada References ou Bibliography</text>
+              <text x="368" y="338">quando o destino também é indexação acadêmica.</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          As exigências de título em fonte grande no topo da primeira página, autores em linha separada, seção final de bibliografia e limite de 5 MB por arquivo estão nas diretrizes de inclusão do Google Scholar, consultadas em 7 de setembro de 2026.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <p>
+          Metadado do arquivo é a metade esquecida do trabalho. O título visível na página e o campo de título dentro do arquivo são coisas diferentes, e é comum encontrar um documento cuidadoso cujo campo de título ainda guarda o nome do modelo do qual ele nasceu. [FALTA EVIDENCIA: qual é a regra atual e documentada do Google para escolher o título exibido de um PDF nos resultados de busca.] Enquanto essa regra não estiver conferida na documentação, a prática segura é a redundância: o mesmo título no campo de metadado, no topo da página e no texto do link que aponta para o arquivo.
+        </p>
+        <p>
+          A URL estável fecha o conjunto. Um documento citável que muda de endereço a cada reorganização do site perde as citações que já recebeu, e é por isso que material de referência ganha identificador persistente quando existe pesquisa por trás, caminho descrito na página irmã sobre <a href="/conteudo-social/repositorios-academicos">repositórios acadêmicos</a>.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="slide-sem-texto" class="section-h text-2xl">O slide sem texto selecionável</h2>
+        <p>
+          O erro mais comum desta superfície tem uma causa simples: a apresentação foi desenhada para ser projetada, e projeção vive de imagem. Quando esse arquivo vira documento público, o texto que era falado desaparece, os números moram dentro de gráficos exportados como figura e a sequência de slides deixa de contar a história para quem não estava na sala.
+        </p>
+        <p>
+          O prejuízo é duplo. Para o leitor humano, o arquivo exige adivinhação. Para qualquer sistema que extraia texto, o arquivo simplesmente não tem conteúdo: o Google declara indexar o conteúdo da maioria dos arquivos baseados em texto e de certos formatos codificados de documento, e o que está desenhado dentro de uma imagem fica fora dessa descrição. [FALTA EVIDENCIA: em que condições o Google aplica reconhecimento óptico de caracteres a PDF composto por páginas digitalizadas.]
+        </p>
+        <p>
+          A correção é barata e cabe em três movimentos. Primeiro, cada slide ganha uma frase completa como título, no lugar do rótulo de duas palavras. Segundo, cada gráfico ganha uma legenda escrita que repete os valores e a fonte, de modo que a informação exista em texto. Terceiro, a apresentação ganha uma primeira página no formato descrito acima, com autoria, data, versão, resumo e URL canônica. Depois desses três movimentos, o mesmo arquivo serve para projeção e para citação.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="acessibilidade" class="section-h text-2xl">Acessibilidade do documento</h2>
+        <p>
+          As decisões que tornam um documento acessível são quase todas as mesmas que o tornam extraível, e essa convergência é o melhor argumento para fazê-las. Texto real em vez de imagem de texto serve ao leitor de tela e ao rastreador. Estrutura de títulos hierárquica permite navegar por seções e ajuda a delimitar passagens. Legenda escrita em cada figura entrega o conteúdo a quem não vê a imagem e a quem só lê o texto extraído.
+        </p>
+        <p>
+          Três itens são específicos de acessibilidade e não aparecem no trabalho de indexação. A ordem de leitura do arquivo precisa acompanhar a ordem visual, porque exportação de ferramenta de design frequentemente embaralha as duas. O idioma do documento precisa estar declarado nas propriedades do arquivo, para que o leitor de tela use a pronúncia certa. E o contraste entre texto e fundo precisa sobreviver à impressão em preto e branco, que é como boa parte do público de coordenação lê material de comparação.
+        </p>
+        <p>
+          Tabela merece atenção separada, porque é onde a acessibilidade costuma quebrar em silêncio. Tabela exportada como imagem perde a estrutura de linha e coluna, e uma comparação de modalidades vira um retângulo opaco para quem usa leitor de tela. O portal aplica o mesmo princípio nas páginas, mantendo tabela como tabela e deixando a rolagem horizontal dentro do próprio bloco, padrão visível no <a href="/comparativos/act-vs-tcc-dor-cronica">comparativo entre ACT e TCC para dor crônica</a>.
+        </p>
+      </div>
+
+      <figure>
+        <h2 id="onde-publicar" class="section-h text-2xl">Portal, terceiro, ou os dois com canônico</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="doc-fluxo-titulo doc-fluxo-desc" viewBox="0 0 720 330" width="720" height="330" style="min-width:720px" class="block">
+            <title id="doc-fluxo-titulo">Fluxo de quatro decisões para escolher onde publicar um documento</title>
+            <desc id="doc-fluxo-desc">Quatro caixas de decisão ligadas em sequência da esquerda para a direita. A primeira pergunta se existe direito sobre todos os elementos do arquivo, incluindo imagens e citações longas, porque o Acordo de Uploader do Scribd e do SlideShare exige que quem envia seja criador e proprietário do conteúdo ou tenha as licenças, direitos, consentimentos, liberações e permissões necessários. A segunda pergunta se a licença exigida pela plataforma é aceitável, lembrando que a licença concedida naquele acordo inclui hospedar, reproduzir, adaptar, distribuir, monetizar, cobrar por e treinar aprendizado de máquina sobre o conteúdo. A terceira determina que a cópia de referência more no domínio do portal, com URL estável, e que a indexação de arquivo que não é HTML seja controlada por cabeçalho X-Robots-Tag, observando que arquivo bloqueado no robots.txt impede a leitura de qualquer instrução de indexação. A quarta trata da cópia em terceiro e registra que a documentação de canonicalização do Google não recomenda o elemento canônico para evitar duplicação por parceiros de sindicação, porque as páginas costumam ser bastante diferentes, e aponta o bloqueio de indexação pelo parceiro como caminho previsto.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">Quatro decisões, nesta ordem</text>
+
+            <g class="stroke-current text-brand-700" fill="none" stroke-width="1.6">
+              <rect x="16" y="48" width="164" height="176" rx="12" />
+              <rect x="200" y="48" width="164" height="176" rx="12" />
+              <rect x="384" y="48" width="164" height="176" rx="12" />
+              <rect x="568" y="48" width="136" height="176" rx="12" />
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" fill="none">
+              <path d="M180 136 H200" />
+              <path d="M364 136 H384" />
+              <path d="M548 136 H568" />
+            </g>
+            <g class="fill-current text-ink-500">
+              <path d="M192 130 L200 136 L192 142 Z" />
+              <path d="M376 130 L384 136 L376 142 Z" />
+              <path d="M560 130 L568 136 L560 142 Z" />
+            </g>
+
+            <g font-size="12" class="fill-current text-ink-700">
+              <text x="30" y="74" font-size="11" font-weight="700" class="fill-current text-brand-700">1. DIREITO</text>
+              <text x="30" y="96">Você tem direito</text>
+              <text x="30" y="114">sobre cada elemento,</text>
+              <text x="30" y="132">imagem e citação</text>
+              <text x="30" y="150">longa incluídas.</text>
+              <text x="30" y="176" font-size="11" class="fill-current text-ink-500">Exigência escrita no</text>
+              <text x="30" y="192" font-size="11" class="fill-current text-ink-500">Acordo de Uploader.</text>
+
+              <text x="214" y="74" font-size="11" font-weight="700" class="fill-current text-brand-700">2. LICENÇA</text>
+              <text x="214" y="96">A licença concedida</text>
+              <text x="214" y="114">cobre monetizar,</text>
+              <text x="214" y="132">cobrar por e treinar</text>
+              <text x="214" y="150">aprendizado de máquina.</text>
+              <text x="214" y="176" font-size="11" class="fill-current text-ink-500">Decida com isso à vista,</text>
+              <text x="214" y="192" font-size="11" class="fill-current text-ink-500">e não depois.</text>
+
+              <text x="398" y="74" font-size="11" font-weight="700" class="fill-current text-brand-700">3. CÓPIA DE REFERÊNCIA</text>
+              <text x="398" y="96">Mora no domínio do</text>
+              <text x="398" y="114">portal, com URL estável.</text>
+              <text x="398" y="132">Indexação de arquivo</text>
+              <text x="398" y="150">sem HTML pelo cabeçalho</text>
+              <text x="398" y="168">X-Robots-Tag.</text>
+              <text x="398" y="194" font-size="11" class="fill-current text-ink-500">Bloqueio no robots.txt</text>
+              <text x="398" y="210" font-size="11" class="fill-current text-ink-500">impede ler a instrução.</text>
+
+              <text x="582" y="74" font-size="11" font-weight="700" class="fill-current text-brand-700">4. CÓPIA EM TERCEIRO</text>
+              <text x="582" y="96">O canônico não é</text>
+              <text x="582" y="114">recomendado para</text>
+              <text x="582" y="132">duplicação por</text>
+              <text x="582" y="150">sindicação. O caminho</text>
+              <text x="582" y="168">é o parceiro bloquear</text>
+              <text x="582" y="186">a indexação da cópia.</text>
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" fill="none">
+              <rect x="16" y="248" width="688" height="66" rx="12" />
+            </g>
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="32" y="272" font-weight="700" font-size="11" class="fill-current text-ink-900">SAÍDA DA DECISÃO</text>
+              <text x="32" y="296">Três resultados possíveis: só no portal, no portal com cópia de alcance em terceiro sem indexação, ou nos dois com o papel de cada cópia escrito junto do arquivo.</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          As quatro decisões usam o Acordo de Uploader do Scribd e do SlideShare, a documentação do Google sobre etiquetas robots e cabeçalho X-Robots-Tag, e a documentação de canonicalização do Google, todas consultadas em 7 de setembro de 2026.
+        </figcaption>
+      </figure>
+
+      <div>
+        <h2 id="plataformas" class="section-h text-2xl">O que cada plataforma exige em troca</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">
+          Quatro destinos, com o controle que cada um deixa nas suas mãos, o preço que cobra e a situação em que ele compensa. Os dados vêm das políticas oficiais consultadas em 7 de setembro de 2026.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 w-48">Destino</th>
+                <th class="text-left px-4 py-3">Controle que sobra com você</th>
+                <th class="text-left px-4 py-3">Preço declarado</th>
+                <th class="text-left px-4 py-3">Quando compensa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {plataformas.map(p => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{p.nome}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{p.controle}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{p.custo}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{p.quando}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-ink-700 leading-relaxed max-w-3xl">
+          Um detalhe de infraestrutura resume a relação entre duas dessas plataformas: em 7 de setembro de 2026, o endereço de suporte do SlideShare responde com redirecionamento permanente para o suporte do Scribd, e o mesmo Acordo de Uploader é apresentado para as duas. Quem decide publicar numa está aceitando as regras da outra.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="etica-cfp" class="section-h text-2xl">Ética profissional nesta superfície</h2>
+        <p>
+          O Código de Ética Profissional do Psicólogo veda sensacionalismo, promessa de cura e diagnóstico a distância na comunicação pública, e o documento baixável agrava cada uma dessas vedações por uma razão material: o arquivo circula sem contexto e sem a página que o explicava. Um slide isolado, salvo e reenviado meses depois, chega ao leitor sem a ressalva que estava no texto ao redor.
+        </p>
+        <p>
+          Isso muda três decisões concretas de produção. A primeira é o título: manchete alarmante num PDF viaja com muito mais força que num artigo, porque vira o nome do arquivo salvo na máquina de alguém. A segunda é o material clínico: nenhum documento público carrega print de conversa com paciente, recorte de prontuário ou instrumento psicométrico reproduzido, e essa proibição vale mesmo em material dito educativo, porque o arquivo é copiável. A terceira é o roteiro de autoavaliação: um documento que ofereça pontuação e faixa de resultado funciona, na prática, como triagem a distância, e é isso que a vedação de diagnóstico a distância alcança.
+        </p>
+        <p>
+          A ressalva que sobrevive ao recorte é a que está dentro do próprio slide. Quando um material trata de sofrimento psíquico, cada página que traz número clínico carrega, na mesma página, a fonte e a indicação de procurar avaliação profissional. O portal descreve como trata esse tipo de conteúdo em <a href="/principios-editoriais">princípios editoriais</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="do-portal-para-o-canal" class="section-h text-2xl">Do portal para o canal</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">
+          Seis passos para transformar uma página do portal em documento sem virar cópia colada. O movimento central está no passo 2: o texto vira critério, e o critério vira ferramenta de comparação.
+        </p>
+        <ol class="mt-5 space-y-4">
+          {passos.map((p, i) => (
+            <li class="card p-5 border-surface-200">
+              <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">Passo {i + 1}</p>
+              <h3 class="font-display font-semibold text-lg mt-1 text-ink-900">{p.nome}</h3>
+              <p class="mt-2 text-sm text-ink-700 leading-relaxed">{p.texto}</p>
+            </li>
+          ))}
+        </ol>
+        <p class="mt-5 text-ink-700 leading-relaxed max-w-3xl">
+          O material de partida costuma vir de duas fontes internas. A comparação de modalidades sai de <a href="/tipos-de-pos-graduacao">tipos de pós-graduação</a>, que já organiza carga horária, certificação e natureza regulatória. As peças curtas que anunciam o documento nas outras superfícies saem do <a href="/conteudo-social/kit-de-repurposing">kit de reaproveitamento</a>, com a regra de sempre: a peça curta se sustenta sozinha e o documento é o aprofundamento, jamais o lugar onde a resposta estava escondida.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="checklist" class="section-h text-2xl">Checklist antes de publicar o arquivo</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">Onze itens verificáveis. Cada um se confere abrindo o arquivo, o cabeçalho de resposta ou a política da plataforma.</p>
+        <ul class="mt-5 space-y-3">
+          {checklist.map((item, i) => (
+            <li class="flex gap-3 items-start rounded-xl border border-surface-200 bg-surface-50 p-4">
+              <span class="shrink-0 w-7 h-7 rounded-full bg-brand-100 text-brand-800 text-xs font-bold inline-flex items-center justify-center">{i + 1}</span>
+              <span class="text-sm text-ink-700 leading-relaxed">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none min-h-[44px]">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer-text">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <nav aria-label="Navegação entre páginas de canal" class="rounded-2xl border border-surface-200 bg-surface-50 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-4">Continuar pelo menu Conteúdo e Social</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <a href="/conteudo-social/repositorios-academicos" class="card-lift block p-4 min-h-[44px]">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">Página anterior</span>
+            <span class="block font-display font-semibold text-ink-900 mt-1">Repositórios acadêmicos</span>
+          </a>
+          <a href="/conteudo-social/google-discover-e-noticias" class="card-lift block p-4 min-h-[44px]">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">Próxima página</span>
+            <span class="block font-display font-semibold text-ink-900 mt-1">Discover e Notícias</span>
+          </a>
+          <a href="/conteudo-social" class="card-lift block p-4 min-h-[44px]">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">Voltar</span>
+            <span class="block font-display font-semibold text-ink-900 mt-1">Hub Conteúdo e Social</span>
+          </a>
+        </div>
+      </nav>
+
+    </article>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

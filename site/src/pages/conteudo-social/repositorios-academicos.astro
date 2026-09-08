@@ -1,0 +1,615 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TLDR from '@components/TLDR.astro';
+import InPageNav from '@components/InPageNav.astro';
+import { SITE } from '@lib/data';
+import { alexandreAuthorRef } from '@lib/schemas';
+
+const title = 'Repositórios acadêmicos para um portal editorial: o que vira DOI citável e o que é verniz';
+const description = 'PsyArXiv, OSF, SciELO Preprints, Zenodo e ResearchGate pelas regras oficiais: o que pode ser depositado, licença, versionamento, o que gera DOI e o que exige um pesquisador de verdade por trás.';
+const datePublished = '2026-09-07';
+const pageUrl = `${SITE.url}/conteudo-social/repositorios-academicos/`;
+
+const headings = [
+  { id: 'contrato-do-canal', text: 'Contrato do canal', level: 2 },
+  { id: 'o-que-pode-ser-depositado', text: 'O que pode ser depositado', level: 2 },
+  { id: 'vira-deposito', text: 'Este material vira depósito?', level: 2 },
+  { id: 'fluxo-do-deposito', text: 'O fluxo do depósito, do envio ao DOI', level: 2 },
+  { id: 'licenca-e-versionamento', text: 'Licença e versionamento', level: 2 },
+  { id: 'doi-citavel', text: 'O que vira DOI citável', level: 2 },
+  { id: 'rede-social-nao-e-repositorio', text: 'Rede social acadêmica não é repositório', level: 2 },
+  { id: 'google-scholar', text: 'Como isso chega ao Google Scholar', level: 2 },
+  { id: 'o-que-exige-pesquisador', text: 'O que exige um pesquisador de verdade', level: 2 },
+  { id: 'etica-cfp', text: 'Ética profissional nesta superfície', level: 2 },
+  { id: 'do-portal-para-o-canal', text: 'Do portal para o canal', level: 2 },
+  { id: 'checklist', text: 'Checklist antes de depositar', level: 2 },
+  { id: 'perguntas-frequentes', text: 'Perguntas frequentes', level: 2 }
+];
+
+const contrato = [
+  {
+    campo: 'Público real',
+    valor: 'Pesquisadores, docentes, revisores, bibliotecários, coordenadores de pós-graduação e jornalistas que precisam de um objeto estável para citar. Motores generativos leem o mesmo objeto por metadado, e não por design de página.'
+  },
+  {
+    campo: 'Formato canônico',
+    valor: 'Relatório de pesquisa em .pdf com método declarado, dados anonimizados em .csv, protocolo e material suplementar em projeto OSF. Preprint apenas quando existe contribuição acadêmica completa, com pergunta, corpus, critério de inclusão, achados e limites.'
+  },
+  {
+    campo: 'Gancho de abertura',
+    valor: 'A pergunta pesquisável não é qual pós-graduação em Psicologia é melhor. É quais dúvidas regulatórias, clínicas e profissionais aparecem de forma recorrente nas buscas e nas respostas geradas, e com qual frequência medida.'
+  },
+  {
+    campo: 'Regra que quebra a conta',
+    valor: 'As políticas de moderação do OSF Preprints declaram que conteúdo total ou majoritariamente gerado por ferramentas de modelo de linguagem ou de inteligência artificial não é apropriado para o serviço, e que organizações não podem usar contas do OSF como agregadores de publicação, centrais de distribuição ou serviços de geração de DOI. O serviço opera com pré-moderação: a submissão fica privada e pendente até um moderador aceitar ou recusar.'
+  },
+  {
+    campo: 'Erro clássico',
+    valor: 'Depositar artigo editorial com aparência de paper. Repositório acadêmico convive bem com incerteza metodológica declarada e recusa verniz acadêmico sem método.'
+  },
+  {
+    campo: 'Métrica honesta',
+    valor: 'Citação em bibliografia de terceiro, uso em ementa de disciplina, link a partir de grupo de pesquisa e download qualificado. DOI criado sem nenhuma citação é arquivo com identificador, não autoridade.'
+  }
+];
+
+const plataformas = [
+  {
+    nome: 'PsyArXiv',
+    natureza: 'Servidor de preprints de Psicologia, criado pela Society for the Improvement of Psychological Science, hospedado no OSF do Center for Open Science e administrado pelo PsyArXiv Scientific Advisory Board.',
+    aceita: 'Working papers, preprints e cópias de autor de trabalhos publicados, incluindo relatos originais qualitativos e quantitativos, registered reports de estágios 1 e 2, livros, capítulos, revisões, críticas, pôsteres e comentários de pesquisa.',
+    modera: 'Sim. Os moderadores avaliam se o material está no escopo, com duas perguntas declaradas: é trabalho acadêmico e é Psicologia. Submissão de brincadeira é recusada.',
+    ia: 'Uso de modelo de linguagem para apoiar a preparação do manuscrito, como revisão ortográfica, reestruturação de frase e checagem gramatical, é permitido, e qualquer uso substantivo deve ser explicitamente divulgado no manuscrito.'
+  },
+  {
+    nome: 'OSF Preprints',
+    natureza: 'Infraestrutura que hospeda serviços de preprint da comunidade, mantida pelo Center for Open Science.',
+    aceita: 'Conteúdo original criado pelo usuário, ou publicado com permissão explícita e atribuição apropriada de quem o criou.',
+    modera: 'Pré-moderação. A submissão fica em estado privado e pendente até um moderador aceitar ou recusar, com a justificativa devolvida ao autor.',
+    ia: 'Conteúdo total ou majoritariamente gerado por ferramentas de modelo de linguagem ou de inteligência artificial não é apropriado para o OSF Preprints.'
+  },
+  {
+    nome: 'SciELO Preprints',
+    natureza: 'Servidor de preprints da rede SciELO, aberto a manuscritos de todas as disciplinas e assuntos científicos.',
+    aceita: 'Manuscrito relacionado a pesquisa, depositado em PDF, com declaração de que não foi depositado em outro servidor nem publicado em periódico.',
+    modera: 'Triagem básica para identificar se o material é manuscrito relacionado a pesquisa, com um caminho de postagem automática para autor com histórico de publicação. [FALTA EVIDENCIA: o limiar exato de artigos anteriores que dispara a postagem automática.]',
+    ia: '[FALTA EVIDENCIA: política específica do SciELO Preprints sobre uso de modelo de linguagem na preparação do manuscrito.]'
+  },
+  {
+    nome: 'Zenodo',
+    natureza: 'Repositório geral de resultados de pesquisa, operado no ambiente do CERN.',
+    aceita: 'Todos os campos de pesquisa e todos os tipos de artefato de pesquisa, desde que o conteúdo não viole privacidade nem direito autoral e não quebre confidencialidade. Limite de 50 GB por registro, com cota maior mediante pedido avaliado caso a caso.',
+    modera: 'Sem revisão de mérito. O controle é de direitos e de escopo, com remoção prevista para violação de política.',
+    ia: '[FALTA EVIDENCIA: política específica do Zenodo sobre conteúdo gerado por modelo de linguagem.]'
+  },
+  {
+    nome: 'ResearchGate',
+    natureza: 'Rede social acadêmica. A própria plataforma declara que não é editora e não aceita artigos ou trabalhos para publicação.',
+    aceita: 'Depende do contrato que o autor assinou com a editora do periódico. A plataforma avisa que muitas editoras não permitem compartilhar publicamente a versão final publicada em nenhum momento.',
+    modera: 'A responsabilidade é do usuário. A plataforma declara que você responde por qualquer conteúdo que enviar ou compartilhar e que precisa conferir antes se tem todos os direitos necessários.',
+    ia: '[FALTA EVIDENCIA: política específica do ResearchGate sobre conteúdo gerado por modelo de linguagem.]'
+  }
+];
+
+const passos = [
+  {
+    nome: 'Escolha a pergunta que sobrevive fora do portal',
+    texto: 'A pergunta precisa ser respondível por método, e não por opinião editorial. Comparar a frequência com que dúvidas regulatórias aparecem nas buscas é pesquisável; afirmar qual formação é melhor não é. Escreva a pergunta em uma frase antes de qualquer outra coisa, porque ela decide o corpus.'
+  },
+  {
+    nome: 'Declare corpus, critério de inclusão e período',
+    texto: 'Quantos itens, colhidos de onde, entre quais datas, com qual critério de entrada e de saída, e quantos foram descartados e por quê. Esse parágrafo é o que separa relatório de pesquisa de ensaio com números. Sem denominador, o achado não é auditável.'
+  },
+  {
+    nome: 'Escreva o documento no formato que o repositório aceita',
+    texto: 'PDF com título em fonte grande na primeira página, autores logo abaixo em linha própria, resumo, método, achados, limites e uma seção final de referências. O SciELO Preprints exige PDF; o Google Scholar pede PDF ou HTML, com no máximo 5 MB por arquivo, título em fonte grande no topo da primeira página e seção de bibliografia ao final.'
+  },
+  {
+    nome: 'Declare autoria, afiliação, conflito de interesse e uso de IA',
+    texto: 'Cada autor com ORCID, a afiliação institucional real, e o vínculo econômico do portal declarado no próprio documento. Uso de modelo de linguagem para apoio de redação é aceito pelo PsyArXiv, e qualquer uso substantivo precisa ser divulgado explicitamente no manuscrito.'
+  },
+  {
+    nome: 'Escolha o repositório pela natureza do objeto',
+    texto: 'Manuscrito acadêmico de Psicologia vai a servidor de preprint de Psicologia. Conjunto de dados, protocolo, código e material suplementar vão ao Zenodo, que aceita todos os tipos de artefato de pesquisa. Depositar em dois servidores de preprint ao mesmo tempo é vedado pela declaração exigida no SciELO Preprints.'
+  },
+  {
+    nome: 'Publique o DOI de volta no portal e registre a data',
+    texto: 'Depois do aceite, o preprint recebe DOI e URL persistente que permitem citá-lo. A página HTML do portal passa a citar o próprio DOI, e o registro interno guarda a data do depósito, a versão e o repositório. Sem esse fechamento, o depósito vira arquivo esquecido com identificador.'
+  }
+];
+
+const checklist = [
+  'A pergunta de pesquisa está escrita em uma frase e é respondível por método.',
+  'O documento declara corpus, período, critério de inclusão, critério de exclusão e quantos itens foram descartados.',
+  'Os limites do trabalho estão escritos pelo próprio autor, antes de qualquer revisor apontá-los.',
+  'O documento não foi gerado total ou majoritariamente por modelo de linguagem, conforme a política de moderação do OSF Preprints.',
+  'Qualquer uso substantivo de modelo de linguagem está divulgado explicitamente no manuscrito, conforme a política do PsyArXiv.',
+  'Cada autor tem ORCID declarado e a afiliação institucional está correta.',
+  'O vínculo econômico entre portal, agência e instituição de ensino está declarado dentro do documento.',
+  'A licença está escolhida e escrita: o SciELO Preprints publica o manuscrito aprovado sob CC-BY, e o Zenodo exige licença especificada para todo arquivo público.',
+  'O mesmo manuscrito não foi depositado em dois servidores de preprint, declaração exigida na submissão do SciELO Preprints.',
+  'O arquivo em PDF tem título em fonte grande no topo da primeira página, autores em linha própria abaixo, seção de referências ao final e menos de 5 MB, conforme as diretrizes de inclusão do Google Scholar.',
+  'O DOI recebido foi citado de volta na página HTML do portal, com a data do depósito registrada.'
+];
+
+const faqs = [
+  {
+    q: 'Um portal editorial pode depositar seus artigos em PsyArXiv?',
+    a: 'Pode depositar o que for trabalho acadêmico em Psicologia, e é essa a régua que os moderadores aplicam. O PsyArXiv declara ser destinado a pesquisadores de qualquer área da Psicologia para enviar working papers, preprints e cópias de autor de trabalhos publicados, e a moderação avalia se a submissão está no escopo com duas perguntas: é trabalho acadêmico e é Psicologia. Um artigo de blog reescrito com aparência de paper falha na primeira pergunta. Um relatório com pergunta, corpus, critério de inclusão, achados e limites declarados passa a ter chance real, ainda que o tema seja o mercado de formação em vez de intervenção clínica.'
+  },
+  {
+    q: 'Depositar um preprint gera DOI mesmo sem revisão por pares?',
+    a: 'Gera, e essa é justamente a diferença entre identificador e validação. No OSF, a documentação registra que, se aceito, o preprint recebe um DOI e uma URL persistente que permitem citá-lo. No SciELO Preprints, imediatamente após a aceitação o preprint recebe um DOI e fica disponível ao público. O DOI resolve permanência e citabilidade, e não diz nada sobre qualidade metodológica. Confundir os dois é o erro que transforma depósito em argumento de autoridade indevido.'
+  },
+  {
+    q: 'Posso usar o repositório para gerar DOI de material do portal em série?',
+    a: 'Não. As políticas de moderação do OSF Preprints dizem que organizações não podem usar contas do OSF como agregadores de publicação, centrais de distribuição ou serviços de geração de DOI, e o caminho previsto para organização que queira hospedar conteúdo é a associação oficial ao OSF Preprints. O ponto vale como princípio geral: repositório existe para dar permanência a objeto de pesquisa, e usá-lo como máquina de identificadores queima a conta e a reputação de quem assina.'
+  },
+  {
+    q: 'ResearchGate conta como repositório?',
+    a: 'Conta como rede social acadêmica, com regra de direito autoral própria e responsabilidade transferida ao usuário. A plataforma declara que não é editora e não aceita artigos ou trabalhos para publicação, que você responde por qualquer conteúdo que enviar e precisa conferir antes se tem todos os direitos necessários, e que remove o material identificado quando o titular de direitos apresenta notificação de infração conforme os procedimentos e a lei internacional. A plataforma ainda avisa que muitas editoras não permitem o compartilhamento público da versão final publicada em nenhum momento. A consequência prática é direta: o objeto citável nasce no repositório, e o perfil na rede social serve para divulgar o link, não para hospedar o arquivo.'
+  },
+  {
+    q: 'Como o depósito chega ao Google Scholar?',
+    a: 'Pelas diretrizes de inclusão do Scholar, que são técnicas e verificáveis. O serviço cobre artigos de periódico, trabalhos de congresso, relatórios técnicos ou seus rascunhos, teses, preprints, postprints e resumos, e deixa de fora notícias, matérias de revista, resenhas de livro e editoriais. Os arquivos precisam estar em HTML ou PDF, com no máximo 5 MB cada, e o texto completo ou o resumo escrito pelo autor precisa estar livremente disponível e visível ao clicar na URL. Para trabalho depositado por autor individual, o Scholar pede o texto completo em PDF terminado em ponto pdf, título em fonte grande no topo da primeira página, autores em linha separada logo abaixo do título e uma seção final chamada References ou Bibliography.'
+  },
+  {
+    q: 'O que este portal pode depositar sozinho, sem um pesquisador vinculado a instituição?',
+    a: 'Análise documental de fonte pública, que dispensa participante humano e por isso dispensa comitê de ética. Levantamento de resoluções de conselho, portarias e séries do censo, com corpus declarado, é pesquisa documental legítima; o mesmo vale para relatório metodológico sobre como se mede citação de domínio em resposta gerada, contanto que o método esteja escrito e os limites também. Estudo com participantes, coleta de dado identificável ou aplicação de instrumento psicométrico exige pesquisador responsável, protocolo aprovado e vínculo institucional, e nenhum deles se resolve com boa redação. Quem quiser trilhar o caminho da formação acadêmica formal encontra o mapa das cinco modalidades em tipos de pós-graduação, com o catálogo de MBAs do IPOG entre as opções listadas ali.'
+  }
+];
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: 'Repositórios acadêmicos para um portal editorial: o que vira DOI citável',
+      description,
+      datePublished,
+      author: alexandreAuthorRef,
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      mainEntityOfPage: pageUrl,
+      articleSection: 'Conteúdo e Social',
+      keywords: 'PsyArXiv, OSF Preprints, SciELO Preprints, Zenodo, ResearchGate, DOI, preprint, Google Scholar, licença CC-BY'
+    },
+    {
+      '@type': 'HowTo',
+      '@id': `${pageUrl}#howto`,
+      name: 'Transformar um dossiê do portal em depósito legítimo com DOI',
+      description: 'Seis passos para converter material editorial em relatório de pesquisa depositável, do desenho da pergunta ao DOI citado de volta na página.',
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      author: alexandreAuthorRef,
+      publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+      step: passos.map((p, i) => ({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: p.nome,
+        text: p.texto,
+        url: `${pageUrl}#do-portal-para-o-canal`
+      }))
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${pageUrl}#faq`,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE.url}/#website` },
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a }
+      }))
+    }
+  ]
+};
+---
+
+<Base title={title} description={description} pageType="article" datePublished={datePublished}>
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[
+        { label: 'Início', href: '/' },
+        { label: 'Conteúdo e Social', href: '/conteudo-social' },
+        { label: 'Repositórios acadêmicos' }
+      ]} />
+      <span class="section-eyebrow mt-3">Por canal · Infraestrutura de pesquisa</span>
+      <h1 class="section-h text-3xl sm:text-4xl mt-2">Repositórios acadêmicos: o que vira DOI citável e o que é verniz</h1>
+      <p class="mt-3 text-ink-700 max-w-3xl text-lg">
+        Um depósito em PsyArXiv, OSF, SciELO Preprints ou Zenodo transforma um documento em objeto permanente, citável e legível por qualquer sistema que consuma metadados. A entrada tem porteiro: a pré-moderação recusa texto gerado por máquina e recusa material sem método, e o preço de tentar contornar isso é a conta e a assinatura de quem tentou.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-8">
+    <TLDR
+      resposta="O que vira depósito legítimo é o documento que declara pergunta, corpus, critério de inclusão, achados e limites. O OSF Preprints opera com pré-moderação, recusa conteúdo total ou majoritariamente gerado por modelo de linguagem e proíbe que organizações usem contas como serviços de geração de DOI. O DOI resolve permanência e citabilidade, e não substitui revisão por pares."
+      fontes={['OSF Preprints, políticas de moderação', 'PsyArXiv, políticas do serviço', 'SciELO Preprints, sobre e diretrizes de submissão', 'Zenodo, políticas gerais', 'ResearchGate, guia de direito autoral', 'Google Scholar, diretrizes de inclusão']}
+    />
+  </section>
+
+  <section class="container-page pb-12 grid lg:grid-cols-12 gap-10">
+    <aside class="lg:col-span-3 order-first">
+      <InPageNav headings={headings} />
+    </aside>
+
+    <article class="lg:col-span-9 space-y-12">
+
+      <div>
+        <h2 id="contrato-do-canal" class="section-h text-2xl">Contrato do canal</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">
+          Repositório acadêmico é a única superfície desta lista em que o objeto sobrevive ao site que o produziu. Essa permanência tem contrapartida, e ela está escrita nas políticas de cada plataforma.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 w-56">Cláusula</th>
+                <th class="text-left px-4 py-3">O que ela obriga</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {contrato.map(c => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{c.campo}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{c.valor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 id="o-que-pode-ser-depositado" class="section-h text-2xl">O que pode ser depositado</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">
+          Cada plataforma tem natureza jurídica e editorial distinta, e a escolha errada custa uma recusa pública. A tabela reúne o que cada uma declara nas próprias políticas, consultadas em 7 de setembro de 2026.
+        </p>
+        <div class="overflow-x-auto mt-5 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3 w-40">Plataforma</th>
+                <th class="text-left px-4 py-3">Natureza</th>
+                <th class="text-left px-4 py-3">O que aceita</th>
+                <th class="text-left px-4 py-3">Como modera</th>
+                <th class="text-left px-4 py-3">Regra sobre texto gerado por máquina</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              {plataformas.map(p => (
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{p.nome}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{p.natureza}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{p.aceita}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{p.modera}</td>
+                  <td class="px-4 py-3 text-ink-700 align-top leading-relaxed">{p.ia}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-ink-700 leading-relaxed max-w-3xl">
+          Três recusas concentram quase todos os casos. A primeira é de escopo, e atinge o material que não é Psicologia nem trabalho acadêmico. A segunda é de origem, e atinge o texto que a moderação identifica como total ou majoritariamente produzido por máquina. A terceira é de direito, e atinge o arquivo que o autor não podia distribuir. Nenhuma delas se resolve reescrevendo o título.
+        </p>
+      </div>
+
+      <figure>
+        <h2 id="vira-deposito" class="section-h text-2xl">Este material vira depósito?</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="repo-triagem-titulo repo-triagem-desc" viewBox="0 0 720 320" width="720" height="320" style="min-width:720px" class="block">
+            <title id="repo-triagem-titulo">Quatro perguntas de triagem que decidem se um material do portal pode ser depositado</title>
+            <desc id="repo-triagem-desc">Quatro caixas de pergunta dispostas da esquerda para a direita, cada uma com uma saída negativa apontando para baixo. A primeira pergunta se existe uma pergunta de pesquisa respondível por método, e não por opinião editorial; a saída negativa manda manter o material como página do portal. A segunda pergunta se corpus, período, critério de inclusão e critério de exclusão estão escritos; a saída negativa é a mesma, manter como página. A terceira pergunta se o documento foi escrito por pessoa, com qualquer uso substantivo de modelo de linguagem divulgado explicitamente no manuscrito; a saída negativa registra recusa na moderação, porque as políticas do OSF Preprints declaram inapropriado o conteúdo total ou majoritariamente gerado por essas ferramentas. A quarta pergunta se existe direito de distribuir cada elemento do arquivo; a saída negativa impede o depósito. Uma faixa final registra que, com resposta afirmativa nas quatro, a escolha do repositório segue a natureza do objeto: manuscrito acadêmico de Psicologia vai a servidor de preprint da área, e conjunto de dados, protocolo, código e material suplementar vão ao Zenodo, que aceita todos os tipos de artefato de pesquisa.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">Quatro perguntas antes de abrir a submissão</text>
+
+            <g class="stroke-current text-brand-700" fill="none" stroke-width="1.6">
+              <rect x="16" y="46" width="164" height="112" rx="12" />
+              <rect x="200" y="46" width="164" height="112" rx="12" />
+              <rect x="384" y="46" width="164" height="112" rx="12" />
+              <rect x="568" y="46" width="136" height="112" rx="12" />
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" fill="none">
+              <path d="M180 102 H200" />
+              <path d="M364 102 H384" />
+              <path d="M548 102 H568" />
+              <path d="M98 158 V186" stroke-dasharray="6 5" />
+              <path d="M282 158 V186" stroke-dasharray="6 5" />
+              <path d="M466 158 V186" stroke-dasharray="6 5" />
+              <path d="M636 158 V186" stroke-dasharray="6 5" />
+            </g>
+
+            <g font-size="12" class="fill-current text-ink-700">
+              <text x="30" y="70" font-size="11" font-weight="700" class="fill-current text-brand-700">1. PERGUNTA</text>
+              <text x="30" y="92">Existe pergunta</text>
+              <text x="30" y="110">respondível por</text>
+              <text x="30" y="128">método, e não por</text>
+              <text x="30" y="146">opinião editorial.</text>
+
+              <text x="214" y="70" font-size="11" font-weight="700" class="fill-current text-brand-700">2. CORPUS</text>
+              <text x="214" y="92">Corpus, período,</text>
+              <text x="214" y="110">critério de inclusão</text>
+              <text x="214" y="128">e de exclusão estão</text>
+              <text x="214" y="146">escritos.</text>
+
+              <text x="398" y="70" font-size="11" font-weight="700" class="fill-current text-brand-700">3. AUTORIA</text>
+              <text x="398" y="92">Escrito por pessoa,</text>
+              <text x="398" y="110">com uso substantivo</text>
+              <text x="398" y="128">de modelo divulgado</text>
+              <text x="398" y="146">no manuscrito.</text>
+
+              <text x="582" y="70" font-size="11" font-weight="700" class="fill-current text-brand-700">4. DIREITO</text>
+              <text x="582" y="92">Existe direito de</text>
+              <text x="582" y="110">distribuir cada</text>
+              <text x="582" y="128">elemento do</text>
+              <text x="582" y="146">arquivo.</text>
+            </g>
+
+            <g font-size="11" class="fill-current text-ink-500">
+              <text x="30" y="204">Não: fica página</text>
+              <text x="30" y="220">do portal.</text>
+              <text x="214" y="204">Não: fica página</text>
+              <text x="214" y="220">do portal.</text>
+              <text x="398" y="204">Não: recusa na</text>
+              <text x="398" y="220">moderação.</text>
+              <text x="582" y="204">Não: sem</text>
+              <text x="582" y="220">depósito.</text>
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" fill="none">
+              <rect x="16" y="242" width="688" height="62" rx="12" />
+            </g>
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="32" y="266" font-weight="700" font-size="11" class="fill-current text-ink-900">SIM NAS QUATRO</text>
+              <text x="32" y="288">Manuscrito acadêmico de Psicologia vai a servidor de preprint da área. Dado, protocolo, código e material suplementar vão ao Zenodo, que aceita todos os tipos de artefato de pesquisa.</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          A pergunta 3 traduz duas políticas consultadas em 7 de setembro de 2026: a do OSF Preprints, que declara inapropriado conteúdo total ou majoritariamente gerado por modelo de linguagem, e a do PsyArXiv, que permite apoio de redação e exige divulgação explícita de qualquer uso substantivo. A saída da pergunta 4 usa a política do Zenodo, que aceita todos os campos e todos os tipos de artefato de pesquisa desde que o conteúdo não viole privacidade nem direito autoral.
+        </figcaption>
+      </figure>
+
+      <figure>
+        <h2 id="fluxo-do-deposito" class="section-h text-2xl">O fluxo do depósito, do envio ao DOI</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="repo-fluxo-titulo repo-fluxo-desc" viewBox="0 0 720 300" width="720" height="300" style="min-width:720px" class="block">
+            <title id="repo-fluxo-titulo">Etapas do depósito de um preprint, da submissão à nova versão vinculada</title>
+            <desc id="repo-fluxo-desc">Cinco marcos ligados por uma linha horizontal. O primeiro marco é a submissão, com PDF, metadados, autores com ORCID e licença escolhida. O segundo marco é a pré-moderação, período em que a submissão fica privada e pendente até um moderador aceitar ou recusar, com a justificativa devolvida ao autor. O terceiro marco é o aceite, quando o preprint recebe um DOI e uma URL persistente que permitem citá-lo, e no SciELO Preprints o DOI é atribuído imediatamente após a aceitação. O quarto marco é a citação de volta na página HTML do portal, com registro interno da data, da versão e do repositório. O quinto marco é a nova versão, criada pelo autor e vinculada às versões anteriores, mantendo o histórico visível. Uma caixa abaixo do segundo marco registra os três motivos de recusa mais comuns: material fora do escopo do serviço, conteúdo total ou majoritariamente gerado por modelo de linguagem, e ausência de direito de distribuir o arquivo.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">Do envio ao objeto citável</text>
+
+            <line x1="46" y1="110" x2="694" y2="110" stroke-width="2" class="stroke-current text-ink-500" />
+
+            <g class="fill-current text-brand-700">
+              <circle cx="70" cy="110" r="8" />
+              <circle cx="222" cy="110" r="8" />
+              <circle cx="374" cy="110" r="11" />
+              <circle cx="526" cy="110" r="8" />
+              <circle cx="668" cy="110" r="8" />
+            </g>
+
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="40" y="54" font-weight="700" font-size="11" class="fill-current text-ink-900">1. SUBMISSÃO</text>
+              <text x="40" y="74">PDF, metadados,</text>
+              <text x="40" y="92">ORCID e licença.</text>
+
+              <text x="192" y="54" font-weight="700" font-size="11" class="fill-current text-ink-900">2. PRÉ-MODERAÇÃO</text>
+              <text x="192" y="74">Privado e pendente</text>
+              <text x="192" y="92">até decisão humana.</text>
+
+              <text x="344" y="54" font-weight="700" font-size="11" class="fill-current text-brand-700">3. ACEITE</text>
+              <text x="344" y="74">DOI e URL</text>
+              <text x="344" y="92">persistente.</text>
+
+              <text x="496" y="54" font-weight="700" font-size="11" class="fill-current text-ink-900">4. VOLTA AO SITE</text>
+              <text x="496" y="74">A página cita o</text>
+              <text x="496" y="92">próprio DOI.</text>
+
+              <text x="612" y="54" font-weight="700" font-size="11" class="fill-current text-ink-900">5. NOVA VERSÃO</text>
+              <text x="612" y="74">Vinculada às</text>
+              <text x="612" y="92">anteriores.</text>
+            </g>
+
+            <g class="stroke-current text-ink-500" stroke-width="1.6" stroke-dasharray="6 5" fill="none">
+              <path d="M222 118 V166" />
+            </g>
+            <g class="stroke-current text-ink-500" stroke-width="1.6" fill="none">
+              <rect x="46" y="174" width="500" height="106" rx="12" />
+            </g>
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="64" y="200" font-weight="700" font-size="11" class="fill-current text-ink-900">TRÊS MOTIVOS DE RECUSA</text>
+              <text x="64" y="224">Escopo: o material não é trabalho acadêmico da área do serviço.</text>
+              <text x="64" y="246">Origem: conteúdo total ou majoritariamente gerado por modelo de linguagem.</text>
+              <text x="64" y="268">Direito: o autor não tem permissão para distribuir o arquivo enviado.</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          A pré-moderação e a recusa de conteúdo gerado por máquina saem das políticas de moderação do OSF Preprints. A atribuição de DOI e de URL persistente no aceite sai da documentação do OSF, e a atribuição imediata após a aceitação sai da página sobre o SciELO Preprints, que também registra que novas versões ficam vinculadas às anteriores. Consultas de 7 de setembro de 2026.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="licenca-e-versionamento" class="section-h text-2xl">Licença e versionamento</h2>
+        <p>
+          Licença é a decisão que o autor toma uma vez e não desfaz. No SciELO Preprints, o checklist de submissão exige que os autores concordem que o manuscrito aprovado será disponibilizado sob licença Creative Commons CC-BY, o que significa reuso comercial permitido com atribuição. No Zenodo, a política é de escolha obrigatória: os usuários precisam especificar uma licença para todos os arquivos disponibilizados publicamente, enquanto os metadados ficam sob CC0, com exceção de endereços de correio eletrônico.
+        </p>
+        <p>
+          Para um portal que quer ser citado por sistema generativo, a licença permissiva tem efeito direto e conhecido: ela remove a dúvida jurídica sobre reuso do texto. Esse ganho tem custo simétrico, e ele merece ser dito antes da euforia. Um relatório sob CC-BY pode ser reempacotado por terceiros com atribuição mínima, e a atribuição que a licença garante é a formal, não a visível.
+        </p>
+        <p>
+          Versionamento resolve outro problema, o de corrigir sem apagar. O SciELO Preprints registra que versões revisadas podem ser carregadas pelo autor submissor antes do aceite por um periódico e que novas versões ficam vinculadas às versões anteriores. O OSF oferece criação de nova versão do preprint mantendo o registro original. [FALTA EVIDENCIA: se o DOI do preprint no OSF permanece o mesmo entre versões ou se cada versão recebe identificador próprio.] Enquanto essa dúvida não for resolvida na documentação da plataforma, a prática segura é citar sempre a URL persistente junto com o DOI, e registrar internamente qual versão foi citada em cada página do portal.
+        </p>
+        <p>
+          O Zenodo trata retirada como ato excepcional, e a redação da política mostra por quê: quando um registro é retirado, o DOI e a URL do objeto original são mantidos, e uma página de lápide explica o motivo da retirada. Quem publica com identificador persistente está assumindo que o erro vai ficar visível, corrigido e datado. Essa é a diferença entre publicar num repositório e publicar num site, e ela é a razão de o depósito exigir mais cuidado que uma página.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="doi-citavel" class="section-h text-2xl">O que vira DOI citável</h2>
+        <p>
+          O DOI aparece no aceite, e o que ele entrega é permanência e citabilidade. A documentação do OSF registra que, se aceito, o preprint recebe um DOI e uma URL persistente que permitem citá-lo. A página sobre o SciELO Preprints registra que, imediatamente após a aceitação, o preprint recebe um DOI e fica disponível ao público.
+        </p>
+        <p>
+          O que não vira DOI citável é mais instrutivo. Post de blog reescrito com subtítulos acadêmicos falha na moderação por escopo. Compilação de números de fornecedor, sem corpus nem denominador, falha por método. Material de divulgação de curso falha nas duas frentes ao mesmo tempo, e ainda expõe o vínculo comercial num ambiente que espera declaração de conflito. Documento gerado por modelo de linguagem e revisado por cima falha pela política explícita do OSF Preprints, que declara inapropriado o conteúdo total ou majoritariamente gerado por essas ferramentas.
+        </p>
+        <p>
+          Existe uma classe intermediária que costuma passar despercebida e que é a mais útil para um portal: o artefato de pesquisa que não é artigo. Conjunto de dados anonimizado, protocolo de coleta, dicionário de variáveis, código de análise e material suplementar são aceitos pelo Zenodo, que declara receber todos os campos de pesquisa e todos os tipos de artefato de pesquisa, com limite de 50 GB por registro e cota maior avaliada caso a caso. Depositar o dado que sustenta uma página do portal, com licença declarada, produz um objeto citável sem forçar o texto editorial a fingir que é paper.
+        </p>
+      </div>
+
+      <figure>
+        <h2 id="rede-social-nao-e-repositorio" class="section-h text-2xl">Rede social acadêmica não é repositório</h2>
+        <div class="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 p-4 mt-4">
+          <svg role="img" aria-labelledby="repo-raias-titulo repo-raias-desc" viewBox="0 0 720 300" width="720" height="300" style="min-width:720px" class="block">
+            <title id="repo-raias-titulo">Comparação em duas raias entre repositório de pesquisa e rede social acadêmica</title>
+            <desc id="repo-raias-desc">Duas faixas horizontais comparam quatro atributos. A faixa superior, de repositório de pesquisa, cobre OSF Preprints, PsyArXiv, SciELO Preprints e Zenodo, e registra quatro atributos: a moderação é feita pelo serviço, com submissão privada e pendente até decisão humana; o objeto recebe DOI e URL persistente no aceite; a licença é declarada pelo depositante e no SciELO Preprints o manuscrito aprovado sai sob CC-BY; e a retirada é excepcional, com o DOI e a URL mantidos e uma página de lápide explicando o motivo. A faixa inferior, de rede social acadêmica, cobre o ResearchGate e registra os mesmos quatro atributos com outro conteúdo: a plataforma declara que não é editora e não aceita artigos para publicação; a responsabilidade por ter os direitos é do usuário que envia o arquivo; muitas editoras não permitem compartilhar publicamente a versão final publicada; e o conteúdo identificado é removido quando o titular de direitos apresenta notificação de infração conforme os procedimentos e a lei internacional.</desc>
+
+            <text x="16" y="26" font-size="15" font-weight="600" class="fill-current text-ink-900">Quem responde pelo objeto em cada superfície</text>
+
+            <g class="stroke-current text-brand-700" fill="none" stroke-width="1.6">
+              <rect x="16" y="46" width="688" height="106" rx="12" />
+            </g>
+            <g class="stroke-current text-ink-500" fill="none" stroke-width="1.6">
+              <rect x="16" y="170" width="688" height="106" rx="12" />
+            </g>
+
+            <g font-size="12.5" class="fill-current text-ink-700">
+              <text x="32" y="70" font-size="13" font-weight="700" class="fill-current text-brand-700">Repositório de pesquisa</text>
+              <text x="32" y="90" font-size="11">OSF Preprints, PsyArXiv, SciELO Preprints, Zenodo</text>
+              <text x="32" y="112">Moderação pelo serviço, com submissão privada até decisão humana.</text>
+              <text x="32" y="130">DOI e URL persistente no aceite. Licença declarada, CC-BY no SciELO Preprints.</text>
+              <text x="32" y="146">Retirada excepcional, com DOI mantido e página de lápide explicando o motivo.</text>
+
+              <text x="32" y="194" font-size="13" font-weight="700" class="fill-current text-ink-900">Rede social acadêmica</text>
+              <text x="32" y="214" font-size="11">ResearchGate</text>
+              <text x="32" y="236">A plataforma declara que não é editora e não aceita trabalhos para publicação.</text>
+              <text x="32" y="254">Quem envia responde por ter todos os direitos necessários sobre o arquivo.</text>
+              <text x="32" y="270">Conteúdo removido mediante notificação do titular de direitos.</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-ink-500 mt-3">
+          As frases da faixa inferior são declarações do guia de direito autoral do ResearchGate, consultado em 7 de setembro de 2026. As da faixa superior vêm das políticas do OSF Preprints, do SciELO Preprints e do Zenodo, na mesma data.
+        </figcaption>
+      </figure>
+
+      <div class="prose prose-ink max-w-none">
+        <p>
+          A distinção tem consequência prática imediata para quem administra o perfil de um autor. O arquivo mora no repositório, onde existe DOI, licença declarada e política de retirada. O perfil na rede social carrega o link e o resumo. Inverter a ordem, subindo o PDF na rede social e deixando o repositório para depois, cria o cenário em que a versão mais visível do documento é a que tem menos garantia jurídica, e a mais frágil é a que o Google Scholar vai encontrar primeiro.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="google-scholar" class="section-h text-2xl">Como isso chega ao Google Scholar</h2>
+        <p>
+          O Scholar publica diretrizes de inclusão que funcionam como especificação técnica, e cumpri-las é trabalho de formatação, não de persuasão. O serviço declara cobrir artigos de periódico, trabalhos de congresso, relatórios técnicos ou seus rascunhos, teses, preprints, postprints e resumos, e deixa de fora notícias, matérias de revista, resenhas de livro e editoriais. O site precisa disponibilizar livremente o texto completo dos artigos ou o resumo escrito pelo autor, de forma fácil de ver quando o usuário clica na URL.
+        </p>
+        <p>
+          As exigências de arquivo são as que mais reprovam material bem escrito. Os arquivos precisam estar em HTML ou em PDF, e cada um deve ter no máximo 5 MB. Para trabalho depositado por autor individual, o Scholar pede quatro coisas na mesma ordem: texto completo em PDF com nome de arquivo terminado em ponto pdf, título do trabalho em fonte grande no topo da primeira página, autores listados abaixo do título em linha separada, e uma seção final de bibliografia intitulada References ou Bibliography.
+        </p>
+        <p>
+          Vale ler essa lista ao lado do que ela implica sobre design. Capa artística com o título em imagem, cabeçalho de marca ocupando o topo da primeira página e referências espalhadas em notas de rodapé são escolhas comuns em material de divulgação, e as três atrapalham a indexação acadêmica ao mesmo tempo. A conversa sobre quando um documento merece esse formato, e quando ele deveria ter nascido como página, continua em <a href="/conteudo-social/documentos-e-apresentacoes">documentos e apresentações</a>.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="o-que-exige-pesquisador" class="section-h text-2xl">O que exige um pesquisador de verdade</h2>
+        <p>
+          A parte honesta desta página é a lista do que um portal editorial não consegue fazer sozinho. Estudo com participantes humanos exige pesquisador responsável, protocolo submetido ao sistema de ética em pesquisa e vínculo institucional que responda pelo projeto. Aplicação de instrumento psicométrico exige psicólogo habilitado e instrumento com parecer favorável no sistema de avaliação de testes do Conselho Federal de Psicologia. Nenhuma dessas exigências se resolve com redação, e tentar contorná-las produz um trabalho que a moderação recusa e que, se passasse, criaria responsabilidade legal para quem assinou.
+        </p>
+        <p>
+          O que um portal editorial faz sozinho é análise documental de fonte pública, e essa é uma tradição de pesquisa legítima, com método próprio. Levantar todas as resoluções vigentes sobre uma modalidade de formação, declarar o corpus e o critério de inclusão, e mostrar as contradições entre elas é pesquisa documental. Medir com que frequência determinadas dúvidas aparecem em respostas geradas, declarando as consultas usadas, a data, o motor e o número de execuções, é pesquisa metodológica sobre um artefato público. Os dois cabem em repositório, e o segundo é exatamente o tipo de material que o portal já produz no <a href="/conteudo-social/radar-de-evidencias">radar de evidências</a>.
+        </p>
+        <p>
+          A regra de decisão cabe numa pergunta. Se um leitor cético pedir os dados brutos, você tem o que entregar? Havendo corpus, planilha e critério escritos, o depósito faz sentido. Não havendo, o material continua sendo uma boa página do portal, e transformá-lo em PDF com aparência de artigo só troca o formato do problema.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <h2 id="etica-cfp" class="section-h text-2xl">Ética profissional nesta superfície</h2>
+        <p>
+          O Código de Ética Profissional do Psicólogo veda sensacionalismo, promessa de cura e diagnóstico a distância na comunicação pública, e a superfície acadêmica acrescenta uma vedação própria que costuma pegar quem vem do marketing: o dado que não pode ser mostrado não pode ser afirmado. Relatório depositado é auditável por definição, porque ele existe justamente para ser conferido.
+        </p>
+        <p>
+          Três cuidados concretos. O primeiro é o dado de pessoa: nenhum caso clínico, print de conversa ou material de aluno entra num depósito público, mesmo com nome trocado, porque a combinação de detalhes reidentifica. O segundo é o conflito de interesse: o vínculo entre portal, agência e instituição de ensino se declara dentro do documento, na seção própria, e não na biografia do autor. O terceiro é a promessa: relatório sobre mercado de formação descreve o que mediu e não afirma resultado de carreira sem denominador, porque promessa de desfecho profissional sem base amostral é o defeito que contamina retroativamente tudo o que o portal já publicou.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="do-portal-para-o-canal" class="section-h text-2xl">Do portal para o canal</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">
+          Seis passos para converter material editorial em depósito legítimo. O movimento central acontece no passo 2, quando a opinião é substituída por corpus declarado.
+        </p>
+        <ol class="mt-5 space-y-4">
+          {passos.map((p, i) => (
+            <li class="card p-5 border-surface-200">
+              <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-700">Passo {i + 1}</p>
+              <h3 class="font-display font-semibold text-lg mt-1 text-ink-900">{p.nome}</h3>
+              <p class="mt-2 text-sm text-ink-700 leading-relaxed">{p.texto}</p>
+            </li>
+          ))}
+        </ol>
+        <p class="mt-5 text-ink-700 leading-relaxed max-w-3xl">
+          O texto HTML continua no portal, legível e atualizável, e o depósito sustenta a prova. As peças curtas que circulam nas outras superfícies saem do mesmo material e estão organizadas na <a href="/conteudo-social/biblioteca">biblioteca de snippets</a>, enquanto a disciplina de identificadores que fecha o ciclo está descrita na página sobre <a href="/conteudo-social/wikipedia-e-wikidata">Wikipédia e Wikidata</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 id="checklist" class="section-h text-2xl">Checklist antes de depositar</h2>
+        <p class="mt-3 text-ink-700 leading-relaxed max-w-3xl">Onze itens verificáveis. Cada um se confere abrindo o próprio arquivo ou a política da plataforma.</p>
+        <ul class="mt-5 space-y-3">
+          {checklist.map((item, i) => (
+            <li class="flex gap-3 items-start rounded-xl border border-surface-200 bg-surface-50 p-4">
+              <span class="shrink-0 w-7 h-7 rounded-full bg-brand-100 text-brand-800 text-xs font-bold inline-flex items-center justify-center">{i + 1}</span>
+              <span class="text-sm text-ink-700 leading-relaxed">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (
+            <details class="group p-5">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none min-h-[44px]">
+                <span class="font-semibold text-ink-900">{f.q}</span>
+                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-ink-700 leading-relaxed faq-answer-text">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <nav aria-label="Navegação entre páginas de canal" class="rounded-2xl border border-surface-200 bg-surface-50 p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-4">Continuar pelo menu Conteúdo e Social</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <a href="/conteudo-social/wikipedia-e-wikidata" class="card-lift block p-4 min-h-[44px]">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">Página anterior</span>
+            <span class="block font-display font-semibold text-ink-900 mt-1">Wikipédia e Wikidata</span>
+          </a>
+          <a href="/conteudo-social/documentos-e-apresentacoes" class="card-lift block p-4 min-h-[44px]">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">Próxima página</span>
+            <span class="block font-display font-semibold text-ink-900 mt-1">Documentos e apresentações</span>
+          </a>
+          <a href="/conteudo-social" class="card-lift block p-4 min-h-[44px]">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-ink-500">Voltar</span>
+            <span class="block font-display font-semibold text-ink-900 mt-1">Hub Conteúdo e Social</span>
+          </a>
+        </div>
+      </nav>
+
+    </article>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+</Base>

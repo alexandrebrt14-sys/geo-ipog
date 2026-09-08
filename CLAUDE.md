@@ -109,7 +109,7 @@ Repositório adotou em 2026-05-26 o padrão LLM Wiki descrito por Andrej Karpath
 - **Build:** `cd site && npm run build` → gera 6 sitemaps (principal + areas/mbas/guias/faq/comparativos + index).
 - **Type-check:** `cd site && npx astro check` — exigir 0 errors antes de commit.
 - **Perplexity bypass direto:** curl `api.perplexity.ai/chat/completions` model `sonar-pro` + chave `~/.../.env` `PERPLEXITY_API_KEY`.
-- **IndexNow:** POST JSON com `urlList` ao endpoint da engine. Key: `geoipogIN2026`. Endpoints: `api.indexnow.org/indexnow`, `www.bing.com/indexnow`, `yandex.com/indexnow`.
+- **IndexNow:** POST JSON com `urlList` ao endpoint da engine. Key: `d2b9ebce0365f8fc565be54671f9fae8`, servida em `/d2b9ebce0365f8fc565be54671f9fae8.txt`. A chave `geoipogIN2026`, que este arquivo trazia até 07/09/2026, está no ar em `/geoipogIN2026.txt` e mesmo assim é **rejeitada com 403** por `api.indexnow.org` e por `www.bing.com` (o Yandex aceita as duas). Medido em 07/09/2026 numa submissão de 84 URLs: com a chave antiga, 403/403/202; com a hexadecimal, 200/200. Endpoints: `api.indexnow.org/indexnow`, `www.bing.com/indexnow`, `yandex.com/indexnow`.
 
 ## KPIs canônicos a rastrear
 

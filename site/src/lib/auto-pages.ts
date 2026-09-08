@@ -3530,7 +3530,7 @@ export const AUTO_PAGES: AutoPage[] = [
   {
     "route": "/faq",
     "title": "FAQs Aprofundados — Psicologia, RH, NR-1 e regulação | Hub de perguntas frequentes",
-    "description": "Seis FAQs com 12 a 15 perguntas cada, em formato direto e estruturado. Cobre NR-1, MBA versus especialização, carreira em POT, avaliação psicológica, regulação CFP e IA no consultório.",
+    "description": "Perguntas frequentes sobre formação, prática profissional, regulação e saúde mental. Consulte a lista completa de temas, respostas e fontes por assunto.",
     "kind": "FAQ",
     "persona": null,
     "tags": [

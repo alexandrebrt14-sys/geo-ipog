@@ -6,7 +6,8 @@ import '@styles/global.css';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import MobileBottomNav from '@components/MobileBottomNav.tsx';
-import SearchOverlay from '@components/SearchOverlay.tsx';
+import '@styles/fonts.css';
+import SearchLauncher from '@components/SearchLauncher.tsx';
 import Icon from '@components/Icon.astro';
 import { ViewTransitions } from 'astro:transitions';
 
@@ -192,9 +193,9 @@ if (emitWebPage) {
   <meta name="apple-mobile-web-app-title" content="Pós Psicologia" />
   <meta name="application-name" content="posgraduacaopsicologia" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Fontes críticas locais; o restante dos subconjuntos é carregado quando necessário. -->
+  <link rel="preload" href="/fonts/exo-latin-18bbf39a4e69.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin-3100e775e861.woff2" as="font" type="font/woff2" crossorigin />
 
   <!-- Onda 33: dns-prefetch para os dominios do Google Analytics. Resolve o DNS
        cedo (handshake mais curto quando o gtag async dispara) sem bloquear o
@@ -206,29 +207,7 @@ if (emitWebPage) {
 
   <ViewTransitions />
 
-  {/* Onda 33: Speculation Rules API (navegacao instantanea). Document rules
-      com eagerness "moderate" => o navegador faz PRERENDER de links internos
-      da mesma origem ao passar o mouse / focar. Complementa (nao duplica) o
-      prefetch nativo do Astro: o Astro so PREFETCHA o HTML por viewport; aqui
-      adicionamos PRERENDER sob intencao do usuario, um estagio alem. Excluimos
-      /busca (resultados dinamicos), ancoras e qualquer URL externa. Progressive
-      enhancement: navegadores sem suporte ignoram o bloco silenciosamente. */}
-  <script is:inline type="speculationrules" set:html={JSON.stringify({
-    prerender: [
-      {
-        source: 'document',
-        where: {
-          and: [
-            { href_matches: '/*' },
-            { not: { href_matches: '/busca*' } },
-            { not: { selector_matches: '[rel~="external"]' } },
-            { not: { selector_matches: '[target="_blank"]' } }
-          ]
-        },
-        eagerness: 'moderate'
-      }
-    ]
-  })}></script>
+  <!-- A antecipação de navegação fica no Astro, por intenção (hover/foco). -->
 
   <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${SITE.gaMeasurementId}`}></script>
   <script is:inline define:vars={{ gaId: SITE.gaMeasurementId, siteUrl: SITE.url }}>
@@ -304,10 +283,10 @@ if (emitWebPage) {
   <Footer />
 
   <!-- Mobile bottom navigation (React island for state) -->
-  <MobileBottomNav client:load transition:persist transition:name="mobile-nav" />
+  <MobileBottomNav client:media="(max-width: 1023px)" transition:persist transition:name="mobile-nav" />
 
   <!-- Search overlay (React island) -->
-  <SearchOverlay client:idle transition:persist transition:name="search-overlay" />
+  <SearchLauncher client:load transition:persist transition:name="search-overlay" />
 
   <!-- Voltar ao topo (aparece após rolar) -->
   <button id="back-to-top" type="button" aria-label="Voltar ao topo da página">
@@ -380,6 +359,18 @@ if (emitWebPage) {
 
     document.addEventListener('keydown', (event) => {
       if (event.defaultPrevented) return;
+      // Antes da hidratação, o atalho conserva o caminho de navegação da busca.
+      if (!event.altKey && !event.isComposing && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        if (document.querySelector('[aria-modal="true"]:not([aria-hidden="true"])')?.getClientRects().length) return;
+        event.preventDefault();
+        const request = new Event('pp:open-search', { cancelable: true });
+        document.dispatchEvent(request);
+        if (!request.defaultPrevented) {
+          const q = new URL(location.href).searchParams.get('q') || document.body.dataset.searchPrefill || '';
+          location.assign(q ? '/busca/?q=' + encodeURIComponent(q) : '/busca/');
+        }
+        return;
+      }
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (isTypingTarget(event.target)) return;
       if (document.querySelector('[aria-modal="true"]:not([aria-hidden="true"])')?.getClientRects().length) return;
@@ -400,24 +391,6 @@ if (emitWebPage) {
           window.location.assign(dest);
         }
       }
-    });
-
-    // Prefill: quando o overlay abre por trigger [data-open-search], aplicar valor do body[data-search-prefill]
-    document.addEventListener('click', (event) => {
-      const target = event.target as HTMLElement | null;
-      if (!target) return;
-      const trigger = target.closest('[data-open-search]');
-      if (!trigger) return;
-      const prefill = document.body.getAttribute('data-search-prefill');
-      if (!prefill) return;
-      // SearchOverlay (Wave 1) lê este atributo após montar o input
-      window.setTimeout(() => {
-        const input = document.querySelector<HTMLInputElement>('[data-search-input]');
-        if (input && !input.value) {
-          input.value = prefill;
-          input.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      }, 30);
     });
 
     // Suporte a timelines de scroll/view em CSS (Ondas 16-17): quando há,
@@ -482,7 +455,7 @@ if (emitWebPage) {
           });
         }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
       }
-      els.forEach(el => revealObserver!.observe(el));
+      els.forEach(el => { el.classList.add('reveal-pending'); revealObserver!.observe(el); });
     };
 
     // ── Contadores count-up ──────────────────────────────────────────────────

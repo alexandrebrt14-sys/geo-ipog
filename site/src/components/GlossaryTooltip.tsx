@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import type { FocusEvent, ReactNode } from 'react';
+import { TERMOS as glossaryTerms } from '../lib/glossario-links';
 
 interface Props {
   term: string;
@@ -182,71 +183,130 @@ function findTerm(term: string): TermDef | undefined {
 
 export default function GlossaryTooltip({ term, children, cluster }: Props) {
   const [open, setOpen] = useState(false);
+  const [enhanced, setEnhanced] = useState(false);
+  const [placement, setPlacement] = useState<{ left: number; above: boolean; availableHeight?: number }>({ left: 0, above: false });
   const wrapperRef = useRef<HTMLSpanElement>(null);
+  const popupRef = useRef<HTMLSpanElement>(null);
+  const triggerRef = useRef<HTMLAnchorElement>(null);
+  const previewOpen = useRef(false);
   const id = useId();
   const def = findTerm(term);
 
+  useEffect(() => { setEnhanced(true); }, []);
+
   useEffect(() => {
     if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+    const position = () => {
+      if (!wrapperRef.current || !popupRef.current) return;
+      const anchor = wrapperRef.current.getBoundingClientRect();
+      const width = popupRef.current.offsetWidth;
+      const content = popupRef.current.firstElementChild as HTMLElement | null;
+      const height = (content?.scrollHeight ?? popupRef.current.offsetHeight) + 8;
+      const left = Math.max(16 - anchor.left, Math.min(0, document.documentElement.clientWidth - anchor.left - width - 16));
+      const below = Math.max(0, window.innerHeight - anchor.bottom - 16);
+      const aboveSpace = Math.max(0, anchor.top - 16);
+      const above = below < height && aboveSpace > below;
+      setPlacement({ left, above, availableHeight: Math.max(0, (above ? aboveSpace : below) - 8) });
     };
-    const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
-    document.addEventListener('mousedown', handler);
+    const outside = (event: PointerEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) setOpen(false);
+    };
+    const onEsc = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      if (popupRef.current?.contains(document.activeElement)) triggerRef.current?.focus();
+      previewOpen.current = false;
+      setOpen(false);
+      event.preventDefault();
+    };
+    position();
+    window.addEventListener('resize', position);
+    window.addEventListener('scroll', position, true);
+    document.addEventListener('pointerdown', outside);
     document.addEventListener('keydown', onEsc);
     return () => {
-      document.removeEventListener('mousedown', handler);
+      window.removeEventListener('resize', position);
+      window.removeEventListener('scroll', position, true);
+      document.removeEventListener('pointerdown', outside);
       document.removeEventListener('keydown', onEsc);
     };
   }, [open]);
 
-  if (!def) {
-    // Termo não cadastrado: renderiza apenas o conteúdo sem tooltip
-    return <span>{children ?? term}</span>;
-  }
+  if (!def) return <span>{children ?? term}</span>;
 
-  const targetCluster = cluster ?? def.cluster;
-  const href = `/glossario/${targetCluster}#${def.slug}`;
+  const keys = new Set([term, def.label, def.slug, ...(def.aliases ?? [])].map(normalize));
+  const matches = glossaryTerms.filter(entry => entry.grupo === 'geral' &&
+    [entry.id, entry.termo, ...entry.variantes].some(value => keys.has(normalize(value))));
+  const canonical = matches.find(entry => entry.url.startsWith(`/glossario/${cluster ?? def.cluster}/`)) ?? matches[0];
+  const href = canonical?.url ?? `/busca?q=${encodeURIComponent(def.label)}`;
 
-  const handleBlur = (e: FocusEvent<HTMLSpanElement>) => {
-    // Só fecha quando o foco realmente sai do conjunto gatilho + tooltip,
-    // permitindo navegar até o link "Ver no glossário" por teclado.
-    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-      setOpen(false);
+  const preview = () => {
+    if (!open) {
+      previewOpen.current = true;
+      setOpen(true);
     }
+  };
+  const handleBlur = (event: FocusEvent<HTMLSpanElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false);
   };
 
   return (
     <span
       className="relative inline-block"
       ref={wrapperRef}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={preview}
+      onMouseLeave={() => {
+        if (!wrapperRef.current?.contains(document.activeElement)) setOpen(false);
+      }}
       onBlur={handleBlur}
     >
-      <button
-        type="button"
-        aria-describedby={open ? id : undefined}
-        aria-expanded={open}
-        onFocus={() => setOpen(true)}
-        onClick={() => setOpen(o => !o)}
+      <a
+        ref={triggerRef}
+        href={href}
+        role={enhanced ? 'button' : undefined}
+        aria-describedby={open ? `${id}-definition` : undefined}
+        aria-controls={enhanced ? id : undefined}
+        aria-expanded={enhanced ? open : undefined}
+        onFocus={preview}
+        onKeyDown={event => {
+          if (enhanced && event.key === ' ') {
+            event.preventDefault();
+            event.currentTarget.click();
+          }
+        }}
+        onClick={event => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          if (previewOpen.current) setOpen(true);
+          else setOpen(value => !value);
+          previewOpen.current = false;
+        }}
         className="cursor-help rounded-sm border-b border-dotted border-brand-500 bg-transparent p-0 font-semibold text-brand-700 hover:text-brand-800"
       >
         {children ?? def.label}
-      </button>
+      </a>
       {open && (
         <span
-          role="tooltip"
+          ref={popupRef}
           id={id}
-          className="absolute left-0 top-full z-40 mt-2 w-72 rounded-xl border border-surface-200 bg-white p-3 text-left text-xs leading-relaxed text-ink-700 shadow-lift"
+          role="group"
+          aria-label={def.label}
+          className="absolute z-40 text-left"
+          style={{
+            width: 'min(18rem, calc(100vw - 2rem))',
+            left: placement.left,
+            top: placement.above ? 'auto' : '100%',
+            bottom: placement.above ? '100%' : 'auto',
+            paddingTop: placement.above ? 0 : 8,
+            paddingBottom: placement.above ? 8 : 0,
+          }}
         >
-          <span className="block font-display text-sm font-semibold text-ink-900">{def.label}</span>
-          <span className="mt-1 block">{def.definition}</span>
-          <a href={href} className="mt-2 inline-block text-[11px] font-semibold text-brand-700 hover:text-brand-800">
-            Ver no glossário <span aria-hidden="true">→</span>
-          </a>
+          <span style={{ maxHeight: placement.availableHeight }} className="block max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-xl border border-surface-200 bg-white p-3 text-xs leading-relaxed text-ink-700 shadow-lift">
+            <span className="block font-display text-sm font-semibold text-ink-900">{def.label}</span>
+            <span id={`${id}-definition`} role="tooltip" className="mt-1 block">{def.definition}</span>
+            <a href={href} className="mt-2 inline-block text-[11px] font-semibold text-brand-700 hover:text-brand-800">
+              {canonical ? 'Ver no glossário' : 'Buscar termo no portal'} <span aria-hidden="true">→</span>
+            </a>
+          </span>
         </span>
       )}
     </span>

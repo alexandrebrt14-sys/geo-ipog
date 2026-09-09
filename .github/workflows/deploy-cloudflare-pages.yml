@@ -35,6 +35,8 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "scripts/check-frontend-links.py"
+      - "scripts/test-frontend-links.py"
       - "portal-institucional/**"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
@@ -84,9 +86,27 @@ jobs:
       - name: "Gate: identificadores externos (Wikidata)"
         run: node scripts/check-external-ids.mjs
 
+      - name: "Testes: links, âncoras e recursos CSS"
+        run: python3 scripts/test-frontend-links.py
+
+      - name: "Testes: cache e recuperação do service worker"
+        run: node site/scripts/check-service-worker.mjs
+
+      - name: "Testes: ativação, falhas e cancelamento da busca"
+        run: node site/scripts/check-search-launcher.mjs
+
+      - name: "Testes: scanner da árvore de imports da busca"
+        run: node site/scripts/check-search-bundle.mjs --self-test
+
       - name: "Build Astro + sitemap"
         working-directory: site
         run: npm run build
+
+      - name: "Gate: busca pesada somente após ativação"
+        run: node site/scripts/check-search-bundle.mjs
+
+      - name: "Gate: melhoria progressiva e acessibilidade dos componentes"
+        run: node site/scripts/check-progressive-components.mjs
 
       # Onda 6 (03/09/2026): mesmo gate bloqueante do gates-seo-geo.yml (PR), repetido
       # aqui para que o deploy nunca publique orfao, canonical divergente, JSON-LD

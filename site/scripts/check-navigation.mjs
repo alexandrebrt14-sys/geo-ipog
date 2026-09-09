@@ -34,9 +34,9 @@ class Events extends EventTarget {
 
 function fixture({ reverseLinks = false } = {}) {
   const window = new Events();
-  Object.assign(window, { scrollY: 0, innerHeight: 800 });
+  Object.assign(window, { scrollY: 0, innerHeight: 800, location: { hash: '' } });
   const document = new Events();
-  document.documentElement = { scrollHeight: 5000 };
+  document.documentElement = { scrollHeight: 5000, scrollPaddingTop: '0px' };
   document.fonts = { ready: Promise.resolve() };
   let resize;
   const frames = new Map();
@@ -91,7 +91,7 @@ function fixture({ reverseLinks = false } = {}) {
     disconnect() { this.disconnected = true; }
   }
   window.ResizeObserver = ResizeObserver;
-  const context = vm.createContext({ window, document, HTMLElement: Element, ResizeObserver, Node: { DOCUMENT_POSITION_FOLLOWING: 4, DOCUMENT_POSITION_PRECEDING: 2 },
+  const context = vm.createContext({ window, document, getComputedStyle: element => ({ scrollPaddingTop: element.scrollPaddingTop || 'auto', scrollMarginTop: element.scrollMarginTop || '0px' }), HTMLElement: Element, ResizeObserver, Node: { DOCUMENT_POSITION_FOLLOWING: 4, DOCUMENT_POSITION_PRECEDING: 2 },
     requestAnimationFrame(callback) { const id = ++sequence; frames.set(id, callback); return id; },
     cancelAnimationFrame(id) { frames.delete(id); },
   });
@@ -174,6 +174,37 @@ function fixture({ reverseLinks = false } = {}) {
   f.scroll(1300); assert.deepEqual(f.current('desktop'), ['section-1']);
   f.scroll(2700); assert.deepEqual(f.current('desktop'), ['section-2']);
   checks.push('A ordem real dos headings no DOM prevalece sobre a ordem dos links recebidos.');
+  f.document.fire('astro:before-swap');
+}
+{
+  const f = fixture();
+  const anchor = f.targets[1];
+  const previousId = anchor.id;
+  anchor.id = 'google-scholar';
+  f.links.filter(link => link.dataset.target === previousId).forEach(link => { link.dataset.target = anchor.id; });
+  f.document.documentElement.scrollPaddingTop = '88px';
+  anchor.scrollMarginTop = '88px';
+  const destinationScrollY = anchor.top - 176.25;
+  f.scroll(destinationScrollY);
+  assert.deepEqual(f.current('mobile'), ['section-0']);
+  f.window.location.hash = '#google-scholar';
+  f.window.fire('hashchange'); f.window.fire('scroll');
+  assert.equal(f.frames.size, 1); f.flush();
+  assert.deepEqual(f.current('mobile'), ['google-scholar']);
+  assert.deepEqual(f.current('desktop'), ['google-scholar']);
+  checks.push('Âncora em 176,25px permanece ativa com padding de 88px, margin de 88px e tolerância de arredondamento, em um único frame.');
+  f.scroll(destinationScrollY - 2);
+  assert.deepEqual(f.current('mobile'), ['section-0']);
+  f.scroll(destinationScrollY);
+  for (const hash of ['', '#ausente', '#%E0%A4%A']) {
+    f.window.location.hash = hash; f.window.fire('hashchange'); f.flush();
+    assert.deepEqual(f.current('mobile'), ['section-0']);
+  }
+  checks.push('Sem âncora válida conserva a linha original; a tolerância não antecipa headings além do limite calculado.');
+  f.window.location.hash = '#google%2Dscholar';
+  f.window.fire('hashchange'); f.flush();
+  assert.deepEqual(f.current('mobile'), ['google-scholar']);
+  checks.push('Fragmento codificado identifica o heading sem quebrar a leitura com fragmentos malformados.');
   f.document.fire('astro:before-swap');
 }
 {

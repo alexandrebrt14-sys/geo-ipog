@@ -12,10 +12,18 @@ on:
           - verify-token
           - list-dns
           - purge-cache
+          - purge-url
+      url:
+        description: URL HTTPS única (obrigatória somente para purge-url)
+        required: false
+        default: ''
+        type: string
   push:
     branches: [main]
     paths:
       - .github/workflows/cloudflare-zone-ops.yml
+      - scripts/cloudflare-purge-url.py
+      - scripts/check-cloudflare-purge-url.py
       - docs/governance/dominios/posgraduacaopsicologia.com.md
 
 permissions:
@@ -34,6 +42,14 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
     steps:
+      - name: Checkout para validação da purga restrita
+        if: ${{ github.event_name == 'push' || github.event.inputs.action == 'purge-url' }}
+        uses: actions/checkout@v4
+
+      - name: Testar validação da purga restrita
+        if: ${{ github.event_name == 'push' || github.event.inputs.action == 'purge-url' }}
+        run: python3 scripts/check-cloudflare-purge-url.py
+
       - name: Sanity check — secrets presentes
         run: |
           test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::CLOUDFLARE_API_TOKEN ausente"; exit 1; }
@@ -68,3 +84,9 @@ jobs:
             -H "Content-Type: application/json" \
             --data '{"purge_everything":true}' \
           | jq
+
+      - name: Purga de uma URL validada
+        if: ${{ github.event.inputs.action == 'purge-url' }}
+        env:
+          PURGE_URL: ${{ github.event.inputs.url }}
+        run: python3 scripts/cloudflare-purge-url.py

@@ -114,6 +114,18 @@ const navId = 'inpage-nav-' + nonce;
     return current;
   }
 
+  function anchorReadingLine(targets: HTMLElement[], readingLine: number) {
+    let anchorId = '';
+    try { anchorId = decodeURIComponent(window.location.hash.slice(1)); }
+    catch { return readingLine; }
+    const anchor = targets.find(target => target.id === anchorId);
+    if (!anchor) return readingLine;
+    // O salto nativo soma o padding do contêiner à margem do heading.
+    const padding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    const margin = parseFloat(getComputedStyle(anchor).scrollMarginTop) || 0;
+    return Math.max(readingLine, padding + margin + 1);
+  }
+
   function isPlainInPageClick(event: MouseEvent) {
     return !event.defaultPrevented && event.button === 0 && !event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey;
   }
@@ -151,7 +163,7 @@ const navId = 'inpage-nav-' + nonce;
     };
     const update = () => {
       const headerBottom = document.getElementById('main-header')?.getBoundingClientRect().bottom || 0;
-      const readingLine = Math.max(headerBottom + 16, Math.min(window.innerHeight * 0.2, 180));
+      const readingLine = anchorReadingLine(targets, Math.max(headerBottom + 16, Math.min(window.innerHeight * 0.2, 180)));
       const atEnd = window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
       const current = currentSection(targets, readingLine, atEnd);
       if (current) setActive(current.id);

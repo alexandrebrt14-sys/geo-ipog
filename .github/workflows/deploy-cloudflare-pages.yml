@@ -37,6 +37,7 @@ on:
       - "site/**"
       - "scripts/check-frontend-links.py"
       - "scripts/test-frontend-links.py"
+      - "scripts/check-published-cache.mjs"
       - "portal-institucional/**"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
@@ -302,6 +303,12 @@ jobs:
             echo "Smoke test falhou em pelo menos 1 URL"
             exit 1
           fi
+
+      - name: "Gate: cache e integridade dos arquivos publicados"
+        if: github.event_name == 'push' || github.event.inputs.branch == 'main' || github.event.inputs.branch == ''
+        run: |
+          node scripts/check-published-cache.mjs --self-test
+          node scripts/check-published-cache.mjs
 
       - name: "IndexNow ping (best-effort)"
         if: success()

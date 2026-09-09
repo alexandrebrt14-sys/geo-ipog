@@ -1,4 +1,5 @@
-import { useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import FilterChips from './FilterChips';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { AREAS, type PsychologyArea } from '../lib/data';
 
@@ -28,8 +29,44 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
   const [q, setQ] = useState('');
   const reduce = useReducedMotion();
   const searchId = useId();
-  const clusterLabelId = useId();
-  const regLabelId = useId();
+  const resultsId = useId();
+  const searchRef = useRef<HTMLInputElement>(null);
+  const pagePath = useRef('');
+  const [urlReady, setUrlReady] = useState(false);
+
+  useEffect(() => {
+    pagePath.current = window.location.pathname;
+    const restore = () => {
+      if (window.location.pathname !== pagePath.current) return;
+      const params = new URL(window.location.href).searchParams;
+      const nextCluster = params.get('cluster') || 'all';
+      const nextReg = params.get('reg') || 'all';
+      setCluster(CLUSTERS.some(item => item.id === nextCluster) ? nextCluster : 'all');
+      setReg(REGULATORY.some(item => item.id === nextReg) ? nextReg : 'all');
+      setQ(params.get('q') || '');
+      setUrlReady(true);
+    };
+    restore();
+    window.addEventListener('popstate', restore);
+    document.addEventListener('astro:page-load', restore);
+    return () => {
+      window.removeEventListener('popstate', restore);
+      document.removeEventListener('astro:page-load', restore);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!urlReady || window.location.pathname !== pagePath.current) return;
+    const url = new URL(window.location.href);
+    for (const [name, value] of [['cluster', cluster], ['reg', reg], ['q', q]]) {
+      if (!value || (name !== 'q' && value === 'all')) url.searchParams.delete(name);
+      else url.searchParams.set(name, value);
+    }
+    if (url.href !== window.location.href) {
+      // Conserva parâmetros alheios, fragmento e estado de navegação do Astro.
+      window.history.replaceState(window.history.state, '', url);
+    }
+  }, [cluster, reg, q, urlReady]);
 
   const hasActiveFilters = cluster !== 'all' || reg !== 'all' || q.trim() !== '';
 
@@ -37,6 +74,7 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
     setCluster('all');
     setReg('all');
     setQ('');
+    searchRef.current?.focus();
   };
 
   const results = useMemo(() => {
@@ -57,6 +95,8 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
             <svg aria-hidden="true" focusable="false" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
             <input
               id={searchId}
+              ref={searchRef}
+              aria-controls={resultsId}
               type="search"
               value={q}
               onChange={e => setQ(e.target.value)}
@@ -66,19 +106,9 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
             />
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div role="group" aria-labelledby={clusterLabelId} className="flex items-center gap-2 overflow-x-auto scroll-fade pb-1">
-            <span id={clusterLabelId} className="text-[11px] uppercase tracking-wider text-ink-500 font-semibold shrink-0">Cluster:</span>
-            {CLUSTERS.map(c => (
-              <button key={c.id} type="button" onClick={() => setCluster(c.id)} className={`chip ${cluster === c.id ? 'chip-active' : ''}`} aria-pressed={cluster === c.id}>{c.label}</button>
-            ))}
-          </div>
-          <div role="group" aria-labelledby={regLabelId} className="flex items-center gap-2 overflow-x-auto scroll-fade pb-1">
-            <span id={regLabelId} className="text-[11px] uppercase tracking-wider text-ink-500 font-semibold shrink-0">Regulação:</span>
-            {REGULATORY.map(r => (
-              <button key={r.id} type="button" onClick={() => setReg(r.id)} className={`chip ${reg === r.id ? 'chip-active' : ''}`} aria-pressed={reg === r.id}>{r.label}</button>
-            ))}
-          </div>
+        <div className="flex min-w-0 flex-col sm:flex-row gap-3">
+          <FilterChips options={CLUSTERS} value={cluster} onChange={setCluster} label="Cluster" controls={resultsId} />
+          <FilterChips options={REGULATORY} value={reg} onChange={setReg} label="Regulação" controls={resultsId} />
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <p className="text-xs text-ink-500" aria-live="polite" role="status">{results.length} de {initial.length} áreas</p>
@@ -94,7 +124,7 @@ export default function AreasFilteredGrid({ initial = AREAS }: { initial?: Psych
         </div>
       </div>
 
-      <motion.div layout={!reduce} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <motion.div id={resultsId} layout={!reduce} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <AnimatePresence mode="popLayout" initial={false}>
         {results.map(a => {
           const regMatch = /R\s*(\d)/.exec(a.regulatoryLevel || '');

@@ -227,12 +227,13 @@
   top: 0;
   left: 0;
   height: 3px;
-  width: 0%;
+  width: 100%;
+  transform: scaleX(0);
   z-index: 60;
   background: linear-gradient(90deg, #2C4791 0%, #1E88E5 55%, #F5B400 100%);
   box-shadow: 0 0 8px rgba(30, 136, 229, .35);
   transform-origin: left center;
-  transition: width .12s ease-out;
+  transition: transform .12s ease-out;
   pointer-events: none;
 }
 
@@ -253,12 +254,14 @@
   border: 1px solid rgba(255, 255, 255, .14);
   box-shadow: 0 12px 28px -12px rgba(15, 37, 67, .55);
   opacity: 0;
+  visibility: hidden;
   transform: translateY(12px) scale(.9);
   pointer-events: none;
   transition: opacity .25s ease, transform .25s ease, background .15s ease;
 }
 #back-to-top.is-visible {
   opacity: 1;
+  visibility: visible;
   transform: translateY(0) scale(1);
   pointer-events: auto;
 }
@@ -347,7 +350,7 @@
   position: absolute;
   border-radius: 9999px;
   filter: blur(8px);
-  animation: orbFloat 9s ease-in-out infinite;
+  animation: orbFloat 4s ease-in-out 1;
   pointer-events: none;
 }
 
@@ -724,19 +727,9 @@ details.faq-item[open] .faq-answer-text {
   }
 }
 
-/* Onda 28 — Marquee de selos regulatorios (pausa no hover; estatico sem motion) */
-.marquee {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-.marquee-track { display: inline-flex; align-items: center; gap: 2.5rem; white-space: nowrap; }
-@media (prefers-reduced-motion: no-preference) {
-  .marquee-track { animation: marquee 30s linear infinite; }
-  .marquee:hover .marquee-track,
-  .marquee:focus-within .marquee-track { animation-play-state: paused; }
-}
-@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+/* Referências permanecem legíveis também sem movimento ou ponteiro. */
+.reference-list { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+.reference-list > li { display: inline-flex; align-items: center; gap: .5rem; }
 
 /* Onda 29 — Realce do hero com gradiente animado deslizante (background-clip: text) */
 .grad-anim {
@@ -747,10 +740,10 @@ details.faq-item[open] .faq-answer-text {
   color: transparent;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .grad-anim { animation: gradShift 7s linear infinite; }
+  .grad-anim { animation: gradShift 4s linear 1; }
   /* Palavra do hero que tambem tem gradiente: combina entrada + gradiente
      (senao o shorthand de .grad-anim sobrescreve o wordRise e fica opacity:0). */
-  .hero-word.grad-anim { animation: wordRise .6s cubic-bezier(.2, .8, .2, 1) both, gradShift 7s linear infinite; }
+  .hero-word.grad-anim { animation: wordRise .6s cubic-bezier(.2, .8, .2, 1) both, gradShift 4s linear 1; }
 }
 @keyframes gradShift { to { background-position: 200% 0; } }
 
@@ -1308,4 +1301,13 @@ body {
 .gl-link:focus-visible {
   text-decoration-style: solid;
   color: var(--d-brand-text, #1d4ed8);
+}
+
+/* A animação de entrada nunca esconde o controle que recebeu foco. */
+.reveal:focus-within,
+.slide-in-right:focus-within {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition-delay: 0s !important;
 }

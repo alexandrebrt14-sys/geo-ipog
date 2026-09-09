@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 
 /**
  * Quiz: qual MBA em Psicologia combina com você.
@@ -329,10 +329,18 @@ export default function QuizQualMBA() {
     () => QUESTIONS.map(() => -1)
   );
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const advanceTimer = useRef<number | undefined>();
-  const focusedQuestion = useRef(-1);
-  const cancelAdvance = () => window.clearTimeout(advanceTimer.current);
-  useEffect(() => () => window.clearTimeout(advanceTimer.current), []);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const startRef = useRef<HTMLButtonElement>(null);
+  const hasStarted = useRef(false);
+
+  useEffect(() => {
+    if (view === 'welcome' && !hasStarted.current) return;
+    const target = view === 'welcome' ? startRef.current : headingRef.current;
+    target?.focus({ preventScroll: true });
+    // O scroll-padding da página reserva o cabeçalho fixo, inclusive no celular.
+    // A troca é imediata para manter pergunta, contador e foco no mesmo passo.
+    target?.scrollIntoView({ behavior: 'instant', block: 'start' });
+  }, [view, current]);
 
   const total = QUESTIONS.length;
   const answered = useMemo(
@@ -342,36 +350,28 @@ export default function QuizQualMBA() {
   const progress = Math.round((answered / total) * 100);
 
   function start() {
-    cancelAdvance();
-    focusedQuestion.current = -1;
+    hasStarted.current = true;
     setAnswers(QUESTIONS.map(() => -1));
     setCurrent(0);
     setView('questions');
   }
 
   function answer(optionIndex: number) {
-    cancelAdvance();
-    const next = [...answers];
-    next[current] = optionIndex;
-    setAnswers(next);
-    // pequeno delay visual para feedback de seleção
-    advanceTimer.current = window.setTimeout(() => {
-      if (current + 1 < total) {
-        setCurrent(current + 1);
-      } else {
-        setView('result');
-      }
-    }, 120);
+    setAnswers(previous => previous.map((value, index) => index === current ? optionIndex : value));
+  }
+
+  function goNext() {
+    if (answers[current] < 0) return;
+    if (current + 1 < total) setCurrent(current + 1);
+    else setView('result');
   }
 
   function focusOption(index: number) {
-    window.requestAnimationFrame(() => {
-      optionRefs.current[index]?.focus();
-    });
+    answer(index);
+    optionRefs.current[index]?.focus();
   }
 
-  // Navegação por teclado do radio group: setas movem o foco entre opções,
-  // Home/End vão para a primeira/última. Enter e Espaço já selecionam via onClick.
+  // Setas, Home e End selecionam e movem o foco. A confirmação fica em Continuar.
   function onOptionKeyDown(
     event: React.KeyboardEvent<HTMLButtonElement>,
     index: number,
@@ -394,13 +394,10 @@ export default function QuizQualMBA() {
   }
 
   function goPrev() {
-    cancelAdvance();
     if (current > 0) setCurrent(current - 1);
   }
 
   function reset() {
-    cancelAdvance();
-    focusedQuestion.current = -1;
     setAnswers(QUESTIONS.map(() => -1));
     setCurrent(0);
     setView('welcome');
@@ -450,7 +447,7 @@ export default function QuizQualMBA() {
           </li>
         </ul>
         <div className="mt-6 flex flex-col sm:flex-row gap-3">
-          <button onClick={start} className="btn btn-primary btn-lg">
+          <button ref={startRef} type="button" onClick={start} className="btn btn-primary btn-lg">
             Iniciar quiz
           </button>
           <a href="/mbas" className="btn btn-ghost btn-lg">
@@ -491,22 +488,15 @@ export default function QuizQualMBA() {
           />
         </div>
 
-        <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={current}
-            initial={reduce ? false : { opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, x: -40 }}
-            transition={{ duration: reduce ? 0 : 0.25, ease: [0.2, 0.8, 0.2, 1] }}>
+            initial={reduce ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduce ? 0 : 0.16 }}>
             <h2
               id={`quiz-q-${q.id}`}
               tabIndex={-1}
-              ref={element => {
-                if (element && focusedQuestion.current !== current) {
-                  focusedQuestion.current = current;
-                  element.focus({ preventScroll: true });
-                }
-              }}
+              ref={headingRef}
               className="section-h text-xl sm:text-2xl mt-5">{q.text}</h2>
             {q.helper && (
               <p id={`quiz-help-${q.id}`} className="mt-2 text-sm text-ink-500">{q.helper}</p>
@@ -568,9 +558,8 @@ export default function QuizQualMBA() {
               })}
             </div>
           </motion.div>
-        </AnimatePresence>
 
-        <div className="mt-6 flex items-center justify-between">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <button
             onClick={goPrev}
             disabled={current === 0}
@@ -579,7 +568,14 @@ export default function QuizQualMBA() {
             }`}>
             ← Voltar
           </button>
-          <button onClick={reset} className="text-sm text-ink-500 hover:text-brand-800">
+          <button
+            type="button"
+            onClick={goNext}
+            disabled={selected < 0}
+            className={`btn btn-primary btn-sm ${selected < 0 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+            {current + 1 === total ? 'Ver resultado' : 'Continuar'}
+          </button>
+          <button type="button" onClick={reset} className="text-sm text-ink-500 hover:text-brand-800">
             Reiniciar
           </button>
         </div>
@@ -593,11 +589,10 @@ export default function QuizQualMBA() {
     <div
       className="space-y-6 animate-fade-in"
       role="region"
-      aria-live="polite"
       aria-label={`Resultado do quiz: encaixe principal ${result.primary.shortName}`}>
       <div className="card p-6 sm:p-8 bg-brand-800 text-white border-brand-800">
         <span className="tag tag-dark uppercase">Resultado · orientação</span>
-        <h2 className="section-h text-white text-2xl sm:text-3xl mt-3">
+        <h2 ref={headingRef} tabIndex={-1} className="section-h text-white text-2xl sm:text-3xl mt-3">
           Encaixe principal: {result.primary.shortName}
         </h2>
         <p className="mt-2 text-white/85">{result.primary.oneLiner}</p>
@@ -660,7 +655,10 @@ export default function QuizQualMBA() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <button onClick={reset} className="btn btn-ghost">
+        <button type="button" onClick={() => { setCurrent(total - 1); setView('questions'); }} className="btn btn-ghost">
+          Revisar respostas
+        </button>
+        <button type="button" onClick={reset} className="btn btn-ghost">
           Refazer quiz
         </button>
         <a href="/recursos/guia-pos-psicologia" className="btn btn-ghost">

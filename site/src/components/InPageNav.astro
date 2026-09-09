@@ -1,6 +1,6 @@
 ---
 /**
- * InPageNav: sumário sticky com scrollspy via IntersectionObserver.
+ * InPageNav: sumário sticky com indicação da seção em leitura.
  *
  * Uso:
  *   <InPageNav headings={[
@@ -9,7 +9,7 @@
  *   ]} />
  *
  * Em desktop: coluna lateral sticky.
- * Em mobile: botão "Sumário ▾" que abre drawer.
+ * Em mobile: disclosure nativo que também funciona sem JavaScript.
  *
  * Recomenda-se posicionar dentro de um grid 12 cols como `lg:col-span-3`.
  */
@@ -39,14 +39,12 @@ const navId = 'inpage-nav-' + nonce;
 
 {safeHeadings.length > 0 && (
   <>
-    {/* Mobile: botão + drawer fixo */}
-    <div class="lg:hidden">
-      <button
+    {/* Mobile: sumário nativo, disponível antes da hidratação */}
+    <details class="lg:hidden inpage-mobile" data-inpage-mobile>
+      <summary
         id={buttonId}
         data-inpage-toggle
-        type="button"
         aria-controls={drawerId}
-        aria-expanded="false"
         class="w-full inline-flex items-center justify-between gap-2 rounded-xl border border-surface-200 bg-white px-4 py-2.5 text-sm font-semibold text-ink-900 hover:border-brand-400 hover:text-brand-800 transition outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
       >
         <span class="inline-flex items-center gap-2">
@@ -54,10 +52,9 @@ const navId = 'inpage-nav-' + nonce;
           {title}
         </span>
         <svg class="w-4 h-4 text-ink-500 transition-transform" data-inpage-chevron viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-      </button>
+      </summary>
       <div
         id={drawerId}
-        hidden
         class="mt-2 rounded-xl border border-surface-200 bg-white p-3 shadow-soft"
       >
         <nav aria-label={ariaLabel}>
@@ -77,12 +74,12 @@ const navId = 'inpage-nav-' + nonce;
           </ul>
         </nav>
       </div>
-    </div>
+    </details>
 
     {/* Desktop: sticky sidebar */}
-    <nav id={navId} aria-label={ariaLabel} class="hidden lg:block lg:sticky lg:top-24">
+    <nav id={navId} aria-label={ariaLabel} data-inpage-desktop class="hidden lg:block lg:sticky lg:top-24 inpage-desktop">
       <p class="text-[11px] uppercase tracking-wider font-semibold text-ink-500 mb-3">{title}</p>
-      <ul class="space-y-1 border-l border-surface-200">
+      <ul data-inpage-list class="space-y-1 border-l border-surface-200">
         {safeHeadings.map(h => (
           <li>
             <a
@@ -103,65 +100,156 @@ const navId = 'inpage-nav-' + nonce;
 )}
 
 <script>
-  let observer: IntersectionObserver | undefined;
+  let disposeInPageNav = () => {};
+
+  // O heading que já atravessou a linha de leitura continua ativo entre seções.
+  function currentSection(targets: HTMLElement[], readingLine: number, atEnd: boolean) {
+    if (!targets.length) return undefined;
+    if (atEnd) return targets[targets.length - 1];
+    let current = targets[0];
+    for (const target of targets) {
+      if (target.getBoundingClientRect().top > readingLine) break;
+      current = target;
+    }
+    return current;
+  }
+
+  function isPlainInPageClick(event: MouseEvent) {
+    return !event.defaultPrevented && event.button === 0 && !event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey;
+  }
 
   function initInPageNav() {
-    observer?.disconnect();
-    document.querySelectorAll<HTMLButtonElement>('[data-inpage-toggle]').forEach(btn => {
-      if (btn.dataset.inpageBound === '1') return;
-      const drawer = document.getElementById(btn.getAttribute('aria-controls') || '');
-      if (!drawer) return;
-      btn.dataset.inpageBound = '1';
-      const chevron = btn.querySelector<SVGElement>('[data-inpage-chevron]');
-      const setOpen = (open: boolean) => {
-        drawer.hidden = !open;
-        btn.setAttribute('aria-expanded', String(open));
-        if (chevron) chevron.style.transform = open ? 'rotate(180deg)' : '';
-      };
-      btn.addEventListener('click', () => setOpen(drawer.hidden));
-      drawer.addEventListener('keydown', event => {
-        if (event.key !== 'Escape') return;
-        setOpen(false);
-        btn.focus();
-      });
-      drawer.querySelectorAll<HTMLAnchorElement>('a[data-inpage-link]').forEach(link => {
-        link.addEventListener('click', () => {
-          setOpen(false);
-          const target = document.getElementById(link.dataset.target || '');
-          if (target) {
-            if (!target.hasAttribute('tabindex')) target.tabIndex = -1;
-            target.focus({ preventScroll: true });
-          }
-        });
-      });
-    });
-
+    disposeInPageNav();
     const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[data-inpage-link]'));
-    const targetIds = [...new Set(links.map(link => link.dataset.target).filter(Boolean))];
-    const targets = targetIds.map(id => document.getElementById(id!)).filter((el): el is HTMLElement => !!el);
-    if (!targets.length || !('IntersectionObserver' in window)) return;
+    const ids = [...new Set(links.map(link => link.dataset.target).filter(Boolean))];
+    const targets = ids.map(id => document.getElementById(id!)).filter((target): target is HTMLElement => !!target);
+    if (!targets.length) return;
+    targets.sort((first, second) => {
+      const order = first.compareDocumentPosition(second);
+      return order & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : order & Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0;
+    });
+    const cleanups: (() => void)[] = [];
+    let frame = 0;
+    let alive = true;
+    let activeId = '';
+
     const setActive = (id: string) => {
+      if (activeId === id) return;
+      activeId = id;
       links.forEach(link => {
-        const active = link.dataset.target === id;
-        link.classList.toggle('text-brand-800', active);
-        link.classList.toggle('border-brand-500', active);
-        if (active) link.setAttribute('aria-current', 'location');
+        if (link.dataset.target === id) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
       });
+      // Rola somente a lista lateral, sem mover a página nem roubar o foco.
+      const activeLink = links.find(link => link.dataset.target === id && link.closest('[data-inpage-desktop]'));
+      const list = activeLink?.closest<HTMLElement>('[data-inpage-list]');
+      if (!list || !activeLink || !list.getClientRects().length) return;
+      const itemBox = activeLink.getBoundingClientRect();
+      const listBox = list.getBoundingClientRect();
+      if (itemBox.top < listBox.top) list.scrollTop += itemBox.top - listBox.top - 4;
+      else if (itemBox.bottom > listBox.bottom) list.scrollTop += itemBox.bottom - listBox.bottom + 4;
     };
-    const visible = new Set<string>();
-    observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) visible.add(entry.target.id);
-        else visible.delete(entry.target.id);
-      });
-      const first = targets.find(target => visible.has(target.id));
-      if (first) setActive(first.id);
-    }, { rootMargin: '-20% 0px -65% 0px', threshold: [0, 1] });
-    targets.forEach(target => observer!.observe(target));
+    const update = () => {
+      const headerBottom = document.getElementById('main-header')?.getBoundingClientRect().bottom || 0;
+      const readingLine = Math.max(headerBottom + 16, Math.min(window.innerHeight * 0.2, 180));
+      const atEnd = window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      const current = currentSection(targets, readingLine, atEnd);
+      if (current) setActive(current.id);
+    };
+    const schedule = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => { frame = 0; update(); });
+    };
+
+    links.forEach(link => {
+      const click = (event: MouseEvent) => {
+        if (!isPlainInPageClick(event)) return;
+        const target = document.getElementById(link.dataset.target || '');
+        if (!target) return;
+        const disclosure = link.closest<HTMLDetailsElement>('[data-inpage-mobile]');
+        if (disclosure) disclosure.open = false;
+        if (!target.hasAttribute('tabindex')) target.tabIndex = -1;
+        target.focus({ preventScroll: true });
+        setActive(target.id);
+        // O href nativo conserva o fragmento, o histórico e o movimento reduzido.
+      };
+      link.addEventListener('click', click);
+      cleanups.push(() => link.removeEventListener('click', click));
+    });
+    document.querySelectorAll<HTMLDetailsElement>('[data-inpage-mobile]').forEach(disclosure => {
+      const escape = (event: KeyboardEvent) => {
+        if (event.key !== 'Escape' || !disclosure.open) return;
+        event.preventDefault();
+        event.stopPropagation();
+        disclosure.open = false;
+        disclosure.querySelector<HTMLElement>('summary')?.focus({ preventScroll: true });
+      };
+      disclosure.addEventListener('keydown', escape);
+      cleanups.push(() => disclosure.removeEventListener('keydown', escape));
+    });
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    window.addEventListener('hashchange', schedule);
+    const resizeObserver = 'ResizeObserver' in window ? new ResizeObserver(schedule) : undefined;
+    const main = document.querySelector('main');
+    if (main) resizeObserver?.observe(main);
+    document.fonts?.ready.then(() => { if (alive) schedule(); });
+    update();
+    disposeInPageNav = () => {
+      alive = false;
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      window.removeEventListener('hashchange', schedule);
+      resizeObserver?.disconnect();
+      cleanups.forEach(cleanup => cleanup());
+    };
   }
 
   initInPageNav();
   document.addEventListener('astro:page-load', initInPageNav);
-  document.addEventListener('astro:before-swap', () => observer?.disconnect());
+  document.addEventListener('astro:before-swap', () => disposeInPageNav());
 </script>
+
+<style>
+  .inpage-mobile > summary { cursor: pointer; list-style: none; }
+  .inpage-mobile > summary::-webkit-details-marker { display: none; }
+  .inpage-mobile[open] [data-inpage-chevron] { transform: rotate(180deg); }
+  [data-inpage-link] { overflow-wrap: anywhere; }
+  [data-inpage-link][aria-current="location"] {
+    color: var(--color-primary) !important;
+    background-color: var(--color-primary-soft);
+    border-left-color: var(--color-primary-ring);
+    font-weight: 600;
+  }
+  [data-inpage-link]:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: -2px;
+  }
+  :global([data-theme="dark"]) [data-inpage-link][aria-current="location"] {
+    color: var(--d-brand-text) !important;
+    background-color: var(--d-accent-bg);
+    border-left-color: var(--d-brand-text);
+  }
+  @media (min-width: 1024px) {
+    .inpage-desktop {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 7rem);
+      max-height: calc(100dvh - 7rem);
+    }
+    .inpage-desktop > p { flex-shrink: 0; }
+    [data-inpage-list] {
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      padding-right: .375rem;
+      padding-block: .125rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-inpage-link], [data-inpage-chevron] { transition: none; }
+  }
+</style>

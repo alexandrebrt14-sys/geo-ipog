@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { PERSONAS, MBAS } from '../lib/data';
 import { getNextSteps } from '../lib/taxonomy';
 
@@ -155,6 +155,7 @@ function PersonaPanel({ card, isActive, onSelect }: PersonaPanelProps) {
           <button
             type="button"
             onClick={onSelect}
+            aria-label={`Usar perfil: ${card.shortName}`}
             aria-pressed={isActive}
             className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold transition ${isActive ? 'border-brand-700 bg-brand-700 text-white' : 'border-surface-200 text-ink-700 hover:border-brand-400 hover:text-brand-800'}`}
           >
@@ -174,20 +175,27 @@ function PersonaPanel({ card, isActive, onSelect }: PersonaPanelProps) {
 export default function PersonaQuickPicker({ variant = 'home' }: Props) {
   const cards = useMemo(() => buildCards(), []);
   const [active, setActive] = useState<string | null>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    const validPersona = (value: unknown) => typeof value === 'string' && cards.some(card => card.id === value) ? value : null;
     try {
-      const stored = window.localStorage.getItem('pp_persona');
-      if (stored) setActive(stored);
+      setActive(validPersona(window.localStorage.getItem('pp_persona')));
     } catch { /* A escolha de perfil independe do armazenamento local. */ }
     const handler = (event: Event) => {
-      const ce = event as CustomEvent<{ persona: string }>;
-      if (ce.detail) setActive(ce.detail.persona || null);
+      const change = event as CustomEvent<{ persona: string }>;
+      setActive(validPersona(change.detail?.persona));
     };
-    window.addEventListener('pp:persona-change', handler as EventListener);
-    return () => window.removeEventListener('pp:persona-change', handler as EventListener);
-  }, []);
+    const syncStorage = (event: StorageEvent) => {
+      if (event.key === 'pp_persona' || event.key === null) setActive(validPersona(event.newValue));
+    };
+    window.addEventListener('pp:persona-change', handler);
+    window.addEventListener('storage', syncStorage);
+    return () => {
+      window.removeEventListener('pp:persona-change', handler);
+      window.removeEventListener('storage', syncStorage);
+    };
+  }, [cards]);
 
   const handleSelect = (personaId: string) => {
     setActive(personaId);
@@ -202,13 +210,13 @@ export default function PersonaQuickPicker({ variant = 'home' }: Props) {
     <section aria-label="Escolha o seu perfil" className="space-y-4">
       <header className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-display text-xl font-semibold text-ink-900 sm:text-2xl">Qual desses perfis é o seu?</h2>
+          <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-semibold text-ink-900 sm:text-2xl">Qual desses perfis é o seu?</h2>
           <p className="text-sm text-ink-500">Escolha um para receber recomendação personalizada em todo o portal.</p>
         </div>
         {active && (
           <button
             type="button"
-            onClick={() => { setActive(null); dispatchChange(''); }}
+            onClick={() => { setActive(null); dispatchChange(''); headingRef.current?.focus({ preventScroll: true }); }}
             className="rounded-sm text-xs font-semibold text-ink-500 hover:text-brand-800"
           >
             Limpar seleção
@@ -216,6 +224,9 @@ export default function PersonaQuickPicker({ variant = 'home' }: Props) {
         )}
       </header>
 
+      <p role="status" aria-live="polite" className="sr-only">
+        {active ? `Perfil selecionado: ${cards.find(card => card.id === active)?.shortName}.` : 'Nenhum perfil selecionado.'}
+      </p>
       <div className={gridClass}>
         {cards.map(card => (
           <PersonaPanel

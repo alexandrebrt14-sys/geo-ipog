@@ -4,14 +4,21 @@ interface Option { id: string; label: string; }
 interface Props {
   options: Option[];
   defaultActive?: string;
+  value?: string;
+  controls?: string;
   onChange?: (id: string) => void;
   label?: string;
 }
 
-export default function FilterChips({ options, defaultActive = 'all', onChange, label = 'Filtrar' }: Props) {
+export default function FilterChips({ options, defaultActive = 'all', value, controls, onChange, label = 'Filtrar' }: Props) {
   const labelId = useId();
-  const [active, setActive] = useState(defaultActive);
-  const handle = (id: string) => { setActive(id); onChange?.(id); };
+  const [localActive, setActive] = useState(defaultActive);
+  const candidate = value ?? localActive;
+  const active = options.some(option => option.id === candidate) ? candidate : options[0]?.id;
+  const handle = (id: string) => {
+    if (value === undefined) setActive(id);
+    onChange?.(id);
+  };
   const chipRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   // Navegação por teclado entre os chips: setas movem o foco e mantêm o
@@ -46,7 +53,7 @@ export default function FilterChips({ options, defaultActive = 'all', onChange, 
   }
 
   return (
-    <div className="flex items-center gap-3 overflow-x-auto scroll-fade pb-1">
+    <div className="flex min-w-0 items-center gap-3 overflow-x-auto scroll-fade pb-1">
       <span id={labelId} className="text-xs uppercase tracking-wider text-ink-500 font-semibold shrink-0 mr-1">{label}:</span>
       <div role="group" aria-labelledby={labelId} className="flex gap-2 shrink-0">
         {options.map((o, i) => (
@@ -59,6 +66,7 @@ export default function FilterChips({ options, defaultActive = 'all', onChange, 
             onClick={() => handle(o.id)}
             onKeyDown={(e) => onKeyDown(e, i)}
             className={`chip focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${active === o.id ? 'chip-active' : ''}`}
+            aria-controls={controls}
             aria-pressed={active === o.id}>
             {o.label}
           </button>

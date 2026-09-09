@@ -13,7 +13,8 @@ export default defineConfig({
   },
   prefetch: {
     prefetchAll: true,
-    defaultStrategy: 'viewport'
+    // Antecipar somente após intenção evita baixar páginas durante a leitura.
+    defaultStrategy: 'hover'
   },
   integrations: [
     react(),

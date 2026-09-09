@@ -22,6 +22,7 @@ from functools import lru_cache
 from html.parser import HTMLParser
 from pathlib import Path
 import sys
+import re
 from urllib.parse import unquote, urljoin, urlsplit
 
 
@@ -107,6 +108,7 @@ class AuditResult:
     pages: int = 0
     links: int = 0
     resources: int = 0
+    stylesheets: int = 0
     failures: Counter = field(default_factory=Counter)
     examples: list[str] = field(default_factory=list)
 
@@ -222,13 +224,38 @@ def audit(root: Path) -> AuditResult:
             if resolve_target(root, parsed.path, resource=True) is None:
                 result.fail("Recurso ausente", f"{route} → {reference}")
 
+    # O HTML aponta para CSS; a fonte ou imagem usada dentro dele também precisa existir.
+    for file in sorted(root.rglob("*.css")):
+        result.stylesheets += 1
+        route = "/" + file.relative_to(root).as_posix()
+        try:
+            css = re.sub(r"/\*.*?\*/", "", file.read_text(encoding="utf-8"), flags=re.S)
+        except (UnicodeError, OSError) as error:
+            result.fail("CSS ilegível", f"{route}: {error}")
+            continue
+        pattern = r"url\(\s*(?:\"([^\"]*)\"|'([^']*)'|([^)]*?))\s*\)|@import\s+(?:\"([^\"]*)\"|'([^']*)')"
+        for match in re.finditer(pattern, css, flags=re.I):
+            reference = next(value for value in match.groups() if value is not None).strip()
+            if not reference or reference.startswith("#"):
+                continue
+            try:
+                parsed = local_url(SITE_ORIGIN + route, reference)
+            except ValueError:
+                result.fail("URL CSS inválida", f"{route} → {reference}")
+                continue
+            if parsed is None:
+                continue
+            result.resources += 1
+            if resolve_target(root, parsed.path, resource=True) is None:
+                result.fail("Recurso CSS ausente", f"{route} → {reference}")
+
     return result
 
 
 def main(root: Path = DIST_ROOT) -> int:
     result = audit(root)
     print(f"Auditoria estrutural: {result.pages} páginas HTML, {result.links} links internos "
-          f"e {result.resources} referências a recursos locais.")
+          f"e {result.resources} referências a recursos locais, incluindo {result.stylesheets} folhas CSS.")
     if result.failures:
         print("Falhas: " + "; ".join(f"{category}: {count}" for category, count in result.failures.items()))
         for example in result.examples:

@@ -16,7 +16,7 @@
  * IDs, URLs e slugs permanecem ASCII.
  *
  * Triggers: cliques em [data-open-search] + atalhos ⌘K / Ctrl+K / `/`.
- * Mantém API pública: `<SearchOverlay client:idle />` em Base.astro.
+ * Carregado pelo SearchLauncher somente após uma ativação da busca.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -322,15 +322,6 @@ function clearRecent(): void {
   }
 }
 
-function readUrlQuery(): string {
-  if (typeof window === 'undefined') return '';
-  try {
-    return new URL(window.location.href).searchParams.get('q') || '';
-  } catch {
-    return '';
-  }
-}
-
 function crumbFromHref(href: string): string {
   if (!href) return '';
   const clean = href.split('#')[0].split('?')[0];
@@ -430,10 +421,17 @@ function safeTrack(api: DynamicApi, event: string, payload?: Record<string, unkn
 // Componente principal
 // ---------------------------------------------------------------------------
 
-export default function SearchOverlay() {
+export interface SearchOverlayProps {
+  requestId?: number;
+  initialQuery?: string;
+  returnFocus?: HTMLElement | null;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export default function SearchOverlay({ requestId = 0, initialQuery = '', returnFocus, onOpenChange }: SearchOverlayProps) {
   const reduce = useReducedMotion();
-  const [open, setOpen] = useState(false);
-  const [q, setQ] = useState('');
+  const [open, setOpen] = useState(requestId > 0);
+  const [q, setQ] = useState(initialQuery);
   const [activeIdx, setActiveIdx] = useState(0);
   const [kindFilter, setKindFilter] = useState<'all' | DocKind>('all');
   const [recent, setRecent] = useState<RecentEntry[]>([]);
@@ -460,6 +458,8 @@ export default function SearchOverlay() {
       return false;
     }
   }, []);
+
+  useEffect(() => { onOpenChange?.(open); }, [open, onOpenChange]);
 
   // ---------- carregamento das APIs dinâmicas ----------
   useEffect(() => {
@@ -618,51 +618,23 @@ export default function SearchOverlay() {
     return () => clearTimeout(t);
   }, [q]);
 
-  // ---------- abertura, atalhos, triggers ----------
+  // A ativação é explícita para que a primeira importação não perca o clique.
   useEffect(() => {
-    const anotherDialogOpen = () => Array.from(document.querySelectorAll<HTMLElement>('[aria-modal="true"]')).some(el => !dialogRef.current?.contains(el) && el.getClientRects().length > 0 && el.getAttribute('aria-hidden') !== 'true');
-    const onTrigger = (event: MouseEvent) => {
-      if (anotherDialogOpen()) return;
-      if (event.target instanceof Element && event.target.closest('[data-open-search]')) {
-        setOpen(true);
-      }
-    };
-    document.addEventListener('click', onTrigger);
-
-    const onKey = (e: KeyboardEvent) => {
-      if (e.defaultPrevented || anotherDialogOpen()) return;
-      const isMac = navigator.userAgent.includes('Mac');
-      if ((isMac ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setOpen(true);
-        return;
-      }
-      const active = document.activeElement as HTMLElement | null;
-      const inField = active?.matches('input, textarea, select') || active?.isContentEditable;
-      if (!e.defaultPrevented && !e.altKey && !e.ctrlKey && !e.metaKey && !inField && e.key === '/') {
-        e.preventDefault();
-        setOpen(true);
-      }
-    };
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('click', onTrigger);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, []);
+    if (!requestId) return;
+    setQ(initialQuery);
+    setOpen(true);
+  }, [requestId, initialQuery]);
 
   // O diálogo devolve foco e rolagem também se a ilha for desmontada.
   useEffect(() => {
     if (!open) return;
-    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousFocus = returnFocus?.isConnected ? returnFocus : document.activeElement as HTMLElement | null;
     const previousOverflow = document.body.style.overflow;
     const background = Array.from(document.body.children)
       .filter((el): el is HTMLElement => el instanceof HTMLElement && !el.contains(dialogRef.current))
       .map(element => ({ element, inert: element.inert }));
     background.forEach(({ element }) => { element.inert = true; });
     document.body.style.overflow = 'hidden';
-    const urlQ = readUrlQuery();
-    if (urlQ) setQ(urlQ);
     setRecent(loadRecent());
     const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 30);
     return () => {
@@ -918,6 +890,7 @@ export default function SearchOverlay() {
           first?.focus();
         }
       }}
+      data-search-overlay
       role="dialog"
       aria-modal="true"
       aria-label="Busca do portal"

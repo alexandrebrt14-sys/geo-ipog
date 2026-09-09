@@ -532,7 +532,7 @@ export default function QuizQualMBA() {
                     }`}>
                     <span className="inline-flex items-center gap-3">
                       <span
-                        className={`relative w-6 h-6 rounded-full inline-flex items-center justify-center text-xs font-bold border ${
+                        className={`relative w-6 h-6 shrink-0 rounded-full inline-flex items-center justify-center text-xs font-bold border ${
                           active
                             ? 'border-brand-600 bg-brand-600 text-white'
                             : 'border-surface-200 text-ink-500'

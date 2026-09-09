@@ -4,13 +4,11 @@
   Permissions-Policy: geolocation=(), microphone=(), camera=()
   X-Frame-Options: SAMEORIGIN
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-  Cache-Control: public, max-age=300, s-maxage=3600
 
-# Onda 34 (PWA): o service worker precisa ser sempre revalidado para que novas
-# versões propaguem rápido. A navegação é network-first, então nada fica preso,
-# mas o próprio arquivo /sw.js não deve ficar 5 min em cache do browser.
+# O service worker solicita resposta sem armazenamento em cache HTTP.
+# Navegações HTML continuam seguindo a estratégia de rede do próprio worker.
 /sw.js
-  Cache-Control: no-cache
+  Cache-Control: no-store, max-age=0
   Service-Worker-Allowed: /
 
 # Manifest PWA com o Content-Type correto.
@@ -49,9 +47,7 @@
 # ===========================================================================
 
 # Assets versionados pelo conteúdo. O nome do arquivo muda a cada alteração,
-# então o conteúdo em si nunca muda: podem ser guardados por um ano. Sem esta
-# regra eles herdam os 5 minutos da regra geral acima e são rebaixados a cada
-# visita, que foi o que o Lighthouse apontou em `uses-long-cache-ttl`.
+# então o conteúdo em si nunca muda: podem ser guardados por um ano.
 /ipog/_next/static/*
   Cache-Control: public, max-age=31536000, immutable
 
@@ -63,17 +59,8 @@
 # nosniff`, nem o navegador nem o rastreador podem corrigir isso por conta
 # própria, e a prévia do link volta a não aparecer.
 #
-# Sem `Cache-Control` aqui, de propósito. Nestes dois caminhos o Cloudflare
-# concatenou a declaração à da regra `/*` em vez de substituir a diretiva, e o
-# cabeçalho saiu como `max-age=300, s-maxage=3600, public, max-age=86400`, com
-# `max-age` repetido. Não quebra cache nenhum, porque o primeiro valor é o que
-# prevalece, mas era cabeçalho malformado e o valor efetivo já era o da regra
-# geral. Imagem de compartilhamento é buscada por rastreador de rede social, e
-# raramente, então os 5 minutos herdados bastam.
-#
-# A regra de `_next/static/` acima não tem esse problema: ali o Cloudflare
-# substitui `max-age` corretamente, e o cabeçalho servido é
-# `public, max-age=31536000, s-maxage=3600, immutable`.
+# Estas regras fixam o tipo MIME. O cache segue a política padrão do Pages
+# e as demais regras aplicáveis ao caminho.
 /ipog/opengraph-image
   Content-Type: image/png
 

@@ -6929,11 +6929,27 @@ export const AUTO_PAGES: AutoPage[] = [
     ],
     "weight": 1,
     "pageType": null
+  },
+  {
+    "route": "/validade-de-construto-medicao-ia-brgeo-1",
+    "title": "Validade de construto quando o instrumento não é declarado: o caso BRGEO-1",
+    "description": "Working paper no SSRN mostra que a janela de leitura move a taxa de citação entre 22,95 e 55,73 pontos percentuais e que 68.624 observações valem 1.083 efetivas.",
+    "kind": "Recurso",
+    "persona": null,
+    "tags": [
+      "validade",
+      "construto",
+      "medicao",
+      "brgeo",
+      "recurso"
+    ],
+    "weight": 1,
+    "pageType": "article"
   }
 ];
 
 export const AUTO_PAGES_STATS = {
-  "Recurso": 120,
+  "Recurso": 121,
   "Área": 19,
   "Carreira": 7,
   "Caso": 7,

@@ -224,6 +224,11 @@ export default function PaginaMetodo() {
           </ul>
         </div>
       </Section>
+      <Section id="leitura-critica-brgeo1" titulo="Leitura complementar sobre indicadores de IA">
+        <p className="text-fluid-base leading-relaxed text-[var(--ink)]">O preprint BRGEO-1, publicado por Alexandre Caramaschi em 11 de setembro de 2026, oferece um caso para discutir como regras de observação alteram uma medida. A leitura editorial no portal independente aborda janela de texto, contagem de nomes e denominadores.</p>
+        <p className="mt-4 text-fluid-base leading-relaxed text-[var(--ink)]">Alexandre vai submeter o trabalho à avaliação de um periódico. O preprint ainda não concluiu avaliação por pares. Esta indicação não atribui ao IPOG participação ou validação da pesquisa.</p>
+        <a className="mt-5 inline-block font-semibold text-[var(--acento-forte)] underline" href="https://posgraduacaopsicologia.com/validade-de-construto-medicao-ia-brgeo-1/">Ler o caso BRGEO-1 e acessar o preprint</a>
+      </Section>
     </>
   );
 }

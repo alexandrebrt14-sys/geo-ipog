@@ -1,7 +1,7 @@
 # Painel de marketing: leads, origem e funil
 
 > **Status:** Fase 1 entregue em 14/09/2026, aguardando segredos e Cloudflare Access
-> **Endereço:** https://posgraduacaopsicologia.com/painel/
+> **Endereço:** `https://posgraduacaopsicologia.com/painel/`
 > **Especificação de origem:** `ESPECIFICACAO-DASHBOARD-MARKETING.txt` (Gabriele Cavalcante, versão 2 de 03/09/2026)
 > **Dona do painel:** Gabriele Cavalcante (IPOG). **Administração do repositório e do Cloudflare:** Alexandre Caramaschi (Brasil GEO)
 
@@ -90,7 +90,7 @@ cp data/marketing/dashboard.json dashboards/marketing/dashboard.json
 python -m http.server 8000 --directory dashboards/marketing
 ```
 
-Abrir http://localhost:8000/. Apagar a cópia local do `dashboard.json` antes de commitar (a página em produção lê o arquivo copiado pelo workflow). O coletor do GA4 é opcional e precisa de `pip install google-analytics-data` e da variável `GOOGLE_APPLICATION_CREDENTIALS`.
+Abrir `http://localhost:8000/`. Apagar a cópia local do `dashboard.json` antes de commitar (a página em produção lê o arquivo copiado pelo workflow). O coletor do GA4 é opcional e precisa de `pip install google-analytics-data` e da variável `GOOGLE_APPLICATION_CREDENTIALS`.
 
 ## 6. Carga inicial de 14/09/2026
 

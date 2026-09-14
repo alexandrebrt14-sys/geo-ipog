@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Painel de marketing IPOG</title>
+<style>
+  :root {
+    color-scheme: light;
+    --plano: #f9f9f7;
+    --superficie: #fcfcfb;
+    --borda: rgba(11, 11, 11, 0.10);
+    --texto: #0b0b0b;
+    --texto-2: #52514e;
+    --texto-3: #898781;
+    --grade: #e1e0d9;
+    --eixo: #c3c2b7;
+    --sobe: #006300;
+    --desce: #b02a2a;
+    --aviso-fundo: #fff4d6;
+    --aviso-borda: #e8c46a;
+    --c-meta: #2a78d6;
+    --c-google: #eb6834;
+    --c-chatbot: #1baf7a;
+    --c-instagram: #eda100;
+    --c-linkedin: #e87ba4;
+    --c-demais: #008300;
+    --c-llm: #4a3aa7;
+    --c-sem_utm: #b5b3ab;
+    --f1: #86b6ef; --f2: #5598e7; --f3: #2a78d6; --f4: #1c5cab; --f5: #104281;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --plano: #0d0d0d;
+      --superficie: #1a1a19;
+      --borda: rgba(255, 255, 255, 0.10);
+      --texto: #ffffff;
+      --texto-2: #c3c2b7;
+      --texto-3: #898781;
+      --grade: #2c2c2a;
+      --eixo: #383835;
+      --sobe: #0ca30c;
+      --desce: #e66767;
+      --aviso-fundo: #2e2814;
+      --aviso-borda: #7a6427;
+      --c-meta: #3987e5;
+      --c-google: #d95926;
+      --c-chatbot: #199e70;
+      --c-instagram: #c98500;
+      --c-linkedin: #d55181;
+      --c-demais: #008300;
+      --c-llm: #9085e9;
+      --c-sem_utm: #5c5b57;
+      --f1: #6da7ec; --f2: #5598e7; --f3: #3987e5; --f4: #256abf; --f5: #184f95;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--plano); }
+  body {
+    margin: 0;
+    padding-block: 24px 48px;
+    padding-inline: 16px;
+    background: var(--plano);
+    color: var(--texto);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  a { color: inherit; }
+  main { max-width: 1180px; margin: 0 auto; }
+  header.topo { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
+  h1 { font-size: 1.55rem; line-height: 1.2; margin: 0 0 4px; font-weight: 650; letter-spacing: -0.01em; }
+  .sub { color: var(--texto-2); margin: 0; }
+  .frescor { font-size: 0.9rem; color: var(--texto-2); text-align: right; }
+  .frescor strong { color: var(--texto); font-weight: 600; }
+  .frescor .ponto { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--c-chatbot); margin-right: 6px; vertical-align: middle; }
+  .frescor .ponto.velho { background: var(--c-instagram); }
+  .frescor .ponto.erro { background: var(--desce); }
+  h2 { font-size: 1.05rem; margin: 0 0 4px; font-weight: 650; }
+  .legenda-secao { color: var(--texto-2); font-size: 0.9rem; margin: 0 0 14px; }
+  section.cartao {
+    background: var(--superficie);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .aviso {
+    background: var(--aviso-fundo);
+    border: 1px solid var(--aviso-borda);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 0.92rem;
+  }
+  .aviso p { margin: 0; }
+  .grade-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .kpi {
+    background: var(--superficie);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 14px 16px;
+    min-width: 0;
+  }
+  .kpi .rotulo { font-size: 0.82rem; color: var(--texto-2); margin: 0 0 6px; }
+  .kpi .valor { font-size: 1.9rem; font-weight: 650; line-height: 1.1; margin: 0; letter-spacing: -0.01em; }
+  .kpi .valor.vazio { color: var(--texto-3); font-size: 1.15rem; font-weight: 500; }
+  .kpi .delta { font-size: 0.85rem; color: var(--texto-2); margin: 6px 0 0; }
+  .kpi .delta .up { color: var(--sobe); font-weight: 600; }
+  .kpi .delta .down { color: var(--desce); font-weight: 600; }
+  .kpi.pendente { border-style: dashed; }
+  .grafico { position: relative; }
+  .grafico svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .grafico .dica {
+    position: absolute; pointer-events: none; display: none;
+    background: var(--superficie); border: 1px solid var(--borda); border-radius: 8px;
+    padding: 8px 10px; font-size: 0.82rem; line-height: 1.35; min-width: 180px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12); z-index: 2;
+  }
+  .grafico .dica b { display: block; margin-bottom: 4px; }
+  .grafico .dica .lin { display: flex; justify-content: space-between; gap: 12px; }
+  .grafico .dica .lin i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.85rem; color: var(--texto-2); margin: 10px 0 0; padding: 0; list-style: none; }
+  .legenda li i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .nota { font-size: 0.82rem; color: var(--texto-3); margin: 10px 0 0; }
+  details { margin-top: 12px; }
+  summary { cursor: pointer; color: var(--texto-2); font-size: 0.9rem; }
+  .rolagem { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--grade); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  th { color: var(--texto-2); font-weight: 600; font-size: 0.8rem; }
+  th:first-child, td:first-child { text-align: left; white-space: normal; font-variant-numeric: normal; }
+  td .cor { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; }
+  td.up { color: var(--sobe); } td.down { color: var(--desce); } td.mudo { color: var(--texto-3); }
+  .duas { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+  .funil-lista { list-style: none; margin: 0; padding: 0; }
+  .funil-lista li { display: grid; grid-template-columns: 150px 1fr; gap: 10px; align-items: center; margin-bottom: 8px; font-size: 0.9rem; }
+  .funil-lista .barra { height: 22px; border-radius: 0 4px 4px 0; min-width: 2px; }
+  .funil-lista .nome { color: var(--texto-2); }
+  .funil-lista .num { margin-left: 8px; font-variant-numeric: tabular-nums; }
+  .funil-lista .num small { color: var(--texto-3); }
+  .barras-h { list-style: none; margin: 0; padding: 0; }
+  .barras-h li { display: grid; grid-template-columns: 170px 1fr 90px; gap: 10px; align-items: center; margin-bottom: 6px; font-size: 0.88rem; }
+  .barras-h .trilho { height: 14px; background: transparent; }
+  .barras-h .preenche { height: 14px; background: var(--c-meta); border-radius: 0 3px 3px 0; }
+  .barras-h .nome { color: var(--texto-2); }
+  .barras-h .val { text-align: right; font-variant-numeric: tabular-nums; }
+  .fontes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 16px; font-size: 0.88rem; }
+  .fontes li { display: flex; gap: 8px; align-items: baseline; }
+  .fontes .st { flex: none; font-size: 0.75rem; font-weight: 600; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--borda); }
+  .fontes .st.ok { color: var(--sobe); }
+  .fontes .st.pendente { color: var(--texto-3); }
+  .fontes small { color: var(--texto-3); display: block; }
+  footer { color: var(--texto-3); font-size: 0.82rem; margin-top: 24px; }
+  .oculto { display: none; }
+  @media (max-width: 640px) {
+    .funil-lista li { grid-template-columns: 110px minmax(0, 1fr); }
+    .funil-lista .num small { display: block; }
+    .barras-h li { grid-template-columns: 120px 1fr 70px; }
+    .frescor { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header class="topo">
+    <div>
+      <h1>Painel de marketing IPOG</h1>
+      <p class="sub">Leads, origem e funil do HubSpot. Fase 1: leads e funil; mídia paga entra na Fase 2.</p>
+    </div>
+    <div class="frescor" id="frescor"><span class="ponto"></span>Carregando dados...</div>
+  </header>
+
+  <div class="aviso oculto" id="aviso-erro"><p id="aviso-erro-texto"></p></div>
+  <div class="aviso oculto" id="aviso-pendente"><p id="aviso-pendente-texto"></p></div>
+
+  <div class="grade-kpi" id="kpis"></div>
+
+  <section class="cartao">
+    <h2>Leads por dia e por canal</h2>
+    <p class="legenda-secao" id="serie-sub">Contatos criados no HubSpot nos últimos 30 dias, empilhados por canal.</p>
+    <div class="grafico" id="grafico-serie">
+      <svg id="svg-serie" role="img" aria-labelledby="svg-serie-titulo"><title id="svg-serie-titulo">Leads por dia e por canal nos últimos 30 dias</title></svg>
+      <div class="dica" id="dica-serie"></div>
+    </div>
+    <ul class="legenda" id="legenda-serie"></ul>
+    <p class="nota">O dia de hoje aparece mais claro porque ainda está em andamento. Passe o mouse sobre uma barra para ver o detalhe.</p>
+    <details>
+      <summary>Ver os mesmos dados em tabela</summary>
+      <div class="rolagem"><table id="tabela-serie"></table></div>
+    </details>
+  </section>
+
+  <section class="cartao">
+    <h2>Canais</h2>
+    <p class="legenda-secao" id="canais-sub">Comparação dos últimos 7 dias completos com os 7 anteriores. Investimento, CTR e CPL chegam com os coletores de mídia paga.</p>
+    <div class="rolagem"><table id="tabela-canais"></table></div>
+  </section>
+
+  <div class="duas">
+    <section class="cartao">
+      <h2>Funil</h2>
+      <p class="legenda-secao" id="funil-sub">Contatos criados nos últimos 30 dias, por estágio alcançado.</p>
+      <ul class="funil-lista" id="funil"></ul>
+      <p class="nota" id="funil-nota"></p>
+    </section>
+    <section class="cartao">
+      <h2>Contatos sem UTM</h2>
+      <p class="legenda-secao" id="sem-utm-sub">Origem automática registrada pelo HubSpot para quem chegou sem utm_source.</p>
+      <ul class="barras-h" id="sem-utm"></ul>
+      <p class="nota">Um terço dos contatos entra sem UTM. O painel não tenta adivinhar o canal: mostra a origem automática e sinaliza o problema para a padronização na fonte.</p>
+    </section>
+  </div>
+
+  <section class="cartao">
+    <h2>Orgânico e portal</h2>
+    <p class="legenda-secao">Sessões e cliques de saída para o ipog.edu.br, pelo GA4.</p>
+    <div id="organico"></div>
+  </section>
+
+  <section class="cartao">
+    <h2>Valores brutos de utm_source</h2>
+    <p class="legenda-secao">Como cada valor encontrado nos últimos 30 dias foi classificado. Serve para a governança de UTM: o mesmo canal aparece com várias grafias.</p>
+    <details>
+      <summary>Ver os valores encontrados</summary>
+      <div class="rolagem"><table id="tabela-utm"></table></div>
+    </details>
+  </section>
+
+  <section class="cartao">
+    <h2>Fontes de dados</h2>
+    <ul class="fontes" id="fontes"></ul>
+  </section>
+
+  <footer>
+    <p id="rodape">Painel interno da Brasil GEO para o IPOG. Os números vêm do HubSpot do IPOG e são recalculados a cada coleta. Portal GEO: <a href="/ipog/">posgraduacaopsicologia.com/ipog</a>.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var CORES = {
+    meta: "--c-meta", google: "--c-google", chatbot: "--c-chatbot", instagram: "--c-instagram",
+    linkedin: "--c-linkedin", demais: "--c-demais", llm: "--c-llm", sem_utm: "--c-sem_utm"
+  };
+  var ORDEM_PILHA = ["meta", "google", "chatbot", "instagram", "linkedin", "demais", "llm", "sem_utm"];
+  var INTERVALO_MS = 5 * 60 * 1000;
+  var fmtInt = new Intl.NumberFormat("pt-BR");
+  var fmtPct = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
+  var dados = null;
+
+  function $(id) { return document.getElementById(id); }
+  function cor(canal) {
+    var v = CORES[canal] || "--texto-3";
+    return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || "#888";
+  }
+  function nomeCanal(id) {
+    if (!dados) return id;
+    for (var i = 0; i < dados.canais_config.length; i++) if (dados.canais_config[i].id === id) return dados.canais_config[i].nome;
+    return id;
+  }
+  function dataBr(iso) {
+    if (!iso) return "";
+    var p = iso.slice(0, 10).split("-");
+    return p[2] + "/" + p[1];
+  }
+  function dataHoraBr(iso) {
+    if (!iso) return "";
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+  }
+  function el(tag, attrs, filhos) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "text") e.textContent = attrs[k];
+      else if (k === "html") e.innerHTML = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    });
+    (filhos || []).forEach(function (f) { if (f) e.appendChild(f); });
+    return e;
+  }
+  function svgEl(tag, attrs) {
+    var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    return e;
+  }
+  function deltaHtml(pct, invertido) {
+    if (pct === null || pct === undefined) return '<span class="mudo">sem base</span>';
+    var sobe = pct > 0;
+    var classe = pct === 0 ? "" : ((sobe !== !!invertido) ? "up" : "down");
+    var sinal = pct > 0 ? "+" : "";
+    return '<span class="' + classe + '">' + sinal + fmtPct.format(pct) + "%</span>";
+  }
+
+  function renderFrescor(estado, msg) {
+    var f = $("frescor");
+    var classe = estado === "ok" ? "" : estado === "velho" ? " velho" : " erro";
+    f.innerHTML = '<span class="ponto' + classe + '"></span>' + msg;
+  }
+
+  function renderKpis(c) {
+    var g = $("kpis");
+    g.innerHTML = "";
+    if (!c) {
+      g.appendChild(el("div", { class: "kpi pendente" }, [
+        el("p", { class: "rotulo", text: "Leads" }),
+        el("p", { class: "valor vazio", text: "Aguardando a primeira coleta do HubSpot" })
+      ]));
+      return;
+    }
+    function tile(rotulo, valor, delta, extra) {
+      var t = el("div", { class: "kpi" + (extra && extra.pendente ? " pendente" : "") });
+      t.appendChild(el("p", { class: "rotulo", text: rotulo }));
+      t.appendChild(el("p", { class: "valor" + (valor === null ? " vazio" : ""), text: valor === null ? (extra && extra.vazio) || "Fase 2" : fmtInt.format(valor) }));
+      if (delta) t.appendChild(el("p", { class: "delta", html: delta }));
+      g.appendChild(t);
+    }
+    tile("Leads hoje (até a última coleta)", c.leads_hoje, "Ontem, dia completo: " + fmtInt.format(c.leads_ontem));
+    tile("Últimos 7 dias (" + dataBr(c.janela_7d.inicio) + " a " + dataBr(c.janela_7d.fim) + ")", c.leads_7d,
+      deltaHtml(c.variacao_7d_pct) + " contra os 7 dias anteriores (" + fmtInt.format(c.leads_7d_anteriores) + ")");
+    var metaTxt = c.meta_mes ? fmtPct.format(c.leads_mes / c.meta_mes * 100) + "% da meta de " + fmtInt.format(c.meta_mes) : "Meta do mês ainda não definida em metas.json";
+    tile("Mês atual (" + c.dias_no_mes + (c.dias_no_mes === 1 ? " dia)" : " dias)"), c.leads_mes, metaTxt);
+    tile("Últimos 30 dias completos", c.leads_30d, "Média de " + fmtInt.format(Math.round(c.leads_30d / 30)) + " por dia");
+    tile("LLM / GEO em 30 dias", c.leads_llm_30d, "Leads com utm_source de ChatGPT, Gemini e afins. Hoje: " + fmtInt.format(c.leads_llm_hoje));
+    tile("Sem UTM em 30 dias", c.sem_utm_30d, (c.sem_utm_pct_30d !== null ? fmtPct.format(c.sem_utm_pct_30d) + "% dos contatos" : ""));
+    tile("Investimento hoje", c.investimento_hoje, "Meta Ads, Google Ads e LinkedIn", { pendente: true, vazio: "Aguardando Fase 2" });
+    tile("CPL médio em 30 dias", c.cpl_medio_30d, "Investimento dividido por leads atribuídos", { pendente: true, vazio: "Aguardando Fase 2" });
+  }
+
+  function renderSerie() {
+    var serie = dados.serie_diaria || [];
+    var svg = $("svg-serie");
+    while (svg.childNodes.length > 1) svg.removeChild(svg.lastChild);
+    if (!serie.length) return;
+
+    var largura = Math.max(320, $("grafico-serie").clientWidth || 900);
+    var altura = largura < 560 ? 240 : 300;
+    var m = { topo: 12, dir: 8, base: 28, esq: 46 };
+    var pw = largura - m.esq - m.dir, ph = altura - m.topo - m.base;
+    svg.setAttribute("viewBox", "0 0 " + largura + " " + altura);
+    svg.setAttribute("width", largura);
+    svg.setAttribute("height", altura);
+
+    var maximo = 0;
+    serie.forEach(function (d) { if (d.total > maximo) maximo = d.total; });
+    var passo = Math.pow(10, Math.floor(Math.log10(Math.max(1, maximo))));
+    var topo = Math.ceil(maximo / (passo / 2)) * (passo / 2) || 10;
+    var y = function (v) { return m.topo + ph - (v / topo) * ph; };
+    var n = serie.length;
+    var faixa = pw / n;
+    var lb = Math.max(4, faixa * 0.68);
+
+    for (var t = 0; t <= 4; t++) {
+      var v = topo * t / 4;
+      svg.appendChild(svgEl("line", { x1: m.esq, x2: m.esq + pw, y1: y(v), y2: y(v), stroke: t === 0 ? "var(--eixo)" : "var(--grade)", "stroke-width": 1 }));
+      var tx = svgEl("text", { x: m.esq - 8, y: y(v) + 4, "text-anchor": "end", "font-size": 11, fill: "var(--texto-3)" });
+      tx.textContent = fmtInt.format(Math.round(v));
+      svg.appendChild(tx);
+    }
+
+    serie.forEach(function (d, i) {
+      var x = m.esq + i * faixa + (faixa - lb) / 2;
+      var acumulado = 0;
+      var g = svgEl("g", { opacity: d.parcial ? 0.55 : 1 });
+      ORDEM_PILHA.forEach(function (canal, k) {
+        var val = d.por_canal[canal] || 0;
+        if (!val) return;
+        var y1 = y(acumulado + val), y0 = y(acumulado);
+        var h = Math.max(0, y0 - y1 - 2);
+        var r = svgEl("rect", { x: x, y: y1 + 1, width: lb, height: h, fill: cor(canal) });
+        if (acumulado + val === d.total) r.setAttribute("rx", 3);
+        g.appendChild(r);
+        acumulado += val;
+      });
+      svg.appendChild(g);
+      if (i % 5 === 0 || i === n - 1) {
+        var lab = svgEl("text", { x: x + lb / 2, y: altura - 8, "text-anchor": "middle", "font-size": 11, fill: "var(--texto-3)" });
+        lab.textContent = dataBr(d.data);
+        svg.appendChild(lab);
+      }
+      var alvo = svgEl("rect", { x: m.esq + i * faixa, y: m.topo, width: faixa, height: ph, fill: "transparent" });
+      alvo.style.cursor = "crosshair";
+      alvo.addEventListener("mouseenter", function () { mostrarDica(d, m.esq + i * faixa + faixa / 2, largura); });
+      alvo.addEventListener("mouseleave", esconderDica);
+      svg.appendChild(alvo);
+    });
+
+    var leg = $("legenda-serie");
+    leg.innerHTML = "";
+    ORDEM_PILHA.forEach(function (canal) {
+      leg.appendChild(el("li", { html: '<i style="background:' + cor(canal) + '"></i>' + nomeCanal(canal) }));
+    });
+
+    var tab = $("tabela-serie");
+    var cab = "<tr><th>Dia</th><th>Total</th>" + ORDEM_PILHA.map(function (c) { return "<th>" + nomeCanal(c) + "</th>"; }).join("") + "</tr>";
+    var linhas = serie.map(function (d) {
+      return "<tr><td>" + dataBr(d.data) + (d.parcial ? " (parcial)" : "") + "</td><td>" + fmtInt.format(d.total) + "</td>" +
+        ORDEM_PILHA.map(function (c) { return "<td>" + fmtInt.format(d.por_canal[c] || 0) + "</td>"; }).join("") + "</tr>";
+    }).join("");
+    tab.innerHTML = cab + linhas;
+  }
+
+  function mostrarDica(d, xCentro, largura) {
+    var dica = $("dica-serie");
+    var html = "<b>" + dataBr(d.data) + (d.parcial ? " (dia em andamento)" : "") + ": " + fmtInt.format(d.total) + " leads</b>";
+    ORDEM_PILHA.slice().reverse().forEach(function (canal) {
+      var v = d.por_canal[canal] || 0;
+      if (!v) return;
+      html += '<div class="lin"><span><i style="background:' + cor(canal) + '"></i>' + nomeCanal(canal) + "</span><span>" + fmtInt.format(v) + "</span></div>";
+    });
+    dica.innerHTML = html;
+    dica.style.display = "block";
+    var w = dica.offsetWidth;
+    var esq = xCentro + 12;
+    if (esq + w > largura) esq = xCentro - w - 12;
+    dica.style.left = Math.max(0, esq) + "px";
+    dica.style.top = "8px";
+  }
+  function esconderDica() { $("dica-serie").style.display = "none"; }
+
+  function renderCanais() {
+    var tab = $("tabela-canais");
+    var canais = dados.canais || [];
+    var cab = "<tr><th>Canal</th><th>Hoje</th><th>7 dias</th><th>7 anteriores</th><th>Variação</th><th>30 dias</th><th>Participação</th><th>Investimento</th><th>CPL</th><th>Semáforo</th></tr>";
+    var linhas = canais.map(function (c) {
+      var varClasse = c.variacao_7d_pct === null ? "mudo" : c.variacao_7d_pct > 0 ? "up" : c.variacao_7d_pct < 0 ? "down" : "";
+      var varTxt = c.variacao_7d_pct === null ? "sem base" : (c.variacao_7d_pct > 0 ? "+" : "") + fmtPct.format(c.variacao_7d_pct) + "%";
+      return "<tr><td><span class=\"cor\" style=\"background:" + cor(c.id) + "\"></span>" + c.nome + "</td>" +
+        "<td>" + fmtInt.format(c.leads_hoje) + "</td><td>" + fmtInt.format(c.leads_7d) + "</td><td>" + fmtInt.format(c.leads_7d_anteriores) + "</td>" +
+        "<td class=\"" + varClasse + "\">" + varTxt + "</td><td>" + fmtInt.format(c.leads_30d) + "</td>" +
+        "<td>" + (c.share_30d_pct === null ? "" : fmtPct.format(c.share_30d_pct) + "%") + "</td>" +
+        "<td class=\"mudo\">" + (c.investimento_30d === null ? (c.tipo === "pago" ? "Fase 2" : "n/a") : fmtInt.format(c.investimento_30d)) + "</td>" +
+        "<td class=\"mudo\">" + (c.cpl_30d === null ? (c.tipo === "pago" ? "Fase 2" : "n/a") : fmtInt.format(c.cpl_30d)) + "</td>" +
+        "<td class=\"mudo\">" + (c.semaforo === "sem_custo" ? (c.tipo === "pago" ? "aguarda custo" : "n/a") : c.semaforo) + "</td></tr>";
+    }).join("");
+    tab.innerHTML = cab + linhas;
+  }
+
+  function renderFunil() {
+    var f = dados.funil;
+    var ul = $("funil");
+    ul.innerHTML = "";
+    if (!f) return;
+    $("funil-sub").textContent = "Contatos criados de " + dataBr(f.janela.inicio) + " a " + dataBr(f.janela.fim) + ", por estágio alcançado (quem está em um estágio posterior passou pelos anteriores).";
+    var base = f.estagios.length ? f.estagios[0].alcancou : 1;
+    var ramp = ["--f1", "--f2", "--f3", "--f4", "--f5"];
+    f.estagios.forEach(function (e, i) {
+      var pct = base ? e.alcancou / base * 100 : 0;
+      var li = el("li");
+      li.appendChild(el("span", { class: "nome", text: e.nome }));
+      var linha = el("div", { style: "display:flex;align-items:center;min-width:0" });
+      var barra = el("div", { class: "barra", style: "width:" + Math.max(1, pct) + "%;background:var(" + ramp[Math.min(i, ramp.length - 1)] + ")" });
+      barra.title = e.nome + ": " + fmtInt.format(e.alcancou);
+      linha.appendChild(barra);
+      var num = el("span", { class: "num" });
+      num.innerHTML = fmtInt.format(e.alcancou) + (e.taxa_passagem !== null ? " <small>(" + fmtPct.format(e.taxa_passagem) + "% do estágio anterior)</small>" : "");
+      linha.appendChild(num);
+      li.appendChild(linha);
+      ul.appendChild(li);
+    });
+    var outros = (f.outros_estagios || []).map(function (o) { return o.nome + " " + fmtInt.format(o.atual); }).join(", ");
+    $("funil-nota").textContent = "Estágio atual de cada contato no HubSpot. " + (outros ? "Fora do funil principal: " + outros + ". " : "") +
+      "Lealdade e Churn contam como quem chegou a Cliente. O estágio Outro fica de fora das taxas.";
+  }
+
+  function renderSemUtm() {
+    var s = dados.sem_utm;
+    var ul = $("sem-utm");
+    ul.innerHTML = "";
+    if (!s) return;
+    $("sem-utm-sub").textContent = fmtInt.format(s.total_30d) + " contatos sem utm_source nos últimos 30 dias, pela origem automática do HubSpot.";
+    var max = s.por_origem.length ? s.por_origem[0].total : 1;
+    s.por_origem.forEach(function (o) {
+      var li = el("li");
+      li.appendChild(el("span", { class: "nome", text: o.nome }));
+      var trilho = el("div", { class: "trilho" });
+      trilho.appendChild(el("div", { class: "preenche", style: "width:" + (o.total / max * 100) + "%;background:var(--c-sem_utm)" }));
+      li.appendChild(trilho);
+      li.appendChild(el("span", { class: "val", text: fmtInt.format(o.total) + (o.pct !== null ? " (" + fmtPct.format(o.pct) + "%)" : "") }));
+      ul.appendChild(li);
+    });
+  }
+
+  function renderOrganico() {
+    var o = dados.organico;
+    var box = $("organico");
+    box.innerHTML = "";
+    if (!o || !o.portal) {
+      box.appendChild(el("p", { class: "nota", text: "Aguardando a credencial do GA4 no workflow (segredo GA4_SERVICE_ACCOUNT_JSON) para o portal posgraduacaopsicologia.com, e o acesso de leitura à propriedade GA4 do ipog.edu.br para o site institucional." }));
+      return;
+    }
+    function bloco(titulo, p) {
+      var g = el("div");
+      g.appendChild(el("h2", { text: titulo, style: "font-size:0.95rem;margin-top:8px" }));
+      var grade = el("div", { class: "grade-kpi" });
+      function tile(r, v, d) {
+        var t = el("div", { class: "kpi" });
+        t.appendChild(el("p", { class: "rotulo", text: r }));
+        t.appendChild(el("p", { class: "valor", text: fmtInt.format(v || 0) }));
+        if (d) t.appendChild(el("p", { class: "delta", text: d }));
+        grade.appendChild(t);
+      }
+      tile("Sessões em 7 dias", p.sessoes_7d, "Usuários ativos: " + fmtInt.format(p.usuarios_7d || 0));
+      if (p.cliques_ipog_7d !== undefined) tile("Cliques de saída para o ipog.edu.br", p.cliques_ipog_7d, "Evento click_outbound_ipog em 7 dias");
+      if (p.conversoes_7d !== undefined) tile("Conversões em 7 dias", p.conversoes_7d, "Eventos marcados como conversão no GA4");
+      g.appendChild(grade);
+      if (p.top_paginas_7d && p.top_paginas_7d.length) {
+        var tab = el("table");
+        tab.innerHTML = "<tr><th>Página</th><th>Visualizações</th></tr>" + p.top_paginas_7d.slice(0, 8).map(function (x) {
+          return "<tr><td>" + x.caminho + "</td><td>" + fmtInt.format(x.visualizacoes) + "</td></tr>";
+        }).join("");
+        var det = el("details");
+        det.appendChild(el("summary", { text: "Páginas mais vistas em 7 dias" }));
+        var rol = el("div", { class: "rolagem" });
+        rol.appendChild(tab);
+        det.appendChild(rol);
+        g.appendChild(det);
+      }
+      return g;
+    }
+    box.appendChild(bloco("Portal posgraduacaopsicologia.com", o.portal));
+    if (o.ipog) box.appendChild(bloco("Site institucional ipog.edu.br", o.ipog));
+    else box.appendChild(el("p", { class: "nota", text: "Site institucional ipog.edu.br: aguardando acesso de leitura à propriedade GA4 do IPOG." }));
+  }
+
+  function renderUtm() {
+    var tab = $("tabela-utm");
+    var lista = dados.utm_brutos || [];
+    tab.innerHTML = "<tr><th>utm_source encontrado</th><th>Classificado como</th><th>Leads em 30 dias</th></tr>" + lista.map(function (u) {
+      return "<tr><td><code>" + u.utm_source.replace(/</g, "&lt;") + "</code></td><td>" + nomeCanal(u.canal) + "</td><td>" + fmtInt.format(u.total_30d) + "</td></tr>";
+    }).join("");
+  }
+
+  function renderFontes() {
+    var ul = $("fontes");
+    ul.innerHTML = "";
+    var nomes = { hubspot: "HubSpot (CRM)", ga4_portal: "GA4 do portal", ga4_ipog: "GA4 do ipog.edu.br", meta_ads: "Meta Ads", google_ads: "Google Ads", linkedin_ads: "LinkedIn Ads" };
+    var pendentes = [];
+    Object.keys(dados.fontes).forEach(function (k) {
+      var f = dados.fontes[k];
+      var li = el("li");
+      li.appendChild(el("span", { class: "st " + f.status, text: f.status === "ok" ? "ok" : "pendente" }));
+      var d = el("div");
+      d.appendChild(document.createTextNode(nomes[k] || k));
+      d.appendChild(el("small", { text: f.detalhe + (f.coletado_em ? ". Coleta: " + dataHoraBr(f.coletado_em) : "") }));
+      li.appendChild(d);
+      ul.appendChild(li);
+      if (f.status !== "ok") pendentes.push(nomes[k] || k);
+    });
+    var av = $("aviso-pendente");
+    if (pendentes.length) {
+      $("aviso-pendente-texto").textContent = "Fontes ainda não conectadas: " + pendentes.join(", ") + ". Os blocos correspondentes ficam marcados como pendentes até a credencial entrar no repositório.";
+      av.classList.remove("oculto");
+    } else av.classList.add("oculto");
+  }
+
+  function renderTudo() {
+    renderKpis(dados.cartoes);
+    renderSerie();
+    renderCanais();
+    renderFunil();
+    renderSemUtm();
+    renderOrganico();
+    renderUtm();
+    renderFontes();
+    var coleta = dados.fontes.hubspot && dados.fontes.hubspot.coletado_em;
+    var idade = coleta ? (Date.now() - new Date(coleta).getTime()) / 60000 : null;
+    var estado = idade === null ? "erro" : idade > 180 ? "velho" : "ok";
+    renderFrescor(estado, "Dados do HubSpot coletados às <strong>" + dataHoraBr(coleta) + "</strong>" +
+      (idade !== null && idade > 180 ? " (há mais de " + Math.floor(idade / 60) + " h; conferir o workflow)" : "") +
+      "<br>Painel gerado às " + dataHoraBr(dados.gerado_em) + ". A página recarrega os dados a cada 5 minutos.");
+  }
+
+  function carregar() {
+    fetch("dashboard.json?v=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (json) {
+        dados = json;
+        $("aviso-erro").classList.add("oculto");
+        renderTudo();
+      })
+      .catch(function (erro) {
+        var av = $("aviso-erro");
+        $("aviso-erro-texto").textContent = "Não foi possível carregar dashboard.json (" + erro.message + "). " + (dados ? "Mostrando a última leitura que deu certo." : "");
+        av.classList.remove("oculto");
+        if (!dados) renderFrescor("erro", "Sem dados carregados.");
+      });
+  }
+
+  var timerRedimensiona = null;
+  window.addEventListener("resize", function () {
+    clearTimeout(timerRedimensiona);
+    timerRedimensiona = setTimeout(function () { if (dados) renderSerie(); }, 150);
+  });
+  if (window.matchMedia) {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { if (dados) renderTudo(); });
+  }
+  carregar();
+  setInterval(carregar, INTERVALO_MS);
+})();
+</script>
+</body>
+</html>

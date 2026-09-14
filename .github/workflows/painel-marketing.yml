@@ -1,0 +1,217 @@
+# Painel de marketing: coleta os dados (HubSpot e GA4), consolida o
+# data/marketing/dashboard.json, versiona a leitura no repositório e republica
+# o site com o arquivo novo em https://posgraduacaopsicologia.com/painel/.
+#
+# Por que este workflow NÃO reconstrói o site: o build completo (Astro + portal
+# Next + gates + Lighthouse) leva uns 15 minutos. Rodar isso de hora em hora
+# consumiria a cota de minutos do GitHub Actions do repositório privado. Em vez
+# disso, o deploy-cloudflare-pages.yml guarda o site pronto num cache
+# (site-dist-producao-*) toda vez que publica em produção, e este workflow
+# restaura esse cache, troca só a pasta painel/ e sobe de novo. O Cloudflare
+# Pages reaproveita os arquivos de hash igual, então o upload é rápido, e o
+# /ipog sai byte a byte igual ao que já estava no ar.
+#
+# Se não houver cache (primeira execução, ou cache expirado após 7 dias sem
+# deploy), o fallback dispara o deploy completo, que também monta o painel a
+# partir do dashboard.json já commitado aqui.
+#
+# Custo aproximado: 3 minutos por execução. Cadência padrão abaixo: de hora em
+# hora das 7h às 20h (horário de Brasília) de segunda a sábado, e a cada 3 horas
+# fora disso, cerca de 17 execuções por dia. Para 30 minutos, trocar o primeiro
+# cron por "*/30 10-23 * * 1-6" e conferir a cota em Settings > Billing.
+#
+# Segredos usados (Settings > Secrets and variables > Actions):
+#   HUBSPOT_PRIVATE_APP_TOKEN  obrigatório (Private App com crm.objects.contacts.read)
+#   GA4_SERVICE_ACCOUNT_JSON   já existe para o relatório semanal; opcional aqui
+#   CLOUDFLARE_API_TOKEN e CLOUDFLARE_ACCOUNT_ID  já existem para o deploy
+# Variável opcional (Settings > Variables): GA4_PROPERTY_IPOG, propriedade do ipog.edu.br.
+
+name: "Painel de marketing: coleta e publicação"
+
+on:
+  schedule:
+    # Cron do GitHub é em UTC. Brasília = UTC-3 (sem horário de verão).
+    - cron: "0 10-23 * * 1-6"   # 7h às 20h BRT, segunda a sábado, de hora em hora
+    - cron: "0 2,5,8 * * *"     # 23h, 2h e 5h BRT, todos os dias
+    - cron: "0 11,14,17,20 * * 0"  # domingo: 8h, 11h, 14h e 17h BRT
+  workflow_dispatch:
+    inputs:
+      publicar:
+        description: "Publicar no Cloudflare Pages depois de coletar (false = só coletar e commitar)"
+        required: false
+        default: "true"
+      dias:
+        description: "Janela de coleta do HubSpot em dias"
+        required: false
+        default: "35"
+
+permissions:
+  contents: write
+  actions: write
+
+# Mesmo grupo do deploy completo: os dois nunca publicam ao mesmo tempo.
+concurrency:
+  group: "cloudflare-pages-deploy"
+  cancel-in-progress: false
+
+jobs:
+  coletar-e-publicar:
+    name: "Coletar HubSpot e GA4, consolidar e publicar"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: "Checkout da main"
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: "Setup Python 3.12"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: "Instalar dependência do GA4"
+        run: pip install --quiet google-analytics-data
+
+      - name: "Coletar HubSpot"
+        env:
+          HUBSPOT_PRIVATE_APP_TOKEN: ${{ secrets.HUBSPOT_PRIVATE_APP_TOKEN }}
+          DIAS: ${{ github.event.inputs.dias || '35' }}
+        run: |
+          if [ -z "$HUBSPOT_PRIVATE_APP_TOKEN" ]; then
+            echo "::error::Secret HUBSPOT_PRIVATE_APP_TOKEN não definido. Adicione em Settings > Secrets and variables > Actions (exige admin do repositório)."
+            exit 1
+          fi
+          python scripts/collectors/collector_hubspot.py --dias "$DIAS"
+
+      - name: "Coletar GA4 (opcional)"
+        env:
+          KEY: ${{ secrets.GA4_SERVICE_ACCOUNT_JSON }}
+          GA4_PROPERTY_IPOG: ${{ vars.GA4_PROPERTY_IPOG }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "GA4_SERVICE_ACCOUNT_JSON ausente: painel segue sem o bloco orgânico."
+            exit 0
+          fi
+          mkdir -p .runtime
+          printf '%s' "$KEY" > .runtime/sa.json
+          chmod 600 .runtime/sa.json
+          GOOGLE_APPLICATION_CREDENTIALS="$GITHUB_WORKSPACE/.runtime/sa.json" python scripts/collectors/collector_ga4.py || echo "::warning::Coleta do GA4 falhou; painel segue com a leitura anterior."
+
+      - name: "Limpar credenciais"
+        if: always()
+        run: rm -rf .runtime
+
+      - name: "Consolidar dashboard.json"
+        run: python scripts/build_dashboard_data.py
+
+      - name: "Versionar a leitura no repositório"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/marketing
+          if git diff --cached --quiet; then
+            echo "Nenhuma mudança nos dados."
+            exit 0
+          fi
+          git commit -q -m "dados(painel): leitura de $(TZ=America/Sao_Paulo date '+%Y-%m-%d %H:%M') BRT [skip ci]"
+          # Outro push pode ter entrado na main enquanto a coleta rodava.
+          for tentativa in 1 2 3; do
+            if git pull --rebase -q origin main && git push -q origin HEAD:main; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::Não foi possível enviar a leitura para a main."
+          exit 1
+
+      - name: "Restaurar o site publicado (cache do deploy completo)"
+        if: github.event.inputs.publicar != 'false'
+        id: cache-dist
+        uses: actions/cache/restore@v4
+        with:
+          path: site/dist
+          key: site-dist-producao-nunca-bate
+          restore-keys: |
+            site-dist-producao-
+
+      - name: "Sem cache: disparar o deploy completo"
+        if: github.event.inputs.publicar != 'false' && steps.cache-dist.outputs.cache-matched-key == ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Cache do site publicado não encontrado. O deploy completo monta o painel a partir do dashboard.json commitado."
+          gh workflow run deploy-cloudflare-pages.yml --ref main -f branch=main
+
+      - name: "Montar o painel em site/dist/painel"
+        if: github.event.inputs.publicar != 'false' && steps.cache-dist.outputs.cache-matched-key != ''
+        run: |
+          echo "Cache restaurado: ${{ steps.cache-dist.outputs.cache-matched-key }}"
+          # Sanidade do artefato antes de tocar em qualquer coisa: o site e o
+          # portal precisam estar inteiros, senão não publicamos nada.
+          test -f site/dist/index.html || (echo "Cache sem index.html do site" && exit 1)
+          test -f site/dist/ipog/index.html || (echo "Cache sem o portal /ipog" && exit 1)
+          test -d site/dist/ipog/_next || (echo "Cache sem os assets do portal" && exit 1)
+          PAGINAS_PORTAL=$(find site/dist/ipog -name "index.html" | wc -l)
+          test "$PAGINAS_PORTAL" -ge 23 || (echo "Portal no cache com poucas páginas ($PAGINAS_PORTAL)" && exit 1)
+          ANTES=$(find site/dist -type f ! -path "site/dist/painel/*" | sort | xargs sha256sum | sha256sum)
+
+          rm -rf site/dist/painel
+          mkdir -p site/dist/painel
+          cp dashboards/marketing/index.html site/dist/painel/index.html
+          cp data/marketing/dashboard.json site/dist/painel/dashboard.json
+
+          # Só a pasta painel/ pode ter mudado.
+          DEPOIS=$(find site/dist -type f ! -path "site/dist/painel/*" | sort | xargs sha256sum | sha256sum)
+          test "$ANTES" = "$DEPOIS" || (echo "Algo fora de painel/ mudou; abortando" && exit 1)
+          echo "Painel montado. Arquivos: $(ls site/dist/painel)"
+
+      - name: "Publicar no Cloudflare Pages"
+        if: github.event.inputs.publicar != 'false' && steps.cache-dist.outputs.cache-matched-key != ''
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy site/dist --project-name=posgraduacaopsicologia --branch=main
+
+      - name: "Smoke test: painel e portal no ar"
+        if: github.event.inputs.publicar != 'false' && steps.cache-dist.outputs.cache-matched-key != ''
+        run: |
+          sleep 8
+          FAIL=0
+          for URL in \
+            "https://posgraduacaopsicologia.com/" \
+            "https://posgraduacaopsicologia.com/ipog/" \
+            "https://posgraduacaopsicologia.com/ipog/sitemap.xml" \
+            "https://posgraduacaopsicologia.com/painel/" \
+            "https://posgraduacaopsicologia.com/painel/dashboard.json"; do
+            CODE=$(curl -sIL -o /dev/null -w "%{http_code}" "$URL")
+            echo "$CODE $URL"
+            # 302 é aceito no painel quando o Cloudflare Access estiver ligado (redireciona para login).
+            case "$URL" in
+              *painel*) [ "$CODE" = "200" ] || [ "$CODE" = "302" ] || FAIL=1 ;;
+              *) [ "$CODE" = "200" ] || FAIL=1 ;;
+            esac
+          done
+          # O painel não pode ser indexado.
+          curl -sI "https://posgraduacaopsicologia.com/painel/" | grep -qi "x-robots-tag: noindex" || echo "::warning::Cabeçalho X-Robots-Tag ausente em /painel/ (conferir site/public/_headers)"
+          [ "$FAIL" -eq 0 ] || (echo "Smoke test falhou" && exit 1)
+
+  notificar-falha:
+    needs: coletar-e-publicar
+    if: failure() && github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: "Abrir issue quando a coleta agendada falha"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          # Uma issue aberta por dia basta; não empilhar a cada hora.
+          TITULO="Falha no painel de marketing ($(TZ=America/Sao_Paulo date +%Y-%m-%d))"
+          if gh issue list --repo "${{ github.repository }}" --state open --search "\"$TITULO\" in:title" --json number --jq 'length' | grep -q '^0$'; then
+            gh issue create --repo "${{ github.repository }}" --title "$TITULO" --label "monitoramento" \
+              --body "O workflow agendado **Painel de marketing** falhou. Run: $RUN_URL. Conferir o log: segredo HUBSPOT_PRIVATE_APP_TOKEN, API do HubSpot, cache do site publicado ou deploy no Cloudflare. Issue aberta automaticamente pelo job notificar-falha."
+          fi

@@ -1,0 +1,861 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import InPageNav from '@components/InPageNav.astro';
+import { SITE } from '@lib/data';
+
+const title = 'Base de Conhecimento IPOG: wiki de engenharia completa · posgraduacaopsicologia.com';
+const description = 'Documentação de engenharia da base de conhecimento institucional do IPOG: arquitetura da informação, modelo de metadados, pipeline de ingestão de documentos, governança por Pull Request, dívida técnica e roadmap. Versão integral do documento de 14 de agosto de 2026.';
+
+const headings = [
+  { id: 'visao-geral', text: '01 Visão geral do projeto', level: 2 },
+  { id: 'arquitetura', text: '02 Arquitetura da informação', level: 2 },
+  { id: 'modelo-de-dados', text: '03 Modelo de dados', level: 2 },
+  { id: 'catalogo', text: '04 Catálogo de conteúdo', level: 2 },
+  { id: 'acervo', text: '05 Acervo de originais', level: 2 },
+  { id: 'convencoes', text: '06 Convenções de engenharia', level: 2 },
+  { id: 'governanca', text: '07 Fluxo e governança', level: 2 },
+  { id: 'pipeline', text: '08 Pipeline de ingestão', level: 2 },
+  { id: 'qualidade', text: '09 Qualidade e dívida técnica', level: 2 },
+  { id: 'riscos', text: '10 Riscos e restrições', level: 2 },
+  { id: 'roadmap', text: '11 Roadmap', level: 2 },
+  { id: 'operacao', text: '12 Guia de operação', level: 2 },
+  { id: 'glossario', text: '13 Glossário', level: 2 },
+  { id: 'apendice-a', text: 'A Inventário de texto', level: 2 },
+  { id: 'apendice-b', text: 'B Métricas', level: 2 },
+  { id: 'apendice-c', text: 'C Procedência', level: 2 }
+];
+
+const ldWebPage = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  '@id': SITE.url + '/ipogcompleto/#webpage',
+  name: title,
+  description,
+  inLanguage: 'pt-BR',
+  datePublished: '2026-08-14',
+  dateModified: '2026-08-14',
+  about: { '@id': SITE.url + '/#ipog-educational-organization' },
+  publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+  isPartOf: { '@type': 'WebSite', url: SITE.url, name: SITE.name }
+});
+
+const ldBreadcrumb = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Base de Conhecimento IPOG', item: SITE.url + '/ipogcompleto/' }
+  ]
+});
+---
+
+<Base title={title} description={description}>
+
+  <section class="bg-surface-50 border-b border-surface-200">
+    <div class="container-page py-7">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Base de Conhecimento IPOG' }]} />
+      <div class="mt-3 max-w-3xl">
+        <span class="section-eyebrow">Documentação de engenharia · versão integral</span>
+        <h1 class="section-h text-3xl sm:text-4xl">Base de Conhecimento IPOG</h1>
+        <p class="mt-3 text-ink-700 text-lg">
+          Wiki técnica da base de conhecimento institucional do IPOG: arquitetura da informação, modelo de dados, pipeline de ingestão, governança, dívida técnica e roadmap. Documento fechado no estado de 13 de agosto de 2026, com leitura feita em 14 de agosto de 2026.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+
+    <aside class="lg:col-span-3">
+      <InPageNav headings={headings} title="Seções" />
+    </aside>
+
+    <article class="lg:col-span-9 space-y-10">
+
+      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6" id="tldr">
+        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
+        <p class="text-ink-900 leading-relaxed">
+          A base de conhecimento do IPOG não é uma aplicação: é um sistema de documentação versionada, em que o Git faz o papel de banco de dados, o GitHub faz o papel de servidor e o Pull Request faz o papel de fluxo de aprovação. A decisão de arquitetura central separa o arquivo original, que é a fonte de verdade, da transcrição em Markdown, que é a referência de leitura. Em caso de divergência entre as duas, o original prevalece. Cada documento declara no cabeçalho o dono, a data da última atualização, a fonte de onde veio e se já foi conferido pela área responsável.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-surface-200 bg-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Origem e classificação deste documento</p>
+        <p class="text-sm text-ink-700 leading-relaxed">
+          Este texto documenta um repositório interno do IPOG e resume conteúdo do Guia de Expressão da Marca 2025, desenvolvido pela Galileo Branding, marcado como Uso Confidencial na origem. Publicação decidida pela área de Marketing do IPOG. Números institucionais citados aqui aparecem apenas como objeto de análise de procedência, e não como dado oficial para uso público: o caminho oficial para dado institucional, valores, modalidade e turma vigente é sempre <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ipog.edu.br</a>.
+        </p>
+      </div>
+
+      <!-- 01 -->
+      <div class="scroll-mt-24" id="visao-geral">
+        <h2 class="section-h text-2xl">01 Visão geral do projeto</h2>
+
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>1.1 O produto</h3>
+          <p>
+            O repositório é a base de conhecimento institucional do IPOG, Instituto de Pós-Graduação e Graduação. Ele não é uma aplicação: não há código executável, dependências, build nem testes. É um sistema de documentação versionada, no qual o Git faz o papel de banco de dados, o GitHub faz o papel de servidor e interface, e o Pull Request faz o papel de fluxo de aprovação.
+          </p>
+          <p>
+            Do ponto de vista de engenharia, o projeto resolve um problema clássico de dados: existe uma fonte de verdade dispersa, em formatos binários e sem histórico confiável, e o sistema a transforma em conteúdo estruturado, pesquisável, comparável entre versões e com dono declarado.
+          </p>
+          <h3>1.2 Problema que resolve</h3>
+          <p>
+            O README enuncia o problema em uma frase: ninguém deveria precisar procurar onde está o arquivo, nem descobrir a regra certa perguntando no WhatsApp. Traduzindo para termos de sistema, são quatro sintomas atacados.
+          </p>
+        </div>
+
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Sintoma</th>
+                <th class="text-left px-4 py-3">Como o repositório trata</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Dispersão</td><td class="px-4 py-3 text-ink-700">Documentos espalhados entre SharePoint, Drive, e-mail e desktop passam a ter um endereço único e estável.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Opacidade de versão</td><td class="px-4 py-3 text-ink-700">PDF e DOCX não mostram o que mudou entre revisões. O espelho em Markdown torna cada alteração comparável linha a linha.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Ausência de dono</td><td class="px-4 py-3 text-ink-700">Cada documento declara no cabeçalho a área responsável, a fonte e a data da última atualização.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Conteúdo não pesquisável</td><td class="px-4 py-3 text-ink-700">Texto dentro de PDF de imagem é invisível para busca e para leitor de tela. A transcrição em Markdown resolve, quando a extração é possível.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>1.3 Público e casos de uso</h3>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold">
+              <tr>
+                <th class="text-left px-4 py-3">Caso de uso</th>
+                <th class="text-left px-4 py-3">Quem usa</th>
+                <th class="text-left px-4 py-3">O que consome</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Consulta interna</td><td class="px-4 py-3 text-ink-700">Qualquer colaborador</td><td class="px-4 py-3 text-ink-700">Camada de consulta, por navegação ou busca</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Onboarding</td><td class="px-4 py-3 text-ink-700">RH e gestores</td><td class="px-4 py-3 text-ink-700">IPOG Way, texto institucional, plataforma de marca</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Briefing de comunicação</td><td class="px-4 py-3 text-ink-700">Marketing, agências, fornecedores</td><td class="px-4 py-3 text-ink-700">Tom de voz, território de palavras, identidade visual</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Contexto para ferramentas de IA</td><td class="px-4 py-3 text-ink-700">Times que usam assistentes</td><td class="px-4 py-3 text-ink-700">Markdown limpo e estruturado, que é o formato que esses sistemas leem melhor</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Produção gráfica</td><td class="px-4 py-3 text-ink-700">Design e fornecedores</td><td class="px-4 py-3 text-ink-700">Camada de originais, com o arquivo do jeito que saiu da criação</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Consulta pedagógica e comercial</td><td class="px-4 py-3 text-ink-700">Comercial e Acadêmico</td><td class="px-4 py-3 text-ink-700">Projetos de curso em PDF</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>1.4 Ficha técnica</h3>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+          <div class="card p-4"><p class="text-2xl font-display font-semibold text-ink-900">328</p><p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mt-1">arquivos versionados</p></div>
+          <div class="card p-4"><p class="text-2xl font-display font-semibold text-ink-900">2,56 GiB</p><p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mt-1">volume total</p></div>
+          <div class="card p-4"><p class="text-2xl font-display font-semibold text-ink-900">12</p><p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mt-1">arquivos de texto</p></div>
+          <div class="card p-4"><p class="text-2xl font-display font-semibold text-ink-900">305</p><p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mt-1">PDFs</p></div>
+        </div>
+
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Atributo</th><th class="text-left px-4 py-3">Valor</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Visibilidade</td><td class="px-4 py-3 text-ink-700">Privado</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Branch padrão</td><td class="px-4 py-3 text-ink-700">main</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Criado em</td><td class="px-4 py-3 text-ink-700">13 de agosto de 2026, 14h14</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Último push</td><td class="px-4 py-3 text-ink-700">13 de agosto de 2026, 17h58</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Commits na main</td><td class="px-4 py-3 text-ink-700">9</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Pull Requests</td><td class="px-4 py-3 text-ink-700">2, ambos aprovados e integrados</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Issues abertas</td><td class="px-4 py-3 text-ink-700">5</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Linguagem detectada</td><td class="px-4 py-3 text-ink-700">Nenhuma. O GitHub não classifica o repositório porque não há código</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Integração contínua</td><td class="px-4 py-3 text-ink-700">Nenhum workflow configurado</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Licença</td><td class="px-4 py-3 text-ink-700">Nenhuma, e é o correto: conteúdo proprietário</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Git LFS</td><td class="px-4 py-3 text-ink-700">Não habilitado</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>1.5 Fora de escopo</h3>
+          <p>O README define uma lista de exclusão explícita, que funciona como política de segurança do repositório. Nada disso entra:</p>
+          <ul>
+            <li>Dados pessoais de alunos, colaboradores ou docentes, por sujeição à LGPD</li>
+            <li>Contratos, informações financeiras e dados comerciais sensíveis</li>
+            <li>Senhas, tokens, chaves de API ou qualquer credencial</li>
+          </ul>
+          <p>A terceira linha é reforçada por mecanismo, e não apenas por regra escrita: o arquivo de exclusões do Git bloqueia credenciais por padrão de nome. Ver seção 6.2.</p>
+        </div>
+
+        <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Verificação já executada</p>
+          <p class="text-sm text-ink-700 leading-relaxed">
+            Antes de integrar o segundo Pull Request, os 311 arquivos de origem foram conferidos contra filtros de contrato, proposta, comercial, financeiro, orçamento e faturamento. As 23 ocorrências encontradas eram nome de curso, como "Gestão Comercial e Alta Performance em Vendas" e "Mercados Financeiros e de Capitais", e não documento comercial. Nenhum contrato, proposta ou documento financeiro real foi identificado.
+          </p>
+        </div>
+      </div>
+
+      <!-- 02 -->
+      <div class="scroll-mt-24" id="arquitetura">
+        <h2 class="section-h text-2xl">02 Arquitetura da informação</h2>
+
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>2.1 Princípio de fonte única</h3>
+          <p>A decisão de arquitetura mais importante do projeto separa fonte de verdade de referência de leitura. São duas camadas com papéis diferentes e uma regra de precedência entre elas.</p>
+          <ul>
+            <li>A camada de originais guarda o arquivo no formato em que foi produzido. É a fonte. Serve para imprimir, enviar a fornecedor, usar a arte.</li>
+            <li>A camada de consulta guarda a transcrição em Markdown. É a referência de leitura, pesquisável e comparável entre versões.</li>
+            <li>Em caso de divergência, o original prevalece, e a correção é feita no Markdown por Pull Request.</li>
+          </ul>
+          <p>Isso é, na prática, o padrão de sistema de origem mais projeção derivada. O Markdown é uma projeção legível de um dado que mora em outro lugar, e a regra de precedência impede que a projeção se torne, por descuido, uma segunda verdade concorrente.</p>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>2.2 Camadas do sistema</h3>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4 mt-4">
+          <div class="card p-5">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Sistemas de origem</p>
+            <ul class="mt-3 space-y-2 text-sm text-ink-700">
+              <li><strong class="text-ink-900">SharePoint</strong><br />pasta de criação e projetos</li>
+              <li><strong class="text-ink-900">Galileo Branding</strong><br />Guia de Marca 2025</li>
+              <li><strong class="text-ink-900">Acadêmico</strong><br />Manual do Aluno 2026</li>
+              <li><strong class="text-ink-900">RH</strong><br />cartas do IPOG Way</li>
+              <li><strong class="text-ink-900">Marketing</strong><br />texto institucional</li>
+            </ul>
+          </div>
+          <div class="card p-5 border-brand-100 bg-brand-50">
+            <p class="text-xs uppercase tracking-wider text-brand-800 font-semibold">Camada de fonte</p>
+            <ul class="mt-3 space-y-2 text-sm text-ink-700">
+              <li><strong class="text-ink-900">6 documentos institucionais</strong><br />PDF, DOCX, PPTX, 35,9 MB</li>
+              <li><strong class="text-ink-900">Projetos de curso</strong><br />301 PDFs, 293 cursos, 2,53 GiB</li>
+              <li><strong class="text-ink-900">Cópia manual</strong><br />fotografia de 13 de agosto de 2026</li>
+            </ul>
+            <p class="text-xs text-brand-800 font-semibold mt-3 pt-3 border-t border-brand-100">Prevalece em caso de divergência. Não é a referência de leitura.</p>
+          </div>
+          <div class="card p-5">
+            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Camada de consulta</p>
+            <ul class="mt-3 space-y-2 text-sm text-ink-700">
+              <li><strong class="text-ink-900">institucional</strong><br />2 documentos</li>
+              <li><strong class="text-ink-900">cultura</strong><br />1 documento</li>
+              <li><strong class="text-ink-900">marca</strong><br />4 documentos</li>
+              <li><strong class="text-ink-900">aluno</strong><br />2 documentos</li>
+            </ul>
+            <p class="text-xs text-ink-500 font-semibold mt-3 pt-3 border-t border-surface-200">9 arquivos Markdown, 61 KB. Pesquisável, versionável, comparável.</p>
+          </div>
+        </div>
+        <p class="text-xs text-ink-500 mt-3">A extração entre as duas camadas é hoje inteiramente manual, e essa é a principal fragilidade operacional do sistema.</p>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>2.3 Árvore de diretórios</h3>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200 bg-surface-50">
+          <pre class="text-xs leading-relaxed p-5 text-ink-800"><code>ipog/
+├── README.md                porta de entrada, índice, confidencialidade
+├── CONTRIBUTING.md          convenções, cabeçalho obrigatório, binários
+├── .gitignore               temporários de Office, lixo de SO, credenciais
+│
+├── docs/                    CAMADA DE CONSULTA · 9 arquivos · 61 KB
+│   ├── institucional/       sobre-o-ipog, canais-de-atendimento
+│   ├── cultura/             ipog-way
+│   ├── marca/               plataforma-de-marca, tom-de-voz,
+│   │                        territorio-de-palavras, identidade-visual
+│   └── aluno/               manual-do-aluno-pos-graduacao, metodo-ipog
+│
+└── documentos-ipog/         CAMADA DE FONTE · 316 arquivos · 2,56 GiB
+    ├── Manual do Aluno 2026 (PDF)
+    ├── Guia de Expressão da Marca 2025 (PDF)
+    ├── Guia de Aulas Remotas (PDF)
+    ├── Cartas IPOG Way (PDF)
+    ├── Texto institucional (DOCX)
+    ├── Apresentação de parceria (PPTX)
+    └── projetos-de-curso/   espelho da estrutura do SharePoint
+        ├── CEU/             91 arquivos · 765 MB
+        └── PÓS E MBA/       218 arquivos · 1,78 GiB</code></pre>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>2.4 Camada de consulta</h3>
+          <p>A camada de consulta é dividida em quatro domínios temáticos, e a divisão coincide com a divisão de donos. Isso não é acaso: pasta por assunto e dono por assunto reduzem o conflito de responsabilidade quando duas áreas precisam alterar o mesmo diretório.</p>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Domínio</th><th class="text-left px-4 py-3">Dono</th><th class="text-left px-4 py-3">Docs</th><th class="text-left px-4 py-3">Escopo</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">institucional</td><td class="px-4 py-3 text-ink-700">Marketing e Relacionamento</td><td class="px-4 py-3 text-ink-700">2</td><td class="px-4 py-3 text-ink-700">Texto oficial, números públicos, canais de contato e portais</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">cultura</td><td class="px-4 py-3 text-ink-700">RH e Gente e Gestão</td><td class="px-4 py-3 text-ink-700">1</td><td class="px-4 py-3 text-ink-700">Propósito, visão e os seis valores, com práticas e perguntas-chave</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">marca</td><td class="px-4 py-3 text-ink-700">Marketing</td><td class="px-4 py-3 text-ink-700">4</td><td class="px-4 py-3 text-ink-700">Plataforma de marca, expressão verbal e expressão visual</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">aluno</td><td class="px-4 py-3 text-ink-700">Acadêmico</td><td class="px-4 py-3 text-ink-700">2</td><td class="px-4 py-3 text-ink-700">Regras acadêmicas vigentes e metodologia de ensino</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>2.5 Camada de originais</h3>
+          <p>A camada de originais concentra 99,9% do volume do repositório e 96% dos arquivos. Ela tem duas naturezas distintas, que convém não confundir. A primeira são os seis documentos institucionais, que servem de fonte direta para a camada de consulta. A segunda são os 301 projetos de curso importados do SharePoint, sem espelho em Markdown e sem previsão de transcrição, em que o repositório funciona como repositório de arquivos e não como base de texto.</p>
+        </div>
+        <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Consequência arquitetural</p>
+          <p class="text-sm text-ink-800 leading-relaxed">As duas naturezas convivem no mesmo diretório e sob a mesma política de versionamento, mas têm perfis de risco muito diferentes. Os projetos de curso não são consultados como texto, mudam por decisão de outra área e respondem por praticamente todo o custo de clone. Separá-los, seja por Git LFS, seja por um repositório próprio, é a decisão de arquitetura mais relevante ainda em aberto.</p>
+        </div>
+      </div>
+
+      <!-- 03 -->
+      <div class="scroll-mt-24" id="modelo-de-dados">
+        <h2 class="section-h text-2xl">03 Modelo de dados</h2>
+
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>3.1 Esquema de metadados</h3>
+          <p>Todo arquivo da camada de consulta começa com um bloco de metadados em YAML. Ele é o esquema de dados do projeto, e a justificativa está escrita no guia de contribuição: informação institucional envelhece rápido, e sem dono e sem data ninguém sabe se o documento ainda vale.</p>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200 bg-surface-50">
+          <pre class="text-xs leading-relaxed p-5 text-ink-800"><code>---
+titulo: Sobre o IPOG
+dono: Marketing
+atualizado_em: 2026-08-13
+fonte: "SOBRE O IPOG - TEXTO INSTITUCIONAL.docx"
+status: revisado
+---</code></pre>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Campo</th><th class="text-left px-4 py-3">Tipo</th><th class="text-left px-4 py-3">Obrigatório</th><th class="text-left px-4 py-3">Semântica e valores observados</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">titulo</td><td class="px-4 py-3 text-ink-700">texto</td><td class="px-4 py-3 text-ink-700">Sim</td><td class="px-4 py-3 text-ink-700">Nome do documento em linguagem natural, com acentuação normal. Difere do nome do arquivo, que é normalizado.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">dono</td><td class="px-4 py-3 text-ink-700">enum informal</td><td class="px-4 py-3 text-ink-700">Sim</td><td class="px-4 py-3 text-ink-700">Área responsável por manter o documento. Valores em uso: Marketing, Acadêmico, Relacionamento, RH e Gente e Gestão.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">atualizado_em</td><td class="px-4 py-3 text-ink-700">data ISO</td><td class="px-4 py-3 text-ink-700">Sim</td><td class="px-4 py-3 text-ink-700">Data da última atualização do Markdown. Todos os nove documentos estão em 13 de agosto de 2026.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">fonte</td><td class="px-4 py-3 text-ink-700">texto</td><td class="px-4 py-3 text-ink-700">Sim</td><td class="px-4 py-3 text-ink-700">Caminho do arquivo original, com página ou módulo quando aplicável. Aceita origem não versionada, como site institucional ou RH.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">status</td><td class="px-4 py-3 text-ink-700">enum</td><td class="px-4 py-3 text-ink-700">Sim</td><td class="px-4 py-3 text-ink-700">rascunho quando ainda não conferido pela área dona, revisado depois da conferência.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">data_do_documento_original</td><td class="px-4 py-3 text-ink-700">data ISO</td><td class="px-4 py-3 text-ink-700">Não</td><td class="px-4 py-3 text-ink-700">Campo opcional observado apenas no Manual do Aluno. Registra a data do PDF de origem, diferente da data da transcrição.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Observação de engenharia</p>
+          <p class="text-sm text-ink-700 leading-relaxed">O esquema é declarado em prosa no guia de contribuição e não existe nenhuma validação automática. Nada impede que um Pull Request entre com status inválido, com data em formato brasileiro ou sem o campo de fonte. Hoje a conservação do esquema depende inteiramente da revisão humana.</p>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>3.2 Ciclo de vida do campo status</h3>
+          <p>O campo de status é a máquina de estados do documento. Ele responde a uma pergunta operacional: posso usar isto em uma peça pública sem checar com ninguém?</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4 mt-4">
+          <div class="card p-5"><p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Estado inicial</p><p class="font-semibold text-ink-900 mt-2">Extração feita</p><p class="text-sm text-ink-700 mt-1">Markdown criado dentro do Pull Request.</p></div>
+          <div class="card p-5"><p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Estado intermediário</p><p class="font-semibold text-ink-900 mt-2">rascunho</p><p class="text-sm text-ink-700 mt-1">Ainda não conferido pela área dona. Hoje, 1 documento de 9.</p></div>
+          <div class="card p-5"><p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Estado final</p><p class="font-semibold text-ink-900 mt-2">revisado</p><p class="text-sm text-ink-700 mt-1">Vale como referência. Hoje, 8 documentos de 9.</p></div>
+        </div>
+        <p class="text-xs text-ink-500 mt-3">O documento volta para rascunho quando surge nova versão do original ou quando alguém encontra divergência. O único em rascunho hoje é o IPOG Way, que aguarda conferência visual do RH.</p>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>3.3 Grafo de referências</h3>
+          <p>Os documentos se referenciam por links relativos, quase sempre concentrados em uma seção final chamada "Veja também". O efeito é uma malha navegável, na qual quem entra por um documento chega aos correlatos sem voltar ao índice. Dois nós concentram as entradas e funcionam como hubs, o texto institucional e a plataforma de marca. É coerente, já que ambos definem identidade e são citados por quase todo o resto.</p>
+          <h3>3.4 Rastreabilidade</h3>
+          <p>Cada documento carrega no cabeçalho o caminho do original e, quando cabe, a página exata. Isso permite conferir uma afirmação sem procurar. A matriz completa está no Apêndice C.</p>
+        </div>
+      </div>
+
+      <!-- 04 -->
+      <div class="scroll-mt-24" id="catalogo">
+        <h2 class="section-h text-2xl">04 Catálogo de conteúdo</h2>
+
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>4.1 Índice geral</h3>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Documento</th><th class="text-left px-4 py-3">Dono</th><th class="text-left px-4 py-3">Status</th><th class="text-left px-4 py-3">Do que trata</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">sobre-o-ipog</td><td class="px-4 py-3 text-ink-700">Marketing</td><td class="px-4 py-3 text-ink-700">revisado</td><td class="px-4 py-3 text-ink-700">Texto institucional oficial, tabela de números-chave, frentes de atuação e diferenciais</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">canais-de-atendimento</td><td class="px-4 py-3 text-ink-700">Relacionamento</td><td class="px-4 py-3 text-ink-700">revisado</td><td class="px-4 py-3 text-ink-700">Telefones, e-mails, horários, portais e onde ficam as taxas acadêmicas</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">ipog-way</td><td class="px-4 py-3 text-ink-700">RH e Gente e Gestão</td><td class="px-4 py-3 text-ink-700">rascunho</td><td class="px-4 py-3 text-ink-700">Propósito, visão e os seis valores, cada um com práticas e perguntas-chave</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">plataforma-de-marca</td><td class="px-4 py-3 text-ink-700">Marketing</td><td class="px-4 py-3 text-ink-700">revisado</td><td class="px-4 py-3 text-ink-700">Estratégia, arquétipos, atributos, narrativa, promessa, tagline e manifesto</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">tom-de-voz</td><td class="px-4 py-3 text-ink-700">Marketing</td><td class="px-4 py-3 text-ink-700">revisado</td><td class="px-4 py-3 text-ink-700">Os cinco tons, regras de estilo, exemplos de reescrita e checklist de 11 itens</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">territorio-de-palavras</td><td class="px-4 py-3 text-ink-700">Marketing</td><td class="px-4 py-3 text-ink-700">revisado</td><td class="px-4 py-3 text-ink-700">Verbos aprovados, lista de restrição e catálogo de CTAs por etapa de funil</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">identidade-visual</td><td class="px-4 py-3 text-ink-700">Marketing</td><td class="px-4 py-3 text-ink-700">revisado</td><td class="px-4 py-3 text-ink-700">Paletas com valores de cor, gradientes, duotones, tipografia e fotografia</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">manual-do-aluno-pos-graduacao</td><td class="px-4 py-3 text-ink-700">Acadêmico</td><td class="px-4 py-3 text-ink-700">revisado</td><td class="px-4 py-3 text-ink-700">Regras acadêmicas completas de 2026, da matrícula ao certificado</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">metodo-ipog</td><td class="px-4 py-3 text-ink-700">Acadêmico</td><td class="px-4 py-3 text-ink-700">revisado</td><td class="px-4 py-3 text-ink-700">Dimensões da metodologia e Ciclo de Aprendizagem Experiencial</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>4.2 Domínio institucional</h3>
+          <p>
+            O documento institucional traz o texto oficial em citação, seguido de uma tabela de números-chave que funciona como referência rápida, e registra as quatro frentes de atuação, que são pós-graduação lato sensu, Faculdade IPOG, extensão e IPOG Enterprise. Ele carrega um alerta explícito sobre o uso desses números, porque duas fontes internas divergem no total de profissionais formados. A divergência está registrada como pendência e detalhada na seção 9.2. Enquanto ela não se resolve, nenhum desses números deve ser usado em peça pública sem confirmação da área responsável.
+          </p>
+          <p>
+            O documento de canais de atendimento é curto e operacional. Consolida Relacionamento e Financeiro com telefone, e-mail e horário, indica os três portais em uso e registra o caminho padrão para solicitações acadêmicas. É o documento com maior taxa de perecimento do repositório, já que telefone e horário mudam sem aviso.
+          </p>
+
+          <h3>4.3 Domínio cultura</h3>
+          <p>
+            O IPOG Way existe fisicamente como um baralho de cartas de 8 por 11 centímetros, usado em dinâmicas de equipe, onboarding e entrevistas. O documento transcreve esse baralho e organiza cada valor em dois blocos, "como praticamos esse valor" e "perguntas-chave", o que torna o material diretamente aproveitável em entrevista por competência. Registra o propósito, que é desenvolver pessoas para impactar positivamente a sociedade, a visão, que é oferecer uma experiência educacional de excelência para 1 milhão de alunos até 2034, e os seis valores: valorizamos as relações humanas, colaboramos e comemoramos, somos apaixonados pelo aluno, somos comprometidos com o resultado do negócio, desafiamos constantemente o status quo e fazemos o que é certo.
+          </p>
+        </div>
+        <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Por que está em rascunho</p>
+          <p class="text-sm text-ink-800 leading-relaxed">Nas cartas, os títulos dos valores estão vetorizados, ou seja, são imagem e não texto, e por isso não saem na extração. Os seis títulos foram obtidos de outro documento e associados a cada carta pela ordem e pelo conteúdo. O texto de práticas e perguntas saiu completo e é confiável. Falta a conferência visual do RH.</p>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>4.4 Domínio marca</h3>
+          <p>Os quatro documentos de marca são transcrições dos três módulos do Guia de Expressão da Marca 2025, desenvolvido pela Galileo Branding. Todos carregam a marcação de uso confidencial no topo, na origem.</p>
+          <p>
+            A plataforma de marca corresponde ao Módulo 01 e define a base da qual tudo o mais deriva: estratégia, texto de quem somos, propósito, visão, a lista dos seis valores, os dois arquétipos, cinco atributos emocionais e cinco atributos funcionais. Fecha com narrativa, promessa, tagline e manifesto. Um detalhe de engenharia digno de nota: o documento explica a derivação da tagline a partir de dois cruzamentos da própria plataforma, o que torna a decisão auditável em vez de arbitrária.
+          </p>
+          <p>
+            O tom de voz corresponde ao Módulo 02. Define a voz em quatro eixos, detalha os cinco tons e traz seis regras práticas de estilo, entre elas verbos no presente, maiúscula no início de títulos e CTAs, dois-pontos seguidos de minúscula e evitar gerúndios. Registra também a regra de que o IPOG é tratado no masculino. Termina com uma tabela de reescrita no formato sair de e ir para, e um checklist de 11 perguntas a aplicar antes de finalizar qualquer texto.
+          </p>
+          <p>
+            O território de palavras lista verbos com sinergia com a marca, adjetivos que descrevem como o IPOG não fala, e CTAs organizados em três etapas: descoberta e conhecimento, carreira e futuro, conversão e matrícula. A organização por etapa é útil na prática, porque transforma uma lista solta em algo escolhível por contexto de campanha. O documento carrega uma nota sobre a palavra "Formal", que aparece ao mesmo tempo entre os tons de voz e na lista de restrição.
+          </p>
+          <p>
+            A identidade visual corresponde ao Módulo 03 e é o documento com maior densidade de dado exato: paleta principal e paleta complementar com valores em HEX, RGB, CMYK e Pantone, três gradientes, dois duotones, duas famílias tipográficas e a combinação tipográfica de cada vertical, com regras de entreletras e entrelinhas. O documento declara o próprio limite: cobre as diretrizes textuais do módulo, e as páginas de logotipo, área de proteção, usos incorretos e elementos de apoio continuam exigindo consulta ao PDF, porque são majoritariamente visuais.
+          </p>
+        </div>
+        <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Ressalva registrada no próprio documento</p>
+          <p class="text-sm text-ink-800 leading-relaxed">Os valores de cor saíram limpos e são confiáveis. A associação entre cor complementar e área de curso foi reconstruída pela posição, porque nas páginas de origem os rótulos e os blocos de cor estão em camadas separadas do PDF. Antes de usar como referência de produção, é obrigatório confirmar visualmente no original.</p>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>4.5 Domínio aluno</h3>
+          <p>
+            O Manual do Aluno é o maior documento da base e o único com data do documento original declarada. Transcreve o manual completo de 2026 em 25 seções, que cobrem informações gerais dos cursos, modalidades e formato das aulas, horário e local, matrícula, parcelas e reajuste, composição da nota por modalidade, regra de falta acima de 25% em aula ao vivo, revisão de notas, reposição de módulo, aproveitamento de módulos, plano de descontos progressivos, declarações e documentos, transferências, cancelamento de matrícula, duas condições distintas de reembolso, trabalho de conclusão com prazo e curso de apoio, acesso ao ambiente virtual após a conclusão, certificado, e as listas de direitos e deveres do aluno.
+          </p>
+          <p>
+            O Método IPOG descreve a metodologia própria, ancorada nas recomendações da UNESCO para a Educação do Século XXI, e o Ciclo de Aprendizagem Experiencial em quatro etapas: agir, refletir, conceitualizar e aplicar, cada uma com foco e pergunta associada. Documenta a primeira dimensão, formação continuada de professores, e a segunda, sala de aula somada ao ambiente virtual no formato de sala de aula invertida.
+          </p>
+        </div>
+        <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Criticidade e defeito aberto</p>
+          <p class="text-sm text-ink-800 leading-relaxed">
+            O Manual do Aluno é o documento de maior risco jurídico do repositório, porque descreve regras contratuais em vigor que alunos de 2026 já recebem. Divergência entre a transcrição e o PDF distribuído não é apenas erro de documentação. Além disso, o manual afirma que o Método está estruturado em três dimensões, mas a página correspondente só nomeia duas: a terceira aparece apenas dentro de um infográfico sem camada de texto. A pendência está aberta e classificada como risco alto.
+          </p>
+        </div>
+      </div>
+
+      <!-- 05 -->
+      <div class="scroll-mt-24" id="acervo">
+        <h2 class="section-h text-2xl">05 Acervo de arquivos originais</h2>
+
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>5.1 Documentos institucionais</h3>
+          <p>Seis arquivos na raiz da camada de originais, somando 35,9 MB. São a fonte de tudo o que existe na camada de consulta.</p>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Arquivo</th><th class="text-left px-4 py-3">Tamanho</th><th class="text-left px-4 py-3">Situação</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Manual do Aluno de Pós-Graduação 2026 (PDF)</td><td class="px-4 py-3 text-ink-700">14,0 MB</td><td class="px-4 py-3 text-ink-700">Transcrito. Um infográfico não tem camada de texto</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Guia de Expressão da Marca 2025 (PDF)</td><td class="px-4 py-3 text-ink-700">11,9 MB</td><td class="px-4 py-3 text-ink-700">Transcrito nos trechos textuais. Páginas visuais seguem só no PDF</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Cartas do IPOG Way (PDF)</td><td class="px-4 py-3 text-ink-700">2,1 MB</td><td class="px-4 py-3 text-ink-700">Transcrito. Títulos vetorizados, pendente de conferência</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Guia de Orientações para Aulas Remotas (PDF)</td><td class="px-4 py-3 text-ink-700">2,6 MB</td><td class="px-4 py-3 text-ink-700">Não transcrito. 14 páginas, 100% imagem, sem camada de texto</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Apresentação institucional de parceria (PPTX)</td><td class="px-4 py-3 text-ink-700">5,3 MB</td><td class="px-4 py-3 text-ink-700">Não transcrito. 11 slides, quase todos imagem, com trechos de template</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Texto institucional (DOCX)</td><td class="px-4 py-3 text-ink-700">14 KB</td><td class="px-4 py-3 text-ink-700">Transcrito integralmente</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Cobertura da camada de consulta</p>
+          <p class="text-sm text-ink-700 leading-relaxed">Quatro dos seis originais institucionais têm espelho em Markdown. Dois não têm, e por motivos diferentes: o Guia de Aulas Remotas por barreira técnica, e a apresentação de parceria por parecer material inacabado. Isso significa que a promessa do README, de que a consulta se faz na camada de texto, tem duas exceções conhecidas que hoje não estão sinalizadas no índice.</p>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>5.2 Projetos de curso</h3>
+          <p>Importados do SharePoint no segundo Pull Request. A estrutura de pastas de origem foi reproduzida sem alteração, o que facilita a comparação com a origem e prepara terreno para a sincronização automática planejada.</p>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Programa</th><th class="text-left px-4 py-3">Modalidade</th><th class="text-left px-4 py-3">Cursos</th><th class="text-left px-4 py-3">Arquivos</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">CEU</td><td class="px-4 py-3 text-ink-700">EaD</td><td class="px-4 py-3 text-ink-700">5</td><td class="px-4 py-3 text-ink-700">5</td></tr>
+              <tr><td class="px-4 py-3 text-ink-700">CEU</td><td class="px-4 py-3 text-ink-700">Híbrido</td><td class="px-4 py-3 text-ink-700">2</td><td class="px-4 py-3 text-ink-700">2</td></tr>
+              <tr><td class="px-4 py-3 text-ink-700">CEU</td><td class="px-4 py-3 text-ink-700">Online e Ao Vivo</td><td class="px-4 py-3 text-ink-700">46</td><td class="px-4 py-3 text-ink-700">49</td></tr>
+              <tr><td class="px-4 py-3 text-ink-700">CEU</td><td class="px-4 py-3 text-ink-700">Presencial</td><td class="px-4 py-3 text-ink-700">32</td><td class="px-4 py-3 text-ink-700">35</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">PÓS E MBA</td><td class="px-4 py-3 text-ink-700">EAD</td><td class="px-4 py-3 text-ink-700">29</td><td class="px-4 py-3 text-ink-700">30</td></tr>
+              <tr><td class="px-4 py-3 text-ink-700">PÓS E MBA</td><td class="px-4 py-3 text-ink-700">ONLINE</td><td class="px-4 py-3 text-ink-700">107</td><td class="px-4 py-3 text-ink-700">115</td></tr>
+              <tr><td class="px-4 py-3 text-ink-700">PÓS E MBA</td><td class="px-4 py-3 text-ink-700">PRESENCIAL</td><td class="px-4 py-3 text-ink-700">72</td><td class="px-4 py-3 text-ink-700">73</td></tr>
+              <tr class="bg-brand-50"><td class="px-4 py-3 font-semibold text-ink-900" colspan="2">Total</td><td class="px-4 py-3 font-semibold text-ink-900">293</td><td class="px-4 py-3 font-semibold text-ink-900">309</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="prose prose-ink max-w-none mt-4">
+          <p>A contagem de arquivos supera a de cursos porque alguns diretórios guardam mais de uma peça. Há três padrões observados: variações de carga horária, variações de capa e versões revitalizadas. Um curso de MBA em Marketing guarda ainda sete imagens de banco, que somam 72 MB e são o material de arte do projeto.</p>
+          <h3>5.3 Exclusões conhecidas</h3>
+          <p>Um projeto de curso com 107 MB ficou de fora, porque o GitHub rejeita arquivos individuais acima de 100 MB, e continua disponível no SharePoint. É a única lacuna de conteúdo do acervo. Um arquivo de lixo de sistema do macOS foi descartado na importação. Existe ainda um arquivo DOCX de 0 byte que veio junto da origem e deveria ser removido.</p>
+        </div>
+        <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Fotografia, não espelho</p>
+          <p class="text-sm text-ink-800 leading-relaxed">Esta cópia é manual e representa o estado do SharePoint em 13 de agosto de 2026. Alterações feitas lá não chegam ao repositório sozinhas. Enquanto a sincronização automática não entrar em operação, trate a pasta como fotografia daquela data e confira a origem quando precisar da versão mais recente.</p>
+        </div>
+      </div>
+
+      <!-- 06 -->
+      <div class="scroll-mt-24" id="convencoes">
+        <h2 class="section-h text-2xl">06 Convenções de engenharia</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>6.1 Nomenclatura</h3>
+          <p>A regra é minúsculas, sem acento, palavras separadas por hífen, e vale para arquivos e pastas. A justificativa é operacional: espaço vira código de escape na URL, colchete também, e acento quebra em algumas ferramentas. Links ficam frágeis e qualquer automação sofre. O guia autoriza explicitamente renomear o arquivo recebido de fornecedor, com a observação de que o nome original não tem valor documental.</p>
+        </div>
+        <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Aderência atual</p>
+          <p class="text-sm text-ink-700 leading-relaxed">A camada de consulta segue a convenção em 100% dos arquivos. A camada de originais não segue: os seis documentos institucionais mantêm espaço, acento, parêntese e colchete, e os 309 arquivos de projetos de curso preservam deliberadamente a nomenclatura do SharePoint. Essa é uma exceção consciente, porque espelhar a origem facilita a futura sincronização, mas o texto do guia não registra a exceção e afirma o contrário. Convém alinhar os dois.</p>
+        </div>
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>6.2 Exclusões de versionamento</h3>
+          <p>O arquivo de exclusões é curto e tem três blocos: temporários de Office, lixo de sistema operacional e arquivos de editor. O quarto bloco é o mais importante do ponto de vista de segurança, e bloqueia credenciais por padrão de nome. Ele transforma uma regra de README em barreira mecânica. Vale registrar o limite: essa exclusão impede o acréscimo acidental, não impede o acréscimo forçado, e não faz nada por um segredo escrito dentro de um Markdown ou de um PDF.</p>
+          <h3>6.3 Política de arquivos binários</h3>
+          <p>É a convenção mais argumentada do guia de contribuição, e por bom motivo. O Git guarda cada versão inteira de um arquivo binário para sempre. Um PDF de 14 MB atualizado cinco vezes deixa 70 MB no histórico, e não dá para apagar sem reescrever o histórico do repositório. Daí as quatro regras em vigor: só sobe binário que seja fonte de verdade de algum documento de texto; material de trabalho e arte em edição ficam no Drive; antes de subir nova versão de arquivo grande, avaliar se vale versionar; e, se o volume crescer, o caminho é Git LFS, feito de forma coordenada, e não apenas com um arquivo de atributos.</p>
+        </div>
+        <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Tensão entre a regra e a prática</p>
+          <p class="text-sm text-ink-800 leading-relaxed">A primeira regra diz que só sobe binário que seja fonte de algum documento de texto. Os 301 projetos de curso não alimentam nenhum Markdown, então a importação é, na letra, uma exceção à própria política. A exceção foi discutida e aceita no Pull Request, com os números de custo na mesa, o que é o comportamento correto. Falta apenas registrar a exceção no guia, para que a regra escrita descreva o repositório real.</p>
+        </div>
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>6.4 Padrão editorial dos documentos</h3>
+          <p>Os nove documentos seguem um padrão consistente, mesmo sem estar escrito em lugar nenhum: cabeçalho de metadados no topo, marcação de confidencialidade logo abaixo do título nos documentos derivados do Guia de Marca, citação em bloco para o texto literal do original, aviso em destaque onde a extração foi incerta, tabelas para dado estruturado e seção de "Veja também" ao final. O quarto item é o mais valioso e o menos comum em bases de conhecimento: o documento declara a própria incerteza no ponto exato em que ela existe, em vez de apresentar tudo com o mesmo grau de confiança.</p>
+        </div>
+      </div>
+
+      <!-- 07 -->
+      <div class="scroll-mt-24" id="governanca">
+        <h2 class="section-h text-2xl">07 Fluxo de trabalho e governança</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>7.1 Modelo de branches</h3>
+          <p>O modelo é o trunk simples, com branches de curta duração por assunto. A regra do guia é categórica: toda alteração entra por Pull Request, nada vai direto para a branch principal, e o objetivo declarado é garantir que uma segunda pessoa leia antes de a informação virar oficial. As duas branches de trabalho criadas até hoje seguem a convenção de nome por assunto e continuam existindo depois do merge.</p>
+        </div>
+        <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Ponto de atenção</p>
+          <p class="text-sm text-ink-700 leading-relaxed">A regra de não empurrar direto para a branch principal hoje é acordo, não mecanismo. Não há proteção de branch nem exigência de aprovação configurada. Uma regra de proteção com revisão obrigatória de uma pessoa custa pouco e converte o acordo em garantia.</p>
+        </div>
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>7.2 Ciclo de uma alteração</h3>
+          <p>O fluxo prescrito tem cinco passos: o original sobe para a camada de fonte, o Markdown é criado na pasta temática certa, o link entra no índice do README, o Pull Request descreve o que entrou e de onde veio, e o merge torna a informação oficial. Nenhuma etapa é verificada automaticamente. Toda a garantia está na revisão humana.</p>
+          <h3>7.3 Donos por área</h3>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Área</th><th class="text-left px-4 py-3">Docs</th><th class="text-left px-4 py-3">Responsável por</th><th class="text-left px-4 py-3">Pendências</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Marketing</td><td class="px-4 py-3 text-ink-700">5</td><td class="px-4 py-3 text-ink-700">Texto institucional e os quatro documentos de marca</td><td class="px-4 py-3 text-ink-700">3 pendências</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Acadêmico</td><td class="px-4 py-3 text-ink-700">2</td><td class="px-4 py-3 text-ink-700">Manual do Aluno e Método IPOG</td><td class="px-4 py-3 text-ink-700">1 pendência de risco alto</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">RH e Gente e Gestão</td><td class="px-4 py-3 text-ink-700">1</td><td class="px-4 py-3 text-ink-700">IPOG Way</td><td class="px-4 py-3 text-ink-700">1 pendência, único documento em rascunho</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Relacionamento</td><td class="px-4 py-3 text-ink-700">1</td><td class="px-4 py-3 text-ink-700">Canais de atendimento</td><td class="px-4 py-3 text-ink-700">Nenhuma</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Jurídico e Compliance</td><td class="px-4 py-3 text-ink-700">0</td><td class="px-4 py-3 text-ink-700">Não é dono de documento, mas participa da definição do número institucional</td><td class="px-4 py-3 text-ink-700">1 pendência conjunta</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="prose prose-ink max-w-none mt-4">
+          <p>A concentração no Marketing é natural, porque marca e institucional são o grosso do conteúdo, mas também significa que quatro das cinco pendências abertas dependem da mesma área.</p>
+          <h3>7.4 Histórico</h3>
+          <p>O repositório inteiro foi construído em uma janela de 3 horas e 44 minutos, em 13 de agosto de 2026. O primeiro Pull Request criou a estrutura e transcreveu os documentos, com 17 arquivos e 1.431 linhas acrescentadas. O segundo trouxe os projetos de curso, com 311 arquivos alterados, e levou o repositório de alguns megabytes para 2,5 GB. Entre os dois, as cinco pendências de conferência foram abertas.</p>
+          <p>Os dois Pull Requests merecem menção pela qualidade da descrição. Ambos listam o que entra, o que fica de fora e por quê, quantificam o custo da decisão e separam explicitamente o que foi feito do que aguarda aval. O primeiro chega a listar quatro ações não executadas por depender de decisão de outra pessoa. É o padrão que convém manter.</p>
+        </div>
+      </div>
+
+      <!-- 08 -->
+      <div class="scroll-mt-24" id="pipeline">
+        <h2 class="section-h text-2xl">08 Pipeline de ingestão</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>8.1 Etapas</h3>
+          <p>O projeto tem um processo de ingestão bem definido, ainda que executado inteiramente à mão. Em vocabulário de dados, é um ETL: extrai de formatos binários, transforma em Markdown estruturado e carrega na camada de consulta. São sete etapas: coleta do arquivo na origem, ingestão na camada de fonte com renomeação quando necessário, extração do texto, transformação em Markdown com hierarquia e tabelas, anotação com metadados e avisos de incerteza, publicação por Pull Request e conferência pela área dona.</p>
+          <h3>8.2 Limitações de extração</h3>
+          <p>Quatro das cinco pendências abertas têm a mesma causa raiz, e ela não é descuido: é limitação técnica de extrair texto de arquivos pensados para impressão. Vale catalogar os modos de falha, porque eles vão se repetir na próxima ingestão.</p>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Modo de falha</th><th class="text-left px-4 py-3">Como se manifesta</th><th class="text-left px-4 py-3">Contorno</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Texto vetorizado</td><td class="px-4 py-3 text-ink-700">O texto foi convertido em curvas no design e deixou de ser texto</td><td class="px-4 py-3 text-ink-700">Buscar o mesmo conteúdo em outra fonte e conferir visualmente</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Camadas separadas</td><td class="px-4 py-3 text-ink-700">Rótulo e elemento gráfico ficam em camadas distintas e a extração embaralha a associação</td><td class="px-4 py-3 text-ink-700">Conferência visual, ou exportar a tabela do arquivo de design</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Conteúdo dentro de imagem</td><td class="px-4 py-3 text-ink-700">Infográfico sem camada de texto some inteiro na extração</td><td class="px-4 py-3 text-ink-700">Perguntar à área dona, ou aplicar OCR</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">PDF integralmente imagem</td><td class="px-4 py-3 text-ink-700">Nenhuma camada de texto no documento inteiro</td><td class="px-4 py-3 text-ink-700">OCR ou digitação. Não transcrito até hoje</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Layout multicoluna</td><td class="px-4 py-3 text-ink-700">A ordem de leitura se perde quando o layout tem três colunas</td><td class="px-4 py-3 text-ink-700">Aviso no documento pedindo conferência no original</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Ambiguidade da fonte</td><td class="px-4 py-3 text-ink-700">O original diz coisas diferentes em páginas diferentes</td><td class="px-4 py-3 text-ink-700">Registrar a leitura provisória e escalar para a área dona</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Prática que merece registro</p>
+          <p class="text-sm text-ink-700 leading-relaxed">Em todos os seis casos, a incerteza foi anotada dentro do próprio documento, no ponto exato em que existe, e transformada em pendência com área responsável e risco declarado. Isso é o equivalente documental de um teste que falha com mensagem clara: o defeito fica visível para quem consome, e não escondido em uma lista à parte que ninguém lê.</p>
+        </div>
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>8.3 Regra de precedência</h3>
+          <p>Quando duas informações conflitam, o projeto aplica três regras, nesta ordem. Primeiro, original acima da transcrição. Segundo, mais recente acima do mais antigo, aplicada ao número de formados e registrada como decisão provisória do editor, não como definição da área. Terceiro, área dona acima de todas, quando as duas primeiras não resolvem.</p>
+          <p>A segunda regra funciona para o caso presente, mas não impede a reincidência. O caminho melhor, já apontado internamente, é definir o número com data-base e sistema de origem. Vale generalizar: todo número institucional que entrar na base deveria vir acompanhado de data-base e fonte do dado, e não apenas do documento em que apareceu.</p>
+        </div>
+      </div>
+
+      <!-- 09 -->
+      <div class="scroll-mt-24" id="qualidade">
+        <h2 class="section-h text-2xl">09 Qualidade e dívida técnica</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>9.1 Backlog aberto</h3>
+          <p>As cinco pendências abertas foram criadas no mesmo minuto, junto com a entrega do primeiro Pull Request. Não são reclamações posteriores: são o registro deliberado do que a extração não conseguiu resolver sozinha. Todas seguem o mesmo formato, com área responsável, risco declarado, descrição do problema, o que precisa ser decidido e onde está no repositório.</p>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Assunto</th><th class="text-left px-4 py-3">Área</th><th class="text-left px-4 py-3">Risco</th><th class="text-left px-4 py-3">Natureza</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Terceira dimensão do Método IPOG</td><td class="px-4 py-3 text-ink-700">Acadêmico</td><td class="px-4 py-3 text-ink-700">Alto</td><td class="px-4 py-3 text-ink-700">Defeito de conteúdo, possivelmente no PDF em circulação</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Número oficial de profissionais formados</td><td class="px-4 py-3 text-ink-700">Marketing e Jurídico</td><td class="px-4 py-3 text-ink-700">Alto</td><td class="px-4 py-3 text-ink-700">Divergência entre fontes, com implicação regulatória</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Cores complementares por área de curso</td><td class="px-4 py-3 text-ink-700">Marketing e Design</td><td class="px-4 py-3 text-ink-700">Médio</td><td class="px-4 py-3 text-ink-700">Incerteza de extração, com custo de retrabalho gráfico</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Títulos dos seis valores do IPOG Way</td><td class="px-4 py-3 text-ink-700">RH</td><td class="px-4 py-3 text-ink-700">Baixo</td><td class="px-4 py-3 text-ink-700">Conferência visual de cerca de 15 minutos</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Palavra "Formal" como tom e como restrição</td><td class="px-4 py-3 text-ink-700">Marketing</td><td class="px-4 py-3 text-ink-700">Baixo</td><td class="px-4 py-3 text-ink-700">Ambiguidade de redação no Guia</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>9.2 Detalhamento</h3>
+          <p>
+            <strong>Terceira dimensão do Método.</strong> O Manual do Aluno afirma que o Método está estruturado em três dimensões, mas nomeia apenas duas: formação continuada de professores, e sala de aula somada ao ambiente virtual. A terceira não aparece em nenhum lugar do texto e pode estar dentro do infográfico da página, que não tem camada de texto. A pendência coloca a decisão em dois caminhos excludentes, e só o Acadêmico sabe qual vale. Se a terceira dimensão existe e está no infográfico, basta informar qual é. Se o manual tem erro e o Método tem duas dimensões, então é o PDF que precisa de correção, porque é documento vigente e em circulação. O risco é alto justamente porque a segunda hipótese extrapola o repositório.
+          </p>
+          <p>
+            <strong>Número oficial de formados.</strong> Dois documentos oficiais trazem números diferentes, e o mais recente foi indicado como válido na transcrição. A pendência deixa claro que essa foi uma decisão provisória do editor, e não uma definição da área. O ponto mais bem colocado é que a pergunta não é qual dos dois números está certo, e sim qual é o número com rastreabilidade. São três definições necessárias: qual é o número oficial hoje, qual é a data-base dele, e de qual sistema ou relatório ele saiu. Sem data-base e fonte, os dois números voltam a divergir na próxima atualização. Depois de decidido, dois documentos precisam de atualização e a correção do Guia precisa ser pedida na próxima revisão com a agência.
+          </p>
+          <p>
+            <strong>Cores por área.</strong> Nas páginas de paleta complementar, os rótulos de área e os blocos de cor estão em camadas separadas do PDF, e na extração automática vêm embaralhados. A associação foi reconstruída pela posição, o que não é confiável o bastante para virar referência de produção. Os valores de cor em si saíram limpos. Uma pista reforça a suspeita: duas áreas aparecem marcadas junto à paleta principal, e uma das cores ficou sem área identificada. O risco é médio porque cor errada descoberta na gráfica é retrabalho pago. A recomendação registrada é exportar a tabela definitiva a partir do arquivo original de design, e não do PDF.
+          </p>
+          <p>
+            <strong>Títulos dos valores.</strong> Nas cartas do IPOG Way os títulos estão vetorizados e não saem na extração. Os seis títulos foram tirados de outro documento e associados a cada carta pela ordem e pelo conteúdo. A correspondência parece clara, mas não foi verificada visualmente. É a pendência mais barata do backlog e destrava a mudança do único documento que ainda está em rascunho.
+          </p>
+          <p>
+            <strong>A palavra "Formal".</strong> No Guia, ela aparece como um dos cinco tons de voz, descrito como tratar o conhecimento com respeito e seriedade, e também na lista de como o IPOG não fala, ao lado de distante, burocrática, rebuscada e intimidadora. Quem consultar só uma das duas páginas tira conclusões opostas. A leitura provisória registrada é que o "Formal" do IPOG significa rigor acadêmico e postura ética, e não formalidade rebuscada, que é o que a lista de restrição proíbe. Cabe ao Marketing confirmar ou definir outra, e pedir o ajuste de redação na próxima revisão do Guia.
+          </p>
+          <h3>9.3 Dívida estrutural</h3>
+          <p>Além do backlog registrado, a leitura do repositório revela itens de dívida que hoje não têm pendência aberta. São observações desta análise, não itens já reconhecidos pelo projeto.</p>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Item</th><th class="text-left px-4 py-3">Impacto</th><th class="text-left px-4 py-3">Encaminhamento sugerido</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Dois originais sem espelho em Markdown</td><td class="px-4 py-3 text-ink-700">Médio</td><td class="px-4 py-3 text-ink-700">Citá-los no índice com a marcação de não transcrito, para que a lacuna fique visível</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Ausência de validação do cabeçalho</td><td class="px-4 py-3 text-ink-700">Médio</td><td class="px-4 py-3 text-ink-700">Converter o esquema de acordo em contrato, com verificação automática</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Convenção de nome contrariada na prática</td><td class="px-4 py-3 text-ink-700">Baixo</td><td class="px-4 py-3 text-ink-700">Registrar a exceção da camada de originais no guia</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Política de binários contrariada na prática</td><td class="px-4 py-3 text-ink-700">Baixo</td><td class="px-4 py-3 text-ink-700">Registrar a exceção dos projetos de curso</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Arquivo vazio versionado</td><td class="px-4 py-3 text-ink-700">Baixo</td><td class="px-4 py-3 text-ink-700">Remover</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Branches integradas ainda abertas</td><td class="px-4 py-3 text-ink-700">Baixo</td><td class="px-4 py-3 text-ink-700">Apagar, para que a lista informe o que está em andamento</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Todos os documentos com a mesma data</td><td class="px-4 py-3 text-ink-700">Baixo</td><td class="px-4 py-3 text-ink-700">Natural na carga inicial. O campo ganha valor quando as datas divergirem</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Ausência de proteção de branch</td><td class="px-4 py-3 text-ink-700">Médio</td><td class="px-4 py-3 text-ink-700">Ativar proteção com exigência de revisão</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div class="scroll-mt-24" id="riscos">
+        <h2 class="section-h text-2xl">10 Riscos e restrições operacionais</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>10.1 Matriz de riscos</h3>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Risco</th><th class="text-left px-4 py-3">Grau</th><th class="text-left px-4 py-3">Consequência</th><th class="text-left px-4 py-3">Mitigação atual</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Defasagem em relação ao SharePoint</td><td class="px-4 py-3 text-ink-700">Alto</td><td class="px-4 py-3 text-ink-700">Projeto de curso alterado na origem não chega ao repositório</td><td class="px-4 py-3 text-ink-700">Aviso explícito. Integração pronta, mas não ativada</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Uso de número institucional divergente</td><td class="px-4 py-3 text-ink-700">Alto</td><td class="px-4 py-3 text-ink-700">Dado de instituição de ensino em peça pública tem implicação regulatória e publicitária</td><td class="px-4 py-3 text-ink-700">Aviso dentro do documento e pendência aberta</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Erro em regra acadêmica vigente</td><td class="px-4 py-3 text-ink-700">Alto</td><td class="px-4 py-3 text-ink-700">O Manual descreve regras contratuais que alunos de 2026 já recebem</td><td class="px-4 py-3 text-ink-700">Precedência do original, transcrição integral, pendência aberta</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Exposição de conteúdo confidencial</td><td class="px-4 py-3 text-ink-700">Alto</td><td class="px-4 py-3 text-ink-700">O Guia de Expressão da Marca é marcado como Uso Confidencial na origem</td><td class="px-4 py-3 text-ink-700">Repositório privado e marcação no topo de cada documento derivado</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Cor errada em produção gráfica</td><td class="px-4 py-3 text-ink-700">Médio</td><td class="px-4 py-3 text-ink-700">Retrabalho pago na gráfica</td><td class="px-4 py-3 text-ink-700">Aviso no documento e pendência aberta</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Custo de clone</td><td class="px-4 py-3 text-ink-700">Médio</td><td class="px-4 py-3 text-ink-700">2,5 GB de download para quem só quer ler nove arquivos de texto</td><td class="px-4 py-3 text-ink-700">Nenhuma. Git LFS foi avaliado e adiado</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Erosão do esquema de metadados</td><td class="px-4 py-3 text-ink-700">Médio</td><td class="px-4 py-3 text-ink-700">Documento sem dono ou sem data volta ao problema que o projeto veio resolver</td><td class="px-4 py-3 text-ink-700">Revisão humana, sem verificação automática</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Perecimento de dado de contato</td><td class="px-4 py-3 text-ink-700">Baixo</td><td class="px-4 py-3 text-ink-700">Telefone e horário desatualizados</td><td class="px-4 py-3 text-ink-700">Data de atualização visível no topo do documento</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>10.2 Limites técnicos da plataforma</h3>
+          <p>O limite de 100 MB por arquivo já foi atingido uma vez, e um projeto de curso ficou de fora. O repositório está em 2,56 GiB, cerca de metade do limite a partir do qual o GitHub passa a alertar. O caminho mais longo tem 284 caracteres, acima do limite padrão de 260 do Windows, o que torna obrigatório habilitar caminhos longos antes do primeiro clone nesse sistema. Adotar Git LFS exigiria pacote pago, porque o plano gratuito cobre 1 GB de armazenamento e 1 GB de banda por mês.</p>
+          <h3>10.3 Confidencialidade e LGPD</h3>
+          <p>A restrição de confidencialidade é declarada em dois níveis: no README do repositório e no topo de cada documento derivado do Guia de Marca, de modo que a marcação acompanha o trecho mesmo quando alguém copia só aquele arquivo. Na LGPD, a política é de exclusão prévia: dados pessoais de alunos, colaboradores e docentes não entram. Essa é a decisão certa, porque mantém o repositório fora do escopo de tratamento de dado pessoal em vez de tentar controlá-lo depois. O documento de canais traz telefone e e-mail institucionais, que são dado de contato corporativo, e não dado pessoal de indivíduo, o que é compatível com a política.</p>
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div class="scroll-mt-24" id="roadmap">
+        <h2 class="section-h text-2xl">11 Roadmap</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>11.1 Sincronização automática com o SharePoint</h3>
+          <p>O script e o workflow já estão escritos. Falta apenas o registro do aplicativo no serviço de identidade da Microsoft. Depois disso, a sincronização passa a rodar todo dia útil às 6 da manhã. É o item de maior retorno do roadmap, porque o trabalho de engenharia já está feito e o que falta é uma liberação administrativa. Enquanto não entra, os projetos de curso são uma fotografia de 13 de agosto de 2026.</p>
+          <h3>11.2 OCR dos documentos que são imagem pura</h3>
+          <p>O guia de contribuição reconhece o problema e dá a orientação: alguns PDFs não têm camada de texto, não são pesquisáveis e não funcionam com leitor de tela. Quando possível, o caminho preferido é gerar o PDF a partir do arquivo original com texto selecionável, e transcrever o conteúdo. Dois itens dependem disso. O Guia de Aulas Remotas é o caso mais claro, e vale notar que documento de orientação a aluno inacessível a leitor de tela é também um problema de acessibilidade. O infográfico do Manual do Aluno é o outro, e resolvê-lo pode fechar uma pendência sem depender de consulta.</p>
+          <h3>11.3 Git LFS</h3>
+          <p>O tema aparece nos dois Pull Requests e no guia, sempre com o mesmo alerta: não basta adicionar um arquivo de atributos, porque arquivo que já entrou no histórico só sai com reescrita. A decisão tomada e o raciocínio ficaram registrados: os 2,5 GB cabem no GitHub, o clone fica lento, e a alternativa em LFS exigiria pacote pago. Ficou explícito que, se o caminho fosse LFS, o correto seria refazer a importação com LFS ativado desde o início. A decisão foi consciente, com o custo na mesa.</p>
+          <h3>11.4 Validação automatizada</h3>
+          <p>Este item é proposta desta análise e não está registrado no repositório. Hoje não há nenhuma automação configurada, e todas as convenções dependem de alguém lembrar delas na revisão. Quatro verificações baratas cobririam a maior parte do risco de erosão: presença e formato dos campos do cabeçalho, existência dos arquivos apontados por links internos, correspondência entre o índice do README e os arquivos que existem, e alerta de tamanho antes do limite de 100 MB. Complementando, duas configurações que não exigem código: proteção da branch principal com exigência de revisão, e um arquivo de donos de código mapeando cada pasta temática à área responsável, o que já existe de fato no campo de dono e apenas se tornaria executável.</p>
+        </div>
+      </div>
+
+      <!-- 12 -->
+      <div class="scroll-mt-24" id="operacao">
+        <h2 class="section-h text-2xl">12 Guia de operação</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <h3>12.1 Clonar</h3>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200 bg-surface-50">
+          <pre class="text-xs leading-relaxed p-5 text-ink-800"><code># Windows, uma única vez, antes do primeiro clone
+git config --global core.longpaths true
+
+# clone completo, cerca de 2,5 GB
+git clone https://github.com/ORG/REPO.git
+
+# apenas a camada de texto, sem baixar o acervo de PDFs
+git clone --filter=blob:none --sparse https://github.com/ORG/REPO.git
+cd REPO
+git sparse-checkout set docs README.md CONTRIBUTING.md</code></pre>
+        </div>
+        <div class="prose prose-ink max-w-none mt-4">
+          <p>A segunda forma é a recomendada para quem só precisa consultar ou editar texto: ela traz os 61 KB de Markdown sem os 2,5 GB de PDF. Quem precisa dos originais para produção usa o clone completo, ou baixa o arquivo pontual pela interface.</p>
+          <h3>12.2 Consultar</h3>
+          <p>Para ler, navegue pela camada de consulta, em que todo documento tem no topo a fonte e a data da última atualização. A busca cobre o conteúdo dos Markdown, e não cobre o texto dentro dos PDFs. Para pegar o arquivo original, seja para imprimir, enviar a fornecedor ou usar a arte, vá à camada de originais. Antes de usar em peça pública, confira o campo de status: documento em rascunho ainda não foi conferido pela área dona.</p>
+          <h3>12.3 Adicionar um documento</h3>
+          <p>Cinco passos: colocar o original na camada de fonte, renomeando se o nome for ruim; criar o Markdown na pasta temática certa; preencher o cabeçalho com os cinco campos obrigatórios; acrescentar o link no índice do README; e abrir o Pull Request descrevendo o que entrou e de onde veio.</p>
+          <h3>12.4 Checklist de Pull Request</h3>
+        </div>
+        <div class="rounded-2xl bg-surface-50 border border-surface-200 p-6 mt-4">
+          <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-3">Antes de pedir revisão</p>
+          <ul class="space-y-2 text-sm text-ink-700 list-disc pl-5">
+            <li>O cabeçalho tem os cinco campos obrigatórios?</li>
+            <li>A data está em formato ISO?</li>
+            <li>O nome do arquivo está em minúsculas, sem acento e com hífen?</li>
+            <li>O documento entrou no índice do README?</li>
+            <li>Os links de "Veja também" apontam para arquivos que existem?</li>
+            <li>Todo trecho de extração incerta recebeu aviso no ponto exato?</li>
+            <li>Se o conteúdo vem do Guia de Marca, a marcação de uso confidencial está no topo?</li>
+            <li>Se subiu binário, ele é fonte de verdade de algum documento de texto e tem menos de 100 MB?</li>
+            <li>Nenhum dado pessoal, contrato, informação financeira ou credencial entrou junto?</li>
+            <li>A descrição do Pull Request diz o que entrou, de onde veio e o que ficou pendente de decisão?</li>
+          </ul>
+        </div>
+        <div class="prose prose-ink max-w-none mt-6">
+          <h3>12.5 Onboarding</h3>
+          <p>Roteiro sugerido de leitura para quem chega, na ordem que vai do geral ao específico: o README, para entender a divisão entre fonte e referência de leitura; o texto institucional, para saber o que é a instituição; o IPOG Way, para propósito, visão e valores; a plataforma de marca, para o posicionamento; o documento da própria área; e, por último, o guia de contribuição, que só é necessário quando a pessoa for alterar algo.</p>
+        </div>
+      </div>
+
+      <!-- 13 -->
+      <div class="scroll-mt-24" id="glossario">
+        <h2 class="section-h text-2xl">13 Glossário</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <dl>
+            <dt><strong>AVA</strong></dt><dd>Ambiente Virtual de Aprendizagem. Guarda atividades e aulas gravadas.</dd>
+            <dt><strong>Camada de consulta</strong></dt><dd>Pasta com as transcrições em Markdown. É onde se lê.</dd>
+            <dt><strong>Camada de fonte</strong></dt><dd>Pasta com os arquivos originais. Prevalece em caso de divergência.</dd>
+            <dt><strong>CEU</strong></dt><dd>Programa de cursos de extensão do IPOG, oferecido em quatro modalidades.</dd>
+            <dt><strong>Ciclo de Aprendizagem Experiencial</strong></dt><dd>Ciclo de quatro etapas que orienta a experiência de aprendizagem: agir, refletir, conceitualizar e aplicar.</dd>
+            <dt><strong>Front matter</strong></dt><dd>Bloco de metadados em YAML no topo de cada Markdown. É o esquema de dados do projeto.</dd>
+            <dt><strong>Git LFS</strong></dt><dd>Extensão do Git que guarda arquivos grandes fora do histórico, mantendo apenas um ponteiro no repositório.</dd>
+            <dt><strong>IPOG Enterprise</strong></dt><dd>Frente de educação corporativa, que leva a metodologia do IPOG para dentro das empresas.</dd>
+            <dt><strong>IPOG Way</strong></dt><dd>Conjunto de propósito, visão e valores que orienta o comportamento de quem trabalha no IPOG. Existe fisicamente como um baralho de cartas.</dd>
+            <dt><strong>Lato sensu</strong></dt><dd>Modalidade de pós-graduação que abrange especializações e MBAs, distinta do stricto sensu, que é mestrado e doutorado.</dd>
+            <dt><strong>Método IPOG</strong></dt><dd>Metodologia própria de ensino, ancorada nas recomendações da UNESCO para a Educação do Século XXI.</dd>
+            <dt><strong>Pull Request</strong></dt><dd>Proposta de alteração submetida à revisão antes de entrar na branch principal. No projeto, é o único caminho para alterar conteúdo.</dd>
+            <dt><strong>Sala de aula invertida</strong></dt><dd>Formato em que o aluno conhece o conteúdo de preparação antes da aula, o que libera o tempo de aula para aplicação.</dd>
+            <dt><strong>Texto vetorizado</strong></dt><dd>Texto convertido em curvas no arquivo de design. Fica idêntico na tela, mas deixa de ser texto e some na extração.</dd>
+            <dt><strong>Trunk</strong></dt><dd>Modelo de trabalho com uma única branch principal, alimentada por branches curtas de assunto.</dd>
+          </dl>
+        </div>
+      </div>
+
+      <!-- A -->
+      <div class="scroll-mt-24" id="apendice-a">
+        <h2 class="section-h text-2xl">Apêndice A: inventário de arquivos de texto</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <p>Os 12 arquivos de texto versionados no repositório somam 66 KB e concentram todo o conteúdo legível por busca: o README, o guia de contribuição, o arquivo de exclusões do Git, os nove documentos da camada de consulta e um README próprio dentro da pasta de projetos de curso, que documenta a camada de originais de dentro dela.</p>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Arquivo</th><th class="text-left px-4 py-3">Bytes</th><th class="text-left px-4 py-3">Função</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">README.md</td><td class="px-4 py-3 text-ink-700">2.971</td><td class="px-4 py-3 text-ink-700">Porta de entrada, índice, confidencialidade e lista de exclusão</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">CONTRIBUTING.md</td><td class="px-4 py-3 text-ink-700">2.755</td><td class="px-4 py-3 text-ink-700">Convenções, cabeçalho obrigatório, política de binários</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">.gitignore</td><td class="px-4 py-3 text-ink-700">196</td><td class="px-4 py-3 text-ink-700">Exclusões de versionamento, incluindo o bloco de credenciais</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">sobre-o-ipog.md</td><td class="px-4 py-3 text-ink-700">3.725</td><td class="px-4 py-3 text-ink-700">Texto institucional, números-chave, frentes e diferenciais</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">canais-de-atendimento.md</td><td class="px-4 py-3 text-ink-700">1.467</td><td class="px-4 py-3 text-ink-700">Telefones, e-mails, horários, portais e taxas</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">ipog-way.md</td><td class="px-4 py-3 text-ink-700">9.235</td><td class="px-4 py-3 text-ink-700">Propósito, visão e seis valores com práticas e perguntas</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">plataforma-de-marca.md</td><td class="px-4 py-3 text-ink-700">8.767</td><td class="px-4 py-3 text-ink-700">Arquétipos, atributos, narrativa, promessa, tagline e manifesto</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">tom-de-voz.md</td><td class="px-4 py-3 text-ink-700">8.263</td><td class="px-4 py-3 text-ink-700">Cinco tons, regras de estilo, reescritas e checklist</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">territorio-de-palavras.md</td><td class="px-4 py-3 text-ink-700">3.056</td><td class="px-4 py-3 text-ink-700">Verbos, lista de restrição e CTAs por etapa</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">identidade-visual.md</td><td class="px-4 py-3 text-ink-700">8.305</td><td class="px-4 py-3 text-ink-700">Paletas, gradientes, duotones, tipografia e fotografia</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">manual-do-aluno-pos-graduacao.md</td><td class="px-4 py-3 text-ink-700">15.965</td><td class="px-4 py-3 text-ink-700">Regras acadêmicas completas de 2026, em 25 seções</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">metodo-ipog.md</td><td class="px-4 py-3 text-ink-700">2.303</td><td class="px-4 py-3 text-ink-700">Dimensões do método e Ciclo de Aprendizagem Experiencial</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">projetos-de-curso/README.md</td><td class="px-4 py-3 text-ink-700">1.528</td><td class="px-4 py-3 text-ink-700">Origem, organização, exclusões e aviso de atualização manual</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- B -->
+      <div class="scroll-mt-24" id="apendice-b">
+        <h2 class="section-h text-2xl">Apêndice B: métricas do repositório</h2>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Métrica</th><th class="text-left px-4 py-3">Valor</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Arquivos versionados</td><td class="px-4 py-3 text-ink-700">328</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Diretórios</td><td class="px-4 py-3 text-ink-700">316</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Volume total de conteúdo</td><td class="px-4 py-3 text-ink-700">2,56 GiB</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Composição por extensão</td><td class="px-4 py-3 text-ink-700">305 PDF, 12 MD, 5 JPG, 2 PNG, 2 DOCX, 1 PPTX, 1 sem extensão</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Volume da camada de consulta</td><td class="px-4 py-3 text-ink-700">61 KB, que é 0,002% do repositório</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Volume da camada de originais</td><td class="px-4 py-3 text-ink-700">2,56 GiB, que é 99,998% do repositório</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Maior arquivo</td><td class="px-4 py-3 text-ink-700">37,8 MB</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Caminho mais longo</td><td class="px-4 py-3 text-ink-700">284 caracteres</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Profundidade máxima de diretórios</td><td class="px-4 py-3 text-ink-700">6 níveis</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Commits na branch principal</td><td class="px-4 py-3 text-ink-700">9</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Pull Requests</td><td class="px-4 py-3 text-ink-700">2, ambos integrados</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Pendências abertas</td><td class="px-4 py-3 text-ink-700">5, sendo 2 de risco alto, 1 médio e 2 baixo</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Documentos revisados</td><td class="px-4 py-3 text-ink-700">8 de 9</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Originais com espelho em Markdown</td><td class="px-4 py-3 text-ink-700">4 de 6</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">Janela de construção</td><td class="px-4 py-3 text-ink-700">3 horas e 44 minutos, em 13 de agosto de 2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- C -->
+      <div class="scroll-mt-24" id="apendice-c">
+        <h2 class="section-h text-2xl">Apêndice C: matriz de procedência</h2>
+        <div class="prose prose-ink max-w-none mt-4">
+          <p>Rastreabilidade de cada documento da camada de consulta até o arquivo de origem, com o grau de confiança da extração.</p>
+        </div>
+        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-surface-50 text-ink-900 font-semibold"><tr><th class="text-left px-4 py-3">Documento</th><th class="text-left px-4 py-3">Origem</th><th class="text-left px-4 py-3">Confiança da extração</th></tr></thead>
+            <tbody class="divide-y divide-surface-200">
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">sobre-o-ipog</td><td class="px-4 py-3 text-ink-700">Texto institucional (DOCX), documento inteiro</td><td class="px-4 py-3 text-ink-700">Alta. Divergência de número com o Guia</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">canais-de-atendimento</td><td class="px-4 py-3 text-ink-700">Manual do Aluno 2026, p. 4</td><td class="px-4 py-3 text-ink-700">Alta</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">ipog-way</td><td class="px-4 py-3 text-ink-700">Cartas do IPOG Way, complementado pelo Guia de Marca</td><td class="px-4 py-3 text-ink-700">Parcial. Títulos vetorizados. Documento em rascunho</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">plataforma-de-marca</td><td class="px-4 py-3 text-ink-700">Guia de Marca 2025, Módulo 01</td><td class="px-4 py-3 text-ink-700">Alta. Divergência de número</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">tom-de-voz</td><td class="px-4 py-3 text-ink-700">Guia de Marca 2025, Módulo 02</td><td class="px-4 py-3 text-ink-700">Alta. Ambiguidade da palavra "Formal"</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">territorio-de-palavras</td><td class="px-4 py-3 text-ink-700">Guia de Marca 2025, Módulo 02</td><td class="px-4 py-3 text-ink-700">Alta. Mesma ambiguidade</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">identidade-visual</td><td class="px-4 py-3 text-ink-700">Guia de Marca 2025, Módulo 03</td><td class="px-4 py-3 text-ink-700">Parcial. Cores confiáveis, associação por área incerta</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">manual-do-aluno-pos-graduacao</td><td class="px-4 py-3 text-ink-700">Manual do Aluno 2026, documento inteiro</td><td class="px-4 py-3 text-ink-700">Alta</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-ink-900">metodo-ipog</td><td class="px-4 py-3 text-ink-700">Manual do Aluno 2026, p. 7</td><td class="px-4 py-3 text-ink-700">Parcial. Terceira dimensão presa em infográfico</td></tr>
+              <tr class="bg-brand-50"><td class="px-4 py-3 text-ink-700">sem espelho</td><td class="px-4 py-3 text-ink-700">Guia de Aulas Remotas, 14 páginas</td><td class="px-4 py-3 text-ink-700">Não extraído. PDF integralmente imagem</td></tr>
+              <tr class="bg-brand-50"><td class="px-4 py-3 text-ink-700">sem espelho</td><td class="px-4 py-3 text-ink-700">Apresentação de parceria, 11 slides</td><td class="px-4 py-3 text-ink-700">Não extraído. Quase todo imagem</td></tr>
+              <tr class="bg-brand-50"><td class="px-4 py-3 text-ink-700">sem espelho</td><td class="px-4 py-3 text-ink-700">Projetos de curso, 301 PDFs</td><td class="px-4 py-3 text-ink-700">Fora de escopo de transcrição. Acervo de arquivo</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-brand-900 text-white p-6">
+        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Encerramento</p>
+        <h3 class="font-display font-semibold text-xl">Documento fechado em 14 de agosto de 2026</h3>
+        <p class="mt-3 text-white/90 leading-relaxed">
+          Esta wiki descreve a base de conhecimento institucional do IPOG no estado de 13 de agosto de 2026. Alterações posteriores ao repositório não estão refletidas aqui. As seções 8.3, 9.3 e 11.4 contêm recomendações desta análise, marcadas como proposta, e não decisões já tomadas pelo projeto. Para dado institucional oficial, valores, modalidade e turma vigente, o caminho é <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="underline font-medium">ipog.edu.br</a>.
+        </p>
+      </div>
+
+      <div class="prose prose-ink max-w-none">
+        <p class="text-sm text-ink-500">
+          Leitura relacionada no portal: <a href="/sobre">sobre o portal e quem o assina</a>, <a href="/regulacao">posicionamento regulatório</a> e <a href="/tipos-de-pos-graduacao">as cinco modalidades canônicas de pós-graduação</a>.
+        </p>
+      </div>
+
+    </article>
+  </section>
+
+  <script type="application/ld+json" set:html={ldWebPage} />
+  <script type="application/ld+json" set:html={ldBreadcrumb} />
+</Base>

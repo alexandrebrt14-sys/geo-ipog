@@ -39,6 +39,7 @@ on:
       - "scripts/test-frontend-links.py"
       - "scripts/check-published-cache.mjs"
       - "portal-institucional/**"
+      - "dashboards/marketing/**"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
     inputs:
@@ -267,6 +268,30 @@ jobs:
             exit 1
           fi
 
+      # ---------------------------------------------------------------------
+      # Painel de marketing em /painel
+      #
+      # Um HTML e um JSON, copiados depois do sitemap (como o portal) para não
+      # entrarem nele. Nada aqui toca em site/dist/ipog. A atualização de hora
+      # em hora dos dados NÃO passa por este workflow: ver painel-marketing.yml,
+      # que restaura o cache salvo no fim deste job e troca só a pasta painel/.
+      # ---------------------------------------------------------------------
+
+      - name: "Montar o painel de marketing em site/dist/painel"
+        run: |
+          rm -rf site/dist/painel
+          mkdir -p site/dist/painel
+          cp dashboards/marketing/index.html site/dist/painel/index.html
+          cp data/marketing/dashboard.json site/dist/painel/dashboard.json
+          python3 -c "import json; json.load(open('site/dist/painel/dashboard.json', encoding='utf-8'))" || (echo "dashboard.json inválido" && exit 1)
+          grep -q 'name="robots" content="noindex' site/dist/painel/index.html || (echo "Painel sem noindex" && exit 1)
+          if grep -q "posgraduacaopsicologia.com/painel" site/dist/sitemap.xml; then
+            echo "Sitemap do site contaminado com a rota /painel"
+            exit 1
+          fi
+          # O portal continua exatamente como o passo anterior deixou.
+          test -f site/dist/ipog/index.html || (echo "Portal sumiu de dist/ipog" && exit 1)
+
       - name: "Gate: links, âncoras e recursos do frontend consolidado"
         run: python3 scripts/check-frontend-links.py
 
@@ -301,12 +326,18 @@ jobs:
             "https://posgraduacaopsicologia.com/ipog/faq/"
             "https://posgraduacaopsicologia.com/ipog/sitemap.xml"
             "https://posgraduacaopsicologia.com/ipog/llms.txt"
+            "https://posgraduacaopsicologia.com/painel/"
+            "https://posgraduacaopsicologia.com/painel/dashboard.json"
           )
           FAIL=0
           for URL in "${URLS[@]}"; do
             CODE=$(curl -sIL -o /dev/null -w "%{http_code}" "$URL")
             echo "$CODE $URL"
-            if [ "$CODE" != "200" ]; then FAIL=1; fi
+            case "$URL" in
+              # Com o Cloudflare Access ligado, /painel responde 302 para o login.
+              *"/painel/"*) if [ "$CODE" != "200" ] && [ "$CODE" != "302" ]; then FAIL=1; fi ;;
+              *) if [ "$CODE" != "200" ]; then FAIL=1; fi ;;
+            esac
           done
           if [ "$FAIL" -ne 0 ]; then
             echo "Smoke test falhou em pelo menos 1 URL"
@@ -318,6 +349,17 @@ jobs:
         run: |
           node scripts/check-published-cache.mjs --self-test
           node scripts/check-published-cache.mjs
+
+      # Guarda o site exatamente como foi publicado em produção. O workflow
+      # painel-marketing.yml restaura este cache, troca só a pasta painel/ e
+      # republica, sem reconstruir nada. O cache do GitHub não conta como
+      # armazenamento cobrado e expira sozinho após 7 dias sem uso.
+      - name: "Guardar o site publicado para o painel de marketing"
+        if: github.event_name == 'push' || github.event.inputs.branch == 'main' || github.event.inputs.branch == ''
+        uses: actions/cache/save@v4
+        with:
+          path: site/dist
+          key: site-dist-producao-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: "IndexNow ping (best-effort)"
         if: success()

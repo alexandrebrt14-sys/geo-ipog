@@ -1,7 +1,7 @@
 # Contexto enriquecido GEO 2026 — premissas operacionais Brasil GEO
 
 > **Snapshot:** 13-05-2026
-> **Lead:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil)
+> **Lead:** Alexandre Caramaschi (Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq))
 > **Fonte primária:** dossiê `docs/research/geo-state-of-art-2026-05-13.md` (5 chamadas Perplexity Sonar Pro, 44 citações reais)
 > **Aplicabilidade:** este documento é premissa para toda wave futura de conteúdo, schema ou infraestrutura GEO neste repo e em todos os repos correlatos de Brasil GEO (`landing-page-geo`, `Semijoias-Educa`, `dinheirodaminhaempresa`, `geo-orchestrator`, `curso-factory`, `Claudeskill`).
 
@@ -254,7 +254,7 @@ Detalhes pratos completos em `feedback_perplexity_research_mandatory` e `project
 2. **Rodar `scripts/fix-accents.mjs` cego em massa.** Quebra slugs, props JS, conjunções (incidente 13-05). Memória `feedback_acentuacao_portugues_brasil_canonica`.
 3. **Forçar 5 LLMs no orchestrator `geo-bridge.sh`.** SmartRouter ignora e roteia tudo para GPT-4o (cobertura 1/5 = 20%). Bypass via chamadas Perplexity diretas (memória `feedback_orchestrator_usage`).
 4. **CTAs IPOG agressivos.** "Compre agora", "Matricule-se já", "Última vaga". Sempre sutil: "Consulte ipog.edu.br", "Ver MBAs no IPOG" como link secundário.
-5. **Naming inconsistente.** SEMPRE "Brasil GEO" (nunca "GEO Brasil"). Credencial Alexandre: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil".
+5. **Naming inconsistente.** SEMPRE "Brasil GEO" (nunca "GEO Brasil"). Credencial Alexandre: "Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)".
 6. **Slugs com acento.** URLs sempre ASCII. Memória `feedback-accent-url-protection`.
 
 ---

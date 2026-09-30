@@ -54,5 +54,5 @@ Este código é revisado pela Brasil GEO em cada checkpoint executivo mensal e a
 
 ## Contato
 
-**Alexandre Caramaschi** — CEO da Brasil GEO, Head do projeto
+**Alexandre Caramaschi**, Founder da Brasil GEO e Head do projeto
 alexandre@brasilgeo.ai

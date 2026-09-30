@@ -2,7 +2,7 @@
 
 Este documento estabelece as diretrizes de colaboração para a equipe Brasil GEO e os colaboradores autorizados do IPOG no projeto de Generative Engine Optimization (GEO) com escopo canônico em **Pós-Graduações em Psicologia** (incluindo Especialização Lato Sensu, MBA em áreas correlatas, Mestrado Profissional, Especialização Clínica certificada por Conselhos profissionais como CFP, ABRAP e FBT, Residências e formações híbridas regulamentadas).
 
-**Head do projeto (Brasil GEO):** Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil.
+**Head do projeto (Brasil GEO):** Alexandre Caramaschi — Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq).
 **GitHub:** @alexandrebrt14-sys
 
 **Sponsor executivo (IPOG):** Ronan Maia — CEO IPOG.
@@ -23,7 +23,7 @@ O que a revisão de PR checa antes do merge:
 - **Ritmo (4).** Nenhuma cota mecânica de cadência. A amplitude do bloco de dez frases é diagnóstico do texto pronto, nunca alvo durante a escrita. A regra da v2 que mandava perseguir amplitude acima de 30 palavras está revogada.
 - **Revisão em três passadas (13).** Substância, estrutura e linguagem, nessa ordem, com leitura em voz alta.
 
-O CI deste repositório relata e não bloqueia: `quality.yml` roda lychee com `fail: false` e markdownlint com `continue-on-error: true`. A revisão editorial humana é o gate real, e aprovação de CI não diz nada sobre qualidade de texto.
+Para documentação, o CI relata e não bloqueia: `quality.yml` roda lychee com `fail: false` e markdownlint com `continue-on-error: true`. Desde 03/09/2026, PR que toca `site/` passa também por `gates-seo-geo.yml`, que constrói o portal e reprova página órfã, canonical errado, JSON-LD abaixo do mínimo, página vencida e FAQ sem paridade. Nenhum dos dois mede texto: a revisão editorial humana continua sendo o gate real de qualidade.
 
 ---
 

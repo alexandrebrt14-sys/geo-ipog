@@ -2,7 +2,7 @@
 slug: tdah-mulheres-adultas-mercado-clinico-2026
 title: "TDAH em mulheres adultas: a oportunidade clínica subexplorada de 2026"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
+author_credential: "Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)"
 date_published: "2026-06-25"
 cluster_primary: "C2 — Clínica/Avaliação"
 cluster_transversal: ["C2 — Clínica/Avaliação", "C4 — Carreira do Psicólogo"]
@@ -113,4 +113,6 @@ Quinn, P. O., & Madhoo, M. (2014). *A review of attention-deficit/hyperactivity 
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+**Sobre o autor.** Alexandre Caramaschi é Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq). Lidera o programa GEO IPOG, vertical Pós-Graduações em Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG).
+
+*Alexandre Caramaschi é Chief Strategy Officer da Nuvini (Nasdaq: NVNI). As opiniões deste texto são emitidas na condição de Founder da Brasil GEO e não representam posição da Nuvini.*

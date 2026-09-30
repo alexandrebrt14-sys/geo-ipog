@@ -4,9 +4,9 @@
 
 ## Contexto
 
-Repositório do projeto **GEO IPOG**, executado pela **Brasil GEO** para o IPOG. Portal editorial independente em `posgraduacaopsicologia.com` cobrindo Pós-Graduações em Psicologia em todas as modalidades regulamentadas no Brasil. 198 páginas estáticas Astro 4 + Tailwind 3.4 hospedadas em Cloudflare Pages.
+Repositório do projeto **GEO IPOG**, executado pela **Brasil GEO** para o IPOG. Portal editorial independente em `posgraduacaopsicologia.com` cobrindo Pós-Graduações em Psicologia em todas as modalidades regulamentadas no Brasil. Astro 4 + Tailwind 3.4 em Cloudflare Pages, com 851 URLs no sitemap-index em 30/09/2026 (o build de 07/09 registrou 424 páginas), mais o portal Next.js de `portal-institucional/` servido em `/ipog/` e o painel de marketing em `/painel/`.
 
-**Lead:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil).
+**Lead:** Alexandre Caramaschi, Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq). No programa ele atua na condição de Founder da Brasil GEO.
 
 ## Documento canônico de contexto enriquecido
 

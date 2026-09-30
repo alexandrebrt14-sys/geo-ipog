@@ -2,7 +2,7 @@
 slug: psicologo-recem-formado-organizacional
 title: "Por que o psicólogo recém-formado deveria começar pelo organizacional — e não pela clínica"
 author: "Alexandre Caramaschi"
-author_credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
+author_credential: "Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)"
 date_published: "2026-06-09"
 cluster_primary: "C1 — Psicologia Organizacional e do Trabalho"
 cluster_transversal: ["C2 — Clínica/Avaliação", "C4 — Decisão de carreira"]
@@ -190,7 +190,9 @@ Brasil GEO. (2026). *Levantamento de infraestrutura técnica em Schema de pós-g
 
 ---
 
-**Sobre o autor.** Alexandre Caramaschi é CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil. Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG). Revisão técnica desta peça pelo corpo docente do MBA Online de Psicologia do IPOG.
+**Sobre o autor.** Alexandre Caramaschi é Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq). Lidera o programa GEO IPOG, vertical MBA Online de Psicologia, em parceria com Ronan Maia (CEO IPOG) e Bruno Azambuja (Gerente de Marketing IPOG). Revisão técnica desta peça pelo corpo docente do MBA Online de Psicologia do IPOG.
+
+*Alexandre Caramaschi é Chief Strategy Officer da Nuvini (Nasdaq: NVNI). As opiniões deste texto são emitidas na condição de Founder da Brasil GEO e não representam posição da Nuvini.*
 
 **Peça anterior do hub.** *Anatomia do MBA Online de Psicologia — os cinco atributos não-replicáveis que separam categoria fundada de catálogo massificado* (publicada 02-06-2026, marco M08 da Fase 2).
 

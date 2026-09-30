@@ -207,7 +207,7 @@ Próxima camada: Camada 5 (Voice Guard)
 
 ### Integração com Voice Guard
 
-Voice Guard inspeciona o `Person` para garantir que a credencial canônica do autor está íntegra. Para peças assinadas por Alexandre Caramaschi: "CEO da Brasil GEO, ex-CMO da Semantix Nasdaq, cofundador da AI Brasil". Para peças assinadas por corpo docente IPOG: credencial completa com formação, registro CRP/CFP quando aplicável, link Lattes/ORCID.
+Voice Guard inspeciona o `Person` para garantir que a credencial canônica do autor está íntegra. Para peças assinadas por Alexandre Caramaschi: "Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)". Para peças assinadas por corpo docente IPOG: credencial completa com formação, registro CRP/CFP quando aplicável, link Lattes/ORCID.
 
 ## Camada 5 — Voice Guard
 

@@ -2,7 +2,7 @@
 
 **Data:** 2026-05-17
 **Repositório:** `alexandrebrt14-sys/geo-ipog`
-**Lead:** Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil
+**Lead:** Alexandre Caramaschi — Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)
 **Escopo:** taxonomia operacional do estado-da-arte em Generative Engine Optimization e SEO em maio/2026, destilada de cinco dossiês paralelos rodados em 2026-05-17 por sub-agents Opus.
 
 ---

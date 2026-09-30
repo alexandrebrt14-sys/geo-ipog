@@ -1,7 +1,7 @@
 # Síntese aplicada do research de Generative Engine Optimization ao programa GEO IPOG
 
 > **Status:** proposta técnica para aprovação do Conselho IPOG · ciclo 06-2026 — escopo amplo (12-05-2026)
-> **Dono:** Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil)
+> **Dono:** Alexandre Caramaschi (Founder da Brasil GEO)
 > **Validação operacional prevista:** Bruno Azambuja (Gerente de Marketing IPOG)
 > **Sponsor executivo:** Ronan Maia (CEO IPOG)
 > **Data:** 10-05-2026

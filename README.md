@@ -24,7 +24,7 @@ A tese central do projeto: empreendedores e profissionais que decidem cursar uma
   - **Ronan Maia** — CEO IPOG (sponsor executivo do programa)
   - **Bruno Azambuja** — Gerente de Marketing IPOG (interlocutor operacional)
 - **Executor:** Brasil GEO
-  - **Alexandre Caramaschi** — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil (Head do projeto)
+  - **Alexandre Caramaschi**, Head do projeto: Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq). Neste programa ele atua na condição de Founder da Brasil GEO.
 - **Ferramenta principal:** NAIA — diagnóstico GEO, monitoramento de citações em LLMs, score técnico de Schema, llms.txt e autoridade externa
 
 ## Escopo canônico — Pós-Graduações em Psicologia
@@ -65,13 +65,27 @@ A matriz de concorrentes inicial cobre instituições de pós-graduação online
 
 ```
 geo-ipog/
-  audits/          # baselines, auditorias técnicas e relatórios NAIA
-  prompts/         # kit de prompts-âncora canônicos por persona IPOG Pós-Graduação em Psicologia (todas as modalidades)
-  content/         # rascunhos editoriais, briefings HBR-grade, drafts
-  data/            # datasets brutos, exports de LLMs, métricas raw
-  dashboards/      # mention rate, share-of-voice, scores NAIA por ciclo
-  docs/            # registros de marcos, kickoff, retros, atas, relatórios
+  site/                  # portal posgraduacaopsicologia.com (Astro 4 + Tailwind 3.4, Cloudflare Pages)
+  portal-institucional/  # portal GEO IPOG em Next.js, servido em /ipog/ e espelhado em geo-ipog.pages.dev
+  audits/                # baselines, auditorias técnicas e relatórios NAIA
+  prompts/               # kit de prompts-âncora canônicos por persona (todas as modalidades)
+  content/               # padrões editoriais, briefings e peças HBR em rascunho
+  data/                  # datasets brutos, exports de LLMs e leituras do painel (data/marketing)
+  dashboards/            # métricas, relatórios GA4 e o painel de marketing (dashboards/marketing)
+  scripts/               # gates editoriais, IndexNow, auditoria de schema, coletores e purga de cache
+  docs/                  # marcos, atas, relatórios, governança, runbooks e tech stack
+  wiki/                  # base de conhecimento interna: entidades, conceitos, decisões e log
+  .github/workflows/     # deploy, gates SEO/GEO, painel, relatórios e monitoramento
 ```
+
+## Como rodar, testar e publicar
+
+- **Portal principal (`site/`).** `npm ci` e `npm run dev` para trabalho local. `npm run build` roda antes o `prebuild` (páginas de busca, manifesto de lastmod e termos do glossário) e depois gera o sitemap. `npm run check` executa o `astro check`, e `npm run gate:seo-geo` confere órfão, canonical, JSON-LD mínimo, staleness e paridade de FAQ sobre o build.
+- **Portal GEO IPOG (`portal-institucional/`).** `npm run validar` encadeia typecheck, lint, build e os verificadores de GEO, parágrafos, contraste e endereços. O `README.md` da pasta explica o `basePath` `/ipog` e os helpers `assetPath` e `corDeTextoAcessivel`.
+- **Publicação.** Push na `main` que toque `site/`, `portal-institucional/` ou `dashboards/marketing/` dispara `deploy-cloudflare-pages.yml`: o workflow constrói o Astro, monta o portal Next.js em `/ipog/` e o painel em `/painel/` e publica tudo no mesmo projeto do Cloudflare Pages. `deploy-portal-geo.yml` publica o espelho de conferência em `geo-ipog.pages.dev`.
+- **Operação manual.** Em 14/08/2026 saíram todos os agendamentos de relatório, monitoramento e qualidade, que passaram a rodar por `workflow_dispatch` (o `quality.yml` segue disparando em PR e push de `.md`), e o Dependabot com auto-merge foi retirado. O único agendamento ativo hoje é o do painel de marketing.
+- **Gates de PR.** `gates-seo-geo.yml` constrói o site e roda o gate SEO/GEO quando o PR toca `site/`. `quality.yml` roda lychee e markdownlint nos `.md`, em modo consultivo.
+- **Painel de marketing (`/painel/`).** `painel-marketing.yml` coleta contagens do HubSpot (e do GA4, quando configurado) de hora em hora das 7h às 20h de segunda a sábado, com rodadas extras de madrugada e no domingo, consolida `data/marketing/dashboard.json` e republica só a pasta do painel. A página sai com noindex e o login fica no Cloudflare Access, configurado fora do repositório. Especificação em `dashboards/PAINEL-MARKETING.md`.
 
 ## Disciplina operacional
 
@@ -151,7 +165,7 @@ Diagnóstico dos 10 concorrentes prioritários do IPOG na vertical de pós-gradu
 - `dashboards/METRICAS-CANONICAS.md` — definição operacional, fórmula, cadência e owner de cada KPI.
 - `dashboards/RUNBOOK-COLETA-LLM.md` — runbook da coleta diária cross-LLM com circuit breaker, retry, fallback, drift detection.
 - `dashboards/FINOPS-DISCIPLINA.md` — preços 2026, budget guards, alocação por LLM, otimizações.
-- `dashboards/GA4-WEEKLY-REPORT.md` — pipeline semanal GA4 Data API + setup Looker Studio + integração GSC. Cron seg 09:00 BRT via GitHub Actions abre PR automático com 7 relatórios.
+- `dashboards/GA4-WEEKLY-REPORT.md` — pipeline semanal GA4 Data API + setup Looker Studio + integração GSC. Desde 14/08/2026 o workflow `ga4-weekly-report.yml` roda só por disparo manual (os agendamentos do repositório foram retirados naquele dia), e cada execução abre um PR com os relatórios.
 - `dashboards/relatorios-ga4/` — relatórios semanais GA4 versionados (HTML + CSV + Markdown + JSON), gerados por `scripts/weekly_ga4_report.py`.
 
 ### Camada de medição GA4 (`docs/governance/google-analytics.md`)
@@ -169,6 +183,19 @@ Inventário canônico da camada de analytics: Property ID `537256335`, Measureme
 
 Início oficial dos trabalhos: **30 de abril de 2026** (ver `docs/01-kickoff-30-04-2026.md`).
 
+### Estado em 30/09/2026
+
+O sitemap-index publicado em `posgraduacaopsicologia.com` lista 851 URLs distribuídas em 20 sitemaps, contagem feita sobre a produção em 30/09/2026. O último build registrado em `STATUS.md` é o da W26, de 07/09/2026, com 424 páginas; o que entrou depois (leitura crítica do protocolo BRGEO-1 em 11/09, crosslinks de mensuração em 21/09 e o painel) não tem contagem de build própria.
+
+O que mudou desde o snapshot de maio, em ordem:
+
+1. **Entidade única (27/08, PR #160).** Person e Organization passam a sair de `site/src/data/entity-canonical.json`, com os QIDs mortos removidos e a pendência de autoria clínica documentada.
+2. **W25 e W26 (27/08 e 07/09, PRs #158 e #164).** Cinco ondas complementares em cada rodada no menu Conteúdo e social, com o gate mecânico `scripts/lint-conteudo-social.py`.
+3. **Ondas 3 a 6 de SEO (03/09, PR #163).** Lastmod por git, FAQ nos hubs, glossário de autismo estruturado, E-E-A-T por `@id` e o gate bloqueante `gates-seo-geo.yml`.
+4. **Robustez, frontend e layout do portal (08/09, PRs #168 a #173).** Carregamento, acessibilidade, cache HTTP e navegação do `site/`, com a purga restrita de cache em `scripts/cloudflare-purge-url.py`.
+5. **Painel de marketing (PR #174, mesclado em 28/09).** Leads, origem e funil do HubSpot em `/painel/`, com coleta agendada.
+
+O registro sessão a sessão continua em `STATUS.md`.
 ### Snapshot 13-05-2026
 
 Portal `posgraduacaopsicologia.com` em produção com **198 páginas estáticas** (Astro 4 + Tailwind 3.4 + Cloudflare Pages), build verde, sitemap-index com 6 sitemaps segmentados, IndexNow 202/202/202 em 3 engines (Bing, Yandex, api.indexnow.org). Cobertura editorial e GEO:
@@ -200,7 +227,7 @@ Portal `posgraduacaopsicologia.com` em produção com **198 páginas estáticas*
 - **Article schema** em 19 comparativos + 25 temas + 6 evidências + 5 casos + 5 intervenções
 - **DefinedTermSet** em 5 clusters de glossário (115 termos)
 - **GA4** Property 537256335 com Data API ativa e cron semanal
-- **Person Alexandre Caramaschi** como autor canônico (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil)
+- **Person Alexandre Caramaschi** como autor canônico. Desde a Onda 2 de 27/08/2026, o Person sai de `site/src/data/entity-canonical.json`, com a credencial Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil
 
 ### Contexto enriquecido GEO 2026 (premissa operacional)
 
@@ -216,4 +243,4 @@ Toda onda de trabalho neste repo deve consultar:
 - **Bateria 1 (commit `63117de`)** — 6 guias + 6 FAQs + 8 comparativos com voz HBR e citações 2024-2026 ancoradas (Hull, Lai, Faraone, Kessler, Kooij, Hayes, Maslach-Leiter, Linehan, Stoffers-Winterling, Clark, Cuijpers, Foa, Shapiro, Dawson, Bloom, Cox EPDS, Marshall DUP, Birchwood EIP, Kane RAISE-ETP, Howard, Bernard & Goodyear, Falender & Shafranske, NR-1 Portaria 1.419/2024, CFP 06/2019, CFP 11/2018, DSM-5-TR, CID-11 QD85 e 6A05, Lei 10.216/2001, LBI 13.146/2015).
 - **Bateria 2** — GEO infrastructure hardening (Person/Publisher canonical schemas, llms.txt v2, llms-full.txt, MCP manifests, ai-policy.json, Speakable, TLDR, citation-prompts.json com 50 prompt seeds).
 
-Para detalhes operacionais, consultar `docs/governance/STATUS.md` e o índice de memória persistente do projeto.
+Para detalhes operacionais, consultar `STATUS.md` (registro por sessão, na raiz), `docs/STATUS.md` e o índice de memória persistente do projeto.

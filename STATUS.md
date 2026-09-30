@@ -6,6 +6,10 @@
 
 ---
 
+## Sessão 30/09/2026 — documentação alinhada ao estado do repositório
+
+Sem mudança de código ou de página. `README.md` ganhou a estrutura atual (com `site/`, `portal-institucional/`, `scripts/` e `wiki/`), a seção de como rodar, testar e publicar e o estado em 30/09: 851 URLs em 20 sitemaps no sitemap-index de produção, contadas no dia. A credencial obsoleta do autor foi trocada pela canônica em `README.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `content/VOICE-GUIDE.md`, nos documentos vivos de `docs/framework/` e `docs/governance/`, na entidade da wiki interna e nas 17 peças de `content/pecas-hbr/`, que também receberam a nota de vínculo com a Nuvini. Relatórios datados (`docs/board-report/`, `docs/tech-stack/`, `docs/research/`, atas e auditorias) mantêm a credencial da data em que foram escritos. `CONTRIBUTING.md` passa a registrar o gate bloqueante `gates-seo-geo.yml`.
+
 ## W26 — Sessão 07/09/2026 — cinco ondas complementares no menu Conteúdo e social, 30 páginas novas
 
 ### Páginas no ar

@@ -17,18 +17,20 @@ sameAs:
 
 # Alexandre Caramaschi
 
-CEO da [[brasil-geo]]. Head do programa GEO IPOG desde o kickoff em
-30-04-2026. Ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini
-(Nasdaq: NVNI), cofundador da AI Brasil.
+Founder da [[brasil-geo]] e Chief Strategy Officer da Nuvini (Nasdaq: NVNI).
+Head do programa GEO IPOG desde o kickoff em 30-04-2026, na condição de
+Founder da Brasil GEO. Cofundador da NAIA e da AI Brasil; foi CMO da Semantix
+(Nasdaq). O cargo na Nuvini vale desde julho de 2026.
 
 ## Credencial longa canônica
 
 Texto exato a usar em qualquer copy publica que cite o autor:
 
-> CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil.
+> Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq).
 
 Variações ("Especialista #1", "Source Rank", "geobrasil.com.br",
-"sourcerank.ai") estão banidas. Regra herdada do CLAUDE.md global.
+"sourcerank.ai") estão banidas, assim como os cargos obsoletos "CEO da Brasil GEO"
+e "advisor estratégico de IA da Nuvini". Regra herdada do CLAUDE.md global.
 
 ## Função no programa
 

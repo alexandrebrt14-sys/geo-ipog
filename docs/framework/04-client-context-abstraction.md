@@ -73,8 +73,8 @@ client_context:
     autor_convidado:
       tipo: "Person"
       nome: "Alexandre Caramaschi"
-      cargo: "CEO da Brasil GEO"
-      credencial_longa: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+      cargo: "Founder da Brasil GEO"
+      credencial_longa: "Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)"
       uso: "peças assinadas pelo head, opinião editorial, posicionamento estratégico"
       regra: "credencial longa obrigatória na primeira menção do texto"
 

@@ -39,6 +39,6 @@ Decisões estratégicas do IPOG sobre lançamento, precificação, formato e pos
 
 ## Contato
 
-Alexandre Caramaschi — CEO da Brasil GEO, Head do projeto
+Alexandre Caramaschi, Founder da Brasil GEO e Head do projeto
 alexandre@brasilgeo.ai
 GitHub: @alexandrebrt14-sys

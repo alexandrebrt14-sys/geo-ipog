@@ -14,7 +14,7 @@ const waves = [];
 let pages = 0;
 function add(url, wave, route, origin) {
   if (typeof url !== 'string' || !/^https?:\/\//.test(url)) return;
-  url = url.replace(/&amp;/g, '&');
+  url = url.replace(/&amp;/g, '&').replace(/\\+$/, '');
   const key = url.split('#')[0];
   if (!urls.has(key)) urls.set(key, {url:key, waves:new Set(), routes:new Set(), origins:new Set()});
   const item = urls.get(key); item.waves.add(wave); item.routes.add(route); item.origins.add(origin);
@@ -37,7 +37,7 @@ for (let wave = 1; wave <= 5; wave++) {
       // Inclui URLs de arrays/frontmatter utilizadas em href dinâmico.
       for (const match of text.matchAll(/https?:\/\/[^"'\x60\s<>]+/g)) {
         const candidate=match[0];
-        if (/^https?:\/\/(?:schema\.org\/?$|brasilgeo\.ai\/#organization$|posgraduacaopsicologia\.com(?:\/|$))/.test(candidate)) continue;
+        if (/^https?:\/\/(?:schema\.org\/?$|brasilgeo\.ai\/#organization$|posgraduacaopsicologia\.com(?:\/|$)|www\.wikidata\.org\/wiki\/$)/.test(candidate)) continue;
         add(candidate, wave, row.route, 'url-literal-da-pagina');
       }
     }
@@ -75,7 +75,7 @@ async function inspect(item) {
     const title=clean(text.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]);
     const h1=clean(text.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1]);
     if (classification === 'acessivel' && /just a moment|access denied|checking your browser|verifique se voc[eê] [eé] humano|captcha|attention required/i.test(title || '')) classification='restricao-de-acesso';
-    if (classification === 'acessivel' && /^(404|p[aá]gina n[aã]o encontrada|page not found|not found)/i.test(h1||'')) classification='possivelmente-quebrado';
+    if (classification === 'acessivel' && [h1, title].some(value => /^(404|p[aá]gina n[aã]o encontrada|page not found|not found)/i.test(value||''))) classification='possivelmente-quebrado';
     return {...meta,checkedAt:new Date().toISOString(),method:'GET',status,finalUrl:response.url,redirected:response.redirected,contentType:type,title,h1,classification,elapsedMs:Date.now()-started};
   } catch(e) {
     return {...meta,checkedAt:new Date().toISOString(),method:'GET',status:null,finalUrl:null,classification:'erro-de-transporte',error:e.name+': '+e.message,cause:e.cause?.code||null,elapsedMs:Date.now()-started};
@@ -89,6 +89,11 @@ async function worker() {
 }
 await Promise.all(Array.from({length:4},worker));
 results.sort((a,b)=>priority(a)-priority(b)||a.url.localeCompare(b.url));
+const verifiedFile = path.join(dir, 'links-verificados.json');
+if (fs.existsSync(verifiedFile)) {
+  const verified = new Map(JSON.parse(fs.readFileSync(verifiedFile,'utf8').replace(/^\uFEFF/,'')).map(row=>[row.url,row.verification]));
+  for (const row of results) if (verified.has(row.url)) row.verification = verified.get(row.url);
+}
 const counts = {};
 for (const row of results) counts[row.classification]=(counts[row.classification]||0)+1;
 const report = {checkedAt:new Date().toISOString(),scopeWaves:waves,pageCount:pages,uniqueUrls:results.length,method:{http:'GET',maximumConcurrency:4,timeoutMs:15000,tls:'Node --use-system-ca',reusedPreviouslyChecked:results.length-fetched, auditDir},summary:counts,results};

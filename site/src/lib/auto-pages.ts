@@ -337,8 +337,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/autismo/artigos/camuflagem-masking-cat-q-adulto-2026",
-    "title": "{titulo}",
-    "description": "Material educativo para adultos com autismo nível 1 de suporte e profissionais que os acompanham. Aborda o conceito de camuflagem social, as três dimensões do CAT-Q (compensação, mascaramento, assimilação), por que mulheres adultas chegam tarde ao diagnóstico, os custos invisíveis em saúde mental e o que costuma mudar em terapia adaptada para o adulto autista.",
+    "title": "Camuflagem no autismo adulto: o que o CAT-Q mede e como interpretar a pesquisa",
+    "description": "Definições de compensação, mascaramento e assimilação, pesquisa brasileira recente e um roteiro educativo para discutir contextos e necessidades sem pontuar pessoas.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -356,8 +356,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/autismo/artigos/clinica-tea-adulto-evidencia-2026",
-    "title": "{titulo}",
-    "description": "Guia técnico para psicólogos clínicos sobre avaliação diagnóstica, adaptação do enquadre, instrumentos (AQ-50, RAADS-R, ADOS-2, ADI-R, CAT-Q, AAA), TCC adaptada, terapia familiar sistêmica, dupla empatia e intervenções neuroafirmativas no acompanhamento de adultos autistas nível 1 de suporte.",
+    "title": "Clínica do autismo em adultos: avaliação, cuidado e decisões apoiadas em evidências",
+    "description": "Como organizar a avaliação e o acompanhamento de adultos autistas, escolher recursos com critério e negociar objetivos sem transformar escalas em diagnóstico.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -375,8 +375,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/autismo/artigos/diagnostico-tardio-adulto-2026",
-    "title": "{titulo}",
-    "description": "Adultos brasileiros que recebem diagnóstico de TEA nível 1 nos últimos 24 meses enfrentam reorganização biográfica, luto e ganhos práticos. Mapa do que muda na clínica, no trabalho e nas relações, ancorado em Censo 2022, Mapa Autismo Brasil 2026 e literatura sobre camuflagem (Hull, Lai, Mandy).",
+    "title": "Diagnóstico tardio de autismo: perguntas, apoio e decisões na vida adulta",
+    "description": "Um guia para compreender a avaliação, organizar dúvidas após o diagnóstico e planejar comunicação, cuidado e acesso a direitos sem cronogramas universais.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -393,8 +393,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/autismo/artigos/fronteira-pesquisa-tea-adulto-2026",
-    "title": "{titulo}",
-    "description": "Revisão crítica para pesquisadores em autismo nível 1 em adultos: debate paradigmático medical model vs neurodiversidade, double empathy problem (Milton, 2012; Bottema-Beutel et al., 2021), default mode network, biomarcadores plasmáticos, neurofeedback, intervenções psicossociais com evidência, grupos brasileiros e gaps de pesquisa para pós-graduandos.",
+    "title": "Pesquisa sobre autismo adulto em 2026: perguntas atuais e limites das evidências",
+    "description": "Como transformar temas de autismo adulto em perguntas pesquisáveis, interpretar novidades sobre camuflagem e dupla empatia e planejar estudos acessíveis.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -412,8 +412,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/autismo/artigos/relacionamentos-amorosos-nt-autista-2026",
-    "title": "{titulo}",
-    "description": "Em casais em que um parceiro é neurotípico e o outro é adulto autista nível 1 de suporte, a maioria das brigas crônicas não vem de falta de amor, mas de diferenças invisíveis de processamento. Como ler a relação pela lente da dupla empatia, do apego adulto, da camuflagem em contexto íntimo e da Terapia Familiar Sistêmica.",
+    "title": "Relacionamentos entre pessoas autistas e não autistas: comunicação, acordos e limites",
+    "description": "Como discutir diferenças de comunicação e necessidades sensoriais no casal, compreender os limites da dupla empatia e construir acordos voluntários.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -430,8 +430,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/autismo/artigos/vida-cotidiana-trabalho-autista-adulto-2026",
-    "title": "{titulo}",
-    "description": "O que protege e o que adoece a vida laboral de adultos autistas nível 1 de suporte: autistic burnout como fenômeno qualitativamente distinto, sobrecarga sensorial em escritórios abertos, remotos e híbridos, meltdown e shutdown, stim adulto, hiperfoco, acomodações razoáveis pela CLT e pela NR-1, vigilância no trabalho e estratégias práticas de regulação energética e sensorial.",
+    "title": "Autismo adulto no trabalho: barreiras, adaptações e sinais de sobrecarga",
+    "description": "Como descrever barreiras no trabalho e discutir adaptações razoáveis, com a NR-1 vigente e limites claros entre burnout autista, diagnóstico e gestão de riscos.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -450,8 +450,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/autismo/glossario",
-    "title": "Glossário de autismo nível 1 em adultos, vocabulário técnico, ético e atualizado em 2026",
-    "description": "Cinquenta verbetes essenciais sobre autismo nível 1 de suporte em adultos, do diagnóstico tardio à dupla empatia, da camuflagem ao apego, com vocabulário identity-first e definições operacionais para pacientes, profissionais e pesquisadores.",
+    "title": "Glossário de autismo adulto: 53 termos para ler com contexto",
+    "description": "Definições de identidade, camuflagem, sensorialidade, relacionamentos, instrumentos e direitos, com âncoras para consulta e limites de uso.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -460,12 +460,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "recurso"
     ],
     "weight": 0.8,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/autismo/para-pacientes",
-    "title": "Autismo nível 1 em adultos para pacientes e famílias: leitura clínica acessível com Larissa Caramaschi",
-    "description": "Conteúdo para adultos autistas nível 1 de suporte, parceiros, pais, irmãos e amigos que querem entender diagnóstico tardio, camuflagem, vida amorosa neurodivergente e acomodações no trabalho, em vocabulário identity-first e com rigor clínico.",
+    "title": "Autismo em adultos: guia de leitura para pacientes e familiares",
+    "description": "Por onde começar diante de uma suspeita ou diagnóstico, como preparar perguntas e avaliar informações, com direitos e opções de apoio explicados sem promessas.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -475,12 +475,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "recurso"
     ],
     "weight": 0.8,
-    "pageType": "website"
+    "pageType": "article"
   },
   {
     "route": "/autismo/para-pesquisadores",
-    "title": "Autismo nível 1 em adultos para pesquisadores, fronteira metodológica e lacunas brasileiras",
-    "description": "Conteúdo para pesquisadoras e pesquisadores em psicologia, neurociências, psiquiatria e estudos da neurodiversidade: fronteira de pesquisa em TEA adulto, validação cruzada de instrumentos como CAT-Q e RAADS-R, lacunas em amostras brasileiras e diálogo entre paradigma médico e paradigma da neurodiversidade.",
+    "title": "Pesquisa sobre autismo adulto: da pergunta ao protocolo",
+    "description": "Roteiro para delimitar população, escolher medidas, planejar participação autista e conferir o enquadramento ético de um projeto, com fontes brasileiras e internacionais.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -490,12 +490,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "recurso"
     ],
     "weight": 0.8,
-    "pageType": "website"
+    "pageType": "article"
   },
   {
     "route": "/autismo/para-profissionais",
-    "title": "Autismo nível 1 em adultos para profissionais de psicologia, conteúdo técnico com Larissa Caramaschi",
-    "description": "Material clínico sobre autismo nível 1 de suporte em adultos para psicólogas, psicólogos, neuropsicólogos e profissionais da saúde mental: instrumentos validados, raciocínio diferencial, escuta de apresentações internalizantes, supervisão de casos com camuflagem alta e compliance CFP.",
+    "title": "Autismo em adultos para profissionais: percurso de estudo, avaliação e supervisão",
+    "description": "Um roteiro para transformar leitura sobre autismo adulto em competências verificáveis, com atualização normativa e critérios para selecionar instrumentos e supervisão.",
     "kind": "Recurso",
     "persona": null,
     "tags": [
@@ -505,7 +505,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "recurso"
     ],
     "weight": 0.8,
-    "pageType": "website"
+    "pageType": "article"
   },
   {
     "route": "/autismo/sobre-larissa",
@@ -566,8 +566,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/carreira/consultoria-organizacional",
-    "title": "Carreira em Consultoria Organizacional — framework, vendas e marca pessoal",
-    "description": "A trilha de saída do CLT que mais falha. Sem retaguarda teórica, o consultor vende workshop. Com método, escala. Progressão típica e MBA combinado.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Carreira",
     "persona": "consultores",
     "tags": [
@@ -576,7 +576,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "organizacional"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/carreira/neuropsicologia",
@@ -761,8 +761,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/aba-vs-denver-tea-precoce",
-    "title": "ABA tradicional vs Modelo Denver (ESDM) para TEA precoce",
-    "description": "Comparativo independente entre ABA (Lovaas) e ESDM (Dawson & Rogers) em TEA precoce. Mecanismo, evidência por faixa etária, perfil de criança e decisão clínica.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -774,12 +774,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/act-vs-tcc",
-    "title": "ACT ou TCC: comparativo clínico para decidir",
-    "description": "Comparativo independente entre ACT e TCC em Psicologia clínica. Mecanismo de ação, evidência por condição, perfil ideal de paciente, decisão clínica.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -789,7 +789,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/act-vs-tcc-dor-cronica",
@@ -845,8 +845,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/avaliacao-presencial-vs-remota",
-    "title": "Avaliação psicológica presencial vs remota: regulamentação CFP e técnica",
-    "description": "Comparativo independente entre avaliação psicológica presencial e por telessaúde. Resolução CFP 11/2018, SATEPSI, equivalência psicométrica e indicação por perfil.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -857,12 +857,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/bat-vs-mbi-burnout",
-    "title": "BAT vs MBI em burnout: comparativo entre Schaufeli (2020) e Maslach (1996)",
-    "description": "Comparativo técnico entre Burnout Assessment Tool (Schaufeli, Desart & De Witte, 2020) e Maslach Burnout Inventory (Maslach et al., 1996). Base teórica, propriedades psicométricas e cenários de uso em clínica, NR-1 e pesquisa.",
+    "title": "BAT e MBI: comparar versões antes de trocar a medida",
+    "description": "Entenda diferenças entre BAT e MBI, licença, continuidade de séries e limites de interpretação de escores de burnout.",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -873,7 +873,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/brasil-vs-portugal-pos-psi",
@@ -946,8 +946,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/chatbots-saude-mental-certificados-2026",
-    "title": "Chatbots de saúde mental certificados em 2026 — Brasil vs EUA vs Reino Unido | Wysa, Woebot, Limbic, Replika",
-    "description": "Comparativo independente em 10 atributos: certificação FDA SaMD, MHRA, ANVISA RDC 657/2022, classe de risco, evidência RCT, integração CID, suporte pt-BR, integração SUS e base do modelo.",
+    "title": "Chatbots de saúde mental: como conferir evidência e regularização",
+    "description": "Um roteiro para verificar finalidade, estudos, disponibilidade e situação regulatória de chatbots no Brasil, nos EUA e no Reino Unido.",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -960,7 +960,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/chatbots-terapeuticos-vs-terapeuta-humano-2026",
@@ -1015,8 +1015,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/dbt-vs-tcc-borderline",
-    "title": "DBT vs TCC para borderline: qual escolher e quando combinar",
-    "description": "Comparativo independente entre DBT (Linehan) e TCC clássica em transtorno de personalidade borderline. Mecanismo, evidência Cochrane, perfil ideal de paciente é decisão clínica.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1027,7 +1027,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/diagnostico-tea-humano-vs-ia-2026",
@@ -1115,8 +1115,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/emdr-vs-tcc-trauma",
-    "title": "EMDR vs TCC focada em trauma (TF-CBT): qual escolher e quando",
-    "description": "Comparativo independente entre EMDR e TF-CBT em TEPT e trauma complexo. Mecanismo, evidência por condição, perfil ideal de paciente e quando combinar.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1127,7 +1127,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/entrevista-motivacional-vs-tcc-transtorno-do-jogo",
@@ -1166,8 +1166,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/exposicao-vs-emdr-tept",
-    "title": "Exposição Prolongada vs EMDR para TEPT: comparativo entre duas primeiras linhas",
-    "description": "Comparativo independente entre PE (Foa) e EMDR (Shapiro) em TEPT. Mecanismo, evidência por subtipo, perfil de paciente é decisão clínica.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1178,7 +1178,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/gpt55-vs-claude47-vs-gemini25-clinica-2026",
@@ -1234,8 +1234,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/ia-vs-terapeuta-humano",
-    "title": "IA vs terapeuta humano: comparativo em saúde mental",
-    "description": "Comparativo independente entre IA generativa (Woebot, Wysa, ChatGPT) e terapeuta humano. Evidência, limites, regulação APA e CFP, e quando cada um faz sentido.",
+    "title": "IA e terapeuta humano: como comparar apoios em saúde mental",
+    "description": "Diferenças entre chatbot, recurso educativo e psicoterapia: evidência, finalidade, vínculo, privacidade e limites das comparações.",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1245,12 +1245,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/iapt-vs-stepped-care-brasil",
-    "title": "IAPT vs SUS: comparativo entre modelo NHS e stepped care brasileiro",
-    "description": "Comparativo independente entre o modelo IAPT do NHS é o sistema brasileiro RAPS/CAPS. Lógica de stepped care, evidência por condição, cobertura é o que adaptar.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1262,7 +1262,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/instrumentos-burnout-bat12-mbihssmp-olbi-cbi-validacao-br-2026",
@@ -1321,8 +1321,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/laudo-psicologico-vs-laudo-medico",
-    "title": "Laudo psicológico vs laudo médico: competências, diferenças e complementaridade",
-    "description": "Comparativo entre laudo psicológico (Resolução CFP 06/2019) e laudo médico (CFM). Competências legais, finalidades, contextos jurídicos e quando os dois se complementam.",
+    "title": "Laudo psicológico e documentos médicos: escolher pela finalidade",
+    "description": "Diferenças entre laudo psicológico, relatório, atestado e documentos médicos, com CFP 6/2019 e CFM 2.381/2024.",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1333,7 +1333,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/lecanemab-vs-donanemab-anvisa-2026",
@@ -1369,8 +1369,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/mindfulness-vs-act",
-    "title": "Mindfulness vs ACT: comparativo entre MBSR/MBCT e Aceitação e Compromisso",
-    "description": "Comparativo independente entre Mindfulness clínico (MBSR/MBCT) e ACT em Psicologia. Mecanismo de ação, evidência por condição, perfil ideal e quando combinar.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1380,12 +1380,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/neuropsicologia-vs-reabilitacao",
-    "title": "Neuropsicologia vs Reabilitação Neuropsicológica: qual escolher e quando",
-    "description": "Comparativo independente entre Neuropsicologia e Reabilitação Neuropsicológica. Avaliar versus reabilitar, perfil ideal de cada lado, mini-caso e erros comuns.",
+    "title": "Neuropsicologia e reabilitação: competências que se articulam",
+    "description": "Compare avaliação e reabilitação neuropsicológicas sem reduzir a Neuropsicologia ao laudo: funções, objetivos, equipe e escolha de formação.",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1395,12 +1395,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/online-vs-presencial",
-    "title": "Online vs Presencial em pós-graduação: qual escolher e quando",
-    "description": "Comparativo independente entre online síncrono, online assíncrono, híbrido e presencial em pós-graduação em Psicologia. Perfil ideal de cada formato, mini-caso e erros comuns.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1410,7 +1410,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/positiva-vs-organizacional",
@@ -1461,8 +1461,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/comparativos/psicoterapia-individual-vs-grupo",
-    "title": "Psicoterapia individual vs em grupo: mecanismo, evidência e quando combinar",
-    "description": "Comparativo independente: psicoterapia individual vs em grupo. Onze fatores terapêuticos de Yalom, evidência por condição clínica, custos SUS e decisão por perfil de paciente.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Comparativo",
     "persona": null,
     "tags": [
@@ -1473,7 +1473,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "comparativo"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/comparativos/reabilitacao-neuropsi-curta-vs-longa-duracao",
@@ -4359,8 +4359,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/avaliacao-tdah-adulto",
-    "title": "Avaliação de TDAH em adulto — guia 9 passos · ASRS-18, DIVA-5, DSM-5-TR, laudo CFP",
-    "description": "Protocolo passo-a-passo para avaliação de TDAH em adulto: anamnese retrospectiva, ASRS-18, DIVA-5, neuropsicologia, diferenciais com TEA/ansiedade, prejuízo funcional, plano integrado e laudo conforme Resolução CFP 06/2019.",
+    "title": "Avaliação de TDAH adulto: história, contexto e decisão clínica",
+    "description": "Como preparar e compreender uma avaliação de TDAH adulto, distinguindo rastreio, entrevista, funcionamento e avaliação neuropsicológica.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4371,12 +4371,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/avaliacao-tdah-mulheres-adultas",
-    "title": "Avaliação de TDAH em mulheres adultas — guia 10 passos · ASRS-18, DIVA-5, modulação hormonal, laudo CFP",
-    "description": "Protocolo passo-a-passo para avaliação de TDAH em mulher adulta: anamnese com mascaramento, mapeamento hormonal cíclico, ASRS-18 sensibilizado, DIVA-5 ampliado, diferenciais com burnout, comorbidades específicas femininas, plano integrado e laudo CFP 06/2019.",
+    "title": "TDAH em mulheres adultas: avaliar sem estereótipos",
+    "description": "História, compensações, contexto, ciclo de vida e limites dos instrumentos na avaliação de TDAH em mulheres adultas.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4388,7 +4388,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/avaliacao-tea-adulto",
@@ -4425,8 +4425,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/avaliacao-tea-mulheres-adultas",
-    "title": "Avaliação de TEA em mulher adulta — guia 9 passos · CAT-Q, ADOS-2, fenótipo feminino, laudo CFP",
-    "description": "Protocolo passo-a-passo para avaliação de TEA em mulher adulta: anamnese retrospectiva com camuflagem, CAT-Q (Hull 2019), AQ-50 + RAADS-R ajustados, GQ-ASC vs ADOS-2, 3DI/ADI-R, diferenciais TPL/TDAH/anorexia, comorbidades e laudo CFP 06/2019.",
+    "title": "TEA em mulheres adultas: investigar trajetória e necessidades",
+    "description": "Avaliação de autismo em mulheres adultas com história do desenvolvimento, contexto, camuflagem, instrumentos e limites de interpretação.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4438,7 +4438,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/biomarcadores-plasma-alzheimer-protocolo-neuropsi-2026",
@@ -4532,8 +4532,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/dupla-excepcionalidade-2e-adulto-avaliacao",
-    "title": "Dupla excepcionalidade (2e) no adulto: guia de avaliação · AHSD com TDAH ou TEA sem ver só um lado",
-    "description": "Como avaliar dupla excepcionalidade (2e) no adulto: o talento mascara o transtorno e o transtorno mascara o talento. Leitura fatorial do WAIS, diferencial sem fechamento prematuro, custo da sobrecompensação e plano que reduz fricção em vez de exigir força de vontade.",
+    "title": "Dupla excepcionalidade no adulto: investigar forças e dificuldades",
+    "description": "Como analisar altas habilidades e condições coexistentes sem inferir dupla excepcionalidade por discrepância cognitiva ou um único teste.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4545,12 +4545,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/escalas-burnout-bat-mbi-olbi-cbi",
-    "title": "Escalas de burnout no Brasil em 2026: como escolher e aplicar BAT, MBI, OLBI e CBI",
-    "description": "Protocolo técnico em 9 passos para selecionar entre BAT (Schaufeli, 2020), MBI (Maslach, 1996), OLBI (Demerouti, 2003) e CBI (Kristensen, 2005), com cutoffs, validação brasileira, integração com NR-1 e Resolução CFP 06/2019.",
+    "title": "Escalas de burnout: escolher o instrumento pela pergunta",
+    "description": "Compare BAT, MBI, OLBI e CBI por construto, versão, população, licença e finalidade, sem transformar escores em diagnóstico.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4564,7 +4564,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/escolher-supervisor-clinico",
@@ -4637,8 +4637,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/integracao-ia-psicodiagnostico-clinica",
-    "title": "IA generativa no psicodiagnóstico clínico — guia 9 passos · CFP 11/2018, LGPD, vieses, prompts auditáveis",
-    "description": "Protocolo passo-a-passo para integrar IA generativa no psicodiagnóstico clínico com ética: Resolução CFP 11/2018, vieses algorítmicos, LGPD, prompts auditáveis, anonimização robusta e registro técnico.",
+    "title": "IA e psicodiagnóstico: limites, evidência e conferência do processo",
+    "description": "Como examinar o papel de IA no psicodiagnóstico sem confundir apoio informacional com aplicação de testes, interpretação ou decisão profissional.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4649,7 +4649,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/intervencao-adolescente-ideacao-suicida-algoritmos",
@@ -4760,8 +4760,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/notas-clinicas-ia-implantar-consultorio-2026",
-    "title": "Implantar notas clínicas por IA no consultório em 2026 — HowTo 10 passos | LGPD, CFP, auditoria",
-    "description": "Protocolo operacional em 10 passos para psicólogos brasileiros: LGPD Art. 11 e 33, CFP 11/2018, CFP 06/2019, RDC 657/2022, redação supervisionada, hospedagem, auditoria trimestral e política de incidente.",
+    "title": "Notas clínicas e IA: avaliar transcrição, registro e proteção de dados",
+    "description": "Critérios para examinar ferramentas de notas clínicas: finalidade, consentimento, dados sensíveis, fidelidade, retenção e incidentes.",
     "kind": "Guia",
     "persona": "consultores",
     "tags": [
@@ -4774,7 +4774,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/protocolo-act-burnout-saude",
@@ -4904,8 +4904,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/uso-etico-ia-clinica",
-    "title": "Uso ético de IA generativa na clínica — guia 9 passos · sigilo, LGPD, viés, CFP, APA",
-    "description": "Guia passo-a-passo para uso ético de ChatGPT, Claude e Copilot em prática clínica: sigilo, LGPD, viés algorítmico, consentimento, alertas APA 2024-2026 e Resolução CFP.",
+    "title": "IA na prática clínica: decidir a finalidade antes de escolher a ferramenta",
+    "description": "Um roteiro de decisão para psicólogos: finalidade, dados, evidência, consentimento, revisão e limites do uso de inteligência artificial.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4916,12 +4916,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/uso-etico-ia-generativa-2026",
-    "title": "Uso ético de IA generativa na clínica em 2026 — protocolo em 9 passos · CFP, LGPD, viés, deepfakes",
-    "description": "Protocolo operacional para psicólogos brasileiros: caso de uso, Resolução CFP 11/2018, Posicionamento CFP 07/2025, LGPD prontuário, desidentificação, escolha de modelo, viés, deepfakes e documentação pericial.",
+    "title": "Contratar IA para a clínica: um roteiro de governança e proteção de dados",
+    "description": "Como verificar finalidade, fornecedor, dados sensíveis, consentimento, transferências, revisão e incidentes antes de adotar IA na clínica.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4933,7 +4933,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/intervencoes",
@@ -6152,8 +6152,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/adhd-adulto-brasil",
-    "title": "TDAH adulto no Brasil: subdiagnóstico e tratamento",
-    "description": "TDAH adulto segue subdiagnosticado no Brasil. O que a literatura de Polanczyk, Mattos e Faraone muda para a clínica, o RH e a regulação CFM.",
+    "title": "TDAH adulto no Brasil: da suspeita ao cuidado",
+    "description": "Como buscar avaliação de TDAH adulto, interpretar informações públicas e conversar sobre cuidado e funcionamento sem autodiagnóstico.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6164,7 +6164,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/adolescencia-lgbtqia-trevor-project-2026",
@@ -6186,8 +6186,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/avaliar-tdah-adulto-brasil-protocolo",
-    "title": "Como avaliar TDAH em adulto no Brasil em 2026 — protocolo principal",
-    "description": "Protocolo principal para avaliação de TDAH em adulto no Brasil em 2026: prevalência 2,5-4%, critérios DSM-5-TR e CID-11 6A05, ASRS-18, DIVA-5, BRIEF-A, CAARS e Resolução CFP 31/2022.",
+    "title": "TDAH adulto: construir um processo de avaliação justificável",
+    "description": "Roteiro de planejamento para profissionais: demanda, hipóteses, fontes, escolha de instrumentos, TDIC, integração e devolutiva.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6200,7 +6200,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/burnout-lgbtqia-minority-stress-2026",
@@ -6317,8 +6317,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/fadiga-digital",
-    "title": "Fadiga digital: Zoom fatigue, tecnostress e direito à desconexão em 2025-2026",
-    "description": "Fadiga digital não é metáfora — é exaustão mensurável. Análise técnica de Bailenson, Fauville e da diretiva europeia de desconexão. O que a empresa decide sobre arquitetura digital.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6328,12 +6328,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/gen-z-burnout",
-    "title": "Burnout na geração Z: o que retém quem está sendo contratado em 2025-2026",
-    "description": "Gen Z não é mais frágil — é coorte distinta em contexto distinto. Análise técnica de Twenge, Deloitte e evidência brasileira sobre burnout, engajamento e retenção.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6343,7 +6343,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/gpt5-claude47-em-psicoterapia-2026",
@@ -6377,8 +6377,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/ia-generativa-rh",
-    "title": "IA generativa em RH: viés algorítmico, LGPD e a defesa técnica em 2025-2026",
-    "description": "ChatGPT em hiring amplifica viés histórico e expõe a empresa juridicamente. Análise técnica de Raghavan, Kim, EEOC, AI Act e da posição do CFP — com o que decidir.",
+    "title": "IA generativa em RH: critérios, dados e revisão das decisões",
+    "description": "Como avaliar usos de IA em RH com critérios de seleção, transparência, proteção de dados, acessibilidade e conferência de vieses.",
     "kind": "Tema",
     "persona": "rh",
     "tags": [
@@ -6387,12 +6387,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/ia-psicodiagnostico-2026",
-    "title": "IA generativa em psicodiagnóstico em 2026: validade, viés, CFP e LGPD aplicados à clínica",
-    "description": "ChatGPT, Claude e Gemini em screening psicológico. Estado da arte 2024-2026 com Sharma, Heinz, Inkster e Fitzpatrick. APA, CFP, LGPD. O que muda para a clínica brasileira.",
+    "title": "IA e psicodiagnóstico: o que a evidência permite concluir em 2026",
+    "description": "Como ler estudos de IA em saúde mental e separar melhora de sintomas, validade diagnóstica, viés e regras da avaliação psicológica.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6402,7 +6402,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/ia-psicologia-2026",
@@ -6494,8 +6494,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/ia-saude-mental-supervisao-clinica-humana-mba-trilha",
-    "title": "IA em Saúde Mental com Supervisão Clínica Humana: a trilha MBA que captura a onda regulatória de 2026",
-    "description": "",
+    "title": "Formação em IA e saúde mental: como avaliar uma trilha de estudo",
+    "description": "Critérios para comparar formação em IA, saúde mental e supervisão: competências, evidência, prática, credenciais e limites profissionais.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6510,7 +6510,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/lei-15100-12-meses-balanco-2026",
@@ -6532,8 +6532,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/lideranca-positiva",
-    "title": "Liderança positiva: protege pessoas das forças que adoecem performance",
-    "description": "Liderança positiva não é ser legal — é proteger pessoas das forças estruturais que adoecem performance. Cameron, Edmondson, Goleman e prática gerencial documentada.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": "lideres",
     "tags": [
@@ -6543,12 +6543,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/lideranca-toxica",
-    "title": "Liderança tóxica: supervisão abusiva, narcisismo organizacional e o que tolerância produz",
-    "description": "Liderança tóxica raramente é só sobre o líder. É sobre o sistema que tolera. Análise técnica de Tepper, Padilla e Schyns & Schilling, com a decisão gerencial defensável.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": "lideres",
     "tags": [
@@ -6558,12 +6558,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/longevidade-no-trabalho",
-    "title": "Longevidade no trabalho: carreiras de 60 anos, ageism e o redesenho que 2025-2026 já exige",
-    "description": "Carreira virou de 60 anos. RH ainda opera no modelo de 30. Análise técnica de Gratton, Scott e da pesquisa em longevidade adulta — com o que muda na arquitetura organizacional.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6573,7 +6573,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/mba-psicologia-organizacional-riscos-psicossociais-people-analytics",
@@ -6650,8 +6650,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/neurodiversidade-corporativa",
-    "title": "Neurodiversidade corporativa: TEA, TDAH, dislexia e a inclusão que a LBI já obriga",
-    "description": "Neurodiversidade no trabalho deixou de ser nicho. Análise técnica da literatura de Krzeminska, Hawse, Austin e Pisano, com a base legal brasileira (LBI 13.146/2015).",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6661,7 +6661,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/nr1-explicada-para-psicologos-2026",
@@ -6819,8 +6819,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/saude-mental-trabalho-remoto",
-    "title": "Saúde mental no trabalho remoto: isolamento, fronteira difusa e o desenho que falta",
-    "description": "Trabalho remoto não é bom nem ruim em si. É como foi desenhado. Análise técnica de Wang, Galanti, Vyas e da regulação brasileira (Lei 14.442/2022, NR-17).",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6832,12 +6832,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/seguranca-psicologica",
-    "title": "Segurança psicológica: tolerância gerencial à discordância técnica",
-    "description": "Não é ambiente agradável — é base da performance sustentada. Análise técnica do framework de Edmondson, quatro níveis, instrumento de medição e plano de construção.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6847,12 +6847,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/supervisao-clinica-async-ia-2026",
-    "title": "Supervisão clínica assíncrona com IA em 2026 — o que CFP e evidência permitem",
-    "description": "Tese técnica: supervisão assíncrona com camada de IA é viável e ética se preservar presença humana do supervisor. Evidência Watkins 2024-2025, Carlsson 2025, Bernard e Goodyear 2024 e Posicionamento CFP 03/07/2025.",
+    "title": "Supervisão clínica assíncrona e IA: delimitar funções e responsabilidades",
+    "description": "Como estruturar a discussão sobre supervisão assíncrona, sigilo, prazos, devolutivas e apoio de IA sem substituir análise profissional.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6864,12 +6864,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/tea-adulto-trabalho",
-    "title": "TEA em adultos no trabalho: diagnóstico tardio, masking e adaptações razoáveis no Brasil",
-    "description": "Autismo adulto na pauta corporativa. Estado da arte 2024-2026 com Pellicano, Lai, Bishop e Krzeminska. O que muda para RH, clínica e a Lei Brasileira de Inclusão.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6880,7 +6880,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/tea-mulheres-lgbtqia-camuflagem-2026",

@@ -1,309 +1,184 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import FichaRapida from '@components/FichaRapida.astro';
-import { SITE, AREAS, MBAS } from '@lib/data';
-import { buildEducationalOccupationalProgram, buildSpeakable, alexandreAuthorRef } from '@lib/schemas';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+import { SITE } from '@lib/data';
 
-const area = AREAS.find(a => a.id === 'psicomotricidade')!;
-const relatedMbas = MBAS.filter(m => area.relatedCourses.includes(m.id));
-const adjacent = AREAS.filter(a => a.id !== area.id && a.cluster === area.cluster).slice(0, 4);
-
-const faqs = [
-  {
-    q: 'Psicomotricidade é especialidade ou profissão própria?',
-    a: 'A Psicomotricidade é um campo interdisciplinar de atuação, não uma profissão regulamentada de forma autônoma. A Sociedade Brasileira de Psicomotricidade (SBP) organiza, desde 1979, referências técnicas, congressos e a titulação de Especialista em Psicomotricidade para profissionais associados que cumpram os critérios (formação, supervisão, prática comprovada). Psicólogos, fisioterapeutas, pedagogos, terapeutas ocupacionais, professores de Educação Física e fonoaudiólogos podem se formar e exercer a prática conforme as habilitações de sua profissão de base.'
+const page = {
+  "title": "Psicomotricidade: regulamentação, formação e critérios de prática",
+  "description": "Conheça a Lei 13.794/2019, diferencie formação e habilitação e compare propostas de Psicomotricidade com uma ficha de leitura crítica.",
+  "route": "/areas/psicomotricidade/",
+  "label": "Psicomotricidade",
+  "section": "Áreas",
+  "sectionPath": "/areas/",
+  "faqs": [
+    {
+      "q": "A Psicomotricidade é uma profissão regulamentada?",
+      "a": "Sim. A Lei nº 13.794/2019 regulamenta a profissão de psicomotricista. A elegibilidade depende das condições previstas no texto legal."
+    },
+    {
+      "q": "Qualquer pós atual habilita automaticamente como psicomotricista?",
+      "a": "Não se deve fazer essa inferência. É necessário examinar a trajetória de formação, as regras legais e a base específica apresentada pela instituição."
+    },
+    {
+      "q": "Uma dificuldade motora confirma um diagnóstico?",
+      "a": "Não. Uma observação isolada exige contextualização e não substitui avaliação qualificada."
+    }
+  ],
+  "worksheet": {
+    "title": "Verificação de uma formação em Psicomotricidade",
+    "description": "Documente o que o curso oferece e o que precisa ser esclarecido antes da matrícula.",
+    "fields": [
+      {
+        "label": "Promessa do curso",
+        "hint": "Registre a redação pública sobre certificado ou habilitação."
+      },
+      {
+        "label": "Base normativa apresentada",
+        "hint": "Anote o dispositivo e o link que a instituição cita."
+      },
+      {
+        "label": "Prática e supervisão",
+        "hint": "Que situações e públicos a formação cobre?"
+      },
+      {
+        "label": "Dúvida pendente",
+        "hint": "Formule uma pergunta objetiva à coordenação."
+      }
+    ],
+    "checklist": [
+      "Consultei a Lei nº 13.794/2019.",
+      "Verifiquei a aplicabilidade das regras à minha trajetória.",
+      "Separei aprendizado, certificado e habilitação.",
+      "Solicitei evidências de supervisão e acessibilidade."
+    ]
   },
-  {
-    q: 'Qual a diferença entre Psicomotricidade educativa, reeducativa e terapêutica?',
-    a: 'A SBP organiza três frentes. Psicomotricidade educativa atua em escolas, creches e contextos coletivos, com finalidade preventiva e de desenvolvimento de habilidades psicomotoras. Psicomotricidade reeducativa intervém em dificuldades específicas — escolares, motoras leves, atraso de desenvolvimento — em sessões pedagógico-clínicas. Psicomotricidade terapêutica (também chamada de relacional) opera no plano clínico, com finalidade de simbolização e elaboração, frequentemente em parceria com psicoterapia. Cada vertente tem método e contexto próprios.'
-  },
-  {
-    q: 'Psicomotricidade serve só para crianças?',
-    a: 'Não. Embora a maior parte da literatura clássica trate da infância (Wallon, Ajuriaguerra, Lapierre, Aucouturier), o campo se expandiu para outras faixas etárias. Há aplicação documentada em adolescentes com transtornos do neurodesenvolvimento, em adultos com transtorno de ansiedade, em idosos com perda funcional e em populações específicas como pessoas com TEA, Síndrome de Down e demências iniciais. A literatura contemporânea sobre psicomotricidade e envelhecimento ativo é especialmente promissora.'
-  },
-  {
-    q: 'Existe diferença entre Psicomotricidade e Educação Física adaptada?',
-    a: 'Sim, embora se complementem em alguns contextos. Educação Física adaptada tem foco em atividade motora, esporte adaptado e desenvolvimento das capacidades físicas em populações com deficiência. Psicomotricidade trabalha o corpo como instrumento de relação, simbolização, comunicação, com forte componente afetivo e cognitivo. Os instrumentos são distintos: a EF adaptada usa lógica de treino e prescrição; a Psicomotricidade usa lógica de sessão, mediação relacional e leitura simbólica do gesto.'
-  },
-  {
-    q: 'Vale a pena pós em Psicomotricidade para psicólogo clínico infantil?',
-    a: 'Vale, especialmente para quem atende crianças em fase pré-escolar e início da alfabetização. Domínio das etapas do desenvolvimento psicomotor (controle postural, coordenação, lateralidade, esquema corporal, organização espaço-temporal) permite leitura mais fina de queixas de aprendizagem, autorregulação e comportamento. A pós também amplia repertório de intervenção corporal mediada, complementando abordagens exclusivamente verbais. Verificar grade, supervisão e prática é regra básica.'
-  }
-];
-
+  "sources": [
+    [
+      "Lei nº 13.794/2019: regulamentação do psicomotricista",
+      "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13794.htm"
+    ],
+    [
+      "CFP: registro de especialista",
+      "https://site.cfp.org.br/servicos/titulo-de-especialista/"
+    ],
+    [
+      "Lei nº 13.146/2015: inclusão e acessibilidade",
+      "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+    ]
+  ]
+};
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Psicomotricidade: corpo, movimento, desenvolvimento e formação interdisciplinar',
-  description: 'Guia técnico de Psicomotricidade: campo interdisciplinar, vertentes educativa, reeducativa e terapêutica, desenvolvimento psicomotor. Referência SBP. Conteúdo independente.',
-  // E-E-A-T: author Person canônico + publisher Organization via @id (Maio 2026 Core Update).
-  author: alexandreAuthorRef,
-  reviewedBy: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
+  '@id': SITE.url + page.route + '#article',
+  headline: page.title,
+  description: page.description,
+  mainEntityOfPage: SITE.url + page.route,
+  author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
-  datePublished: '2026-05-13',
-  inLanguage: 'pt-BR'
+  inLanguage: 'pt-BR',
+  citation: page.sources.map(([name, url]) => ({ '@type': 'CreativeWork', name, url }))
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  mainEntity: page.faqs.map(({q, a}) => ({
+    '@type': 'Question', name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a }
   }))
 };
-
-const ldProgram = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Especialização Lato Sensu em Psicomotricidade',
-    slug: '/areas/psicomotricidade',
-    description: 'Formação interdisciplinar para psicólogos, pedagogos e terapeutas que atuam com desenvolvimento psicomotor nas vertentes educativa, reeducativa e terapêutica, com referência na Sociedade Brasileira de Psicomotricidade.',
-    programType: 'Especialização Lato Sensu',
-    timeRequired: 'P360H',
-    occupationalCredentialAwarded: 'Especialista em Psicomotricidade',
-    educationalCredentialAwarded: 'Certificado de Especialização Lato Sensu'
-  }),
-  speakable: buildSpeakable(['h1', '.section-h'])
-});
 ---
-
-<Base
-  title="Psicomotricidade: corpo, movimento e desenvolvimento — pós interdisciplinar"
-  description="Guia técnico de Psicomotricidade: campo interdisciplinar, vertentes educativa, reeducativa e terapêutica, desenvolvimento psicomotor, populações e contextos. Referência SBP, MEC.">
-
+<Base title={page.title} description={page.description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Áreas', href: '/areas' },
-        { label: 'Psicomotricidade' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Área · Cluster demais áreas · Regulação {area.regulatoryLevel}</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Psicomotricidade: corpo, movimento e desenvolvimento — pós interdisciplinar</h1>
-          <p class="mt-3 text-ink-700 text-lg">O campo que toma o corpo em movimento como organizador do psiquismo. Interdisciplinar por origem, técnico por exigência.</p>
-          <FichaRapida area={area} />
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver cursos no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{label:'Início',href:'/'},{label:page.section,href:page.sectionPath},{label:page.label}]} />
     </div>
   </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          Psicomotricidade é um campo interdisciplinar que estuda o corpo em movimento como organizador do desenvolvimento humano — cognitivo, afetivo, social e motor. A Sociedade Brasileira de Psicomotricidade (SBP) organiza referências técnicas e o título de Especialista. Atua em três vertentes: educativa (escolas e contextos coletivos), reeducativa (intervenção em dificuldades específicas) e terapêutica (clínica relacional, simbolização).
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">A tese contraintuitiva da psicomotricidade</h2>
-        <p>
-          A leitura comum trata a Psicomotricidade como "atividade física com crianças". É exatamente o que a tradição do campo combate desde Wallon e Ajuriaguerra. Psicomotricidade é uma teoria do sujeito — entende o corpo em movimento, com sua tonicidade, postura, ritmo e gesto, como o lugar primeiro de organização da subjetividade. O psicomotricista competente lê o movimento como linguagem, não como exercício.
-        </p>
-        <p>
-          A segunda confusão é separar psicomotricidade de cognição. A literatura contemporânea da neurociência do desenvolvimento (Pinto et al., 2017; Diamond, 2013) demonstrou empiricamente o que a tradição já sustentava em outro vocabulário: experiências motoras estruturadas e desafiadoras na infância organizam funções executivas, autorregulação, atenção e aprendizagem escolar. Quem ignora corpo na clínica infantil empobrece a clínica.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Fundamentação conceitual</h2>
-        <p>
-          O primeiro pilar é a obra de Henri Wallon, que articulou afetividade, motricidade e cognição em uma teoria do desenvolvimento que escapa do dualismo corpo-mente. Para Wallon, o gesto é uma linguagem antes da palavra. As emoções, especialmente nos primeiros anos, são manifestadas tonicamente no corpo, e essa tonicidade organiza o vínculo, a relação com o outro e, por consequência, o desenvolvimento psíquico (Wallon, 1942).
-        </p>
-        <p>
-          O segundo pilar é a clínica psicomotora de Julian de Ajuriaguerra, médico psiquiatra que sistematizou a leitura tônico-emocional do corpo em quadros psiquiátricos e em distúrbios do desenvolvimento. A Bateria Piaget-Head e a Avaliação Psicomotora de Ajuriaguerra continuam sendo referência técnica para o exame psicomotor estruturado (Ajuriaguerra, 1974).
-        </p>
-        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
-          "A criança é, antes de tudo, um corpo em movimento. Esse movimento é portador de emoção, intenção e relação. Lê-lo é o trabalho do psicomotricista." — André Lapierre &amp; Bernard Aucouturier, A Simbologia do Movimento (1977).
-        </blockquote>
-        <p>
-          O terceiro pilar é a Prática Psicomotora Aucouturier (PPA), formulada por Bernard Aucouturier a partir dos anos 1960 e amplamente disseminada na formação brasileira em Psicomotricidade. A PPA opera em sessões com material e setting padronizados, em que a criança vivencia o "trajeto de maturidade" — do prazer sensório-motor à representação simbólica. É a vertente terapêutica e relacional mais utilizada no Brasil (Aucouturier, 2004).
-        </p>
-        <p>
-          O quarto pilar é a vertente psicomotora de André Lapierre, mais focada no contexto reeducativo e educativo, com forte componente de leitura simbólica do gesto. Lapierre e Aucouturier formaram juntos parte importante da tradição francófona da psicomotricidade brasileira, depois seguindo trajetórias distintas. **Cursos de Psicomotricidade que ignoram a herança Wallon-Ajuriaguerra-Lapierre-Aucouturier perdem a fundação técnica do campo.**
-        </p>
-        <p>
-          O quinto pilar é a integração com a neurociência cognitiva contemporânea, especialmente em torno das funções executivas e da regulação corporal-emocional. A literatura sobre intervenções psicomotoras estruturadas e seu impacto em autorregulação, controle inibitório e desempenho escolar em populações com TDAH e TEA tem crescido consistentemente, dialogando com a tradição clínica clássica.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Três vertentes da Psicomotricidade</h2>
-        <p class="text-ink-700 mt-2">
-          A SBP organiza o campo em três vertentes com método, contexto e finalidade distintos.
-        </p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Vertente</th>
-                <th class="text-left px-4 py-3">Contexto típico</th>
-                <th class="text-left px-4 py-3">Finalidade</th>
-                <th class="text-left px-4 py-3">Método dominante</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Educativa</td>
-                <td class="px-4 py-3 text-ink-700">Escola, creche, programas coletivos.</td>
-                <td class="px-4 py-3 text-ink-700">Prevenção e desenvolvimento de habilidades psicomotoras.</td>
-                <td class="px-4 py-3 text-ink-700">Programas estruturados em grupo, jogos psicomotores.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Reeducativa</td>
-                <td class="px-4 py-3 text-ink-700">Atendimento individual ou em pequenos grupos.</td>
-                <td class="px-4 py-3 text-ink-700">Intervir em dificuldades motoras, escolares ou comportamentais.</td>
-                <td class="px-4 py-3 text-ink-700">Sessões com objetivos pedagógico-clínicos definidos.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Terapêutica / relacional</td>
-                <td class="px-4 py-3 text-ink-700">Clínica psicomotora, frequentemente em parceria com psicoterapia.</td>
-                <td class="px-4 py-3 text-ink-700">Elaboração simbólica, manejo de afetos e relação.</td>
-                <td class="px-4 py-3 text-ink-700">PPA, abordagem Lapierre, modelos integrativos.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Geriátrica e adulta</td>
-                <td class="px-4 py-3 text-ink-700">Idosos, populações com perda funcional, ansiedade adulta.</td>
-                <td class="px-4 py-3 text-ink-700">Manutenção funcional, regulação emocional, reorganização corporal.</td>
-                <td class="px-4 py-3 text-ink-700">Sessões adaptadas, grupos terapêuticos.</td>
-              </tr>
-            </tbody>
-          </table>
+  <div class="container-page py-12">
+    <article class="editorial mx-auto max-w-4xl">
+      <header>
+        <p class="eyebrow">Formação e prática responsável</p>
+        <h1>{page.title}</h1>
+        <p class="lead">Caso hipotético: uma profissional encontra uma pós que promete habilitar qualquer graduado como psicomotricista. Antes de avaliar a grade ou o preço, ela precisa conferir qual regra permite usar o título e se a promessa corresponde à sua trajetória.</p>
+        <p class="update">Atualização editorial: 06/10/2026 · Brasil GEO. Conteúdo educativo para leitura crítica e escolha de formação.</p>
+      </header>
+      <section><h2>A profissão de psicomotricista é regulamentada pela Lei nº 13.794/2019.</h2>
+<p>A <a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13794.htm">Lei nº 13.794/2019</a> regulamenta a profissão e define condições para o uso do título e o exercício da atividade. Seu artigo 2º contempla formação superior específica e outras situações, incluindo regras de transição. A hipótese relacionada à pós-graduação contém referência temporal de 48 meses após a promulgação. Portanto, uma nova matrícula não pode ser anunciada como habilitação universal apenas porque o curso é uma especialização.</p>
+<p>Esse é o primeiro documento a levar à coordenação do curso. Peça que a instituição explique por escrito qual dispositivo se aplica ao seu caso e que resultado acadêmico ou profissional está oferecendo. Não confunda a conclusão de uma disciplina, a especialização em uma área e a habilitação para uma profissão.</p></section>
+<section><h2>Corpo e movimento precisam ser lidos no contexto</h2>
+<p>A Psicomotricidade aborda relações entre movimento, desenvolvimento e participação em atividades. Uma proposta pode ter finalidade educacional ou de cuidado, conforme contexto e qualificação profissional. A escolha de recursos precisa considerar necessidades, possibilidades e preferências da pessoa, sem interpretar todo comportamento motor como sinal de transtorno.</p>
+<p>Uma criança que evita uma brincadeira pode encontrar barreiras de acesso, dificuldades para compreender a atividade ou desconforto naquele ambiente. A observação isolada não permite concluir autismo, ansiedade ou alteração neurológica. O aluno deve aprender a descrever o que vê, reconhecer o que ainda não sabe e formular perguntas adequadas para a equipe.</p>
+<p>A <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm">Lei Brasileira de Inclusão</a> oferece referência para discutir participação e acessibilidade. Na análise de uma atividade, pergunte quem consegue participar, quem encontra barreiras e o que precisa ser adaptado. Isso exige escuta e contexto, além de conhecer exercícios.</p></section>
+<section><h2>Como comparar propostas de formação</h2>
+<div class="table-wrap"><table><thead><tr><th>Critério</th><th>Documento ou resposta a solicitar</th></tr></thead><tbody>
+<tr><td>Condição de ingresso e título</td><td>Edital, certificado previsto e fundamento normativo aplicável ao perfil do aluno</td></tr>
+<tr><td>Finalidade da prática</td><td>Distinção entre atividades educacionais, avaliação e cuidado especializado</td></tr>
+<tr><td>Supervisão</td><td>Quem acompanha a prática e como o aluno recebe feedback</td></tr>
+<tr><td>Acessibilidade e segurança</td><td>Como se avaliam ambiente, materiais, participação e necessidade de apoio</td></tr>
+<tr><td>Evidência</td><td>Estudos relativos à população e ao resultado anunciado</td></tr>
+</tbody></table></div>
+<p>A força da proposta aparece na capacidade de explicar escolhas e limites. Um vídeo de atividade prazerosa não prova efeito terapêutico; uma sequência de exercícios sem contexto não prepara o aluno para todas as idades e condições. Peça exemplos de situações em que um recurso precisou ser modificado ou não era apropriado.</p></section>
+<section><h2>Especialidade em Psicologia e profissão regulamentada</h2>
+<p>O <a href="https://site.cfp.org.br/servicos/titulo-de-especialista/">CFP inclui Psicomotricidade entre suas especialidades</a>. Para a pessoa psicóloga, o registro é uma questão de sua regulamentação profissional. A análise da Lei nº 13.794/2019 e a análise das regras do conselho têm objetos próprios. Uma instituição precisa explicar essas diferenças quando anuncia sua formação a públicos diversos.</p>
+<p>Para integrar os campos, consulte <a href="/areas/psicopedagogia/">Psicopedagogia</a> e <a href="/areas/reabilitacao-neuropsicologica/">reabilitação neuropsicológica</a>. A colaboração ganha clareza quando cada profissional sabe a que pergunta pode responder e quando deve solicitar outra contribuição.</p>
+<p>No exemplo inicial, a profissional pode decidir adiar a matrícula até receber uma resposta documental sobre a habilitação. Essa é uma decisão completa e útil. Não é necessário supor que uma propaganda imprecisa invalida todo o curso, mas também não é prudente preencher a lacuna com uma interpretação favorável à venda.</p></section>
+<section><h2>Transforme a dúvida em uma verificação</h2>
+<p>Prepare um registro com a promessa exata, o documento apresentado e o ponto ainda não explicado. Guarde links e datas de consulta. Na comparação, avalie separadamente a utilidade pedagógica do curso e o efeito jurídico anunciado para o certificado.</p>
+<p>O curso <a href="https://alexandrecaramaschi.com/educacao/eeat-qualidade">E-E-A-T e qualidade</a>, do portal educacional de Alexandre Caramaschi, pode apoiar a identificação de autoria e evidências em páginas de formação. Esse complemento ajuda na leitura crítica; não interpreta sua habilitação individual. Preencha a ficha a seguir com dados públicos e perguntas para a instituição.</p></section>
+      <StudyWorksheet id="ficha-pratica" title={page.worksheet.title} description={page.worksheet.description} fields={page.worksheet.fields} checklist={page.worksheet.checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+        <div class="faq-list">
+          {page.faqs.map(({q,a}) => <details><summary>{q}</summary><p>{a}</p></details>)}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Quando a "agressividade" da criança era inibição psicomotora travada</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Menino, 5 anos, encaminhado por escola particular com queixa de "agressividade e dificuldade de socialização". Pais relatavam crises de choro e bater nos colegas. A psicóloga em atendimento havia trabalhado em registro verbal por três meses sem mudança expressiva. A indicação para avaliação psicomotora veio da neuropsicopediatra que descartou hipótese de TEA.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A avaliação psicomotora encontrou hipertonia generalizada, dificuldade de tolerar contato corporal, esquema corporal pouco diferenciado e baixo investimento em jogo de regra. Na sessão de PPA, o menino passou as primeiras três sessões em fuga sensório-motora — corria pelo espaço, jogava materiais, sem instalar atividade. Aos poucos, com setting estável e mediação contida do psicomotricista, começou a construir "casas" de almofada, depois "esconder-se" e "ser encontrado" — clássico trajeto simbólico de elaboração de separação.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Em seis meses, com sessões semanais e articulação com a psicóloga e a escola, as crises na escola caíram para frequência residual. O que parecia "agressividade comportamental" era inibição corporal travada que só ganhou vias de expressão e elaboração no setting psicomotor. Lição: nem todo sintoma comportamental responde a trabalho verbal isolado. Há sintomas que pedem mediação corporal estruturada.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Oportunidades emergentes</h2>
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">TEA e neurodesenvolvimento</p>
-            <p class="text-sm text-ink-700">A Psicomotricidade tem papel reconhecido em equipes multiprofissionais de atendimento a crianças com TEA e outros transtornos do neurodesenvolvimento, especialmente em integração sensorial e regulação corporal-afetiva.</p>
-          </div>
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Educação infantil e BNCC</p>
-            <p class="text-sm text-ink-700">A Base Nacional Comum Curricular destaca corpo, gestos e movimentos como campo de experiência na educação infantil. Psicomotricistas atuam em formação de professores, consultoria pedagógica e desenho de espaços educativos.</p>
-          </div>
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Envelhecimento ativo</p>
-            <p class="text-sm text-ink-700">A Política Nacional do Idoso e a literatura contemporânea sobre envelhecimento ativo abrem espaço para Psicomotricidade em centros de convivência, ILPI, programas de saúde do idoso e demências iniciais.</p>
-          </div>
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Saúde mental adulta</p>
-            <p class="text-sm text-ink-700">Aplicações de abordagens psicomotoras em transtornos de ansiedade, transtornos alimentares e populações com trauma têm crescido na literatura internacional, com diálogo crescente com terapias somáticas e mindfulness clínico.</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
-          {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">Psicomotricidade é leitura do corpo como linguagem do sujeito</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          O campo articula Wallon, Ajuriaguerra, Lapierre, Aucouturier e neurociência contemporânea. Quem domina avaliação psicomotora, PPA, vertente reeducativa e leitura tônico-emocional atua com método em escola, clínica e contextos geriátricos. Pós-graduação que dialoga com SBP, com supervisão de prática, é o caminho consistente. Próximo passo: comparar grade vigente e modalidade no portal do IPOG.
-        </p>
-      </div>
-
+      </section>
+      <section class="source-box" aria-labelledby="fontes-consultadas">
+        <h2 id="fontes-consultadas">Fontes primárias consultadas</h2>
+        <p>Consulte a população, a finalidade e os limites de cada documento. Leitura complementar não equivale a formação clínica ou habilitação profissional.</p>
+        <ul>{page.sources.map(([name,url]) => <li><a href={url}>{name}</a></li>)}</ul>
+      </section>
     </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">Pós em Psicomotricidade no IPOG</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          O IPOG oferece programas de pós-graduação interdisciplinares em Psicomotricidade, com formato Ao Vivo síncrono e corpo docente nominal. Para grade, valor, modalidade e turma vigentes, consulte o portal oficial.
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
-          Ver no IPOG
-        </a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
-          Home IPOG
-        </a>
-      </div>
-
-      {relatedMbas.length > 0 && (
-        <div class="card p-6">
-          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs relacionados</p>
-          <ul class="space-y-2">
-            {relatedMbas.map(m => (
-              <li>
-                <a href={`/mbas/${m.id}`} class="mega-link">
-                  <strong class="text-ink-900 text-sm">{m.shortName}</strong>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {adjacent.length > 0 && (
-        <div class="card p-6">
-          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
-          <ul class="space-y-1">
-            {adjacent.map(a => (
-              <li>
-                <a href={`/areas/${a.id}`} class="mega-link">
-                  <strong class="text-ink-900 text-sm">{a.name}</strong>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
-        </div>
-      )}
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://psicomotricidade.com.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SBP — Sociedade Brasileira de Psicomotricidade</a></li>
-          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC — BNCC e pós lato sensu</a></li>
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
-          <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde — Política Nacional do Idoso</a></li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
+  </div>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
-  <script type="application/ld+json" set:html={ldProgram} />
 </Base>
+<style>
+  .editorial { color: var(--color-text-subtle); line-height: 1.8; }
+  .editorial header { margin-bottom: 2.75rem; }
+  .editorial h1 { color: var(--color-text-strong); font-size: clamp(2rem, 4.5vw, 3.1rem); line-height: 1.15; font-weight: 700; letter-spacing: -.025em; }
+  .editorial h2 { color: var(--color-text-strong); font-size: clamp(1.35rem, 3vw, 1.7rem); line-height: 1.35; font-weight: 650; margin-bottom: 1rem; }
+  .editorial > section { margin-block: 2.5rem; }
+  .editorial p { margin-block: 1rem; text-align: justify; overflow-wrap: anywhere; }
+  .editorial .lead { font-size: 1.15rem; }
+  .editorial .eyebrow { color: var(--color-primary-ring); font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .editorial .update { font-size: .85rem; color: var(--color-text-muted); border-left: 3px solid var(--color-primary-ring); padding-left: 1rem; text-align: left; }
+  .editorial a { color: var(--color-primary-ring); text-decoration: underline; text-underline-offset: .2em; }
+  .editorial a:hover { color: var(--color-primary-hover); }
+  .editorial ul, .editorial ol { padding-left: 1.4rem; margin-block: 1rem; }
+  .editorial ul { list-style: disc; }
+  .editorial ol { list-style: decimal; }
+  .editorial li { margin-block: .6rem; }
+  .table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--color-border); border-radius: .75rem; margin-block: 1.5rem; }
+  .editorial table { border-collapse: collapse; width: 100%; min-width: 35rem; font-size: .95rem; }
+  .editorial th, .editorial td { text-align: left; vertical-align: top; padding: 1rem; border-bottom: 1px solid var(--color-border); }
+  .editorial th { background: var(--color-primary-soft); color: var(--color-text-strong); font-weight: 650; }
+  .editorial tbody tr:last-child td { border-bottom: 0; }
+  .faq-list details { border-bottom: 1px solid var(--color-border); padding-block: 1rem; }
+  .faq-list summary { cursor: pointer; color: var(--color-text-strong); font-weight: 650; }
+  .source-box { border-top: 1px solid var(--color-border); padding-top: 2rem; font-size: .95rem; }
+  :global([data-theme="dark"]) .editorial { color: var(--d-ink-700); }
+  :global([data-theme="dark"]) .editorial h1,
+  :global([data-theme="dark"]) .editorial h2,
+  :global([data-theme="dark"]) .faq-list summary { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .eyebrow,
+  :global([data-theme="dark"]) .editorial a { color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .editorial a:hover { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .update { color: var(--d-ink-500); border-color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .table-wrap,
+  :global([data-theme="dark"]) .editorial th,
+  :global([data-theme="dark"]) .editorial td,
+  :global([data-theme="dark"]) .faq-list details,
+  :global([data-theme="dark"]) .source-box { border-color: var(--d-border); }
+  :global([data-theme="dark"]) .editorial th { background: var(--d-accent-bg); color: var(--d-ink-900); }
+</style>

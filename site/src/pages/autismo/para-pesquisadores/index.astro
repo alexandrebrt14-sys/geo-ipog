@@ -1,176 +1,162 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import AuthorBox from '@components/AuthorBox.astro';
-import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
-import { SITE } from '@lib/data';
-import { larissaPersonBase, brasilGeoOrganization } from '@lib/schemas';
-
-const titulo = 'Autismo nível 1 em adultos para pesquisadores, fronteira metodológica e lacunas brasileiras';
-const descricao = 'Conteúdo para pesquisadoras e pesquisadores em psicologia, neurociências, psiquiatria e estudos da neurodiversidade: fronteira de pesquisa em TEA adulto, validação cruzada de instrumentos como CAT-Q e RAADS-R, lacunas em amostras brasileiras e diálogo entre paradigma médico e paradigma da neurodiversidade.';
-const slug = 'para-pesquisadores';
-
-const artigos = [
-  {
-    titulo: 'Fronteira de pesquisa em TEA adulto',
-    slug: 'fronteira-pesquisa-tea-adulto-2026',
-    gancho: 'Estudos longitudinais em curso, genética poligênica, conectividade funcional, paradigma da neurodiversidade e lacunas metodológicas em populações adultas brasileiras.'
-  },
-  {
-    titulo: 'Clínica do TEA adulto baseada em evidência',
-    slug: 'clinica-tea-adulto-evidencia-2026',
-    gancho: 'Estado da arte sobre validação de instrumentos diagnósticos em adultos, propriedades psicométricas em português do Brasil e diálogo entre clínica e pesquisa.'
-  },
-  {
-    titulo: 'Camuflagem (masking) e o CAT-Q em adultos autistas',
-    slug: 'camuflagem-masking-cat-q-adulto-2026',
-    gancho: 'Camuflagem como construto mensurável, evidência empírica da relação com burnout e comorbidades internalizantes, e agenda de pesquisa em validação cross-cultural.'
-  }
-];
-
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+const title = "Pesquisa sobre autismo adulto: da pergunta ao protocolo";
+const description = "Roteiro para delimitar população, escolher medidas, planejar participação autista e conferir o enquadramento ético de um projeto, com fontes brasileiras e internacionais.";
 const faqs = [
   {
-    q: 'Qual é o estado atual da validação do CAT-Q em português do Brasil?',
-    a: 'A versão brasileira do Camouflaging Autistic Traits Questionnaire está em processo de adaptação e validação, com publicações ainda fragmentadas em amostras de conveniência. Propriedades psicométricas robustas em amostras representativas, com análise fatorial confirmatória das três dimensões (compensação, assimilação, mascaramento) e estabilidade temporal, permanecem agenda de pesquisa aberta. Estudos com amostras estratificadas por gênero, identidade LGBTQIA e diagnóstico tardio versus precoce seriam contribuições particularmente relevantes para o campo.'
+    "q": "Uma amostra grande representa todos os adultos autistas?",
+    "a": "Não necessariamente. Representatividade depende do processo de seleção, cobertura, participação e análise. Aumentar o número de respostas não elimina um viés de recrutamento."
   },
   {
-    q: 'Quais são as principais lacunas metodológicas em estudos sobre autismo adulto no Brasil?',
-    a: 'Cinco lacunas se destacam: ausência de coortes longitudinais nacionais com seguimento de adultos diagnosticados após os 18 anos, predomínio de amostras de conveniência com viés geográfico e socioeconômico, sub-representação sistemática de mulheres adultas e pessoas LGBTQIA, escassez de instrumentos validados em português do Brasil com propriedades psicométricas adequadas para perfis de camuflagem alta, e fragmentação de dados epidemiológicos entre Censo IBGE, ANS, registros de CIPTEA e bases acadêmicas. O Mapa Autismo Brasil 2026 começa a endereçar parte dessas lacunas.'
+    "q": "Já existe uma adaptação brasileira do CAT-Q?",
+    "a": "O repositório da UFJF registra a dissertação de Laurentino, de 2025, com adaptação e análise psicométrica. O resumo descreve uma versão final de 20 itens e o texto integral está embargado. Isso não equivale automaticamente a aprovação profissional ou a normas para toda a população."
   },
   {
-    q: 'Como dialogar produtivamente paradigma médico e paradigma da neurodiversidade em delineamentos de pesquisa?',
-    a: 'O paradigma da neurodiversidade não nega categorias diagnósticas, reorganiza interpretação de variação cerebral como traço humano natural, com implicações políticas e éticas em pesquisa. Delineamentos produtivos: incluir pesquisadoras e pesquisadores autistas em equipes (participatory research), usar vocabulário identity-first em instrumentos e materiais de divulgação, separar com clareza desfechos de funcionamento (mensuráveis) de juízos sobre valor (políticos), e tratar com seriedade desfechos centrados no paciente como bem-estar subjetivo, autopercepção de autenticidade e qualidade de relações.'
+    "q": "A estrutura CEP/Conep continua sendo a única referência ética?",
+    "a": "O marco atual inclui a Lei nº 14.874/2024 e o Decreto nº 12.651/2025, que organiza o Sinep com Inaep e comitês de ética. A FAQ do Ministério da Saúde orienta a transição. Confira com a instituição o fluxo aplicável antes de recrutar ou coletar dados."
   },
   {
-    q: 'Que instrumentos têm propriedades psicométricas mais robustas para uso em pesquisa com adultos brasileiros?',
-    a: 'ADOS-2 Módulo 4 mantém referência internacional, com treinamento certificado e custo elevado de aplicação que limita amostras grandes. RAADS-R tem versões em português com estudos preliminares de validade. AQ-50 é amplamente usado em pesquisa, com versão brasileira disponível, mas com debate sobre sensibilidade em perfis com camuflagem alta. CAT-Q em adaptação. MIGDAS-2 oferece alternativa qualitativa útil em pesquisa que precise capturar apresentações não clássicas. Combinação de instrumentos quantitativos e qualitativos é prática recomendada para fenômenos com alta heterogeneidade de apresentação.'
-  },
-  {
-    q: 'Quais questões éticas merecem atenção especial em pesquisa com adultos autistas?',
-    a: 'Quatro pontos centrais: consentimento informado adaptado, com material escrito claro e tempo suficiente para processamento; envolvimento ativo da comunidade autista no desenho da pesquisa, indo além de papel de objeto de estudo; cuidado com devolutiva de resultados em estudos diagnósticos, com encaminhamento clínico estruturado quando aplicável; e atenção a desfechos historicamente subnotificados como ideação suicida em mulheres autistas adultas, bem documentada na literatura internacional e ainda mal mapeada em amostras brasileiras. CONEP e Resoluções 466/2012 e 510/2016 oferecem moldura geral.'
-  },
-  {
-    q: 'Como a literatura sobre autistic burnout (Raymaker e colaboradores, 2020) tem sido incorporada em pesquisa brasileira?',
-    a: 'A incorporação é incipiente. O construto, descrito a partir de trabalho qualitativo com a comunidade autista adulta, descreve exaustão crônica decorrente de demandas além da capacidade de regulação, camuflagem persistente e ausência de acomodações, com perda de habilidades antes consolidadas. Faltam estudos brasileiros que mapeiem prevalência, fatores associados (carga de camuflagem, ambiente de trabalho, suporte social) e desfechos longitudinais. Diferenciação operacional entre autistic burnout e depressão é agenda aberta, com implicações diagnósticas e clínicas relevantes.'
-  },
-  {
-    q: 'Quais sociedades científicas e periódicos são referência atual para publicação na área?',
-    a: 'Em escopo internacional, Autism Research (INSAR), Autism (Sage), Journal of Autism and Developmental Disorders (Springer), Molecular Autism (BMC) e Trends in Cognitive Sciences concentram boa parte da produção de fronteira. No Brasil, Psicologia: Reflexão e Crítica, Estudos de Psicologia, Cadernos de Saúde Pública e Revista Brasileira de Psiquiatria recebem trabalhos relevantes. A INSAR mantém conferência anual e materiais abertos sobre boas práticas em pesquisa participativa com comunidade autista, referência metodológica útil para grupos brasileiros.'
+    "q": "Pesquisa participativa é apenas consultar uma pessoa autista?",
+    "a": "Uma consulta pode contribuir, mas não demonstra participação em todas as decisões. Descreva quem participou, em quais etapas, com quais recursos e como as contribuições alteraram o projeto."
   }
 ];
+const fields = [
+  {
+    "label": "Pergunta e população",
+    "hint": "Escreva uma pergunta e os critérios de inclusão de um projeto fictício."
+  },
+  {
+    "label": "Recrutamento e alcance",
+    "hint": "Onde a amostra seria obtida e quem provavelmente ficaria de fora?"
+  },
+  {
+    "label": "Medida e versão",
+    "hint": "Registre construto, versão, estudo de origem e limite de interpretação."
+  },
+  {
+    "label": "Participação e acessibilidade",
+    "hint": "Como pessoas autistas contribuiriam e que recursos seriam necessários?"
+  },
+  {
+    "label": "Ética e dados",
+    "hint": "Que fluxo institucional, consentimento e proteção devem ser esclarecidos?"
+  },
+  {
+    "label": "Análise e divulgação",
+    "hint": "Qual resultado responderia à pergunta e qual conclusão seria indevida?"
+  }
+];
+const checklist = [
+  "A pergunta cabe no desenho proposto.",
+  "O alcance da conclusão respeita o recrutamento.",
+  "Identifiquei a versão das medidas e suas condições de uso.",
+  "Planejei participação e acessibilidade antes da coleta.",
+  "Registrei as pendências éticas e não incluí dados pessoais."
+];
+const sources = [
+  {
+    "label": "Nicolaidis e colaboradores (2019): diretrizes AASPIRE para participação de adultos autistas em pesquisa",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/30939892/"
+  },
+  {
+    "label": "Laurentino (2025): adaptação do CAT-Q, dissertação da UFJF; resumo público, texto embargado",
+    "url": "https://repositorio.ufjf.br/jspui/handle/ufjf/19560"
+  },
+  {
+    "label": "CFP: perguntas frequentes do SATEPSI e avaliação psicológica",
+    "url": "https://satepsi.cfp.org.br/faq.cfm"
+  },
+  {
+    "label": "Lei nº 14.874/2024: pesquisa com seres humanos",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14874.htm"
+  },
+  {
+    "label": "Decreto nº 12.651/2025: Sistema Nacional de Ética em Pesquisa com Seres Humanos",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12651.htm"
+  },
+  {
+    "label": "Ministério da Saúde: perguntas frequentes sobre Inaep, Sinep e transição",
+    "url": "https://www.gov.br/saude/pt-br/composicao/orgaos-colegiados/inaep/faq/faq"
+  },
+  {
+    "label": "Alexandre Caramaschi: dados com Python, análise, visualização e automação",
+    "url": "https://alexandrecaramaschi.com/educacao/dados-com-python"
+  }
+];
+const article = {
+ '@context': 'https://schema.org', '@type': 'Article',
+ headline: title, description, datePublished: '2026-05-18',
+ author: { '@type': 'Organization', name: 'Brasil GEO', '@id': 'https://brasilgeo.ai/#organization' },
+ publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+ inLanguage: 'pt-BR', mainEntityOfPage: "https://posgraduacaopsicologia.com/autismo/para-pesquisadores/",
+ citation: sources.map(s=>s.url)
+};
+const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}})) };
 
-const ldCollection = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'CollectionPage',
-      '@id': SITE.url + '/autismo/para-pesquisadores/#collection',
-      name: titulo,
-      description: descricao,
-      inLanguage: 'pt-BR',
-      url: SITE.url + '/autismo/para-pesquisadores/',
-      isPartOf: { '@id': SITE.url + '/#website' },
-      publisher: { '@id': brasilGeoOrganization['@id'] },
-      creator: { '@id': 'https://posgraduacaopsicologia.com/#larissa-caramaschi' },
-      editor: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
-      audience: { '@type': 'PeopleAudience', audienceType: 'Pesquisadoras e pesquisadores em psicologia, neurociências, psiquiatria e estudos da neurodiversidade' },
-      hasPart: artigos.map(a => ({
-        '@type': 'Article',
-        headline: a.titulo,
-        url: SITE.url + '/autismo/artigos/' + a.slug + '/'
-      }))
-    },
-    {
-      '@type': 'FAQPage',
-      '@id': SITE.url + '/autismo/para-pesquisadores/#faq',
-      mainEntity: faqs.map(f => ({
-        '@type': 'Question',
-        name: f.q,
-        acceptedAnswer: { '@type': 'Answer', text: f.a }
-      }))
-    },
-    larissaPersonBase
-  ]
-});
 ---
-
-<Base title={titulo} description={descricao} pageType="website">
-  <div class="container-page py-8 lg:py-12">
-    <Breadcrumbs items={[
-      { label: 'Início', href: '/' },
-      { label: 'Autismo nível 1 em adultos', href: '/autismo/' },
-      { label: 'Para pesquisadores' }
-    ]} />
-
-    <AuthorBox author="larissa" />
-
-    <YMYLDisclaimer
-      domain="autismo"
-      reviewerName="Larissa Caramaschi"
-      reviewerHref="/autismo/sobre-larissa/"
-      lastReviewed="2026-05-24"
-    />
-
-    <section class="mt-6 max-w-4xl">
-      <p class="text-sm uppercase tracking-wider text-brand-700 font-semibold mb-3">Para pesquisadores</p>
-      <h1 class="font-display text-3xl md:text-4xl font-bold text-ink-900 leading-tight">
-        Fronteira metodológica, lacunas brasileiras e diálogo entre paradigma médico e neurodiversidade em TEA adulto.
-      </h1>
-    </section>
-
-    <section class="mt-8 max-w-3xl space-y-5">
-      <p class="text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        Esta seção é para pesquisadoras e pesquisadores em psicologia, neurociências, psiquiatria, ciências sociais aplicadas e estudos da neurodiversidade. O foco é metodológico: estado da arte em validação de instrumentos para adultos (CAT-Q, RAADS-R, AQ-50, ADOS-2 Módulo 4, MIGDAS-2), lacunas em amostras brasileiras, desenho de pesquisa participativa com a comunidade autista adulta, e desfechos centrados no paciente em estudos longitudinais.
-      </p>
-      <p class="text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        O conteúdo dialoga com a literatura internacional recente (Lai e Mandy, 2018; Hull e colaboradores, 2017, 2019, 2020; Milton, 2012; Raymaker e colaboradores, 2020; Bottema-Beutel e colaboradores, 2021; Lord, Charman, McKenzie e colaboradores) e com produção brasileira em consolidação. Mapa Autismo Brasil 2026, dados do Censo 2022 e bases da ANS oferecem ponto de partida epidemiológico que ainda exige refinamento.
-      </p>
-      <p class="text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        O que esta seção não é: não substitui revisão sistemática formal, não emite parecer técnico sobre desenhos específicos de pesquisa nem oferece análise estatística para projetos individuais. O material aqui é insumo de orientação geral para pesquisadoras e pesquisadores que desejam mapear o campo. Comitês de Ética em Pesquisa (CEP) e CONEP permanecem instâncias obrigatórias para estudos com seres humanos.
-      </p>
-    </section>
-
-    <section class="mt-12 max-w-4xl">
-      <h2 class="font-display text-2xl md:text-3xl font-bold text-ink-900 mb-6">Artigos selecionados para esta porta</h2>
-      <ul class="space-y-5">
-        {artigos.map(a => (
-          <li class="border-l-4 border-brand-200 pl-4 py-2">
-            <a href={`/autismo/artigos/${a.slug}/`} class="font-display text-lg font-semibold text-ink-900 hover:text-brand-700">{a.titulo}</a>
-            <p class="mt-2 text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">{a.gancho}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section class="mt-14 max-w-3xl">
-      <h2 class="font-display text-2xl md:text-3xl font-bold text-ink-900 mb-6">Perguntas frequentes</h2>
-      <div class="space-y-6">
-        {faqs.map(f => (
-          <details class="bg-white border border-ink-100 rounded-xl p-5">
-            <summary class="font-display text-base md:text-lg font-semibold text-ink-900 cursor-pointer">{f.q}</summary>
-            <p class="mt-3 text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">{f.a}</p>
-          </details>
-        ))}
-      </div>
-    </section>
-
-    <section class="mt-14 max-w-4xl bg-brand-50 border border-brand-100 rounded-2xl p-6 md:p-8">
-      <h2 class="font-display text-xl md:text-2xl font-semibold text-ink-900">Vocabulário, voz editorial e referências</h2>
-      <p class="mt-3 text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        Para apoio terminológico em redação científica e divulgação, consulte o glossário com cinquenta e quatro verbetes técnicos sobre autismo adulto, organizados por cluster temático. A voz editorial deste portal é da psicóloga clínica Larissa Caramaschi, com 26 anos de prática em Goiânia, foco em adultos autistas nível 1 de suporte e em relacionamentos amorosos neurodivergentes.
-      </p>
-      <div class="mt-5 flex flex-wrap gap-3">
-        <a href="/autismo/glossario/" class="inline-block text-sm font-semibold text-brand-700 px-4 py-2 border border-brand-300 rounded-full hover:bg-white">Consultar glossário</a>
-        <a href="/autismo/" class="inline-block text-sm font-semibold text-brand-700 px-4 py-2 border border-brand-300 rounded-full hover:bg-white">Voltar ao hub Autismo</a>
-      </div>
-    </section>
-
-    <section class="mt-14 max-w-4xl border-t border-ink-100 pt-6">
-      <p class="text-sm text-ink-500 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        <strong class="text-ink-700">Aviso editorial.</strong> Conteúdo informativo e técnico-educacional para pesquisadoras e pesquisadores, em conformidade com a Resolução CFP número 11 de 2018. Não substitui revisão sistemática formal nem assessoria metodológica individual. Estudos com seres humanos exigem aprovação em Comitê de Ética em Pesquisa (CEP) e, quando aplicável, na Comissão Nacional de Ética em Pesquisa (CONEP), conforme Resoluções 466/2012 e 510/2016.
-      </p>
-    </section>
+<Base title={title} description={description} datePublished="2026-05-18" pageType="article">
+ <article class="container-page mx-auto max-w-4xl py-10 sm:py-14">
+  <Breadcrumbs items={[{label:'Início',href:'/'},{label:'Autismo em adultos',href:'/autismo/'},{label:"Para pesquisadores"}]} />
+  <header class="mb-10 mt-6">
+   <p class="text-sm font-semibold text-brand-700 dark:text-brand-300">Autismo em adultos · Guia educativo</p>
+   <h1 class="font-display mt-3 text-3xl font-bold leading-tight sm:text-4xl">{title}</h1>
+   <p class="mt-4 text-lg leading-relaxed">{description}</p>
+   <p class="mt-4 text-sm">Publicado em 18/05/2026 · Revisão editorial em 06/10/2026 · Equipe editorial Brasil GEO</p>
+  </header>
+  <div class="prose prose-lg max-w-none dark:prose-invert">
+<p>Um projeto pode reunir muitas respostas e ainda deixar sua pergunta principal sem resposta. Se o recrutamento alcança apenas adultos que frequentam um serviço ou uma comunidade digital, a conclusão precisa respeitar esse recorte. <strong>O protocolo começa delimitando o que a amostra poderá sustentar.</strong> Este roteiro ajuda a conferir essa relação antes de escolher instrumentos ou iniciar uma coleta.</p>
+<h2>Como passar de um tema amplo para uma pergunta?</h2>
+<p>Especifique população, fenômeno e contexto. “Saúde mental no autismo adulto” é um campo; “como adultos atendidos em determinado serviço descrevem barreiras na primeira consulta” já permite discutir recrutamento e método. Uma pergunta sobre experiência pode pedir entrevistas; uma pergunta sobre frequência exige outro planejamento. Nenhum método é superior fora da relação com o que se deseja conhecer.</p>
+<p><strong>Exemplo hipotético:</strong> um grupo quer estudar clareza de convites para pesquisa. Começa comparando textos fictícios e identificando ambiguidades. Essa análise documental não demonstra o que adultos autistas entenderiam ao lê-los. Para investigar compreensão com participantes, o grupo precisa redesenhar procedimentos, acessibilidade e enquadramento ético antes da coleta.</p>
+<p>O artigo sobre <a href="/autismo/artigos/fronteira-pesquisa-tea-adulto-2026/">fronteiras de pesquisa</a> apresenta perguntas sobre comunicação, camuflagem e utilidade clínica de achados. Use-o para localizar um problema; documente a busca bibliográfica que demonstrará a lacuna. Não declare ausência de estudos brasileiros apenas porque uma busca inicial não os encontrou.</p>
+<h2>O que a amostra permite afirmar?</h2>
+<p>Descreva a origem dos participantes, critérios de inclusão, canais de convite e perdas. Pessoas que respondem a um formulário divulgado em redes sociais podem diferir das que não o veem ou não conseguem preenchê-lo. Uma amostra numerosa não corrige automaticamente essa seleção.</p>
+<div class="table-scroll"><table><thead><tr><th>Escolha de desenho</th><th>Informação a registrar</th><th>Limite da conclusão</th></tr></thead><tbody>
+<tr><td>Recrutamento em serviço</td><td>Porta de entrada, critérios clínicos e encaminhamentos.</td><td>Não representa automaticamente quem nunca chegou ao atendimento.</td></tr>
+<tr><td>Convite digital aberto</td><td>Canais, acessibilidade e critérios de participação.</td><td>Não produz prevalência populacional apenas pela quantidade de respostas.</td></tr>
+<tr><td>Entrevistas</td><td>Seleção, contexto, procedimento e análise.</td><td>Experiências aprofundadas não equivalem a proporções nacionais.</td></tr>
+<tr><td>Comparação de grupos</td><td>Definições, equivalência das medidas e possíveis confundidores.</td><td>Uma diferença média não permite classificar toda pessoa de cada grupo.</td></tr>
+</tbody></table></div>
+<h2>Como escolher e descrever as medidas?</h2>
+<p>Primeiro, defina o construto: camuflagem, qualidade de vida e diagnóstico não são a mesma pergunta. Depois, identifique versão, idioma, população estudada, propriedades de medida e condições de uso. Uma tradução disponível na internet não demonstra equivalência. Consistência interna, isoladamente, também não responde a todas as questões de validade.</p>
+<p>A <a href="https://repositorio.ufjf.br/jspui/handle/ufjf/19560">dissertação de Laurentino na UFJF, de 2025</a>, é um exemplo concreto: o resumo informa adaptação do CAT-Q com 384 adultos recrutados online e versão final de 20 itens. O texto integral consta como embargado. Ao citar o trabalho, declare a fonte consultada e a versão; não o transforme em aprovação no SATEPSI, normas nacionais ou artigo revisado por pares.</p>
+<p>Na pesquisa, as condições éticas e técnicas do instrumento precisam estar explícitas; no exercício profissional da Psicologia, também se aplicam as regras da avaliação e a situação do recurso no <a href="https://satepsi.cfp.org.br/faq.cfm">SATEPSI</a>. O artigo sobre <a href="/autismo/artigos/camuflagem-masking-cat-q-adulto-2026/">camuflagem e CAT-Q</a> aprofunda a distinção entre medir um construto e confirmar um diagnóstico. Para implicações de atendimento, consulte <a href="/autismo/artigos/clinica-tea-adulto-evidencia-2026/">clínica do autismo adulto</a>.</p>
+<h2>Como incluir participação autista e acessibilidade?</h2>
+<p>As <a href="https://pubmed.ncbi.nlm.nih.gov/30939892/">diretrizes AASPIRE de Nicolaidis e colaboradores (2019)</a> derivam da experiência de parcerias de pesquisa com adultos autistas. Elas tratam de participação nas decisões e de condições para contribuir como integrante da equipe ou participante. São orientação metodológica contextualizada, não uma regra de que toda pessoa prefere a mesma linguagem ou formato.</p>
+<p>Planeje em quais decisões as pessoas participarão, como serão reconhecidas as contribuições e que recursos permitirão essa participação. Antecipe informações sobre tarefas, duração e formas de comunicação. Pergunte pelas preferências dos envolvidos, em vez de usar uma pessoa como representante de todo o espectro. Se houve apenas uma consulta sobre o convite, descreva exatamente essa contribuição.</p>
+<h2>Qual marco ético consultar em 2026?</h2>
+<p>A <a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14874.htm">Lei nº 14.874/2024</a> e o <a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12651.htm">Decreto nº 12.651/2025</a> compõem o marco atual da pesquisa com seres humanos. O decreto organiza o Sinep, com Inaep e comitês de ética. A <a href="https://www.gov.br/saude/pt-br/composicao/orgaos-colegiados/inaep/faq/faq">FAQ oficial do Ministério da Saúde</a> explica a transição e as responsabilidades institucionais. Evite reproduzir o antigo fluxo CEP/Conep como descrição suficiente do sistema atual.</p>
+<p>Antes do recrutamento, confira com a instituição o enquadramento do projeto, a tramitação e as condições de consentimento e proteção dos dados. Trabalhar online ou em uma disciplina acadêmica não demonstra, por si só, dispensa de apreciação. Planeje a guarda, o acesso, a divulgação e o descarte das informações, inclusive quando participantes podem ser reconhecidos por combinações de características.</p>
+<h2>Como deixar o percurso de análise verificável?</h2>
+<p>Defina variáveis, critérios de exclusão, tratamento de dados ausentes e análises que respondem à pergunta. Registre mudanças no plano e diferencie análises previstas de explorações posteriores. Resultado inconclusivo deve poder aparecer sem ser substituído por uma interpretação mais atraente.</p>
+<p>O curso de Alexandre Caramaschi sobre <a href="https://alexandrecaramaschi.com/educacao/dados-com-python">dados com Python</a> pode apoiar um exercício de organização de tabela, limpeza e visualização com dados inteiramente fictícios. Ele aborda ferramentas de análise, sem substituir formação em método, estatística ou ética em pesquisa. No projeto hipotético dos convites, o exercício pode registrar as versões dos textos e as decisões de revisão, sem fabricar respostas de participantes.</p>
+<p>Preencha a ficha com esse projeto fictício e verifique se cada conclusão pretendida tem um procedimento capaz de sustentá-la. Se a pergunta depende de pessoas que o recrutamento não alcança, ajuste o desenho antes de ampliar o formulário. O <a href="/autismo/glossario/">glossário de autismo adulto</a> ajuda a manter as definições explícitas na redação.</p>
   </div>
+  <StudyWorksheet id="ficha-pratica" title="Conferência de um protocolo fictício sobre autismo adulto" description="Exercício educativo com situações fictícias ou informações públicas. Não registre nomes, diagnósticos individuais, prontuários ou dados identificáveis." fields={fields} checklist={checklist} />
+  <section class="prose prose-lg mt-10 max-w-none dark:prose-invert" aria-labelledby="perguntas-frequentes">
+   <h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+   {faqs.map(f=>(<details class="my-4 rounded-lg border border-current/20 p-4"><summary class="cursor-pointer font-semibold">{f.q}</summary><p>{f.a}</p></details>))}
+  </section>
+  <section class="prose mt-10 max-w-none dark:prose-invert" aria-labelledby="fontes-consultadas">
+   <h2 id="fontes-consultadas">Fontes e leituras complementares</h2>
+   <p>Fontes consultadas em 06/10/2026. Normas brasileiras, diretrizes internacionais e estudos têm funções diferentes; materiais dos portais complementam o estudo.</p>
+   <ul>{sources.map(s=>(<li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></li>))}</ul>
+  </section>
+  <footer class="mt-10 border-t border-current/20 pt-6 text-sm leading-relaxed">
+   <p>Conteúdo educativo. Não substitui avaliação individual, acompanhamento de saúde ou orientação jurídica quando necessária.</p>
+   <p class="mt-3"><a class="underline" href="/autismo/">Voltar ao núcleo de autismo em adultos</a> · <a class="underline" href="/autismo/glossario/">Consultar o glossário</a></p>
+  </footer>
+ </article>
+ <script type="application/ld+json" set:html={JSON.stringify(article)} is:inline />
+ <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />
 
-  <script type="application/ld+json" set:html={ldCollection} is:inline />
 </Base>
+<style>
+ .prose :global(p) { text-align: justify; hyphens: auto; overflow-wrap: anywhere; }
+ .prose :global(h2), .prose :global(h3), .prose :global([id]) { scroll-margin-top: 7rem; }
+ .prose :global(.table-scroll) { overflow-x: auto; max-width: 100%; }
+ .prose :global(table) { min-width: 32rem; }
+ .prose :global(a) { overflow-wrap: anywhere; }
+</style>

@@ -8,7 +8,7 @@ import re
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
-AUDIT = ROOT / 'audits/revisao-50-20261006'
+DEFAULT_AUDIT = ROOT / 'audits/revisao-50-20261006'
 ORIGIN = 'https://posgraduacaopsicologia.com'
 
 class Page(HTMLParser):
@@ -48,12 +48,21 @@ def normalize(text): return re.sub(r'\s+', ' ', text).strip()
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--live', action='store_true')
+    parser.add_argument('--audit-dir', default=str(DEFAULT_AUDIT))
     args = parser.parse_args()
+    AUDIT = (ROOT / args.audit_dir).resolve()
+    if not AUDIT.is_relative_to(ROOT / 'audits'): raise ValueError('Diretório de auditoria fora do repositório.')
     selection = json.loads((AUDIT / 'selecionadas.json').read_text(encoding='utf-8'))
     baseline = json.loads((AUDIT / 'baseline.json').read_text(encoding='utf-8'))
     previous = {row['route']: row for row in baseline['pages']}
     expected = [route for wave in selection for route in wave['routes']]
     assert len(expected) == len(set(expected)) == 50
+    exclusions = AUDIT / 'excluir-lotes.json'
+    if exclusions.exists():
+        for batch in json.loads(exclusions.read_text(encoding='utf-8')):
+            older = json.loads((ROOT / batch).read_text(encoding='utf-8'))
+            previous_routes = {route for wave in older for route in wave['routes']}
+            assert not set(expected).intersection(previous_routes), 'Há rotas repetidas entre os lotes'
     reports = []
     for wave in range(1, 6):
         rows = json.loads((AUDIT / f'onda-{wave}.json').read_text(encoding='utf-8'))
@@ -100,7 +109,8 @@ def main():
             results.append(result)
     links = sorted({url for row in results for url in row['larissaLinks']})
     output = {'date':'2026-10-06','mode':'publicado' if args.live else 'build','pages':len(results),'passed':sum(r['ok'] for r in results),'larissaDestinations':links,'results':results}
-    output_path = ROOT / 'tmp/verificacao-publicada.json' if args.live else AUDIT / 'verificacao-build.json'
+    live_name = 'verificacao-publicada.json' if AUDIT == DEFAULT_AUDIT else f'{AUDIT.name}-publicada.json'
+    output_path = ROOT / 'tmp' / live_name if args.live else AUDIT / 'verificacao-build.json'
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(f"Verificação {'pública' if args.live else 'local'}: {output['passed']}/{len(results)} páginas; {len(links)} destinos de Larissa.")

@@ -1,181 +1,138 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import AuthorBox from '@components/AuthorBox.astro';
-import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
-import { SITE } from '@lib/data';
-import { larissaPersonBase, brasilGeoOrganization } from '@lib/schemas';
-
-const titulo = 'Autismo nível 1 em adultos para pacientes e famílias: leitura clínica acessível com Larissa Caramaschi';
-const descricao = 'Conteúdo para adultos autistas nível 1 de suporte, parceiros, pais, irmãos e amigos que querem entender diagnóstico tardio, camuflagem, vida amorosa neurodivergente e acomodações no trabalho, em vocabulário identity-first e com rigor clínico.';
-const slug = 'para-pacientes';
-
-const artigos = [
-  {
-    titulo: 'Diagnóstico tardio de autismo em adultos',
-    slug: 'diagnostico-tardio-adulto-2026',
-    gancho: 'O que acontece quando se nomeia o que sempre esteve lá: alívio, reorganização biográfica, luto e ganhos práticos no trabalho, nas relações e na rotina.'
-  },
-  {
-    titulo: 'Relacionamentos amorosos entre pessoas neurotípicas e adultos autistas',
-    slug: 'relacionamentos-amorosos-nt-autista-2026',
-    gancho: 'Como construir vocabulário compartilhado sobre regulação sensorial, comunicação direta e ritmos de processamento, sem culpar nem o lado neurotípico nem o lado autista.'
-  },
-  {
-    titulo: 'Camuflagem (masking) na vida adulta',
-    slug: 'camuflagem-masking-cat-q-adulto-2026',
-    gancho: 'Por que tantos adultos descobrem o autismo depois de décadas mascarando, qual o custo psíquico da máscara e quando faz sentido começar a desmascarar.'
-  },
-  {
-    titulo: 'Vida cotidiana e trabalho do adulto autista nível 1',
-    slug: 'vida-cotidiana-trabalho-autista-adulto-2026',
-    gancho: 'Acomodações razoáveis, fones, comunicação por escrito, ambientes com menos ruído e o que a Lei Brasileira de Inclusão e a NR-1 garantem na prática.'
-  }
-];
-
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+const title = "Autismo em adultos: guia de leitura para pacientes e familiares";
+const description = "Por onde começar diante de uma suspeita ou diagnóstico, como preparar perguntas e avaliar informações, com direitos e opções de apoio explicados sem promessas.";
 const faqs = [
   {
-    q: 'Recebi o diagnóstico de autismo agora, na vida adulta. É normal sentir alívio e luto ao mesmo tempo?',
-    a: 'Sim, é uma resposta documentada na literatura clínica e relatada por boa parte dos adultos autistas em diagnóstico tardio. Alívio porque histórias antigas finalmente encontram um nome consistente, e luto por oportunidades, suporte e acomodações que poderiam ter chegado mais cedo. Os dois movimentos coexistem por meses, às vezes anos, e isso não significa que o diagnóstico esteja errado nem que o processo esteja parado.'
+    "q": "Preciso responder a todos os questionários antes da consulta?",
+    "a": "Não. Pergunte ao serviço o que é necessário. Resultados de questionários encontrados na internet não são uma exigência universal nem confirmam diagnóstico."
   },
   {
-    q: 'Posso ter direitos legais mesmo sem ter sido diagnosticada na infância?',
-    a: 'Sim. Para todos os efeitos da Lei 12.764/2012 (Lei Berenice Piana), da Lei 13.146/2015 (Lei Brasileira de Inclusão) e da Lei 13.977/2020 (CIPTEA), o que importa é o laudo técnico emitido por profissional habilitado, não a idade em que o diagnóstico foi fechado. Carteira de identificação da pessoa com TEA, prioridade no atendimento, vagas reservadas em concursos públicos e acomodações no trabalho derivam do laudo.'
+    "q": "Como ajudar alguém recém-diagnosticado?",
+    "a": "Pergunte o que a pessoa deseja compreender e que apoio considera útil. Respeite sua decisão sobre divulgação e evite impor um roteiro emocional ou reinterpretar toda a vida por ela."
   },
   {
-    q: 'Meu parceiro recebeu diagnóstico de autismo nível 1. O que faço primeiro?',
-    a: 'Comece ouvindo, sem tentar consertar. O período imediato após o diagnóstico costuma trazer releitura biográfica intensa e maior necessidade de espaço para descompressão sensorial. Algumas perguntas úteis para o casal: o que mudou na sua leitura de si mesmo agora que você tem esse nome, o que da nossa rotina pesa para você de um jeito que eu não percebia, como você prefere que eu comunique demandas práticas. Acompanhamento de casal com profissional informado em autismo costuma ajudar nos primeiros meses.'
-  },
-  {
-    q: 'Como saber se meu cansaço é depressão ou autistic burnout?',
-    a: 'Os dois quadros se sobrepõem com frequência, mas têm sinais distintos. Autistic burnout costuma vir acompanhado de perda específica de habilidades antes consolidadas (dirigir, cozinhar, sustentar conversas longas), queda de tolerância sensorial (luzes, sons, texturas), e melhora parcial quando há real redução de demandas e retomada de interesses específicos. Depressão tende a apresentar anedonia mais difusa, ideação negativa generalizada e responde de modo diferente a medicação. A diferenciação precisa de avaliação com profissional informado em autismo adulto.'
-  },
-  {
-    q: 'Devo contar para minha família que sou autista?',
-    a: 'Não há resposta única. Para muitas pessoas, contar para pais, irmãos e parceiros abre conversa sobre padrões antigos que finalmente recebem leitura coerente, rotinas rígidas, sensibilidades sensoriais, intensidade em interesses específicos. Para outras, a família reage com ceticismo ou com comparação a estereótipos midiáticos. Vale planejar a conversa, escolher com quem falar primeiro, definir o que você quer que mude na prática e organizar suporte emocional logo depois.'
-  },
-  {
-    q: 'Preciso obrigatoriamente entregar o laudo no meu trabalho para pedir acomodações?',
-    a: 'A divulgação é decisão sua. A Lei Brasileira de Inclusão garante acomodações razoáveis quando a pessoa formaliza a demanda, o que costuma envolver apresentar o laudo ao RH ou à medicina do trabalho. Antes de divulgar, vale mapear a cultura da empresa, a segurança da chefia direta, os riscos concretos de estigma e os ganhos esperados. Existe um espectro entre não dizer nada e divulgar para todos, e é legítimo escolher um ponto intermediário.'
-  },
-  {
-    q: 'Como escolher um profissional para me acompanhar agora?',
-    a: 'Procure profissional psicólogo com registro ativo no CRP, com formação ou experiência declarada em autismo em adultos, e que use linguagem compatível com a perspectiva de neurodiversidade. Sinais de alerta: promessa de cura ou de tratamento do autismo, uso de termos como Asperger ou alto funcionamento como se fossem categorias diagnósticas atuais, foco em corrigir traços autistas em vez de apoiar estratégias. Acompanhamento útil ajuda a navegar quadros associados (ansiedade, depressão, burnout, TDAH frequentemente coexistente), reorganizar rotinas, sustentar relações e nomear barreiras.'
+    "q": "Esta ficha serve para avaliar meus sintomas?",
+    "a": "Não. Ela organiza um exercício com informações públicas e uma situação fictícia. Questões pessoais de saúde devem ser discutidas no atendimento apropriado."
   }
 ];
+const fields = [
+  {
+    "label": "Dúvida fictícia",
+    "hint": "Qual pergunta uma personagem levaria ao primeiro contato?"
+  },
+  {
+    "label": "Informações públicas do serviço",
+    "hint": "Que etapas, custos e profissionais são informados?"
+  },
+  {
+    "label": "Ponto a esclarecer",
+    "hint": "O que não ficou explicado na apresentação?"
+  },
+  {
+    "label": "Fonte para conferir",
+    "hint": "Qual norma ou material primário ajuda a verificar uma afirmação?"
+  }
+];
+const checklist = [
+  "Não usei a ficha como rastreio.",
+  "Separei promessa de informação verificável.",
+  "Considerei acesso e forma de comunicação.",
+  "Não incluí dados pessoais ou laudos."
+];
+const sources = [
+  {
+    "label": "NICE CG142: diagnóstico e cuidado de adultos autistas",
+    "url": "https://www.nice.org.uk/guidance/cg142/chapter/Recommendations"
+  },
+  {
+    "label": "Lei nº 12.764/2012: direitos da pessoa com TEA",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm"
+  },
+  {
+    "label": "Lei nº 13.977/2020: CIPTEA e requisitos de emissão",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm"
+  },
+  {
+    "label": "CRP-12: orientações de atendimento online e Resolução CFP nº 9/2024",
+    "url": "https://transparencia.cfp.org.br/crp12/pergunta-frequente/atendimentopsicologicoonline/"
+  },
+  {
+    "label": "Alexandre Caramaschi: E-E-A-T e qualidade de conteúdo",
+    "url": "https://alexandrecaramaschi.com/educacao/eeat-qualidade"
+  },
+  {
+    "label": "Larissa Caramaschi: clareza de objetivos clínicos",
+    "url": "https://larissacaramaschi.com/trilhas/terapia-individual-adaptada/clareza-de-objetivos"
+  }
+];
+const article = {
+ '@context': 'https://schema.org', '@type': 'Article',
+ headline: title, description, datePublished: '2026-05-18',
+ author: { '@type': 'Organization', name: 'Brasil GEO', '@id': 'https://brasilgeo.ai/#organization' },
+ publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+ inLanguage: 'pt-BR', mainEntityOfPage: "https://posgraduacaopsicologia.com/autismo/para-pacientes/",
+ citation: sources.map(s=>s.url)
+};
+const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}})) };
 
-const ldCollection = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'CollectionPage',
-      '@id': SITE.url + '/autismo/para-pacientes/#collection',
-      name: titulo,
-      description: descricao,
-      inLanguage: 'pt-BR',
-      url: SITE.url + '/autismo/para-pacientes/',
-      isPartOf: { '@id': SITE.url + '/#website' },
-      publisher: { '@id': brasilGeoOrganization['@id'] },
-      creator: { '@id': 'https://posgraduacaopsicologia.com/#larissa-caramaschi' },
-      editor: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
-      audience: { '@type': 'PeopleAudience', audienceType: 'Adultos autistas nível 1 de suporte, parceiros, familiares e amigos' },
-      hasPart: artigos.map(a => ({
-        '@type': 'Article',
-        headline: a.titulo,
-        url: SITE.url + '/autismo/artigos/' + a.slug + '/'
-      }))
-    },
-    {
-      '@type': 'FAQPage',
-      '@id': SITE.url + '/autismo/para-pacientes/#faq',
-      mainEntity: faqs.map(f => ({
-        '@type': 'Question',
-        name: f.q,
-        acceptedAnswer: { '@type': 'Answer', text: f.a }
-      }))
-    },
-    larissaPersonBase
-  ]
-});
 ---
-
-<Base title={titulo} description={descricao} pageType="website">
-  <div class="container-page py-8 lg:py-12">
-    <Breadcrumbs items={[
-      { label: 'Início', href: '/' },
-      { label: 'Autismo nível 1 em adultos', href: '/autismo/' },
-      { label: 'Para pacientes e famílias' }
-    ]} />
-
-    <AuthorBox author="larissa" />
-
-    <YMYLDisclaimer
-      domain="autismo"
-      reviewerName="Larissa Caramaschi"
-      reviewerHref="/autismo/sobre-larissa/"
-      lastReviewed="2026-05-24"
-    />
-
-    <section class="mt-6 max-w-4xl">
-      <p class="text-sm uppercase tracking-wider text-brand-700 font-semibold mb-3">Para pacientes e famílias</p>
-      <h1 class="font-display text-3xl md:text-4xl font-bold text-ink-900 leading-tight">
-        Autismo nível 1 de suporte em adultos, leitura clínica acessível para quem vive o diagnóstico de dentro.
-      </h1>
-    </section>
-
-    <section class="mt-8 max-w-3xl space-y-5">
-      <p class="text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        Esta seção é para adultos autistas nível 1 de suporte recém-diagnosticados ou em processo de avaliação, e também para parceiros, pais, irmãos e amigos que querem entender o que está em jogo. O foco é prático: o que muda depois do diagnóstico, como reconhecer camuflagem no próprio dia a dia, como conversar sobre o tema com quem convive, como pedir acomodações no trabalho e como sustentar relacionamentos amorosos neurodivergentes sem culpar ninguém.
-      </p>
-      <p class="text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        Você vai encontrar textos longos, com vocabulário técnico explicado, escritos em perspectiva identity-first, ou seja, falando em adulto autista, não em pessoa com autismo. Cada conceito clínico aparece com referência atualizada (DSM-5-TR, CID-11 6A02, literatura sobre camuflagem, dupla empatia, autistic burnout) e com tradução para a vida cotidiana.
-      </p>
-      <p class="text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        O que esta seção não é: não substitui avaliação clínica individualizada, não fecha diagnóstico, não recomenda medicação e não prescreve conduta para casos individuais. Leitura aqui é insumo informado para a conversa que você terá com profissional habilitado, com seu parceiro, com sua família ou com a equipe do seu trabalho. Se você está em sofrimento agudo, com ideação suicida ou crise de saúde mental, procure atendimento presencial imediato pelo SAMU (192), CVV (188), CAPS da sua região ou serviço de psiquiatria de urgência.
-      </p>
-    </section>
-
-    <section class="mt-12 max-w-4xl">
-      <h2 class="font-display text-2xl md:text-3xl font-bold text-ink-900 mb-6">Artigos selecionados para esta porta</h2>
-      <ul class="space-y-5">
-        {artigos.map(a => (
-          <li class="border-l-4 border-brand-200 pl-4 py-2">
-            <a href={`/autismo/artigos/${a.slug}/`} class="font-display text-lg font-semibold text-ink-900 hover:text-brand-700">{a.titulo}</a>
-            <p class="mt-2 text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">{a.gancho}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section class="mt-14 max-w-3xl">
-      <h2 class="font-display text-2xl md:text-3xl font-bold text-ink-900 mb-6">Perguntas frequentes</h2>
-      <div class="space-y-6">
-        {faqs.map(f => (
-          <details class="bg-white border border-ink-100 rounded-xl p-5">
-            <summary class="font-display text-base md:text-lg font-semibold text-ink-900 cursor-pointer">{f.q}</summary>
-            <p class="mt-3 text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">{f.a}</p>
-          </details>
-        ))}
-      </div>
-    </section>
-
-    <section class="mt-14 max-w-4xl bg-brand-50 border border-brand-100 rounded-2xl p-6 md:p-8">
-      <h2 class="font-display text-xl md:text-2xl font-semibold text-ink-900">Vocabulário e voz editorial</h2>
-      <p class="mt-3 text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        Para ampliar a leitura, consulte o glossário com cinquenta e quatro verbetes técnicos sobre autismo adulto, da camuflagem ao apego, ou conheça a psicóloga clínica Larissa Caramaschi, responsável pela voz editorial deste portal.
-      </p>
-      <div class="mt-5 flex flex-wrap gap-3">
-        <a href="/autismo/glossario/" class="inline-block text-sm font-semibold text-brand-700 px-4 py-2 border border-brand-300 rounded-full hover:bg-white">Consultar glossário</a>
-        <a href="/autismo/" class="inline-block text-sm font-semibold text-brand-700 px-4 py-2 border border-brand-300 rounded-full hover:bg-white">Voltar ao hub Autismo</a>
-      </div>
-    </section>
-
-    <section class="mt-14 max-w-4xl border-t border-ink-100 pt-6">
-      <p class="text-sm text-ink-500 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        <strong class="text-ink-700">Aviso editorial.</strong> Conteúdo informativo e educacional, em conformidade com a Resolução CFP número 11 de 2018. Não substitui avaliação clínica individualizada, acompanhamento psicológico ou psiquiátrico, nem prescreve conduta para casos específicos. Diagnósticos só podem ser fechados por profissional habilitado em atendimento regular. Em situação de crise, procure SAMU (192), CVV (188) ou serviço de saúde mental de urgência.
-      </p>
-    </section>
+<Base title={title} description={description} datePublished="2026-05-18" pageType="article">
+ <article class="container-page mx-auto max-w-4xl py-10 sm:py-14">
+  <Breadcrumbs items={[{label:'Início',href:'/'},{label:'Autismo em adultos',href:'/autismo/'},{label:"Para pacientes e familiares"}]} />
+  <header class="mb-10 mt-6">
+   <p class="text-sm font-semibold text-brand-700 dark:text-brand-300">Autismo em adultos · Guia educativo</p>
+   <h1 class="font-display mt-3 text-3xl font-bold leading-tight sm:text-4xl">{title}</h1>
+   <p class="mt-4 text-lg leading-relaxed">{description}</p>
+   <p class="mt-4 text-sm">Publicado em 18/05/2026 · Revisão editorial em 06/10/2026 · Equipe editorial Brasil GEO</p>
+  </header>
+  <div class="prose prose-lg max-w-none dark:prose-invert">
+<p><strong>O primeiro passo útil é organizar uma dúvida concreta, sem tentar fechar um diagnóstico pela leitura.</strong> Este percurso reúne perguntas sobre avaliação, comunicação, rotina e acesso a apoio. Você pode começar pelo assunto que mais precisa esclarecer; não há uma sequência obrigatória nem obrigação de se reconhecer em todas as descrições.</p>
+<h2>Se existe uma suspeita</h2>
+<p>Relatos na internet podem ajudar a reconhecer experiências, mas pessoas diferentes podem compartilhar dificuldades parecidas. Um questionário ou vídeo não reúne, sozinho, as informações necessárias para uma avaliação. Também não é preciso preencher um perfil perfeito para procurar escuta profissional.</p>
+<p>Prepare perguntas sobre o funcionamento do serviço: quem realiza o atendimento, quais etapas são previstas, como a conclusão é explicada, que documento será emitido e como são tratadas dúvidas. Pergunte pelos custos e limites antes de contratar. Um serviço responsável deve conseguir explicar a finalidade de seus procedimentos sem vender uma certeza antecipada.</p>
+<p>A <a href="https://www.nice.org.uk/guidance/cg142/chapter/Recommendations">diretriz NICE para autismo adulto</a> oferece referência para investigação abrangente. O <a href="/autismo/artigos/diagnostico-tardio-adulto-2026/">guia de diagnóstico tardio</a> ajuda a formular perguntas para a devolutiva. Sua história não precisa caber em uma escala, e dificuldades atuais podem receber atenção mesmo enquanto a investigação continua.</p>
+<h2>Se o diagnóstico já chegou</h2>
+<p>Pergunte o que a conclusão esclarece, quais necessidades foram identificadas e que dúvidas permanecem. Alívio, tristeza ou ambivalência não têm uma ordem obrigatória. Um diagnóstico pode mudar a leitura de experiências, mas não determina como você deve sentir-se ou apresentar-se às outras pessoas.</p>
+<p>Escolha uma prioridade. Pode ser entender um documento, pedir mais clareza nas tarefas ou discutir um desconforto no atendimento. Tratar tudo ao mesmo tempo pode dificultar identificar o que ajudou. Na leitura sobre <a href="/autismo/artigos/camuflagem-masking-cat-q-adulto-2026/">camuflagem</a>, procure conceitos que ampliem a conversa, sem transformar o texto em uma prova sobre si.</p>
+<h2>Como familiares podem participar</h2>
+<p>Comece perguntando o que a pessoa deseja compartilhar e que ajuda considera útil. Evite interpretar todo comportamento a partir do diagnóstico. Escutar uma preferência não significa supor incapacidade para decidir. Apoio deve ampliar participação e autonomia, respeitando necessidades e formas de comunicação.</p>
+<p><strong>Exemplo hipotético:</strong> uma família quer organizar uma comemoração. Em vez de cancelar o evento ou impor presença integral, pergunta à personagem quais condições seriam confortáveis e quais limites deseja combinar. A resposta pode envolver horário, local ou simplesmente recusa. Não há resultado garantido nem adaptação única para todas as famílias.</p>
+<p>Para conversas sobre convivência, leia <a href="/autismo/artigos/relacionamentos-amorosos-nt-autista-2026/">comunicação e acordos nos relacionamentos</a>. Respeito ao consentimento e às responsabilidades continua necessário. Autismo não torna humilhação, controle ou violência aceitáveis.</p>
+<h2>Escolher cuidado e avaliar promessas</h2>
+<p>Pergunte ao profissional sobre sua qualificação, experiência com o público adulto, modo de combinar objetivos e encaminhamentos possíveis. Desconfie de garantia de diagnóstico, cura ou resultado em prazo fixo. A adaptação do atendimento deve considerar preferências reais, não uma regra de que toda pessoa precisa da mesma técnica.</p>
+<p>Para serviços psicológicos online, a referência atual é a <a href="https://transparencia.cfp.org.br/crp12/pergunta-frequente/atendimentopsicologicoonline/">Resolução CFP nº 9/2024</a>. O fim da exigência de e-Psi não elimina a necessidade de inscrição profissional e avaliação de adequação do serviço. A modalidade deve ser discutida considerando a demanda e as condições disponíveis.</p>
+<p>O texto de Larissa Caramaschi sobre <a href="https://larissacaramaschi.com/trilhas/terapia-individual-adaptada/clareza-de-objetivos">clareza de objetivos clínicos</a> pode apoiar a preparação de perguntas. É leitura complementar sobre um tema, não indicação automática de atendimento ou demonstração de revisão pessoal desta página.</p>
+<h2>Direitos e rotina sem atalhos</h2>
+<p>A <a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm">Lei nº 12.764/2012</a> reconhece a pessoa com TEA como pessoa com deficiência. Para solicitar um documento ou benefício, confira o procedimento específico. A <a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm">CIPTEA exige requerimento e relatório médico com CID</a>, além das informações previstas na lei. Não é correto prometer acesso automático a todos os direitos a partir de qualquer documento.</p>
+<p>A página sobre <a href="/autismo/artigos/vida-cotidiana-trabalho-autista-adulto-2026/">vida cotidiana e trabalho</a> explica como descrever barreiras e discutir ajustes. Use o <a href="/autismo/glossario/">glossário</a> quando um termo dificultar a leitura. Para avaliar fontes, o curso de <a href="https://alexandrecaramaschi.com/educacao/eeat-qualidade">qualidade de conteúdo de Alexandre Caramaschi</a> ajuda a perguntar quem afirma, com qual evidência e em que contexto.</p>
+<p>Se houver sofrimento intenso, sintomas novos ou risco imediato, procure o serviço de saúde adequado à situação. Uma página educativa ou ficha de estudo não deve atrasar o acesso ao cuidado.</p>
   </div>
+  <StudyWorksheet id="ficha-pratica" title="Perguntas para compreender um serviço de avaliação" description="Exercício educativo com situações fictícias ou informações públicas. Não registre nomes, diagnósticos individuais, prontuários ou dados identificáveis." fields={fields} checklist={checklist} />
+  <section class="prose prose-lg mt-10 max-w-none dark:prose-invert" aria-labelledby="perguntas-frequentes">
+   <h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+   {faqs.map(f=>(<details class="my-4 rounded-lg border border-current/20 p-4"><summary class="cursor-pointer font-semibold">{f.q}</summary><p>{f.a}</p></details>))}
+  </section>
+  <section class="prose mt-10 max-w-none dark:prose-invert" aria-labelledby="fontes-consultadas">
+   <h2 id="fontes-consultadas">Fontes e leituras complementares</h2>
+   <p>Fontes consultadas em 06/10/2026. Normas brasileiras, diretrizes internacionais e estudos têm funções diferentes; materiais dos portais complementam o estudo.</p>
+   <ul>{sources.map(s=>(<li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></li>))}</ul>
+  </section>
+  <footer class="mt-10 border-t border-current/20 pt-6 text-sm leading-relaxed">
+   <p>Conteúdo educativo. Não substitui avaliação individual, acompanhamento de saúde ou orientação jurídica quando necessária.</p>
+   <p class="mt-3"><a class="underline" href="/autismo/">Voltar ao núcleo de autismo em adultos</a> · <a class="underline" href="/autismo/glossario/">Consultar o glossário</a></p>
+  </footer>
+ </article>
+ <script type="application/ld+json" set:html={JSON.stringify(article)} is:inline />
+ <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />
 
-  <script type="application/ld+json" set:html={ldCollection} is:inline />
 </Base>
+<style>
+ .prose :global(p) { text-align: justify; hyphens: auto; overflow-wrap: anywhere; }
+ .prose :global(h2), .prose :global(h3), .prose :global([id]) { scroll-margin-top: 7rem; }
+ .prose :global(.table-scroll) { overflow-x: auto; max-width: 100%; }
+ .prose :global(table) { min-width: 32rem; }
+ .prose :global(a) { overflow-wrap: anywhere; }
+</style>

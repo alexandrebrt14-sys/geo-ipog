@@ -1,181 +1,136 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import AuthorBox from '@components/AuthorBox.astro';
-import YMYLDisclaimer from '@components/YMYLDisclaimer.astro';
-import { SITE } from '@lib/data';
-import { larissaPersonBase, brasilGeoOrganization } from '@lib/schemas';
-
-const titulo = 'Autismo nível 1 em adultos para profissionais de psicologia, conteúdo técnico com Larissa Caramaschi';
-const descricao = 'Material clínico sobre autismo nível 1 de suporte em adultos para psicólogas, psicólogos, neuropsicólogos e profissionais da saúde mental: instrumentos validados, raciocínio diferencial, escuta de apresentações internalizantes, supervisão de casos com camuflagem alta e compliance CFP.';
-const slug = 'para-profissionais';
-
-const artigos = [
-  {
-    titulo: 'Clínica do TEA adulto baseada em evidência',
-    slug: 'clinica-tea-adulto-evidencia-2026',
-    gancho: 'ADOS-2, ADI-R, AQ-50, RAADS-R, CAT-Q, MIGDAS-2 e raciocínio clínico longitudinal para diagnóstico diferencial rigoroso em adultos com camuflagem alta.'
-  },
-  {
-    titulo: 'Camuflagem (masking) e o CAT-Q em adultos autistas',
-    slug: 'camuflagem-masking-cat-q-adulto-2026',
-    gancho: 'Compensação, assimilação e mascaramento como dimensões mensuráveis, sua relação com burnout, comorbidades internalizantes e uso clínico do CAT-Q.'
-  },
-  {
-    titulo: 'Relacionamentos amorosos entre pessoas neurotípicas e adultos autistas',
-    slug: 'relacionamentos-amorosos-nt-autista-2026',
-    gancho: 'Aplicação da dupla empatia, do modelo de apego adulto e do ciclo de vida familiar à clínica de casais NT-autistas, com escuta sistêmica e supervisão.'
-  },
-  {
-    titulo: 'Fronteira de pesquisa em TEA adulto',
-    slug: 'fronteira-pesquisa-tea-adulto-2026',
-    gancho: 'O que a evidência recente sustenta, o que ainda é hipótese e o que falta validar em amostras brasileiras adultas, para alinhar conduta clínica ao estado da arte.'
-  }
-];
-
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+const title = "Autismo em adultos para profissionais: percurso de estudo, avaliação e supervisão";
+const description = "Um roteiro para transformar leitura sobre autismo adulto em competências verificáveis, com atualização normativa e critérios para selecionar instrumentos e supervisão.";
 const faqs = [
   {
-    q: 'Quais instrumentos compõem um protocolo de avaliação de autismo em adulto com hipótese de nível 1 de suporte?',
-    a: 'Protocolo robusto integra ADOS-2 Módulo 4, ADI-R (quando há informante confiável de desenvolvimento), instrumentos de autorrelato (AQ-50, RAADS-R, CAT-Q) e anamnese longitudinal estruturada. MIGDAS-2 é alternativa qualitativa útil quando ADOS-2 perde sensibilidade por camuflagem. Nenhum instrumento isolado fecha diagnóstico, o que sustenta a hipótese é raciocínio clínico abrangente, escuta de apresentações internalizantes e diagnóstico diferencial com TDAH, transtorno borderline, transtorno de ansiedade social e quadros traumáticos complexos.'
+    "q": "Um curso livre habilita a realizar qualquer avaliação?",
+    "a": "Não. Formação complementar não substitui os requisitos da profissão, a competência para o procedimento nem as regras aplicáveis ao instrumento e à modalidade de atendimento."
   },
   {
-    q: 'Como diferenciar autismo nível 1 de suporte de TDAH em adulto, quando há sobreposição clara?',
-    a: 'A sobreposição é alta e a coocorrência é frequente, descrita em torno de 30 a 40 por cento dos casos. Sinais que ajudam o diferencial: padrões de interesse específico com hiperprofundidade (mais autista) versus interesses voláteis e hiperestimulados por novidade (mais TDAH), regulação sensorial constante e estruturada (mais autista) versus desregulação atencional difusa (mais TDAH), camuflagem social elaborada com fadiga pós-interação (mais autista). Avaliação combinada com instrumentos para ambos os quadros é prática recomendada, e a hipótese de comorbidade não deve ser excluída por padrão.'
+    "q": "Todo adulto com ansiedade deve responder ao CAT-Q?",
+    "a": "Não. A escolha de recursos decorre da demanda e do raciocínio de avaliação. Um questionário de camuflagem não é rastreio universal nem confirmação de autismo."
   },
   {
-    q: 'Como conduzir devolutiva diagnóstica de TEA adulto sem patologizar nem subestimar o impacto?',
-    a: 'Boa devolutiva descreve funcionamento neurossensorial e social em termos operacionais, nomeia custos da camuflagem, valida releitura biográfica em curso e antecipa o luto frequente que se segue. Evite formulações que sugiram cura ou tratamento do autismo. Aborde explicitamente acomodações possíveis no trabalho, vocabulário identity-first, direitos previstos na Lei Brasileira de Inclusão e na CIPTEA, e oriente sobre redes da comunidade autista adulta. A devolutiva costuma demandar mais de uma sessão, com material escrito de apoio e espaço para retorno em semanas seguintes.'
-  },
-  {
-    q: 'Que cuidados éticos observar na divulgação técnica sobre autismo em mídias sociais e blogs?',
-    a: 'A Resolução CFP número 11 de 2018 sobre comunicação técnica define os limites principais: vedada a promessa de resultado terapêutico, vedada a divulgação de caso identificável sem consentimento expresso, vedado o uso de testemunhos com finalidade publicitária. Conteúdo educacional sobre autismo adulto pode e deve circular, desde que não substitua avaliação individual nem ofereça diagnóstico à distância. Vocabulário identity-first, ausência de promessas de cura, e referência clara à literatura científica são parâmetros mínimos.'
-  },
-  {
-    q: 'Em supervisão, como conduzir casos de adultos autistas com camuflagem alta e queixa principal aparente de ansiedade ou depressão?',
-    a: 'A queixa de ansiedade ou depressão é frequentemente o sintoma visível de um quadro subjacente de funcionamento autista não nomeado, com camuflagem prolongada como fator mantenedor. Em supervisão, vale: revisitar anamnese do desenvolvimento com perguntas específicas (sensorialidade, interesses, padrões sociais ao longo da vida), aplicar CAT-Q e AQ-50, considerar avaliação formal de TEA quando a hipótese ganhar consistência, e mapear ambientes que estejam exigindo camuflagem crônica. Tratar apenas a comorbidade aparente, sem nomear o quadro de base, costuma manter sofrimento.'
-  },
-  {
-    q: 'Como abordar clinicamente casais NT-autistas que chegam em crise?',
-    a: 'O enquadramento útil vem da dupla empatia de Milton (2012), da teoria do apego adulto de Mikulincer e Shaver, e do modelo de ciclo de vida familiar de Carter e McGoldrick. Recuse o enquadramento de que um dos dois precisa ser ajustado, mapeie expectativas comunicativas, padrões de regulação sensorial e ritmos de processamento emocional. Construa vocabulário compartilhado para necessidades concretas (avisos antecipados de mudanças, comunicação por escrito quando útil, espaço de descompressão após eventos sociais), e considere supervisão sistêmica nos primeiros meses.'
-  },
-  {
-    q: 'Como evitar viés de gênero na avaliação de adultas com hipótese de autismo nível 1?',
-    a: 'Reconheça a literatura sobre subdiagnóstico feminino (Lai e Mandy, 2018, Hull e colaboradores). Mulheres adultas e pessoas socializadas como mulheres frequentemente apresentam camuflagem mais elaborada, interesses específicos socialmente aceitos (literatura, animais, organização) e apresentação clínica que pode parecer compatível com ansiedade social. CAT-Q torna-se especialmente útil. Anamnese deve incluir perguntas sobre custo subjetivo de interações sociais, ensaio mental de conversas, fadiga pós-eventos e padrão sensorial. ADOS-2 isolado tem sensibilidade reduzida nesse perfil.'
+    "q": "Qual é uma boa pergunta de supervisão?",
+    "a": "Uma dúvida delimitada que possa mudar uma decisão: qual informação falta, como interpretar dados discordantes ou como adaptar o enquadre sem perder a finalidade do atendimento."
   }
 ];
+const fields = [
+  {
+    "label": "Competência escolhida",
+    "hint": "Que decisão você pretende aprender a justificar?"
+  },
+  {
+    "label": "Fonte principal",
+    "hint": "Registre uma norma ou estudo público e a data de consulta."
+  },
+  {
+    "label": "Exercício fictício",
+    "hint": "Que tarefa demonstrará a competência sem dados reais?"
+  },
+  {
+    "label": "Questão para supervisão",
+    "hint": "Que incerteza permanece após a leitura?"
+  }
+];
+const checklist = [
+  "A competência é específica e observável.",
+  "Separei informação clínica de norma profissional.",
+  "A fonte foi lida e corresponde à afirmação.",
+  "O exercício não inclui material identificável."
+];
+const sources = [
+  {
+    "label": "NICE CG142: diagnóstico e cuidado de adultos autistas",
+    "url": "https://www.nice.org.uk/guidance/cg142/chapter/Recommendations"
+  },
+  {
+    "label": "CFP: perguntas frequentes do SATEPSI e Resolução nº 31/2022",
+    "url": "https://satepsi.cfp.org.br/faq.cfm"
+  },
+  {
+    "label": "CRP-12: orientações de atendimento online e Resolução CFP nº 9/2024",
+    "url": "https://transparencia.cfp.org.br/crp12/pergunta-frequente/atendimentopsicologicoonline/"
+  },
+  {
+    "label": "CFP: Resolução nº 6/2019 comentada, documentos psicológicos",
+    "url": "https://site.cfp.org.br/wp-content/uploads/2019/09/Resolu%C3%A7%C3%A3o-CFP-n-06-2019-comentada.pdf"
+  },
+  {
+    "label": "Alexandre Caramaschi: como escrever bem usando IA generativa",
+    "url": "https://alexandrecaramaschi.com/educacao/escrever-bem-com-ia"
+  },
+  {
+    "label": "Larissa Caramaschi: supervisão clínica em TEA adulto",
+    "url": "https://larissacaramaschi.com/profissionais/supervisao-clinica"
+  }
+];
+const article = {
+ '@context': 'https://schema.org', '@type': 'Article',
+ headline: title, description, datePublished: '2026-05-18',
+ author: { '@type': 'Organization', name: 'Brasil GEO', '@id': 'https://brasilgeo.ai/#organization' },
+ publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+ inLanguage: 'pt-BR', mainEntityOfPage: "https://posgraduacaopsicologia.com/autismo/para-profissionais/",
+ citation: sources.map(s=>s.url)
+};
+const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}})) };
 
-const ldCollection = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'CollectionPage',
-      '@id': SITE.url + '/autismo/para-profissionais/#collection',
-      name: titulo,
-      description: descricao,
-      inLanguage: 'pt-BR',
-      url: SITE.url + '/autismo/para-profissionais/',
-      isPartOf: { '@id': SITE.url + '/#website' },
-      publisher: { '@id': brasilGeoOrganization['@id'] },
-      creator: { '@id': 'https://posgraduacaopsicologia.com/#larissa-caramaschi' },
-      editor: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
-      audience: { '@type': 'PeopleAudience', audienceType: 'Psicólogas, psicólogos clínicos, neuropsicólogos e profissionais da saúde mental' },
-      hasPart: artigos.map(a => ({
-        '@type': 'Article',
-        headline: a.titulo,
-        url: SITE.url + '/autismo/artigos/' + a.slug + '/'
-      }))
-    },
-    {
-      '@type': 'FAQPage',
-      '@id': SITE.url + '/autismo/para-profissionais/#faq',
-      mainEntity: faqs.map(f => ({
-        '@type': 'Question',
-        name: f.q,
-        acceptedAnswer: { '@type': 'Answer', text: f.a }
-      }))
-    },
-    larissaPersonBase
-  ]
-});
 ---
-
-<Base title={titulo} description={descricao} pageType="website">
-  <div class="container-page py-8 lg:py-12">
-    <Breadcrumbs items={[
-      { label: 'Início', href: '/' },
-      { label: 'Autismo nível 1 em adultos', href: '/autismo/' },
-      { label: 'Para profissionais de psicologia' }
-    ]} />
-
-    <AuthorBox author="larissa" />
-
-    <YMYLDisclaimer
-      domain="autismo"
-      reviewerName="Larissa Caramaschi"
-      reviewerHref="/autismo/sobre-larissa/"
-      lastReviewed="2026-05-24"
-    />
-
-    <section class="mt-6 max-w-4xl">
-      <p class="text-sm uppercase tracking-wider text-brand-700 font-semibold mb-3">Para profissionais de psicologia</p>
-      <h1 class="font-display text-3xl md:text-4xl font-bold text-ink-900 leading-tight">
-        Avaliação, clínica e supervisão em autismo nível 1 de suporte no adulto, com rigor metodológico e compliance CFP.
-      </h1>
-    </section>
-
-    <section class="mt-8 max-w-3xl space-y-5">
-      <p class="text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        Esta seção é para psicólogas e psicólogos clínicos, neuropsicólogos e demais profissionais da saúde mental que atendem adultos com hipótese de autismo nível 1 de suporte. O foco é técnico, com material sobre raciocínio diagnóstico longitudinal, instrumentos validados (ADOS-2, ADI-R, AQ-50, RAADS-R, CAT-Q, MIGDAS-2), escuta de apresentações internalizantes, condução de devolutiva, supervisão de casos com camuflagem alta e ética da comunicação técnica em mídias sociais.
-      </p>
-      <p class="text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        O material aqui dialoga com a literatura recente (Lai e Mandy, 2018; Hull e colaboradores, 2017, 2019, 2020; Milton, 2012; Raymaker e colaboradores, 2020; Bottema-Beutel e colaboradores, 2021), com Resoluções do Conselho Federal de Psicologia, sobretudo a Resolução número 11 de 2018 sobre comunicação técnica, e com a moldura legal brasileira que protege adultos autistas (Lei 12.764/2012, Lei 13.146/2015, Lei 13.977/2020).
-      </p>
-      <p class="text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        O que esta seção não é: não substitui supervisão presencial individual, não fecha diagnóstico em casos específicos, não recomenda protocolo único para todos os contextos clínicos e não emite parecer técnico sobre situações particulares. Conteúdo aqui é insumo educacional para profissionais já formados que desejam atualização. Para questões de fórum, recorrer ao CRP regional.
-      </p>
-    </section>
-
-    <section class="mt-12 max-w-4xl">
-      <h2 class="font-display text-2xl md:text-3xl font-bold text-ink-900 mb-6">Artigos selecionados para esta porta</h2>
-      <ul class="space-y-5">
-        {artigos.map(a => (
-          <li class="border-l-4 border-brand-200 pl-4 py-2">
-            <a href={`/autismo/artigos/${a.slug}/`} class="font-display text-lg font-semibold text-ink-900 hover:text-brand-700">{a.titulo}</a>
-            <p class="mt-2 text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">{a.gancho}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section class="mt-14 max-w-3xl">
-      <h2 class="font-display text-2xl md:text-3xl font-bold text-ink-900 mb-6">Perguntas frequentes</h2>
-      <div class="space-y-6">
-        {faqs.map(f => (
-          <details class="bg-white border border-ink-100 rounded-xl p-5">
-            <summary class="font-display text-base md:text-lg font-semibold text-ink-900 cursor-pointer">{f.q}</summary>
-            <p class="mt-3 text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">{f.a}</p>
-          </details>
-        ))}
-      </div>
-    </section>
-
-    <section class="mt-14 max-w-4xl bg-brand-50 border border-brand-100 rounded-2xl p-6 md:p-8">
-      <h2 class="font-display text-xl md:text-2xl font-semibold text-ink-900">Vocabulário técnico e voz editorial</h2>
-      <p class="mt-3 text-ink-700 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        Para apoio terminológico em devolutivas, supervisões e produção técnica, consulte o glossário com cinquenta e quatro verbetes sobre autismo adulto. A voz editorial deste portal é da psicóloga clínica Larissa Caramaschi, com 26 anos de prática em Goiânia e foco em adultos autistas nível 1 de suporte.
-      </p>
-      <div class="mt-5 flex flex-wrap gap-3">
-        <a href="/autismo/glossario/" class="inline-block text-sm font-semibold text-brand-700 px-4 py-2 border border-brand-300 rounded-full hover:bg-white">Consultar glossário</a>
-        <a href="/autismo/" class="inline-block text-sm font-semibold text-brand-700 px-4 py-2 border border-brand-300 rounded-full hover:bg-white">Voltar ao hub Autismo</a>
-      </div>
-    </section>
-
-    <section class="mt-14 max-w-4xl border-t border-ink-100 pt-6">
-      <p class="text-sm text-ink-500 leading-relaxed" style="text-align: justify; hyphens: auto;">
-        <strong class="text-ink-700">Aviso editorial.</strong> Conteúdo informativo e técnico-educacional para profissionais da saúde mental, em conformidade com a Resolução CFP número 11 de 2018. Não substitui supervisão presencial, não fecha diagnóstico em casos individuais e não emite parecer técnico. Para dúvidas éticas específicas, consultar Conselho Regional de Psicologia da jurisdição.
-      </p>
-    </section>
+<Base title={title} description={description} datePublished="2026-05-18" pageType="article">
+ <article class="container-page mx-auto max-w-4xl py-10 sm:py-14">
+  <Breadcrumbs items={[{label:'Início',href:'/'},{label:'Autismo em adultos',href:'/autismo/'},{label:"Para profissionais"}]} />
+  <header class="mb-10 mt-6">
+   <p class="text-sm font-semibold text-brand-700 dark:text-brand-300">Autismo em adultos · Guia educativo</p>
+   <h1 class="font-display mt-3 text-3xl font-bold leading-tight sm:text-4xl">{title}</h1>
+   <p class="mt-4 text-lg leading-relaxed">{description}</p>
+   <p class="mt-4 text-sm">Publicado em 18/05/2026 · Revisão editorial em 06/10/2026 · Equipe editorial Brasil GEO</p>
+  </header>
+  <div class="prose prose-lg max-w-none dark:prose-invert">
+<p><strong>O estudo profissional deve produzir decisões justificadas, não uma coleção de escalas.</strong> Atender adultos autistas envolve reconhecer diferentes necessidades, examinar condições coexistentes e adaptar a relação de cuidado. Uma formação consistente permite explicar por que determinado procedimento é necessário e quando solicitar apoio de outra especialidade.</p>
+<h2>Organize o estudo em quatro entregas</h2>
+<p>Comece pelo <a href="/autismo/artigos/clinica-tea-adulto-evidencia-2026/">guia de clínica e evidências</a>. A primeira entrega é um mapa da demanda: o que o serviço se propõe a avaliar ou acompanhar, que situações encaminha e quais informações precisa obter. Evite prometer diagnóstico com base em uma entrevista breve ou em pontuação de questionário.</p>
+<p>A segunda entrega é uma matriz de métodos. Para cada recurso considerado, registre finalidade, população, versão, evidências, condições de aplicação e limites interpretativos. A terceira é um plano de acessibilidade do atendimento, construído com a pessoa. A quarta é uma síntese de caso fictício que diferencie observação, relato, hipótese e decisão.</p>
+<h2>Avaliar sem procurar apenas confirmação</h2>
+<p>A investigação precisa permitir resultados diferentes da hipótese inicial. Uma pessoa pode identificar-se com relatos de autismo e, ao mesmo tempo, precisar de avaliação de outras condições. A <a href="https://www.nice.org.uk/guidance/cg142/chapter/Recommendations">NICE CG142</a> oferece referências para avaliação abrangente e diferenciação clínica; sua aplicação no Brasil exige compatibilidade com o contexto e as normas nacionais.</p>
+<p>Na leitura de instrumentos, examine se os participantes do estudo se parecem com o público atendido. Uma comparação entre grupos previamente diagnosticados não reproduz necessariamente um serviço onde várias hipóteses competem. Sensibilidade e especificidade não devem aparecer em divulgação sem população, procedimento de referência e limites do estudo.</p>
+<p>A <a href="https://satepsi.cfp.org.br/faq.cfm">Resolução CFP nº 31/2022 e as orientações do SATEPSI</a> são a referência para avaliação psicológica. Antes de usar um teste, confira a situação atual, o manual e a modalidade. Não considere um questionário automaticamente liberado por ser gratuito ou estrangeiro. A página sobre <a href="/autismo/artigos/camuflagem-masking-cat-q-adulto-2026/">camuflagem e CAT-Q</a> mostra por que tradução, estudo psicométrico e autorização de uso são perguntas distintas.</p>
+<h2>Adaptar o encontro e acompanhar resultados relevantes</h2>
+<p>Clareza da pauta, tempo de resposta e ambiente sensorial podem ser discutidos antes ou durante o atendimento. Não transforme preferências presumidas em regras: algumas pessoas querem apoio visual, outras o consideram excessivo. Registre o que foi combinado e permita revisão. Acessibilidade diz respeito à participação, não à obrigação de corresponder a um perfil ideal de paciente.</p>
+<p>Em acompanhamento, escolha com a pessoa um objetivo compreensível. Avalie também efeitos indesejados, custo das tarefas propostas e barreiras externas. Se o objetivo é pedir uma acomodação, melhorar o ambiente pode ser tão relevante quanto ampliar repertório individual. O texto sobre <a href="/autismo/artigos/relacionamentos-amorosos-nt-autista-2026/">relacionamentos</a> ajuda a discutir reciprocidade sem explicar todos os conflitos pelo diagnóstico.</p>
+<h2>Supervisão com uma pergunta precisa</h2>
+<p>A supervisão pode examinar uma incerteza concreta: a formulação ficou estreita, um instrumento não responde à demanda ou uma adaptação prejudicou o objetivo da sessão? Prepare uma síntese suficiente, com proteção do sigilo e compartilhamento limitado ao necessário. Evite coleções de detalhes biográficos que não contribuem para a decisão.</p>
+<p><strong>Exemplo hipotético:</strong> uma profissional em formação quer discutir se o silêncio de um personagem durante a entrevista exige mudar o formato ou ampliar a investigação. Ela apresenta contexto, tentativas de comunicação e hipóteses concorrentes. Não leva à supervisão a conclusão prévia de que todo silêncio é shutdown.</p>
+<p>A página de <a href="https://larissacaramaschi.com/profissionais/supervisao-clinica">supervisão clínica do portal de Larissa Caramaschi</a> descreve modalidades e temas de discussão profissional. O link serve para conhecer essa proposta; a contratação depende da verificação de condições e qualificação, sem promessa de resultado.</p>
+<h2>Atualização normativa e comunicação pública</h2>
+<p>A <a href="https://transparencia.cfp.org.br/crp12/pergunta-frequente/atendimentopsicologicoonline/">Resolução CFP nº 9/2024</a> rege serviços mediados por tecnologias e substituiu a nº 11/2018. A produção de documentos deve observar a <a href="https://site.cfp.org.br/wp-content/uploads/2019/09/Resolu%C3%A7%C3%A3o-CFP-n-06-2019-comentada.pdf">Resolução nº 6/2019</a>. Reserve um registro de atualização com número da norma, assunto e data da consulta, para não repetir a mesma referência para finalidades diferentes.</p>
+<p>No curso de Alexandre sobre <a href="https://alexandrecaramaschi.com/educacao/escrever-bem-com-ia">escrita com IA</a>, o inventário de provas e a revisão factual podem ser aplicados a um folheto educativo fictício. Confira cada afirmação no original e não inclua material de pacientes em ferramentas abertas. Continue pelo <a href="/autismo/artigos/fronteira-pesquisa-tea-adulto-2026/">panorama de pesquisa</a> e pelo <a href="/autismo/glossario/">glossário</a>.</p>
   </div>
+  <StudyWorksheet id="ficha-pratica" title="Plano de desenvolvimento de uma competência clínica" description="Exercício educativo com situações fictícias ou informações públicas. Não registre nomes, diagnósticos individuais, prontuários ou dados identificáveis." fields={fields} checklist={checklist} />
+  <section class="prose prose-lg mt-10 max-w-none dark:prose-invert" aria-labelledby="perguntas-frequentes">
+   <h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+   {faqs.map(f=>(<details class="my-4 rounded-lg border border-current/20 p-4"><summary class="cursor-pointer font-semibold">{f.q}</summary><p>{f.a}</p></details>))}
+  </section>
+  <section class="prose mt-10 max-w-none dark:prose-invert" aria-labelledby="fontes-consultadas">
+   <h2 id="fontes-consultadas">Fontes e leituras complementares</h2>
+   <p>Fontes consultadas em 06/10/2026. Normas brasileiras, diretrizes internacionais e estudos têm funções diferentes; materiais dos portais complementam o estudo.</p>
+   <ul>{sources.map(s=>(<li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></li>))}</ul>
+  </section>
+  <footer class="mt-10 border-t border-current/20 pt-6 text-sm leading-relaxed">
+   <p>Conteúdo educativo. Não substitui avaliação individual, acompanhamento de saúde ou orientação jurídica quando necessária.</p>
+   <p class="mt-3"><a class="underline" href="/autismo/">Voltar ao núcleo de autismo em adultos</a> · <a class="underline" href="/autismo/glossario/">Consultar o glossário</a></p>
+  </footer>
+ </article>
+ <script type="application/ld+json" set:html={JSON.stringify(article)} is:inline />
+ <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />
 
-  <script type="application/ld+json" set:html={ldCollection} is:inline />
 </Base>
+<style>
+ .prose :global(p) { text-align: justify; hyphens: auto; overflow-wrap: anywhere; }
+ .prose :global(h2), .prose :global(h3), .prose :global([id]) { scroll-margin-top: 7rem; }
+ .prose :global(.table-scroll) { overflow-x: auto; max-width: 100%; }
+ .prose :global(table) { min-width: 32rem; }
+ .prose :global(a) { overflow-wrap: anywhere; }
+</style>

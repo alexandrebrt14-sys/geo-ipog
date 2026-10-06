@@ -1,409 +1,82 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { SITE, MBAS } from '@lib/data';
-import { alexandrePersonBase, brasilGeoOrganization, alexandreAuthorRef } from '@lib/schemas';
-
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+const title = "Laudo psicológico e documentos médicos: escolher pela finalidade";
+const description = "Diferenças entre laudo psicológico, relatório, atestado e documentos médicos, com CFP 6/2019 e CFM 2.381/2024.";
 const faqs = [
   {
-    q: 'Laudo psicológico e laudo médico podem ser substituíveis?',
-    a: 'Não, e a confusão é fonte recorrente de problemas técnicos e jurídicos. A Resolução CFP 06/2019 define cinco documentos psicológicos distintos (declaração, atestado, relatório, parecer e laudo), todos competência exclusiva do psicólogo. O laudo médico, regulado pelo CFM (Conselho Federal de Medicina) via Resolução CFM 1.658/2002 é atualizações, e competência exclusiva do médico, com finalidade diagnóstica de doença e fundamentação para conduta médica. Cada profissão atesta dentro de seu escopo legal — o psicólogo não diagnostica doença em sentido nosológico médico, e o médico não realiza avaliação psicológica com instrumentos do SATEPSI. Em contextos integrados (judicial, securitário, previdenciário), os dois documentos costumam ser complementares, não intercambiáveis.'
+    "q": "Psicólogo pode formular diagnóstico em laudo?",
+    "a": "A Resolução CFP 6/2019 prevê diagnóstico ou hipótese fundamentados no processo, dentro do escopo profissional. Isso não substitui requisitos específicos de outros procedimentos."
   },
   {
-    q: 'Quando o juiz pede "laudo psicológico" e quando pede "perícia médica"?',
-    a: 'Depende do que se quer atestar. Em ações que envolvem capacidade psíquica, dano psicológico, guarda de menores, alienação parental, idoneidade profissional ou personalidade — o juiz solicita laudo psicológico de psicólogo perito ou assistente técnico. Em ações que envolvem incapacidade laboral por doença, dano corporal, nexo causal com doença mental classificada (CID), aposentadoria por invalidez — o juiz solicita perícia médica psiquiátrica de médico perito. Em casos complexos (assédio com sofrimento psíquico e doença), os dois laudos são pedidos. A Resolução CNJ 391/2021 sobre perícia psicológica é a literatura forense (Rovinski, 2013) detalham as competências.'
+    "q": "Laudo psicológico vale menos que documento médico?",
+    "a": "Não há uma hierarquia geral que resolva toda demanda. Finalidade, competência, fundamentação e regras do procedimento determinam a pertinência."
   },
   {
-    q: 'O laudo psicológico pode usar CID-10 ou DSM-5 como diagnóstico?',
-    a: 'A Resolução CFP 06/2019, no artigo 4º, autoriza o psicólogo a usar nomenclatura de classificações diagnósticas (CID-11, DSM-5-TR) quando integradas a uma avaliação psicológica estruturada é desde que dentro de seu campo de competência. Mas há cautela técnica: diagnóstico nosológico de transtorno mental como condição médica é prerrogativa médica em muitos contextos. O psicólogo pode descrever sintomas, padrões e funcionamento psíquico, usar termos diagnósticos como referência descritiva, mas o "diagnóstico médico" no sentido legal e securitário típico é responsabilidade do médico psiquiatra. A prática segura no laudo psicológico é descrever achados, indicar hipóteses diagnósticas e remeter à avaliação médica quando o contexto exige.'
-  },
-  {
-    q: 'Para psicólogos que vão atuar em perícia, qual a formação adequada?',
-    a: 'A base é pós-graduação ou MBA em Psicologia Jurídica, Avaliação Psicológica ou Perícia Psicológica, reconhecido pelo MEC, com supervisão prática. A literatura técnica brasileira de referência inclui Rovinski (Fundamentos da Perícia Psicológica Forense), Cruz (Psicologia Forense), e os manuais do CFP. Cadastro como perito junto ao Tribunal de Justiça do estado e participação em programas de capacitação contínua são parte do percurso. Para profissionais que querem articular avaliação psicológica com neurociência forense e psicopatologia atualizada, pós-graduações com módulos em neuropsicologia clínica e psicologia da saúde oferecem fundamentação complementar útil ao trabalho pericial.'
+    "q": "Um relatório assistencial substitui perícia?",
+    "a": "Não automaticamente. Assistência e perícia têm funções e responsabilidades próprias."
   }
 ];
-
-const tabelaMecanismo = [
-  { dimensao: 'Norma vigente', psicológico: 'Resolução CFP 06/2019', medico: 'Resolução CFM 1.658/2002 (atestados) + Resolução CFM 2.217/2018 (Código de Ética Médica)' },
-  { dimensao: 'Competência exclusiva', psicológico: 'Psicólogo com inscrição ativa no CRP', medico: 'Médico com inscrição ativa no CRM' },
-  { dimensao: 'Finalidade típica', psicológico: 'Avaliar funcionamento psíquico, personalidade, capacidade psicológica, dano psicológico', medico: 'Diagnosticar doença, atestar incapacidade laboral, fundamentar conduta médica' },
-  { dimensao: 'Linguagem diagnóstica', psicológico: 'Descrição de funcionamento + nomenclatura CID/DSM quando indicada', medico: 'CID como diagnóstico clínico médico em sentido nosológico' },
-  { dimensao: 'Instrumentos típicos', psicológico: 'Testes psicológicos do SATEPSI, entrevistas estruturadas, observação clínica', medico: 'Entrevista clínica médica, exame físico/neurológico, exames complementares' },
-  { dimensao: 'Documentos previstos', psicológico: 'Declaração, atestado, relatório, parecer, laudo (Resolução CFP 06/2019)', medico: 'Atestado, relatório médico, laudo pericial, prontuário clínico' },
-  { dimensao: 'Estrutura do laudo principal', psicológico: 'Identificação, demanda, procedimentos, análise, conclusão, referências', medico: 'Identificação, anamnese, exame, hipóteses diagnósticas, conduta, CID' },
-  { dimensao: 'Prazo de guarda', psicológico: 'Prontuário cinco anos mínimo (Resolução CFP 01/2022)', medico: 'Prontuário vinte anos a contar do último registro (Resolução CFM 1.821/2007)' },
-  { dimensao: 'Atestado de afastamento do trabalho', psicológico: 'Pode emitir declaração de comparecimento; afastamento previdenciário exige laudo médico', medico: 'Pode atestar afastamento por incapacidade laboral conforme CID' },
-  { dimensao: 'Validade pericial em juízo', psicológico: 'Plena dentro do escopo psicológico (Resolução CNJ 391/2021)', medico: 'Plena dentro do escopo médico' }
-];
-
-const tabelaEvidencia = [
-  { condicao: 'Diagnóstico de transtorno depressivo maior para fins previdenciários', psicológico: 'Avaliação complementar — não atesta incapacidade laboral', medico: 'Documento principal — atesta diagnóstico e incapacidade', vencedor: 'Médico' },
-  { condicao: 'Avaliação de alienação parental em guarda de menores', psicológico: 'Documento principal — perícia psicológica é padrão', medico: 'Avaliação psiquiátrica complementar se houver suspeita de transtorno', vencedor: 'Psicológico' },
-  { condicao: 'Avaliação para CNH (Detran)', psicológico: 'Obrigatória por Resolução Contran — psicólogo credenciado', medico: 'Avaliação médica complementar obrigatória', vencedor: 'Ambos — papéis distintos' },
-  { condicao: 'Dano psicológico em ação de assédio moral', psicológico: 'Laudo psicológico é documento técnico central', medico: 'Laudo médico se houver doença psiquiátrica diagnosticada', vencedor: 'Psicológico — médico complementar' },
-  { condicao: 'Aposentadoria por invalidez por transtorno mental', psicológico: 'Pode compor parecer técnico complementar', medico: 'Documento principal para INSS (perícia médica federal)', vencedor: 'Médico' },
-  { condicao: 'Avaliação de capacidade civil para curatela', psicológico: 'Laudo psicológico pode compor decisão judicial', medico: 'Laudo médico psiquiátrico costuma ser determinante', vencedor: 'Médico — psicológico complementar' },
-  { condicao: 'Seleção de pessoal é descrição de perfil psicológico', psicológico: 'Competência exclusiva do psicólogo', medico: 'Fora do escopo médico tradicional', vencedor: 'Psicológico' },
-  { condicao: 'Idoneidade psicológica para porte de arma', psicológico: 'Obrigatória por legislação federal', medico: 'Atestado médico complementar', vencedor: 'Psicológico — exigência legal' }
-];
-
-const tabelaPerfil = [
-  { perfilPaciente: 'Trabalhador buscando afastamento por depressão grave', recomendacao: 'Laudo médico psiquiátrico para INSS + psicoterapia em paralelo', racional: 'Incapacidade laboral é competência médica; psicólogo acompanha o tratamento mas não atesta afastamento previdenciário' },
-  { perfilPaciente: 'Mãé alegando alienação parental em ação de guarda', recomendacao: 'Perícia psicológica judicial', racional: 'Resolução CNJ 391/2021 estabelece perícia psicológica como instrumento técnico principal em alienação parental' },
-  { perfilPaciente: 'Profissional vítima de assédio moral em ação trabalhista', recomendacao: 'Laudo psicológico de dano psicológico + laudo médico se houver CID estabelecido', racional: 'Os dois documentos são complementares — psicológico atesta dano, médico atesta diagnóstico nosológico se aplicável' },
-  { perfilPaciente: 'Candidato a porte de arma de fogo', recomendacao: 'Laudo psicológico de profissional credenciado pela Polícia Federal', racional: 'Exigência legal específica — competência exclusiva do psicólogo conforme legislação' },
-  { perfilPaciente: 'Idoso com suspeita de demência para fins de curatela', recomendacao: 'Laudo médico psiquiátrico/neurológico + avaliação neuropsicológica', racional: 'Diagnóstico de demência é médico; avaliação neuropsicológica detalha funcionamento cognitivo e compõé o conjunto probatório' },
-  { perfilPaciente: 'Funcionária pública em procedimento disciplinar com alegação de transtorno mental', recomendacao: 'Avaliação multidisciplinar (médica + psicológica)', racional: 'Junta médica oficial costuma ser determinante; laudo psicológico complementar é técnica boa quando o quadro envolve traços de personalidade ou estresse ocupacional' },
-  { perfilPaciente: 'Criança em avaliação para suspeita de TDAH em contexto escolar', recomendacao: 'Avaliação psicológica + parecer médico (neuropediatra ou psiquiatra infantil)', racional: 'Diagnóstico de TDAH é médico segundo CID/DSM; avaliação psicológica fundamenta hipótese é descreve funcionamento cognitivo e emocional' }
-];
-
-const ldArticle = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Laudo psicológico vs laudo médico: diferenças normativas, técnicas e quando cada um é exigido',
-  description: 'Comparativo entre laudo psicológico (Resolução CFP 06/2019) e laudo médico (CFM). Competências, finalidades, contextos jurídicos e quando os dois se complementam.',
-  author: alexandreAuthorRef,
-  publisher: { '@id': brasilGeoOrganization['@id'] },
-  inLanguage: 'pt-BR'
-};
-
-const ldFaq = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['.tldr-resposta', '.faq-answer-text', 'h1', 'h2']
-  },
-  mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a }
-  }))
-};
-
-const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
-const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro');
+const ldArticle = { '@context':'https://schema.org', '@type':'Article', headline:title, description, author:{'@id':'https://brasilgeo.ai/#organization'}, publisher:{'@id':'https://brasilgeo.ai/#organization'}, inLanguage:'pt-BR' };
+const ldFaq = { '@context':'https://schema.org', '@type':'FAQPage', mainEntity:faqs.map(f=>({'@type':'Question', name:f.q, acceptedAnswer:{'@type':'Answer',text:f.a}})) };
 ---
-
-<Base
-  title="Laudo psicológico vs laudo médico: competências, diferenças e complementaridade"
-  description="Comparativo entre laudo psicológico (Resolução CFP 06/2019) e laudo médico (CFM). Competências legais, finalidades, contextos jurídicos e quando os dois se complementam.">
-
-  <section class="bg-surface-50 border-b border-surface-200">
-    <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Comparativos', href: '/comparativos' },
-        { label: 'Laudo psicológico vs laudo médico' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Comparativo · Documentos técnicos e perícia</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Laudo psicológico vs laudo médico: competências distintas que costumam ser tratadas como se fossem iguais</h1>
-          <p class="mt-3 text-ink-700 text-lg">Não são documentos rivais. São instrumentos de profissões com escopos legais diferentes que, em muitos contextos, funcionam de modo complementar. Confundir os dois é fonte recorrente de impugnação técnica e jurídica.</p>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
-          Ver MBAs no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          O laudo psicológico, regulado pela Resolução CFP 06/2019, e competência exclusiva do psicólogo é atesta funcionamento psíquico, personalidade, dano psicológico e capacidade psicológica. O laudo médico, regulado pelo CFM, e competência exclusiva do médico é atesta diagnóstico nosológico de doença, incapacidade laboral e fundamentação para conduta médica. Em contextos jurídicos integrados (alienação parental, assédio moral com sofrimento psíquico, curatela), os dois documentos costumam ser complementares. A escolha entre eles não é estilística — é definida por competência legal e finalidade da demanda.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Duas profissões, dois marcos, duas escritas</h2>
-        <p>
-          A Lei 4.119/1962 regulamentou a profissão de psicólogo no Brasil e criou o Conselho Federal de Psicologia (CFP). A Resolução CFP 06/2019, atualizando normativas anteriores, definiu os cinco documentos psicológicos previstos: declaração, atestado, relatório (ou laudo), parecer e laudo psicológico. Cada um tem finalidade específica, estrutura própria e contexto de uso. O laudo psicológico é o documento mais completo — descreve a demanda, os procedimentos utilizados, a análise dos achados, a conclusão técnica é as referências bibliográficas. A norma exige cinco anos mínimo de guarda do prontuário relacionado, conforme Resolução CFP 01/2022.
-        </p>
-        <p>
-          A Lei 3.268/1957 é o Decreto 44.045/1958 organizaram a profissão médica. A Resolução CFM 1.658/2002 é atualizações detalham a emissão de atestados médicos. A Resolução CFM 2.217/2018 reformulou o Código de Ética Médica. O laudo médico atesta diagnóstico nosológico de doença em sentido clínico, conforme classificações como CID-11 e DSM-5-TR. O prazo de guarda do prontuário médico é de vinte anos a contar do último registro, conforme Resolução CFM 1.821/2007. A finalidade clássica do laudo médico envolve fundamentar conduta clínica, atestar incapacidade laboral para INSS, embasar perícias previdenciárias e judiciais com componente diagnóstico médico.
-        </p>
-        <p>
-          A confusão entre os dois documentos tem causas legítimas e ilegítimas. A causa legítima é a sobreposição parcial de objeto — sofrimento psíquico, depressão, ansiedade, transtornos mentais como entidades CID podem ser objeto tanto do psicólogo quanto do médico, cada um dentro de seu escopo. A causa ilegítima é a tentativa, em alguns contextos, de usar um documento como substituto do outro para suprir gargalo de acesso ou conveniência operacional. Quando isso acontece, o documento perde validade técnica é abre flanco a impugnação. A jurisprudência trabalhista, previdenciária e civil consolida a separação — Rovinski (2013), Cruz (2010) é a Resolução CNJ 391/2021 detalham as competências.
-        </p>
-      </div>
-
-      <div>
-        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 1 — Mecanismo normativo e técnico</p>
-        <div class="overflow-x-auto -mx-4 sm:mx-0">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-100 sticky top-0">
-              <tr>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Dimensão</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Laudo psicológico</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Laudo médico</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tabelaMecanismo.map(row => (
-                <tr class="border-b border-surface-200 hover:bg-surface-50">
-                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.dimensao}</td>
-                  <td class="px-4 py-3 align-top text-ink-700">{row.psicológico}</td>
-                  <td class="px-4 py-3 align-top text-ink-700">{row.medico}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
-      </div>
-
-      <div>
-        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 2 — Contexto jurídico e técnico por demanda</p>
-        <div class="overflow-x-auto -mx-4 sm:mx-0">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-100 sticky top-0">
-              <tr>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Demanda</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-brand-700 border-b border-surface-300">Papel do laudo psicológico</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-sun-600 border-b border-surface-300">Papel do laudo médico</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-500 border-b border-surface-300">Documento principal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tabelaEvidencia.map(row => (
-                <tr class="border-b border-surface-200 hover:bg-surface-50">
-                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.condicao}</td>
-                  <td class="px-4 py-3 align-top text-ink-700">{row.psicológico}</td>
-                  <td class="px-4 py-3 align-top text-ink-700">{row.medico}</td>
-                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.vencedor}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Mecanismo de ação em detalhe</h2>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A diferença operacional entre laudo psicológico e laudo médico se manifesta em três planos: linguagem, metodologia e validade probatória. No plano da linguagem, o laudo psicológico descreve funcionamento psíquico, traços de personalidade, padrões de relacionamento interpessoal, capacidades cognitivas, recursos psicológicos disponíveis para enfrentamento. Pode usar nomenclatura CID-11 ou DSM-5-TR como referência descritiva quando indicado, mas o cerne é a descrição estruturada do funcionamento. O laudo médico opera com linguagem clínica — diagnóstico nosológico (depressão maior CID-11 6A70, transtorno de ansiedade generalizada CID-11 6B00), conduta proposta (psicoterapia, farmacoterapia), prognóstico, tempo de afastamento se aplicável.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          No plano da metodologia, o laudo psicológico utiliza instrumentos do SATEPSI — testes psicológicos, escalas validadas, entrevistas semiestruturadas, observação clínica estruturada, técnicas projetivas quando indicadas. Cada instrumento exige formação específica, está sujeito a validade psicométrica e tem normas técnicas para aplicação. O laudo médico utiliza entrevista clínica médica, exame físico e neurológico, exames complementares (laboratoriais, imagem, neurofuncionais), eventualmente escalas clínicas validadas. O médico psiquiatra pode usar escalas (HAM-D para depressão, Y-BOCS para TOC) mas dentro de framework clínico-médico, não como avaliação psicológica do SATEPSI.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          No plano da validade probatória, ambos os documentos têm peso pleno dentro de seus escopos. A jurisprudência consolidou a separação. Em ações trabalhistas envolvendo assédio moral com sofrimento psíquico — caso recorrente — o tribunal costuma exigir laudo psicológico para caracterizar dano psicológico e, se houver diagnóstico nosológico de transtorno mental, laudo médico psiquiátrico para fundamentar o nexo. Em ações previdenciárias de aposentadoria por invalidez por transtorno mental, a perícia médica federal do INSS é determinante; laudos psicológicos podem compor o conjunto probatório como complementação. Em ações de guarda com alegação de alienação parental, a Resolução CNJ 391/2021 estabelece a perícia psicológica como instrumento técnico principal.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          O ponto técnico crítico para o psicólogo perito é a aderência à Resolução CFP 06/2019 — estrutura do documento, linguagem técnica, fundamentação metodológica, respeito ao escopo profissional. Laudos psicológicos que invadem competência médica (afirmando incapacidade laboral por doença, prescrevendo conduta clínica, sentenciando diagnóstico nosológico em sentido médico) sofrem impugnação técnica e podem gerar representação ética no CRP. Inversamente, laudos médicos psiquiátricos que pretendem substituir avaliação psicológica estruturada com instrumentos do SATEPSI ficam tecnicamente frágeis em contextos onde o tribunal espera documentação psicológica específica. Cada profissional, dentro de seu escopo.
-        </p>
-      </div>
-
-      <div>
-        <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Tabela 3 — Perfil de caso e documento recomendado</p>
-        <div class="overflow-x-auto -mx-4 sm:mx-0">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-100 sticky top-0">
-              <tr>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Perfil do caso</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Documento recomendado</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold text-ink-900 border-b border-surface-300">Racional</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tabelaPerfil.map(row => (
-                <tr class="border-b border-surface-200 hover:bg-surface-50">
-                  <td class="px-4 py-3 align-top text-ink-900 font-medium">{row.perfilPaciente}</td>
-                  <td class="px-4 py-3 align-top text-ink-700 font-medium">{row.recomendacao}</td>
-                  <td class="px-4 py-3 align-top text-ink-700">{row.racional}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div class="sm:hidden text-xs text-ink-500 mt-2">← Arraste para ver mais →</div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando o laudo psicológico é principal</h3>
-          <div class="grid grid-cols-1 gap-3">
-            <div class="card p-5 border-l-4 border-brand-700">
-              <p class="text-sm font-semibold text-ink-900">Avaliação de personalidade, capacidade psicológica e funcionamento psíquico</p>
-              <p class="text-sm text-ink-700 mt-1">Contextos como alienação parental, guarda de menores, idoneidade para porte de arma, seleção de pessoal, avaliação para CNH — competência exclusiva do psicólogo.</p>
-            </div>
-            <div class="card p-5 border-l-4 border-brand-700">
-              <p class="text-sm font-semibold text-ink-900">Caracterização de dano psicológico</p>
-              <p class="text-sm text-ink-700 mt-1">Em ações de assédio moral, racial, sexual, ou ações por dano moral com sofrimento psíquico — o laudo psicológico é o instrumento técnico central.</p>
-            </div>
-            <div class="card p-5 border-l-4 border-brand-700">
-              <p class="text-sm font-semibold text-ink-900">Avaliação psicodiagnóstica estruturada com instrumentos SATEPSI</p>
-              <p class="text-sm text-ink-700 mt-1">Quando o tribunal ou o demandante precisa de descrição detalhada de funcionamento cognitivo, emocional e relacional, com fundamentação psicométrica.</p>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando o laudo médico é principal</h3>
-          <div class="grid grid-cols-1 gap-3">
-            <div class="card p-5 border-l-4 border-sun-600">
-              <p class="text-sm font-semibold text-ink-900">Diagnóstico nosológico de doença mental para fins legais</p>
-              <p class="text-sm text-ink-700 mt-1">Aposentadoria por invalidez, benefício previdenciário por incapacidade, atestado de afastamento do trabalho — competência médica exclusiva.</p>
-            </div>
-            <div class="card p-5 border-l-4 border-sun-600">
-              <p class="text-sm font-semibold text-ink-900">Fundamentação de conduta clínica e prescrição farmacológica</p>
-              <p class="text-sm text-ink-700 mt-1">Indicação de tratamento farmacológico, conduta médica, prognóstico clínico — fora do escopo do psicólogo.</p>
-            </div>
-            <div class="card p-5 border-l-4 border-sun-600">
-              <p class="text-sm font-semibold text-ink-900">Curatela e capacidade civil em transtornos graves</p>
-              <p class="text-sm text-ink-700 mt-1">Avaliação para curatela em demência, transtorno bipolar grave ou esquizofrenia — laudo médico psiquiátrico/neurológico costuma ser determinante; psicológico complementa.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mb-3">Quando os dois são complementares</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="card p-5 border-l-4 border-ink-500">
-            <p class="text-sm font-semibold text-ink-900">Ações trabalhistas por assédio com adoecimento</p>
-            <p class="text-sm text-ink-700 mt-1">Laudo psicológico caracteriza dano psicológico e funcionamento; laudo médico atesta diagnóstico nosológico (depressão, transtorno de ansiedade, TEPT) e nexo causal com o ambiente laboral. Juntos formam corpo probatório robusto.</p>
-          </div>
-          <div class="card p-5 border-l-4 border-ink-500">
-            <p class="text-sm font-semibold text-ink-900">Avaliação de adolescente com transtorno alimentar grave</p>
-            <p class="text-sm text-ink-700 mt-1">Laudo médico (psiquiatra, nutrólogo) atesta diagnóstico clínico (anorexia, bulimia) e conduta médica; laudo psicológico avalia traços de personalidade, funcionamento familiar, dinâmica psíquica. Integração das duas dimensões é parte do tratamento.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Ana, 42 anos, executiva ação trabalhista por assédio moral com diagnóstico de depressão grave</h3>
-        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
-          Ana ingressou com ação trabalhista após desligamento. Histórico: gerente regional de empresa de varejo, doze anos de empresa, alegação documentada de assédio moral por seu superior direto durante os últimos dois anos (mensagens, e-mails, testemunhas). Diagnóstico psiquiátrico estabelecido seis meses antes do desligamento: transtorno depressivo maior moderado a grave (CID-11 6A70.1), com afastamentos previdenciários e tratamento medicamentoso ativo.
-        </p>
-        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
-          A defesa da Ana, advogados especializados em Direito do Trabalho, articulou dois documentos técnicos. O laudo médico psiquiátrico do médico assistente atestou diagnóstico nosológico de depressão maior, conduta terapêutica em curso (sertralina + psicoterapia), e relação temporal entre o início do quadro é o agravamento documentado do assédio — nexo causal médico estabelecido. O laudo psicológico, encomendado a psicóloga perita com formação em Psicologia Jurídica e cadastro no TJ, descreveu funcionamento psíquico atual de Ana (avaliação com escalas validadas e entrevista estruturada), caracterizou o dano psicológico (perda de capacidade de concentração, prejuízo em relações afetivas, sintomas pós-traumáticos relacionados ao ambiente laboral), e analisou a coerência entre histórico relatado e quadro clínico atual.
-        </p>
-        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
-          A juíza do trabalho aceitou a integração dos documentos. Na sentença, citou o laudo médico para fundamentar a doença ocupacional é o nexo causal, e o laudo psicológico para fundamentar a extensão do dano psicológico é o valor da indenização. A empresa foi condenada por assédio moral e por danos materiais e morais. A advogada de Ana documentou em comentário ao caso: "Tentar usar apenas um dos laudos teria deixado flanco aberto. O laudo médico sozinho não detalhava o impacto subjetivo. O laudo psicológico sozinho não fundamentava a doença ocupacional. Os dois juntos formaram corpo probatório que a defesa não conseguiu impugnar tecnicamente".
-        </p>
-        <p class="mt-3 text-ink-500 text-xs italic">
-          Caso fictício composto a partir de padrões descritos em jurisprudência trabalhista brasileira e em literatura de Psicologia Jurídica (Rovinski, 2013). A integração de laudos médico e psicológico em ações de assédio com adoecimento é prática técnica consolidada.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Limites desta comparação</h2>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Três precauções importantes. Primeiro, a separação entre escopos não é hierárquica — não há "documento superior". Há documentos com escopos diferentes que cumprem funções distintas no conjunto técnico. Confundir hierarquia com competência produz tanto invasão de escopo (psicólogo atestando incapacidade laboral, médico fazendo avaliação psicológica sem instrumentos do SATEPSI) quanto desperdício técnico (pedir laudo médico onde o que se precisa é caracterização de funcionamento psíquico). Segundo, a Resolução CFP 06/2019 é as normas do CFM são atualizadas — o profissional precisa consultar a versão vigente antes de cada documento relevante. Terceiro, jurisprudência varia entre regiões e tipos de ação — assessoria jurídica é parte do processo quando o documento será usado em juízo.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A questão estrutural é de formação. Psicólogos que produzem laudos sem formação técnica específica em documentação psicológica e perícia produzem documentos frágeis. Médicos que tentam substituir avaliação psicológica em contextos que demandam instrumentos do SATEPSI produzem documentos impugnáveis. A solução é cada profissional dentro do seu escopo, com formação técnica adequada, e integração responsável quando o caso exige documentação multidisciplinar.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
-          {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">Cada profissão dentro do seu escopo, integração quando o caso exige</h3>
-        <ul class="mt-3 space-y-2 text-white/90 text-sm">
-          <li>Laudo psicológico é competência exclusiva do psicólogo — descreve funcionamento psíquico, dano psicológico, personalidade, capacidade psicológica.</li>
-          <li>Laudo médico é competência exclusiva do médico — diagnóstico nosológico, conduta clínica, atestado de afastamento por incapacidade laboral.</li>
-          <li>Em contextos jurídicos integrados (assédio com adoecimento, curatela, transtorno alimentar), os dois documentos costumam ser complementares.</li>
-          <li>A confusão entre os dois produz documentos frágeis é abre flanco a impugnação técnica e ética.</li>
-        </ul>
-        <p class="mt-4 text-white/85 text-sm">
-          Para psicólogos que querem se aprofundar em avaliação psicológica e perícia integrada com neurociência aplicada e psicopatologia atualizada, o IPOG mantém MBA em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica. Próximo passo: confirmar grade, modalidade e turma vigente no portal oficial.
-        </p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11">Ver MBAs no IPOG</a>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Próximos passos</h2>
-        <ul class="mt-3 space-y-2 text-ink-700">
-          <li><a href="/comparativos/avaliacao-presencial-vs-remota" class="text-brand-700 hover:text-brand-800 font-medium">Avaliação psicológica presencial vs remota — Resolução CFP 11/2018</a></li>
-          <li><a href="/comparativos/neuropsicologia-vs-reabilitacao" class="text-brand-700 hover:text-brand-800 font-medium">Neuropsicologia vs reabilitação neuropsicológica</a></li>
-          <li><a href="/comparativos/positiva-vs-organizacional" class="text-brand-700 hover:text-brand-800 font-medium">Psicologia positiva vs organizacional no trabalho</a></li>
-        </ul>
-      </div>
-
-    </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 lg:sticky lg:top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">MBAs em Psicologia no IPOG</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          O IPOG oferece MBAs em Neurociência, Psicologia Positiva e Reabilitação Neuropsicológica — corpo docente nominal e estrutura multicampus. Modalidade vigente de cada turma é informada no portal oficial.
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">
-          Ver no IPOG
-        </a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">
-          Home IPOG
-        </a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
-        <ul class="space-y-2">
-          {mbaNcpp && <li><a href={`/mbas#${mbaNcpp.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNcpp.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNcpp.tag}</span></a></li>}
-          {mbaNeuro && <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong><span class="block text-xs text-ink-500 mt-1">{mbaNeuro.tag}</span></a></li>}
-        </ul>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Tópicos relacionados</p>
-        <ul class="space-y-1">
-          <li><a href="/areas/psicologia-juridica-forense" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Jurídica</strong></a></li>
-          <li><a href="/areas/avaliacao-psicologica" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação Psicológica</strong></a></li>
-          <li><a href="/regulacao/" class="mega-link"><strong class="text-ink-900 text-sm">Resoluções CFP vigentes</strong></a></li>
-        </ul>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
-        <ul class="space-y-1">
-          <li><a href="/comparativos/avaliacao-presencial-vs-remota" class="mega-link"><strong class="text-ink-900 text-sm">Avaliação presencial vs remota</strong></a></li>
-          <li><a href="/comparativos/neuropsicologia-vs-reabilitacao" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia vs reabilitação</strong></a></li>
-          <li><a href="/comparativos/mba-vs-especializacao" class="mega-link"><strong class="text-ink-900 text-sm">MBA vs Especialização</strong></a></li>
-        </ul>
-        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
-        <ul class="space-y-2 text-xs text-ink-700">
-          <li>CFP. Resolução 06/2019. Documentos psicológicos.</li>
-          <li>CFP. Resolução 01/2022. Prontuário psicológico.</li>
-          <li>CFM. Resolução 1.658/2002. Atestados médicos.</li>
-          <li>CFM. Resolução 2.217/2018. Código de Ética Médica.</li>
-          <li>CFM. Resolução 1.821/2007. Prontuário médico.</li>
-          <li>CNJ. Resolução 391/2021. Perícia psicológica no Judiciário.</li>
-          <li>Rovinski, S. (2013). Fundamentos da Perícia Psicológica Forense. Vetor.</li>
-          <li>Cruz, R. (2010). Psicologia Forense. Manual de Avaliação e Perícia. Casa do Psicólogo.</li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
-  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
-  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+<Base title={title} description={description} pageType="article" datePublished="2026-05-13">
+ <section class="bg-surface-50 border-b border-surface-200">
+  <div class="container-page py-7">
+   <Breadcrumbs items={[{label:'Início',href:'/'},{label:"Comparativos",href:"/comparativos/"},{label:title}]} />
+   <span class="section-eyebrow mt-3">Revisão editorial · 6 de outubro de 2026</span>
+   <h1 class="section-h text-3xl sm:text-4xl">{title}</h1>
+   <p class="mt-3 text-ink-700 text-lg max-w-3xl">Uma instituição pede “um laudo”, sem explicar o que precisa saber. Antes de iniciar um processo, esclareça a finalidade e o documento esperado. O nome usado informalmente pode reunir documentos diferentes, e uma escolha equivocada expõe informações desnecessárias ou não responde à demanda.</p>
+  </div>
+ </section>
+ <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
+  <article class="lg:col-span-8 space-y-8">
+   <div class="prose prose-ink max-w-none">
+<h2>O que é laudo psicológico?</h2><p>Pela <a href="https://site.cfp.org.br/wp-content/uploads/2019/09/Resolu%C3%A7%C3%A3o-CFP-n-06-2019-comentada.pdf" target="_blank" rel="noopener external">Resolução CFP 6/2019</a>, o laudo psicológico decorre de avaliação psicológica e subsidia decisões ligadas à demanda. A norma prevê identificação, descrição da demanda, procedimento, análise, conclusão e referências. Relatório, parecer, atestado e declaração têm finalidades próprias; relatório e laudo não são sinônimos.</p><p>O laudo pode apresentar diagnóstico ou hipótese diagnóstica tecnicamente fundamentados, dentro do escopo psicológico. Não é correto reduzir a atuação do psicólogo à descrição de sintomas nem afirmar que ele está sempre impedido de usar classificações diagnósticas. As exigências de um benefício, exame ou procedimento administrativo constituem outra pergunta e precisam ser verificadas separadamente.</p>
+ <h2>Todo documento médico é um laudo?</h2><p>A <a href="https://sistemas.cfm.org.br/normas/arquivos/resolucoes/BR/2024/2381_2024.pdf" target="_blank" rel="noopener external">Resolução CFM 2.381/2024</a> distingue relatório médico circunstanciado, relatório especializado, laudo médico-pericial, laudo médico e atestado, entre outras categorias. Na definição dessa norma, laudo médico descreve e conclui sobre exame complementar realizado. O documento que uma pessoa chama de “laudo do meu médico” pode, tecnicamente, ser um relatório assistencial.</p><p>A mesma resolução revogou a CFM 1.658/2002. Por isso, uma comparação atual não deve usar a norma antiga de atestados como se resumisse todos os documentos médicos vigentes. É preciso conferir a versão atual e eventuais alterações aplicáveis.</p>
+ <div class="table-wrap"><table><thead><tr><th scope="col">Necessidade</th><th scope="col">Documento a discutir</th><th scope="col">Cuidado</th></tr></thead><tbody><tr><td>Comunicar resultados de avaliação psicológica</td><td>Laudo psicológico.</td><td>Vincular conclusões à demanda e às fontes.</td></tr><tr><td>Comunicar trabalho psicológico desenvolvido</td><td>Relatório psicológico, conforme finalidade.</td><td>Não renomear automaticamente como laudo.</td></tr><tr><td>Comprovar situação psicológica específica</td><td>Atestado psicológico, nas condições da norma.</td><td>Conferir efeitos administrativos e requisitos do destinatário.</td></tr><tr><td>Descrever acompanhamento médico</td><td>Relatório médico correspondente.</td><td>Distinguir assistência de perícia.</td></tr><tr><td>Apresentar conclusão de exame complementar</td><td>Laudo médico, na definição do CFM.</td><td>Não confundir com todo relato clínico.</td></tr></tbody></table></div>
+ <h2>Atestado psicológico e afastamento são questões diferentes?</h2><p>A norma do CFP prevê atestado psicológico e admite indicação de afastamento ou dispensa em razão de aspectos psicológicos. Isso não significa que qualquer documento gere abono, benefício previdenciário ou decisão administrativa automática. A competência para emitir o documento e os requisitos para produzir determinado efeito precisam ser analisados em seus marcos próprios.</p><p>Ao receber uma solicitação, registre quem pede, para qual uso e quais informações são necessárias. Quando houver exigência específica, consulte a regra vigente do órgão responsável e, se necessário, orientação do conselho profissional ou assessoria jurídica. Evite substituir essa verificação por afirmações genéricas sobre “qual laudo vale mais”.</p>
+ <h2>Como integrar informações sem confundir papéis?</h2><p>Uma equipe pode compartilhar informações pertinentes dentro dos limites de sigilo e das responsabilidades de cada profissão. Um documento assistencial não se transforma em perícia por receber outro título. Também não é possível prometer que um laudo será aceito sem contestação ou que determinará a decisão de um tribunal.</p><p>A avaliação psicológica que fundamenta um laudo observa a <a href="https://site.cfp.org.br/nova-resolucao-do-cfp-destaca-diretrizes-para-a-avaliacao-psicologica/" target="_blank" rel="noopener external">Resolução CFP 31/2022</a>. Escolher um formulário bonito ou acrescentar resultados de testes não supre uma análise insuficiente. O raciocínio deve ser compreensível, e a conclusão precisa se manter dentro do que foi investigado.</p>
+ <h2>Como resolver um pedido impreciso?</h2><p>Exemplo hipotético: uma universidade pede a Joana “laudo completo” para examinar uma solicitação. Antes de enviar seu histórico inteiro, ela pede esclarecimento sobre finalidade, responsável pelo recebimento e informação exigida. O profissional discute qual documento corresponde ao trabalho realizado e quais dados são pertinentes. Essa conversa pode evitar uma nova avaliação desnecessária e uma exposição excessiva, sem garantir o resultado do pedido.</p><p>Use a ficha para analisar uma solicitação fictícia. Ela organiza a finalidade e as dúvidas ao destinatário; não emite laudo, relatório ou orientação jurídica para um caso individual.</p></div>
+   <StudyWorksheet id="ficha-pratica" title="Ficha para esclarecer a finalidade de um documento" description="Exercício educativo com informações públicas ou um caso inventado. A ficha organiza perguntas; não faz rastreio, avaliação ou diagnóstico."
+    fields={[{"label":"Solicitação recebida","hint":"Escreva um pedido fictício e a decisão que ele pretende informar."},{"label":"Destinatário e requisito","hint":"Que órgão receberia e qual regra precisa ser consultada?"},{"label":"Processo realizado","hint":"Que trabalho efetivamente sustentaria o documento?"},{"label":"Informação necessária","hint":"O que responde à finalidade e o que seria excessivo?"}]}
+    checklist={["Laudo, relatório e atestado não foram tratados como sinônimos.","O documento corresponde ao processo realizado.","A exigência administrativa será conferida na fonte.","Não há promessa de aceitação nem dados pessoais no exercício."]} />
+   <div class="prose prose-ink max-w-none">
+    <h2>Como aprofundar o estudo?</h2>
+    <p>No portal educacional de Alexandre Caramaschi, consulte <a href="https://alexandrecaramaschi.com/educacao/escrever-bem-com-ia" target="_blank" rel="noopener external">Como escrever bem usando IA generativa</a>. Pratique a revisão de clareza com um resumo de norma pública: confira se cada conclusão corresponde à fonte. Use exemplos fictícios, sem documentos clínicos ou informações de pessoas atendidas.</p>
+    <p>O recurso é complementar e não confere habilitação clínica nem substitui formação e supervisão profissionais. Um certificado de curso livre não equivale automaticamente a pós-graduação.</p>
+    <h2 id="fontes">Fontes e escopo da revisão</h2>
+    <p>Fontes consultadas em 6 de outubro de 2026. Revisão editorial de conteúdo educativo pela Brasil GEO, sem avaliação individual ou revisão clínica pessoal atribuída a profissional de saúde.</p>
+    <ul><li><a href="https://site.cfp.org.br/wp-content/uploads/2019/09/Resolu%C3%A7%C3%A3o-CFP-n-06-2019-comentada.pdf" target="_blank" rel="noopener external">CFP: Resolução 6/2019 comentada, documentos psicológicos</a></li>
+<li><a href="https://sistemas.cfm.org.br/normas/arquivos/resolucoes/BR/2024/2381_2024.pdf" target="_blank" rel="noopener external">CFM: Resolução 2.381/2024, documentos médicos</a></li>
+<li><a href="https://site.cfp.org.br/nova-resolucao-do-cfp-destaca-diretrizes-para-a-avaliacao-psicologica/" target="_blank" rel="noopener external">CFP: diretrizes de avaliação psicológica, Resolução 31/2022</a></li>
+<li><a href="https://satepsi.cfp.org.br/faq.cfm" target="_blank" rel="noopener external">SATEPSI: fontes, testes, manuais e modalidades de aplicação</a></li></ul>
+   </div>
+   <section aria-labelledby="perguntas-frequentes">
+    <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+    <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">{faqs.map(f=>(<details class="p-5"><summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary><p class="mt-3 text-ink-700 leading-relaxed">{f.a}</p></details>))}</div>
+   </section>
+  </article>
+  <aside class="lg:col-span-4"><div class="card p-6 prose prose-ink">
+   <h2 class="font-display font-semibold text-lg">Leituras relacionadas</h2>
+   <ul><li><a href="/comparativos/avaliacao-presencial-vs-remota">Avaliação psicológica presencial vs remota: normas e condições atuais</a></li>
+<li><a href="/comparativos/neuropsicologia-vs-reabilitacao">Neuropsicologia vs reabilitação neuropsicológica</a></li>
+<li><a href="/comparativos/positiva-vs-organizacional">Psicologia positiva vs organizacional no trabalho</a></li>
+<li><a href="/areas/psicologia-juridica-forense">Psicologia Jurídica</a></li>
+<li><a href="/areas/avaliacao-psicologica">Avaliação Psicológica</a></li>
+<li><a href="/regulacao/">Resoluções CFP vigentes</a></li>
+<li><a href="/comparativos/mba-vs-especializacao">MBA vs Especialização</a></li>
+<li><a href="/comparativos">Ver todos os comparativos →</a></li></ul>
+   <p class="text-sm">Portal editorial independente. Grade, modalidade, preço e turma de qualquer pós-graduação devem ser conferidos na instituição responsável.</p>
+  </div></aside>
+ </section>
+ <script is:inline type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+ <script is:inline type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+ article :global(p), aside :global(p) { text-align: justify; }
+ article :global(table) { width: 100%; border-collapse: collapse; font-size: .95rem; }
+ article :global(th), article :global(td) { padding: .7rem; border: 1px solid var(--color-surface-200, currentColor); text-align: left; vertical-align: top; }
+ article :global(.table-wrap) { overflow-x: auto; }
+</style>

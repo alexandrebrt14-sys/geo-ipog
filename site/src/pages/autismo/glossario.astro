@@ -1,388 +1,571 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { SITE } from '@lib/data';
-import { larissaPersonBase, brasilGeoOrganization } from '@lib/schemas';
-
-const titulo = 'Glossário de autismo nível 1 em adultos, vocabulário técnico, ético e atualizado em 2026';
-const descricao = 'Cinquenta verbetes essenciais sobre autismo nível 1 de suporte em adultos, do diagnóstico tardio à dupla empatia, da camuflagem ao apego, com vocabulário identity-first e definições operacionais para pacientes, profissionais e pesquisadores.';
-const clusters = [
-  { id: 'identidade-diagnostico', label: 'Identidade e diagnóstico' },
-  { id: 'camuflagem', label: 'Camuflagem e máscara' },
-  { id: 'sensorialidade', label: 'Sensorialidade e regulação' },
-  { id: 'relacionamentos', label: 'Relacionamentos' },
-  { id: 'clinica', label: 'Clínica e instrumentos' },
-  { id: 'trabalho', label: 'Trabalho e direito' }
-];
-
-const slug = 'glossario';
-
-interface Verbete {
-  termo: string;
-  definicao: string;
-  cluster: string;
-  relacionados?: string[];
-  /** Onda 5 SEO/GEO (03/09/2026): QID do Wikidata, verificado por HTTP e rótulo (scripts/check-external-ids.mjs). */
-  wikidata?: string;
-}
-
-const verbetes: Verbete[] = [
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+const title = "Glossário de autismo adulto: 53 termos para ler com contexto";
+const description = "Definições de identidade, camuflagem, sensorialidade, relacionamentos, instrumentos e direitos, com âncoras para consulta e limites de uso.";
+const faqs = [
   {
-    termo: 'AAA (Adult Asperger Assessment)',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Bateria de avaliação desenvolvida por Baron-Cohen e colaboradores em 2005 para apoiar diagnóstico de autismo em adultos com bom nível verbal e funcional, integrando AQ-50, EQ (Empathy Quotient) e entrevista semiestruturada com observação de critérios DSM. O nome carrega o termo Asperger por razões históricas, mas a bateria continua válida sob a nomenclatura atual de transtorno do espectro autista nível 1 de suporte. No Brasil, o AAA costuma compor protocolos clínicos junto com ADOS-2 e ADI-R, sobretudo em adultos com diagnóstico tardio e camuflagem alta, situações em que ferramentas pediátricas isoladas têm baixa sensibilidade.'
+    "q": "Encontrar um termo que descreve minha experiência confirma autismo?",
+    "a": "Não. Termos podem ajudar a expressar dúvidas e necessidades, mas o diagnóstico exige avaliação contextualizada. Muitas experiências também ocorrem em outras condições e situações."
   },
   {
-    termo: 'Acomodações razoáveis',
-    wikidata: 'Q751097',
-    cluster: 'Trabalho e direito',
-    definicao: 'Ajustes proporcionais no ambiente, na jornada ou nos processos de trabalho que permitem a pessoa autista exercer suas funções com equidade, sem onerar de forma desproporcional o empregador. Exemplos incluem reduzir ruído com fones, oferecer pauta escrita antes de reuniões, permitir trabalho remoto parcial, e definir canais escritos como padrão de comunicação. No Brasil, a Lei Brasileira de Inclusão (13.146/2015) e a NR-1 atualizada em 2024 fundamentam a obrigação de acomodação. A pessoa autista não precisa apresentar laudo médico para solicitar ajustes pontuais, embora o CIPTEA fortaleça a posição jurídica.'
+    "q": "Nível 1 do DSM é o mesmo que CID-11 6A02?",
+    "a": "Não. Nível de suporte e código classificatório têm funções diferentes. A CID-11 possui especificadores próprios, que não correspondem automaticamente aos níveis do DSM."
   },
   {
-    termo: 'ADI-R (Autism Diagnostic Interview-Revised)',
-    wikidata: 'Q4822682',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Entrevista semiestruturada conduzida com um informante que tenha conhecimento aprofundado do desenvolvimento da pessoa avaliada, normalmente mãe, pai ou cuidador. Cobre histórico desde os primeiros anos, comunicação, interação social e comportamentos restritos e repetitivos, somando aproximadamente noventa itens. Em adultos, a aplicação enfrenta limites óbvios, ausência de informante, memória parental imprecisa, e camuflagem prolongada que apagou marcadores na infância. Mesmo assim, segue sendo padrão-ouro complementar quando o objetivo é diagnóstico diferencial rigoroso, em conjunto com ADOS-2 e instrumentos de autorrelato como AQ-50 e RAADS-R.'
-  },
-  {
-    termo: 'ADOS-2 (Autism Diagnostic Observation Schedule)',
-    wikidata: 'Q4822673',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Protocolo padronizado de observação clínica considerado padrão-ouro internacional para diagnóstico de autismo, com cinco módulos calibrados por idade e nível verbal. O Módulo 4 é o aplicado em adolescentes e adultos com fala fluente. A avaliação dura entre quarenta e sessenta minutos e gera escores que orientam a hipótese diagnóstica, sempre integrada à anamnese, histórico evolutivo e instrumentos complementares. Em adultos com camuflagem alta, a sensibilidade do ADOS-2 cai, razão pela qual avaliação isolada não basta, exige raciocínio clínico abrangente e, idealmente, escuta da comunidade autista para reconhecer apresentações internalizantes.'
-  },
-  {
-    termo: 'Adulto autista',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Pessoa autista a partir dos dezoito anos, marco etário relevante no Brasil para autonomia jurídica, decisões clínicas e acesso a direitos específicos. A expressão identity-first é preferida pela maioria da comunidade autoadvogada brasileira e internacional, conforme estudos como Bottema-Beutel e colaboradores (2021). Falar em adulto autista deixa explícito que o autismo é parte constitutiva da identidade, não um acessório a ser removido. Muitos adultos autistas recebem diagnóstico tardio após uma vida de camuflagem, e o reconhecimento da identidade frequentemente vem antes ou depois do laudo formal, em ambos os casos com peso clínico legítimo.'
-  },
-  {
-    termo: 'Apego adulto (Mikulincer e Shaver)',
-    wikidata: 'Q16243237',
-    cluster: 'Relacionamentos',
-    definicao: 'Continuação da teoria do apego aplicada à vida amorosa e às relações próximas no adulto, sistematizada por Mario Mikulincer e Phillip Shaver. O modelo distingue duas dimensões, ansiedade de apego e evitação de apego, que combinadas formam os padrões seguro, ansioso, evitativo e desorganizado. No casal NT-autista, o adulto autista pode apresentar padrão evitativo aparente em razão de necessidade real de regulação sensorial e descompressão, fenômeno que se confunde com fuga emocional na leitura do parceiro. Diferenciar regulação neurossensorial de defesa de apego é tarefa terapêutica central na clínica de casais neurodiversos.'
-  },
-  {
-    termo: 'AQ-50 (Autism-Spectrum Quotient)',
-    wikidata: 'Q862027',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Questionário de autorrelato com cinquenta itens, desenvolvido por Baron-Cohen e equipe em 2001, que mensura traços do espectro autista em adultos com inteligência típica. Pontuações iguais ou superiores a 32 sugerem investigação clínica formal, embora o instrumento sozinho não diagnostique nada. O AQ-50 é gratuito, autoaplicável, e útil como triagem inicial em consultórios de psicologia, neuropsicologia e psiquiatria adulta. A versão em português do Brasil tem propriedades psicométricas razoáveis, mas há viés em populações com camuflagem alta, especialmente em mulheres adultas, que tendem a subnotificar traços e exigem escuta clínica mais cuidadosa.'
-  },
-  {
-    termo: 'Assimilação',
-    cluster: 'Camuflagem e máscara',
-    definicao: 'Uma das três dimensões do CAT-Q (Hull e colaboradores, 2019), referente ao esforço deliberado de imitar comportamentos sociais neurotípicos para se misturar ao grupo. Inclui copiar gestos, expressões faciais, padrões de voz e roteiros de conversa observados em colegas. A assimilação difere da compensação porque é menos sobre superar dificuldade específica e mais sobre dissolver visibilidade autista. O custo psíquico é alto, gera sensação de inautenticidade crônica, fadiga social desproporcional e, com frequência, autistic burnout. Reconhecer a assimilação como estratégia adaptativa, e não como sinal de superficialidade, é peça-chave no trabalho clínico com adultos autistas em diagnóstico tardio.'
-  },
-  {
-    termo: 'Autistic burnout',
-    wikidata: 'Q97365310',
-    cluster: 'Camuflagem e máscara',
-    definicao: 'Síndrome de exaustão crônica descrita pela comunidade autista e progressivamente estudada na literatura científica desde Raymaker e colaboradores (2020). Resulta da combinação prolongada de demandas além da capacidade de regulação, camuflagem persistente e ausência de acomodações. Manifesta-se com perda de habilidades antes consolidadas, queda de tolerância sensorial, retraimento social e sintomas confundidos com depressão. Não é episódio agudo nem preguiça, é resposta funcional a um ambiente cronicamente incompatível. O tratamento exige redução real de demandas, retomada de stims e interesses específicos, períodos de baixa estimulação, e revisão de acomodações no trabalho e nos relacionamentos, mais do que medicação isolada.'
-  },
-  {
-    termo: 'Autismo nível 1 de suporte',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Classificação atual do DSM-5-TR (2022) e referência da CID-11 (6A02) para apresentações do espectro autista que requerem suporte, mas com menor demanda de apoio formal do que os níveis 2 e 3. Substitui de modo definitivo a categoria histórica de síndrome de Asperger, retirada da nomenclatura oficial em 2013. Falar em nível 1 de suporte não significa autismo "leve", expressão que a comunidade autista rejeita por minimizar sofrimento real, custo de camuflagem, esgotamento e barreiras concretas no trabalho, na escola e nas relações. A intensidade de suporte varia ao longo da vida e nos diferentes domínios funcionais.'
-  },
-  {
-    termo: 'Camuflagem (masking)',
-    wikidata: 'Q72290770',
-    cluster: 'Camuflagem e máscara',
-    definicao: 'Conjunto de estratégias conscientes e inconscientes que adultos autistas utilizam para esconder traços autísticos e parecer neurotípicos em contextos sociais e profissionais. Hull e colaboradores (2019) sistematizaram três dimensões, compensação, assimilação e mascaramento. A camuflagem é mais frequente e mais elaborada em mulheres, pessoas LGBTQIA, e adultos com diagnóstico tardio, o que explica parte da subnotificação histórica nesses grupos. O custo inclui fadiga crônica, ansiedade social, transtornos depressivos comórbidos, perda de senso de identidade e maior risco de autistic burnout. Reconhecer e nomear a camuflagem é etapa terapêutica anterior à decisão sobre quando, onde e com quem desmascarar.'
-  },
-  {
-    termo: 'Casal NT-autista',
-    cluster: 'Relacionamentos',
-    definicao: 'Relação afetiva ou conjugal em que uma pessoa é neurotípica e a outra é autista, frequentemente nível 1 de suporte. A literatura clínica e a experiência da comunidade descrevem padrões específicos, divergência na regulação sensorial, expectativas diferentes sobre comunicação subentendida, ritmos distintos de processamento emocional, e ciclos de mal-entendido amplificados por leituras mútuas equivocadas. Não há prognóstico fixo, casais NT-autistas podem ter relações longas e saudáveis quando há reconhecimento explícito da neurodivergência, vocabulário compartilhado para necessidades sensoriais e comunicativas, e supervisão clínica especializada nos momentos de crise. A dupla empatia (Milton, 2012) é referência teórica central.'
-  },
-  {
-    termo: 'CAT-Q (Camouflaging Autistic Traits Questionnaire)',
-    cluster: 'Camuflagem e máscara',
-    definicao: 'Instrumento de vinte e cinco itens desenvolvido por Hull e colaboradores (2019) para mensurar camuflagem em adultos autistas, com três subescalas, compensação, assimilação e mascaramento. Pontuações elevadas correlacionam-se com ansiedade, depressão, autistic burnout e sentimento de inautenticidade. O CAT-Q é especialmente útil em mulheres adultas com diagnóstico tardio, em adultos LGBTQIA, e em qualquer contexto em que a apresentação clínica externa pareça incompatível com o sofrimento relatado. Tradução e validação em português do Brasil ainda em consolidação, exigindo que o uso clínico considere o instrumento como apoio à conversa, não substituto da escuta longitudinal.'
-  },
-  {
-    termo: 'Ciclo de vida familiar (Carter e McGoldrick)',
-    cluster: 'Relacionamentos',
-    definicao: 'Modelo desenvolvimentista da terapia familiar sistêmica que organiza a vida da família em estágios, casal sem filhos, chegada dos filhos, filhos adolescentes, ninho vazio e velhice, com tarefas e crises previsíveis em cada transição. Em famílias com adulto autista, cada transição traz desafios adicionais, ajuste de acomodações, redistribuição de carga doméstica, suporte a filhos autistas ou neurotípicos, e renegociação de papéis quando o adulto autista descobre o diagnóstico tardiamente. O modelo Carter e McGoldrick, atualizado nas edições mais recentes, é referências principais em terapia familiar sistêmica orientada a famílias neurodiversas.'
-  },
-  {
-    termo: 'CID-11 6A02',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Código da Classificação Internacional de Doenças, 11ª revisão, da Organização Mundial da Saúde, que designa o transtorno do espectro do autismo. A CID-11 entrou em vigor internacionalmente em 2022 e abandonou as subdivisões antigas como autismo infantil e síndrome de Asperger, adotando dimensões qualitativas relacionadas ao nível de comprometimento intelectual e à linguagem funcional. No Brasil, o CID ainda é exigido em laudos para fins jurídicos e previdenciários, junto com critérios DSM-5-TR usados clinicamente. A CID-11 reconhece explicitamente que o autismo é condição do neurodesenvolvimento que persiste ao longo da vida.'
-  },
-  {
-    termo: 'CIPTEA (Carteira de Identificação da Pessoa com TEA)',
-    wikidata: 'Q139982517',
-    cluster: 'Trabalho e direito',
-    definicao: 'Documento criado pela Lei 13.977/2020, conhecida como Lei Romeo Mion, que assegura prioridade no atendimento e direitos previstos no ordenamento brasileiro à pessoa diagnosticada com transtorno do espectro autista. A CIPTEA é emitida gratuitamente, tem validade nacional e cinco anos de prazo. Não substitui laudo clínico nem CID em processos judiciais e previdenciários, mas facilita acesso a serviços, atendimento prioritário, vagas reservadas e acomodações no trabalho. Adultos autistas em diagnóstico tardio frequentemente subutilizam a carteira, embora ela seja instrumento jurídico relevante junto com a Lei Brasileira de Inclusão e a Lei Berenice Piana.'
-  },
-  {
-    termo: 'Compensação',
-    cluster: 'Camuflagem e máscara',
-    definicao: 'Primeira das três dimensões do CAT-Q, refere-se ao esforço cognitivo para superar dificuldades sociais autistas específicas, como decodificar expressões faciais, antecipar regras tácitas de conversa, ou planejar respostas socialmente aceitáveis. Diferentemente da assimilação, a compensação é dirigida a problemas concretos. Adultos autistas com alto desempenho profissional frequentemente compensam intensamente em reuniões, eventos sociais e interações com clientes, gerando sobrecarga cognitiva invisível ao observador. A compensação prolongada está associada a fadiga crônica, queda de produtividade em tarefas técnicas após interações sociais densas, e maior risco de autistic burnout, especialmente em ambientes corporativos com cultura de presença forçada.'
-  },
-  {
-    termo: 'Comunicação direta/literal',
-    cluster: 'Relacionamentos',
-    definicao: 'Padrão comunicativo predominante em adultos autistas, caracterizado por preferência por enunciados explícitos, factuais e sem dependência de subtexto. Não é falta de empatia nem rigidez, é uma estratégia que reduz custo de processamento e diminui ambiguidade. Em casais NT-autistas, a comunicação literal pode soar fria ou seca para o parceiro neurotípico, que está acostumado a inferir intenção a partir de tom, contexto e implícito. O trabalho terapêutico consiste em traduzir mutuamente, o adulto autista aprende a sinalizar afeto explicitamente quando necessário, e o parceiro neurotípico aprende a dizer o que precisa em palavras, sem esperar adivinhação.'
-  },
-  {
-    termo: 'Comunidade autoadvogados',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Movimento internacional e brasileiro de pessoas autistas adultas que reivindicam protagonismo na definição de suas necessidades, vocabulário, prioridades de pesquisa e políticas públicas. Inclui organizações como ASAN nos Estados Unidos e coletivos brasileiros como Abraça e o Movimento Orgulho Autista. A comunidade autoadvogada foi central na consolidação da linguagem identity-first, na rejeição de terapias normalizadoras como ABA aplicada de modo coercitivo, e na demanda por intervenções neuroafirmativas. A escuta dessa comunidade é diretriz ética para profissionais que atendem adultos autistas, princípio reforçado por documentos do Conselho Federal de Psicologia e por boas práticas internacionais.'
-  },
-  {
-    termo: 'Custo da camuflagem',
-    cluster: 'Camuflagem e máscara',
-    definicao: 'Conjunto de consequências psíquicas, físicas e sociais do esforço prolongado para esconder traços autistas. Inclui fadiga crônica desproporcional ao volume objetivo de trabalho, transtornos de ansiedade e depressão, sensação persistente de inautenticidade, isolamento mesmo em meio a relações aparentemente saudáveis, e maior risco de autistic burnout. O custo é particularmente alto em adultos com diagnóstico tardio, que passaram décadas sem nomear o esforço. Reconhecer, mensurar e reduzir esse custo é objetivo terapêutico explícito, mais relevante do que perseguir adaptação social a qualquer preço. A literatura tem associado camuflagem prolongada também a maior risco de ideação suicida.'
-  },
-  {
-    termo: 'Diagnóstico tardio',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Identificação do autismo na adolescência tardia, vida adulta ou meia-idade, frequentemente após décadas de camuflagem, sofrimento atribuído a outros diagnósticos como depressão, transtorno de personalidade ou TDAH, e múltiplas tentativas terapêuticas pouco efetivas. É mais frequente em mulheres, pessoas LGBTQIA e adultos com inteligência típica ou alta. O diagnóstico tardio frequentemente reorganiza a história de vida, gerando alívio, luto, reinterpretação de relacionamentos e revisão de rotinas. A literatura recente destaca a necessidade de protocolos clínicos específicos para adultos, com instrumentos como AQ-50, RAADS-R, CAT-Q, AAA e ADOS-2 Módulo 4, sempre integrados a escuta longitudinal.'
-  },
-  {
-    termo: 'DSM-5-TR',
-    wikidata: 'Q126596457',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Edição revisada de 2022 do Manual Diagnóstico e Estatístico de Transtornos Mentais da Associação Americana de Psiquiatria. Manteve a categoria única de transtorno do espectro do autismo introduzida no DSM-5 em 2013, com classificação por níveis de suporte (1, 2 e 3) e domínios de comunicação social e comportamentos restritos e repetitivos. A edição TR atualizou linguagem, especificadores e nota sobre prevalência ajustada, reconhecendo viés histórico contra mulheres e pessoas LGBTQIA. No Brasil, DSM-5-TR e CID-11 6A02 coexistem como referências clínicas, sendo o CID exigido em laudos formais e o DSM mais utilizado no raciocínio clínico cotidiano.'
-  },
-  {
-    termo: 'Dupla empatia (Milton, 2012)',
-    wikidata: 'Q109546940',
-    cluster: 'Relacionamentos',
-    definicao: 'Hipótese formulada pelo sociólogo autista britânico Damian Milton em 2012, segundo a qual dificuldades de comunicação entre pessoas autistas e neurotípicas não são exclusivas do lado autista, são bidirecionais, decorrem da divergência entre dois estilos de processamento social. Tem ampla evidência empírica desde Crompton e colaboradores (2020), que mostraram que pessoas autistas se comunicam entre si com a mesma fluidez que pessoas neurotípicas entre si, e que a falha aparece sobretudo na interface. A dupla empatia subverte o modelo deficitário clássico do autismo e fundamenta intervenções neuroafirmativas, supervisão clínica especializada e terapia de casal NT-autista orientada a tradução mútua.'
-  },
-  {
-    termo: 'Espectro autista',
-    wikidata: 'Q1436063',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Expressão que reconhece a diversidade de apresentações dentro do transtorno do espectro do autismo. Não é gradiente linear de leve a grave, é constelação multidimensional de traços que variam em comunicação social, sensorialidade, regulação, interesses, e necessidades de suporte. O espectro inclui adultos com fala fluente e carreira estabelecida e adultos com suporte intensivo em atividades de vida diária, com necessidades muito distintas. Falar em espectro lembra que cada adulto autista combina pontos fortes e barreiras de forma única, e que estratégias de cuidado devem ser personalizadas, baseadas em avaliação dimensional e na escuta da própria pessoa autista.'
-  },
-  {
-    termo: 'Hiperfoco',
-    wikidata: 'Q1640924',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Estado de concentração intensa e prolongada em uma atividade ou tema, com supressão parcial de fome, sede, sono e estímulos externos. É traço comum tanto no autismo quanto no TDAH e nas suas formas combinadas. No adulto autista, hiperfoco em interesses específicos é frequentemente fonte de produtividade, mestria técnica, prazer e regulação. Pode também gerar conflito em ambientes corporativos com mudança constante de prioridades, e em relacionamentos quando o parceiro neurotípico interpreta o hiperfoco como desinteresse pessoal. O cuidado clínico envolve preservar o hiperfoco como recurso, ao mesmo tempo em que se constroem rotinas mínimas de hidratação, alimentação e pausas.'
-  },
-  {
-    termo: 'Hipersensibilidade',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Resposta intensa a estímulos sensoriais que para a maior parte das pessoas neurotípicas é inócua ou moderada. Inclui sons ambientes, luzes fluorescentes, texturas de roupas, perfumes, contato físico inesperado, gosto e cheiro de alimentos. No adulto autista, hipersensibilidade não é frescura, é experiência neurossensorial documentada por evidência funcional. Pode acumular ao longo do dia até gerar meltdown, shutdown ou retraimento. Acomodações práticas incluem fones com cancelamento de ruído, iluminação regulável, escolha de tecidos, e direito de sair de ambientes sobrecarregantes sem precisar justificar. O CIPTEA respalda juridicamente acomodações desse tipo em serviços públicos e privados.'
-  },
-  {
-    termo: 'Hipossensibilidade',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Resposta reduzida a estímulos sensoriais que outras pessoas percebem com intensidade média ou alta. Inclui menor percepção de dor, fome, sede, temperatura ambiente, ou de sinais internos como pressão arterial alta e fadiga muscular. Em adultos autistas, hipossensibilidade pode levar a subnotificação de quadros médicos, exigindo acompanhamento clínico atento e checagens objetivas, e não apenas perguntar como a pessoa se sente. Também coexiste com hipersensibilidade em outros canais, montando um perfil sensorial misto. Avaliação ocupacional com instrumentos como o Adult Sensory Profile auxilia a desenhar rotinas, exercícios e ambientes sensorialmente compatíveis.'
-  },
-  {
-    termo: 'Identidade encoberta',
-    cluster: 'Camuflagem e máscara',
-    definicao: 'Construção identitária em que a pessoa autista vive a maior parte da vida pública como neurotípica, frequentemente sem ter consciência plena da própria neurodivergência. Tem custo psíquico semelhante ao de outras experiências de minoria invisível, sensação de fraude, fadiga crônica, dificuldade em construir intimidade verdadeira, e revisitação dolorosa da história pessoal quando o diagnóstico tardio chega. A identidade encoberta é tema comum no acompanhamento clínico de adultos autistas com diagnóstico após os trinta, quarenta ou cinquenta anos, e atravessa também questões de gênero, sexualidade e raça, especialmente em pessoas LGBTQIA, mulheres e profissionais de alto desempenho.'
-  },
-  {
-    termo: 'Identity-first vs person-first',
-    wikidata: 'Q130395843',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Debate sobre como nomear pessoas dentro do espectro autista. A linguagem identity-first ("adulto autista", "pessoa autista") afirma o autismo como parte constitutiva da identidade. A linguagem person-first ("pessoa com autismo") separa pessoa e condição, lógica adequada a doenças episódicas, mas problemática para condições neurodesenvolvimentais permanentes. A maioria da comunidade autoadvogada brasileira e internacional prefere identity-first, conforme Bottema-Beutel e colaboradores (2021) e múltiplos pronunciamentos da ASAN e de coletivos brasileiros. Em comunicação institucional, profissional e acadêmica, a default 2026 é identity-first, com respeito à preferência declarada por cada pessoa em contexto clínico individual.'
-  },
-  {
-    termo: 'Interesses específicos',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Áreas de profundidade incomum em conhecimento, prática ou apreciação que adultos autistas cultivam, frequentemente desde a infância ou em ondas ao longo da vida. Não são manias nem distrações, são vetores de regulação, prazer, identidade e, em muitos casos, carreira. A literatura recente, em vez de patologizar, descreve interesses específicos como recursos a serem reconhecidos e protegidos, especialmente em adultos autistas em diagnóstico tardio. Intervenções neuroafirmativas incorporam o interesse específico como ponto de partida terapêutico, não como sintoma a reduzir. No trabalho, alinhar função à área de interesse profundo é estratégia comprovada de retenção e produtividade.'
-  },
-  {
-    termo: 'Intervenção neuroafirmativa',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Abordagem clínica e educacional que parte da premissa de que o autismo é variação neurológica legítima, não deficiência a ser curada. Foca em construir habilidades funcionais, regulação, autoconhecimento e acomodações ambientais, em vez de extinguir comportamentos autísticos como stims, interesses específicos ou padrões de comunicação direta. Tem origem no movimento autoadvogado e em pesquisas como Leadbitter e colaboradores (2021). A intervenção neuroafirmativa rejeita práticas coercitivas, integra a perspectiva da pessoa autista nas decisões terapêuticas, e dialoga com a Teoria Polivagal, Terapia Familiar Sistêmica, TCC adaptada e supervisão clínica especializada em adultos com diagnóstico tardio.'
-  },
-  {
-    termo: 'Lei Berenice Piana',
-    cluster: 'Trabalho e direito',
-    definicao: 'Lei federal 12.764/2012, que institui a Política Nacional de Proteção dos Direitos da Pessoa com Transtorno do Espectro Autista no Brasil. Reconhece a pessoa autista como pessoa com deficiência para todos os efeitos legais, garante diagnóstico precoce, acompanhamento multiprofissional pelo SUS, acesso à educação, à proteção social, ao trabalho e à inclusão. Foi marco histórico da legislação brasileira em autismo, ampliada e complementada por leis posteriores como a Lei Romeo Mion (CIPTEA) e a Lei Brasileira de Inclusão. Continua sendo base jurídica relevante para adultos autistas que reivindicam acomodações, vagas reservadas, benefícios previdenciários e atendimento prioritário.'
-  },
-  {
-    termo: 'Mascaramento feminino',
-    cluster: 'Camuflagem e máscara',
-    definicao: 'Padrão de camuflagem mais frequente em meninas e mulheres autistas, descrito sistematicamente desde os trabalhos de Lai e colaboradores e da pesquisadora Sarah Hendrickx. Inclui maior investimento em mimetização social, foco em interesses específicos socialmente aceitáveis, controle facial e corporal mais elaborado, e capacidade de manter performance neurotípica por longos períodos, ao custo de exaustão profunda. É uma das principais razões para o atraso diagnóstico em mulheres, frequentemente identificadas tardiamente após décadas de diagnósticos errôneos de transtornos de ansiedade, depressão ou personalidade. O mascaramento feminino exige instrumentos clínicos sensíveis ao viés histórico do autismo masculinizado.'
-  },
-  {
-    termo: 'Masking',
-    cluster: 'Camuflagem e máscara',
-    definicao: 'Termo em inglês adotado na literatura internacional para camuflagem autista, que ganhou tradução direta em português do Brasil. Frequentemente usado como sinônimo de camuflagem, embora alguns autores reservem masking para a dimensão mais especificamente performativa, ligada a expressões faciais, postura e tom de voz. Hull e colaboradores (2019) tratam mascaramento como uma das três subescalas do CAT-Q, ao lado de compensação e assimilação. Para fins clínicos e editoriais em português, a recomendação é alternar camuflagem (mais técnica) e masking (mais coloquial), sempre explicando o significado para quem chega ao tema pela primeira vez.'
-  },
-  {
-    termo: 'Meltdown',
-    wikidata: 'Q72423832',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Resposta intensa de desregulação a sobrecarga sensorial, emocional ou cognitiva, com manifestações que podem incluir choro, gritos, agitação motora, fuga do ambiente, ou expressão verbal explosiva. Não é birra, não é manipulação, é resposta funcional a um sistema nervoso saturado. Em adultos autistas, o meltdown pode ser confundido com crise de raiva, ataque de pânico ou episódio dissociativo, gerando intervenções equivocadas. O manejo adequado inclui reduzir estímulos, dar espaço, evitar conversa imediata, e voltar ao tema apenas depois da regulação. Identificar gatilhos recorrentes é parte do trabalho clínico, ao lado de planos de prevenção e de comunicação para parceiros e equipes de trabalho.'
-  },
-  {
-    termo: 'Neurodivergência',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Conceito popularizado por Kassiane Asasumasu nos anos 2000 que designa modos de funcionamento neurológico que divergem do padrão majoritário, incluindo autismo, TDAH, dislexia, gagueira, síndrome de Tourette e transtornos relacionados. Não é diagnóstico clínico, é categoria sociopolítica útil para articular movimentos, políticas públicas e identidade compartilhada entre pessoas com diferentes condições neurodesenvolvimentais. Em comunicação institucional, "neurodivergente" é termo apropriado para falar de coletivos, enquanto "autista" é o termo correto quando o foco é especificamente autismo. A distinção evita diluir reivindicações específicas e respeita a pluralidade de experiências dentro do guarda-chuva neurodivergente.'
-  },
-  {
-    termo: 'Neurofeedback',
-    wikidata: 'Q1306920',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Técnica de biofeedback baseada em registro de atividade elétrica cerebral, utilizada como intervenção complementar em diversos contextos clínicos. No autismo adulto, a evidência permanece limitada e heterogênea, com estudos sugerindo possíveis benefícios em regulação atencional e ansiedade, mas sem consenso sobre protocolos, número de sessões e desfechos consistentes. Não substitui psicoterapia, intervenção neuroafirmativa, acomodações ambientais ou tratamento medicamentoso quando indicado. Profissionais que oferecem neurofeedback a adultos autistas devem explicitar nível de evidência, evitar promessas curativas, integrar a técnica a plano clínico amplo, e respeitar a autonomia do paciente para encerrar o tratamento se não houver ganho funcional perceptível.'
-  },
-  {
-    termo: 'Neurotípico',
-    wikidata: 'Q1079090',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Pessoa cujo funcionamento neurológico segue o padrão majoritário, sem características neurodivergentes clinicamente significativas. Não é sinônimo de saúde mental, neurotípicos também têm depressão, ansiedade e crises existenciais. É categoria sociológica que existe por contraste com neurodivergente, e é especialmente útil em conversas sobre relacionamentos NT-autista, ambientes de trabalho neurodiversos, e políticas de inclusão. Como em qualquer dicotomia, há fronteiras borradas, há pessoas que não preenchem critério para diagnóstico autista, mas apresentam traços do espectro, fenômeno conhecido como "amplo fenótipo autista". Em comunicação institucional, "neurotípico" deve ser usado com clareza e respeito.'
-  },
-  {
-    termo: 'NR-1',
-    cluster: 'Trabalho e direito',
-    definicao: 'Norma Regulamentadora 1 do Ministério do Trabalho, atualizada em 2024 para incorporar de forma explícita o gerenciamento de riscos psicossociais nos programas de saúde e segurança no trabalho. Exige que empresas mapeiem fatores como sobrecarga cognitiva, assédio, jornadas extensas, ruído ambiente e falta de pausas, e construam plano de ação. Para adultos autistas, a NR-1 atualizada é instrumento jurídico relevante para reivindicar acomodações razoáveis baseadas em risco psicossocial concreto, e não como favor pessoal. Articula-se com a Lei Brasileira de Inclusão, a Lei Berenice Piana e o CIPTEA, formando um ecossistema legal cada vez mais densamente protetivo no Brasil.'
-  },
-  {
-    termo: 'Padrões de apego (seguro, ansioso, evitativo, desorganizado)',
-    cluster: 'Relacionamentos',
-    definicao: 'Quatro padrões clássicos derivados da teoria do apego de Bowlby e Ainsworth e da pesquisa adulta de Mary Main e colaboradores. O padrão seguro associa-se a regulação afetiva eficaz, expectativas realistas e capacidade de reparação. O ansioso tende a hipervigilância em relações próximas. O evitativo minimiza expressão de necessidades e busca de proximidade. O desorganizado combina sinais contraditórios e está associado a histórico de trauma relacional. Em adultos autistas, padrões de apego se entrelaçam com necessidades de regulação sensorial, e exigem leitura cuidadosa do clínico para diferenciar o que é apego, o que é regulação neurossensorial, e o que é resposta a invalidação prolongada.'
-  },
-  {
-    termo: 'Pessoa autista',
-    cluster: 'Identidade e diagnóstico',
-    definicao: 'Forma identity-first principal para nomear quem está dentro do espectro do autismo, preferida pela comunidade autoadvogada brasileira e internacional. Difere de "pessoa com autismo", construção person-first que separa pessoa e condição, modelo adequado a doenças, não a condições neurodesenvolvimentais permanentes. Em comunicação institucional, acadêmica, clínica e jornalística, a default 2026 é "pessoa autista" e "adulto autista", com respeito à autodescrição individual em contextos terapêuticos. A escolha de linguagem tem efeito prático em estigma, acesso a direitos, autoimagem, e adesão a serviços, conforme literatura editorial e diretrizes da APA atualizadas em 2022.'
-  },
-  {
-    termo: 'RAADS-R (Ritvo Autism Asperger Diagnostic Scale-Revised)',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Instrumento de autorrelato com oitenta itens, desenvolvido por Riva Ariella Ritvo e equipe em 2011, voltado especificamente para identificação de traços do espectro autista em adultos com inteligência típica. Cobre quatro domínios, linguagem, relacionamento social, sensorialidade e interesses específicos. Pontuações sugestivas variam por validação local, sendo o ponto de corte 65 referência comum na literatura internacional. No Brasil, a RAADS-R tem uso clínico crescente como triagem complementar ao AQ-50, particularmente em adultos com diagnóstico tardio e camuflagem alta. Como qualquer escala, requer integração com escuta longitudinal e instrumentos como ADOS-2, AAA e ADI-R.'
-  },
-  {
-    termo: 'Regulação afetiva',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Capacidade de monitorar, modular e expressar estados emocionais de forma adaptativa ao contexto. Em adultos autistas, a regulação afetiva está entrelaçada à regulação sensorial, à carga de camuflagem do dia, à previsibilidade do ambiente, e à presença de acomodações reais. O modelo dimensional de Gross é referência clássica, e abordagens neuroafirmativas o atualizam ao reconhecer especificidades autistas, como necessidade de stims, de pausas sensoriais e de retorno a interesses específicos como vias legítimas de regulação. Confundir regulação afetiva com "controle emocional" produz violência clínica, especialmente em meltdowns e shutdowns, que não são falhas de caráter, são respostas funcionais a sobrecarga.'
-  },
-  {
-    termo: 'Regulação neuro-sensorial',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Conjunto de processos pelos quais o sistema nervoso filtra, integra e responde a estímulos sensoriais internos e externos. Em adultos autistas, esses processos costumam funcionar de modo atípico, com hiper e hipossensibilidades coexistindo em canais distintos. Estratégias de regulação incluem ambientes previsíveis, fones de cancelamento de ruído, iluminação ajustável, pausas programadas, stims permitidos, e interesses específicos como vias regulatórias. A literatura tem abandonado o termo histórico "transtorno do processamento sensorial" como diagnóstico isolado, preferindo perfis sensoriais funcionais avaliados por terapeutas ocupacionais especializados, em diálogo com psicologia clínica e psiquiatria adulta.'
-  },
-  {
-    termo: 'Reparação pós-conflito',
-    cluster: 'Relacionamentos',
-    definicao: 'Conjunto de gestos verbais e relacionais que reabrem o vínculo após desentendimento, frustração ou ruptura temporária. John Gottman é referência clássica em pesquisa sobre reparação conjugal. Em casais NT-autista, a reparação tem dinâmica específica, o adulto autista frequentemente precisa de período de descompressão sensorial antes de retomar a conversa, enquanto o parceiro neurotípico tende a buscar contato emocional imediato. O risco é interpretar o tempo do outro como rejeição. Estratégias úteis incluem combinar previamente "vou precisar de uma hora, voltamos às vinte" e sinalizar via mensagens curtas que o vínculo segue, ainda que o diálogo presencial só retorne depois.'
-  },
-  {
-    termo: 'Shutdown',
-    wikidata: 'Q120175339',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Resposta de desligamento parcial diante de sobrecarga sensorial ou emocional, complementar ao meltdown. Em vez de explosão, há retraimento, lentificação, perda de fala temporária, dificuldade de tomar decisões simples e necessidade urgente de isolamento. É frequentemente confundido com depressão episódica, dissociação ou indiferença afetiva, gerando intervenções equivocadas em consultórios e em casa. O manejo adequado é proteger o tempo de baixa estimulação, evitar perguntas múltiplas, oferecer presença sem exigência, e retomar tarefas só após regulação. O shutdown é especialmente comum em adultos autistas com camuflagem alta, que esgotam reserva de regulação após dias intensos de trabalho social.'
-  },
-  {
-    termo: 'Sobrecarga sensorial',
-    wikidata: 'Q2142286',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Estado em que o volume e a intensidade de estímulos sensoriais simultâneos excede a capacidade de filtragem e integração do sistema nervoso. Em adultos autistas, surge em ambientes com ruído contínuo, iluminação fluorescente, multidões, transições rápidas, e exigência simultânea de fala, escuta e tomada de decisão. Pode progredir para meltdown, shutdown ou retraimento abrupto. Reconhecer sinais precoces, suor, taquicardia, irritabilidade crescente, pensamento mais lento, é parte do autoconhecimento clínico. Acomodações estruturais, fones, óculos com filtro, pausas planejadas, salas de baixa estimulação no trabalho, têm efeito documentado em redução de absenteísmo e em saúde mental de adultos autistas neurodivergentes.'
-  },
-  {
-    termo: 'Stim (estereotipia)',
-    wikidata: 'Q15780353',
-    cluster: 'Sensorialidade e regulação',
-    definicao: 'Comportamento autoestimulatório repetitivo que regula sistema nervoso, emoção e atenção. Inclui balançar o corpo, mexer com objetos nas mãos, tamborilar os dedos, repetir frases, sussurrar palavras, ou movimentar pernas. Stims são funcionais, não sintomas a serem extinguidos, e sua supressão prolongada agrava ansiedade, autistic burnout e desregulação. Intervenções neuroafirmativas protegem o direito de stim, ainda que possam ajudar a substituir stims que machucam por equivalentes funcionais e seguros. O termo técnico "estereotipia" sobrevive em laudos e classificações, mas a comunidade autista prefere "stim", e em comunicação editorial é razoável usar as duas formas com explicação.'
-  },
-  {
-    termo: 'Subtexto e implícito',
-    cluster: 'Relacionamentos',
-    definicao: 'Camada não dita da comunicação, composta por tom de voz, expressão facial, ironia, sarcasmo, alusões culturais e expectativas tácitas. Adultos autistas frequentemente decodificam subtexto com esforço explícito e atraso, ou priorizam o conteúdo literal por economia cognitiva. Não é incapacidade absoluta nem falta de inteligência social, é diferença de prioridade de processamento. Em casais NT-autistas e em equipes neurodiversas, reduzir dependência de subtexto e dizer o que se quer em palavras é prática que melhora qualidade de relação e produtividade. Acomodações como pautas escritas antes de reuniões e atas após reuniões reduzem custo de subtexto sem sacrificar nuance afetiva.'
-  },
-  {
-    termo: 'Supervisão clínica em TEA adulto',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Espaço estruturado em que psicólogos, psiquiatras, terapeutas ocupacionais e fonoaudiólogos discutem casos de adultos autistas com colega ou grupo mais experiente, integrando evidência atualizada, ética profissional e perspectiva da comunidade autista. É exigência ética implícita para quem atende adultos autistas, área ainda subrepresentada na formação brasileira de graduação e pós-graduação. Boas práticas envolvem supervisor com experiência em diagnóstico tardio, camuflagem, terapia de casal NT-autista, intervenções neuroafirmativas e interface com direito do trabalho. Resoluções recentes do Conselho Federal de Psicologia reforçam supervisão como vetor de qualidade e de segurança do paciente em populações neurodivergentes.'
-  },
-  {
-    termo: 'TCC adaptada para TEA adulto',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Versão da Terapia Cognitivo-Comportamental ajustada às particularidades cognitivas, sensoriais e comunicativas do adulto autista, conforme protocolos como o de Spain e Happé. Inclui linguagem mais literal, uso de materiais escritos e visuais, foco em habilidades concretas, atenção a sobrecarga sensorial nas sessões, e respeito à necessidade de pausas e previsibilidade. Não busca normalizar traços autistas, busca reduzir sofrimento e ampliar autonomia. A TCC adaptada tem evidência crescente para ansiedade social, transtorno obsessivo-compulsivo, depressão e insônia em adultos autistas, e pode integrar-se a intervenções neuroafirmativas, terapia familiar sistêmica e supervisão clínica especializada em diagnóstico tardio.'
-  },
-  {
-    termo: 'Teoria do apego (Bowlby, Ainsworth)',
-    wikidata: 'Q909609',
-    cluster: 'Relacionamentos',
-    definicao: 'Quadro teórico desenvolvido por John Bowlby a partir dos anos 1950 e operacionalizado empiricamente por Mary Ainsworth na década de 1970, segundo o qual o vínculo precoce com cuidadores moldura padrões internos de regulação afetiva e expectativas sobre relacionamento ao longo da vida. Em adultos autistas, a teoria continua relevante, mas exige releitura cuidadosa, comportamentos lidos como evitação podem ser, na verdade, necessidade legítima de regulação sensorial, e nem todo retraimento é defesa de apego. Bowlby e Ainsworth seguem como referências principais em terapia familiar sistêmica orientada a famílias neurodiversas e em supervisão clínica especializada.'
-  },
-  {
-    termo: 'Terapia Familiar Sistêmica',
-    wikidata: 'Q870449',
-    cluster: 'Clínica e instrumentos',
-    definicao: 'Abordagem terapêutica que toma a família como unidade de cuidado, com referências como Murray Bowen, Salvador Minuchin, Virginia Satir, Carter e McGoldrick. Em famílias com adulto autista, a Terapia Familiar Sistêmica ajuda a renegociar papéis, redistribuir carga doméstica, traduzir necessidades sensoriais e comunicativas, e atravessar transições do ciclo de vida com menor sofrimento. É especialmente útil quando o diagnóstico tardio reorganiza a história do casal, das relações com filhos e dos vínculos com famílias de origem. Articula-se com intervenções neuroafirmativas individuais, TCC adaptada e supervisão clínica em TEA adulto, formando um conjunto integrado de cuidado.'
+    "q": "Um instrumento citado aqui está automaticamente liberado para uso?",
+    "a": "Não. Finalidade, versão, evidências, licença e regras profissionais precisam ser verificadas. A definição de um instrumento não é recomendação de aplicação."
   }
 ];
-
-// Slug de âncora do verbete: o mesmo no <article id> e no @id do DefinedTerm.
-const verbeteId = (t: string) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-
-const ldGlossary = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'DefinedTermSet',
-      '@id': SITE.url + '/autismo/glossario/#glossario',
-      name: titulo,
-      description: descricao,
-      inLanguage: 'pt-BR',
-      creator: { '@id': 'https://posgraduacaopsicologia.com/#larissa-caramaschi' },
-      publisher: { '@id': brasilGeoOrganization['@id'] },
-      url: SITE.url + '/autismo/glossario/',
-      isPartOf: { '@id': SITE.url + '/#website' },
-      // Onda 5 SEO/GEO (03/09/2026): cada verbete com @id/url por âncora (mesmo slug
-      // do <article id> visível), termCode, inDefinedTermSet e sameAs só com QID verificado.
-      hasDefinedTerm: verbetes.map(v => ({
-        '@type': 'DefinedTerm',
-        '@id': SITE.url + '/autismo/glossario/#' + verbeteId(v.termo),
-        url: SITE.url + '/autismo/glossario/#' + verbeteId(v.termo),
-        name: v.termo,
-        termCode: verbeteId(v.termo),
-        description: v.definicao,
-        inDefinedTermSet: { '@id': SITE.url + '/autismo/glossario/#glossario' },
-        ...(v.wikidata ? { sameAs: 'https://www.wikidata.org/wiki/' + v.wikidata } : {})
-      }))
-    },
-    larissaPersonBase
-  ]
-});
-
+const fields = [
+  {
+    "label": "Termo",
+    "hint": "Escolha um dos verbetes."
+  },
+  {
+    "label": "Afirmação pública",
+    "hint": "Resuma uma afirmação sem dados pessoais."
+  },
+  {
+    "label": "Tipo e fonte",
+    "hint": "É experiência, resultado de estudo ou regra? Qual documento a sustenta?"
+  },
+  {
+    "label": "Limite da conclusão",
+    "hint": "O que a fonte não autoriza afirmar?"
+  }
+];
+const checklist = [
+  "Não transformei um termo em diagnóstico.",
+  "Distingui classificação e necessidade individual.",
+  "Consultei a fonte, a versão e a data.",
+  "Preservei a preferência de linguagem da pessoa."
+];
+const sources = [
+  {
+    "label": "OMS (2024): descrições clínicas e requisitos diagnósticos da CID-11",
+    "url": "https://www.who.int/publications/i/item/9789240077263"
+  },
+  {
+    "label": "American Psychiatric Association: atualizações oficiais do DSM-5-TR",
+    "url": "https://www.psychiatry.org/psychiatrists/practice/dsm/updates-to-dsm/updates-to-dsm-5-tr-criteria-text"
+  },
+  {
+    "label": "NICE CG142: diagnóstico e cuidado de adultos autistas",
+    "url": "https://www.nice.org.uk/guidance/cg142/chapter/Recommendations"
+  },
+  {
+    "label": "Hull e colaboradores (2019): desenvolvimento do CAT-Q, Journal of Autism and Developmental Disorders, 49, 819–833",
+    "url": "https://doi.org/10.1007/s10803-018-3792-6"
+  },
+  {
+    "label": "Laurentino (2025): dissertação de adaptação do CAT-Q, UFJF; resumo público, texto embargado",
+    "url": "https://repositorio.ufjf.br/jspui/handle/ufjf/19560"
+  },
+  {
+    "label": "Cook, Hull, Crane e Mandy (2021): Camouflaging in autism: A systematic review, Clinical Psychology Review, 89, 102080",
+    "url": "https://research-information.bris.ac.uk/en/publications/camouflaging-in-autism-a-systematic-review/"
+  },
+  {
+    "label": "Fellowes (2026): revisão crítica da metodologia dos estudos sobre dupla empatia",
+    "url": "https://link.springer.com/article/10.1007/s10803-026-07315-2"
+  },
+  {
+    "label": "Raymaker e colaboradores (2020): estudo qualitativo participativo sobre burnout autista, Autism in Adulthood, 2(2), 132–143",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/32851204/"
+  },
+  {
+    "label": "CFP: perguntas frequentes do SATEPSI e Resolução nº 31/2022",
+    "url": "https://satepsi.cfp.org.br/faq.cfm"
+  },
+  {
+    "label": "Jones e colaboradores (2021): The Effectiveness of RAADS-R as a Screening Tool for Adult ASD Populations",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8452438/"
+  },
+  {
+    "label": "Lei nº 12.764/2012: direitos da pessoa com TEA",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm"
+  },
+  {
+    "label": "Lei Brasileira de Inclusão, Lei nº 13.146/2015",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+  },
+  {
+    "label": "Lei nº 13.977/2020: CIPTEA e requisitos de emissão",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm"
+  },
+  {
+    "label": "MTE (2026): perguntas e respostas sobre GRO/PGR e fatores psicossociais",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/manuais-e-publicacoes/2026/perguntas-e-respostas-gro-pgr-maio-2026"
+  },
+  {
+    "label": "MTE: texto vigente e histórico da NR-1",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-1"
+  },
+  {
+    "label": "Alexandre Caramaschi: E-E-A-T e qualidade de conteúdo",
+    "url": "https://alexandrecaramaschi.com/educacao/eeat-qualidade"
+  }
+];
+const article = {
+ '@context': 'https://schema.org', '@type': 'Article',
+ headline: title, description, datePublished: '2026-05-18',
+ author: { '@type': 'Organization', name: 'Brasil GEO', '@id': 'https://brasilgeo.ai/#organization' },
+ publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+ inLanguage: 'pt-BR', mainEntityOfPage: "https://posgraduacaopsicologia.com/autismo/glossario/",
+ citation: sources.map(s=>s.url)
+};
+const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}})) };
+const glossaryTerms = [
+  {
+    "termo": "AAA (Adult Asperger Assessment)",
+    "definicao": "Proposta histórica de avaliação de adultos associada à antiga categoria de Asperger. Conhecer sua origem ajuda a ler estudos antigos. Ela não equivale automaticamente às classificações atuais nem constitui uma bateria obrigatória; uso exige exame de finalidade, evidências e regras profissionais.",
+    "cluster": "Clínica e instrumentos",
+    "id": "aaa-adult-asperger-assessment"
+  },
+  {
+    "termo": "Acomodações razoáveis",
+    "definicao": "Modificações necessárias e adequadas para participação em igualdade de condições, sem ônus desproporcional e indevido, conforme a Lei Brasileira de Inclusão. A solução depende da barreira e do contexto. Um diagnóstico não torna qualquer pedido específico automaticamente aplicável.",
+    "cluster": "Trabalho e direito",
+    "id": "acomodacoes-razoaveis",
+    "wikidata": "Q751097"
+  },
+  {
+    "termo": "ADI-R (Autism Diagnostic Interview-Revised)",
+    "definicao": "Entrevista estruturada com informante sobre o desenvolvimento e características relacionadas ao autismo. Sua contribuição depende da pergunta clínica, da disponibilidade e qualidade das informações e das condições de aplicação. Não é condição universal para que um adulto possa ser avaliado.",
+    "cluster": "Clínica e instrumentos",
+    "id": "adi-r-autism-diagnostic-interview-revised",
+    "wikidata": "Q4822682"
+  },
+  {
+    "termo": "ADOS-2 (Autism Diagnostic Observation Schedule)",
+    "definicao": "Procedimento padronizado de observação de comportamentos relacionados ao autismo. A escolha do módulo e a aplicação dependem de requisitos específicos. Resultados precisam ser integrados a outras informações; uma sessão isolada não resolve todas as hipóteses diagnósticas.",
+    "cluster": "Clínica e instrumentos",
+    "id": "ados-2-autism-diagnostic-observation-schedule",
+    "wikidata": "Q4822673"
+  },
+  {
+    "termo": "Adulto autista",
+    "definicao": "Pessoa autista na vida adulta. A expressão não informa, sozinha, competências, capacidade de decidir ou necessidade de suporte. No atendimento e na convivência, pergunte pela forma de identificação preferida e pelos apoios necessários.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "adulto-autista"
+  },
+  {
+    "termo": "Apego adulto (Mikulincer e Shaver)",
+    "definicao": "Campo que estuda expectativas e comportamentos em vínculos próximos. Mikulincer e Shaver são referências de pesquisa sobre apego adulto. Modelos e medidas diferentes não devem ser misturados; necessidade de pausa ou preferência sensorial não demonstram automaticamente um padrão de apego.",
+    "cluster": "Relacionamentos",
+    "id": "apego-adulto-mikulincer-e-shaver",
+    "wikidata": "Q16243237"
+  },
+  {
+    "termo": "AQ-50 (Autism-Spectrum Quotient)",
+    "definicao": "Questionário de autorrelato de traços associados ao autismo. Não fornece diagnóstico isoladamente. Versão, população e finalidade importam: um ponto de corte de determinado estudo não é uma regra universal de decisão para qualquer adulto ou serviço.",
+    "cluster": "Clínica e instrumentos",
+    "id": "aq-50-autism-spectrum-quotient",
+    "wikidata": "Q862027"
+  },
+  {
+    "termo": "Assimilação",
+    "definicao": "Dimensão do modelo do CAT-Q referente a esforços para integrar-se a situações sociais. Não é um tipo de personalidade nem marcador isolado de depressão. Seu significado depende do relato, do contexto e da versão da medida.",
+    "cluster": "Camuflagem e máscara",
+    "id": "assimilacao"
+  },
+  {
+    "termo": "Autistic burnout",
+    "definicao": "Conceito pesquisado a partir de experiências de exaustão, dificuldade para manter habilidades e menor tolerância a estímulos. O estudo qualitativo de Raymaker e colaboradores contribuiu para sua definição. Não oferece diagnóstico diferencial ou tratamento padronizado para cada pessoa.",
+    "cluster": "Camuflagem e máscara",
+    "id": "autistic-burnout",
+    "wikidata": "Q97365310"
+  },
+  {
+    "termo": "Autismo nível 1 de suporte",
+    "definicao": "Especificação de necessidade de suporte no DSM, que não deve ser traduzida como valor pessoal ou ausência de sofrimento. A CID-11 utiliza outros especificadores. Não existe equivalência automática entre nível 1 e a antiga categoria de Asperger.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "autismo-nivel-1-de-suporte"
+  },
+  {
+    "termo": "Camuflagem (masking)",
+    "definicao": "Conjunto de estratégias de ajuste da apresentação social e compensação de dificuldades. Pode ocorrer com diferentes intenções e consequências. Não identifica sozinho o autismo, e sua presença não permite prever um transtorno ou resultado clínico.",
+    "cluster": "Camuflagem e máscara",
+    "id": "camuflagem-masking",
+    "wikidata": "Q72290770"
+  },
+  {
+    "termo": "Casal NT-autista",
+    "definicao": "Expressão usada para uma relação entre pessoa neurotípica e pessoa autista. Não define papéis, preferências ou prognóstico do casal. A qualidade do vínculo envolve consentimento, responsabilidade, contexto e comunicação, além de eventuais diferenças relacionadas ao autismo.",
+    "cluster": "Relacionamentos",
+    "id": "casal-nt-autista"
+  },
+  {
+    "termo": "CAT-Q (Camouflaging Autistic Traits Questionnaire)",
+    "definicao": "Medida de autorrelato de camuflagem desenvolvida por Hull e colaboradores. A versão original tem 25 itens; estudos de adaptação podem apresentar versões diferentes. Não confirma autismo. A identificação da versão e de suas condições de uso é indispensável.",
+    "cluster": "Camuflagem e máscara",
+    "id": "cat-q-camouflaging-autistic-traits-questionnaire"
+  },
+  {
+    "termo": "Ciclo de vida familiar (Carter e McGoldrick)",
+    "definicao": "Referência sistêmica para examinar mudanças nas relações familiares ao longo do tempo. Pode ajudar a discutir redistribuição de papéis e transições. Não impõe um percurso único de casamento, parentalidade ou envelhecimento a todas as famílias.",
+    "cluster": "Relacionamentos",
+    "id": "ciclo-de-vida-familiar-carter-e-mcgoldrick"
+  },
+  {
+    "termo": "CID-11 6A02",
+    "definicao": "Código da CID-11 para transtorno do espectro do autismo. Seus especificadores consideram desenvolvimento intelectual e linguagem funcional, entre outros aspectos. Não corresponde aos níveis de suporte do DSM; documentos devem seguir a classificação exigida para sua finalidade.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "cid-11-6a02"
+  },
+  {
+    "termo": "CIPTEA (Carteira de Identificação da Pessoa com TEA)",
+    "definicao": "Documento instituído pela Lei nº 13.977/2020. A emissão envolve requerimento e relatório médico com CID, além de dados previstos em lei. A validade é de cinco anos. A carteira não concede automaticamente todo benefício ou adaptação.",
+    "cluster": "Trabalho e direito",
+    "id": "ciptea-carteira-de-identificacao-da-pessoa-com-tea",
+    "wikidata": "Q139982517"
+  },
+  {
+    "termo": "Compensação",
+    "definicao": "Dimensão do CAT-Q que descreve estratégias para contornar dificuldades em situações sociais. Preparar respostas é um exemplo possível. A função e o custo da estratégia precisam ser compreendidos no contexto, sem classificar automaticamente seu uso como saudável ou prejudicial.",
+    "cluster": "Camuflagem e máscara",
+    "id": "compensacao"
+  },
+  {
+    "termo": "Comunicação direta/literal",
+    "definicao": "Preferência ou prática de explicitar mensagens e reduzir dependência de inferências. Pode facilitar alguns encontros, mas não caracteriza toda pessoa autista. Clareza inclui confirmar entendimento, respeitar tempo de resposta e permitir discordância.",
+    "cluster": "Relacionamentos",
+    "id": "comunicacao-direta-literal"
+  },
+  {
+    "termo": "Comunidade autoadvogados",
+    "definicao": "Pessoas que defendem seus próprios direitos e participam de debates sobre políticas, pesquisa e cuidado. Há diversidade de posições entre autistas. Consultar uma pessoa não autoriza apresentá-la como representante de toda a comunidade.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "comunidade-autoadvogados"
+  },
+  {
+    "termo": "Custo da camuflagem",
+    "definicao": "Expressão para descrever esforço e efeitos percebidos ao ajustar a apresentação social. Relatos podem incluir cansaço e dificuldade de expressar necessidades. Associações observadas em estudos não estabelecem uma causa única para sintomas individuais.",
+    "cluster": "Camuflagem e máscara",
+    "id": "custo-da-camuflagem"
+  },
+  {
+    "termo": "Diagnóstico tardio",
+    "definicao": "Reconhecimento do autismo depois da infância, conforme o recorte adotado em cada estudo ou serviço. Pode suscitar diferentes interpretações da trajetória pessoal. Não existe cronograma emocional universal nem obrigação de atribuir todas as dificuldades anteriores ao autismo.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "diagnostico-tardio"
+  },
+  {
+    "termo": "DSM-5-TR",
+    "definicao": "Revisão de texto do manual da American Psychiatric Association publicada em 2022, com atualizações posteriores disponibilizadas pela instituição. É uma referência classificatória. Critérios, especificadores e ferramentas de avaliação não substituem a investigação clínica contextualizada.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "dsm-5-tr",
+    "wikidata": "Q126596457"
+  },
+  {
+    "termo": "Dupla empatia (Milton, 2012)",
+    "definicao": "Hipótese de que dificuldades de compreensão entre pessoas autistas e não autistas também dependem da interação e das diferenças de experiência. Não prova simetria em todo encontro. Uma revisão metodológica de 2026 discute limites das medidas usadas nessa pesquisa.",
+    "cluster": "Relacionamentos",
+    "id": "dupla-empatia-milton-2012",
+    "wikidata": "Q109546940"
+  },
+  {
+    "termo": "Espectro autista",
+    "definicao": "Diversidade de apresentações e necessidades associadas ao autismo. Não é uma linha simples entre pouco e muito autismo. Comunicação, sensorialidade, autonomia e suporte precisam ser descritos concretamente, sem inferir uma área a partir de outra.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "espectro-autista",
+    "wikidata": "Q1436063"
+  },
+  {
+    "termo": "Hiperfoco",
+    "definicao": "Termo descritivo para concentração muito intensa em determinada atividade. Pode ocorrer em contextos diferentes e não comprova autismo. Seu valor ou dificuldade depende da tarefa, das transições e do impacto sobre outras necessidades da pessoa.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "hiperfoco",
+    "wikidata": "Q1640924"
+  },
+  {
+    "termo": "Hipersensibilidade",
+    "definicao": "Resposta aumentada ou desconforto diante de certos estímulos, como som, luz ou toque. A descrição deve indicar estímulo, contexto e efeito. Não é necessário demonstrar um perfil sensorial uniforme para discutir um ajuste ambiental.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "hipersensibilidade"
+  },
+  {
+    "termo": "Hipossensibilidade",
+    "definicao": "Resposta reduzida a determinados estímulos. Não significa ausência de dor ou de necessidades de saúde. Alterações sensoriais devem ser compreendidas individualmente; sintomas novos ou persistentes não devem ser atribuídos automaticamente ao autismo.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "hipossensibilidade"
+  },
+  {
+    "termo": "Identidade encoberta",
+    "definicao": "Expressão usada para discutir uma identidade que não é compartilhada em determinados contextos. Não é categoria diagnóstica. Razões para divulgar ou preservar informação podem envolver segurança, privacidade, pertencimento e escolha pessoal.",
+    "cluster": "Camuflagem e máscara",
+    "id": "identidade-encoberta"
+  },
+  {
+    "termo": "Identity-first vs person-first",
+    "definicao": "Identity-first enfatiza a identidade, como pessoa autista; person-first usa pessoa com autismo. Preferências variam entre pessoas e comunidades. Nenhuma forma precisa ser imposta: respeite a autodescrição e evite termos que diminuam dignidade ou autonomia.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "identity-first-vs-person-first",
+    "wikidata": "Q130395843"
+  },
+  {
+    "termo": "Interesses específicos",
+    "definicao": "Temas ou atividades de interesse intenso e significativo para uma pessoa. Podem trazer prazer, conhecimento e participação. Não indicam automaticamente vantagem profissional, e sua importância não depende de gerar produtividade ou rendimento.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "interesses-especificos"
+  },
+  {
+    "termo": "Intervenção neuroafirmativa",
+    "definicao": "Orientação de cuidado que valoriza autonomia, necessidades, participação e respeito às diferenças neurológicas. O rótulo não valida uma técnica específica. Cada intervenção continua exigindo justificativa, avaliação de efeitos, consentimento e adequação à demanda.",
+    "cluster": "Clínica e instrumentos",
+    "id": "intervencao-neuroafirmativa"
+  },
+  {
+    "termo": "Lei Berenice Piana",
+    "definicao": "Nome pelo qual é conhecida a Lei nº 12.764/2012, que institui a política nacional de proteção dos direitos da pessoa com TEA. Reconhece a pessoa com TEA como pessoa com deficiência, sem eliminar requisitos específicos de benefícios e procedimentos.",
+    "cluster": "Trabalho e direito",
+    "id": "lei-berenice-piana"
+  },
+  {
+    "termo": "Mascaramento feminino",
+    "definicao": "Expressão encontrada em discussões sobre camuflagem e reconhecimento do autismo em mulheres. Não descreve todas as mulheres nem exclui outros gêneros. Diferenças entre grupos de pesquisa precisam ser interpretadas considerando amostra, medida e contexto.",
+    "cluster": "Camuflagem e máscara",
+    "id": "mascaramento-feminino"
+  },
+  {
+    "termo": "Masking",
+    "definicao": "Termo em inglês frequentemente usado como sinônimo de camuflagem. No modelo do CAT-Q, mascaramento é uma de suas dimensões. Ao ler uma pesquisa, confira a definição adotada; os autores podem usar o termo com alcances diferentes.",
+    "cluster": "Camuflagem e máscara",
+    "id": "masking"
+  },
+  {
+    "termo": "Meltdown",
+    "definicao": "Termo usado para descrever episódios de intensa desregulação em contextos de sobrecarga. Não identifica sozinho causa ou diagnóstico. Priorize segurança e apoio apropriado; episódios novos, graves ou com risco exigem avaliação, sem presumir que todo comportamento tem a mesma explicação.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "meltdown",
+    "wikidata": "Q72423832"
+  },
+  {
+    "termo": "Neurodivergência",
+    "definicao": "Conceito amplo usado em debates sobre diversidade de funcionamento neurológico, identidade e direitos. Seu alcance varia conforme o contexto. Não é diagnóstico nem sinônimo exclusivo de autismo; nomear uma condição específica pode ser necessário para evitar generalizações.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "neurodivergencia"
+  },
+  {
+    "termo": "Neurofeedback",
+    "definicao": "Técnica de biofeedback que apresenta informações derivadas de atividade cerebral. O nome não comprova eficácia para autismo adulto. Qualquer proposta exige identificar procedimento, objetivo, evidência pertinente, riscos, custos e alternativas, sem promessas de normalização ou cura.",
+    "cluster": "Clínica e instrumentos",
+    "id": "neurofeedback",
+    "wikidata": "Q1306920"
+  },
+  {
+    "termo": "Neurotípico",
+    "definicao": "Termo usado por contraste com neurodivergente, com significados que variam entre contextos. Não equivale a pessoa sem sofrimento ou sem dificuldade de comunicação. Evite presumir preferências e comportamentos apenas a partir dessa classificação.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "neurotipico",
+    "wikidata": "Q1079090"
+  },
+  {
+    "termo": "NR-1",
+    "definicao": "Norma Regulamentadora sobre disposições gerais e gerenciamento de riscos ocupacionais. A nova redação do capítulo 1.5 vigora desde 26/05/2026 e explicita fatores psicossociais relacionados ao trabalho. Não constitui rastreio clínico dos trabalhadores nem garante uma adaptação única.",
+    "cluster": "Trabalho e direito",
+    "id": "nr-1"
+  },
+  {
+    "termo": "Padrões de apego (seguro, ansioso, evitativo, desorganizado)",
+    "definicao": "Rótulos usados em diferentes tradições de pesquisa sobre apego. Categorias infantis, entrevistas de apego e medidas de autorrelato adulto não são intercambiáveis. Nenhum padrão deve ser deduzido apenas de silêncio, autismo ou necessidade sensorial.",
+    "cluster": "Relacionamentos",
+    "id": "padroes-de-apego-seguro-ansioso-evitativo-desorganizado"
+  },
+  {
+    "termo": "Pessoa autista",
+    "definicao": "Forma de linguagem que integra autismo e identidade. Pode ser preferida por muitas pessoas, enquanto outras usam pessoa com autismo. A escolha individual merece respeito e não determina, sozinha, uma posição clínica ou política.",
+    "cluster": "Identidade e diagnóstico",
+    "id": "pessoa-autista"
+  },
+  {
+    "termo": "RAADS-R (Ritvo Autism Asperger Diagnostic Scale-Revised)",
+    "definicao": "Questionário sobre características associadas ao autismo em adultos. Seu desempenho varia conforme a população e o contexto, com limitações encontradas em serviços clínicos. Não deve ser tratado como confirmação diagnóstica ou prescrito por um ponto de corte universal.",
+    "cluster": "Clínica e instrumentos",
+    "id": "raads-r-ritvo-autism-asperger-diagnostic-scale-revised"
+  },
+  {
+    "termo": "Regulação afetiva",
+    "definicao": "Processos de reconhecer, expressar e lidar com emoções em determinado contexto. Podem envolver apoio de outras pessoas e mudanças no ambiente. Não se resumem a conter manifestações visíveis nem permitem atribuir intenção a uma crise.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "regulacao-afetiva"
+  },
+  {
+    "termo": "Regulação neuro-sensorial",
+    "definicao": "Expressão usada para discutir respostas a estímulos e estratégias que ajudam a lidar com o ambiente. Prefira descrever a necessidade observada e o ajuste possível, sem prometer um mecanismo neural único ou um protocolo igual para todas as pessoas.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "regulacao-neuro-sensorial"
+  },
+  {
+    "termo": "Reparação pós-conflito",
+    "definicao": "Retomada de uma interação depois de um desentendimento, com reconhecimento do ocorrido e responsabilidade pelos efeitos. Pausas e canais de conversa podem ser combinados. Não substitui proteção quando há medo, coerção ou violência.",
+    "cluster": "Relacionamentos",
+    "id": "reparacao-pos-conflito"
+  },
+  {
+    "termo": "Shutdown",
+    "definicao": "Termo utilizado para experiências de retraimento ou dificuldade de responder em situações de sobrecarga. Não é explicação automática para silêncio, perda de fala ou alteração de consciência. Mudanças importantes ou inesperadas precisam de avaliação adequada.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "shutdown",
+    "wikidata": "Q120175339"
+  },
+  {
+    "termo": "Sobrecarga sensorial",
+    "definicao": "Experiência de dificuldade para lidar com a intensidade ou combinação de estímulos. Pode orientar a discussão de ajustes, como redução de ruído ou previsibilidade. Não existe um conjunto obrigatório de sintomas ou uma acomodação que sirva para todas as pessoas.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "sobrecarga-sensorial",
+    "wikidata": "Q2142286"
+  },
+  {
+    "termo": "Stim (estereotipia)",
+    "definicao": "Comportamento repetitivo que pode ter funções sensoriais, emocionais ou comunicativas. Movimentos inofensivos não devem ser tratados como problema apenas por parecerem incomuns. Lesão, dor ou risco exigem compreensão da função e apoio individualizado.",
+    "cluster": "Sensorialidade e regulação",
+    "id": "stim-estereotipia",
+    "wikidata": "Q15780353"
+  },
+  {
+    "termo": "Subtexto e implícito",
+    "definicao": "Informações comunicadas indiretamente por contexto, expressão, tom ou convenções. A interpretação varia entre pessoas e situações. Explicitar pedidos e conferir entendimento pode ajudar, sem supor que pessoas autistas sejam incapazes de compreender humor ou linguagem figurada.",
+    "cluster": "Relacionamentos",
+    "id": "subtexto-e-implicito"
+  },
+  {
+    "termo": "Supervisão clínica em TEA adulto",
+    "definicao": "Discussão profissional estruturada sobre formulação, decisões, limites de competência e encaminhamentos. Pode apoiar a formação, com proteção do sigilo. Não substitui habilitação profissional nem transfere ao supervisor toda a responsabilidade pelo atendimento.",
+    "cluster": "Clínica e instrumentos",
+    "id": "supervisao-clinica-em-tea-adulto"
+  },
+  {
+    "termo": "TCC adaptada para TEA adulto",
+    "definicao": "Adaptação da forma de oferecer intervenções cognitivas e comportamentais a uma demanda definida. Pode envolver recursos escritos e maior explicitação quando úteis. A evidência deve ser examinada por condição, público e desfecho; o nome não garante benefício universal.",
+    "cluster": "Clínica e instrumentos",
+    "id": "tcc-adaptada-para-tea-adulto"
+  },
+  {
+    "termo": "Teoria do apego (Bowlby, Ainsworth)",
+    "definicao": "Referencial sobre vínculos e busca de apoio, associado a Bowlby e Ainsworth. Suas aplicações exigem atenção ao contexto e aos métodos de avaliação. Não explica sozinho o autismo nem autoriza culpar relações familiares pela condição.",
+    "cluster": "Relacionamentos",
+    "id": "teoria-do-apego-bowlby-ainsworth",
+    "wikidata": "Q909609"
+  },
+  {
+    "termo": "Terapia Familiar Sistêmica",
+    "definicao": "Conjunto de abordagens que examinam relações, contextos e padrões de interação. Pode contribuir para discutir demandas familiares, conforme indicação e preferência. Não é obrigatória nem comprovadamente superior para todo casal ou família com uma pessoa autista.",
+    "cluster": "Clínica e instrumentos",
+    "id": "terapia-familiar-sistemica",
+    "wikidata": "Q870449"
+  }
+];
+const glossarySchema = {
+ '@context': 'https://schema.org', '@type': 'DefinedTermSet',
+ '@id': 'https://posgraduacaopsicologia.com/autismo/glossario/#glossario',
+ name: title, description, inLanguage: 'pt-BR',
+ creator: { '@type': 'Organization', name: 'Brasil GEO', '@id': 'https://brasilgeo.ai/#organization' },
+ hasDefinedTerm: glossaryTerms.map(t=>({
+ '@type': 'DefinedTerm', '@id': 'https://posgraduacaopsicologia.com/autismo/glossario/#'+t.id,
+ url: 'https://posgraduacaopsicologia.com/autismo/glossario/#'+t.id,
+ name:t.termo, description:t.definicao, termCode:t.id,
+ inDefinedTermSet:{'@id':'https://posgraduacaopsicologia.com/autismo/glossario/#glossario'},
+ ...(t.wikidata?{sameAs:'https://www.wikidata.org/wiki/'+t.wikidata}:{})
+ }))
+};
 ---
-<Base title={titulo} description={descricao} emitWebPage={true}>
-  <div class="container-page py-8 lg:py-12 max-w-4xl mx-auto">
-    <Breadcrumbs items={[
-      { label: 'Início', href: '/' },
-      { label: 'Autismo em adultos', href: '/autismo/' },
-      { label: 'Glossário' }
-    ]} />
-    <header class="mt-6">
-      <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-900 leading-tight">{titulo}</h1>
-      <p class="text-base sm:text-lg text-ink-700 mt-4 leading-relaxed" style="text-align: justify;">{descricao}</p>
-    </header>
-    <nav aria-label="Navegação por cluster" class="mt-8 flex flex-wrap gap-2 text-sm">
-      {clusters.map(cluster => (
-        <a href={`#${cluster.id}`} class="px-3 py-1.5 rounded-full bg-brand-50 text-brand-800 hover:bg-brand-100">{cluster.label}</a>
-      ))}
-    </nav>
-    <div id="glossario" class="mt-12 grid gap-10">
-      {clusters.map(cluster => (
-        <section id={cluster.id} class="scroll-mt-32" aria-labelledby={`${cluster.id}-titulo`}>
-          <h2 id={`${cluster.id}-titulo`} class="font-display text-2xl font-bold text-ink-900">{cluster.label}</h2>
-          <div class="mt-5 grid gap-6">
-            {verbetes.filter(v => v.cluster === cluster.label).map(v => (
-              <article id={verbeteId(v.termo)} class="scroll-mt-32 p-6 bg-white rounded-2xl border border-surface-200">
-                <h3 class="font-display text-xl font-bold text-ink-900">{v.termo}</h3>
-                <p class="mt-3 text-ink-800 leading-relaxed" style="text-align: justify; hyphens: auto;">{v.definicao}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      ))}
-    </div>
-    <footer class="mt-12 pt-8 border-t border-surface-200 text-sm text-ink-600 leading-relaxed">
-      <p>Glossário em construção contínua. Vocabulário identity-first preferido pela comunidade autista adulta brasileira (Bottema-Beutel e colaboradores, 2021). Sugestões de novos verbetes em <a href="/sobre/" class="underline text-brand-700">página sobre o portal</a>.</p>
-    </footer>
+<Base title={title} description={description} datePublished="2026-05-18" pageType="article">
+ <article class="container-page mx-auto max-w-4xl py-10 sm:py-14">
+  <Breadcrumbs items={[{label:'Início',href:'/'},{label:'Autismo em adultos',href:'/autismo/'},{label:"Glossário"}]} />
+  <header class="mb-10 mt-6">
+   <p class="text-sm font-semibold text-brand-700 dark:text-brand-300">Autismo em adultos · Guia educativo</p>
+   <h1 class="font-display mt-3 text-3xl font-bold leading-tight sm:text-4xl">{title}</h1>
+   <p class="mt-4 text-lg leading-relaxed">{description}</p>
+   <p class="mt-4 text-sm">Publicado em 18/05/2026 · Revisão editorial em 06/10/2026 · Equipe editorial Brasil GEO</p>
+  </header>
+  <div class="prose prose-lg max-w-none dark:prose-invert">
+<p><strong>Um termo ajuda a conversar; ele não substitui uma avaliação nem define uma pessoa inteira.</strong> Este glossário preserva os 53 verbetes e seus endereços de consulta. Distingue conceitos de pesquisa, linguagem de experiência, classificações clínicas e regras brasileiras. Use a definição como ponto de partida para examinar a fonte e o contexto.</p>
+<p>As descrições clínicas remetem à <a href="https://www.who.int/publications/i/item/9789240077263">OMS</a>, à <a href="https://www.psychiatry.org/psychiatrists/practice/dsm/updates-to-dsm/updates-to-dsm-5-tr-criteria-text">American Psychiatric Association</a> e à <a href="https://www.nice.org.uk/guidance/cg142/chapter/Recommendations">NICE</a>. Para instrumentos na Psicologia brasileira, consulte o <a href="https://satepsi.cfp.org.br/faq.cfm">SATEPSI</a>. As definições não reproduzem testes nem oferecem pontos de corte.</p>
+<nav aria-label="Navegação por categorias"><ul><li><a href="#identidade-diagnostico">Identidade e diagnóstico</a></li><li><a href="#camuflagem">Camuflagem e máscara</a></li><li><a href="#sensorialidade">Sensorialidade e regulação</a></li><li><a href="#relacionamentos">Relacionamentos</a></li><li><a href="#clinica">Clínica e instrumentos</a></li><li><a href="#trabalho">Trabalho e direito</a></li></ul></nav>
+<div id="glossario"><section id="identidade-diagnostico" aria-labelledby="identidade-diagnostico-titulo"><h2 id="identidade-diagnostico-titulo">Identidade e diagnóstico</h2><section id="adulto-autista"><h3>Adulto autista</h3><p>Pessoa autista na vida adulta. A expressão não informa, sozinha, competências, capacidade de decidir ou necessidade de suporte. No atendimento e na convivência, pergunte pela forma de identificação preferida e pelos apoios necessários.</p></section>
+<section id="autismo-nivel-1-de-suporte"><h3>Autismo nível 1 de suporte</h3><p>Especificação de necessidade de suporte no DSM, que não deve ser traduzida como valor pessoal ou ausência de sofrimento. A CID-11 utiliza outros especificadores. Não existe equivalência automática entre nível 1 e a antiga categoria de Asperger.</p></section>
+<section id="cid-11-6a02"><h3>CID-11 6A02</h3><p>Código da CID-11 para transtorno do espectro do autismo. Seus especificadores consideram desenvolvimento intelectual e linguagem funcional, entre outros aspectos. Não corresponde aos níveis de suporte do DSM; documentos devem seguir a classificação exigida para sua finalidade.</p></section>
+<section id="comunidade-autoadvogados"><h3>Comunidade autoadvogados</h3><p>Pessoas que defendem seus próprios direitos e participam de debates sobre políticas, pesquisa e cuidado. Há diversidade de posições entre autistas. Consultar uma pessoa não autoriza apresentá-la como representante de toda a comunidade.</p></section>
+<section id="diagnostico-tardio"><h3>Diagnóstico tardio</h3><p>Reconhecimento do autismo depois da infância, conforme o recorte adotado em cada estudo ou serviço. Pode suscitar diferentes interpretações da trajetória pessoal. Não existe cronograma emocional universal nem obrigação de atribuir todas as dificuldades anteriores ao autismo.</p></section>
+<section id="dsm-5-tr"><h3>DSM-5-TR</h3><p>Revisão de texto do manual da American Psychiatric Association publicada em 2022, com atualizações posteriores disponibilizadas pela instituição. É uma referência classificatória. Critérios, especificadores e ferramentas de avaliação não substituem a investigação clínica contextualizada.</p></section>
+<section id="espectro-autista"><h3>Espectro autista</h3><p>Diversidade de apresentações e necessidades associadas ao autismo. Não é uma linha simples entre pouco e muito autismo. Comunicação, sensorialidade, autonomia e suporte precisam ser descritos concretamente, sem inferir uma área a partir de outra.</p></section>
+<section id="identity-first-vs-person-first"><h3>Identity-first vs person-first</h3><p>Identity-first enfatiza a identidade, como pessoa autista; person-first usa pessoa com autismo. Preferências variam entre pessoas e comunidades. Nenhuma forma precisa ser imposta: respeite a autodescrição e evite termos que diminuam dignidade ou autonomia.</p></section>
+<section id="neurodivergencia"><h3>Neurodivergência</h3><p>Conceito amplo usado em debates sobre diversidade de funcionamento neurológico, identidade e direitos. Seu alcance varia conforme o contexto. Não é diagnóstico nem sinônimo exclusivo de autismo; nomear uma condição específica pode ser necessário para evitar generalizações.</p></section>
+<section id="neurotipico"><h3>Neurotípico</h3><p>Termo usado por contraste com neurodivergente, com significados que variam entre contextos. Não equivale a pessoa sem sofrimento ou sem dificuldade de comunicação. Evite presumir preferências e comportamentos apenas a partir dessa classificação.</p></section>
+<section id="pessoa-autista"><h3>Pessoa autista</h3><p>Forma de linguagem que integra autismo e identidade. Pode ser preferida por muitas pessoas, enquanto outras usam pessoa com autismo. A escolha individual merece respeito e não determina, sozinha, uma posição clínica ou política.</p></section></section>
+<section id="camuflagem" aria-labelledby="camuflagem-titulo"><h2 id="camuflagem-titulo">Camuflagem e máscara</h2><section id="assimilacao"><h3>Assimilação</h3><p>Dimensão do modelo do CAT-Q referente a esforços para integrar-se a situações sociais. Não é um tipo de personalidade nem marcador isolado de depressão. Seu significado depende do relato, do contexto e da versão da medida.</p></section>
+<section id="autistic-burnout"><h3>Autistic burnout</h3><p>Conceito pesquisado a partir de experiências de exaustão, dificuldade para manter habilidades e menor tolerância a estímulos. O estudo qualitativo de Raymaker e colaboradores contribuiu para sua definição. Não oferece diagnóstico diferencial ou tratamento padronizado para cada pessoa.</p></section>
+<section id="camuflagem-masking"><h3>Camuflagem (masking)</h3><p>Conjunto de estratégias de ajuste da apresentação social e compensação de dificuldades. Pode ocorrer com diferentes intenções e consequências. Não identifica sozinho o autismo, e sua presença não permite prever um transtorno ou resultado clínico.</p></section>
+<section id="cat-q-camouflaging-autistic-traits-questionnaire"><h3>CAT-Q (Camouflaging Autistic Traits Questionnaire)</h3><p>Medida de autorrelato de camuflagem desenvolvida por Hull e colaboradores. A versão original tem 25 itens; estudos de adaptação podem apresentar versões diferentes. Não confirma autismo. A identificação da versão e de suas condições de uso é indispensável.</p></section>
+<section id="compensacao"><h3>Compensação</h3><p>Dimensão do CAT-Q que descreve estratégias para contornar dificuldades em situações sociais. Preparar respostas é um exemplo possível. A função e o custo da estratégia precisam ser compreendidos no contexto, sem classificar automaticamente seu uso como saudável ou prejudicial.</p></section>
+<section id="custo-da-camuflagem"><h3>Custo da camuflagem</h3><p>Expressão para descrever esforço e efeitos percebidos ao ajustar a apresentação social. Relatos podem incluir cansaço e dificuldade de expressar necessidades. Associações observadas em estudos não estabelecem uma causa única para sintomas individuais.</p></section>
+<section id="identidade-encoberta"><h3>Identidade encoberta</h3><p>Expressão usada para discutir uma identidade que não é compartilhada em determinados contextos. Não é categoria diagnóstica. Razões para divulgar ou preservar informação podem envolver segurança, privacidade, pertencimento e escolha pessoal.</p></section>
+<section id="mascaramento-feminino"><h3>Mascaramento feminino</h3><p>Expressão encontrada em discussões sobre camuflagem e reconhecimento do autismo em mulheres. Não descreve todas as mulheres nem exclui outros gêneros. Diferenças entre grupos de pesquisa precisam ser interpretadas considerando amostra, medida e contexto.</p></section>
+<section id="masking"><h3>Masking</h3><p>Termo em inglês frequentemente usado como sinônimo de camuflagem. No modelo do CAT-Q, mascaramento é uma de suas dimensões. Ao ler uma pesquisa, confira a definição adotada; os autores podem usar o termo com alcances diferentes.</p></section></section>
+<section id="sensorialidade" aria-labelledby="sensorialidade-titulo"><h2 id="sensorialidade-titulo">Sensorialidade e regulação</h2><section id="hiperfoco"><h3>Hiperfoco</h3><p>Termo descritivo para concentração muito intensa em determinada atividade. Pode ocorrer em contextos diferentes e não comprova autismo. Seu valor ou dificuldade depende da tarefa, das transições e do impacto sobre outras necessidades da pessoa.</p></section>
+<section id="hipersensibilidade"><h3>Hipersensibilidade</h3><p>Resposta aumentada ou desconforto diante de certos estímulos, como som, luz ou toque. A descrição deve indicar estímulo, contexto e efeito. Não é necessário demonstrar um perfil sensorial uniforme para discutir um ajuste ambiental.</p></section>
+<section id="hipossensibilidade"><h3>Hipossensibilidade</h3><p>Resposta reduzida a determinados estímulos. Não significa ausência de dor ou de necessidades de saúde. Alterações sensoriais devem ser compreendidas individualmente; sintomas novos ou persistentes não devem ser atribuídos automaticamente ao autismo.</p></section>
+<section id="interesses-especificos"><h3>Interesses específicos</h3><p>Temas ou atividades de interesse intenso e significativo para uma pessoa. Podem trazer prazer, conhecimento e participação. Não indicam automaticamente vantagem profissional, e sua importância não depende de gerar produtividade ou rendimento.</p></section>
+<section id="meltdown"><h3>Meltdown</h3><p>Termo usado para descrever episódios de intensa desregulação em contextos de sobrecarga. Não identifica sozinho causa ou diagnóstico. Priorize segurança e apoio apropriado; episódios novos, graves ou com risco exigem avaliação, sem presumir que todo comportamento tem a mesma explicação.</p></section>
+<section id="regulacao-afetiva"><h3>Regulação afetiva</h3><p>Processos de reconhecer, expressar e lidar com emoções em determinado contexto. Podem envolver apoio de outras pessoas e mudanças no ambiente. Não se resumem a conter manifestações visíveis nem permitem atribuir intenção a uma crise.</p></section>
+<section id="regulacao-neuro-sensorial"><h3>Regulação neuro-sensorial</h3><p>Expressão usada para discutir respostas a estímulos e estratégias que ajudam a lidar com o ambiente. Prefira descrever a necessidade observada e o ajuste possível, sem prometer um mecanismo neural único ou um protocolo igual para todas as pessoas.</p></section>
+<section id="shutdown"><h3>Shutdown</h3><p>Termo utilizado para experiências de retraimento ou dificuldade de responder em situações de sobrecarga. Não é explicação automática para silêncio, perda de fala ou alteração de consciência. Mudanças importantes ou inesperadas precisam de avaliação adequada.</p></section>
+<section id="sobrecarga-sensorial"><h3>Sobrecarga sensorial</h3><p>Experiência de dificuldade para lidar com a intensidade ou combinação de estímulos. Pode orientar a discussão de ajustes, como redução de ruído ou previsibilidade. Não existe um conjunto obrigatório de sintomas ou uma acomodação que sirva para todas as pessoas.</p></section>
+<section id="stim-estereotipia"><h3>Stim (estereotipia)</h3><p>Comportamento repetitivo que pode ter funções sensoriais, emocionais ou comunicativas. Movimentos inofensivos não devem ser tratados como problema apenas por parecerem incomuns. Lesão, dor ou risco exigem compreensão da função e apoio individualizado.</p></section></section>
+<section id="relacionamentos" aria-labelledby="relacionamentos-titulo"><h2 id="relacionamentos-titulo">Relacionamentos</h2><section id="apego-adulto-mikulincer-e-shaver"><h3>Apego adulto (Mikulincer e Shaver)</h3><p>Campo que estuda expectativas e comportamentos em vínculos próximos. Mikulincer e Shaver são referências de pesquisa sobre apego adulto. Modelos e medidas diferentes não devem ser misturados; necessidade de pausa ou preferência sensorial não demonstram automaticamente um padrão de apego.</p></section>
+<section id="casal-nt-autista"><h3>Casal NT-autista</h3><p>Expressão usada para uma relação entre pessoa neurotípica e pessoa autista. Não define papéis, preferências ou prognóstico do casal. A qualidade do vínculo envolve consentimento, responsabilidade, contexto e comunicação, além de eventuais diferenças relacionadas ao autismo.</p></section>
+<section id="ciclo-de-vida-familiar-carter-e-mcgoldrick"><h3>Ciclo de vida familiar (Carter e McGoldrick)</h3><p>Referência sistêmica para examinar mudanças nas relações familiares ao longo do tempo. Pode ajudar a discutir redistribuição de papéis e transições. Não impõe um percurso único de casamento, parentalidade ou envelhecimento a todas as famílias.</p></section>
+<section id="comunicacao-direta-literal"><h3>Comunicação direta/literal</h3><p>Preferência ou prática de explicitar mensagens e reduzir dependência de inferências. Pode facilitar alguns encontros, mas não caracteriza toda pessoa autista. Clareza inclui confirmar entendimento, respeitar tempo de resposta e permitir discordância.</p></section>
+<section id="dupla-empatia-milton-2012"><h3>Dupla empatia (Milton, 2012)</h3><p>Hipótese de que dificuldades de compreensão entre pessoas autistas e não autistas também dependem da interação e das diferenças de experiência. Não prova simetria em todo encontro. Uma revisão metodológica de 2026 discute limites das medidas usadas nessa pesquisa.</p></section>
+<section id="padroes-de-apego-seguro-ansioso-evitativo-desorganizado"><h3>Padrões de apego (seguro, ansioso, evitativo, desorganizado)</h3><p>Rótulos usados em diferentes tradições de pesquisa sobre apego. Categorias infantis, entrevistas de apego e medidas de autorrelato adulto não são intercambiáveis. Nenhum padrão deve ser deduzido apenas de silêncio, autismo ou necessidade sensorial.</p></section>
+<section id="reparacao-pos-conflito"><h3>Reparação pós-conflito</h3><p>Retomada de uma interação depois de um desentendimento, com reconhecimento do ocorrido e responsabilidade pelos efeitos. Pausas e canais de conversa podem ser combinados. Não substitui proteção quando há medo, coerção ou violência.</p></section>
+<section id="subtexto-e-implicito"><h3>Subtexto e implícito</h3><p>Informações comunicadas indiretamente por contexto, expressão, tom ou convenções. A interpretação varia entre pessoas e situações. Explicitar pedidos e conferir entendimento pode ajudar, sem supor que pessoas autistas sejam incapazes de compreender humor ou linguagem figurada.</p></section>
+<section id="teoria-do-apego-bowlby-ainsworth"><h3>Teoria do apego (Bowlby, Ainsworth)</h3><p>Referencial sobre vínculos e busca de apoio, associado a Bowlby e Ainsworth. Suas aplicações exigem atenção ao contexto e aos métodos de avaliação. Não explica sozinho o autismo nem autoriza culpar relações familiares pela condição.</p></section></section>
+<section id="clinica" aria-labelledby="clinica-titulo"><h2 id="clinica-titulo">Clínica e instrumentos</h2><section id="aaa-adult-asperger-assessment"><h3>AAA (Adult Asperger Assessment)</h3><p>Proposta histórica de avaliação de adultos associada à antiga categoria de Asperger. Conhecer sua origem ajuda a ler estudos antigos. Ela não equivale automaticamente às classificações atuais nem constitui uma bateria obrigatória; uso exige exame de finalidade, evidências e regras profissionais.</p></section>
+<section id="adi-r-autism-diagnostic-interview-revised"><h3>ADI-R (Autism Diagnostic Interview-Revised)</h3><p>Entrevista estruturada com informante sobre o desenvolvimento e características relacionadas ao autismo. Sua contribuição depende da pergunta clínica, da disponibilidade e qualidade das informações e das condições de aplicação. Não é condição universal para que um adulto possa ser avaliado.</p></section>
+<section id="ados-2-autism-diagnostic-observation-schedule"><h3>ADOS-2 (Autism Diagnostic Observation Schedule)</h3><p>Procedimento padronizado de observação de comportamentos relacionados ao autismo. A escolha do módulo e a aplicação dependem de requisitos específicos. Resultados precisam ser integrados a outras informações; uma sessão isolada não resolve todas as hipóteses diagnósticas.</p></section>
+<section id="aq-50-autism-spectrum-quotient"><h3>AQ-50 (Autism-Spectrum Quotient)</h3><p>Questionário de autorrelato de traços associados ao autismo. Não fornece diagnóstico isoladamente. Versão, população e finalidade importam: um ponto de corte de determinado estudo não é uma regra universal de decisão para qualquer adulto ou serviço.</p></section>
+<section id="intervencao-neuroafirmativa"><h3>Intervenção neuroafirmativa</h3><p>Orientação de cuidado que valoriza autonomia, necessidades, participação e respeito às diferenças neurológicas. O rótulo não valida uma técnica específica. Cada intervenção continua exigindo justificativa, avaliação de efeitos, consentimento e adequação à demanda.</p></section>
+<section id="neurofeedback"><h3>Neurofeedback</h3><p>Técnica de biofeedback que apresenta informações derivadas de atividade cerebral. O nome não comprova eficácia para autismo adulto. Qualquer proposta exige identificar procedimento, objetivo, evidência pertinente, riscos, custos e alternativas, sem promessas de normalização ou cura.</p></section>
+<section id="raads-r-ritvo-autism-asperger-diagnostic-scale-revised"><h3>RAADS-R (Ritvo Autism Asperger Diagnostic Scale-Revised)</h3><p>Questionário sobre características associadas ao autismo em adultos. Seu desempenho varia conforme a população e o contexto, com limitações encontradas em serviços clínicos. Não deve ser tratado como confirmação diagnóstica ou prescrito por um ponto de corte universal.</p></section>
+<section id="supervisao-clinica-em-tea-adulto"><h3>Supervisão clínica em TEA adulto</h3><p>Discussão profissional estruturada sobre formulação, decisões, limites de competência e encaminhamentos. Pode apoiar a formação, com proteção do sigilo. Não substitui habilitação profissional nem transfere ao supervisor toda a responsabilidade pelo atendimento.</p></section>
+<section id="tcc-adaptada-para-tea-adulto"><h3>TCC adaptada para TEA adulto</h3><p>Adaptação da forma de oferecer intervenções cognitivas e comportamentais a uma demanda definida. Pode envolver recursos escritos e maior explicitação quando úteis. A evidência deve ser examinada por condição, público e desfecho; o nome não garante benefício universal.</p></section>
+<section id="terapia-familiar-sistemica"><h3>Terapia Familiar Sistêmica</h3><p>Conjunto de abordagens que examinam relações, contextos e padrões de interação. Pode contribuir para discutir demandas familiares, conforme indicação e preferência. Não é obrigatória nem comprovadamente superior para todo casal ou família com uma pessoa autista.</p></section></section>
+<section id="trabalho" aria-labelledby="trabalho-titulo"><h2 id="trabalho-titulo">Trabalho e direito</h2><section id="acomodacoes-razoaveis"><h3>Acomodações razoáveis</h3><p>Modificações necessárias e adequadas para participação em igualdade de condições, sem ônus desproporcional e indevido, conforme a Lei Brasileira de Inclusão. A solução depende da barreira e do contexto. Um diagnóstico não torna qualquer pedido específico automaticamente aplicável.</p></section>
+<section id="ciptea-carteira-de-identificacao-da-pessoa-com-tea"><h3>CIPTEA (Carteira de Identificação da Pessoa com TEA)</h3><p>Documento instituído pela Lei nº 13.977/2020. A emissão envolve requerimento e relatório médico com CID, além de dados previstos em lei. A validade é de cinco anos. A carteira não concede automaticamente todo benefício ou adaptação.</p></section>
+<section id="lei-berenice-piana"><h3>Lei Berenice Piana</h3><p>Nome pelo qual é conhecida a Lei nº 12.764/2012, que institui a política nacional de proteção dos direitos da pessoa com TEA. Reconhece a pessoa com TEA como pessoa com deficiência, sem eliminar requisitos específicos de benefícios e procedimentos.</p></section>
+<section id="nr-1"><h3>NR-1</h3><p>Norma Regulamentadora sobre disposições gerais e gerenciamento de riscos ocupacionais. A nova redação do capítulo 1.5 vigora desde 26/05/2026 e explicita fatores psicossociais relacionados ao trabalho. Não constitui rastreio clínico dos trabalhadores nem garante uma adaptação única.</p></section></section></div>
+<h2>Como conferir um verbete na prática</h2>
+<p>Ao encontrar uma afirmação, identifique se ela descreve experiência, apresenta um achado de pesquisa ou informa uma obrigação. Uma pessoa pode relatar cansaço após camuflar; isso não cria um diagnóstico. Um estudo pode examinar associação; isso não demonstra causa universal. Uma lei pode reconhecer um direito e ainda exigir um procedimento específico.</p>
+<p><strong>Exemplo hipotético:</strong> uma estudante lê que determinada pontuação confirma autismo. Ela identifica a versão citada, procura o estudo original e verifica população, finalidade e limites. Se o texto não oferece essas informações, registra a pendência em vez de repetir a conclusão.</p>
+<p>O curso de <a href="https://alexandrecaramaschi.com/educacao/eeat-qualidade">E-E-A-T e qualidade de conteúdo, de Alexandre Caramaschi</a> ajuda nessa checagem de origem e responsabilidade. Use a ficha para comparar uma afirmação pública com sua fonte. Para aprofundar, escolha o percurso <a href="/autismo/para-pacientes/">para pacientes</a>, <a href="/autismo/para-profissionais/">para profissionais</a> ou <a href="/autismo/para-pesquisadores/">para pesquisadores</a>. Informações institucionais estão na <a href="/sobre/">página sobre o portal</a>.</p>
   </div>
-  <script type="application/ld+json" set:html={ldGlossary} is:inline />
+  <StudyWorksheet id="ficha-pratica" title="Ficha de leitura crítica de um conceito" description="Exercício educativo com situações fictícias ou informações públicas. Não registre nomes, diagnósticos individuais, prontuários ou dados identificáveis." fields={fields} checklist={checklist} />
+  <section class="prose prose-lg mt-10 max-w-none dark:prose-invert" aria-labelledby="perguntas-frequentes">
+   <h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+   {faqs.map(f=>(<details class="my-4 rounded-lg border border-current/20 p-4"><summary class="cursor-pointer font-semibold">{f.q}</summary><p>{f.a}</p></details>))}
+  </section>
+  <section class="prose mt-10 max-w-none dark:prose-invert" aria-labelledby="fontes-consultadas">
+   <h2 id="fontes-consultadas">Fontes e leituras complementares</h2>
+   <p>Fontes consultadas em 06/10/2026. Normas brasileiras, diretrizes internacionais e estudos têm funções diferentes; materiais dos portais complementam o estudo.</p>
+   <ul>{sources.map(s=>(<li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></li>))}</ul>
+  </section>
+  <footer class="mt-10 border-t border-current/20 pt-6 text-sm leading-relaxed">
+   <p>Conteúdo educativo. Não substitui avaliação individual, acompanhamento de saúde ou orientação jurídica quando necessária.</p>
+   <p class="mt-3"><a class="underline" href="/autismo/">Voltar ao núcleo de autismo em adultos</a> · <a class="underline" href="/autismo/glossario/">Consultar o glossário</a></p>
+  </footer>
+ </article>
+ <script type="application/ld+json" set:html={JSON.stringify(article)} is:inline />
+ <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />
+ <script type="application/ld+json" set:html={JSON.stringify(glossarySchema)} is:inline />
 </Base>
+<style>
+ .prose :global(p) { text-align: justify; hyphens: auto; overflow-wrap: anywhere; }
+ .prose :global(h2), .prose :global(h3), .prose :global([id]) { scroll-margin-top: 7rem; }
+ .prose :global(.table-scroll) { overflow-x: auto; max-width: 100%; }
+ .prose :global(table) { min-width: 32rem; }
+ .prose :global(a) { overflow-wrap: anywhere; }
+</style>

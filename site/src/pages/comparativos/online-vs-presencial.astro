@@ -1,341 +1,220 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 import { SITE } from '@lib/data';
-import { alexandrePersonBase, brasilGeoOrganization, alexandreAuthorRef } from '@lib/schemas';
-
-const faqs = [
-  {
-    q: 'Online tem a mesma qualidade que presencial?',
-    a: 'Pode ter, depende do formato. Online síncrono ao vivo com corpo docente nominal preserva discussão de caso e interação real — densidade pedagógica próxima do presencial. Online assíncrono gravado, sem mediação, tende a virar consumo passivo. Presencial garante densidade de rede e experiência situada. A pergunta real não é "online é tão bom?" — é "qual formato combina com a minha capacidade de aprender hoje?"'
+const page = {
+  "route": "/comparativos/online-vs-presencial/",
+  "label": "Formatos de pós-graduação",
+  "title": "Pós-graduação online, presencial ou híbrida: compare o desenho do curso",
+  "description": "Compare aulas ao vivo, atividades assíncronas, encontros presenciais, mediação, prática, agenda e custo total antes de escolher uma pós-graduação.",
+  "lead": "O formato do curso precisa caber na rotina e sustentar a aprendizagem pretendida. Compare calendário, mediação, atividades e avaliação antes de decidir pela etiqueta “online” ou “presencial”.",
+  "sections": [
+    {
+      "title": "Esta comparação trata de formação, não de atendimento",
+      "paragraphs": [
+        "Uma pós-graduação presencial reúne participantes em um local e horário definidos. Atividades online podem ocorrer ao vivo, com horários compartilhados, ou de modo assíncrono, com prazos e tempos de acesso diferentes. A denominação “híbrido” precisa ser traduzida em calendário: quais atividades, em que lugar, com quem e em quais datas.",
+        "Essas características não determinam automaticamente qualidade, engajamento ou rede profissional. Uma atividade assíncrona pode ter mediação cuidadosa e devolutivas; uma aula ao vivo pode oferecer pouca participação. A comparação precisa observar o que docentes e estudantes fazem, não apenas o canal de transmissão.",
+        "Este texto não compara psicoterapia remota e presencial. Regras de formação educacional, exercício profissional e atendimento são assuntos relacionados, mas distintos. Fazer um curso online não autoriza aplicar remotamente qualquer procedimento aprendido."
+      ]
+    },
+    {
+      "title": "Regulação: confira o nível educacional e a instituição",
+      "paragraphs": [
+        "MBAs integram a pós-graduação lato sensu. Antes da matrícula, identifique a instituição responsável pelo certificado e consulte o <a href=\"https://emec.mec.gov.br/\">e-MEC</a> e os <a href=\"https://portal.mec.gov.br/component/content/323-secretarias-112877938/orgaos-vinculados-82187207/12899-pos-graduacao-normativos\">normativos de pós-graduação do MEC</a>. A expressão comercial “reconhecido pelo MEC” precisa ser esclarecida em relação à instituição e ao regime aplicável ao curso.",
+        "O <a href=\"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12456.htm\">Decreto 12.456/2025</a> trata da oferta de educação a distância em cursos de graduação e também altera dispositivos de regulação institucional. Não é correto transportar automaticamente percentuais e restrições dos formatos de graduação para toda especialização. Para a oferta concreta, confira as normas pertinentes e os documentos da instituição.",
+        "Também separe certificado educacional de registro profissional ou de especialidade. Se o objetivo é exercer uma atividade regulamentada ou solicitar um registro, consulte os requisitos próprios antes de atribuir esse efeito ao curso."
+      ]
+    },
+    {
+      "title": "O que verificar no projeto pedagógico",
+      "paragraphs": [
+        "Peça exemplos de atividades e de avaliação. Um curso que promete desenvolver análise de casos deveria mostrar como o estudante pratica, recebe comentários e demonstra aprendizagem. Em conteúdos clínicos, a descrição precisa esclarecer o escopo da prática, o acompanhamento e a proteção das informações utilizadas.",
+        "Verifique os responsáveis pelas disciplinas e pela mediação, a forma de tirar dúvidas, os prazos de retorno e os recursos de acessibilidade. Pergunte como funcionam faltas, reposições, gravações, alteração de calendário e acesso aos materiais depois do encerramento.",
+        "Para avaliar custo, some mensalidades e taxas informadas, materiais, deslocamento, hospedagem e outras despesas necessárias no seu cenário. Registre separadamente as horas de estudo e deslocamento. Uma mensalidade menor pode exigir mais recursos fora do contrato, mas isso deve ser calculado, não presumido."
+      ]
+    }
+  ],
+  "tableTitle": "Compare as atividades efetivamente oferecidas",
+  "tableCaption": "Características a confirmar com a instituição",
+  "columns": [
+    "Critério",
+    "Online ao vivo",
+    "Assíncrono",
+    "Presencial ou encontros híbridos"
+  ],
+  "rows": [
+    [
+      "Agenda",
+      "Horários de encontro e regras de presença.",
+      "Prazos, ritmo e momentos de devolutiva.",
+      "Datas, locais e tempo de deslocamento."
+    ],
+    [
+      "Mediação",
+      "Quem conduz, como participar e tirar dúvidas.",
+      "Quem acompanha e como ocorre o retorno.",
+      "Como se distribui o tempo entre exposição, prática e discussão."
+    ],
+    [
+      "Prática",
+      "Atividades possíveis no ambiente remoto e seus limites.",
+      "Produções e exercícios acompanhados, além de vídeos.",
+      "Recursos disponíveis e atividades que justificam presença."
+    ],
+    [
+      "Interação",
+      "Turma, grupos de trabalho e oportunidades de troca.",
+      "Fóruns e colaboração planejados, quando existentes.",
+      "Tamanho de turma e condições reais de interação."
+    ],
+    [
+      "Custos adicionais",
+      "Conectividade, equipamento e eventuais materiais.",
+      "Recursos exigidos, licenças e materiais.",
+      "Viagens, hospedagem, alimentação e materiais previstos."
+    ]
+  ],
+  "stepsTitle": "Um roteiro de decisão antes da matrícula",
+  "steps": [
+    "Escreva o objetivo de formação e uma competência que espera desenvolver, sem partir do nome do formato.",
+    "Use uma semana real para localizar tempo de aula, estudo, atividades e deslocamento.",
+    "Solicite calendário, projeto do curso, regras de avaliação e identificação da instituição certificadora.",
+    "Compare duas ofertas pelos mesmos critérios de mediação, prática, acessibilidade e custo total.",
+    "Registre dúvidas contratuais e confirme por escrito as condições determinantes para sua escolha."
+  ],
+  "exampleTitle": "Exemplo hipotético: horário previsível versus plantões variáveis",
+  "example": "Uma profissional com plantões que mudam todo mês compara duas especializações. A primeira tem encontros ao vivo em datas fixas e uma política de reposição ainda pouco clara. A segunda oferece atividades assíncronas com devolutivas, mas exige entregas semanais. Ela monta um calendário de um mês, consulta as regras e identifica qual conjunto de compromissos consegue sustentar. O resultado depende dessas condições, não de um perfil universal de “aluno disciplinado”.",
+  "exampleLimit": "O cenário não descreve uma turma real nem promete conclusão, empregabilidade ou retorno financeiro.",
+  "learning": [
+    "Em <a href=\"https://alexandrecaramaschi.com/educacao/gestao-projetos-geo\">Gestão de projetos, de Alexandre Caramaschi</a>, a definição de entregas, dependências e critérios de aceitação pode apoiar um plano de estudo. Converta o interesse em formação em uma entrega educativa concreta, como uma revisão bibliográfica com fontes conferidas. Esse curso complementar não equivale automaticamente a uma pós-graduação."
+  ],
+  "worksheet": {
+    "title": "Plano de comparação de duas ofertas de pós-graduação",
+    "description": "Preencha com informações públicas dos cursos e uma rotina fictícia, sem dados de colegas ou pacientes.",
+    "fields": [
+      {
+        "label": "Objetivo e aprendizagem",
+        "hint": "Que competência pretende desenvolver e como poderá observar seu aprendizado?"
+      },
+      {
+        "label": "Calendário possível",
+        "hint": "Quais horários, prazos e deslocamentos estão previstos em cada oferta?"
+      },
+      {
+        "label": "Mediação e recursos",
+        "hint": "Quem acompanha, como dá retorno e que prática e acessibilidade estão descritas?"
+      },
+      {
+        "label": "Custo e dúvidas",
+        "hint": "Quais despesas e condições contratuais ainda precisam ser confirmadas?"
+      }
+    ],
+    "checklist": [
+      "Conferi instituição e nível educacional.",
+      "Li a distribuição real das atividades.",
+      "Somei custos e tempo além da mensalidade.",
+      "Não confundi certificado com habilitação ou registro de especialidade."
+    ]
   },
-  {
-    q: 'EAD pelo MEC é o mesmo que aula gravada?',
-    a: 'Não exatamente. O MEC, pela Portaria 2.117/2019, define educação a distância como modalidade educacional na qual a mediação didático-pedagógica ocorre com utilização de tecnologias de informação e comunicação, podendo incluir momentos síncronos. O regulador admite tanto EAD síncrono quanto assíncrono — desde que o curso cumpra requisitos de carga, tutoria e atividades. Aula gravada sem mediação ativa não cumpre o conceito completo de EAD regulado.'
-  },
-  {
-    q: 'Rede profissional é melhor no presencial?',
-    a: 'Tradicionalmente sim, mas o cenário mudou. Cursos online síncronos com turma fixa, fóruns ativos e encontros presenciais opcionais constroem rede comparável. O fator decisivo não é o canal, é a intensidade da interação. Cursos online assíncronos sem turma constituída quase não geram rede. Cursos presenciais com turmas grandes e baixa interação também não. O que constrói rede é tempo compartilhado em discussão real — independente do canal.'
-  },
-  {
-    q: 'Quem trabalha o dia todo deveria escolher online?',
-    a: 'Em regra, sim — mas depende do tipo de online. Profissionais com agenda rígida ganham mais com online ao vivo síncrono em horário noturno fixo, do que com online assíncrono gravado. O síncrono cria compromisso semanal definido, evita procrastinação e mantém engajamento. O assíncrono, sem disciplina forte, vira fila de aulas não assistidas. Para perfil ativo com agenda densa, síncrono ao vivo costuma ser a melhor escolha.'
-  },
-  {
-    q: 'Híbrido é o melhor dos dois mundos?',
-    a: 'Pode ser, quando bem desenhado. Híbrido sério alterna momentos síncronos online — para densidade técnica — com encontros presenciais pontuais — para imersão e rede. Híbrido mal desenhado vira "online com viagem cara obrigatória" ou "presencial com aulas gravadas como complemento fraco". Avalie no detalhe: quantos encontros presenciais, qual densidade, quais entregas. Híbrido sem critério pode somar custos sem somar benefícios.'
-  }
-];
-
-const ldArticle = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Online vs Presencial: qual escolher e quando para pós em Psicologia',
-  description: 'Comparativo independente entre modalidades online, ao vivo, gravado e presencial em pós-graduação em Psicologia. Perfil ideal de cada formato, mini-caso, erros comuns.',
-  author: alexandreAuthorRef,
-  publisher: { '@id': brasilGeoOrganization['@id'] },
-  inLanguage: 'pt-BR'
+  "faqs": [
+    {
+      "q": "Online significa apenas assistir a aulas gravadas?",
+      "a": "Não. A oferta pode combinar encontros ao vivo, atividades assíncronas e diferentes formas de mediação. É necessário examinar o projeto e o calendário."
+    },
+    {
+      "q": "Presencial garante mais qualidade ou uma rede melhor?",
+      "a": "Não automaticamente. Qualidade e interação dependem de docentes, atividades, acompanhamento e condições de participação."
+    },
+    {
+      "q": "As regras de EAD da graduação se aplicam automaticamente a qualquer pós?",
+      "a": "Não cabe essa transposição automática. Confira o escopo de cada norma, os requisitos da pós-graduação e o regime de oferta da instituição."
+    }
+  ],
+  "related": [
+    {
+      "label": "Tipos de pós-graduação",
+      "url": "/tipos-de-pos-graduacao/"
+    },
+    {
+      "label": "MBA e especialização",
+      "url": "/comparativos/mba-vs-especializacao/"
+    },
+    {
+      "label": "Regulação da formação e do exercício profissional",
+      "url": "/regulacao/"
+    },
+    {
+      "label": "Comparar MBAs",
+      "url": "/mbas/"
+    },
+    {
+      "label": "Neuropsicologia e reabilitação",
+      "url": "/comparativos/neuropsicologia-vs-reabilitacao/"
+    }
+  ],
+  "sources": [
+    {
+      "label": "MEC: normativos de pós-graduação",
+      "url": "https://portal.mec.gov.br/component/content/323-secretarias-112877938/orgaos-vinculados-82187207/12899-pos-graduacao-normativos"
+    },
+    {
+      "label": "Cadastro e-MEC: consulta institucional",
+      "url": "https://emec.mec.gov.br/"
+    },
+    {
+      "label": "Planalto: Decreto 12.456/2025 e seu escopo",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12456.htm"
+    },
+    {
+      "label": "CFP: requisitos de registro de especialista",
+      "url": "https://site.cfp.org.br/servicos/titulo-de-especialista/"
+    }
+  ],
+  "published": "2026-05-11"
 };
-
-const ldFaq = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['.tldr-resposta', '.faq-answer-text', 'h1', 'h2']
-  },
-  mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a }
-  }))
-};
+const ldArticle = {'@context':'https://schema.org','@type':'Article',headline:page.title,description:page.description,datePublished:page.published,author:{'@type':'Organization',name:'Brasil GEO','@id':'https://brasilgeo.ai/#organization'},publisher:{'@id':'https://brasilgeo.ai/#organization'},mainEntityOfPage:SITE.url+page.route,inLanguage:'pt-BR'};
+const ldFaq = {'@context':'https://schema.org','@type':'FAQPage',mainEntity:page.faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))};
 ---
-
-<Base
-  title="Online vs Presencial em pós-graduação: qual escolher e quando"
-  description="Comparativo independente entre online síncrono, online assíncrono, híbrido e presencial em pós-graduação em Psicologia. Perfil ideal de cada formato, mini-caso e erros comuns.">
-
-  <section class="bg-surface-50 border-b border-surface-200">
-    <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Comparativos', href: '/comparativos' },
-        { label: 'Online vs Presencial' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Comparativo · 05</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Online vs Presencial: qual escolher e quando para pós em Psicologia</h1>
-          <p class="mt-3 text-ink-700 text-lg">A decisão de 2026 não é mais sobre qualidade. É sobre qual formato de aprendizagem combina com o seu momento real.</p>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver MBAs no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          Online ao vivo síncrono funciona para profissional ativo com agenda rígida — cria compromisso semanal definido. Online assíncrono gravado funciona para autodidata com disciplina forte e horário imprevisível. Presencial funciona para quem prioriza rede e experiência full-time e tem mobilidade. Híbrido funciona quando combina densidade técnica online com imersão presencial pontual. Não há formato superior — há formato que combina com o seu momento.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Por que a comparação confunde</h2>
-        <p>
-          Até por volta de 2018, a discussão "online ou presencial" era razoável — havia diferença visível de qualidade entre os dois canais. Em 2026, a pergunta envelheceu. A real distinção hoje está dentro do online, não entre online e presencial.
-        </p>
-        <p>
-          O Horizon Report da Educause (2024) descreve quatro formatos relevantes em pós-graduação: presencial tradicional, online síncrono ao vivo, online assíncrono gravado e híbrido. Os quatro coexistem com regulação do MEC pela Portaria 2.117/2019. A ABED, em sua pesquisa anual (2023), mostrou que 47% das matrículas em pós-graduação no Brasil já são em formato online ou híbrido — número que dobrou desde 2019. A discussão deixou de ser "qual canal" e passou a ser "qual modelo de mediação".
-        </p>
-        <p>
-          A escolha certa hoje depende de três fatores honestos. Primeiro, qual é a sua agenda real — não a agenda ideal que você imagina. Segundo, qual é o seu padrão de disciplina sem supervisão — alguns aprendem sozinhos, outros precisam de obrigação externa. Terceiro, qual é o tipo de rede profissional que você quer construir — corporativa, setorial, regional ou nacional. Sem essas três respostas claras, qualquer escolha é palpite.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Lado a lado</h2>
-        <div class="grid sm:grid-cols-3 gap-4 mt-4">
-          <div class="card p-6 border-l-4 border-brand-700">
-            <p class="text-xs uppercase tracking-wider text-brand-700 font-semibold mb-2">Online ao vivo</p>
-            <h3 class="font-display font-semibold text-lg text-ink-900">Síncrono com mediação</h3>
-            <p class="text-sm text-ink-700 mt-3">
-              Aula em horário fixo, transmissão ao vivo, com possibilidade de interação. Compromisso semanal definido. Bom para perfil ativo com agenda densa.
-            </p>
-          </div>
-          <div class="card p-6 border-l-4 border-sun-500">
-            <p class="text-xs uppercase tracking-wider text-sun-500 font-semibold mb-2">Online assíncrono</p>
-            <h3 class="font-display font-semibold text-lg text-ink-900">Gravado, sob demanda</h3>
-            <p class="text-sm text-ink-700 mt-3">
-              Acesso ao conteúdo no próprio ritmo. Flexibilidade alta, disciplina exigida. Bom para autodidata com horário imprevisível.
-            </p>
-          </div>
-          <div class="card p-6 border-l-4 border-ink-500">
-            <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-2">Presencial</p>
-            <h3 class="font-display font-semibold text-lg text-ink-900">Imersão e rede</h3>
-            <p class="text-sm text-ink-700 mt-3">
-              Aulas em local fixo, encontros longos, alta densidade de interação. Custo maior em deslocamento. Bom para quem prioriza rede e tem mobilidade.
-            </p>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto mt-6 rounded-2xl border border-surface-200">
-          <table class="w-full text-sm">
-            <thead class="bg-surface-50">
-              <tr>
-                <th class="text-left p-3 font-display font-semibold text-ink-900">Dimensão</th>
-                <th class="text-left p-3 font-display font-semibold text-brand-700">Online ao vivo</th>
-                <th class="text-left p-3 font-display font-semibold text-sun-500">Online assíncrono</th>
-                <th class="text-left p-3 font-display font-semibold text-ink-500">Presencial</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              <tr>
-                <td class="p-3 font-medium text-ink-900">Compromisso de horário</td>
-                <td class="p-3 text-ink-700">Fixo e semanal</td>
-                <td class="p-3 text-ink-700">Livre</td>
-                <td class="p-3 text-ink-700">Fixo e presencial</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-medium text-ink-900">Densidade de mediação</td>
-                <td class="p-3 text-ink-700">Alta — docente nominal, debate</td>
-                <td class="p-3 text-ink-700">Baixa a moderada — tutor, fórum</td>
-                <td class="p-3 text-ink-700">Alta — densidade situada</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-medium text-ink-900">Engajamento médio</td>
-                <td class="p-3 text-ink-700">Alto, sustentado pelo ritmo</td>
-                <td class="p-3 text-ink-700">Variável — depende do perfil</td>
-                <td class="p-3 text-ink-700">Alto, sustentado pela presença</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-medium text-ink-900">Rede profissional</td>
-                <td class="p-3 text-ink-700">Nacional, transversal</td>
-                <td class="p-3 text-ink-700">Limitada</td>
-                <td class="p-3 text-ink-700">Regional, intensa</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-medium text-ink-900">Flexibilidade</td>
-                <td class="p-3 text-ink-700">Média — fixo, mas em casa</td>
-                <td class="p-3 text-ink-700">Alta — livre</td>
-                <td class="p-3 text-ink-700">Baixa — exige deslocamento</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-medium text-ink-900">Custo total</td>
-                <td class="p-3 text-ink-700">Médio — sem deslocamento</td>
-                <td class="p-3 text-ink-700">Baixo — autosserviço</td>
-                <td class="p-3 text-ink-700">Alto — deslocamento e hospedagem</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-medium text-ink-900">Perfil de aluno</td>
-                <td class="p-3 text-ink-700">Profissional ativo com agenda densa</td>
-                <td class="p-3 text-ink-700">Autodidata com disciplina forte</td>
-                <td class="p-3 text-ink-700">Quem prioriza rede e tem mobilidade</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-medium text-ink-900">Risco característico</td>
-                <td class="p-3 text-ink-700">Choque com agenda de trabalho</td>
-                <td class="p-3 text-ink-700">Abandono por procrastinação</td>
-                <td class="p-3 text-ink-700">Custo proibitivo de deslocamento</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Quando escolher online ao vivo (síncrono)</h2>
-        <p class="mt-3 text-ink-700">
-          Online ao vivo é a escolha para o profissional ativo com agenda densa. Quem trabalha em jornada integral e precisa de pós em duas noites por semana, com presença real, debate de caso e contato direto com docente, encontra no formato síncrono o equilíbrio mais sustentável. O compromisso fixo cria obrigação saudável — evita procrastinação e mantém engajamento ao longo dos dezoito meses.
-        </p>
-        <p class="mt-3 text-ink-700">
-          O perfil que se beneficia tem três marcadores. Primeiro, agenda rígida com janelas previsíveis. Quem tem horário noturno livre em duas noites por semana se beneficia; quem tem agenda imprevisível sofre. Segundo, vocação para discussão real. Síncrono entrega valor quando o aluno participa — câmera aberta, pergunta feita, caso compartilhado. Quem entra silencioso e fica silencioso desperdiça o formato. Terceiro, conforto com tecnologia básica. Plataforma de videoconferência precisa funcionar; conexão estável é requisito não negociável.
-        </p>
-        <p class="mt-3 text-ink-700">
-          Exemplos de carreira que se favorecem: profissional de RH em cargo executivo que vive em metrópole sem tempo para deslocamento; psicólogo organizacional em interior sem oferta presencial local; consultor independente que viaja em parte da semana e quer fixar dois dias para estudo; profissional de saúde com plantões em rotina semanal previsível. Em todos os casos, o profissional vive de fazer o curso encaixar na semana, não a semana encaixar no curso.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Quando escolher online assíncrono (gravado)</h2>
-        <p class="mt-3 text-ink-700">
-          Online assíncrono é a escolha para o autodidata com disciplina forte e horário imprevisível. Quem viaja constantemente, trabalha em ritmo irregular, ou tem rotina familiar que muda toda semana se beneficia da flexibilidade total — assistir aula às seis da manhã antes do trabalho ou às onze da noite após resolver imprevisto familiar.
-        </p>
-        <p class="mt-3 text-ink-700">
-          O perfil que se beneficia tem três marcadores honestos. Primeiro, histórico de autodisciplina sem supervisão. Quem nunca completou curso online longo sem cobrança externa deve pensar duas vezes — o formato exige maturidade de estudo. Segundo, capacidade de aprender sozinho. O assíncrono entrega conteúdo; cabe ao aluno fazer perguntas, buscar diálogo em fórum, sustentar conversa interna. Terceiro, expectativa realista de rede. A rede que assíncrono constrói tende a ser limitada — quem precisa de rede como retorno principal escolhe mal.
-        </p>
-        <p class="mt-3 text-ink-700">
-          Exemplos de carreira que se favorecem: profissional em região remota sem oferta síncrona compatível; pesquisador independente que quer aprofundar tema específico com flexibilidade; profissional em transição de carreira que precisa estudar paralelamente a trabalho intenso; mãe ou pai com filhos pequenos cujo horário noturno é imprevisível. Em todos os casos, o profissional aceita a troca: menos mediação e menos rede em troca de mais autonomia.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Quando escolher presencial</h2>
-        <p class="mt-3 text-ink-700">
-          Presencial é a escolha quando a prioridade é rede regional intensa e experiência full-time. Quem mora em capital com oferta presencial densa, tem mobilidade para encontros longos, e valoriza a densidade situada de aprender em sala física se beneficia. A experiência inclui café entre aulas, conversa informal, encontro espontâneo — coisas que canal digital aproxima mas não reproduz integralmente.
-        </p>
-        <p class="mt-3 text-ink-700">
-          O perfil que se beneficia também tem três marcadores. Primeiro, mobilidade real. Quem mora longe da sede tem custo de deslocamento alto — depois de dois meses, a empolgação inicial cede e a frequência cai. Segundo, vocação para encontro físico prolongado. Aulas presenciais em pós tendem a ser longas — sextas à noite e sábados inteiros. Quem cansa muito sofre no formato. Terceiro, valorização da experiência além do conteúdo. Presencial entrega mais que conteúdo — entrega imersão, ritual, comunidade. Quem só quer o conteúdo paga caro pelo que não usa.
-        </p>
-        <p class="mt-3 text-ink-700">
-          Exemplos de carreira que se favorecem: profissional sediado em capital com agenda flexível; psicólogo clínico em transição que quer rede regional sólida; gestor em empresa que cobre custo da pós e oferece tempo de estudo; profissional jovem com mobilidade total e prioridade em construir rede para os próximos dez anos. Em todos os casos, o investimento de tempo e deslocamento precisa fazer sentido frente ao retorno de rede e experiência.
-        </p>
-      </div>
-
-      <div class="rounded-2xl border border-brand-100 bg-brand-50/50 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Quando faz sentido o formato híbrido</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Quando densidade técnica online se soma a imersão presencial pontual</h3>
-        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
-          O híbrido faz sentido quando o desenho combina o melhor de cada lado sem somar fricções. Modelo bom: aulas semanais online ao vivo com discussão de caso, mais dois a quatro encontros presenciais ao longo do curso — para imersão, networking e atividades que ganham com presença física. Modelo ruim: aulas online assíncronas como base e viagens longas obrigatórias sem agenda clara — soma custo de deslocamento sem ganho proporcional. Avalie no detalhe: quantos encontros presenciais, em que cidade, quais entregas, qual densidade. Híbrido sério pode ser a melhor escolha para quem quer rede sem abrir mão da semana de trabalho — desde que a parte presencial seja calibrada com cuidado.
-        </p>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-600 mb-2">Mini-caso · composto</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Três perfis, três escolhas certas pelo motivo certo</h3>
-        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
-          Carolina, RH senior em uma indústria do interior de Goiás, escolheu MBA em POT online ao vivo síncrono em 2024. Duas noites por semana, das dezenove às vinte e duas, conectada de casa. Concluiu em dezoito meses com noventa e quatro por cento de presença. A rede que formou inclui colegas de cinco estados. O custo do deslocamento que ela teria com presencial em Goiânia comprou para ela um notebook novo e ainda sobrou.
-        </p>
-        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
-          Marcos, consultor independente baseado em Brasília que viaja três a quatro dias por semana, tentou o mesmo formato síncrono em 2024 e abandonou em quatro meses — não conseguia honrar o compromisso fixo de horário. Migrou para online assíncrono em 2025. Assiste aulas em hotel, em vôos, em fins de semana. Concluiu o curso em quinze meses. A rede que formou foi modesta, mas o conteúdo entrou — e era o que ele queria.
-        </p>
-        <p class="mt-3 text-ink-700 text-sm leading-relaxed">
-          Roberta, psicóloga organizacional em São Paulo capital, com agenda flexível e empresa pagando o curso, escolheu MBA em Psicologia Positiva em formato híbrido em 2024. Aulas síncronas semanais online, mais quatro encontros presenciais ao longo do ano em São Paulo e Brasília. A rede regional que formou foi densa; a flexibilidade semanal preservou sua agenda. Concluiu em dezesseis meses. O custo de deslocamento foi previsível e absorvido pela empresa.
-        </p>
-        <p class="mt-3 text-ink-500 text-xs italic">
-          Três decisões diferentes, três resultados positivos. Nenhuma das três teria funcionado se Carolina tivesse escolhido presencial, ou se Marcos tivesse escolhido ao vivo, ou se Roberta tivesse escolhido assíncrono puro. A escolha certa depende do momento — não do prestígio do formato.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Erros comuns na decisão</h2>
-        <ol class="mt-4 space-y-3 text-sm text-ink-700 list-decimal list-inside marker:font-bold marker:text-brand-700">
-          <li><strong>Achar que online é "presencial de segunda categoria".</strong> Em 2026, online ao vivo síncrono com docente nominal entrega densidade pedagógica comparável à de presencial bem desenhado. A diferença está no formato, não na qualidade automática.</li>
-          <li><strong>Subestimar a disciplina exigida pelo assíncrono.</strong> Quem nunca completou curso longo sem cobrança externa deve evitar assíncrono. A taxa de abandono no formato é alta — Educause (2024) reporta cerca de 40% em pós lato sensu assíncrona puramente sob demanda.</li>
-          <li><strong>Romantizar a rede presencial sem checar a rede online possível.</strong> Cursos online síncronos com turma fixa e fóruns ativos constroem rede transversal — diferente da regional, mas igualmente útil para carreira. Antes de pagar deslocamento, avalie a rede que cada formato oferece.</li>
-          <li><strong>Escolher híbrido sem ler o desenho do híbrido.</strong> Híbrido bom é diferente de híbrido ruim. Pergunte: quantos encontros presenciais, em que cidade, com qual antecedência divulgada, qual entrega vinculada. Sem isso, híbrido vira "online com viagem cara".</li>
-          <li><strong>Decidir pelo formato antes de ler o currículo do docente.</strong> Em qualquer formato, o que entrega valor é o corpo docente. Pesquise nominalmente quem dá cada disciplina e que trajetória esse docente tem. Formato é veículo; conteúdo é carga.</li>
-          <li><strong>Ignorar a regulação do MEC sobre EAD.</strong> A Portaria 2.117/2019 define o que conta como EAD regulado. Cursos que se vendem como "EAD" mas não cumprem requisitos podem trazer problemas de reconhecimento de certificado.</li>
-        </ol>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
-          {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">A pergunta certa não é "qual canal é melhor"</h3>
-        <ul class="mt-3 space-y-2 text-white/90 text-sm">
-          <li>Online ao vivo síncrono funciona para profissional ativo com agenda rígida e janelas previsíveis.</li>
-          <li>Online assíncrono funciona para autodidata com disciplina forte e horário imprevisível.</li>
-          <li>Presencial funciona para quem prioriza rede regional intensa e tem mobilidade.</li>
-          <li>Híbrido bem desenhado combina densidade online com imersão presencial pontual.</li>
-        </ul>
-        <p class="mt-4 text-white/85 text-sm">
-          O IPOG mantém oferta híbrida — Ao Vivo síncrono e EAD assíncrono, dependendo da turma — o que ajuda a comparar formatos antes da escolha. Próximo passo: confirme grade, modalidade e turma vigentes no portal oficial.
-        </p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4">Ver MBAs no IPOG</a>
-      </div>
-
-    </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">Modalidades no IPOG</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          O IPOG oferece MBAs em Psicologia em formato Ao Vivo síncrono e EAD assíncrono, com corpo docente nominal e estrutura multicampus. A modalidade vigente de cada turma é informada no portal oficial.
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
-          Ver no IPOG
-        </a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
-          Home IPOG
-        </a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Outros comparativos</p>
-        <ul class="space-y-1">
-          <li><a href="/comparativos/pot-vs-gestao-pessoas" class="mega-link"><strong class="text-ink-900 text-sm">POT vs Gestão de Pessoas</strong></a></li>
-          <li><a href="/comparativos/positiva-vs-organizacional" class="mega-link"><strong class="text-ink-900 text-sm">Positiva vs Organizacional</strong></a></li>
-          <li><a href="/comparativos/neuropsicologia-vs-reabilitacao" class="mega-link"><strong class="text-ink-900 text-sm">Neuropsicologia vs Reabilitação</strong></a></li>
-          <li><a href="/comparativos/mba-vs-especializacao" class="mega-link"><strong class="text-ink-900 text-sm">MBA vs Especialização</strong></a></li>
-        </ul>
-        <a href="/comparativos" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todos os comparativos →</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Conteúdo relacionado</p>
-        <ul class="space-y-1">
-          <li><a href="/regulacao#modalidades" class="mega-link"><strong class="text-ink-900 text-sm">Modalidades — regulação MEC</strong></a></li>
-          <li><a href="/mbas" class="mega-link"><strong class="text-ink-900 text-sm">Todos os MBAs em Psicologia</strong></a></li>
-          <li><a href="/regulacao" class="mega-link"><strong class="text-ink-900 text-sm">Regulação completa</strong></a></li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
-  <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
-  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
+<Base title={page.title} description={page.description} pageType="article" datePublished={page.published}>
+ <div class="container-page py-8 sm:py-12">
+  <Breadcrumbs items={[{label:'Início',href:'/'},{label:'Comparativos',href:'/comparativos/'},{label:page.label}]} />
+  <article class="editorial mx-auto max-w-4xl mt-7">
+   <header><h1>{page.title}</h1><p class="lead">{page.lead}</p><p class="update">Revisão editorial em 06/10/2026 · Brasil GEO. Conteúdo educativo; a ficha organiza perguntas e não substitui avaliação profissional.</p></header>
+   {page.sections.map(s=><section><h2>{s.title}</h2>{s.paragraphs.map(text=><p set:html={text} />)}</section>)}
+   <section aria-labelledby="comparacao-pratica"><h2 id="comparacao-pratica">{page.tableTitle}</h2><div class="table-wrap" role="region" aria-label={page.tableTitle} tabindex="0"><table><caption>{page.tableCaption}</caption><thead><tr>{page.columns.map(c=><th scope="col">{c}</th>)}</tr></thead><tbody>{page.rows.map(row=><tr>{row.map((cell,index)=>index===0?<th scope="row">{cell}</th>:<td>{cell}</td>)}</tr>)}</tbody></table></div><p class="table-help">Em telas pequenas, deslize a tabela horizontalmente. As diferenças precisam ser interpretadas junto com as fontes e o contexto.</p></section>
+   <section><h2>{page.stepsTitle}</h2><ol>{page.steps.map(step=><li>{step}</li>)}</ol></section>
+   <section><h2>{page.exampleTitle}</h2><p>{page.example}</p><p>{page.exampleLimit}</p></section>
+   <section><h2>Estudo complementar com aplicação prática</h2>{page.learning.map(text=><p set:html={text} />)}</section>
+   <StudyWorksheet id="ficha-pratica" title={page.worksheet.title} description={page.worksheet.description} fields={page.worksheet.fields} checklist={page.worksheet.checklist} />
+   <section aria-labelledby="perguntas-frequentes"><h2 id="perguntas-frequentes">Perguntas frequentes</h2>{page.faqs.map(f=><details><summary>{f.q}</summary><p>{f.a}</p></details>)}</section>
+   <section><h2>Leituras relacionadas</h2><ul>{page.related.map(r=><li><a href={r.url}>{r.label}</a></li>)}</ul></section>
+   <section class="source-box"><h2>Fontes e limites da comparação</h2><p>Confira a população, a intervenção e a finalidade de cada referência. Uma diretriz internacional apoia o estudo da evidência; as obrigações profissionais no Brasil seguem a legislação e os conselhos competentes.</p><ul>{page.sources.map(s=><li><a href={s.url} rel="external noopener">{s.label}</a></li>)}</ul></section>
+  </article>
+ </div>
+ <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+ <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+.editorial { color: var(--color-text-subtle); line-height: 1.8; }
+.editorial header { margin-bottom: 2.75rem; }
+.editorial h1 { color: var(--color-text-strong); font-size: clamp(2rem,4.5vw,3.1rem); line-height: 1.15; font-weight: 700; letter-spacing: -.025em; }
+.editorial h2 { color: var(--color-text-strong); font-size: clamp(1.35rem,3vw,1.7rem); line-height: 1.35; font-weight: 650; margin-bottom: 1rem; }
+.editorial > section { margin-block: 2.5rem; }
+.editorial p { margin-block: 1rem; text-align: justify; overflow-wrap: anywhere; }
+.editorial .lead { font-size: 1.15rem; }
+.editorial .update { font-size: .85rem; color: var(--color-text-muted); border-left: 3px solid var(--color-primary-ring); padding-left: 1rem; text-align: left; }
+.editorial :global(a) { color: var(--color-primary-ring); text-decoration: underline; text-underline-offset: .2em; }
+.editorial :global(a:hover) { color: var(--color-primary-hover); }
+.editorial ul, .editorial ol { padding-left: 1.4rem; margin-block: 1rem; }
+.editorial ul { list-style: disc; } .editorial ol { list-style: decimal; }
+.editorial li { margin-block: .7rem; }
+.table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--surface-200); border-radius: .75rem; }
+table { width: 100%; min-width: 38rem; border-collapse: collapse; font-size: .94rem; }
+caption { text-align: left; padding: 1rem; font-weight: 600; color: var(--color-text-strong); }
+th,td { padding: 1rem; text-align: left; vertical-align: top; border-top: 1px solid var(--surface-200); }
+th { color: var(--color-text-strong); } .table-help { font-size: .85rem; }
+details { border-bottom: 1px solid var(--surface-200); padding-block: 1rem; }
+summary { cursor: pointer; font-weight: 600; color: var(--color-text-strong); }
+.source-box { border: 1px solid var(--surface-200); border-radius: .75rem; padding: 1.5rem; font-size: .94rem; }
+</style>

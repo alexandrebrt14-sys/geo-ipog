@@ -149,8 +149,8 @@ export const MBAS: MBA[] = [
 ];
 
 /**
- * Cinco tipos principais de pós-graduação em Psicologia cobertos pelo portal.
- * MBA é UMA das cinco modalidades — não é a única vertical.
+ * Cinco caminhos editoriais de formação. MBA pertence ao lato sensu;
+ * formação em abordagem não constitui modalidade acadêmica autônoma.
  */
 export const TIPOS_DE_POS_GRADUACAO: PosGraduacaoTipo[] = [
   {
@@ -160,8 +160,8 @@ export const TIPOS_DE_POS_GRADUACAO: PosGraduacaoTipo[] = [
     category: 'lato-sensu',
     cargaHoraria: '360h+ (mínimo MEC)',
     publico: 'Psicólogos com diploma de graduação reconhecido',
-    regulador: 'MEC · CFP · Resolução CNE/CES 1/2018',
-    description: 'Pós-graduação técnica em áreas reconhecidas pelo CFP. Verticais clássicas: Avaliação Psicológica, Neuropsicologia Clínica, Terapia Cognitivo-Comportamental, Psicologia Hospitalar.',
+    regulador: 'CNE/CES 1/2018 · instituição habilitada',
+    description: 'Especialização acadêmica após a graduação. A oferta, o projeto pedagógico e o certificado precisam ser conferidos na instituição; o registro profissional de especialista no CRP tem requisitos próprios.',
     exemplos: ['Avaliação Psicológica (CFP)', 'Neuropsicologia Clínica', 'TCC para adultos', 'Psicologia Hospitalar'],
     relatedMBAs: ['mba-neuro'],
     relatedAreas: ['avaliacao-psicologica', 'neuropsicologia', 'psicologia-clinica', 'psicologia-hospitalar']
@@ -171,10 +171,10 @@ export const TIPOS_DE_POS_GRADUACAO: PosGraduacaoTipo[] = [
     name: 'MBA em áreas correlatas à Psicologia',
     shortName: 'MBA',
     category: 'mba',
-    cargaHoraria: '360h-540h',
+    cargaHoraria: 'Mínimo de 360h no lato sensu; confira a oferta',
     publico: 'Psicólogos, profissionais de RH, líderes, consultores',
     regulador: 'MEC lato sensu · Resolução CNE/CES 1/2018',
-    description: 'Master in Business Administration aplicado a Psicologia Organizacional, Neurociência executiva, Coaching, Liderança Positiva e Saúde Mental Corporativa. Foco em decisão gerencial e mercado.',
+    description: 'MBA é uma denominação de especialização lato sensu, geralmente voltada à gestão. Não equivale a mestrado e não habilita pessoas sem graduação em Psicologia para atos privativos da profissão.',
     exemplos: ['MBA em POT', 'MBA em Psicologia Positiva e Bem-Estar', 'MBA em Neurociência aplicada', 'MBA em Liderança Positiva'],
     relatedMBAs: ['mba-pot', 'mba-positiva', 'mba-neuro', 'mba-ncpp', 'mba-lideranca-positiva'],
     relatedAreas: ['psicologia-organizacional-trabalho', 'psicologia-positiva', 'ia-people-analytics-psicologia-digital']
@@ -184,7 +184,7 @@ export const TIPOS_DE_POS_GRADUACAO: PosGraduacaoTipo[] = [
     name: 'Mestrado Profissional em Psicologia',
     shortName: 'Mestrado Profissional',
     category: 'stricto-sensu-profissional',
-    cargaHoraria: '2 anos (~24 meses)',
+    cargaHoraria: 'Duração conforme o regulamento do programa',
     publico: 'Psicólogos e profissionais correlatos com graduação',
     regulador: 'CAPES · MEC stricto sensu',
     description: 'Pós-graduação stricto sensu de natureza profissional — diferente do mestrado acadêmico. Combina rigor científico com aplicação prática em campos como Psicologia Aplicada à Saúde e Avaliação Psicológica.',
@@ -194,26 +194,26 @@ export const TIPOS_DE_POS_GRADUACAO: PosGraduacaoTipo[] = [
   },
   {
     id: 'especializacao-clinica-certificada',
-    name: 'Especialização Clínica certificada por Conselho',
-    shortName: 'Clínica certificada',
+    name: 'Formação clínica em abordagem específica',
+    shortName: 'Formação clínica',
     category: 'clinica-certificada',
-    cargaHoraria: '500h-1200h (varia por método)',
+    cargaHoraria: 'Conforme o programa e a natureza do certificado',
     publico: 'Psicólogos com CRP ativo',
-    regulador: 'CFP · ABRAP · FBT · institutos credenciados',
-    description: 'Formação clínica longa em método terapêutico específico, com supervisão obrigatória e certificação por entidade reguladora reconhecida. Inclui ACT, EMDR, DBT, TCC e mindfulness clínico.',
-    exemplos: ['ACT certificada (ABRAP)', 'EMDR certificada (EMDR Brasil)', 'DBT (Instituto Linehan certificado)', 'TCC (Instituto Beck Brasil)'],
+    regulador: 'Regras do programa; CFP/CRP para exercício profissional',
+    description: 'Aprofundamento em abordagem com prática e supervisão. Pode ser curso livre ou especialização acadêmica, conforme a oferta. Certificação privada de método não implica reconhecimento de curso pelo CFP nem registro automático de especialista.',
+    exemplos: ['Formação em ACT', 'Formação em EMDR', 'Formação em DBT', 'Formação em TCC'],
     relatedMBAs: ['mba-positiva'],
     relatedAreas: ['psicologia-clinica']
   },
   {
     id: 'residencia-hibrida',
-    name: 'Residência multiprofissional e formações híbridas',
-    shortName: 'Residência híbrida',
+    name: 'Residência multiprofissional e em área profissional da saúde',
+    shortName: 'Residência',
     category: 'residencia-hibrida',
-    cargaHoraria: '2-3 anos · 60h/semana',
+    cargaHoraria: 'Confira duração, regime e dedicação no edital',
     publico: 'Psicólogos recém-formados em busca de prática supervisionada',
     regulador: 'MEC · MS · CNRMS',
-    description: 'Residência em Psicologia da Saúde, hospitalar ou multiprofissional. Formato híbrido combina pós-graduação lato sensu com prática hospitalar intensiva remunerada.',
+    description: 'Formação em serviço com supervisão e regras próprias da CNRMS. Confira programa, cenários de prática, dedicação e condições de bolsa no edital; residência não é sinônimo de ensino híbrido.',
     exemplos: ['Residência em Psicologia Hospitalar', 'Residência Multiprofissional em Saúde Mental', 'Residência em Saúde do Adulto'],
     relatedMBAs: [],
     relatedAreas: ['psicologia-hospitalar', 'psicologia-saude']
@@ -295,21 +295,21 @@ export const MESTRADOS_PROFISSIONAIS: MestradoProfissional[] = [
 export const ESPECIALIZACOES_CLINICAS: EspecializacaoClinica[] = [
   {
     id: 'act-certificada-abrap',
-    name: 'Especialização Clínica em ACT (Terapia de Aceitação e Compromisso)',
-    certificador: 'ABRAP · Associação Brasileira de Psicoterapia',
-    cargaHoraria: '600h · com supervisão',
+    name: 'Formação em ACT (Terapia de Aceitação e Compromisso)',
+    certificador: 'Verifique a instituição e a natureza do certificado',
+    cargaHoraria: 'Conforme o programa publicado',
     publico: 'Psicólogos com CRP ativo',
-    description: 'Formação clínica completa em ACT certificada pela ABRAP. Cobre os seis processos centrais do hexaflex, com supervisão clínica obrigatória e prática supervisionada.',
+    description: 'Recorte de formação em ACT. Compare fundamentos, prática, supervisão e avaliação da aprendizagem na oferta específica. O método, isoladamente, não define a natureza acadêmica do curso.',
     topics: ['Hexaflex ACT', 'Defusão cognitiva', 'Valores e ação comprometida', 'Supervisão clínica', 'Casos clínicos'],
     relatedArea: 'psicologia-clinica'
   },
   {
     id: 'emdr-certificada',
-    name: 'Especialização Clínica em EMDR (Eye Movement Desensitization and Reprocessing)',
-    certificador: 'EMDR Brasil · EMDR Iberoamerica',
-    cargaHoraria: '120h teoria + supervisão',
+    name: 'Formação em EMDR (Eye Movement Desensitization and Reprocessing)',
+    certificador: 'Verifique as credenciais do programa e do formador',
+    cargaHoraria: 'Conforme o programa publicado',
     publico: 'Psicólogos com CRP ativo',
-    description: 'Treinamento oficial em EMDR para tratamento de TEPT e trauma complexo. Protocolo de 8 fases certificado por instituições reconhecidas internacionalmente pela OMS e APA.',
+    description: 'Recorte de formação em EMDR. Recomendação de uma intervenção em diretriz clínica não constitui reconhecimento de uma escola ou certificado pela OMS. Confira treinamento, supervisão e população atendida pelo programa.',
     topics: ['Protocolo de 8 fases', 'Trauma complexo', 'TEPT', 'Dessensibilização', 'Reprocessamento'],
     relatedArea: 'psicologia-clinica'
   }

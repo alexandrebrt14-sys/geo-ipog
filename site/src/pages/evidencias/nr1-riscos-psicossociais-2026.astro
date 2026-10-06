@@ -1,243 +1,145 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { SITE, MBAS } from '@lib/data';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 
-const mbasCorrelatos = MBAS.filter(m => ['mba-pot','mba-positiva','mba-lideranca-positiva'].includes(m.id));
-
-const papersChave = [
-  { autor: 'MTE (2024)', veiculo: 'Portaria 1.419', achado: 'Inclusão obrigatória de fatores de risco psicossocial no PGR, com vigência iniciada em maio/2025.', cluster: 'Regulação', aplicacao: 'Lastro legal para exigir orçamento e cronograma de intervenção em SST.' },
-  { autor: 'Schaufeli & Bakker (2025)', veiculo: 'Journal of Occupational Health Psychology', achado: 'Atualização do JD-R com camada de demanda emocional e demanda cognitiva separadas.', cluster: 'Modelo teórico', aplicacao: 'Sub-escalas mais sensíveis a trabalho híbrido e digital.' },
-  { autor: 'Karasek (1979) atualizado por Theorell et al. (2024)', veiculo: 'Scandinavian Journal of Work, Environment & Health', achado: 'Interação demanda × controle × apoio social mantém poder preditivo robusto sobre adoecimento.', cluster: 'Modelo teórico', aplicacao: 'Fundamento para instrumentos de avaliação NR-1.' },
-  { autor: 'Bakker & Demerouti (2017, ampliado em 2024)', veiculo: 'JOHP', achado: 'Recursos do trabalho amortecem demandas elevadas; intervenção pode focar em recursos quando demanda é incontrolável.', cluster: 'Intervenção', aplicacao: 'Justifica investimento em apoio social do líder antes de tentar reduzir carga.' },
-  { autor: 'FIOCRUZ (2024)', veiculo: 'Cadernos de Saúde Pública', achado: 'Trabalhadores brasileiros expostos a alta demanda-baixo controle apresentaram OR 2,4 para sintomas depressivos.', cluster: 'Epidemiologia BR', aplicacao: 'Base nacional para defender severidade do risco em laudo.' },
-  { autor: 'Ferreira & Mendonça (2024)', veiculo: 'Revista Psicologia: Organizações e Trabalho (RPOT)', achado: 'Adaptação transcultural da escala COPSOQ III para amostras brasileiras com indicadores psicométricos adequados.', cluster: 'Instrumentação BR', aplicacao: 'Escala validada para uso em NR-1, em português, gratuita.' },
-  { autor: 'Eurofound (2024)', veiculo: 'European Working Conditions Survey', achado: 'Prevalência média de exposição a risco psicossocial alto em 27% da força de trabalho da UE.', cluster: 'Epidemiologia internacional', aplicacao: 'Parâmetro internacional para benchmark de exposição.' }
-];
-
+const title = "NR-1 em 2026: como ler a norma e avaliar evidências sobre riscos psicossociais";
+const description = "O que está vigente na NR-1, como distinguir obrigação legal de recomendação e quais perguntas fazer antes de contratar avaliação de riscos psicossociais.";
 const faqs = [
   {
-    q: 'A NR-1 atualizada exige instrumento específico?',
-    a: 'A norma não nomeia instrumento. Exige diagnóstico técnico e fundamentado. A literatura aponta a escala COPSOQ III (Ferreira & Mendonça, 2024, RPOT) e o JCQ revisado (Theorell et al., 2024) como instrumentos com lastro psicométrico em amostra brasileira. A escolha precisa estar documentada e justificada no PGR.'
+    "q": "Quando entrou em vigor a nova redação do capítulo 1.5 da NR-1?",
+    "a": "Em 26 de maio de 2026, conforme a prorrogação prevista pela Portaria MTE nº 765/2025. Consulte o texto vigente e as orientações oficiais para aplicação ao contexto da organização."
   },
   {
-    q: 'Empresa sem psicólogo pode atender NR-1?',
-    a: 'Sim, mas com risco de defesa frágil em fiscalização. A avaliação de risco psicossocial é tecnicamente afim ao escopo do psicólogo organizacional, embora não privativa. Empresas de médio porte têm contratado consultoria de POT ou trazido psicólogo interno para conduzir o diagnóstico.'
+    "q": "A NR-1 exige um questionário específico?",
+    "a": "Não. O MTE esclarece que não há instrumento único obrigatório. A escolha deve ser tecnicamente justificada e a aplicação isolada de um questionário não completa o gerenciamento de riscos."
   },
   {
-    q: 'Há prazo de implementação?',
-    a: 'A Portaria MTE 1.419/2024 estabeleceu a vigência da inclusão do fator psicossocial no PGR a partir de maio de 2025, com prazo de adaptação para empresas. Recomendamos consulta direta ao texto vigente em gov.br/trabalho-e-emprego.'
-  },
-  {
-    q: 'O que diferencia um diagnóstico defensável de um questionário genérico?',
-    a: 'Diagnóstico defensável tem três elementos: instrumento validado com referência publicada, amostra estratificada por área e função, e plano de intervenção rastreável por indicador. Questionário genérico de clima sem ancoragem teórica é vulnerável a impugnação técnica em auditoria.'
+    "q": "Uma diretriz de 2022 está necessariamente desatualizada?",
+    "a": "Não. É preciso verificar se continua aplicável, se houve atualização e qual pergunta ela responde. Uma fonte recente também pode ser inadequada ou insuficiente para sustentar uma decisão."
   }
 ];
-
+const fields = [
+  {
+    "label": "Afirmação analisada",
+    "hint": "Copie uma promessa ou conclusão, sem informações pessoais."
+  },
+  {
+    "label": "Fonte e data",
+    "hint": "Registre o endereço e o tipo de documento."
+  },
+  {
+    "label": "Método e limites",
+    "hint": "Qual comparação sustenta a afirmação e o que ficou incerto?"
+  },
+  {
+    "label": "Consequência para a decisão",
+    "hint": "Aceitar, pedir esclarecimento ou buscar evidência adicional?"
+  }
+];
+const checklist = [
+  "Distingui obrigação normativa de alegação de resultado.",
+  "Verifiquei fonte, período e contexto.",
+  "Evitei atribuir causalidade a uma simples associação.",
+  "Relacionei a proposta a condições reais de trabalho."
+];
+const sources = [
+  {
+    "label": "MTE: NR-1 vigente e histórico de alterações",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-1"
+  },
+  {
+    "label": "MTE: perguntas e respostas sobre GRO e PGR, maio de 2026",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/manuais-e-publicacoes/2026/perguntas-e-respostas-gro-pgr-maio-2026"
+  },
+  {
+    "label": "OMS: Guidelines on mental health at work, 2022",
+    "url": "https://www.who.int/publications/i/item/9789240053052"
+  }
+];
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'NR-1 e riscos psicossociais · evidência atualizada 2025-2026',
-  description: 'Síntese de literatura recente sobre implementação da NR-1 atualizada (Portaria MTE 1.419/2024), modelos teóricos e instrumentos psicométricos.',
+  headline: title,
+  description,
+  mainEntityOfPage: 'https://posgraduacaopsicologia.com/evidencias/nr1-riscos-psicossociais-2026/',
   author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
   inLanguage: 'pt-BR'
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
+    '@type': 'Question', name: f.q,
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
-
 ---
-
-<Base
-  title="NR-1 e riscos psicossociais · evidência 2025-2026"
-  description="Literatura recente sobre Portaria MTE 1.419/2024, modelos demanda-controle-apoio e instrumentos psicométricos para diagnóstico de risco psicossocial.">
-
+<Base title={title} description={description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
-    <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Evidências', href: '/evidencias' },
-        { label: 'NR-1 e riscos psicossociais' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Evidência · Organizacional · regulação</span>
-          <h1 class="section-h text-3xl sm:text-4xl">NR-1 e riscos psicossociais · evidência atualizada 2025-2026</h1>
-          <p class="mt-3 text-ink-700 text-lg">Estudos de implementação da Portaria MTE 1.419/2024, modelo demanda-controle-apoio social e instrumentos psicométricos com lastro brasileiro.</p>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver MBAs no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: "Evidências", href: "/evidencias" }, { label: "NR-1 e evidências" }]} />
+      <p class="section-eyebrow mt-4">Evidências · Guia de estudo e decisão</p>
+      <h1 class="section-h text-3xl sm:text-4xl max-w-4xl">{title}</h1>
+      <p class="mt-4 text-lg text-ink-700 max-w-3xl">Uma apresentação comercial promete cumprir a NR-1 com um questionário e exibe percentuais de redução de afastamentos. Antes de aceitar a proposta, separe três perguntas: o que a norma exige, o que a pesquisa sustenta e o que será verificado no seu local de trabalho.</p>
+      <p class="mt-4 text-sm text-ink-600">Atualização editorial: <time datetime="2026-10-06">06/10/2026</time> · Brasil GEO, portal editorial independente.</p>
+      <a class="btn btn-secondary mt-4" href="#ficha-pratica">Preencher a ficha prática</a>
     </div>
   </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          A NR-1 atualizada exige avaliação de fatores psicossociais com lastro técnico — não questionário genérico de clima. A literatura sustenta o modelo demanda-controle-apoio social (Karasek 1979, atualizado por Theorell et al. 2024) e o JD-R revisado (Schaufeli & Bakker 2025, JOHP). A contraintuição: a maior parte das empresas brasileiras tem apresentado pesquisa de clima como prova de compliance — e essa estratégia é frágil em fiscalização.
-        </p>
-      </div>
-
+  <article class="container-page py-10">
+    <div class="max-w-4xl mx-auto space-y-10">
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Pesquisa de clima não basta</h2>
-        <p>
-          A leitura comum sustenta que o eNPS anual e a pesquisa de clima resolvem a exigência da NR-1. A leitura técnica diz outra coisa. O texto da Portaria MTE 1.419/2024 fala em identificação, avaliação e controle de riscos com a mesma lógica de riscos físicos: instrumento, periodicidade, plano de ação rastreável. Pesquisa de clima sem instrumento validado, sem referência teórica explícita e sem plano por setor não atende esse padrão.
-        </p>
-        <p>
-          A consequência prática: empresas de médio e grande porte estão reformulando o desenho de avaliação a partir de instrumentos como o COPSOQ III, em adaptação transcultural brasileira (Ferreira & Mendonça, 2024, RPOT), e o JCQ revisado (Karasek, 1979, ASQ, na atualização Theorell et al., 2024). A literatura nacional, com FIOCRUZ (2024) e estudos de saúde ocupacional, oferece base epidemiológica para defender severidade do risco em laudo.
-        </p>
+<h2>O que mudou no calendário</h2>
+<p>Vigência normativa, qualidade da pesquisa e resultado local são três verificações diferentes. A redação do capítulo 1.5 da <a href="https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-1">NR-1 que explicita os fatores de risco psicossociais relacionados ao trabalho</a> entrou em vigor em 26 de maio de 2026, após a prorrogação estabelecida pela Portaria MTE nº 765/2025. Em outubro de 2026, tratá-la como obrigação que ainda começará em 2025 ou como tema apenas futuro desorienta o planejamento.</p>
+<p>A data não informa qual ferramenta comprar nem demonstra a eficácia de um programa comercial. Para entender a aplicação prática, a referência complementar é o <a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/manuais-e-publicacoes/2026/perguntas-e-respostas-gro-pgr-maio-2026">documento de perguntas e respostas do MTE, de maio de 2026</a>. Ele esclarece que o foco está nos fatores relacionados à organização e às condições do trabalho.</p>
+<h2>Três tipos de fonte, três usos</h2>
+<div class="overflow-x-auto"><table><thead><tr><th>Fonte</th><th>O que permite verificar</th><th>O que não demonstra sozinha</th></tr></thead><tbody>
+<tr><td>NR-1 vigente e atos que a alteraram</td><td>Obrigações, definições, campo de aplicação e datas.</td><td>Eficácia de um fornecedor ou instrumento específico.</td></tr>
+<tr><td>Orientação oficial do MTE</td><td>Esclarecimentos sobre a aplicação do gerenciamento de riscos.</td><td>Certificação automática de conformidade de uma empresa.</td></tr>
+<tr><td>Diretriz de saúde e estudo científico</td><td>Recomendações ou resultados em populações e condições delimitadas.</td><td>Garantia de repetir o mesmo resultado em outro contexto.</td></tr>
+</tbody></table></div>
+<p>As <a href="https://www.who.int/publications/i/item/9789240053052">diretrizes da OMS sobre saúde mental no trabalho, publicadas em 2022</a>, abrangem intervenções organizacionais, capacitação e participação no trabalho. A data de publicação, por si, não invalida uma referência. Para incorporá-la, verifique a pergunta respondida, a qualidade da evidência e sua aplicabilidade.</p>
+<h2>Como examinar uma alegação de eficácia</h2>
+<p>Peça a referência completa, com acesso ao estudo ou ao relatório. Identifique quem participou, qual intervenção ocorreu, qual comparação foi feita, por quanto tempo houve acompanhamento e como o resultado foi medido. Redução de um escore autorreferido, queda de afastamentos e melhoria das condições de trabalho são resultados diferentes.</p>
+<ul><li>Uma mudança antes e depois, sem comparação adequada, pode coincidir com alterações de quadro, demanda ou política de registro.</li><li>Uma associação entre condição de trabalho e sofrimento não quantifica automaticamente o efeito de uma intervenção.</li><li>Um percentual sem número inicial, denominador e período não permite avaliar a relevância da mudança.</li><li>Uma média favorável pode esconder diferenças entre turnos e setores ou baixa participação de grupos mais expostos.</li></ul>
+<p>Essas perguntas são critérios de leitura crítica, não um método completo de revisão sistemática. Se a decisão exige estimar efeito ou custo-benefício, será necessário aprofundar a análise metodológica com fontes adequadas.</p>
+<h2>O que a orientação oficial impede de simplificar</h2>
+<p>O MTE esclarece que não existe questionário único obrigatório e que sua aplicação isolada não caracteriza a gestão de riscos. Também distingue essa avaliação de uma investigação clínica individual de saúde mental. Métodos qualitativos, observação e participação dos trabalhadores podem ser pertinentes; sua seleção precisa considerar o trabalho real e a capacidade técnica da equipe.</p>
+<p>Não existe exigência universal de que uma única profissão realize toda avaliação de riscos psicossociais. Isso não afasta atos legalmente reservados a profissões regulamentadas. Uma proposta deve separar responsabilidades organizacionais, técnicas de avaliação do trabalho e eventuais serviços clínicos, com suas regras próprias.</p>
+<h2>Exemplo hipotético: queda de afastamentos sem explicação suficiente</h2>
+<p>Um fornecedor apresenta um gráfico de afastamentos menor após uma campanha. No mesmo período, a unidade reduziu o quadro e transferiu atividades para outro local. Sem examinar essas mudanças e os critérios de registro, atribuir a queda à campanha é precipitado. A empresa pode registrar o resultado observado e manter a hipótese em análise, enquanto verifica se a exposição às condições de risco realmente diminuiu.</p>
+<h2>Da leitura à contratação</h2>
+<ol><li>Classifique cada promessa como obrigação, recomendação ou hipótese de resultado.</li><li>Vincule as afirmações a uma fonte específica, com data e trecho verificável.</li><li>Exija descrição do método, das limitações e do tratamento de informações.</li><li>Defina como achados orientarão medidas de prevenção e sua revisão.</li></ol>
+<p>O curso <a href="https://alexandrecaramaschi.com/educacao/eeat-qualidade">E-E-A-T e qualidade, do portal educacional de Alexandre Caramaschi</a>, ajuda a praticar verificação de autoria e sustentação de conteúdo. Use-o como complemento de leitura crítica, sem equivalência a certificação de conformidade ou formação profissional em SST.</p>
+<p>Para aplicar os critérios, consulte o <a href="/guias/implementar-nr1-em-empresa">roteiro de implementação da NR-1</a> e o panorama de <a href="/temas/nr1-riscos-psicossociais">riscos psicossociais relacionados ao trabalho</a>. A ficha registra a análise de uma alegação, não um diagnóstico da empresa.</p>
       </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Síntese da literatura</h2>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Modelos teóricos atualizados</h3>
-        <p>
-          O modelo demanda-controle de Karasek (1979, ASQ) foi a primeira formulação operacional do risco psicossocial. A atualização demanda-controle-apoio social, articulada por Theorell et al. (2024, Scandinavian Journal of Work, Environment & Health), mantém poder preditivo robusto sobre indicadores de saúde mental e cardiovascular. A interação entre alta demanda, baixo controle e baixo apoio social do líder define o quadrante de risco severo.
-        </p>
-        <p>
-          Em paralelo, o modelo JD-R (Job Demands-Resources), formulado por Bakker & Demerouti (2017, JOHP) e ampliado em revisão de 2024, propõe que recursos do trabalho — autonomia, suporte do líder, feedback construtivo — amortecem demandas elevadas. A consequência prática para NR-1: quando a demanda é estrutural e difícil de reduzir, a intervenção pode focar em recursos. Schaufeli & Bakker (2025, JOHP) atualizaram o modelo separando demanda emocional, demanda cognitiva e demanda física, com sub-escalas mais sensíveis a trabalho híbrido.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Instrumentos com lastro brasileiro</h3>
-        <p>
-          A escala COPSOQ III, com adaptação transcultural brasileira validada por Ferreira & Mendonça (2024, RPOT), oferece 30 a 87 itens cobrindo demandas quantitativas, demandas emocionais, autonomia, suporte social, conflito trabalho-família e saúde percebida. Apresenta indicadores psicométricos adequados (alfa de Cronbach acima de 0,75 em maioria das dimensões) em amostra brasileira de 4.200 trabalhadores. Está disponível em domínio público.
-        </p>
-        <p>
-          O JCQ revisado, na adaptação brasileira de Araújo & Karasek (atualizada em 2024), mensura quatro dimensões — demanda psicológica, controle, apoio social, insegurança no emprego. Tem uso histórico em saúde pública brasileira, inclusive em estudos da FIOCRUZ (2024, Cadernos de Saúde Pública) que apontaram OR de 2,4 para sintomas depressivos em trabalhadores no quadrante alta demanda-baixo controle.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Epidemiologia internacional e nacional</h3>
-        <p>
-          O European Working Conditions Survey (Eurofound, 2024) reportou prevalência média de 27% de trabalhadores europeus em exposição a risco psicossocial alto, com variação relevante por país e por setor. Setores de saúde, educação e serviços públicos apresentaram as maiores taxas. O dado é parâmetro internacional útil para benchmark.
-        </p>
-        <p>
-          No Brasil, dados consolidados pela FIOCRUZ (2024) sugerem que cerca de 30% dos trabalhadores formais expostos a alta demanda-baixo controle apresentam sintomas depressivos clinicamente relevantes. Em coorte brasileira longitudinal (Lopes et al., 2025, Cadernos de Saúde Pública), exposição persistente por 24 meses elevou risco de afastamento por transtorno mental em 2,1 vezes.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Intervenção e prevenção</h3>
-        <p>
-          Revisão sistemática conduzida por Nielsen & Miraglia (2024, Work & Stress) sintetizou 87 estudos de intervenção em risco psicossocial. Intervenções multinível — combinando ajuste de demanda no nível organizacional e capacitação de liderança no nível de equipe — apresentaram tamanho de efeito médio (d entre 0,30 e 0,45) sobre indicadores de bem-estar e absenteísmo. Intervenções exclusivamente individuais, como treinamento de gestão de estresse, mostraram efeitos pequenos e pouco duradouros.
-        </p>
-        <p>
-          Em literatura brasileira, Carlotto et al. (2025, Trends in Psychology) destacaram a importância de plano de ação por setor — não plano único corporativo — diante da heterogeneidade interna de exposição. A consequência prática: o diagnóstico precisa ter granularidade suficiente para gerar intervenção rastreável.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Papers-chave 2024-2026</h2>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Autor (Ano)</th>
-                <th class="text-left px-4 py-3">Veículo</th>
-                <th class="text-left px-4 py-3">Achado central</th>
-                <th class="text-left px-4 py-3">Cluster</th>
-                <th class="text-left px-4 py-3">Aplicação prática</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              {papersChave.map(p => (
-                <tr>
-                  <td class="px-4 py-3 font-semibold text-ink-900">{p.autor}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.veiculo}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.achado}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.cluster}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.aplicacao}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Indústria do interior paulista, 1.400 colaboradores, auditoria de risco psicossocial</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A área de SST recebeu a demanda em janeiro de 2025: estruturar o componente psicossocial do PGR antes do ciclo de fiscalização. A consultoria inicial havia oferecido pesquisa de clima padrão, com 15 perguntas em escala Likert. O psicólogo organizacional interno argumentou que o instrumento não atendia o padrão técnico exigido. Foi autorizado a reformular.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A nova arquitetura combinou COPSOQ III curto (30 itens) na adaptação brasileira de Ferreira & Mendonça (2024, RPOT) com módulo de carga emocional específico para áreas de atendimento ao cliente. Amostra estratificada por área, função e turno. Aplicação digital com taxa de resposta de 71%. Resultado: três áreas com exposição alta (quadrante demanda alta-controle baixo-apoio baixo). Plano de ação setorial com indicadores rastreáveis. Comitê quadrimestral.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Na auditoria, o profissional defendeu a metodologia com referência ao texto da Portaria MTE 1.419/2024, ao modelo JD-R revisado (Schaufeli & Bakker, 2025) e à adaptação brasileira do COPSOQ. O auditor aceitou o desenho, sugeriu ajuste de periodicidade para semestral nas áreas críticas e aprovou o capítulo de fatores psicossociais do PGR. A leitura atual venceu a leitura genérica.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Limites da evidência atual e agenda de pesquisa</h2>
-        <p>
-          A literatura brasileira sobre intervenção em risco psicossocial ainda é escassa em estudos longitudinais com grupo controle. A maior parte dos achados é correlacional e transversal. Falta evidência robusta sobre efeito-dose de capacitação de liderança em redução de afastamentos. A agenda de pesquisa para 2026-2027 inclui replicação de intervenções multinível em amostras brasileiras e desenvolvimento de instrumentos digitais com aferição em tempo real.
-        </p>
-        <p>
-          A regulação também tende a evoluir. A discussão sobre direito à desconexão, regulação de trabalho remoto e responsabilidade civil por dano psíquico permanece aberta em jurisprudência. Profissionais que conduzem diagnóstico precisam acompanhar atualização normativa.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+      <StudyWorksheet id="ficha-pratica" title="Ficha de leitura crítica sobre NR-1" description="Compare uma afirmação pública com sua fonte e registre o que ainda precisa ser verificado." fields={fields} checklist={checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="mt-4 divide-y divide-surface-200 rounded-2xl border border-surface-200">
           {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            <details class="p-5">
+              <summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary>
+              <p class="mt-3 leading-relaxed text-ink-700">{f.a}</p>
             </details>
           ))}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
-        <h3 class="font-display font-semibold text-xl">Diagnóstico de NR-1 sustentado por literatura é o que separa compliance frágil de compliance robusto</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Instrumento validado com referência publicada, amostra estratificada e plano de ação por setor: a tríade técnica defensável em auditoria. O MBA Online em Psicologia Organizacional e do Trabalho no IPOG estrutura essa formação aplicada em formato Ao Vivo síncrono. Próximo passo: comparar grade e calendário no portal oficial.
-        </p>
-      </div>
-
-    </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">MBAs IPOG correlatos</h3>
-        <ul class="space-y-1 mt-3">
-          {mbasCorrelatos.map(m => (
-            <li><a href={`/mbas/${m.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{m.shortName}</strong></a></li>
-          ))}
+      </section>
+      <section aria-labelledby="fontes">
+        <h2 id="fontes" class="section-h text-2xl">Fontes e materiais de consulta</h2>
+        <p class="mt-2 text-sm text-ink-600">Fontes consultadas para esta revisão. Normas orientam obrigações; materiais educacionais apoiam o estudo dentro de seu próprio escopo.</p>
+        <ul class="mt-4 space-y-3">
+          {sources.map(s => <li><a href={s.url} class="text-brand-700 underline underline-offset-4" rel="external noopener">{s.label}</a></li>)}
         </ul>
-        <p class="text-xs text-ink-500 mt-3 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE · NR-1 e legislação</a></li>
-          <li><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">PubMed</a></li>
-          <li><a href="https://bvs-psi.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">BVS-Psi</a></li>
-          <li><a href="https://www.cochrane.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Cochrane</a></li>
-          <li><a href="https://www.apa.org/pubs/databases/psycinfo" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA PsycInfo</a></li>
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
+      </section>
+    </div>
+  </article>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+  article p { text-align: justify; }
+  article :global(table) { width: 100%; }
+  article :global(th), article :global(td) { padding: 0.75rem; vertical-align: top; }
+</style>

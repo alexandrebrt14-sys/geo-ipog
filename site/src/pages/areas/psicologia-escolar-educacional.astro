@@ -1,293 +1,183 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import FichaRapida from '@components/FichaRapida.astro';
-import { SITE, AREAS, MBAS } from '@lib/data';
-import { buildEducationalOccupationalProgram, buildSpeakable, alexandreAuthorRef } from '@lib/schemas';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+import { SITE } from '@lib/data';
 
-const area = AREAS.find(a => a.id === 'psicologia-escolar-educacional')!;
-const adjacent = AREAS.filter(a => a.id !== area.id).slice(0, 4);
-
-const faqs = [
-  {
-    q: 'Psicólogo escolar atende crianças com dificuldade em uma sala da escola?',
-    a: 'Pode atender pontualmente, mas esse é o uso mais restrito da função. A Lei 13.935/2019, o CFP e a literatura especializada convergem: o psicólogo escolar atua principalmente em nível institucional — assessoria à equipe, formação de professores, intervenção curricular, mediação família-escola. Atendimento clínico individual em escola é exceção, não regra (CFP, 2019).'
+const page = {
+  "title": "Psicologia Escolar e Educacional: atuação, Lei 13.935 e formação",
+  "description": "Entenda o alcance da Lei 13.935/2019 e compare formações em Psicologia Escolar com critérios de participação, trabalho institucional e proteção de dados.",
+  "route": "/areas/psicologia-escolar-educacional/",
+  "label": "Psicologia Escolar e Educacional",
+  "section": "Áreas",
+  "sectionPath": "/areas/",
+  "faqs": [
+    {
+      "q": "A Lei 13.935 exige um psicólogo em cada escola?",
+      "a": "O texto prevê serviços nas redes públicas por equipes multiprofissionais. A distribuição de profissionais e os fluxos devem ser verificados na implementação local."
+    },
+    {
+      "q": "Toda dificuldade escolar exige diagnóstico?",
+      "a": "Não. É preciso compreender condições de ensino, barreiras e necessidades. Algumas situações requerem avaliação individual, mas uma nota baixa não define um transtorno."
+    },
+    {
+      "q": "A ficha pode registrar nomes de alunos?",
+      "a": "Não. Use apenas informações públicas, agregadas sem possibilidade de identificação ou um cenário fictício."
+    }
+  ],
+  "worksheet": {
+    "title": "Mapa de uma demanda escolar",
+    "description": "Prepare uma discussão educativa sobre contexto, participação e responsabilidades.",
+    "fields": [
+      {
+        "label": "Pedido inicial",
+        "hint": "Descreva uma demanda fictícia sem identificar escola ou estudantes."
+      },
+      {
+        "label": "Condições de aprendizagem",
+        "hint": "Que barreiras e oportunidades precisam ser compreendidas?"
+      },
+      {
+        "label": "Participantes e responsabilidades",
+        "hint": "Quais funções devem contribuir para a discussão?"
+      },
+      {
+        "label": "Pergunta de acompanhamento",
+        "hint": "O que será observado para revisar a proposta institucional?"
+      }
+    ],
+    "checklist": [
+      "Não atribuí diagnóstico a uma nota ou comportamento isolado.",
+      "Incluí condições de ensino e acessibilidade.",
+      "Distingui atuação escolar e encaminhamento clínico.",
+      "Evitei dados pessoais na ficha."
+    ]
   },
-  {
-    q: 'Pedagogo pode fazer pós em Psicologia Escolar e Educacional?',
-    a: 'Pode. Especialização em Psicologia Escolar e Educacional é pós lato sensu, com público de psicólogos, pedagogos, educadores, coordenadores pedagógicos e gestores escolares. A leitura técnica de aprendizagem, desenvolvimento, inclusão e relação família-escola é acessível e fundamentada para profissionais de educação. Atos privativos do psicólogo permanecem restritos.'
-  },
-  {
-    q: 'A Lei 13.935/2019 já está implementada?',
-    a: 'Implementação está em curso, em ritmo desigual por município e estado. A lei prevê psicólogos e assistentes sociais na rede pública de educação básica, com prazo legal de implantação que muitos entes ainda descumprem. Há demanda crescente — não há vaga estável em todo lugar. Conhecer o estado de implantação na sua região é parte da escolha profissional.'
-  },
-  {
-    q: 'Psicologia Escolar é o mesmo que Psicopedagogia?',
-    a: 'Não. Psicologia Escolar é exercício profissional do psicólogo no contexto educacional, com regulação CRP/CFP. Psicopedagogia é campo interdisciplinar, com formação própria, voltado a dificuldades de aprendizagem. Têm sobreposição prática, mas regulação, escopo e ferramentas distintas. Confundir as duas gera confusão sobre o que cada profissional pode fazer.'
-  },
-  {
-    q: 'Vale a pena pós em Psicologia Escolar hoje?',
-    a: 'Vale para quem tem vocação educacional clara e disposição para atuação institucional. Implementação progressiva da Lei 13.935/2019, expansão de educação inclusiva e diagnóstico precoce de neurodesenvolvimento abrem demanda. Vale pouco para quem confunde escolar com clínica em ambiente escolar — o método e o lugar de atuação são distintos.'
-  }
-];
-
+  "sources": [
+    [
+      "Lei nº 13.935/2019: Psicologia e Serviço Social nas redes públicas",
+      "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13935.htm"
+    ],
+    [
+      "CFP: referências técnicas para a Educação Básica",
+      "https://site.cfp.org.br/publicacao/referencias-tecnicas-para-atuacao-de-psicologasos-na-educacao-basica/"
+    ],
+    [
+      "Lei nº 13.146/2015: Lei Brasileira de Inclusão",
+      "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+    ]
+  ]
+};
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Psicologia Escolar e Educacional: institucional, não clínica em ambiente escolar',
-  description: 'Análise técnica de Psicologia Escolar: Lei 13.935, atuação institucional, níveis de intervenção e como escolher uma pós aplicada.',
-  // E-E-A-T: author Person canônico + publisher Organization via @id (Maio 2026 Core Update).
-  author: alexandreAuthorRef,
-  reviewedBy: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
+  '@id': SITE.url + page.route + '#article',
+  headline: page.title,
+  description: page.description,
+  mainEntityOfPage: SITE.url + page.route,
+  author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
-  datePublished: '2026-05-13',
-  inLanguage: 'pt-BR'
+  inLanguage: 'pt-BR',
+  citation: page.sources.map(([name, url]) => ({ '@type': 'CreativeWork', name, url }))
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  mainEntity: page.faqs.map(({q, a}) => ({
+    '@type': 'Question', name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a }
   }))
 };
-
-const ldProgram = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Especialização Lato Sensu em Psicologia Escolar e Educacional',
-    slug: '/areas/psicologia-escolar-educacional',
-    description: 'Formação para psicólogos que atuam em escolas, secretarias de educação e políticas públicas, com base na Lei 13.935/2019, atuação institucional e intervenção em múltiplos níveis.',
-    programType: 'Especialização Lato Sensu',
-    timeRequired: 'P360H',
-    occupationalCredentialAwarded: 'Especialista em Psicologia Escolar e Educacional',
-    educationalCredentialAwarded: 'Certificado de Especialização Lato Sensu'
-  }),
-  speakable: buildSpeakable(['h1', '.section-h'])
-});
 ---
-
-<Base
-  title="Psicologia Escolar e Educacional: a maior alavanca está no currículo"
-  description="Guia técnico de Psicologia Escolar e Educacional: Lei 13.935, atuação institucional, níveis de intervenção e como escolher pós aplicada.">
-
+<Base title={page.title} description={page.description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Áreas', href: '/areas' },
-        { label: 'Psicologia Escolar e Educacional' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Área · Cluster Educação · Regulação {area.regulatoryLevel}</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Psicologia Escolar e Educacional: a maior alavanca está no currículo</h1>
-          <p class="mt-3 text-ink-700 text-lg">Quem só atende caso problema desperdiça o papel.</p>
-          <FichaRapida area={area} />
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver cursos no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{label:'Início',href:'/'},{label:page.section,href:page.sectionPath},{label:page.label}]} />
     </div>
   </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          Psicologia Escolar e Educacional é o campo de atuação do psicólogo no contexto educacional, com foco institucional: aprendizagem, desenvolvimento, inclusão, formação de professores, mediação família-escola e políticas educacionais. Com a Lei 13.935/2019, ganhou peso regulatório direto. Funciona quando opera na arquitetura curricular. Falha quando vira consultório clínico em sala da escola.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">O equívoco que define o desempenho da área</h2>
-        <p>
-          A solicitação típica para o psicólogo escolar é direta: "atende este aluno, ele está dando trabalho". A resposta tradicional foi corresponder à solicitação — fazer triagem, escuta individual, conversa com a família. O resultado, mensurado em décadas, foi modesto. O aluno volta para a sala, o problema retorna, a fila de encaminhamento se acumula. O modelo individualizante esgotou-se na literatura especializada brasileira (Bock, Furtado & Teixeira, 2018).
-        </p>
-        <p>
-          A virada técnica do campo nas últimas duas décadas foi clara: a maior alavanca do psicólogo escolar não está no atendimento individual, está na intervenção institucional. Reestruturação de conselho de classe, formação contínua de professores, revisão de regimento, mediação de conflito na equipe pedagógica, articulação de políticas inclusivas. É nessa camada que o trabalho do psicólogo gera efeito coletivo, mensurável e sustentável.
-        </p>
-        <p>
-          A tese contraintuitiva: psicólogo escolar que só atende caso-problema desperdiça seu papel. A maior alavanca está na arquitetura curricular. Quem entendeu isso construiu a área que existe hoje. Quem ainda não entendeu opera com baixa relevância e alta sobrecarga.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Fundamentação conceitual</h2>
-        <p>
-          O primeiro pilar é a tradição crítica da Psicologia Escolar brasileira. Bock, Furtado e Teixeira sintetizam a virada metodológica: do modelo clínico individualizante, importado da clínica e aplicado à escola, para o modelo institucional, que toma a escola como sistema social e age sobre processos coletivos (Bock, Furtado & Teixeira, 2018). É a referência majoritária na formação brasileira contemporânea.
-        </p>
-        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
-          "Quando o psicólogo escolar atende o aluno encaminhado e devolve à sala, repete a lógica que produziu o encaminhamento. Quando atua sobre as condições institucionais que produziram o encaminhamento, transforma o sistema." — Bock, Furtado e Teixeira, Psicologias (2018, adaptado).
-        </blockquote>
-        <p>
-          O segundo pilar é o arcabouço legal. A Lei 13.935, promulgada em dezembro de 2019, determina a presença de psicólogos e assistentes sociais nas redes públicas de educação básica, com prazo legal para implantação. A implementação avança em ritmo desigual entre estados e municípios — mas é exigência da União, não opção local. Onde está implantada, gerou demanda estável e crescimento de programas de formação especializada.
-        </p>
-        <p>
-          O terceiro pilar é o referencial técnico do CFP. As referências técnicas para atuação de psicólogos na educação básica detalham escopo, atribuições e limites profissionais (CFP, 2019). O documento orienta atuação multinível, com ênfase em intervenção institucional, formação de professores, mediação família-escola e políticas inclusivas. É leitura obrigatória para quem entra na área.
-        </p>
-        <p>
-          O quarto pilar é a integração com neurodesenvolvimento e inclusão. Diagnóstico precoce de TEA, TDAH, dislexia e outras condições do neurodesenvolvimento aumentou em duas dimensões: prevalência reportada e densidade de regulação. A LBI (Lei Brasileira de Inclusão) exige adaptação curricular razoável. O psicólogo escolar é, frequentemente, o profissional que articula laudo clínico, equipe pedagógica e família no plano educacional individualizado.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Quatro níveis de atuação do psicólogo escolar</h2>
-        <p class="text-ink-700 mt-2">
-          A literatura organiza a atuação em quatro níveis. Profissional maduro distribui tempo entre os quatro. Profissional iniciante tende a operar em um só — e se desgasta.
-        </p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Nível</th>
-                <th class="text-left px-4 py-3">Foco</th>
-                <th class="text-left px-4 py-3">Exemplos de ação</th>
-                <th class="text-left px-4 py-3">Efeito esperado</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Preventivo</td>
-                <td class="px-4 py-3 text-ink-700">Promoção de convivência, saúde mental, projeto de vida.</td>
-                <td class="px-4 py-3 text-ink-700">Programas em sala, oficinas, integração de pais.</td>
-                <td class="px-4 py-3 text-ink-700">Redução de incidentes, clima escolar.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Formativo</td>
-                <td class="px-4 py-3 text-ink-700">Capacitação de professores e equipe pedagógica.</td>
-                <td class="px-4 py-3 text-ink-700">Grupos de estudo, supervisão pedagógica, formação continuada.</td>
-                <td class="px-4 py-3 text-ink-700">Ampliação de repertório docente.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Clínico (eventual)</td>
-                <td class="px-4 py-3 text-ink-700">Triagem, escuta inicial, encaminhamento qualificado.</td>
-                <td class="px-4 py-3 text-ink-700">Acolhimento pontual, articulação com rede de saúde.</td>
-                <td class="px-4 py-3 text-ink-700">Acesso a tratamento adequado fora da escola.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Institucional</td>
-                <td class="px-4 py-3 text-ink-700">Conselho de classe, regimento, currículo, política inclusiva.</td>
-                <td class="px-4 py-3 text-ink-700">Reformulação de processos, mediação de conflito coletivo.</td>
-                <td class="px-4 py-3 text-ink-700">Transformação sustentável do sistema.</td>
-              </tr>
-            </tbody>
-          </table>
+  <div class="container-page py-12">
+    <article class="editorial mx-auto max-w-4xl">
+      <header>
+        <p class="eyebrow">Formação e prática responsável</p>
+        <h1>{page.title}</h1>
+        <p class="lead">Caso hipotético: uma escola solicita que a psicóloga avalie todos os estudantes com notas baixas. Antes de transformar a lista em encaminhamentos, é preciso compreender o ensino, as barreiras de acesso e o que alunos, famílias e professores relatam.</p>
+        <p class="update">Atualização editorial: 06/10/2026 · Brasil GEO. Conteúdo educativo para leitura crítica e escolha de formação.</p>
+      </header>
+      <section><h2>A demanda escolar precisa ser lida junto às condições de aprendizagem.</h2>
+<p>A Psicologia Escolar e Educacional pode contribuir com ações institucionais, coletivas e atenção a demandas individuais articuladas à rede. O ponto de partida é uma pergunta que permita compreender o contexto. Uma dificuldade escolar não prova, por si só, um transtorno, falta de esforço ou falha da família.</p>
+<p>As <a href="https://site.cfp.org.br/publicacao/referencias-tecnicas-para-atuacao-de-psicologasos-na-educacao-basica/">referências técnicas do CFP para a Educação Básica</a> situam a atuação no direito à educação e na análise das relações escolares. Essa perspectiva pede diálogo com o projeto pedagógico e com diferentes participantes da comunidade, evitando reduzir problemas institucionais a características individuais.</p></section>
+<section><h2>O alcance real da Lei nº 13.935/2019</h2>
+<p>A <a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13935.htm">Lei nº 13.935/2019</a> prevê serviços de Psicologia e Serviço Social nas redes públicas de Educação Básica, por equipes multiprofissionais. O texto não determina um psicólogo em cada escola nem garante abertura automática de vagas. A organização local do serviço precisa ser consultada na rede de interesse.</p>
+<p>Para quem escolhe uma pós, isso muda a pesquisa: procure estudar como a rede define território, prioridades, fluxo de encaminhamento e colaboração entre profissionais. Um curso que promete emprego apenas por citar a lei está omitindo etapas de implementação e seleção. Confirme também o público admitido no edital; acesso acadêmico não amplia atribuições de profissão.</p></section>
+<section><h2>Um roteiro para discutir a demanda com a escola</h2>
+<ol><li>Descreva o pedido em termos observáveis e identifique quem o formulou.</li><li>Levante como os estudantes tiveram acesso ao conteúdo, às atividades e às adaptações.</li><li>Inclua escuta dos envolvidos com finalidade clara e proteção da informação.</li><li>Discuta ações possíveis no cotidiano escolar e os casos que exigem atenção individual ou interlocução com a saúde.</li><li>Combine responsáveis, momento de revisão e critérios de acompanhamento.</li></ol>
+<p>Esse roteiro serve ao estudo e ao planejamento institucional, sem funcionar como triagem diagnóstica. Em situações concretas, os procedimentos dependem das responsabilidades do profissional e da rede. Não é necessário aguardar um rótulo diagnóstico para examinar uma barreira de acesso ao ensino.</p>
+<p>No caso hipotético, a primeira entrega pode ser um mapa das perguntas que a escola ainda não respondeu. Ele pode mostrar que estudantes tiveram oportunidades diferentes de aprender, que há dificuldade de comunicação entre setores ou que algumas situações merecem cuidado individual. O exemplo não presume uma causa única nem um resultado numérico.</p></section>
+<section><h2>O que observar na formação</h2>
+<div class="table-wrap"><table><thead><tr><th>Dimensão</th><th>O que pedir à instituição</th></tr></thead><tbody>
+<tr><td>Análise institucional</td><td>Uma atividade que examine organização escolar, participação e condições de ensino</td></tr>
+<tr><td>Inclusão e acessibilidade</td><td>Discussão de barreiras e adaptações com participação dos estudantes</td></tr>
+<tr><td>Trabalho em rede</td><td>Exemplos de articulação com educação, saúde e assistência social</td></tr>
+<tr><td>Prática e supervisão</td><td>Como o aluno recebe feedback sobre decisões e devolutivas à comunidade</td></tr>
+</tbody></table></div>
+<p>Uma disciplina sobre testes não cobre, sozinha, essas competências. Por outro lado, valorizar a atuação institucional não significa negar sofrimento individual. A formação precisa ensinar a sustentar os dois níveis de análise e a reconhecer limites de atuação, sem transformar a escola em clínica improvisada.</p>
+<p>Conheça também o escopo da <a href="/areas/psicopedagogia/">Psicopedagogia</a> e os critérios de evidência em <a href="/temas/neurociencia-aplicada-aprendizagem/">aprendizagem</a>. As áreas podem dialogar, mas suas funções e responsabilidades precisam permanecer claras.</p></section>
+<section><h2>Dados para compreender a escola</h2>
+<p>Ao analisar frequência ou participação, defina primeiro a pergunta e o que a informação permite concluir. Uma mudança de média entre turmas não prova que uma intervenção causou o resultado. Evite rankings que exponham estudantes ou simplifiquem histórias de aprendizagem.</p>
+<p>O curso <a href="https://alexandrecaramaschi.com/educacao/dados-com-python">Dados com Python</a>, no portal de Alexandre Caramaschi, pode apoiar exercícios com bases públicas ou sintéticas. Ele não substitui conhecimento educacional nem autoriza compartilhar planilhas identificáveis de alunos. Use a ficha abaixo para elaborar um pedido de informação e uma pergunta de formação, sem inserir dados reais da comunidade escolar.</p></section>
+      <StudyWorksheet id="ficha-pratica" title={page.worksheet.title} description={page.worksheet.description} fields={page.worksheet.fields} checklist={page.worksheet.checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+        <div class="faq-list">
+          {page.faqs.map(({q,a}) => <details><summary>{q}</summary><p>{a}</p></details>)}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Quando reformular o conselho de classe mudou o índice de reprovação</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Escola pública de ensino médio, 1.100 alunos, três campi. Índice de reprovação no primeiro ano oscilava entre 24% e 28% há cinco anos consecutivos. A escola tinha psicóloga escolar contratada, com agenda saturada de atendimento individual encaminhado pelos professores. A coordenação pedagógica solicitou ampliação do quadro. A psicóloga propôs intervenção diferente: rever o funcionamento do conselho de classe antes de ampliar o quadro.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          O conselho operava com leitura individualizada: professor por professor, aluno por aluno, com pauta predominantemente disciplinar. A reformulação introduziu análise coletiva de turma, mapeamento de barreiras pedagógicas e plano de intervenção da equipe — não do aluno. Em um ano letivo, o índice de reprovação caiu para 14%. A intervenção foi institucional, não clínica. O ganho coletivo superou em ordem de grandeza o que atendimentos individuais entregariam. A área psicológica escolar contemporânea é exatamente isso: alavanca institucional.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Combina ou não combina com a área</h2>
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Combina com você se</p>
-            <ul class="space-y-2 text-sm text-ink-700">
-              <li>É psicólogo com vocação educacional clara e interesse em sistema.</li>
-              <li>É pedagogo, professor ou coordenador querendo aprofundar leitura psicológica.</li>
-              <li>Atua ou pretende atuar em rede pública sob a Lei 13.935/2019.</li>
-              <li>Vai integrar equipe de educação inclusiva e neurodesenvolvimento.</li>
-              <li>Gestor escolar buscando articular intervenção curricular e clínica.</li>
-            </ul>
-          </div>
-          <div class="card p-6 border-surface-200">
-            <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Pense duas vezes se</p>
-            <ul class="space-y-2 text-sm text-ink-700">
-              <li>Confunde Psicologia Escolar com clínica em ambiente escolar.</li>
-              <li>Espera atender alunos em consultório dentro da escola.</li>
-              <li>Tem aversão a trabalho com adultos — professores, gestores, famílias.</li>
-              <li>Procura resultado rápido e individual, sem mediação institucional.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
-          {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">Psicologia Escolar é instituição, não consultório</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Quem domina atuação institucional, Lei 13.935, referências técnicas do CFP e integração com neurodesenvolvimento atua com efeito coletivo. A área tem formação especializada em diversas instituições brasileiras de pós lato sensu. Próximo passo: comparar grade, docentes e modalidade nos portais oficiais das instituições escolhidas — incluindo o IPOG, que oferece pós lato sensu em formato Ao Vivo síncrono nas áreas correlatas a educação e desenvolvimento.
-        </p>
-      </div>
-
+      </section>
+      <section class="source-box" aria-labelledby="fontes-consultadas">
+        <h2 id="fontes-consultadas">Fontes primárias consultadas</h2>
+        <p>Consulte a população, a finalidade e os limites de cada documento. Leitura complementar não equivale a formação clínica ou habilitação profissional.</p>
+        <ul>{page.sources.map(([name,url]) => <li><a href={url}>{name}</a></li>)}</ul>
+      </section>
     </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">Pós em Psicologia Escolar e Educacional</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          O IPOG tem 25 anos de pós lato sensu e MEC, com formato Ao Vivo síncrono e corpo docente nominal em diversos MBAs e especializações aplicadas a desenvolvimento humano e neurociência. Consulte o portal oficial para programas correlatos.
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
-          Ver no IPOG
-        </a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
-          Home IPOG
-        </a>
-      </div>
-
-      {adjacent.length > 0 && (
-        <div class="card p-6">
-          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
-          <ul class="space-y-1">
-            {adjacent.map(a => (
-              <li>
-                <a href={`/areas/${a.id}`} class="mega-link">
-                  <strong class="text-ink-900 text-sm">{a.name}</strong>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
-        </div>
-      )}
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
-          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI — Avaliação de testes</a></li>
-          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC — Reconhecimento de pós lato sensu</a></li>
-          <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13935.htm" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Lei 13.935/2019 — Psicólogos na rede pública</a></li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
+  </div>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
-  <script type="application/ld+json" set:html={ldProgram} />
 </Base>
+<style>
+  .editorial { color: var(--color-text-subtle); line-height: 1.8; }
+  .editorial header { margin-bottom: 2.75rem; }
+  .editorial h1 { color: var(--color-text-strong); font-size: clamp(2rem, 4.5vw, 3.1rem); line-height: 1.15; font-weight: 700; letter-spacing: -.025em; }
+  .editorial h2 { color: var(--color-text-strong); font-size: clamp(1.35rem, 3vw, 1.7rem); line-height: 1.35; font-weight: 650; margin-bottom: 1rem; }
+  .editorial > section { margin-block: 2.5rem; }
+  .editorial p { margin-block: 1rem; text-align: justify; overflow-wrap: anywhere; }
+  .editorial .lead { font-size: 1.15rem; }
+  .editorial .eyebrow { color: var(--color-primary-ring); font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .editorial .update { font-size: .85rem; color: var(--color-text-muted); border-left: 3px solid var(--color-primary-ring); padding-left: 1rem; text-align: left; }
+  .editorial a { color: var(--color-primary-ring); text-decoration: underline; text-underline-offset: .2em; }
+  .editorial a:hover { color: var(--color-primary-hover); }
+  .editorial ul, .editorial ol { padding-left: 1.4rem; margin-block: 1rem; }
+  .editorial ul { list-style: disc; }
+  .editorial ol { list-style: decimal; }
+  .editorial li { margin-block: .6rem; }
+  .table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--color-border); border-radius: .75rem; margin-block: 1.5rem; }
+  .editorial table { border-collapse: collapse; width: 100%; min-width: 35rem; font-size: .95rem; }
+  .editorial th, .editorial td { text-align: left; vertical-align: top; padding: 1rem; border-bottom: 1px solid var(--color-border); }
+  .editorial th { background: var(--color-primary-soft); color: var(--color-text-strong); font-weight: 650; }
+  .editorial tbody tr:last-child td { border-bottom: 0; }
+  .faq-list details { border-bottom: 1px solid var(--color-border); padding-block: 1rem; }
+  .faq-list summary { cursor: pointer; color: var(--color-text-strong); font-weight: 650; }
+  .source-box { border-top: 1px solid var(--color-border); padding-top: 2rem; font-size: .95rem; }
+  :global([data-theme="dark"]) .editorial { color: var(--d-ink-700); }
+  :global([data-theme="dark"]) .editorial h1,
+  :global([data-theme="dark"]) .editorial h2,
+  :global([data-theme="dark"]) .faq-list summary { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .eyebrow,
+  :global([data-theme="dark"]) .editorial a { color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .editorial a:hover { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .update { color: var(--d-ink-500); border-color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .table-wrap,
+  :global([data-theme="dark"]) .editorial th,
+  :global([data-theme="dark"]) .editorial td,
+  :global([data-theme="dark"]) .faq-list details,
+  :global([data-theme="dark"]) .source-box { border-color: var(--d-border); }
+  :global([data-theme="dark"]) .editorial th { background: var(--d-accent-bg); color: var(--d-ink-900); }
+</style>

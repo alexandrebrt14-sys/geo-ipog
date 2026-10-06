@@ -5,28 +5,14 @@
  * Disclaimer canônico para páginas YMYL clínicas (autismo, transtornos mentais,
  * avaliação psicológica, etc.).
  *
- * Por que existir:
- * - Maio 2026 Core Update do Google penaliza conteúdo clínico sem revisor identificado
- *   e sem aviso de "não substitui avaliação clínica".
- * - Google I/O 2026 reforça YMYL como camada de filtragem agressiva para Information Agents.
- * - LLMs (Claude, Gemini, ChatGPT, Perplexity) usam Schema.org MedicalWebPage como sinal
- *   de confiabilidade para citar páginas clínicas em respostas grounded.
- *
- * Estratégia:
- * - Caixa visual discreta (não-prose) no topo do conteúdo.
- * - Texto canônico: "não substitui avaliação clínica" + indicação de busca por psicólogo.
- * - Atributo HTML5 `role="note"` para AT (acessibilidade).
- * - Selo visual de revisão técnica (autor + revisor) reforça E-E-A-T.
- *
- * NÃO emite JSON-LD próprio. O parent emite MedicalWebPage / Article com `lastReviewed`
- * e `reviewedBy` referenciando `larissaPersonBase` ou `alexandrePersonBase`.
+ * Explica os limites do conteúdo educativo e orienta a procura de atendimento.
+ * A identificação de revisor só deve ser informada quando houver revisão
+ * documentada daquela página. A ausência do campo não atribui revisão pessoal.
+ * O componente não emite JSON-LD; metadados devem refletir fatos verificáveis.
  *
  * Uso típico:
  *   <YMYLDisclaimer
  *     domain="autismo"
- *     reviewerName="Larissa Caramaschi"
- *     reviewerHref="/autismo/sobre-larissa/"
- *     lastReviewed="2026-05-24"
  *   />
  *
  * Domain controla a copy do disclaimer:
@@ -45,7 +31,7 @@ interface Props {
 
 const {
   domain = 'geral',
-  reviewerName = 'Larissa Caramaschi',
+  reviewerName = '',
   reviewerHref = '/autismo/sobre-larissa/',
   lastReviewed,
   compact = false
@@ -54,15 +40,15 @@ const {
 const COPY: Record<NonNullable<Props['domain']>, { title: string; body: string }> = {
   autismo: {
     title: 'Aviso clínico · conteúdo educacional',
-    body: 'Este conteúdo é educacional e não substitui avaliação clínica, hipótese diagnóstica ou supervisão profissional. Suspeita de autismo em adultos exige avaliação por psicólogo ou psiquiatra com experiência em TEA adulto, com instrumentos validados (ADOS-2 Módulo 4, ADI-R, RAADS-R, CAT-Q) e raciocínio diferencial. O portal segue Resolução CFP 11/2018 sobre comunicação técnica e identity-first language por escolha editorial.'
+    body: 'Este conteúdo é educacional e não substitui avaliação clínica ou supervisão profissional. A investigação de autismo em adultos considera história do desenvolvimento, contexto, necessidades de apoio e hipóteses alternativas. Questionários isolados não estabelecem diagnóstico. A seleção de métodos e testes exige profissional habilitado, fundamentação técnica e consulta ao SATEPSI quando aplicável, conforme a Resolução CFP 31/2022.'
   },
   'saude-mental': {
     title: 'Aviso clínico · conteúdo educacional',
-    body: 'Este conteúdo é educacional e não substitui avaliação clínica, prescrição médica, psicoterapia ou supervisão profissional. Em sofrimento agudo ou risco de vida, ligue 188 (CVV, 24h) ou busque pronto-socorro psiquiátrico. Para acompanhamento contínuo, procure psicólogo registrado no CRP e, quando indicado, psiquiatra com CRM ativo.'
+    body: 'Este conteúdo é educacional e não substitui avaliação clínica, prescrição médica, psicoterapia ou supervisão profissional. Em emergência ou risco imediato à vida, acione o SAMU 192 ou procure pronto atendimento. O CVV 188 oferece apoio emocional e não substitui atendimento de emergência. Para acompanhamento, procure profissional de saúde habilitado.'
   },
   neuropsicologia: {
     title: 'Aviso clínico · conteúdo educacional',
-    body: 'Este conteúdo é educacional e não substitui avaliação neuropsicológica formal. Avaliação cognitiva, parecer e laudo são privativos de psicólogo com registro ativo no CRP, conforme Resolução CFP 06/2019. Instrumentos citados (WAIS-IV, RAVLT, Trail Making, Stroop, BVMT-R, entre outros) só podem ser aplicados por profissional habilitado e em condições controladas.'
+    body: 'Este conteúdo é educacional e não substitui avaliação neuropsicológica. A avaliação psicológica segue a Resolução CFP 31/2022; documentos psicológicos seguem a Resolução CFP 6/2019. O uso profissional de testes psicológicos exige habilitação e verificação do parecer vigente, do público e da modalidade de aplicação no SATEPSI. Este portal não reproduz itens restritos nem oferece interpretação individual de resultados.'
   },
   geral: {
     title: 'Aviso clínico · conteúdo educacional',

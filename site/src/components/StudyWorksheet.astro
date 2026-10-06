@@ -1,0 +1,103 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  fields: { label: string; hint: string }[];
+  checklist: string[];
+}
+const { id, title, description, fields, checklist } = Astro.props;
+---
+
+<section id={id} class="study-worksheet not-prose" data-study-worksheet aria-labelledby={`${id}-title`}>
+  <p class="worksheet-eyebrow">Ferramenta de planejamento</p>
+  <h2 id={`${id}-title`} class="section-h text-2xl" data-worksheet-title>{title}</h2>
+  <p>{description}</p>
+  <p id={`${id}-privacy`} class="worksheet-note">Use apenas informações públicas ou situações fictícias. Não insira nomes, prontuários, respostas a testes ou outros dados pessoais. O site não salva nem envia o preenchimento automaticamente. Use o botão Limpar para apagar os campos; o navegador pode preservar informações durante a navegação. A cópia e o arquivo baixado ficam sob seus cuidados.</p>
+  <form aria-describedby={`${id}-privacy`}>
+    <div class="worksheet-fields">
+      {fields.map((field, index) => (
+        <div>
+          <label for={`${id}-field-${index}`}>{field.label}</label>
+          <p id={`${id}-hint-${index}`} class="worksheet-hint">{field.hint}</p>
+          <textarea id={`${id}-field-${index}`} name={`field-${index}`} rows="3" maxlength="3000" autocomplete="off" aria-describedby={`${id}-hint-${index}`} data-label={field.label}></textarea>
+        </div>
+      ))}
+    </div>
+    <fieldset>
+      <legend>Confira antes de usar o plano</legend>
+      {checklist.map((item) => (
+        <label class="worksheet-check"><input type="checkbox" data-check-label={item} /><span>{item}</span></label>
+      ))}
+    </fieldset>
+    <p class="worksheet-note">A marcação registra sua conferência. Não produz diagnóstico, habilitação profissional ou certificado de conformidade.</p>
+    <div class="worksheet-actions" hidden>
+      <button type="button" class="btn btn-primary" data-worksheet-copy>Copiar ficha</button>
+      <button type="button" class="btn btn-secondary" data-worksheet-download>Baixar texto</button>
+      <button type="reset" class="btn btn-secondary">Limpar ficha</button>
+    </div>
+    <p class="worksheet-status" role="status" aria-live="polite"></p>
+    <noscript><p>Você pode preencher e selecionar o texto manualmente. Ative JavaScript para copiar ou baixar a ficha pelos botões.</p></noscript>
+  </form>
+</section>
+
+<script>
+  function initializeWorksheets() {
+    document.querySelectorAll<HTMLElement>('[data-study-worksheet]').forEach((worksheet) => {
+      if (worksheet.dataset.ready) return;
+      worksheet.dataset.ready = 'true';
+      const form = worksheet.querySelector('form')!;
+      const status = worksheet.querySelector<HTMLElement>('[role="status"]')!;
+      worksheet.querySelector<HTMLElement>('.worksheet-actions')!.hidden = false;
+      const serialize = () => [
+        worksheet.querySelector('[data-worksheet-title]')!.textContent!.trim(),
+        'Ficha educativa de planejamento. Não constitui avaliação clínica ou certificação.',
+        ...Array.from(form.querySelectorAll('textarea')).map((field) => `${field.dataset.label}\n${field.value.trim() || '(não preenchido)'}`),
+        'Conferência do plano',
+        ...Array.from(form.querySelectorAll<HTMLInputElement>('[data-check-label]')).map((field) => `${field.checked ? '[x]' : '[ ]'} ${field.dataset.checkLabel}`),
+        `Fonte: ${window.location.origin}${window.location.pathname}`,
+      ].join('\n\n');
+      form.addEventListener('submit', (event) => event.preventDefault());
+      worksheet.querySelector('[data-worksheet-copy]')!.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(serialize());
+          status.textContent = 'Ficha copiada. Guarde a cópia em um local adequado.';
+        } catch {
+          status.textContent = 'O navegador não permitiu copiar. Use Baixar texto ou selecione os campos manualmente.';
+        }
+      });
+      worksheet.querySelector('[data-worksheet-download]')!.addEventListener('click', () => {
+        const url = URL.createObjectURL(new Blob([serialize()], { type: 'text/plain;charset=utf-8' }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `ficha-${worksheet.id}.txt`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        status.textContent = 'Arquivo de texto preparado para download.';
+      });
+      form.addEventListener('reset', () => { status.textContent = 'Ficha limpa.'; });
+    });
+  }
+  initializeWorksheets();
+  document.addEventListener('astro:page-load', initializeWorksheets);
+</script>
+
+<style>
+  .study-worksheet { border: 1px solid var(--surface-200, #cbd5e1); background: var(--surface-50, #f8fafc); border-radius: 1rem; padding: clamp(1rem, 3vw, 2rem); margin-block: 2rem; scroll-margin-top: 7rem; }
+  .worksheet-eyebrow { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+  p { margin-block: .75rem; text-align: justify; }
+  .worksheet-note, .worksheet-hint { font-size: .875rem; line-height: 1.6; }
+  .worksheet-fields { display: grid; gap: 1.25rem; margin-block: 1.5rem; }
+  label, legend { font-weight: 600; }
+  textarea { display: block; width: 100%; resize: vertical; border: 1px solid #64748b; border-radius: .5rem; padding: .75rem; font: inherit; background: #fff; color: #152338; }
+  textarea:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid #0176d3; outline-offset: 3px; }
+  fieldset { border: 0; padding: 0; margin-block: 1.5rem; }
+  .worksheet-check { display: flex; gap: .75rem; align-items: start; font-weight: 400; margin-block: .75rem; }
+  .worksheet-check input { flex: 0 0 auto; margin-top: .3rem; width: 1.1rem; height: 1.1rem; accent-color: #0176d3; }
+  .worksheet-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .worksheet-actions[hidden] { display: none; }
+  .worksheet-status { min-height: 1.5em; font-size: .875rem; }
+  :global([data-theme='dark']) .study-worksheet, :global(.dark) .study-worksheet { background: #172437; border-color: #52637a; color: #edf3fa; }
+  :global([data-theme='dark']) textarea, :global(.dark) textarea { background: #0f1929; color: #edf3fa; border-color: #94a3b8; }
+  @media print { .worksheet-actions, .worksheet-status { display: none; } textarea { overflow: visible; } }
+</style>

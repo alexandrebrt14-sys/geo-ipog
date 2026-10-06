@@ -1,315 +1,184 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import FichaRapida from '@components/FichaRapida.astro';
-import { SITE, AREAS, MBAS } from '@lib/data';
-import { buildEducationalOccupationalProgram, buildSpeakable, alexandreAuthorRef } from '@lib/schemas';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+import { SITE } from '@lib/data';
 
-const area = AREAS.find(a => a.id === 'psicologia-hospitalar')!;
-const relatedMbas = MBAS.filter(m => area.relatedCourses.includes(m.id));
-const adjacent = AREAS.filter(a => a.id !== area.id && a.cluster === area.cluster).slice(0, 4);
-
-const faqs = [
-  {
-    q: 'Psicologia hospitalar é especialidade reconhecida pelo CFP?',
-    a: 'Sim. A Psicologia Hospitalar é uma das especialidades reconhecidas pelo Conselho Federal de Psicologia desde a Resolução CFP 13/2007, com atualizações posteriores. A Resolução CFP 09/2018 dispõe sobre a atuação do psicólogo no contexto hospitalar e organiza referências técnicas para a prática. Para registrar o título de especialista, o psicólogo precisa cumprir os requisitos previstos pelo CFP, seja por curso reconhecido, seja por concurso de provas e títulos (CFP, 2018).'
+const page = {
+  "title": "Psicologia Hospitalar: cuidado em equipe, paliativos e formação",
+  "description": "Compare formação em Psicologia Hospitalar com referências do CFP e a Política Nacional de Cuidados Paliativos. Inclui ficha de planejamento educativo.",
+  "route": "/areas/psicologia-hospitalar/",
+  "label": "Psicologia Hospitalar",
+  "section": "Áreas",
+  "sectionPath": "/areas/",
+  "faqs": [
+    {
+      "q": "Cuidados paliativos se limitam aos últimos dias de vida?",
+      "a": "Não. A política nacional contempla cuidado em condições que ameaçam ou limitam a continuidade da vida e sua articulação na rede."
+    },
+    {
+      "q": "A CFP 09/2018 era uma norma exclusiva da Psicologia Hospitalar?",
+      "a": "Não. Ela tratava de avaliação psicológica. A formação deve consultar referências específicas do contexto hospitalar e normas vigentes de exercício."
+    },
+    {
+      "q": "A ficha substitui um protocolo hospitalar?",
+      "a": "Não. É uma ferramenta educativa para simulação e comparação de formação, sem dados de pacientes ou decisões clínicas."
+    }
+  ],
+  "worksheet": {
+    "title": "Planejamento educativo de comunicação hospitalar",
+    "description": "Prepare uma reunião simulada e identifique competências a estudar.",
+    "fields": [
+      {
+        "label": "Finalidade da conversa",
+        "hint": "Qual dúvida existe no cenário fictício?"
+      },
+      {
+        "label": "Papéis envolvidos",
+        "hint": "Que funções precisam contribuir e com qual informação?"
+      },
+      {
+        "label": "Condições de comunicação",
+        "hint": "O que considerar sobre privacidade e acessibilidade?"
+      },
+      {
+        "label": "Continuidade",
+        "hint": "Quem deverá acompanhar as perguntas ainda abertas?"
+      }
+    ],
+    "checklist": [
+      "Usei situação inteiramente fictícia.",
+      "Distingui responsabilidades das profissões.",
+      "Incluí participação e compreensão da pessoa.",
+      "Evitei presumir consenso ou desfecho clínico."
+    ]
   },
-  {
-    q: 'Qual a diferença entre psicologia hospitalar e psicologia da saúde?',
-    a: 'A Psicologia Hospitalar é uma subespecialidade aplicada ao contexto do hospital — UTI, enfermarias, oncologia, transplantes, cuidados paliativos, pronto-socorro. A Psicologia da Saúde é um campo mais amplo, dedicado a determinantes psicossociais de saúde e doença, prevenção, promoção e atuação em todos os níveis de atenção (primária, secundária, terciária). Toda psicologia hospitalar é, em sentido amplo, psicologia da saúde, mas nem toda psicologia da saúde acontece dentro do hospital (Castro & Bornholdt, 2004).'
-  },
-  {
-    q: 'O psicólogo hospitalar atua só com o paciente ou também com a família e a equipe?',
-    a: 'Atua com os três núcleos. A literatura clássica de Romano (1999) já organizava a atuação em três frentes simultâneas: paciente, família e equipe de saúde. A intervenção isolada com o paciente, sem articulação com cuidadores e profissionais de saúde, costuma produzir efeito limitado em ambiente hospitalar. A comunicação de notícias difíceis, a contenção da equipe diante de morte e o manejo de luto antecipatório são tarefas estruturais da função.'
-  },
-  {
-    q: 'Cuidados paliativos exigem formação adicional?',
-    a: 'Sim, com vantagem técnica importante. A atuação em cuidados paliativos exige domínio de comunicação de prognóstico, manejo de luto antecipatório, dor total na formulação de Cicely Saunders, espiritualidade no fim de vida e protocolos como o SPIKES. A Academia Nacional de Cuidados Paliativos (ANCP) organiza referências brasileiras. Pós-graduação que inclui módulo dedicado a finitude e luto, com supervisão de caso, entrega aprendizado substancialmente mais sólido do que cursos genéricos de hospitalar.'
-  },
-  {
-    q: 'Vale a pena fazer pós-graduação em psicologia hospitalar online?',
-    a: 'Vale quando o formato preserva discussão de caso clínico real e supervisão. A Psicologia Hospitalar exige raciocínio clínico em situações de alta complexidade emocional — UTI, oncologia, fim de vida — e isso é difícil em cursos exclusivamente gravados. Modelos ao vivo síncronos, com docentes que atuam em hospital, permitem trabalhar caso clínico com a densidade necessária. A modalidade EAD-síncrona é hoje o equilíbrio mais defensável para profissionais que precisam conciliar plantões e formação.'
-  }
-];
-
+  "sources": [
+    [
+      "CFP: referências para serviços hospitalares do SUS",
+      "https://site.cfp.org.br/publicacao/referencias-tecnicas-para-atuacao-de-psicologasos-nos-servicos-hospitalares-do-sus/"
+    ],
+    [
+      "Portaria GM/MS nº 3.681/2024: Política Nacional de Cuidados Paliativos",
+      "https://bvsms.saude.gov.br/bvs/saudelegis/gm/2024/prt3681_22_05_2024.html"
+    ],
+    [
+      "Ministério da Saúde: princípios e diretrizes de cuidados paliativos",
+      "https://www.gov.br/saude/pt-br/composicao/saes/cuidados-paliativos/cuidados-paliativos/"
+    ]
+  ]
+};
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Psicologia Hospitalar: UTI, oncologia, cuidados paliativos e pós-graduação aplicada',
-  description: 'Guia técnico de Psicologia Hospitalar: atuação em UTI, oncologia, transplantes, cuidados paliativos, comunicação de notícias difíceis e formação. Resolução CFP 09/2018. Conteúdo independente.',
-  // E-E-A-T: author Person canônico + publisher Organization via @id (Maio 2026 Core Update).
-  author: alexandreAuthorRef,
-  reviewedBy: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
+  '@id': SITE.url + page.route + '#article',
+  headline: page.title,
+  description: page.description,
+  mainEntityOfPage: SITE.url + page.route,
+  author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
-  datePublished: '2026-05-13',
-  inLanguage: 'pt-BR'
+  inLanguage: 'pt-BR',
+  citation: page.sources.map(([name, url]) => ({ '@type': 'CreativeWork', name, url }))
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  mainEntity: page.faqs.map(({q, a}) => ({
+    '@type': 'Question', name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a }
   }))
 };
-
-const ldProgram = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Especialização Lato Sensu em Psicologia Hospitalar',
-    slug: '/areas/psicologia-hospitalar',
-    description: 'Formação para psicólogos que atuam em UTI, oncologia, transplantes, cuidados paliativos e comunicação de notícias difíceis, com base na Resolução CFP 09/2018 e nas exigências do SUS.',
-    programType: 'Especialização Lato Sensu',
-    timeRequired: 'P360H',
-    occupationalCredentialAwarded: 'Especialista em Psicologia Hospitalar',
-    educationalCredentialAwarded: 'Certificado de Especialização Lato Sensu'
-  }),
-  speakable: buildSpeakable(['h1', '.section-h'])
-});
 ---
-
-<Base
-  title="Psicologia Hospitalar: UTI, oncologia, cuidados paliativos e pós aplicada"
-  description="Guia técnico de Psicologia Hospitalar: atuação em UTI, oncologia, transplantes, cuidados paliativos, comunicação difícil, humanização e como escolher uma pós-graduação. Resolução CFP 09/2018.">
-
+<Base title={page.title} description={page.description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Áreas', href: '/areas' },
-        { label: 'Psicologia Hospitalar' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Área · Cluster demais áreas · Regulação {area.regulatoryLevel}</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Psicologia Hospitalar: UTI, oncologia, cuidados paliativos e pós aplicada</h1>
-          <p class="mt-3 text-ink-700 text-lg">A especialidade que sustenta o paciente, a família e a equipe no ponto em que a medicina chega ao limite do que pode prometer.</p>
-          <FichaRapida area={area} />
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver cursos no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{label:'Início',href:'/'},{label:page.section,href:page.sectionPath},{label:page.label}]} />
     </div>
   </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          Psicologia Hospitalar é a especialidade que atua em UTI, oncologia, transplantes, cuidados paliativos, pronto-socorro e enfermarias, sustentando paciente, família e equipe diante de doença grave, dor, finitude e luto. Reconhecida pelo CFP e regulada pela Resolução CFP 09/2018, é atividade privativa de psicólogo com registro ativo no CRP. A formação técnica é decisiva: hospital é o ambiente onde improvisar custa caro.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">A tese contraintuitiva da psicologia hospitalar</h2>
-        <p>
-          A leitura comum trata o psicólogo hospitalar como "apoio emocional ao paciente internado". É uma redução que destrói o valor técnico da função. O psicólogo hospitalar competente atua, ao mesmo tempo, em três frentes — paciente, família e equipe de saúde — porque entende que adesão a tratamento, comunicação de prognóstico, decisão compartilhada em fim de vida e contenção do burnout da equipe são variáveis acopladas (Romano, 1999). Não há paciente isolado em hospital. Há um sistema clínico em movimento, e o psicólogo é quem lê esse sistema.
-        </p>
-        <p>
-          A segunda confusão é colocar a área no registro do "humanizar". Humanização é resultado, não método. O método é técnico: domínio de avaliação psicológica em contexto clínico, protocolos de comunicação de notícias difíceis (SPIKES), manejo de delirium em UTI, intervenção breve em crise, leitura de mecanismos de defesa de paciente oncológico, instrumentos para avaliar dor total. Quem não tem método, não humaniza — apenas acompanha.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Fundamentação conceitual</h2>
-        <p>
-          O primeiro pilar é o modelo biopsicossocial, formulado por Engel (1977) e reorganizado pela literatura contemporânea de psicologia da saúde. A doença grave produz efeito psicológico e social que se retroalimenta com o quadro orgânico. Adesão ao tratamento, percepção de controle, suporte familiar e relação com a equipe predizem desfechos clínicos, e não só conforto subjetivo. O psicólogo hospitalar opera nesse acoplamento.
-        </p>
-        <p>
-          O segundo pilar é a tríade clássica de Romano (1999), que organiza a atuação em paciente, família e equipe. Cada frente tem instrumento próprio. Com o paciente, o eixo é avaliação breve, leitura de defesas, apoio em decisão e suporte em crise. Com a família, escuta do cuidador, contenção do luto antecipatório, negociação em reunião familiar. Com a equipe, contenção de transferência institucional, ajuda em comunicação difícil, prevenção de burnout em médicos e enfermagem.
-        </p>
-        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
-          "O paciente hospitalizado é, simultaneamente, sujeito biográfico, corpo doente, dependente de equipe e elo de uma família em sofrimento. Reduzir a atuação do psicólogo a qualquer um desses planos isolados empobrece a clínica hospitalar." — Bellkiss Romano, Princípios para a Prática da Psicologia Clínica em Hospitais (1999).
-        </blockquote>
-        <p>
-          O terceiro pilar é a teoria do luto contemporâneo. As fases de Kübler-Ross (1969) continuam sendo referência didática, mas a literatura atual trabalha com o modelo do processo dual de Stroebe e Schut (1999) — oscilação entre orientação à perda e orientação à restauração. Em cuidados paliativos, esse modelo é mais útil porque captura o luto antecipatório do paciente e da família, que não é linear. Quem ainda ensina luto como sequência de etapas obrigatórias está duas décadas atrás da literatura.
-        </p>
-        <p>
-          O quarto pilar é o conceito de dor total de Cicely Saunders, fundadora dos hospices modernos. Dor total integra dimensões física, emocional, social e espiritual da experiência de adoecimento grave. A Academia Nacional de Cuidados Paliativos (ANCP) organiza no Brasil a referência técnica para a atuação interdisciplinar nesse campo. Em equipe de cuidados paliativos, o psicólogo é o profissional formalmente responsável por avaliar e intervir nas dimensões emocional e espiritual da dor total.
-        </p>
-        <p>
-          O quinto pilar é a comunicação de notícias difíceis. O protocolo SPIKES, de Baile et al. (2000), é o referencial mais utilizado em hospitais brasileiros: Setting (ambiente), Perception (percepção do paciente), Invitation (convite), Knowledge (informação), Emotions (acolhimento de emoções) e Strategy (plano). **Treinar SPIKES sem prática supervisionada vira teatro. É preciso simular, gravar, revisar — caso contrário, o protocolo não entra na conduta clínica real.**
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Campos de atuação dentro do hospital</h2>
-        <p class="text-ink-700 mt-2">
-          A função muda substancialmente conforme o setor. A tabela abaixo organiza foco, demanda dominante e habilidade técnica crítica em cada campo.
-        </p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Setor</th>
-                <th class="text-left px-4 py-3">Foco clínico</th>
-                <th class="text-left px-4 py-3">Demanda dominante</th>
-                <th class="text-left px-4 py-3">Habilidade crítica</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">UTI adulto</td>
-                <td class="px-4 py-3 text-ink-700">Paciente sedado/consciente, família em sala de espera, equipe sob carga alta.</td>
-                <td class="px-4 py-3 text-ink-700">Comunicação de prognóstico, decisão compartilhada, contenção familiar.</td>
-                <td class="px-4 py-3 text-ink-700">Manejo de delirium, reunião familiar estruturada, suporte à equipe.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Oncologia</td>
-                <td class="px-4 py-3 text-ink-700">Paciente em tratamento prolongado, comorbidade psiquiátrica frequente.</td>
-                <td class="px-4 py-3 text-ink-700">Adesão a quimioterapia, manejo de efeito colateral psíquico, luto antecipatório.</td>
-                <td class="px-4 py-3 text-ink-700">Intervenção breve, avaliação de depressão e ansiedade em paciente clínico.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Transplantes</td>
-                <td class="px-4 py-3 text-ink-700">Avaliação pré e pós-transplante, doador e receptor, adesão imunossupressora.</td>
-                <td class="px-4 py-3 text-ink-700">Avaliação de elegibilidade psicossocial, manejo de rejeição.</td>
-                <td class="px-4 py-3 text-ink-700">Avaliação psicológica estruturada, parecer técnico para equipe.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Cuidados paliativos</td>
-                <td class="px-4 py-3 text-ink-700">Doença avançada, fim de vida, família em luto antecipatório.</td>
-                <td class="px-4 py-3 text-ink-700">Dor total, comunicação de finitude, espiritualidade, plano de cuidados.</td>
-                <td class="px-4 py-3 text-ink-700">SPIKES, modelo dual de luto, dor total, atuação interdisciplinar.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Pronto-socorro</td>
-                <td class="px-4 py-3 text-ink-700">Crise aguda, tentativa de suicídio, trauma, notícia súbita.</td>
-                <td class="px-4 py-3 text-ink-700">Estabilização emocional, manejo de crise, comunicação de morte súbita.</td>
-                <td class="px-4 py-3 text-ink-700">Intervenção em crise, avaliação de risco, manejo de família em choque.</td>
-              </tr>
-            </tbody>
-          </table>
+  <div class="container-page py-12">
+    <article class="editorial mx-auto max-w-4xl">
+      <header>
+        <p class="eyebrow">Formação e prática responsável</p>
+        <h1>{page.title}</h1>
+        <p class="lead">Caso hipotético: uma família recebe informações fragmentadas durante uma internação e passa a evitar reuniões com a equipe. A demanda dirigida à Psicologia é “acalmar os familiares”. Para responder, é preciso compreender o que foi comunicado, quais dúvidas permanecem e quem participa do cuidado.</p>
+        <p class="update">Atualização editorial: 06/10/2026 · Brasil GEO. Conteúdo educativo para leitura crítica e escolha de formação.</p>
+      </header>
+      <section><h2>A Psicologia Hospitalar participa do cuidado e da comunicação em equipe.</h2>
+<p>A hospitalização pode alterar autonomia, rotina, vínculos e possibilidades de decisão. A atuação psicológica considera a experiência da pessoa, suas relações e as condições do serviço. Não começa apenas quando há finitude ou quando a equipe esgota outras possibilidades; pode contribuir em diferentes momentos do percurso de cuidado.</p>
+<p>As <a href="https://site.cfp.org.br/publicacao/referencias-tecnicas-para-atuacao-de-psicologasos-nos-servicos-hospitalares-do-sus/">referências técnicas do CFP para serviços hospitalares do SUS</a> são uma base específica de leitura profissional. Elas devem integrar a avaliação da formação, junto às normas de exercício e às rotinas do serviço. A antiga Resolução CFP nº 09/2018 tratava de avaliação psicológica, e não de uma regulamentação exclusiva da Psicologia Hospitalar.</p></section>
+<section><h2>Cuidados paliativos: uma política que precisa entrar na grade</h2>
+<p>A <a href="https://bvsms.saude.gov.br/bvs/saudelegis/gm/2024/prt3681_22_05_2024.html">Portaria GM/MS nº 3.681/2024</a> instituiu a Política Nacional de Cuidados Paliativos no SUS. A política aborda alívio do sofrimento em condições que ameaçam ou limitam a continuidade da vida, com atenção à pessoa, familiares e cuidadores e trabalho multiprofissional.</p>
+<p>O <a href="https://www.gov.br/saude/pt-br/composicao/saes/cuidados-paliativos/cuidados-paliativos/">Ministério da Saúde</a> destaca autonomia, comunicação e continuidade na rede. Cuidados paliativos não devem ser apresentados apenas como cuidado nos últimos dias de vida. A dimensão espiritual também não é responsabilidade exclusiva de uma profissão; deve ser considerada respeitando crenças, preferências e articulação da equipe.</p>
+<p>Para escolher formação, procure discussão de comunicação, participação e limites profissionais, além de conceitos sobre luto. O aprendizado precisa incluir situações em que a pessoa e a família têm prioridades diferentes e a equipe deve trabalhar sem presumir consenso.</p></section>
+<section><h2>Competências que mudam conforme o contexto</h2>
+<div class="table-wrap"><table><thead><tr><th>Contexto</th><th>Pergunta para a formação</th></tr></thead><tbody>
+<tr><td>Enfermaria e internação prolongada</td><td>Como compreender rotina, autonomia, vínculos e condições de participação?</td></tr>
+<tr><td>UTI e alta complexidade</td><td>Como colaborar com a equipe diante de comunicação limitada e incerteza?</td></tr>
+<tr><td>Oncologia e cuidado continuado</td><td>Como articular demandas ao longo de diferentes etapas do tratamento?</td></tr>
+<tr><td>Cuidados paliativos</td><td>Como trabalhar preferências, sofrimento e comunicação em equipe?</td></tr>
+<tr><td>Alta e transição</td><td>Como organizar informações e continuidade com a rede?</td></tr>
+</tbody></table></div>
+<p>O contato com vários setores durante um curso não demonstra, sozinho, competência em todos eles. Peça informação sobre supervisão, responsabilidades do aluno e modo de avaliação. Observe se a instituição ensina a reconhecer necessidades de outras profissões e evita atribuir ao psicólogo decisões que são compartilhadas ou pertencem a outro campo.</p></section>
+<section><h2>Um roteiro educativo para uma reunião</h2>
+<ol><li>Defina a finalidade da conversa e as dúvidas que precisam ser compreendidas.</li><li>Identifique funções que devem participar e quem pode esclarecer cada informação.</li><li>Considere condições de comunicação, privacidade e acessibilidade.</li><li>Planeje como registrar os encaminhamentos pertinentes e confirmar compreensão.</li><li>Combine quem dará continuidade às questões ainda abertas.</li></ol>
+<p>Esse roteiro organiza uma simulação de formação; não substitui protocolo institucional ou decisão clínica. No caso hipotético inicial, o resultado pode ser identificar uma falha na circulação da informação e preparar uma reunião mais compreensível. Não se presume concordância com um plano nem mudança de prognóstico.</p>
+<p>Ao discutir a saúde dos trabalhadores, diferencie colaboração com a equipe de atendimento psicológico aos próprios colegas. O serviço precisa esclarecer responsabilidades, acesso e confidencialidade, evitando sobrepor papéis sem organização.</p></section>
+<section><h2>Escolha a formação pelas oportunidades de aprendizagem</h2>
+<p>Compare prática acompanhada, feedback, participação em discussões e bibliografia. O formato presencial ou online, isoladamente, não demonstra qualidade. Pergunte quais competências dependem de atividade no serviço e como isso é assegurado.</p>
+<p>Aprofunde o contexto em <a href="/areas/psicologia-saude/">Psicologia em Saúde</a> e os critérios de <a href="/guias/escolher-supervisor-clinico/">supervisão clínica</a>. O curso <a href="https://alexandrecaramaschi.com/educacao/escrever-bem-com-ia">Escrever bem com IA</a>, do portal de Alexandre Caramaschi, pode apoiar revisão de clareza em textos educativos públicos. Não use dados de pacientes para esse exercício. Na ficha, planeje uma discussão inteiramente fictícia e registre as competências que deseja desenvolver.</p></section>
+      <StudyWorksheet id="ficha-pratica" title={page.worksheet.title} description={page.worksheet.description} fields={page.worksheet.fields} checklist={page.worksheet.checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+        <div class="faq-list">
+          {page.faqs.map(({q,a}) => <details><summary>{q}</summary><p>{a}</p></details>)}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Quando o problema não era o paciente, era a reunião familiar</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Hospital terciário, UTI adulta, 18 leitos. Paciente de 72 anos, sepse, prognóstico reservado, em ventilação mecânica há 11 dias. A equipe médica registrou três tentativas frustradas de conversar com a família sobre limitação de esforço terapêutico. Cada conversa terminava com a filha mais velha exigindo "tudo o que for possível" e o filho caçula em silêncio. O médico assistente classificou a família como "difícil" e pediu apoio do serviço de Psicologia.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A leitura técnica da psicóloga hospitalar foi outra. A família não era difícil — a reunião era mal desenhada. Médico assistente, filha e filho conversavam no corredor, em pé, em três minutos, com pager tocando. A intervenção foi estrutural: reunião familiar agendada, sala fechada, presença do intensivista, da enfermeira responsável, da assistente social e da psicóloga. Aplicação de SPIKES adaptado ao contexto de UTI. Em 50 minutos, a família construiu junto com a equipe um plano de cuidados orientado a conforto, com critérios claros para limitação de esforço terapêutico.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          O paciente faleceu três dias depois, em decisão pactuada. A filha, em retorno seis meses depois para devolutiva de luto, descreveu a reunião como o momento em que a família deixou de brigar com a equipe e passou a cuidar do pai junto com a equipe. Lição: psicologia hospitalar competente não substitui o médico que comunica — desenha o ambiente em que a comunicação se torna possível.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Oportunidades emergentes</h2>
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Cuidados paliativos</p>
-            <p class="text-sm text-ink-700">A ANCP estima crescimento contínuo da demanda no SUS e na saúde suplementar. Psicólogo com formação específica e supervisão de caso tem mercado consolidado, especialmente em hospitais com serviço de paliativos estruturado.</p>
-          </div>
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Programas de transplante</p>
-            <p class="text-sm text-ink-700">Avaliação psicossocial pré e pós-transplante é exigência técnica de programas certificados. Posição de psicólogo em equipe de transplante é especializada e pouco saturada no mercado brasileiro.</p>
-          </div>
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Saúde mental da equipe</p>
-            <p class="text-sm text-ink-700">Burnout em equipe médica e de enfermagem virou pauta institucional pós-pandemia. Psicólogo hospitalar que estrutura programa de cuidado à equipe ocupa espaço inexplorado pela maioria dos hospitais.</p>
-          </div>
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Telepsicologia hospitalar</p>
-            <p class="text-sm text-ink-700">A Resolução CFP 11/2018, atualizada por resoluções subsequentes, abriu espaço para atuação remota em contextos específicos, incluindo extensão de cuidado pós-alta para pacientes oncológicos e em pós-transplante.</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
-          {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">Psicologia hospitalar é técnica clínica em ambiente de alta complexidade</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          A área amadureceu de função de apoio emocional para participação técnica em decisão clínica em UTI, oncologia, transplantes e cuidados paliativos. Quem domina o modelo biopsicossocial, SPIKES, manejo de luto pelo modelo dual e dor total atua no centro do cuidado hospitalar contemporâneo. A formação exige supervisão de caso e prática em hospital — não funciona em modelo gravado sem mediação. Próximo passo: comparar grade vigente, docentes hospitalares ativos e modalidade no portal do IPOG.
-        </p>
-      </div>
-
+      </section>
+      <section class="source-box" aria-labelledby="fontes-consultadas">
+        <h2 id="fontes-consultadas">Fontes primárias consultadas</h2>
+        <p>Consulte a população, a finalidade e os limites de cada documento. Leitura complementar não equivale a formação clínica ou habilitação profissional.</p>
+        <ul>{page.sources.map(([name,url]) => <li><a href={url}>{name}</a></li>)}</ul>
+      </section>
     </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">Pós em Psicologia Hospitalar no IPOG</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          O IPOG oferece programas de pós-graduação na área de Psicologia, com formato Ao Vivo síncrono e corpo docente nominal. Para grade, valor, modalidade e turma vigentes, consulte o portal oficial.
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
-          Ver no IPOG
-        </a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
-          Home IPOG
-        </a>
-      </div>
-
-      {relatedMbas.length > 0 && (
-        <div class="card p-6">
-          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs relacionados</p>
-          <ul class="space-y-2">
-            {relatedMbas.map(m => (
-              <li>
-                <a href={`/mbas/${m.id}`} class="mega-link">
-                  <strong class="text-ink-900 text-sm">{m.shortName}</strong>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {adjacent.length > 0 && (
-        <div class="card p-6">
-          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
-          <ul class="space-y-1">
-            {adjacent.map(a => (
-              <li>
-                <a href={`/areas/${a.id}`} class="mega-link">
-                  <strong class="text-ink-900 text-sm">{a.name}</strong>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
-        </div>
-      )}
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resolução 09/2018 e referências técnicas</a></li>
-          <li><a href="https://paliativo.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ANCP — Academia Nacional de Cuidados Paliativos</a></li>
-          <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Ministério da Saúde — Política de humanização (PNH)</a></li>
-          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC — Reconhecimento de pós lato sensu</a></li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
+  </div>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
-  <script type="application/ld+json" set:html={ldProgram} />
 </Base>
+<style>
+  .editorial { color: var(--color-text-subtle); line-height: 1.8; }
+  .editorial header { margin-bottom: 2.75rem; }
+  .editorial h1 { color: var(--color-text-strong); font-size: clamp(2rem, 4.5vw, 3.1rem); line-height: 1.15; font-weight: 700; letter-spacing: -.025em; }
+  .editorial h2 { color: var(--color-text-strong); font-size: clamp(1.35rem, 3vw, 1.7rem); line-height: 1.35; font-weight: 650; margin-bottom: 1rem; }
+  .editorial > section { margin-block: 2.5rem; }
+  .editorial p { margin-block: 1rem; text-align: justify; overflow-wrap: anywhere; }
+  .editorial .lead { font-size: 1.15rem; }
+  .editorial .eyebrow { color: var(--color-primary-ring); font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .editorial .update { font-size: .85rem; color: var(--color-text-muted); border-left: 3px solid var(--color-primary-ring); padding-left: 1rem; text-align: left; }
+  .editorial a { color: var(--color-primary-ring); text-decoration: underline; text-underline-offset: .2em; }
+  .editorial a:hover { color: var(--color-primary-hover); }
+  .editorial ul, .editorial ol { padding-left: 1.4rem; margin-block: 1rem; }
+  .editorial ul { list-style: disc; }
+  .editorial ol { list-style: decimal; }
+  .editorial li { margin-block: .6rem; }
+  .table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--color-border); border-radius: .75rem; margin-block: 1.5rem; }
+  .editorial table { border-collapse: collapse; width: 100%; min-width: 35rem; font-size: .95rem; }
+  .editorial th, .editorial td { text-align: left; vertical-align: top; padding: 1rem; border-bottom: 1px solid var(--color-border); }
+  .editorial th { background: var(--color-primary-soft); color: var(--color-text-strong); font-weight: 650; }
+  .editorial tbody tr:last-child td { border-bottom: 0; }
+  .faq-list details { border-bottom: 1px solid var(--color-border); padding-block: 1rem; }
+  .faq-list summary { cursor: pointer; color: var(--color-text-strong); font-weight: 650; }
+  .source-box { border-top: 1px solid var(--color-border); padding-top: 2rem; font-size: .95rem; }
+  :global([data-theme="dark"]) .editorial { color: var(--d-ink-700); }
+  :global([data-theme="dark"]) .editorial h1,
+  :global([data-theme="dark"]) .editorial h2,
+  :global([data-theme="dark"]) .faq-list summary { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .eyebrow,
+  :global([data-theme="dark"]) .editorial a { color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .editorial a:hover { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .update { color: var(--d-ink-500); border-color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .table-wrap,
+  :global([data-theme="dark"]) .editorial th,
+  :global([data-theme="dark"]) .editorial td,
+  :global([data-theme="dark"]) .faq-list details,
+  :global([data-theme="dark"]) .source-box { border-color: var(--d-border); }
+  :global([data-theme="dark"]) .editorial th { background: var(--d-accent-bg); color: var(--d-ink-900); }
+</style>

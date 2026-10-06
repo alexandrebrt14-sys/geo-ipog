@@ -1,251 +1,187 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { SITE, MBAS } from '@lib/data';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+import { SITE } from '@lib/data';
 
-const mbasCorrelatos = MBAS.filter(m => ['mba-positiva','mba-ncpp','mba-neuro'].includes(m.id));
-
-const papersChave = [
-  { autor: 'Hayes, Strosahl & Wilson (2012, atualização 2024)', veiculo: 'Guilford', achado: 'Sistematização da ACT — Acceptance and Commitment Therapy — em torno de seis processos centrais e flexibilidade psicológica.', cluster: 'Protocolo fundador', aplicacao: 'Referência teórica para programas em ansiedade e adesão a tratamento.' },
-  { autor: 'Linehan (1993, atualização 2024 com Wilks)', veiculo: 'Guilford', achado: 'DBT — Dialectical Behavior Therapy — para transtorno de personalidade borderline e regulação emocional.', cluster: 'Protocolo fundador', aplicacao: 'Referência para casos de desregulação emocional grave.' },
-  { autor: 'Hayes & Hofmann (2024)', veiculo: 'Clinical Psychology Review', achado: 'Síntese atual comparando ACT, TCC clássica e terapias baseadas em mindfulness, com efeitos comparáveis em maioria dos transtornos.', cluster: 'Comparação', aplicacao: 'Sustenta escolha por preferência e ajuste paciente-terapeuta.' },
-  { autor: 'A-Tjak et al. (2024)', veiculo: 'Psychotherapy and Psychosomatics', achado: 'Meta-análise de ACT em transtornos de ansiedade com efeito médio a grande em 92 ensaios.', cluster: 'Meta-análise ACT', aplicacao: 'Base quantitativa para indicação em ansiedade.' },
-  { autor: 'Kothgassner et al. (2024)', veiculo: 'BJPsych Open', achado: 'Meta-análise de DBT em adolescentes com comportamento suicida, com redução significativa em ideação e tentativa.', cluster: 'Meta-análise DBT', aplicacao: 'Base para programas em saúde mental infantojuvenil.' },
-  { autor: 'Tsai, Kohlenberg & Kanter (2009, revisão 2024)', veiculo: 'Springer', achado: 'FAP — Functional Analytic Psychotherapy — baseada em comportamento clinicamente relevante na relação terapêutica.', cluster: 'Protocolo de processo', aplicacao: 'Integra-se a ACT e CBT em supervisão clínica.' },
-  { autor: 'Sousa & Vandenberghe (2024)', veiculo: 'Revista Brasileira de Terapias Cognitivas', achado: 'Mapeamento de uso de terapias de terceira onda no Brasil, com crescimento de oferta de formação em ACT e DBT.', cluster: 'Prática BR', aplicacao: 'Indica oferta crescente de formação aplicada no país.' },
-  { autor: 'Atkins et al. (2024)', veiculo: 'Behaviour Research and Therapy', achado: 'ACT em contexto organizacional reduziu estresse e melhorou flexibilidade psicológica em coortes corporativas.', cluster: 'ACT corporativo', aplicacao: 'Ponte para programas de bem-estar corporativo com lastro clínico.' }
-];
-
-const faqs = [
-  {
-    q: 'O que diferencia as terapias de terceira onda da TCC clássica?',
-    a: 'A TCC clássica foca em reestruturação cognitiva — modificar pensamento disfuncional. As terapias de terceira onda — ACT, DBT, mindfulness clínico, FAP — operam sobre relação com o pensamento, regulação emocional e comportamento clinicamente relevante na sessão. Hayes & Hofmann (2024, Clinical Psychology Review) sintetizam: efeitos comparáveis em maioria dos transtornos, mas mecanismos distintos.'
+const page = {
+  "title": "Terapias de terceira onda: como comparar ACT, DBT, MBCT e FAP",
+  "description": "Compare abordagens por população, intervenção e desfecho. Use uma matriz de leitura crítica com fontes verificáveis e sem equivalência universal.",
+  "route": "/evidencias/terapias-terceira-onda/",
+  "label": "Terapias de terceira onda",
+  "section": "Evidências",
+  "sectionPath": "/evidencias/",
+  "faqs": [
+    {
+      "q": "As terapias de terceira onda têm a mesma eficácia?",
+      "a": "Não se pode afirmar isso para todas as condições. A comparação depende da intervenção, da população, dos desfechos e do desenho dos estudos."
+    },
+    {
+      "q": "Uma pesquisa de formação comprova efeito clínico?",
+      "a": "Não necessariamente. Aprendizagem do terapeuta e resultados para pacientes são desfechos distintos e precisam ser investigados como tais."
+    },
+    {
+      "q": "Como conferir uma referência recente?",
+      "a": "Localize o trabalho original e confira título, autores, ano, método e resultado. Não use apenas o resumo comercial de um curso."
+    }
+  ],
+  "worksheet": {
+    "title": "Matriz de leitura de evidência em psicoterapia",
+    "description": "Relacione uma afirmação à pesquisa que a sustenta e aos seus limites.",
+    "fields": [
+      {
+        "label": "Afirmação e fonte",
+        "hint": "Escreva a afirmação e o link do documento original."
+      },
+      {
+        "label": "População e intervenção",
+        "hint": "Quem participou e o que foi estudado?"
+      },
+      {
+        "label": "Comparação e desfecho",
+        "hint": "Contra o que foi comparado e o que se mediu?"
+      },
+      {
+        "label": "Limite e decisão de estudo",
+        "hint": "O que permanece incerto e que leitura falta?"
+      }
+    ],
+    "checklist": [
+      "Abri a fonte original.",
+      "Distingui estudo clínico, processo e formação.",
+      "Não tratei ausência de diferença como equivalência automática.",
+      "Minha conclusão respeita a população e o desfecho."
+    ]
   },
-  {
-    q: 'ACT é mais eficaz que TCC clássica?',
-    a: 'A literatura mostra efeitos comparáveis em maioria dos transtornos. A-Tjak et al. (2024, Psychotherapy and Psychosomatics) reportaram efeito médio a grande em ansiedade. A escolha entre ACT e TCC clássica costuma se basear em preferência do paciente, ajuste com o terapeuta e contexto clínico, não em superioridade técnica.'
-  },
-  {
-    q: 'DBT é só para borderline?',
-    a: 'A DBT foi desenvolvida por Linehan (1993, atualização 2024) para transtorno de personalidade borderline com risco suicida. A literatura recente — Kothgassner et al. (2024, BJPsych Open) — estendeu evidência para adolescentes com comportamento suicida e adultos com desregulação emocional não-borderline. As habilidades de regulação têm aplicação clínica ampla.'
-  },
-  {
-    q: 'ACT funciona em contexto corporativo?',
-    a: 'Sim, com adaptação. Atkins et al. (2024, Behaviour Research and Therapy) reportaram redução de estresse e aumento de flexibilidade psicológica em coortes corporativas. A versão organizacional — sem caracterizar psicoterapia — foca em valores, ação comprometida e aceitação. Precisa ser conduzida por profissional habilitado e diferenciada de psicoterapia clínica em comunicação interna.'
-  }
-];
-
+  "sources": [
+    [
+      "NICE NG193: ACT e TCC para dor crônica primária",
+      "https://www.nice.org.uk/guidance/ng193/chapter/recommendations"
+    ],
+    [
+      "NICE CG78: recomendação específica de DBT",
+      "https://www.nice.org.uk/guidance/cg78/chapter/Recommendations"
+    ],
+    [
+      "NICE NG222: MBCT e prevenção de recaída",
+      "https://www.nice.org.uk/guidance/ng222/chapter/Recommendations"
+    ],
+    [
+      "Estudo piloto randomizado sobre formação em FAP",
+      "https://pubmed.ncbi.nlm.nih.gov/23066926/"
+    ]
+  ]
+};
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Terapias de terceira onda · evidência comparada 2024-2026',
-  description: 'Síntese de literatura recente sobre ACT, DBT, FAP e mindfulness clínico, com comparação de evidência em transtornos do humor, ansiedade e regulação emocional.',
+  '@id': SITE.url + page.route + '#article',
+  headline: page.title,
+  description: page.description,
+  mainEntityOfPage: SITE.url + page.route,
   author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
-  inLanguage: 'pt-BR'
+  inLanguage: 'pt-BR',
+  citation: page.sources.map(([name, url]) => ({ '@type': 'CreativeWork', name, url }))
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  mainEntity: page.faqs.map(({q, a}) => ({
+    '@type': 'Question', name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a }
   }))
 };
-
 ---
-
-<Base
-  title="Terapias de terceira onda · evidência comparada 2024-2026"
-  description="Literatura recente sobre ACT, DBT, FAP e mindfulness clínico, com comparação de eficácia em ansiedade, depressão e regulação emocional.">
-
+<Base title={page.title} description={page.description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Evidências', href: '/evidencias' },
-        { label: 'Terapias de terceira onda' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Evidência · Intervenção · clínica</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Terapias de terceira onda · evidência comparada 2024-2026</h1>
-          <p class="mt-3 text-ink-700 text-lg">ACT, DBT, FAP e mindfulness clínico — meta-análises recentes, mecanismos distintos e o que ensina a literatura brasileira.</p>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver MBAs no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{label:'Início',href:'/'},{label:page.section,href:page.sectionPath},{label:page.label}]} />
     </div>
   </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          ACT, DBT, FAP e mindfulness clínico têm evidência robusta em ansiedade, depressão e regulação emocional, com efeitos comparáveis à TCC clássica em maioria dos transtornos (Hayes & Hofmann, 2024, Clinical Psychology Review). A contraintuição: a escolha entre abordagens raramente é técnica — costuma ser de ajuste paciente-terapeuta e preferência do paciente. Eficácia comparável transfere o critério de escolha para variáveis relacionais.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Eficácia comparável transfere o critério de escolha</h2>
-        <p>
-          A leitura comum no debate clínico sustenta competição entre escolas: cada abordagem reivindica superioridade técnica. A literatura recente mostra outro cenário. Hayes & Hofmann (2024, Clinical Psychology Review) sintetizaram dados de centenas de ensaios e identificaram que ACT, TCC clássica e terapias baseadas em mindfulness apresentam efeitos comparáveis em maioria dos transtornos. Diferenças significativas tendem a ser pequenas e dependentes de contexto.
-        </p>
-        <p>
-          A consequência prática é importante. Quando eficácia técnica é equivalente, o critério de escolha desloca-se para outras variáveis: ajuste paciente-terapeuta, preferência do paciente, custo, disponibilidade local. A aliança terapêutica continua sendo o preditor mais robusto de desfecho (Wampold & Imel, revisão 2023). A formação aplicada precisa equipar o profissional para essa leitura — não para evangelizar uma escola.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Síntese da literatura</h2>
-        <h3 class="font-display font-semibold text-lg text-ink-900">ACT — Acceptance and Commitment Therapy</h3>
-        <p>
-          Hayes, Strosahl & Wilson (2012, atualização 2024, Guilford) sistematizaram a ACT em seis processos centrais: aceitação, desfusão cognitiva, contato com o momento presente, self-como-contexto, valores e ação comprometida. O conjunto produz flexibilidade psicológica — capacidade de agir em direção a valores apesar de pensamentos e emoções aversivas. Não busca eliminar sintoma; busca redirecionar comportamento.
-        </p>
-        <p>
-          A-Tjak et al. (2024, Psychotherapy and Psychosomatics) atualizaram meta-análise com 92 ensaios em transtornos de ansiedade, com efeito médio a grande comparado a controle. Em depressão, a evidência é também robusta, com efeito médio. A ACT mostra particular utilidade quando o paciente apresenta luta excessiva contra pensamentos ou emoções — o foco em aceitação produz alívio do esforço infrutífero de evitação.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">DBT — Dialectical Behavior Therapy</h3>
-        <p>
-          Linehan (1993, atualização 2024 com Wilks, Guilford) desenvolveu a DBT para transtorno de personalidade borderline com risco suicida. Combina quatro módulos de habilidades — mindfulness, tolerância ao desconforto, regulação emocional, efetividade interpessoal — com terapia individual, coaching telefônico e equipe de consulta.
-        </p>
-        <p>
-          Kothgassner et al. (2024, BJPsych Open) sintetizaram meta-análise de DBT em adolescentes com comportamento suicida, com redução significativa em ideação suicida e tentativa. A literatura recente estendeu evidência para transtornos alimentares, dependência química e desregulação emocional não-borderline. As habilidades de regulação têm aplicação clínica ampla, mesmo quando o pacote completo não é aplicado.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">FAP — Functional Analytic Psychotherapy</h3>
-        <p>
-          Tsai, Kohlenberg & Kanter (2009, revisão 2024, Springer) propuseram a FAP como abordagem baseada em comportamento clinicamente relevante na relação terapêutica. O terapeuta identifica e responde a comportamentos do paciente que ocorrem na sessão e refletem padrões problemáticos da vida fora dela. A FAP integra-se frequentemente a ACT e CBT, ampliando o uso da relação terapêutica como laboratório de mudança.
-        </p>
-        <p>
-          A evidência da FAP é menor em volume que a de ACT e DBT, mas crescente em estudos de processo. Em contextos brasileiros, há produção em supervisão clínica e formação especializada, com adoção crescente em centros universitários.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Mindfulness clínico — MBCT e variantes</h3>
-        <p>
-          O MBCT (Segal, Williams & Teasdale, 1995, revisão 2023, Guilford) é o exemplo paradigmático de mindfulness clínico. A literatura sustenta eficácia em prevenção de recaída em depressão recorrente, com efeito comparável à terapia de manutenção com antidepressivos em alguns ensaios. Variantes — MBSR aplicado a contexto clínico, mindfulness-based relapse prevention para dependência química — ampliam o leque.
-        </p>
-        <p>
-          A consequência prática: mindfulness clínico não é mindfulness corporativo. Em populações clínicas, há contraindicações relativas — transtorno bipolar não tratado, histórico de trauma agudo, quadros psicóticos — que exigem triagem e supervisão. A formação aplicada precisa fazer essa diferenciação clara.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Cenário brasileiro</h3>
-        <p>
-          Sousa & Vandenberghe (2024, Revista Brasileira de Terapias Cognitivas) mapearam uso de terapias de terceira onda no Brasil. Identificaram crescimento sustentado de oferta de formação em ACT e DBT, presença em programas de pós-graduação e adoção em serviços públicos e privados. Centros de formação como o Instituto ACT Brasil, o Núcleo Paradigma e o Instituto Conte têm papel relevante na disseminação.
-        </p>
-        <p>
-          O cenário regulatório respeita o que o CFP define: atos psicoterápicos são privativos do psicólogo regularmente inscrito. Formação em terceira onda em modalidade lato sensu — como o MBA Online de Psicologia no IPOG, no eixo Psicologia Positiva e Saúde Mental — oferece base aplicada que dialoga com essas abordagens, sem substituir formação clínica longa.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Papers-chave 2024-2026</h2>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Autor (Ano)</th>
-                <th class="text-left px-4 py-3">Veículo</th>
-                <th class="text-left px-4 py-3">Achado central</th>
-                <th class="text-left px-4 py-3">Cluster</th>
-                <th class="text-left px-4 py-3">Aplicação prática</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              {papersChave.map(p => (
-                <tr>
-                  <td class="px-4 py-3 font-semibold text-ink-900">{p.autor}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.veiculo}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.achado}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.cluster}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.aplicacao}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  <div class="container-page py-12">
+    <article class="editorial mx-auto max-w-4xl">
+      <header>
+        <p class="eyebrow">Formação e prática responsável</p>
+        <h1>{page.title}</h1>
+        <p class="lead">Caso hipotético: a coordenação de um ambulatório recebe propostas de formação em ACT, DBT e mindfulness. Todas citam “evidência robusta”, mas se referem a públicos e resultados diferentes. O problema é transformar essas expressões em perguntas comparáveis.</p>
+        <p class="update">Atualização editorial: 06/10/2026 · Brasil GEO. Conteúdo educativo para leitura crítica e escolha de formação.</p>
+      </header>
+      <section><h2>A evidência pertence à intervenção estudada, não ao rótulo de terceira onda.</h2>
+<p>Terceira onda é uma expressão usada para agrupar abordagens que dão destaque a contexto, aceitação, atenção, relação terapêutica e outros processos. Esse agrupamento não cria uma unidade clínica: ACT, DBT, MBCT e FAP têm modelos, formatos de trabalho e bases de pesquisa distintos.</p>
+<p>Também não é adequado descrever toda TCC como tentativa de “trocar pensamentos negativos por positivos”. Comparações úteis precisam examinar intervenções reais, e não versões simplificadas das escolas. A pergunta é qual proposta tem suporte para a demanda e pode ser oferecida com competência e participação da pessoa.</p></section>
+<section><h2>Um mapa de fontes com limites explícitos</h2>
+<div class="table-wrap"><table><thead><tr><th>Abordagem</th><th>Exemplo de fonte verificável</th><th>O que não concluir</th></tr></thead><tbody>
+<tr><td>ACT</td><td>NICE NG193 considera ACT ou TCC para dor crônica primária em pessoas a partir de 16 anos</td><td>Que ACT seja superior em toda dor ou todo transtorno</td></tr>
+<tr><td>DBT</td><td>NICE CG78 descreve uma recomendação específica para programa abrangente</td><td>Que qualquer grupo de habilidades seja equivalente ao programa</td></tr>
+<tr><td>MBCT</td><td>NICE NG222 inclui a abordagem em situações de prevenção de recaída em depressão</td><td>Que meditação genérica reproduza a intervenção estudada</td></tr>
+<tr><td>FAP</td><td>Há estudos de processos relacionais e de formação de terapeutas</td><td>Que um resultado em treinamento demonstre eficácia para todos os diagnósticos</td></tr>
+</tbody></table></div>
+<p>As fontes têm finalidades diferentes. O <a href="https://pubmed.ncbi.nlm.nih.gov/23066926/">estudo piloto randomizado sobre treinamento de terapeutas em FAP</a>, por exemplo, examina formação. Não é uma comparação clínica geral entre FAP e outras psicoterapias. Essa distinção evita promover um estudo além do que ele investigou.</p>
+<p>Os documentos <a href="https://www.nice.org.uk/guidance/ng193/chapter/recommendations">NG193</a>, <a href="https://www.nice.org.uk/guidance/cg78/chapter/Recommendations">CG78</a> e <a href="https://www.nice.org.uk/guidance/ng222/chapter/Recommendations">NG222</a> permitem conferir a redação completa de cada recomendação. Eles são referências internacionais e devem ser lidos junto ao contexto brasileiro e às necessidades do serviço.</p></section>
+<section><h2>Um roteiro para examinar uma afirmação</h2>
+<ol><li>Copie a afirmação que pretende avaliar e localize a fonte original.</li><li>Identifique população, intervenção, comparação e desfecho.</li><li>Confira o desenho: estudo clínico, pesquisa de processo, treinamento ou revisão.</li><li>Registre duração do acompanhamento, limitações e conflitos declarados.</li><li>Escreva uma conclusão proporcional aos dados e uma pergunta ainda aberta.</li></ol>
+<p>“Não encontrou diferença” não significa automaticamente “provou equivalência”. Da mesma forma, resultado superior a lista de espera não estabelece superioridade sobre outro tratamento. O desenho do estudo e a incerteza das estimativas fazem parte da interpretação.</p>
+<p>A preferência da pessoa, a relação terapêutica, a disponibilidade e a acessibilidade importam, mas não apagam diferenças de indicação e competência. Escolher apenas por afinidade entre terapeuta e abordagem pode ignorar o problema que motivou a busca por cuidado.</p></section>
+<section><h2>Da revisão para a decisão de formação</h2>
+<p>No caso hipotético, o ambulatório pode começar mapeando as demandas efetivamente recebidas e as competências que sua equipe precisa desenvolver. Em seguida, compara programas que apresentem supervisão e atividades compatíveis com esse perfil. O resultado pode ser uma decisão de aprofundar um campo, e não adotar uma escola para todas as pessoas.</p>
+<p>Peça aos cursos que demonstrem como ensinam leitura crítica e revisão de decisões. Desconfie de bibliografias com ano recente que não permitem localizar o trabalho citado. Uma edição clássica verificável é mais útil que uma “atualização” sem título, publicação ou link rastreável.</p>
+<p>As páginas de <a href="/metodos/act/">ACT</a>, <a href="/metodos/dbt/">DBT</a> e <a href="/metodos/mindfulness/">mindfulness clínico</a> detalham diferenças de formação e serviço. Um curso sobre processos compartilhados pode ampliar repertório, mas não certifica domínio de todos esses modelos.</p></section>
+<section><h2>Uma ferramenta simples para a bibliografia</h2>
+<p>O curso <a href="https://alexandrecaramaschi.com/educacao/segundo-cerebro-agentes-pessoais">Segundo cérebro e agentes pessoais</a>, do portal de Alexandre Caramaschi, pode apoiar uma biblioteca de fontes públicas organizada por pergunta. Mantenha notas de evidência separadas de prontuários. A ficha abaixo funciona como matriz de leitura, sem produzir recomendação clínica automática.</p></section>
+      <StudyWorksheet id="ficha-pratica" title={page.worksheet.title} description={page.worksheet.description} fields={page.worksheet.fields} checklist={page.worksheet.checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+        <div class="faq-list">
+          {page.faqs.map(({q,a}) => <details><summary>{q}</summary><p>{a}</p></details>)}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Ambulatório universitário e a escolha entre ACT e TCC clássica</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Ambulatório universitário de saúde mental, fluxo de 80 novas demandas mensais, equipe multidisciplinar. O serviço enfrentava debate interno entre supervisores: priorizar TCC clássica, com manualização e protocolo estabelecido, ou abrir espaço para ACT, mais flexível e menos manualizada? A coordenação levou a discussão para reunião clínica e pediu revisão de literatura.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A psicóloga responsável pela revisão apresentou Hayes & Hofmann (2024, Clinical Psychology Review): eficácia comparável em maioria dos transtornos. A-Tjak et al. (2024, Psychotherapy and Psychosomatics): efeito médio a grande de ACT em ansiedade. Conclusão: não há razão técnica para excluir uma abordagem. A escolha deve ser por ajuste paciente-terapeuta, preferência do paciente e formação do supervisor.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          O ambulatório implementou triagem ampliada com cinco perguntas sobre preferência de abordagem e leitura inicial pelo psicólogo entrevistador. Pacientes que demonstravam maior afinidade com aceitação e luta com evitação experiencial eram encaminhados a supervisores ACT; pacientes com maior demanda por reestruturação cognitiva e protocolos estruturados seguiam para supervisores TCC. Em 12 meses, a taxa de aliança terapêutica mensurada com WAI-SR subiu 9 pontos. O caso mostra: eficácia comparável transfere a decisão para ajuste, não exclui abordagens.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Limites da evidência atual e agenda de pesquisa</h2>
-        <p>
-          A literatura sobre terapias de terceira onda é mais robusta em ansiedade e depressão e mais escassa em transtornos psicóticos e quadros graves de transtorno de personalidade. Estudos de mecanismo ainda são heterogêneos. A agenda de pesquisa para 2026-2027 inclui ensaios pragmáticos em contexto público, comparações head-to-head entre abordagens e estudos de processo com mensuração intraindividual.
-        </p>
-        <p>
-          O debate sobre integração — protocolos que combinam ACT, FAP e CBT — ganha tração. Hayes e equipe têm proposto modelo processual de terapia baseado em processos transdiagnósticos. Para a formação aplicada brasileira, a leitura crítica desse movimento é parte do repertório atualizado que o profissional precisa carregar.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
-          {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
-        <h3 class="font-display font-semibold text-xl">Quando eficácia é comparável, a decisão clínica é relacional</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          ACT, DBT, FAP e mindfulness clínico expandem o repertório do psicólogo. O MBA Online em Psicologia Positiva e Saúde Mental no IPOG oferece base aplicada que dialoga com essas abordagens, sem substituir formação clínica longa. Próximo passo: comparar grade e calendário no portal oficial.
-        </p>
-      </div>
-
+      </section>
+      <section class="source-box" aria-labelledby="fontes-consultadas">
+        <h2 id="fontes-consultadas">Fontes primárias consultadas</h2>
+        <p>Consulte a população, a finalidade e os limites de cada documento. Leitura complementar não equivale a formação clínica ou habilitação profissional.</p>
+        <ul>{page.sources.map(([name,url]) => <li><a href={url}>{name}</a></li>)}</ul>
+      </section>
     </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">MBAs IPOG correlatos</h3>
-        <ul class="space-y-1 mt-3">
-          {mbasCorrelatos.map(m => (
-            <li><a href={`/mbas/${m.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{m.shortName}</strong></a></li>
-          ))}
-        </ul>
-        <p class="text-xs text-ink-500 mt-3 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">PubMed</a></li>
-          <li><a href="https://www.cochrane.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Cochrane</a></li>
-          <li><a href="https://www.apa.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA</a></li>
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
-          <li><a href="https://bvs-psi.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">BVS-Psi</a></li>
-          <li><a href="https://contextualscience.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Association for Contextual Behavioral Science</a></li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
+  </div>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+  .editorial { color: var(--color-text-subtle); line-height: 1.8; }
+  .editorial header { margin-bottom: 2.75rem; }
+  .editorial h1 { color: var(--color-text-strong); font-size: clamp(2rem, 4.5vw, 3.1rem); line-height: 1.15; font-weight: 700; letter-spacing: -.025em; }
+  .editorial h2 { color: var(--color-text-strong); font-size: clamp(1.35rem, 3vw, 1.7rem); line-height: 1.35; font-weight: 650; margin-bottom: 1rem; }
+  .editorial > section { margin-block: 2.5rem; }
+  .editorial p { margin-block: 1rem; text-align: justify; overflow-wrap: anywhere; }
+  .editorial .lead { font-size: 1.15rem; }
+  .editorial .eyebrow { color: var(--color-primary-ring); font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .editorial .update { font-size: .85rem; color: var(--color-text-muted); border-left: 3px solid var(--color-primary-ring); padding-left: 1rem; text-align: left; }
+  .editorial a { color: var(--color-primary-ring); text-decoration: underline; text-underline-offset: .2em; }
+  .editorial a:hover { color: var(--color-primary-hover); }
+  .editorial ul, .editorial ol { padding-left: 1.4rem; margin-block: 1rem; }
+  .editorial ul { list-style: disc; }
+  .editorial ol { list-style: decimal; }
+  .editorial li { margin-block: .6rem; }
+  .table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--color-border); border-radius: .75rem; margin-block: 1.5rem; }
+  .editorial table { border-collapse: collapse; width: 100%; min-width: 35rem; font-size: .95rem; }
+  .editorial th, .editorial td { text-align: left; vertical-align: top; padding: 1rem; border-bottom: 1px solid var(--color-border); }
+  .editorial th { background: var(--color-primary-soft); color: var(--color-text-strong); font-weight: 650; }
+  .editorial tbody tr:last-child td { border-bottom: 0; }
+  .faq-list details { border-bottom: 1px solid var(--color-border); padding-block: 1rem; }
+  .faq-list summary { cursor: pointer; color: var(--color-text-strong); font-weight: 650; }
+  .source-box { border-top: 1px solid var(--color-border); padding-top: 2rem; font-size: .95rem; }
+  :global([data-theme="dark"]) .editorial { color: var(--d-ink-700); }
+  :global([data-theme="dark"]) .editorial h1,
+  :global([data-theme="dark"]) .editorial h2,
+  :global([data-theme="dark"]) .faq-list summary { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .eyebrow,
+  :global([data-theme="dark"]) .editorial a { color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .editorial a:hover { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .update { color: var(--d-ink-500); border-color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .table-wrap,
+  :global([data-theme="dark"]) .editorial th,
+  :global([data-theme="dark"]) .editorial td,
+  :global([data-theme="dark"]) .faq-list details,
+  :global([data-theme="dark"]) .source-box { border-color: var(--d-border); }
+  :global([data-theme="dark"]) .editorial th { background: var(--d-accent-bg); color: var(--d-ink-900); }
+</style>

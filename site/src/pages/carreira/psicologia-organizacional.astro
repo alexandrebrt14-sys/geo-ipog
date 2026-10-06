@@ -1,245 +1,155 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { SITE, MBAS } from '@lib/data';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 
-const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
-const mbaLideranca = MBAS.find(m => m.id === 'mba-lideranca-positiva')!;
-
+const title = "Carreira em Psicologia Organizacional: competências e caminhos de atuação";
+const description = "Planeje uma trajetória em POT por competências, projetos e critérios de formação, sem tabelas salariais sem fonte ou prazos universais de transição.";
 const faqs = [
   {
-    q: 'Preciso ser psicólogo para fazer carreira em Psicologia Organizacional?',
-    a: 'Não. POT é a área da Psicologia aplicada com maior abertura para profissionais de outras formações — Administração, RH, Comunicação, Engenharia de Produção. A leitura técnica do comportamento humano é vantagem, mas não barreira de entrada. Áreas privativas do psicólogo dentro de POT são pontuais: aplicação de testes psicológicos avaliados pelo SATEPSI e parecer técnico em avaliação psicológica formal. O grosso do trabalho — diagnóstico cultural, projeto de mudança, programa de liderança — é aberto.'
+    "q": "Quanto tempo leva para migrar da clínica para POT?",
+    "a": "Não há prazo universal. O percurso depende da frente escolhida, das competências já demonstradas, da experiência necessária e das oportunidades. Planeje etapas revisáveis, sem prometer uma transição em número fixo de anos."
   },
   {
-    q: 'Quanto tempo leva para migrar de clínica para POT?',
-    a: 'Entre dois e quatro anos quando o profissional combina formação aplicada (MBA ou pós em POT) com exposição prática — projeto interno em empresa onde trabalha, consultoria júnior remunerada, vaga de business partner em PME. Quem espera o MBA fazer a transição sozinho normalmente trava no primeiro ano por falta de vocabulário operacional. Quem combina formação com prática supervisionada acelera.'
+    "q": "É obrigatório virar gestor para crescer na área?",
+    "a": "Não. Existem trajetórias técnicas, de consultoria, pesquisa e gestão. O desenvolvimento pode ampliar profundidade e responsabilidade sem exigir uma diretoria como destino."
   },
   {
-    q: 'Qual diferença entre Business Partner e Coordenador de Cultura?',
-    a: 'Business Partner é o RH alocado por unidade de negócio, com responsabilidade por agenda de pessoas daquela vertical — talent management, sucessão, engajamento, conflitos. Coordenador de Cultura tem agenda corporativa, transversal, focada em valores, ritos, comunicação interna e desenho de iniciativas que atravessam todas as áreas. BP responde para um líder de negócio; coord. de cultura responde para um Diretor ou Head de Pessoas. Salários comparáveis, lógica de carreira distinta.'
-  },
-  {
-    q: 'Vale entrar como analista de R&S aos 35 anos vindo da clínica?',
-    a: 'Vale se for porta de entrada planejada para uma trilha mais ampla. R&S é a função com maior número de vagas júnior em POT, mas tem teto de carreira em torno de coordenação de aquisição de talento. Profissional que entra em R&S precisa ter plano de saída para BP, T&D ou cultura em até dois anos. Quem se acomoda na função técnica corre risco de estagnar em torno de R$ 8 a 12 mil mensais sem ascender. O MBA aplicado funciona como sinal de intenção de movimento.'
+    "q": "Como comparar remuneração com responsabilidade?",
+    "a": "Use dados atuais com data, localidade, regime e escopo semelhantes. Diferencie gestão de equipe, responsabilidade técnica e componentes variáveis; não preencha salários ausentes com estimativas apresentadas como fatos."
   }
 ];
-
+const fields = [
+  {
+    "label": "Frente e responsabilidade desejadas",
+    "hint": "Que problema pretende aprender a resolver?"
+  },
+  {
+    "label": "Evidências das oportunidades",
+    "hint": "Registre anúncios, datas e requisitos públicos."
+  },
+  {
+    "label": "Lacuna prioritária e exercício",
+    "hint": "Que competência poderá demonstrar em projeto fictício?"
+  },
+  {
+    "label": "Formação e revisão do plano",
+    "hint": "O que comparar e quando reavaliar sua decisão?"
+  }
+];
+const checklist = [
+  "Comparei responsabilidades, não apenas títulos de cargo.",
+  "Mantive lacunas salariais como desconhecidas.",
+  "Distingui aprendizado de habilitação profissional.",
+  "Escolhi exercício sem informações confidenciais."
+];
+const sources = [
+  {
+    "label": "CFP: registro de especialista",
+    "url": "https://site.cfp.org.br/servicos/titulo-de-especialista/"
+  },
+  {
+    "label": "Resolução CFP nº 17/2025",
+    "url": "https://crpma.org.br/wp-content/uploads/2025/07/resadmfin-17-2025-cfp-br.pdf"
+  },
+  {
+    "label": "SATEPSI: legislação aplicável",
+    "url": "https://satepsi.cfp.org.br/legislacao.cfm"
+  },
+  {
+    "label": "MTE: NR-1 vigente",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-1"
+  },
+  {
+    "label": "MTE: perguntas e respostas GRO/PGR, 2026",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/manuais-e-publicacoes/2026/perguntas-e-respostas-gro-pgr-maio-2026"
+  }
+];
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Carreira em Psicologia Organizacional: do analista de R&S ao VP de Pessoas',
-  description: 'Mapa completo da trilha POT — progressão típica, faixa salarial, competências diferenciais e MBA combinado.',
+  headline: title,
+  description,
+  mainEntityOfPage: 'https://posgraduacaopsicologia.com/carreira/psicologia-organizacional/',
   author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
   inLanguage: 'pt-BR'
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
+    '@type': 'Question', name: f.q,
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
 ---
-
-<Base
-  title="Carreira em Psicologia Organizacional — do analista de R&S ao VP de Pessoas"
-  description="Trilha POT mapeada: progressão de júnior a sênior, faixa salarial, competências e MBA combinado. Por que ler sistema antes de indivíduo decide o teto da carreira.">
-
+<Base title={title} description={description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
-    <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Carreira', href: '/carreira' },
-        { label: 'Psicologia Organizacional' }
-      ]} />
-      <span class="section-eyebrow mt-3">Carreira · POT · Schein (2017) · Ulrich (2017) · NR-1</span>
-      <h1 class="section-h text-3xl sm:text-4xl">Carreira em Psicologia Organizacional: do analista de R&S ao VP de Pessoas</h1>
-      <p class="mt-3 text-ink-700 text-lg max-w-3xl">A trilha corporativa mais ampla da Psicologia aplicada. Quem aprende a ler sistema antes de indivíduo, escala. Quem se prende ao indivíduo, estagna em coordenação.</p>
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: "Carreira", href: "/carreira" }, { label: "Psicologia Organizacional" }]} />
+      <p class="section-eyebrow mt-4">Carreira · Guia de estudo e decisão</p>
+      <h1 class="section-h text-3xl sm:text-4xl max-w-4xl">{title}</h1>
+      <p class="mt-4 text-lg text-ink-700 max-w-3xl">Você quer sair de uma função operacional ou migrar da clínica para o trabalho em organizações. Antes de escolher uma pós, examine o que as funções desejadas exigem e quais competências você consegue demonstrar hoje.</p>
+      <p class="mt-4 text-sm text-ink-600">Atualização editorial: <time datetime="2026-10-06">06/10/2026</time> · Brasil GEO, portal editorial independente.</p>
+      <a class="btn btn-secondary mt-4" href="#ficha-pratica">Preencher a ficha prática</a>
     </div>
   </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          Carreira em Psicologia Organizacional e do Trabalho (POT) é a trilha corporativa mais ampla da Psicologia aplicada. Combina ciência comportamental, indicadores de negócio e desenho de cultura. Combina com profissional que tolera ambiguidade, escreve para executivo e gosta de ler organização como sistema, não como soma de indivíduos.
-        </p>
-      </div>
-
+  <article class="container-page py-10">
+    <div class="max-w-4xl mx-auto space-y-10">
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Tese contraintuitiva: POT premia quem lê sistema, não quem entende pessoa</h2>
-        <p>
-          A intuição inicial do psicólogo recém-formado é que carreira corporativa em Psicologia premia quem entende melhor o indivíduo. A literatura sobre cultura organizacional aponta para o oposto. Edgar Schein, referência do tema, define cultura como conjunto de pressupostos compartilhados que um grupo aprendeu ao resolver problemas de adaptação externa e integração interna (Schein, 2017). A leitura precisa do indivíduo é insumo, não produto. O produto é a leitura do sistema — o padrão de comportamento que emerge da interação entre regras, recompensas, ritos e relações de poder.
-        </p>
-        <p>
-          A inversão necessária: o psicólogo organizacional sênior gasta a maior parte do tempo olhando para grupos, indicadores agregados, fluxos de decisão e arquitetura de processo. O atendimento individual é exceção, não regra. Quem migra da clínica para POT esperando "atender pessoas em escala" se frustra. Quem migra entendendo que vai diagnosticar sistemas e desenhar intervenção de comportamento agregado, escala.
-        </p>
-        <p>
-          O mercado validou essa leitura. Levantamento da McKinsey sobre o estado da organização (McKinsey, 2024 State of Organizations) mostra que 70% das empresas em transformação cultural identificam falta de liderança sistêmica como principal barreira — não falta de pessoas qualificadas tecnicamente. A demanda por profissional capaz de ler organização como sistema cresce mais rápido que a oferta. A faixa salarial reflete essa escassez no topo da pirâmide.
-        </p>
+<h2>Escolha primeiro o tipo de responsabilidade</h2>
+<p>A transição para POT precisa de evidências de competência, não de uma promessa de promoção. O título do cargo pode variar muito entre organizações. Leia as responsabilidades, os limites de decisão e as condições do trabalho antes de comparar nomes como analista, especialista, consultor ou parceiro de negócio.</p>
+<p>Há espaço para percursos técnicos e de gestão, além de pesquisa e atuação em diferentes tipos de organização. Migrar da clínica não exige abandonar o que foi aprendido sobre escuta, ética e contexto; exige reconhecer o que precisa ser desenvolvido para investigar processos coletivos e intervir em condições de trabalho.</p>
+<h2>Um mapa por problemas, sem escada obrigatória</h2>
+<div class="overflow-x-auto"><table><thead><tr><th>Frente de atuação</th><th>Competência a demonstrar</th><th>Exemplo educativo de evidência</th></tr></thead><tbody>
+<tr><td>Seleção e desenvolvimento</td><td>Delimitar demanda, critérios e limites dos métodos.</td><td>Plano fictício de processo seletivo com justificativa e cuidados de equidade.</td></tr>
+<tr><td>Organização do trabalho</td><td>Investigar atividades, recursos e conflitos de responsabilidade.</td><td>Mapa de processo simulado com perguntas para escuta dos envolvidos.</td></tr>
+<tr><td>Dados de pessoas</td><td>Definir indicadores, avaliar qualidade dos dados e explicar incertezas.</td><td>Análise de base sintética com limitações e alternativas de interpretação.</td></tr>
+<tr><td>Projetos e gestão</td><td>Pactuar objetivos, recursos, responsabilidades e revisão.</td><td>Plano de mudança fictício com critérios de acompanhamento.</td></tr>
+</tbody></table></div>
+<h2>Como pesquisar oportunidades sem inventar uma média salarial</h2>
+<p>Monte uma amostra própria de anúncios recentes, registrando data, localidade, regime de trabalho, escopo, formação exigida e remuneração divulgada. Quando o anúncio não informa salário, deixe a lacuna visível. Separe cargos com gestão de equipe, responsabilidade técnica ou remuneração variável: misturá-los produz comparações pouco úteis.</p>
+<p>Converse sobre o cotidiano da função e os critérios de seleção com pessoas e instituições pertinentes. Use esses dados para formular hipóteses de posicionamento, sem tratá-los como pesquisa representativa de todo o mercado. A viabilidade da transição também depende de despesas, tempo disponível e condições pessoais que uma tabela genérica não captura.</p>
+<h2>Habilitação e competência precisam caminhar juntas</h2>
+<p>Funções de RH podem reunir profissionais de diferentes áreas, mas uma pós não autoriza o exercício da Psicologia por quem não possui os requisitos profissionais. Para psicólogos, atividades de Avaliação Psicológica devem observar a <a href="https://satepsi.cfp.org.br/legislacao.cfm">Resolução CFP nº 31/2022</a> e as condições de uso dos instrumentos.</p>
+<p>O <a href="https://site.cfp.org.br/servicos/titulo-de-especialista/">registro de especialista em POT</a> segue a Resolução CFP nº 23/2022, alterada pela nº 17/2025, e depende de análise pelo CRP. Verifique o percurso aplicável antes de anunciar um título. Certificado, experiência e registro não são comprovantes intercambiáveis.</p>
+<h2>NR-1: uma frente de trabalho com limites claros</h2>
+<p>O capítulo 1.5 da <a href="https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-1">NR-1</a>, na redação que explicita riscos psicossociais relacionados ao trabalho, está vigente desde 26 de maio de 2026. Se essa é sua frente de interesse, estude a organização do trabalho, a integração ao gerenciamento de riscos e a participação dos trabalhadores.</p>
+<p>Segundo a <a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/manuais-e-publicacoes/2026/perguntas-e-respostas-gro-pgr-maio-2026">orientação do MTE</a>, não existe profissão exclusiva universal para a avaliação desses riscos. Isso torna ainda mais importante descrever sua contribuição, seus limites e a articulação com a equipe técnica, em vez de vender uma exclusividade que a norma não estabelece.</p>
+<h2>Exemplo hipotético: construir uma demonstração de trabalho</h2>
+<p>Uma psicóloga interessada em análise de dados de pessoas escolhe uma base inteiramente fictícia para investigar diferenças de rotatividade entre unidades. Ao documentar o exercício, explica como definiu o indicador, quais erros corrigiu e por que não pode inferir causas apenas pela comparação. O projeto ajuda a demonstrar raciocínio. Não comprova experiência com trabalhadores reais nem assegura contratação.</p>
+<h2>Um plano de desenvolvimento que pode ser revisto</h2>
+<ol><li>Selecione uma frente de atuação e leia responsabilidades de oportunidades atuais.</li><li>Escolha duas ou três competências prioritárias, evitando acumular cursos sem aplicação.</li><li>Desenhe um exercício público ou fictício que permita receber comentários sobre seu trabalho.</li><li>Compare formações pela prática oferecida, docentes, método e condições reais de conclusão.</li><li>Revise a escolha à luz das evidências produzidas e das limitações encontradas.</li></ol>
+<p>Para o exercício de dados, o curso <a href="https://alexandrecaramaschi.com/educacao/dados-com-python">Dados com Python, de Alexandre Caramaschi</a>, pode apoiar a limpeza e análise de bases públicas ou sintéticas. É um recurso complementar, sem promessa de colocação, pós-graduação ou habilitação profissional. Não use dados de empregadores ou trabalhadores sem autorização e avaliação de proteção adequada.</p>
+<p>Aprofunde o escopo em <a href="/areas/psicologia-organizacional-trabalho">Psicologia Organizacional e do Trabalho</a> e consulte <a href="/areas/saude-mental-organizacoes">Saúde Mental nas Organizações</a>. Ao preencher a ficha, transforme o cargo desejado em uma competência observável e escolha como começar a demonstrá-la.</p>
       </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Trajetória típica: do analista ao diretor</h2>
-        <p class="text-ink-700 mt-2">
-          A trilha POT progride em três estágios bem definidos. Cada estágio exige um conjunto distinto de competências e tem teto natural se o profissional não se mover.
-        </p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Estágio</th>
-                <th class="text-left px-4 py-3">Cargo típico</th>
-                <th class="text-left px-4 py-3">Responsabilidade principal</th>
-                <th class="text-left px-4 py-3">Salário mediano</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Júnior (0-3 anos)</td>
-                <td class="px-4 py-3 text-ink-700">Analista de R&S, T&D, Cultura ou Clima</td>
-                <td class="px-4 py-3 text-ink-700">Execução técnica em uma função específica de RH. Aplicação de processos, condução de entrevistas, análise de pesquisa de clima.</td>
-                <td class="px-4 py-3 text-ink-700">R$ 4-7 mil [a confirmar com Catho/Glassdoor 2025]</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Pleno (3-8 anos)</td>
-                <td class="px-4 py-3 text-ink-700">Business Partner, Coordenador de Cultura, Especialista em People Analytics</td>
-                <td class="px-4 py-3 text-ink-700">Agenda transversal de pessoas em uma unidade de negócio ou em projeto corporativo. Diagnóstico, desenho de intervenção, gestão de stakeholders.</td>
-                <td class="px-4 py-3 text-ink-700">R$ 8-15 mil [a confirmar]</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Sênior (8+ anos)</td>
-                <td class="px-4 py-3 text-ink-700">Head de DHO, Head de Pessoas e Cultura, Diretor/VP de Pessoas, CHRO</td>
-                <td class="px-4 py-3 text-ink-700">Estratégia integrada de pessoas, presença em comitê executivo, agenda de transformação cultural, riscos psicossociais NR-1.</td>
-                <td class="px-4 py-3 text-ink-700">R$ 18-35 mil+ (VP/CHRO podem ultrapassar R$ 60 mil em listadas) [a confirmar]</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="text-xs text-ink-500 mt-3">Faixas observadas em portais públicos (Catho, Glassdoor, Vagas) como referência inicial. Variação relevante por porte da empresa, setor e cidade. Validar com pesquisa salarial setorial atualizada antes de decidir migração.</p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Competências diferenciais do profissional avançado</h2>
-        <p>
-          O que distingue um head de DHO de um coordenador de cultura experiente não é tempo de carreira — é o conjunto de competências sistêmicas que o profissional desenvolve. Sete delas aparecem com mais frequência nos perfis que ascendem a diretoria.
-        </p>
-        <ul>
-          <li><strong>Leitura sistêmica.</strong> Capacidade de mapear cultura como sistema de pressupostos compartilhados (Schein, 2017), identificar pontos de alavancagem e antecipar consequências não intencionais de intervenção.</li>
-          <li><strong>Ciência comportamental aplicada.</strong> Fluência nos modelos clássicos — segurança psicológica (Edmondson, 2019), worklife (Maslach &amp; Leiter, 2016), engagement (Kahn, 1990) — e capacidade de traduzir em decisão concreta.</li>
-          <li><strong>Fluência em dados.</strong> Leitura técnica de pesquisa de engajamento, ENPS, indicadores de saída e absenteísmo. Capacidade de cruzar dados de pessoas com dados de negócio sem viés interpretativo.</li>
-          <li><strong>Comunicação executiva.</strong> Escrever para CFO e CEO. Apresentar agenda de pessoas em vocabulário de negócio, não em jargão da Psicologia. Defender investimento em iniciativas com hipótese mensurável.</li>
-          <li><strong>Projeto de mudança.</strong> Conduzir programa cultural com mais de 12 meses de duração — sponsor, marcos, indicadores de progresso, ajuste de curso. Quem nunca conduziu um projeto de mudança longa não passa de pleno.</li>
-          <li><strong>NR-1 e riscos psicossociais.</strong> Domínio da norma atualizada do MTE e da metodologia de mapeamento de risco psicossocial. Tornou-se requisito de mercado em 2024-2025 com a regulamentação acelerada.</li>
-          <li><strong>Vocabulário do RH como função de negócio.</strong> Ulrich (2017) propôs há décadas que RH deveria operar como business partner. A maioria das empresas brasileiras ainda não internalizou. Profissional que opera nesse modelo se diferencia.</li>
-        </ul>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Da clínica em consultório à Business Partner em três anos</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Psicóloga formada há sete anos, mantinha consultório clínico privado em Goiânia com agenda razoavelmente cheia, mas teto financeiro estagnado em torno de R$ 9 mil mensais. Decidiu migrar para corporativo aos 32 anos. Primeiro ano: estudou MBA em POT em formato Ao Vivo síncrono enquanto mantinha consultório a meio período. Conseguiu projeto interno em rede de farmácias regional via networking — diagnóstico de clima e desenho de programa de liderança de loja. Cobrou abaixo do mercado em troca de portfólio.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Segundo ano: usou o projeto como prova de capacidade para vaga de analista pleno de Cultura em healthtech em crescimento. Salário inicial R$ 10 mil. Manteve dois dias de consultório por semana por seis meses para transição financeira. Terceiro ano: migrou internamente para Business Partner da diretoria comercial — agenda de talento, sucessão e engajamento de 180 pessoas. Salário R$ 14 mil. A decisão chave: nunca tentou vender clínica disfarçada de cultura. Investiu meses para aprender vocabulário de OKR, OPEX e RH analytics antes de se posicionar.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Erros comuns na transição para POT</h2>
-        <ul>
-          <li><strong>Tentar vender clínica disfarçada de organizacional.</strong> Profissional que entra na empresa propondo "rodas de cuidado" e "espaços de escuta" sem hipótese de impacto em indicador de negócio perde credibilidade rápido. POT exige tradução para vocabulário gerencial.</li>
-          <li><strong>Subestimar tempo de transição.</strong> Migrar de clínica para POT leva 2-4 anos. Quem espera resultado em 6 meses abandona no meio do caminho. Plano de transição precisa cobrir três anos.</li>
-          <li><strong>Recusar começar como analista.</strong> Profissional clínico com 10 anos de prática espera entrar como pleno ou sênior. Em geral, entra como analista pleno em primeira posição corporativa. Quem recusa por orgulho perde a porta de entrada.</li>
-          <li><strong>Não estudar indicadores de negócio.</strong> POT exige fluência em OKR, ENPS, eNPS, turnover, absenteísmo. Profissional que não estuda esses temas no MBA continua sendo visto como técnico, não como gestor.</li>
-          <li><strong>Confundir POT com coaching.</strong> Coaching é prática paralela. POT é função gerencial e técnica de diagnóstico organizacional. Quem confunde os dois tem dificuldade de progredir para coordenação e direção.</li>
-        </ul>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Qual MBA combina com a trilha POT</h2>
-        <p>
-          A trilha POT tem dois MBAs do IPOG diretamente combinados, com lógicas distintas. A escolha depende do estágio da carreira e da direção desejada.
-        </p>
-        <p>
-          O <strong>{mbaPot.shortName}</strong> é a formação mais direta para quem quer dominar o núcleo técnico da área — cultura organizacional, clima, liderança, NR-1, riscos psicossociais e people analytics. Cobre o vocabulário necessário para sair de analista e chegar a coordenação ou business partner. Combina com profissional clínico em transição, com RH operacional buscando seniorização e com consultor júnior que precisa de estrutura teórica. O IPOG mantém o MBA em POT com formato Ao Vivo síncrono — relevante para profissional ativo que precisa cursar enquanto trabalha.
-        </p>
-        <p>
-          O <strong>{mbaLideranca.shortName}</strong> é o caminho para quem já está em coordenação ou business partner e quer chegar a head ou diretor. Cobre cultura de liderança, segurança psicológica, gestão por significado e performance saudável. Combina com pleno avançado e sênior em ascensão. Quem está em transição inicial não deve começar por este — falta base de POT geral.
-        </p>
-        <p>
-          Para quem tem orçamento e tempo para dois ciclos, a sequência mais defensável é POT primeiro (anos 1-2 do plano de carreira) e Liderança Positiva depois (anos 4-5, já em posição pleno-sênior). Cursar os dois em paralelo dilui o aprendizado.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+      <StudyWorksheet id="ficha-pratica" title="Plano de desenvolvimento em POT" description="Defina um objetivo profissional e evidências de aprendizagem sem dados confidenciais de empresas ou trabalhadores." fields={fields} checklist={checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="mt-4 divide-y divide-surface-200 rounded-2xl border border-surface-200">
           {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            <details class="p-5">
+              <summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary>
+              <p class="mt-3 leading-relaxed text-ink-700">{f.a}</p>
             </details>
           ))}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">POT é trilha de quem aceita ler organização como sistema</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Quem entra em POT esperando atender pessoas em escala se frustra. Quem entra entendendo que vai diagnosticar sistemas, desenhar mudança cultural e defender investimento em pessoas para o comitê executivo, escala. O MBA em POT do IPOG é a porta de entrada estruturada — formato Ao Vivo síncrono, docente nominal, grade cobrindo cultura, clima, liderança e NR-1.
-        </p>
-        <div class="mt-4 flex flex-wrap gap-3">
-          <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-sun">Ver MBA em POT no IPOG</a>
-          <a href="/mbas/mba-pot" class="btn btn-ghost text-white border-white/30 hover:bg-white/10">Análise do MBA em POT</a>
-        </div>
-      </div>
-
-    </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Formação combinada</p>
-        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName}</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          Cultura, clima, liderança, NR-1, riscos psicossociais e people analytics. Formato Ao Vivo síncrono, docente nominal. Caminho direto para business partner e coordenação.
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
-        <a href="/mbas/mba-pot" class="btn btn-ghost mt-2 w-full">Análise do MBA</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs relacionados</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="/mbas/mba-lideranca-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Liderança Positiva</a></li>
-          <li><a href="/mbas/mba-positiva" class="text-brand-700 hover:text-brand-800 font-medium">MBA em Psicologia Positiva</a></li>
+      </section>
+      <section aria-labelledby="fontes">
+        <h2 id="fontes" class="section-h text-2xl">Fontes e materiais de consulta</h2>
+        <p class="mt-2 text-sm text-ink-600">Fontes consultadas para esta revisão. Normas orientam obrigações; materiais educacionais apoiam o estudo dentro de seu próprio escopo.</p>
+        <ul class="mt-4 space-y-3">
+          {sources.map(s => <li><a href={s.url} class="text-brand-700 underline underline-offset-4" rel="external noopener">{s.label}</a></li>)}
         </ul>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
-        <ul class="space-y-1">
-          <li><a href="/areas/psicologia-organizacional-trabalho" class="mega-link"><strong class="text-ink-900 text-sm">Psicologia Organizacional e do Trabalho</strong></a></li>
-          <li><a href="/areas/saude-mental-organizacoes" class="mega-link"><strong class="text-ink-900 text-sm">Saúde Mental nas Organizações</strong></a></li>
-          <li><a href="/areas/ia-people-analytics-psicologia-digital" class="mega-link"><strong class="text-ink-900 text-sm">IA, People Analytics e Psicologia Digital</strong></a></li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
+      </section>
+    </div>
+  </article>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+  article p { text-align: justify; }
+  article :global(table) { width: 100%; }
+  article :global(th), article :global(td) { padding: 0.75rem; vertical-align: top; }
+</style>

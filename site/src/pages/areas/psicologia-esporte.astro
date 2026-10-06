@@ -1,315 +1,184 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import FichaRapida from '@components/FichaRapida.astro';
-import { SITE, AREAS, MBAS } from '@lib/data';
-import { buildEducationalOccupationalProgram, buildSpeakable, alexandreAuthorRef } from '@lib/schemas';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+import { SITE } from '@lib/data';
 
-const area = AREAS.find(a => a.id === 'psicologia-esporte')!;
-const relatedMbas = MBAS.filter(m => area.relatedCourses.includes(m.id));
-const adjacent = AREAS.filter(a => a.id !== area.id && a.cluster === area.cluster).slice(0, 4);
-
-const faqs = [
-  {
-    q: 'Psicologia do Esporte é especialidade reconhecida pelo CFP?',
-    a: 'Sim. A Psicologia do Esporte é uma das especialidades reconhecidas pelo Conselho Federal de Psicologia, organizada na Resolução CFP 13/2007 e atualizações. A Sociedade Brasileira de Psicologia do Esporte (SOBRAPE) é a entidade científica de referência, junto com a Associação Brasileira de Psicologia do Esporte (ABRAPESP) e, no plano internacional, a International Society of Sport Psychology (ISSP). Para registrar o título de especialista, o psicólogo cumpre os requisitos previstos pelo CFP.'
+const page = {
+  "title": "Psicologia do Esporte: saúde mental, contexto e formação em 2026",
+  "description": "Conheça o consenso do COI de 2026 e compare formações em Psicologia do Esporte com critérios de cuidado, confidencialidade e trabalho em equipe.",
+  "route": "/areas/psicologia-esporte/",
+  "label": "Psicologia do Esporte",
+  "section": "Áreas",
+  "sectionPath": "/areas/",
+  "faqs": [
+    {
+      "q": "Psicologia do Esporte trata apenas de desempenho?",
+      "a": "Não. O escopo pode incluir participação, relações, saúde mental e contexto esportivo, conforme a demanda e a qualificação profissional."
+    },
+    {
+      "q": "Um wearable avalia sozinho a saúde mental do atleta?",
+      "a": "Não. Medidas de dispositivos precisam de contexto e não substituem avaliação profissional."
+    },
+    {
+      "q": "O consenso de 2026 vale como protocolo para qualquer equipe?",
+      "a": "Não. Ele se concentra em atletas de elite e exige consideração do contexto. Não autoriza autoaplicação clínica por treinadores."
+    }
+  ],
+  "worksheet": {
+    "title": "Mapa de contratação e formação em Psicologia do Esporte",
+    "description": "Organize perguntas sobre finalidade, comunicação e qualificação usando um cenário fictício.",
+    "fields": [
+      {
+        "label": "Público e demanda",
+        "hint": "Qual contexto esportivo e qual pergunta precisam ser esclarecidos?"
+      },
+      {
+        "label": "Responsabilidades",
+        "hint": "Quem solicita, quem participa e quais papéis devem ser definidos?"
+      },
+      {
+        "label": "Confidencialidade",
+        "hint": "Que limites de informação precisam constar no acordo?"
+      },
+      {
+        "label": "Formação e apoio",
+        "hint": "Que supervisão e rede de encaminhamento serão necessárias?"
+      }
+    ],
+    "checklist": [
+      "Distingui desempenho e necessidades de cuidado.",
+      "Incluí a participação dos atletas.",
+      "Não usei vitória ou dado fisiológico como diagnóstico.",
+      "Previ limites de compartilhamento e encaminhamento."
+    ]
   },
-  {
-    q: 'O que diferencia Psicologia do Esporte de Psicologia Clínica aplicada ao atleta?',
-    a: 'Psicologia do Esporte é um campo de atuação com objeto e instrumental próprios — performance, motivação, ansiedade competitiva, foco, regulação emocional sob pressão, coesão de equipe, transição de carreira. Quem atende atleta apenas com técnica clínica genérica perde a especificidade do contexto: alta cobrança, ciclos curtos de avaliação, exposição midiática, lesão, fim precoce de carreira. A formação específica é o que dá repertório para esse contexto. Em paralelo, o atleta pode precisar de cuidado clínico clássico quando há quadro psicopatológico — e isso continua sendo terreno da clínica.'
-  },
-  {
-    q: 'Psicólogo do esporte trabalha só em equipes de alto rendimento?',
-    a: 'Não. Alto rendimento é apenas uma frente. A área inclui esporte de base, formação de jovens atletas, esporte universitário, esporte amador, esporte adaptado e Paralímpico, ginásios e estúdios, projetos sociais via esporte, e contextos não-esportivos que se beneficiam do instrumental (performing arts, militar, e-sports). O Comitê Olímpico do Brasil (COB) e o Comitê Paralímpico Brasileiro (CPB) estruturaram serviços de Psicologia do Esporte em suas seleções, mas o mercado é mais amplo.'
-  },
-  {
-    q: 'Como medir o efeito da intervenção em Psicologia do Esporte?',
-    a: 'A literatura contemporânea pede triangulação. Medidas de autorrelato validadas (CSAI-2 para ansiedade competitiva, POMS, TOPS), indicadores de performance (resultados, métricas de jogo), e indicadores fisiológicos (frequência cardíaca em repouso, HRV, qualidade de sono) compõem a base. A escolha depende do objetivo da intervenção e do contexto. Trabalhar sem medida nenhuma é o caminho mais curto para "achismo motivacional" e perda de credibilidade técnica diante da comissão (Weinberg &amp; Gould, 2019).'
-  },
-  {
-    q: 'Vale a pena pós em Psicologia do Esporte sem ser ex-atleta?',
-    a: 'Vale. Conhecimento esportivo do contexto ajuda, mas a expertise técnica é mais decisiva. A literatura internacional documenta uma carreira em Psicologia do Esporte feita por profissionais que entraram pela formação técnica — não pela trajetória atlética. O caminho mais sólido envolve pós-graduação reconhecida, supervisão com psicólogo do esporte experiente, prática em clube ou modalidade e estudo dos códigos do esporte de interesse. Verificar grade, supervisão e estágio é regra básica de escolha do curso.'
-  }
-];
-
+  "sources": [
+    [
+      "COI: consenso de saúde mental em atletas de elite, 2026",
+      "https://bjsm.bmj.com/content/60/15/1083"
+    ],
+    [
+      "CFP: especialidades e registro profissional",
+      "https://site.cfp.org.br/servicos/titulo-de-especialista/"
+    ],
+    [
+      "COI: consenso de 2019, referência histórica substituída pela atualização",
+      "https://pubmed.ncbi.nlm.nih.gov/31097450/"
+    ]
+  ]
+};
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Psicologia do Esporte: alta performance, ansiedade competitiva e formação',
-  description: 'Guia técnico de Psicologia do Esporte: alta performance, motivação, ansiedade competitiva, equipes, COB e CPB, métricas, pós-graduação. Especialidade reconhecida pelo CFP.',
-  // E-E-A-T: author Person canônico + publisher Organization via @id (Maio 2026 Core Update).
-  author: alexandreAuthorRef,
-  reviewedBy: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
+  '@id': SITE.url + page.route + '#article',
+  headline: page.title,
+  description: page.description,
+  mainEntityOfPage: SITE.url + page.route,
+  author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
-  datePublished: '2026-05-13',
-  inLanguage: 'pt-BR'
+  inLanguage: 'pt-BR',
+  citation: page.sources.map(([name, url]) => ({ '@type': 'CreativeWork', name, url }))
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  mainEntity: page.faqs.map(({q, a}) => ({
+    '@type': 'Question', name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a }
   }))
 };
-
-const ldProgram = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Especialização Lato Sensu em Psicologia do Esporte',
-    slug: '/areas/psicologia-esporte',
-    description: 'Formação para psicólogos e profissionais de educação física que atuam com alta performance, motivação, ansiedade competitiva e psicologia de equipes esportivas no contexto brasileiro.',
-    programType: 'Especialização Lato Sensu',
-    timeRequired: 'P360H',
-    occupationalCredentialAwarded: 'Especialista em Psicologia do Esporte',
-    educationalCredentialAwarded: 'Certificado de Especialização Lato Sensu'
-  }),
-  speakable: buildSpeakable(['h1', '.section-h'])
-});
 ---
-
-<Base
-  title="Psicologia do Esporte: alta performance, ansiedade competitiva e pós aplicada"
-  description="Guia técnico de Psicologia do Esporte: alta performance, motivação, ansiedade competitiva, equipes, COB/CPB, mensuração e pós-graduação. Especialidade reconhecida pelo CFP.">
-
+<Base title={page.title} description={page.description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Áreas', href: '/areas' },
-        { label: 'Psicologia do Esporte' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Área · Cluster demais áreas · Regulação {area.regulatoryLevel}</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Psicologia do Esporte: alta performance, ansiedade competitiva e pós aplicada</h1>
-          <p class="mt-3 text-ink-700 text-lg">O campo aplicado que lê o atleta como sistema técnico-emocional sob pressão de resultado.</p>
-          <FichaRapida area={area} />
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver cursos no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{label:'Início',href:'/'},{label:page.section,href:page.sectionPath},{label:page.label}]} />
     </div>
   </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          Psicologia do Esporte é o campo aplicado que estuda fatores psicológicos do desempenho esportivo — motivação, ansiedade competitiva, foco, regulação emocional, coesão de equipe, transição de carreira — e atua sobre eles com método. Especialidade reconhecida pelo CFP. Atua em alto rendimento (COB, CPB, federações), esporte de base, esporte universitário, adaptado e contextos análogos como performing arts e e-sports.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">A tese contraintuitiva da psicologia do esporte</h2>
-        <p>
-          A leitura comum trata a Psicologia do Esporte como "motivar atleta antes do jogo". É a redução que destrói a área. Psicologia do Esporte competente não trabalha em registro de palestra motivacional pré-competição — opera em ciclos longos de treinamento de habilidades psicológicas (PST — Psychological Skills Training), com mensuração de baseline, plano individualizado, intervenções específicas e reavaliação. Quem só aparece na hora da prova produz placebo de comissão técnica, não desempenho (Weinberg &amp; Gould, 2019).
-        </p>
-        <p>
-          A segunda confusão é tratar performance e bem-estar como opostos. A literatura recente sobre saúde mental no esporte (Reardon et al., 2019; IOC, 2021) demonstra exatamente o contrário: atleta com saúde mental cuidada desempenha melhor e tem carreira mais longa. O psicólogo do esporte técnico atua nos dois eixos, articulando regulação emocional, prevenção de burnout, manejo de lesão, transição pós-carreira — e não apenas técnicas de foco para o dia da prova.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Fundamentação conceitual</h2>
-        <p>
-          O primeiro pilar é o modelo IZOF (Individual Zones of Optimal Functioning), de Yuri Hanin (1997). Cada atleta tem uma zona ótima de ativação emocional pré-competição — ansiedade, raiva, alegria, calma — em que desempenha melhor. O trabalho técnico não é "reduzir ansiedade", e sim mapear a zona ótima individual e construir rotinas para reentrar nela em competição. Esse modelo enterrou a ideia ingênua de que "calmo é melhor".
-        </p>
-        <p>
-          O segundo pilar é a teoria da autodeterminação (Self-Determination Theory) de Deci e Ryan (2000), com sua taxonomia de motivação intrínseca e extrínseca e os três pilares de autonomia, competência e relação. Aplicada ao esporte (Vallerand, Mageau e outros), explica por que atletas de base com motivação intrínseca alta têm trajetórias mais longas e menor dropout. Treinador que micromaneja erode autonomia e quebra motivação intrínseca.
-        </p>
-        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
-          "A maior parte do trabalho de Psicologia do Esporte de alto nível não é feito no dia da prova. É feito em ciclos longos de treino mental, com mensuração e plano individual — exatamente como o trabalho do fisiologista ou do treinador técnico." — Robert Weinberg &amp; Daniel Gould, Foundations of Sport and Exercise Psychology (2019).
-        </blockquote>
-        <p>
-          O terceiro pilar é a teoria multidimensional da ansiedade competitiva (Martens, Vealey &amp; Burton, 1990), com a distinção entre ansiedade cognitiva (preocupação) e ansiedade somática (ativação fisiológica). Cada componente responde a intervenções distintas. Ansiedade cognitiva pede reestruturação cognitiva, autoinstrução e visualização; ansiedade somática pede respiração, relaxamento progressivo e rotinas pré-competição. **Confundir as duas dimensões é causa frequente de intervenção mal calibrada.**
-        </p>
-        <p>
-          O quarto pilar é o PST — Psychological Skills Training — método estruturado em três fases (educação, aquisição e prática) com pacote típico de habilidades: definição de metas, imagery, autorregulação da ativação, autodiálogo (self-talk), foco atencional e rotinas pré-performance. Treinar essas habilidades exige tempo de treino, repetição e integração à rotina técnica. PST aplicado isoladamente, fora do treino técnico, produz efeito limitado.
-        </p>
-        <p>
-          O quinto pilar é a literatura recente sobre saúde mental do atleta de elite. O Consenso do COI sobre saúde mental no esporte de elite (Reardon et al., 2019) e o documento da SOBRAPE para psicólogos no contexto esportivo organizam a articulação entre desempenho, transtornos mentais (depressão, ansiedade, transtornos alimentares, lesões e burnout), e fim de carreira. Atleta com depressão não é "preguiçoso"; atleta com transtorno alimentar não é "disciplinado".
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Habilidades psicológicas em performance</h2>
-        <p class="text-ink-700 mt-2">
-          O pacote PST organiza o trabalho técnico. A tabela abaixo mostra as principais habilidades, sua função e o instrumento típico de avaliação.
-        </p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Habilidade</th>
-                <th class="text-left px-4 py-3">Função</th>
-                <th class="text-left px-4 py-3">Instrumento</th>
-                <th class="text-left px-4 py-3">Erro frequente</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Definição de metas</td>
-                <td class="px-4 py-3 text-ink-700">Direcionar treino e dar critério de avaliação.</td>
-                <td class="px-4 py-3 text-ink-700">Metas de processo &gt; metas de resultado.</td>
-                <td class="px-4 py-3 text-ink-700">Apostar só em metas de resultado, fora do controle.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Imagery</td>
-                <td class="px-4 py-3 text-ink-700">Ensaiar mentalmente gesto, contexto e resposta a adversidade.</td>
-                <td class="px-4 py-3 text-ink-700">Roteiros estruturados, modelos PETTLEP.</td>
-                <td class="px-4 py-3 text-ink-700">Imagery genérico, sem multimodal e sem contexto.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Autorregulação</td>
-                <td class="px-4 py-3 text-ink-700">Entrar e voltar à zona ótima de ativação.</td>
-                <td class="px-4 py-3 text-ink-700">Respiração, relaxamento, biofeedback, HRV.</td>
-                <td class="px-4 py-3 text-ink-700">Buscar "calma" para esportes que pedem ativação alta.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Autodiálogo</td>
-                <td class="px-4 py-3 text-ink-700">Cortar ruminação, sustentar foco em pressão.</td>
-                <td class="px-4 py-3 text-ink-700">ASTQS, planos de self-talk instrucional e motivacional.</td>
-                <td class="px-4 py-3 text-ink-700">Frases prontas sem repetição em treino.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Foco atencional</td>
-                <td class="px-4 py-3 text-ink-700">Distribuir atenção interna/externa, ampla/estreita.</td>
-                <td class="px-4 py-3 text-ink-700">Modelo de Nideffer, treino de cues atencionais.</td>
-                <td class="px-4 py-3 text-ink-700">Tratar foco como traço, e não como habilidade treinável.</td>
-              </tr>
-            </tbody>
-          </table>
+  <div class="container-page py-12">
+    <article class="editorial mx-auto max-w-4xl">
+      <header>
+        <p class="eyebrow">Formação e prática responsável</p>
+        <h1>{page.title}</h1>
+        <p class="lead">Caso hipotético: um clube procura uma psicóloga depois de uma sequência de derrotas. A comissão quer melhorar resultados; alguns atletas relatam receio de pedir ajuda e perder espaço na equipe. O contrato de trabalho precisa esclarecer como o cuidado e a comunicação serão organizados.</p>
+        <p class="update">Atualização editorial: 06/10/2026 · Brasil GEO. Conteúdo educativo para leitura crítica e escolha de formação.</p>
+      </header>
+      <section><h2>O cuidado no esporte exige objetivos claros e proteção da confidencialidade.</h2>
+<p>A Psicologia do Esporte pode abordar aprendizagem, participação, relações de equipe, desempenho e saúde mental, conforme o contexto e a competência profissional. Atuação com esporte de base, lazer e alto rendimento envolve demandas distintas. Uma formação deve mostrar para quais cenários prepara o aluno e quais situações exigem colaboração especializada.</p>
+<p>Um pedido para “fortalecer o mental” ainda é pouco definido. Antes de escolher uma técnica, é preciso esclarecer o problema, ouvir os envolvidos e compreender condições de treino, competição e convivência. Uma derrota não permite inferir transtorno, assim como uma vitória não demonstra ausência de sofrimento.</p></section>
+<section><h2>O que o consenso do COI de 2026 acrescenta</h2>
+<p>O <a href="https://bjsm.bmj.com/content/60/15/1083">consenso do Comitê Olímpico Internacional de 2026 sobre saúde mental em atletas de elite</a> atualiza o documento de 2019. Ele considera fatores individuais e dos ambientes de treinamento e competição, além de barreiras ao acesso ao cuidado. Destaca também necessidades de atletas em transição de carreira, adolescentes e atletas paralímpicos.</p>
+<p>As recomendações incluem reconhecimento de dificuldades, avaliação por profissionais qualificados e articulação do cuidado. O documento não é um protocolo de autoaplicação para treinadores. Sua população principal é o esporte de elite; a transferência para outros contextos exige examinar diferenças de recursos, idade, objetivos e condições de participação.</p>
+<p>Para a escolha de uma pós, a consequência é concreta: peça que a ementa inclua saúde mental, ambiente e limites profissionais, além de técnicas ligadas ao desempenho. Verifique se a bibliografia discute a atualização de 2026 e como os professores tratam as incertezas da literatura.</p></section>
+<section><h2>Separar demandas ajuda a construir o serviço</h2>
+<div class="table-wrap"><table><thead><tr><th>Demanda</th><th>Pergunta de planejamento</th><th>Informação que não basta</th></tr></thead><tbody>
+<tr><td>Aprendizagem e desempenho</td><td>Que tarefa ou situação precisa ser compreendida?</td><td>Resultado de uma partida isolada</td></tr>
+<tr><td>Saúde mental</td><td>Qual fluxo permite acesso a avaliação e cuidado?</td><td>Impressão da comissão sobre motivação</td></tr>
+<tr><td>Relações e ambiente</td><td>Como atletas participam e relatam problemas?</td><td>Uma pesquisa sem devolutiva ou possibilidade de ação</td></tr>
+<tr><td>Transição e afastamento</td><td>Como a equipe organiza apoio e responsabilidades?</td><td>Um calendário de retorno sem análise individual</td></tr>
+</tbody></table></div>
+<p>A tabela organiza uma conversa sobre o serviço, sem indicar tratamento ou autorização para treinar e competir. Essas decisões exigem avaliação pertinente e coordenação entre profissionais. Dados fisiológicos de dispositivos não funcionam, sozinhos, como medida diagnóstica de saúde mental.</p></section>
+<section><h2>O que uma boa formação deve tornar verificável</h2>
+<p>Procure atividades que ensinem a formular demanda, negociar escopo, comunicar limites e receber supervisão. Peça exemplos simulados em que o interesse do contratante difere da necessidade do atleta. O aluno deve aprender a lidar com essa tensão, sem prometer acesso irrestrito da comissão a informações clínicas.</p>
+<p>Confirme quem supervisiona, a experiência nos públicos abordados e como a prática será avaliada. A <a href="https://site.cfp.org.br/servicos/titulo-de-especialista/">página do CFP sobre especialidades</a> inclui Psicologia do Esporte. Confira separadamente requisitos acadêmicos, condições de atuação e eventual registro de especialista, sem tratar o certificado como garantia de contratação.</p>
+<p>Também peça informação sobre proteção de crianças e adolescentes, acessibilidade e articulação com outros serviços. Uma grade centrada apenas em técnicas de concentração deixa perguntas importantes sem resposta. O plano educativo deve permitir reconhecer quando a demanda ultrapassa a competência disponível.</p></section>
+<section><h2>Roteiro para a primeira conversa institucional</h2>
+<ol><li>Defina quem solicita o serviço e quais necessidades deverão ser ouvidas.</li><li>Esclareça objetivos, públicos, responsabilidades e limites de compartilhamento.</li><li>Mapeie os recursos de encaminhamento e apoio existentes.</li><li>Combine como avaliar a utilidade do trabalho sem reduzir cuidado a vitórias.</li><li>Preveja revisão do contrato quando a demanda ou o contexto mudar.</li></ol>
+<p>No caso hipotético da abertura, a primeira entrega pode ser um acordo sobre finalidade e comunicação, antes de qualquer intervenção. Para aprofundar limites de avaliação, consulte <a href="/areas/avaliacao-psicologica/">Avaliação Psicológica</a>; para acompanhar decisões profissionais, veja <a href="/guias/escolher-supervisor-clinico/">como escolher supervisão</a>.</p>
+<p>O curso <a href="https://alexandrecaramaschi.com/educacao/letramento-ia-executivos">Letramento em IA</a>, no portal de Alexandre Caramaschi, pode apoiar a análise de riscos e fontes em ferramentas oferecidas a clubes. Não envie registros de atletas a sistemas de IA para obter diagnósticos ou decisões de seleção. Use a ficha para planejar o serviço a partir de informações institucionais públicas ou fictícias.</p></section>
+      <StudyWorksheet id="ficha-pratica" title={page.worksheet.title} description={page.worksheet.description} fields={page.worksheet.fields} checklist={page.worksheet.checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+        <div class="faq-list">
+          {page.faqs.map(({q,a}) => <details><summary>{q}</summary><p>{a}</p></details>)}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Quando a "falta de concentração" era zona ótima mal calibrada</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Atleta de tiro esportivo, 26 anos, em ciclo pré-classificatório Olímpico. Histórico de queda de performance entre o treino e a competição: scores excelentes em treino, queda consistente de 4 a 6 pontos em competição. Comissão técnica encaminhou com queixa de "falta de concentração no dia da prova".
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A avaliação psicológica detalhada incluiu medidas de CSAI-2, registro de HRV nos 60 minutos pré-competição e entrevista detalhada sobre rotina. O padrão emergiu claro: ansiedade cognitiva subia bastante na fase pré-competição, com ruminação sobre nota de corte. A ativação fisiológica caía abaixo da zona ótima do atleta nas duas horas anteriores à prova — provavelmente em resposta defensiva. O atleta estava entrando "desligado" no tiro, não tenso.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A intervenção foi reorganização da rotina pré-competição. Inclusão de aquecimento mental ativo, autodiálogo instrucional focado em processo, imagery contextual de 8 minutos com modelo PETTLEP, e exposição planejada a métricas de pressão em treino. Em quatro competições seguintes, a queda treino-prova caiu para 1 a 2 pontos. Lição: ansiedade competitiva tem dimensões diferentes que pedem intervenções diferentes. Sem mensuração estruturada, o diagnóstico vira chute, e o chute custa pódio.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Oportunidades emergentes</h2>
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Saúde mental no esporte de elite</p>
-            <p class="text-sm text-ink-700">O Consenso do COI e iniciativas nacionais (COB, CPB, CBF) consolidaram a pauta de saúde mental como exigência técnica em federações e clubes profissionais, com demanda crescente por psicólogos especializados.</p>
-          </div>
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Esporte Paralímpico</p>
-            <p class="text-sm text-ink-700">O CPB estruturou serviços de Psicologia do Esporte e tem expandido a presença em modalidades paralímpicas, com demandas específicas relativas a adaptação, classificação funcional e identidade atlética em contexto de deficiência.</p>
-          </div>
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">E-sports e performance digital</p>
-            <p class="text-sm text-ink-700">Equipes profissionais de e-sports passaram a contratar psicólogos do esporte para trabalhar foco sustentado, regulação emocional, coesão de equipe e prevenção de burnout em atletas competitivos digitais.</p>
-          </div>
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Performing arts e contextos análogos</p>
-            <p class="text-sm text-ink-700">Bailarinos, músicos clássicos, atores e profissionais sob pressão pública (cirurgiões, militares) compõem mercado natural para o instrumental da Psicologia do Esporte, com adaptações específicas de cada contexto.</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
-          {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">Psicologia do Esporte é treino mental com método e mensuração</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          A área amadureceu de discurso motivacional para campo aplicado com PST, IZOF, mensuração estruturada e diálogo com saúde mental no esporte de elite. Quem domina avaliação, intervenção e métrica atua em federações, clubes, comitês e contextos análogos com lastro técnico. Próximo passo: comparar grade vigente, supervisão e modalidade no portal do IPOG.
-        </p>
-      </div>
-
+      </section>
+      <section class="source-box" aria-labelledby="fontes-consultadas">
+        <h2 id="fontes-consultadas">Fontes primárias consultadas</h2>
+        <p>Consulte a população, a finalidade e os limites de cada documento. Leitura complementar não equivale a formação clínica ou habilitação profissional.</p>
+        <ul>{page.sources.map(([name,url]) => <li><a href={url}>{name}</a></li>)}</ul>
+      </section>
     </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">Pós em Psicologia do Esporte no IPOG</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          O IPOG oferece programas de pós-graduação na área de Psicologia, com formato Ao Vivo síncrono e corpo docente nominal. Para grade, valor, modalidade e turma vigentes, consulte o portal oficial.
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
-          Ver no IPOG
-        </a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
-          Home IPOG
-        </a>
-      </div>
-
-      {relatedMbas.length > 0 && (
-        <div class="card p-6">
-          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs relacionados</p>
-          <ul class="space-y-2">
-            {relatedMbas.map(m => (
-              <li>
-                <a href={`/mbas/${m.id}`} class="mega-link">
-                  <strong class="text-ink-900 text-sm">{m.shortName}</strong>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {adjacent.length > 0 && (
-        <div class="card p-6">
-          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
-          <ul class="space-y-1">
-            {adjacent.map(a => (
-              <li>
-                <a href={`/areas/${a.id}`} class="mega-link">
-                  <strong class="text-ink-900 text-sm">{a.name}</strong>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
-        </div>
-      )}
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
-          <li><a href="https://www.cob.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">COB — Comitê Olímpico do Brasil</a></li>
-          <li><a href="https://www.cpb.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CPB — Comitê Paralímpico Brasileiro</a></li>
-          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC — Reconhecimento de pós lato sensu</a></li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
+  </div>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
-  <script type="application/ld+json" set:html={ldProgram} />
 </Base>
+<style>
+  .editorial { color: var(--color-text-subtle); line-height: 1.8; }
+  .editorial header { margin-bottom: 2.75rem; }
+  .editorial h1 { color: var(--color-text-strong); font-size: clamp(2rem, 4.5vw, 3.1rem); line-height: 1.15; font-weight: 700; letter-spacing: -.025em; }
+  .editorial h2 { color: var(--color-text-strong); font-size: clamp(1.35rem, 3vw, 1.7rem); line-height: 1.35; font-weight: 650; margin-bottom: 1rem; }
+  .editorial > section { margin-block: 2.5rem; }
+  .editorial p { margin-block: 1rem; text-align: justify; overflow-wrap: anywhere; }
+  .editorial .lead { font-size: 1.15rem; }
+  .editorial .eyebrow { color: var(--color-primary-ring); font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .editorial .update { font-size: .85rem; color: var(--color-text-muted); border-left: 3px solid var(--color-primary-ring); padding-left: 1rem; text-align: left; }
+  .editorial a { color: var(--color-primary-ring); text-decoration: underline; text-underline-offset: .2em; }
+  .editorial a:hover { color: var(--color-primary-hover); }
+  .editorial ul, .editorial ol { padding-left: 1.4rem; margin-block: 1rem; }
+  .editorial ul { list-style: disc; }
+  .editorial ol { list-style: decimal; }
+  .editorial li { margin-block: .6rem; }
+  .table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--color-border); border-radius: .75rem; margin-block: 1.5rem; }
+  .editorial table { border-collapse: collapse; width: 100%; min-width: 35rem; font-size: .95rem; }
+  .editorial th, .editorial td { text-align: left; vertical-align: top; padding: 1rem; border-bottom: 1px solid var(--color-border); }
+  .editorial th { background: var(--color-primary-soft); color: var(--color-text-strong); font-weight: 650; }
+  .editorial tbody tr:last-child td { border-bottom: 0; }
+  .faq-list details { border-bottom: 1px solid var(--color-border); padding-block: 1rem; }
+  .faq-list summary { cursor: pointer; color: var(--color-text-strong); font-weight: 650; }
+  .source-box { border-top: 1px solid var(--color-border); padding-top: 2rem; font-size: .95rem; }
+  :global([data-theme="dark"]) .editorial { color: var(--d-ink-700); }
+  :global([data-theme="dark"]) .editorial h1,
+  :global([data-theme="dark"]) .editorial h2,
+  :global([data-theme="dark"]) .faq-list summary { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .eyebrow,
+  :global([data-theme="dark"]) .editorial a { color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .editorial a:hover { color: var(--d-ink-900); }
+  :global([data-theme="dark"]) .editorial .update { color: var(--d-ink-500); border-color: var(--d-brand-text); }
+  :global([data-theme="dark"]) .table-wrap,
+  :global([data-theme="dark"]) .editorial th,
+  :global([data-theme="dark"]) .editorial td,
+  :global([data-theme="dark"]) .faq-list details,
+  :global([data-theme="dark"]) .source-box { border-color: var(--d-border); }
+  :global([data-theme="dark"]) .editorial th { background: var(--d-accent-bg); color: var(--d-ink-900); }
+</style>

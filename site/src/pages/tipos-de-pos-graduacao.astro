@@ -1,372 +1,64 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import SmartCrossLinks from '@components/SmartCrossLinks.astro';
-import RelatedContent from '@components/RelatedContent.astro';
-import NextStepCTA from '@components/NextStepCTA.astro';
-import {
-  SITE,
-  TIPOS_DE_POS_GRADUACAO,
-  ESPECIALIZACOES_LATO_SENSU,
-  MESTRADOS_PROFISSIONAIS,
-  ESPECIALIZACOES_CLINICAS,
-  MBAS,
-  AREAS
-} from '@lib/data';
-import { buildEducationalOccupationalProgram } from '@lib/schemas/educational-program';
-
-const title = 'Tipos de pós-graduação em Psicologia: as 5 modalidades';
-const description = 'Mapa das cinco modalidades no Brasil: Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica e Residência, com carga horária e regulador.';
-
-const ldCollection = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  '@id': SITE.url + '/tipos-de-pos-graduacao',
-  name: title,
-  description,
-  inLanguage: 'pt-BR',
-  isPartOf: { '@type': 'WebSite', url: SITE.url, name: SITE.name },
-  about: {
-    '@type': 'EducationalOrganization',
-    name: 'Programas de pós-graduação em Psicologia no Brasil',
-    hasCredential: [
-      { '@type': 'EducationalOccupationalCredential', credentialCategory: 'Specialization', name: 'Especialização Lato Sensu em Psicologia' },
-      { '@type': 'EducationalOccupationalCredential', credentialCategory: 'MBA', name: 'MBA em áreas correlatas à Psicologia' },
-      { '@type': 'EducationalOccupationalCredential', credentialCategory: 'MastersProgram', name: 'Mestrado Profissional em Psicologia' },
-      { '@type': 'EducationalOccupationalCredential', credentialCategory: 'ClinicalCertification', name: 'Especialização Clínica certificada por Conselho' },
-      { '@type': 'EducationalOccupationalCredential', credentialCategory: 'Residency', name: 'Residência Multiprofissional em Saúde Mental' }
-    ]
-  },
-  mainEntity: {
-    '@type': 'ItemList',
-    numberOfItems: TIPOS_DE_POS_GRADUACAO.length,
-    itemListElement: TIPOS_DE_POS_GRADUACAO.map((t, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      url: `${SITE.url}/tipos-de-pos-graduacao#${t.id}`,
-      name: t.name,
-      description: t.description
-    }))
-  }
-});
-
-// 5 blocos EducationalOccupationalProgram — um por modalidade canônica
-const ldEspecializacaoLatoSensu = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Especialização Lato Sensu em Psicologia',
-    slug: '/tipos-de-pos-graduacao#especializacao-lato-sensu',
-    description: 'Pós-graduação técnica em áreas reconhecidas pelo MEC e CFP. Verticais clássicas: Avaliação Psicológica, Neuropsicologia Clínica, TCC e Psicologia Hospitalar. Carga mínima de 360 horas.',
-    programType: 'Especialização Lato Sensu',
-    timeRequired: 'P360H',
-    educationalCredentialAwarded: 'Especialização Lato Sensu em Psicologia (reconhecida pelo MEC)',
-    educationalProgramMode: 'blended'
-  })
-});
-
-const ldMBA = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'MBA em áreas correlatas à Psicologia',
-    slug: '/tipos-de-pos-graduacao#mba-correlato',
-    description: 'Master in Business Administration aplicado a Psicologia Organizacional, Neurociência executiva, Liderança Positiva e Saúde Mental Corporativa. Foco em decisão gerencial e mercado. Carga entre 360h e 540h.',
-    programType: 'MBA',
-    timeRequired: 'P360H',
-    occupationalCredentialAwarded: 'MBA Lato Sensu reconhecido pelo MEC',
-    educationalCredentialAwarded: 'Pós-Graduação Lato Sensu (MBA) em áreas correlatas à Psicologia',
-    educationalProgramMode: 'blended'
-  })
-});
-
-const ldMestradoProfissional = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Mestrado Profissional em Psicologia',
-    slug: '/tipos-de-pos-graduacao#mestrado-profissional',
-    description: 'Pós-graduação stricto sensu de natureza profissional regulada pela CAPES. Combina rigor científico com aplicação prática em Psicologia Aplicada à Saúde e Avaliação Psicológica. Duração de aproximadamente 24 meses.',
-    programType: 'Mestrado Profissional',
-    timeRequired: 'P24M',
-    educationalCredentialAwarded: 'Mestre em Psicologia (Mestrado Profissional — stricto sensu CAPES)',
-    educationalProgramMode: 'onsite'
-  })
-});
-
-const ldEspecializacaoClinica = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Especialização Clínica certificada por Conselho',
-    slug: '/tipos-de-pos-graduacao#especializacao-clinica-certificada',
-    description: 'Formação clínica longa em método terapêutico específico, com supervisão obrigatória e certificação por entidade reguladora reconhecida. Inclui ACT, EMDR, DBT, TCC e mindfulness clínico. Carga entre 500h e 1.200h.',
-    programType: 'Especialização Clínica',
-    timeRequired: 'P700H',
-    educationalCredentialAwarded: 'Especialização Clínica certificada por Conselho (CFP/ABRAP/FBT/institutos credenciados)',
-    educationalProgramMode: 'blended',
-    additionalRecognizedBy: [
-      { name: 'Conselho Federal de Psicologia (CFP)', url: 'https://site.cfp.org.br/' },
-      { name: 'Associação Brasileira de Psicologia (ABRAP)', url: 'https://www.abrapsi.org.br/' }
-    ]
-  })
-});
-
-const ldResidencia = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Residência Multiprofissional em Saúde Mental',
-    slug: '/tipos-de-pos-graduacao#residencia-multiprofissional',
-    description: 'Programa de imersão hospitalar remunerada regulado pela CNRMS/MEC, com duração de 2 a 3 anos. Forma profissionais para atuação em saúde mental no SUS com supervisão clínica intensiva.',
-    programType: 'Residência',
-    timeRequired: 'P2Y',
-    educationalCredentialAwarded: 'Certificado de Residência Multiprofissional em Saúde Mental (CNRMS/MEC)',
-    educationalProgramMode: 'onsite'
-  })
-});
+import StudyWorksheet from '@components/StudyWorksheet.astro';
+import { SITE, TIPOS_DE_POS_GRADUACAO } from '@lib/data';
+const title = 'Pós-graduação em Psicologia: compare os caminhos de formação';
+const description = 'Diferencie especialização, MBA, mestrado, formação clínica e residência. Confira certificado acadêmico, registro no CRP e critérios de escolha.';
+const faqs = [
+  { q: 'MBA é um tipo de mestrado no Brasil?', a: 'MBA é uma denominação de especialização lato sensu. O nome em inglês não o transforma em mestrado stricto sensu. Confira a natureza do certificado, a instituição habilitada e a oferta.' },
+  { q: 'O curso concede registro de especialista no CRP?', a: 'O certificado acadêmico não produz registro profissional automático. O CRP analisa o pedido conforme a Resolução CFP 23/2022, alterada pela 17/2025, com requisitos de experiência e formação.' },
+  { q: 'Formação em abordagem clínica é sempre pós-graduação?', a: 'Pode ser curso livre ou especialização lato sensu, conforme a oferta. Certificação de associação ou instituto e certificado acadêmico têm naturezas distintas. Peça essa informação por escrito antes da matrícula.' },
+];
+const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description, inLanguage: 'pt-BR', url: SITE.url + '/tipos-de-pos-graduacao/', mainEntity: { '@type': 'ItemList', itemListElement: TIPOS_DE_POS_GRADUACAO.map((t, i) => ({ '@type': 'ListItem', position: i + 1, name: t.name, url: SITE.url + '/tipos-de-pos-graduacao/#' + t.id })) } };
+const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
 ---
-
 <Base title={title} description={description}>
-  <section class="bg-surface-50 border-b border-surface-200">
-    <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Tipos de pós-graduação' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">cinco modalidades principais · guia editorial</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Tipos de Pós-Graduação em Psicologia no Brasil</h1>
-          <p class="mt-3 text-ink-700 text-lg">
-            Pós-Graduação em Psicologia não é só MBA. O portal cobre cinco modalidades regulamentadas, cada uma
-            com regulador, carga horária, público e propósito de carreira distintos.
-          </p>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver ofertas no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+  <section class="container-page py-8">
+    <Breadcrumbs items={[{label:'Início',href:'/'},{label:'Tipos de pós-graduação'}]} />
+    <p class="section-eyebrow mt-5">Formação · atualização editorial em 06/10/2026</p>
+    <h1 class="section-h text-3xl sm:text-4xl mt-3">{title}</h1>
+    <p class="mt-4 max-w-3xl text-lg">Duas ofertas usam a palavra “especialização”, mas entregam certificados diferentes. Antes de comparar preço e grade, confira o documento que será emitido e a finalidade profissional que ele atende.</p>
+  </section>
+  <article class="container-page max-w-4xl pb-12">
+    <div class="prose prose-ink max-w-none">
+      <h2 id="cinco-caminhos">Como interpretar os cinco caminhos deste portal?</h2>
+      <p>Os cinco caminhos são uma organização editorial para comparar escolhas. MBA integra a pós-graduação lato sensu; formação em abordagem clínica pode ser curso livre ou especialização acadêmica. Portanto, a lista não representa cinco modalidades acadêmicas independentes reconhecidas pelo MEC.</p>
+      <p>A Resolução CNE/CES 1/2018 disciplina a especialização lato sensu, com carga mínima de 360 horas e ingresso de pessoas diplomadas na graduação. A instituição habilitada e a regularidade da oferta precisam ser verificadas. O registro profissional de especialista em Psicologia é outro processo, tratado pelo CFP e analisado pelo CRP.</p>
     </div>
-  </section>
-
-  <SmartCrossLinks href="/tipos-de-pos-graduacao" />
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          No Brasil, pós-graduação em Psicologia se organiza em cinco modalidades principais: <strong>Especialização Lato Sensu</strong> (360h+, regulada por MEC/CFP), <strong>MBA aplicado</strong> a áreas correlatas (POT, Neurociência, Liderança), <strong>Mestrado Profissional</strong> stricto sensu (CAPES, 24 meses), <strong>Especialização Clínica certificada</strong> por Conselho (ACT, EMDR, DBT, com supervisão) e <strong>Residência Multiprofissional</strong> em Saúde Mental (2-3 anos, com prática hospitalar). Cada uma responde a um momento profissional distinto — escolha pelo regulador e pelo público-alvo antes do conteúdo.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Por que cinco modalidades e não apenas MBA</h2>
-        <p>
-          A leitura comum reduz pós-graduação em Psicologia a duas categorias — MBA e Especialização. A leitura técnica reconhece cinco modalidades regulamentadas, cada uma com regulador específico, carga horária mínima e finalidade profissional. Confundir as cinco é confundir o roteiro de carreira.
-        </p>
-        <p>
-          O ponto não é hierarquia: nenhuma modalidade é objetivamente superior. O ponto é encaixe. Avaliação Psicológica é privativa de psicólogo e exige Especialização Lato Sensu reconhecida pelo CFP. Liderança em RH com leitura de comportamento humano se beneficia mais de um MBA aplicado. Pesquisa traduzional para o SUS pede Mestrado Profissional. Atendimento de TEPT com método validado exige Especialização Clínica certificada em EMDR. Imersão hospitalar com salário e supervisão é Residência.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Comparativo das cinco modalidades</h2>
-        <p class="text-ink-700 mt-2">Regulador, carga horária, público e finalidade típica.</p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Modalidade</th>
-                <th class="text-left px-4 py-3">Regulador</th>
-                <th class="text-left px-4 py-3">Carga horária</th>
-                <th class="text-left px-4 py-3">Público-alvo</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              {TIPOS_DE_POS_GRADUACAO.map(t => (
-                <tr>
-                  <td class="px-4 py-3 font-semibold text-ink-900">
-                    <a href={`#${t.id}`} class="hover:text-brand-700">{t.shortName}</a>
-                  </td>
-                  <td class="px-4 py-3 text-ink-700">{t.regulador}</td>
-                  <td class="px-4 py-3 text-ink-700">{t.cargaHoraria}</td>
-                  <td class="px-4 py-3 text-ink-700">{t.publico}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="grid sm:grid-cols-1 gap-6">
-        {TIPOS_DE_POS_GRADUACAO.map(t => (
-          <article id={t.id} class="card p-6 scroll-mt-24 border-surface-200">
-            <div class="flex items-start gap-3 mb-3">
-              <span class="tag"><span class="w-1.5 h-1.5 rounded-full bg-brand-700"></span> {t.shortName}</span>
-            </div>
-            <h3 class="font-display font-semibold text-xl text-ink-900">{t.name}</h3>
-            <p class="mt-2 text-sm text-ink-700">{t.description}</p>
-            <dl class="mt-4 grid sm:grid-cols-3 gap-3 text-xs">
-              <div class="rounded-xl bg-surface-50 p-3 border border-surface-200">
-                <dt class="text-ink-500 uppercase tracking-wider font-semibold">Carga horária</dt>
-                <dd class="text-ink-900 mt-1 font-medium">{t.cargaHoraria}</dd>
-              </div>
-              <div class="rounded-xl bg-surface-50 p-3 border border-surface-200">
-                <dt class="text-ink-500 uppercase tracking-wider font-semibold">Regulador</dt>
-                <dd class="text-ink-900 mt-1 font-medium">{t.regulador}</dd>
-              </div>
-              <div class="rounded-xl bg-surface-50 p-3 border border-surface-200">
-                <dt class="text-ink-500 uppercase tracking-wider font-semibold">Público</dt>
-                <dd class="text-ink-900 mt-1 font-medium">{t.publico}</dd>
-              </div>
-            </dl>
-            <div class="mt-4">
-              <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">exemplos principais</p>
-              <ul class="mt-2 flex flex-wrap gap-1.5">
-                {t.exemplos.map(ex => (
-                  <li class="text-[11px] px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 font-medium">{ex}</li>
-                ))}
-              </ul>
-            </div>
-            {t.relatedMBAs.length > 0 && (
-              <div class="mt-4 pt-4 border-t border-surface-200">
-                <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-2">MBAs IPOG correlatos</p>
-                <div class="flex flex-wrap gap-2">
-                  {t.relatedMBAs.map(slug => {
-                    const m = MBAS.find(x => x.id === slug);
-                    return m && (
-                      <a href={`/mbas/${m.id}`} class="text-xs text-brand-700 hover:text-brand-800 font-medium underline decoration-sun-500 underline-offset-2">{m.shortName}</a>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-            {t.relatedAreas.length > 0 && (
-              <div class="mt-3">
-                <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-2">Áreas relacionadas</p>
-                <div class="flex flex-wrap gap-2">
-                  {t.relatedAreas.map(slug => {
-                    const a = AREAS.find(x => x.id === slug);
-                    return a && (
-                      <a href={`/areas/${a.id}`} class="text-xs px-2.5 py-1 rounded-full bg-surface-100 text-ink-700 hover:bg-brand-50 hover:text-brand-800 transition">{a.short}</a>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </article>
-        ))}
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Especializações Lato Sensu representativas</h2>
-        <p class="text-ink-700 mt-2">Quatro recortes principais da modalidade mais procurada por psicólogos com CRP ativo.</p>
-        <div class="grid md:grid-cols-2 gap-4 mt-5">
-          {ESPECIALIZACOES_LATO_SENSU.map(e => (
-            <div class="card p-5 border-surface-200">
-              <p class="text-xs uppercase tracking-wider font-semibold text-brand-800">Lato Sensu · {e.cargaHoraria}</p>
-              <h3 class="font-display font-semibold text-base text-ink-900 mt-2">{e.name}</h3>
-              <p class="text-sm text-ink-700 mt-2">{e.description}</p>
-              <p class="text-xs text-ink-500 mt-3"><strong>Público:</strong> {e.publico}</p>
-              <ul class="mt-3 flex flex-wrap gap-1.5">
-                {e.topics.slice(0, 4).map(top => (
-                  <li class="text-[11px] px-2 py-0.5 rounded-full bg-surface-100 text-ink-700">{top}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Mestrado Profissional · stricto sensu</h2>
-        <p class="text-ink-700 mt-2">Programa CAPES com defesa de dissertação ou produto técnico — diferente do mestrado acadêmico.</p>
-        <div class="grid md:grid-cols-2 gap-4 mt-5">
-          {MESTRADOS_PROFISSIONAIS.map(m => (
-            <div class="card p-5 border-surface-200">
-              <p class="text-xs uppercase tracking-wider font-semibold text-brand-800">Stricto sensu profissional · {m.cargaHoraria}</p>
-              <h3 class="font-display font-semibold text-base text-ink-900 mt-2">{m.name}</h3>
-              <p class="text-sm text-ink-700 mt-2">{m.description}</p>
-              <p class="text-xs text-ink-500 mt-3"><strong>Público:</strong> {m.publico}</p>
-              <ul class="mt-3 flex flex-wrap gap-1.5">
-                {m.topics.slice(0, 4).map(top => (
-                  <li class="text-[11px] px-2 py-0.5 rounded-full bg-surface-100 text-ink-700">{top}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Especialização Clínica certificada por Conselho</h2>
-        <p class="text-ink-700 mt-2">Formação longa em método terapêutico específico, com supervisão obrigatória e certificação por entidade reguladora reconhecida.</p>
-        <div class="grid md:grid-cols-2 gap-4 mt-5">
-          {ESPECIALIZACOES_CLINICAS.map(e => (
-            <div class="card p-5 border-surface-200">
-              <p class="text-xs uppercase tracking-wider font-semibold text-brand-800">Clínica certificada · {e.cargaHoraria}</p>
-              <h3 class="font-display font-semibold text-base text-ink-900 mt-2">{e.name}</h3>
-              <p class="text-sm text-ink-700 mt-2">{e.description}</p>
-              <p class="text-xs text-ink-500 mt-3"><strong>Certificador:</strong> {e.certificador}</p>
-              <p class="text-xs text-ink-500 mt-1"><strong>Público:</strong> {e.publico}</p>
-              <ul class="mt-3 flex flex-wrap gap-1.5">
-                {e.topics.slice(0, 4).map(top => (
-                  <li class="text-[11px] px-2 py-0.5 rounded-full bg-surface-100 text-ink-700">{top}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">A escolha da modalidade vem antes da escolha do curso.</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Antes de comparar grade, valor ou modalidade de ensino (online, presencial, ao vivo), defina a categoria regulatória correta. Avaliação Psicológica, Neuropsicologia clínica e laudos exigem Lato Sensu reconhecida pelo CFP. Liderança aplicada, NR-1 e people analytics são MBA correlato. Pesquisa para o SUS é Mestrado Profissional. EMDR para TEPT exige Especialização Clínica certificada. Residência é o caminho de imersão hospitalar remunerada. Caminho oficial das matrículas: ipog.edu.br.
-        </p>
-      </div>
-
-    </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <nav class="card p-6 lg:sticky lg:top-20" aria-label="Atalhos para modalidades">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Nesta página</p>
-        <ul class="mt-3 space-y-2 text-sm">
-          {TIPOS_DE_POS_GRADUACAO.map(t => (
-            <li><a href={`#${t.id}`} class="text-brand-700 hover:text-brand-800 font-medium">{t.shortName}</a></li>
-          ))}
-        </ul>
-      </nav>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Caminho oficial</p>
-        <p class="text-sm text-ink-700">
-          Valor, modalidade de ensino e calendário de turma são tratados diretamente no portal IPOG.
-        </p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary btn-sm mt-4 w-full">
-          Ver no IPOG
-        </a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Referências regulatórias</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP · Conselho Federal de Psicologia</a></li>
-          <li><a href="https://www.gov.br/capes/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CAPES · Stricto sensu</a></li>
-          <li><a href="https://www.gov.br/mec/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC · Lato sensu (Res. CNE/CES 1/2018)</a></li>
-          <li><a href="https://www.abrapsi.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">ABRAPSI · Associação Brasileira</a></li>
-        </ul>
-      </div>
-    </aside>
-  </section>
-
-  <RelatedContent href="/tipos-de-pos-graduacao" />
-  <NextStepCTA href="/tipos-de-pos-graduacao" />
-
-  <script type="application/ld+json" set:html={ldCollection} />
-  <script type="application/ld+json" set:html={ldEspecializacaoLatoSensu} />
-  <script type="application/ld+json" set:html={ldMBA} />
-  <script type="application/ld+json" set:html={ldMestradoProfissional} />
-  <script type="application/ld+json" set:html={ldEspecializacaoClinica} />
-  <script type="application/ld+json" set:html={ldResidencia} />
+    <nav class="card p-5 my-6" aria-label="Caminhos de formação"><ul class="space-y-2">{TIPOS_DE_POS_GRADUACAO.map(t => <li><a class="text-brand-700 underline" href={'#' + t.id}>{t.name}</a></li>)}</ul></nav>
+    {TIPOS_DE_POS_GRADUACAO.map(t => <section id={t.id} class="card p-6 my-5 scroll-mt-24">
+      <h2 class="section-h text-2xl">{t.name}</h2><p class="mt-3">{t.description}</p>
+      <dl class="grid sm:grid-cols-2 gap-4 mt-4"><div><dt class="font-semibold">Regra e referência</dt><dd>{t.regulador}</dd></div><div><dt class="font-semibold">Duração e carga</dt><dd>{t.cargaHoraria}</dd></div></dl>
+      <p class="mt-3 text-sm">Confira os requisitos do programa e o escopo permitido pela sua graduação e pelo registro profissional. Uma pós-graduação não autoriza atos privativos de outra profissão.</p>
+    </section>)}
+    <div class="prose prose-ink max-w-none">
+      <h2 id="comparar-ofertas">Quais documentos pedir antes da matrícula?</h2>
+      <p>Peça a identificação da instituição que emitirá o certificado, a grade vigente, a natureza da formação, as condições contratuais e o modo de avaliação. Se houver prática ou supervisão, confira quem responde por elas e como o sigilo será preservado.</p>
+      <ol><li>Compare o objetivo profissional com as atividades que o curso permite praticar.</li><li>Verifique a instituição no e-MEC e os programas stricto sensu na consulta oficial da CAPES.</li><li>Separe o certificado do curso dos requisitos de registro de especialista no CRP.</li><li>Avalie carga de estudo, supervisão, acessibilidade, deslocamento e custo total documentado.</li></ol>
+      <h2 id="exemplo">Como aplicar a comparação?</h2>
+      <p>Em um cenário fictício, uma psicóloga quer aprofundar a avaliação neuropsicológica. Uma formação oferece aulas gravadas; outra descreve discussão supervisionada de casos e critérios de avaliação. O nome do curso não resolve a escolha. Ela pede os documentos, verifica a qualificação dos docentes e consulta o CRP sobre as evidências necessárias para um futuro registro de especialista. Só então compara as condições de matrícula.</p>
+      <p>Use o <a href="/guias/escolher-supervisor-clinico/">roteiro de escolha de supervisão</a> e a página de <a href="/regulacao/">regulação e ética</a> para aprofundar essas verificações.</p>
+    </div>
+    <StudyWorksheet id="comparar-formacoes" title="Ficha de comparação de formações" description="Organize documentos e dúvidas antes de escolher uma oferta. Registre apenas dados públicos do curso." fields={[
+      {label:'Objetivo de formação',hint:'Qual competência pretende desenvolver e em qual contexto?'},
+      {label:'Natureza do certificado',hint:'Registre curso livre, especialização, mestrado ou residência e quem emite o documento.'},
+      {label:'Documentos conferidos',hint:'Anote links oficiais, data da consulta e pendências sobre a oferta.'},
+      {label:'Prática e condições',hint:'Compare supervisão, avaliação, acessibilidade, carga de estudo e custo documentado.'}
+    ]} checklist={['Conferi a instituição e a oferta em fontes oficiais.','Separei certificado acadêmico de registro profissional.','Tenho resposta escrita para as pendências que mudam a escolha.']} />
+    <div class="prose prose-ink max-w-none">
+      <h2 id="perguntas">Perguntas frequentes</h2>{faqs.map(f => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      <h2 id="fontes">Fontes e leitura complementar</h2>
+      <ul>
+        <li><a href="https://portal.mec.gov.br/component/content/323-secretarias-112877938/orgaos-vinculados-82187207/12899-pos-graduacao-normativos">MEC: normativos de pós-graduação</a>, incluindo CNE/CES 1/2018.</li>
+        <li><a href="https://emec.mec.gov.br/">Cadastro e-MEC</a>: instituições.</li>
+        <li><a href="https://sucupira.capes.gov.br/">Plataforma Sucupira da CAPES</a>: programas stricto sensu.</li>
+        <li><a href="https://site.cfp.org.br/servicos/titulo-de-especialista/">CFP: registro de especialista</a>, conforme 23/2022 e alteração 17/2025.</li>
+      </ul>
+      <p>O curso <a href="https://alexandrecaramaschi.com/educacao/eeat-qualidade">E-E-A-T e qualidade de conteúdo, no portal de Alexandre Caramaschi</a>, ajuda a examinar autoria e sustentação de alegações. É estudo complementar de leitura crítica; não confere pós-graduação ou título profissional em Psicologia.</p>
+      <p>Para informações sobre uma turma do IPOG, confira grade, valores e condições diretamente em <a href={SITE.ipogOfficial}>ipog.edu.br</a>.</p>
+    </div>
+  </article>
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 </Base>

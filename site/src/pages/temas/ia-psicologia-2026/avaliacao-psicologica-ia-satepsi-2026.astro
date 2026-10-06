@@ -1,293 +1,117 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import TLDR from '@components/TLDR.astro';
-import { SITE, MBAS, AREAS } from '@lib/data';
-import { alexandrePersonBase, brasilGeoOrganization, alexandreAuthorRef } from '@lib/schemas';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 
-const camadasUso = [
-  {
-    camada: 'Camada 1 — apoio à correção e pontuação',
-    exemplos: 'OCR de protocolo manual, pontuação automatizada de WAIS-IV, WISC-V, BFP, RAVLT segundo manual oficial; conferência de cálculo de QI e percentis',
-    riscoTecnico: 'Erros de OCR em escrita manual; arredondamento incorreto de score composto; uso de norma incorreta para faixa etária',
-    parecerSATEPSI: 'Não exige parecer próprio. O instrumento normatizado continua sendo o teste; a ferramenta é calculadora. Responsabilidade técnica é do psicólogo que assina.',
-    defensavel: 'Sim, com revisão humana obrigatória do score e checagem amostral da pontuação automática.'
-  },
-  {
-    camada: 'Camada 2 — apoio à interpretação',
-    exemplos: 'Sugestão de hipóteses interpretativas em Rorschach (R-PAS), associações qualitativas em HTP, sumarização de relato de paciente para integração com testes',
-    riscoTecnico: 'Confabulação interpretativa plausível mas não validada; viés sistemático em populações sub-representadas no treinamento; LLM "inventa" significado psicodinâmico',
-    parecerSATEPSI: 'Zona cinzenta. SATEPSI normatiza o instrumento, não a interpretação. Posicionamento CFP de 03/07/2025 reforça responsabilidade do psicólogo.',
-    defensavel: 'Sim, como rascunho de hipóteses; nunca como interpretação final. Toda hipótese da IA precisa ser checada contra protocolo, anamnese e clínica.'
-  },
-  {
-    camada: 'Camada 3 — apoio à redação do laudo',
-    exemplos: 'Geração de rascunho de laudo a partir de scores e interpretação aprovada pelo psicólogo; revisão de coesão textual; verificação de cumprimento da Resolução CFP 06/2019 (estrutura formal)',
-    riscoTecnico: 'Estilo padronizado que apaga particularidade clínica; introdução de afirmação não embasada; risco LGPD por envio de identificação de paciente a serviço externo',
-    parecerSATEPSI: 'Fora do escopo SATEPSI. Aplica-se Resolução CFP 06/2019 sobre documentos psicológicos.',
-    defensavel: 'Sim, com desidentificação rigorosa antes de qualquer envio, contrato de não treinamento, e revisão integral pelo psicólogo signatário.'
-  },
-  {
-    camada: 'Camada 4 — IA como instrumento autônomo de avaliação',
-    exemplos: 'Sistema que aplica, corrige e interpreta teste psicológico sem psicólogo no loop; "diagnóstico por IA" como produto final',
-    riscoTecnico: 'Validade preditiva não estabelecida; viés cultural e demográfico não mitigado; ausência de controle humano em decisão de alto impacto',
-    parecerSATEPSI: 'Vedado. Nenhuma IA generativa tem parecer SATEPSI favorável como instrumento. Resolução CFP 09/2018 exige validação no sistema SATEPSI para uso como teste psicológico.',
-    defensavel: 'Não. Operação contra a Resolução CFP 09/2018 e contra o Posicionamento de 03/07/2025.'
-  }
-];
-
+const title = "IA na avaliação psicológica: conferir tarefa, evidência e responsabilidade";
+const description = "O que verificar antes de usar IA em avaliação psicológica: CFP 31/2022, SATEPSI, orientações de 2025, documentos e proteção de dados.";
 const faqs = [
   {
-    q: 'IA generativa pode interpretar Rorschach ou outro teste projetivo em 2026?',
-    a: 'Pode auxiliar, não pode substituir. A interpretação de instrumentos projetivos como o Rorschach (R-PAS) e HTP em 2026 é ato técnico privativo de psicólogo habilitado, conforme Resolução CFP 09/2018 e Resolução CFP 31/2022. LLM pode sugerir hipóteses interpretativas a partir de descrição textual de protocolo, mas sem treinamento específico em corpus normatizado e sem validação contra padrão-ouro a sugestão tem natureza de rascunho. Pesquisas com LLMs em interpretação de testes psicológicos (Demszky e colaboradores, com publicações entre 2023 e 2025) mostram que modelos generativos reproduzem categorização razoável em domínios bem estruturados mas falham em integração clínica fina. O psicólogo responsável assume a interpretação final.'
+    "q": "Basta chamar o sistema de apoio para dispensar validação?",
+    "a": "Não. É necessário examinar a tarefa, o procedimento, o instrumento, as normas e as evidências específicas do uso."
   },
   {
-    q: 'O SATEPSI normatiza IA como instrumento de avaliação psicológica?',
-    a: 'Não em 2026. O Sistema de Avaliação de Testes Psicológicos (SATEPSI), regulamentado pela Resolução CFP 09/2018 e atualizado em 2025, normatiza instrumentos específicos passados por processo formal de avaliação técnica (evidências de validade, fidedignidade, normas atualizadas). Em maio de 2026, nenhum sistema de IA generativa (ChatGPT, Claude, Gemini, ou produto verticalizado) tem parecer SATEPSI favorável como instrumento autônomo. IA pode ser usada como ferramenta de apoio em torno de instrumentos já normatizados — a normatização é do teste, não do software de assistência. Produto vendido como "avaliação psicológica por IA" sem o instrumento subjacente normatizado opera contra o marco regulatório.'
+    "q": "A Resolução 9/2018 continua sendo a norma vigente do SATEPSI?",
+    "a": "Ela foi revogada pela Resolução CFP 31/2022, que deve orientar a consulta atual junto às demais normas aplicáveis."
   },
   {
-    q: 'Posso usar ChatGPT para gerar rascunho de laudo psicológico?',
-    a: 'Pode, com governança rigorosa. A Resolução CFP 06/2019 sobre documentos psicológicos define estrutura obrigatória do laudo (identificação, demanda, procedimentos, análise, conclusão). LLM pode gerar rascunho coerente a partir de scores e interpretação já aprovada pelo psicólogo. Três condições mínimas para operar dentro do marco. Primeiro, desidentificação total — nunca enviar nome, CPF ou identificador de paciente para serviço externo de IA. Segundo, contrato Enterprise com cláusula de não treinamento e zero retenção (LGPD art. 11 para dado sensível). Terceiro, revisão integral pelo psicólogo signatário — o laudo gerado por IA sem revisão é falha ética grave, mesmo que tecnicamente correto. A responsabilidade civil e ética é intransferível.'
+    "q": "Um contrato Enterprise autoriza enviar protocolos ao chatbot?",
+    "a": "Não automaticamente. Contrato não comprova validade psicológica e não elimina deveres de sigilo, proteção de dados e respeito às condições de uso dos instrumentos."
   },
   {
-    q: 'Existe alguma vantagem real da IA em avaliação psicológica em 2026?',
-    a: 'Sim, em quatro frentes mensuráveis. Primeiro, redução de erro aritmético em pontuação automatizada de instrumentos com algoritmo determinístico (WAIS, WISC, BFP) — pesquisas em laboratórios universitários reportam queda em erros de cálculo quando comparada a pontuação manual sob pressão de tempo. Segundo, padronização da estrutura formal do laudo conforme Resolução CFP 06/2019 — checagem automática reduz falhas formais que aparecem em fiscalização de CRP. Terceiro, OCR de protocolo manual — agiliza fluxo em serviços com volume alto. Quarto, sumarização de literatura para fundamentação teórica — psicólogo encontra referência atualizada mais rápido. Em todos os casos, o ganho é de produtividade e consistência, não de validade clínica adicional. A validade continua sendo função do instrumento normatizado e do julgamento do profissional.'
-  },
-  {
-    q: 'O que muda se o PL 2338/2023 for aprovado?',
-    a: 'O Projeto de Lei 2338/2023, conhecido como Marco Legal da IA, em tramitação no Senado Federal em 2026, propõe classificação de sistemas de IA por nível de risco — vedados, alto risco, médio risco. Sistemas em saúde mental podem ser enquadrados como alto risco em redações em discussão, exigindo avaliação de impacto algorítmico, supervisão humana significativa, transparência sobre dados de treinamento e mecanismo de contestação. A redação final do texto define o impacto prático; até a publicação desta peça, em maio de 2026, o PL não foi aprovado. Para o psicólogo, a recomendação é acompanhar a tramitação via CFP e operar desde já com governança compatível com o cenário mais restritivo — desidentificação, contrato Enterprise, registro em prontuário, revisão humana obrigatória. O custo é baixo; a proteção contra mudança regulatória é alta.'
+    "q": "A cartilha do CFP proíbe todo apoio à redação?",
+    "a": "Não. O guia de 2025 admite rascunhos com revisão integral, responsabilidade profissional e proteção dos dados. Isso não aprova qualquer ferramenta ou procedimento."
   }
 ];
-
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Avaliação psicológica com IA e o debate SATEPSI em 2026',
-  description: 'IA na avaliação psicológica em 2026 — 4 camadas de uso, Resolução CFP 09/2018, Posicionamento CFP de 03/07/2025, SATEPSI, Resolução CFP 06/2019 e PL 2338/2023. O que é defensável, o que está em zona cinzenta, o que é vedado.',
-  author: alexandreAuthorRef,
-  publisher: { '@id': brasilGeoOrganization['@id'] },
-  inLanguage: 'pt-BR',
-  datePublished: '2026-05-17',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['.tldr-resposta', '.faq-answer-text']
-  }
+  headline: title,
+  description,
+  author: { '@id': 'https://brasilgeo.ai/#organization' },
+  publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+  inLanguage: 'pt-BR'
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
+    '@type': 'Question', name: f.q,
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
-
-const mbaPot = MBAS.find(m => m.id === 'mba-pot');
-const mbaNcpp = MBAS.find(m => m.id === 'mba-ncpp');
-const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
-const areaAvaliacao = AREAS.find(a => a.id === 'avaliacao-psicologica' || a.id === 'psicologia-clinica');
 ---
-<Base
-  title="Avaliação psicológica com IA e o debate SATEPSI em 2026: o que é defensável, o que é vedado"
-  description="IA na avaliação psicológica em 2026 — 4 camadas de uso, Resolução CFP 09/2018, Posicionamento CFP de 03/07/2025, SATEPSI, Resolução CFP 06/2019 e PL 2338/2023.">
-
+<Base title={title} description={description}>
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Temas', href: '/temas' },
-        { label: 'IA e Psicologia em 2026', href: '/temas/ia-psicologia-2026' },
-        { label: 'Avaliação psicológica com IA e SATEPSI 2026' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Frente 2 · Avaliação · 2026</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Avaliação psicológica com IA e o debate SATEPSI em 2026.</h1>
-          <TLDR
-            resposta="IA na avaliação psicológica em 2026 opera em 4 camadas com risco e marco regulatório distintos — pontuação, interpretação, redação de laudo e instrumento autônomo. As três primeiras são defensáveis com governança; a quarta é vedada pela Resolução CFP 09/2018. SATEPSI normatiza o teste, não o software de apoio. O Posicionamento CFP de 03/07/2025 mantém responsabilidade técnica com o psicólogo. O vácuo regulatório sobre IA como instrumento ainda não foi preenchido — é a fronteira onde o profissional informado tem vantagem."
-            fontes={['CFP — Resolução 09/2018 (SATEPSI)', 'CFP — Resolução 06/2019 (documentos psicológicos)', 'CFP — Resolução 31/2022 (avaliação)', 'CFP — Posicionamento de 03/07/2025', 'PL 2338/2023 (Marco Legal da IA)']}
-          />
-          <p class="mt-3 text-ink-700 text-lg">Análise técnica das 4 camadas de uso de IA em avaliação psicológica sob marco regulatório brasileiro. Para psicólogos avaliadores, peritos e coordenadores de programas.</p>
-          <p class="mt-3 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-800 text-xs font-semibold px-3 py-1.5 rounded-full">7 seções · Última revisão · 2026-05-17</p>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver cursos no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{label:'Início',href:'/'},{label:"Temas",href:"/temas/"},{label:"IA e avaliação psicológica"}]} />
+      <span class="section-eyebrow mt-3">Revisão editorial · 6 de outubro de 2026</span>
+      <h1 class="section-h text-3xl sm:text-4xl">{title}</h1>
+      <p class="mt-3 text-ink-700 text-lg max-w-3xl">Chamar um sistema de “apoio” não comprova validade nem o dispensa das condições de uso do instrumento. A avaliação começa pela tarefa concreta e pelos dados que a ferramenta receberia.</p>
     </div>
   </section>
-
   <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
+    <article class="lg:col-span-8 space-y-8">
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
-        <p>
-          A leitura predominante sobre IA em avaliação psicológica em 2026 é dicotômica — ou IA é proibida pelo CFP, ou IA é o futuro inevitável. As duas leituras erram pela mesma omissão: tratam IA como bloco único. Avaliação psicológica é cadeia de atos distintos — aplicação, pontuação, interpretação, integração clínica, redação de laudo, devolutiva. IA opera com vantagem técnica em alguns elos e com risco inaceitável em outros. O profissional treinado em 2026 distingue elo por elo; o profissional menos informado trata o todo como uma decisão binária.
-        </p>
-        <p>
-          A inversão prática é o que define qualidade técnica no momento. SATEPSI, sistema de avaliação de testes psicológicos regulamentado pela Resolução CFP 09/2018 e atualizado em 2025, normatiza instrumentos. Em 2026, nenhuma IA generativa tem parecer SATEPSI favorável como instrumento autônomo de avaliação. Mas o sistema não veda — porque não regula — o uso de IA como ferramenta de apoio em torno de instrumentos já normatizados. O vácuo regulatório sobre o limite entre apoio e substituição é exatamente o terreno onde a competência técnica do profissional decide se o uso é defensável ou improvisado.
-        </p>
+<p>Eduardo, psicólogo em um exemplo hipotético, recebe uma oferta de IA que promete interpretar respostas a testes projetivos e entregar um laudo. O fornecedor afirma que o SATEPSI só avalia o teste e que basta o profissional assinar. Eduardo pede evidências sobre o procedimento e decide não enviar protocolos enquanto a adequação do uso não estiver demonstrada.</p>
+<h2 class="section-h text-2xl">Qual norma orienta a avaliação?</h2>
+<p>A <a href="https://satepsi.cfp.org.br/faq.cfm">Resolução CFP 31/2022, apresentada nas orientações do SATEPSI</a>, regulamenta a avaliação psicológica e o sistema de avaliação de testes. Ela revogou a Resolução 9/2018. A conferência envolve parecer, versão, população, finalidade e forma de aplicação, conforme instrumento e manual, além do processo profissional de avaliação.</p>
+<p>Uma ferramenta digital prevista e estudada para determinado procedimento não equivale a copiar respostas em um chatbot de uso geral. A presença de um teste com parecer favorável não valida automaticamente qualquer software acoplado a ele. Este guia não autoriza interpretação de protocolos, diagnóstico ou emissão de documentos a partir de uma promessa comercial.</p>
+<h2 class="section-h text-2xl">Como distinguir as tarefas?</h2>
+<div class="table-wrap"><table><thead><tr><th>Tarefa proposta</th><th>Conferência antes do uso</th><th>Erro a evitar</th></tr></thead><tbody>
+<tr><td>Organizar bibliografia pública</td><td>Existência, autoria e conteúdo de cada fonte</td><td>Citar referência inventada</td></tr>
+<tr><td>Corrigir ou pontuar um instrumento</td><td>Procedimento previsto, versão e funcionamento documentado</td><td>Tratar LLM como calculadora validada</td></tr>
+<tr><td>Sugerir interpretação de respostas</td><td>Fundamento científico, condições normativas e riscos específicos</td><td>Confundir texto plausível com evidência psicológica</td></tr>
+<tr><td>Apoiar a redação de documento</td><td>Conteúdo fundamentado, revisão integral e proteção dos dados</td><td>Assinar conteúdo acrescentado pela ferramenta sem base</td></tr>
+</tbody></table></div>
+<h2 class="section-h text-2xl">O que as orientações de 2025 efetivamente dizem?</h2>
+<p>A <a href="https://site.cfp.org.br/cfp-divulga-posicionamento-sobre-inteligencia-artificial-no-contexto-da-pratica-psicologica/">nota de posicionamento do CFP de julho de 2025</a> exige postura crítica, proteção de direitos e centralidade do julgamento profissional. Ela não oferece uma exceção geral para interpretação de testes por LLM.</p>
+<p>O <a href="https://site.cfp.org.br/wp-content/uploads/2025/12/Cartilha_IA_A5-1.pdf">guia do CFP publicado em dezembro de 2025</a>, nas perguntas 10 e 11, admite apoio a rascunhos com revisão integral e responsabilidade profissional, ressalta privacidade e remete a validação dos testes ao SATEPSI. Essa orientação não constitui aprovação de produto ou de todo uso descrito como “auxiliar”. Também não sustenta uma proibição indistinta de qualquer tarefa digital.</p>
+<h2 class="section-h text-2xl">Por que retirar o nome não resolve tudo?</h2>
+<p>Uma história clínica, combinação de datas ou contexto raro pode permitir identificação. A <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm">LGPD</a> prevê proteção específica para dados sensíveis; finalidade, hipótese legal, necessidade, segurança e responsabilidades devem ser analisadas antes do tratamento.</p>
+<p>Um plano comercial chamado Enterprise, uma promessa de não treinamento ou um consentimento não conferem, sozinhos, validade psicológica ou conformidade. A análise deve abranger retenção, acesso, fornecedores envolvidos, transferência de dados e possibilidade de incidentes. Não envie protocolos, itens protegidos ou prontuários a uma ferramenta pública como exercício de aprendizagem.</p>
+<h2 class="section-h text-2xl">Como registrar uma decisão revisável?</h2>
+<ol><li>Descreva exatamente a tarefa e os dados envolvidos.</li><li>Consulte normas, SATEPSI e manual, sem presumir equivalência entre formatos.</li><li>Peça evidências e documentação do sistema para aquele uso.</li><li>Avalie privacidade e quem responde por cada etapa.</li><li>Registre limites e a decisão de usar, restringir ou não adotar.</li></ol>
+<p>Os documentos continuam sujeitos à <a href="https://site.cfp.org.br/wp-content/uploads/2019/09/Resolu%C3%A7%C3%A3o-CFP-n-06-2019-comentada.pdf">Resolução CFP 6/2019</a>; autoria e responsabilidade técnica não podem ser transferidas ao gerador de texto.</p>
+<p>A decisão sobre IA em avaliação psicológica precisa ser justificada por tarefa e evidência. Eduardo pode estudar tecnologia com literatura pública enquanto mantém o processo avaliativo dentro de condições demonstradas e profissionalmente defensáveis.</p>
       </div>
-
-      <div>
-        <h2 class="section-h text-2xl">As 4 camadas de uso de IA em avaliação psicológica</h2>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Camada</th>
-                <th class="text-left px-4 py-3">Exemplos práticos</th>
-                <th class="text-left px-4 py-3">Risco técnico</th>
-                <th class="text-left px-4 py-3">Parecer SATEPSI</th>
-                <th class="text-left px-4 py-3">Defensável?</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              {camadasUso.map(c => (
-                <tr>
-                  <td class="px-4 py-3 font-semibold text-ink-900 align-top">{c.camada}</td>
-                  <td class="px-4 py-3 text-ink-700 align-top">{c.exemplos}</td>
-                  <td class="px-4 py-3 text-ink-700 align-top">{c.riscoTecnico}</td>
-                  <td class="px-4 py-3 text-ink-700 align-top">{c.parecerSATEPSI}</td>
-                  <td class="px-4 py-3 text-ink-700 align-top font-medium">{c.defensavel}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <StudyWorksheet id="ficha-pratica" title="Ficha de análise de uma proposta de IA em avaliação" description="Avalie a proposta comercial usando informações públicas, sem protocolos, itens de testes ou dados de pacientes."
+        fields={[{"label":"Tarefa e dados","hint":"O que o sistema faria e que tipo de informação receberia."},{"label":"Norma e manual","hint":"Fonte vigente e condições pertinentes de utilização."},{"label":"Evidência específica","hint":"O que foi testado no sistema e o que segue sem demonstração."},{"label":"Responsabilidade e proteção","hint":"Revisão, retenção, acesso e resposta a incidentes."},{"label":"Decisão documentada","hint":"Usar, restringir, pedir esclarecimentos ou não adotar, com justificativa."}]} checklist={["Consultei a CFP 31/2022 em vez de tratar09/2018 como vigente.","Não confundi apoio com dispensa de validação.","Não inseri dados de pacientes ou itens protegidos.","A revisão humana não foi apresentada como garantia automática.","A decisão preserva responsabilidade profissional."]} />
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Como aprofundar o estudo?</h2>
+        <p>O <a href="https://alexandrecaramaschi.com/educacao/letramento-ia-executivos">Letramento em IA, de Alexandre Caramaschi</a>, apoia a organização de fontes, riscos e revisão humana. Use-o com casos fictícios e documentos públicos, sem transferir material de avaliação psicológica ao assistente.</p>
+        <p>O recurso educacional é complementar. Seu certificado não equivale a pós-graduação nem concede título profissional; as fontes técnicas e normas desta página devem orientar a conferência dos fatos.</p>
+        <h2 class="section-h text-2xl" id="fontes">Fontes e escopo da revisão</h2>
+        <p>Fontes consultadas em 6 de outubro de 2026. Revisão editorial de conteúdo educativo; não representa avaliação clínica individual nem revisão pessoal atribuída a profissional de saúde.</p>
+        <ul><li><a href="https://satepsi.cfp.org.br/faq.cfm" target="_blank" rel="noopener external">CFP/SATEPSI: perguntas frequentes sobre avaliação psicológica</a></li>
+<li><a href="https://site.cfp.org.br/cfp-divulga-posicionamento-sobre-inteligencia-artificial-no-contexto-da-pratica-psicologica/" target="_blank" rel="noopener external">CFP: posicionamento sobre IA na prática psicológica, julho de 2025</a></li>
+<li><a href="https://site.cfp.org.br/wp-content/uploads/2025/12/Cartilha_IA_A5-1.pdf" target="_blank" rel="noopener external">CFP: Inteligência Artificial na Psicologia, guia de 2025</a></li>
+<li><a href="https://site.cfp.org.br/wp-content/uploads/2019/09/Resolu%C3%A7%C3%A3o-CFP-n-06-2019-comentada.pdf" target="_blank" rel="noopener external">CFP: Resolução 6/2019 comentada, documentos psicológicos</a></li>
+<li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank" rel="noopener external">LGPD, Lei 13.709/2018, texto consolidado</a></li></ul>
+      </div>
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (<details class="p-5"><summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary><p class="mt-3 text-ink-700 leading-relaxed">{f.a}</p></details>))}
         </div>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">SATEPSI em 2026 — o que está e o que não está no escopo</h2>
-        <p>
-          O Sistema de Avaliação de Testes Psicológicos é instrumento regulatório do CFP que normatiza, desde sua reformulação em 2003 e ajustes posteriores até a Resolução CFP 09/2018, quais testes podem ser usados profissionalmente no Brasil. O processo de submissão exige evidências de validade (de construto, de critério, baseada em conteúdo), fidedignidade (consistência interna, estabilidade temporal, equivalência entre formas) e normas atualizadas para a população brasileira ou referências internacionais aplicáveis. A lista de instrumentos com parecer favorável é pública, atualizada periodicamente e consultada via sistema online do CFP.
-        </p>
-        <p>
-          O ponto importante em 2026: o SATEPSI normatiza o teste, não a ferramenta de assistência. Calculadora de QI, software de pontuação automatizada, sistema de OCR de protocolo manual e LLM que sugere hipóteses interpretativas operam em torno do instrumento — são ferramentas, não testes. Em 2026, nenhum sistema de IA generativa foi submetido com sucesso ao SATEPSI como instrumento de avaliação. Isso significa que produto vendido como "diagnóstico autônomo por IA" não tem parecer favorável e opera contra a Resolução CFP 09/2018. Produto vendido como "apoio à interpretação" ou "calculadora inteligente" opera fora do escopo SATEPSI, sob responsabilidade técnica do psicólogo que assina o laudo.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">LLMs interpretando testes — o que a pesquisa empírica mostra</h2>
-        <p>
-          A pesquisa empírica sobre LLMs em interpretação de testes psicológicos é recente e em crescimento. Demszky, Yang, Yeager e colaboradores publicaram entre 2023 e 2025 série de estudos sobre uso de LLMs em codificação de texto clínico, anotação de transcrição psicoterapêutica e categorização de sintomas — resultados encorajadores em tarefas bem estruturadas (concordância interavaliador alta com humano treinado em domínios definidos) e falhas previsíveis em integração clínica fina. A síntese de 2025 indica que LLMs reproduzem categorização razoável quando o construto é operacionalizado de forma clara e há corpus de treinamento robusto; falham quando a tarefa exige integração de informação de múltiplas fontes (anamnese, protocolo, observação) com pesos contextuais.
-        </p>
-        <p>
-          Aplicação direta em avaliação psicológica: LLM pode auxiliar na codificação de resposta verbal a teste projetivo, sumarizar relato de paciente, sugerir hipótese inicial a partir de scores. Não tem desempenho validado para interpretação integrada de bateria psicológica em paciente específico. A diferença entre rascunho de hipótese e interpretação final é a linha técnica que o profissional precisa manter explícita em prontuário.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Redação de laudo com IA e a Resolução CFP 06/2019</h2>
-        <p>
-          A Resolução CFP 06/2019 sobre elaboração de documentos psicológicos define estrutura obrigatória do laudo — identificação, demanda, procedimento, análise, conclusão — e atribui responsabilidade técnica e ética ao psicólogo signatário. Em 2026, é tecnicamente trivial usar LLM para gerar rascunho de laudo a partir de scores normatizados e interpretação aprovada pelo psicólogo. O ganho de produtividade é real; o risco também.
-        </p>
-        <p>
-          Três condições mínimas para uso defensável. Primeiro, desidentificação total antes de qualquer envio externo — nome, CPF, data de nascimento, escola, endereço de paciente nunca em prompt para serviço de IA. A LGPD (Lei 13.709/2018, art. 11) classifica dado de saúde como sensível, com exigência reforçada de proteção. Segundo, contrato Enterprise com cláusula de não treinamento e zero retenção; planos consumer (ChatGPT Plus, Claude Pro pessoal) operam com retenção e possibilidade de revisão humana de prompt, inadequados para conteúdo clínico. Terceiro, revisão integral pelo psicólogo signatário — gerar laudo por IA e assinar sem leitura crítica é falha ética grave, mesmo que o texto esteja tecnicamente correto. A responsabilidade civil e ética pela conclusão é intransferível ao desenvolvedor do app.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">PL 2338/2023 — o cenário que pode reconfigurar tudo</h2>
-        <p>
-          O Projeto de Lei 2338/2023, em tramitação no Senado Federal em 2026, propõe Marco Legal da IA no Brasil. As versões em discussão classificam sistemas de IA por nível de risco — vedados, alto risco, médio risco — e estabelecem obrigações proporcionais. Sistemas de IA aplicados a saúde, incluindo saúde mental, têm potencial de enquadramento como alto risco em redações em circulação, o que implicaria avaliação de impacto algorítmico, supervisão humana significativa, transparência sobre dados de treinamento e mecanismo de contestação por parte do indivíduo avaliado.
-        </p>
-        <p>
-          A redação final define o impacto prático. Para o psicólogo brasileiro em 2026, a recomendação operacional é acompanhar a tramitação via comunicados do CFP e operar desde já com governança compatível com o cenário mais restritivo — desidentificação, contrato Enterprise, registro detalhado em prontuário, revisão humana obrigatória, consentimento informado escrito específico para uso de IA. O custo dessa governança é baixo; a proteção contra mudança regulatória futura é alta.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Decisão pessoal de uso para o psicólogo avaliador</h2>
-        <p>
-          O psicólogo avaliador em 2026 toma três decisões sequenciais. Primeira: definir em quais camadas (1 a 3) opera. Camada 1 (pontuação) é defensável amplamente; camada 2 (interpretação) exige treinamento específico em LLM aplicado à clínica; camada 3 (redação) exige governança LGPD rigorosa. Camada 4 (instrumento autônomo) é vedada em 2026. Segunda decisão: contratar plataforma compatível — Enterprise com cláusula de não treinamento, hospedagem em região compatível com LGPD, logs auditáveis. Terceira decisão: redigir protocolo escrito — termo de consentimento específico para IA, procedimento de desidentificação, plano de revisão, padrão de registro em prontuário.
-        </p>
-        <p>
-          O próximo passo prático é a formação aplicada. Pós-graduações em Psicologia que abordam IA em avaliação com profundidade técnica em 2026 são poucas; tendem a ser ofertadas em modalidade Ao Vivo síncrona com docentes que publicaram na literatura recente. O MBA em Neurociência, Comportamento e Psicologia Positiva e o MBA em Psicologia Organizacional e do Trabalho do IPOG abordam, em diferentes graus, IA aplicada com governança técnica — em formato Ao Vivo síncrono com corpo docente nominal. A peça "IA na formação do psicólogo brasileiro em 2026" deste cluster aprofunda a triagem.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="space-y-4 mt-4">
-          {faqs.map(f => (
-            <details class="faq-item rounded-2xl border border-surface-200 bg-white p-5">
-              <summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary>
-              <p class="faq-answer-text mt-3 text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Próximo passo</h2>
-        <p class="text-ink-700 leading-relaxed mt-3">
-          O psicólogo avaliador que decide integrar IA em 2026 começa pela leitura cruzada da Resolução CFP 09/2018 (SATEPSI), da Resolução CFP 06/2019 (documentos psicológicos), do Posicionamento de 03/07/2025 e dos termos de uso do plano Enterprise contratado. Define camadas, redige protocolo escrito, treina equipe e estabelece auditoria interna. A capacidade técnica está disponível; a responsabilidade pela governança é intransferível.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Cross-links internos</h2>
-        <ul class="mt-3 space-y-2 text-sm">
-          <li><a href="/temas/ia-psicologia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Voltar ao cluster — IA e Psicologia em 2026</a></li>
-          <li><a href="/temas/ia-psicologia-2026/terapia-digital-chatbots-clinicos-2026" class="text-brand-700 hover:text-brand-800 font-medium">Frente 1 — Terapia digital e chatbots clínicos</a></li>
-          <li><a href="/temas/ia-psicologia-2026/papers-2025-2026-saude-mental-ia" class="text-brand-700 hover:text-brand-800 font-medium">Frente 3 — 5 papers 2025-2026 em IA e saúde mental</a></li>
-          <li><a href="/temas/ia-psicodiagnostico-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema correlato — IA generativa em psicodiagnóstico</a></li>
-          <li><a href="/faq/lgpd-prontuario-ia-pratica-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — LGPD, prontuário e IA na prática clínica</a></li>
-        </ul>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">SATEPSI normatiza o teste, não o software. IA como apoio é defensável; como instrumento autônomo é vedada.</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Em 2026, IA opera em torno do instrumento normatizado, sob responsabilidade técnica do psicólogo. Camadas 1 a 3 são defensáveis com governança LGPD; camada 4 viola a Resolução CFP 09/2018. PL 2338/2023 pode reconfigurar o cenário. O MBA em POT e o MBA em NCPP do IPOG abordam IA aplicada em modalidade Ao Vivo síncrona com corpo docente nominal.
-        </p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
-      </div>
-
+      </section>
     </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
-        <h3 class="font-display font-semibold text-lg mt-1">{mbaNcpp ? mbaNcpp.shortName : (mbaPot ? mbaPot.shortName : 'MBAs IPOG')}</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          {mbaNcpp ? mbaNcpp.description : (mbaPot ? mbaPot.description : 'O IPOG opera MBAs em Psicologia em formato Ao Vivo síncrono.')}
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
-        <ul class="space-y-1">
-          {areaAvaliacao && <li><a href={`/areas/${areaAvaliacao.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaAvaliacao.name}</strong></a></li>}
-          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
-        </ul>
-        <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">fonte principal</p>
-        <ul class="space-y-2 text-xs text-ink-700">
-          <li>CFP (2018). Resolução 09/2018 — SATEPSI.</li>
-          <li>CFP (2019). Resolução 06/2019 — documentos psicológicos.</li>
-          <li>CFP (2022). Resolução 31/2022 — avaliação psicológica.</li>
-          <li>CFP (03/07/2025). Posicionamento sobre IA generativa em psicoterapia.</li>
-          <li>Demszky, Yang, Yeager et al. (2023-2025). LLMs em codificação clínica.</li>
-          <li>Brasil (2018). LGPD — Lei 13.709/2018, art. 11.</li>
-          <li>Senado Federal (2023, em tramitação 2026). PL 2338/2023 — Marco Legal da IA.</li>
-        </ul>
+    <aside class="lg:col-span-4">
+      <div class="card p-6 prose prose-ink">
+        <h2 class="font-display font-semibold text-lg">Leituras relacionadas</h2>
+        <ul><li><a href="/areas/avaliacao-psicologica/">Formação em avaliação psicológica</a></li>
+<li><a href="/evidencias/ia-generativa-saude-mental/">Evidência sobre IA em saúde mental</a></li>
+<li><a href="/areas/ia-people-analytics-psicologia-digital/">Formação em IA e Psicologia Digital</a></li></ul>
+        <p class="text-sm">Portal editorial independente. Oferta, grade, preço e turma de qualquer pós-graduação precisam ser conferidos na instituição responsável.</p>
       </div>
     </aside>
   </section>
-
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+  article :global(p), aside :global(p) { text-align: justify; }
+  article :global(table) { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  article :global(th), article :global(td) { padding: .7rem; border: 1px solid #d6e1dd; text-align: left; vertical-align: top; }
+  article :global(.table-wrap) { overflow-x: auto; }
+</style>

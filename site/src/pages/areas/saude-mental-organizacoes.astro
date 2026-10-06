@@ -1,294 +1,153 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import FichaRapida from '@components/FichaRapida.astro';
-import { SITE, AREAS, MBAS } from '@lib/data';
-import { buildEducationalOccupationalProgram, buildSpeakable, alexandreAuthorRef } from '@lib/schemas';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 
-const area = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
-const relatedMbas = MBAS.filter(m => area.relatedCourses.includes(m.id));
-const adjacent = AREAS.filter(a => a.id !== area.id && a.cluster === area.cluster).slice(0, 4);
-
+const title = "Saúde Mental nas Organizações: prevenção, cuidado e formação";
+const description = "Como avaliar programas e formações em saúde mental no trabalho, articulando prevenção organizacional, cuidado confidencial e acompanhamento.";
 const faqs = [
   {
-    q: 'O que mudou na NR-1 para saúde mental nas empresas?',
-    a: 'A atualização da NR-1 trouxe os riscos psicossociais para dentro do Gerenciamento de Riscos Ocupacionais (GRO) e do Programa de Gerenciamento de Riscos (PGR). Em prática, empresas precisam identificar, avaliar e controlar fatores como sobrecarga, falta de autonomia, assédio e relações tóxicas — com o mesmo rigor metodológico aplicado a riscos físicos e químicos (MTE, 2025).'
+    "q": "Oferecer psicoterapia basta para cumprir a gestão de riscos?",
+    "a": "Não. O cuidado individual pode integrar um programa, mas não substitui a avaliação e a prevenção de fatores de risco relacionados às condições e à organização do trabalho."
   },
   {
-    q: 'App de meditação resolve burnout?',
-    a: 'Não. App de meditação é intervenção individual de baixo custo. Burnout, segundo Maslach e Leiter, decorre de seis áreas da vida laboral em desequilíbrio: carga, controle, recompensa, comunidade, justiça e valores (Maslach & Leiter, 2016). Endereçar burnout sem mexer em carga e autonomia é folder caro disfarçado de benefício.'
+    "q": "O RH deve receber o conteúdo dos atendimentos?",
+    "a": "O desenho do programa deve preservar sigilo e separar cuidado clínico de gestão. Informações de acompanhamento institucional precisam respeitar finalidade, necessidade e proteção contra identificação."
   },
   {
-    q: 'Empresa precisa de psicólogo para implantar programa de saúde mental?',
-    a: 'Precisa de profissional qualificado para liderar diagnóstico e desenho de intervenção. Pode ser psicólogo, médico do trabalho ou profissional de RH com formação especializada. Atos privativos — avaliação clínica individual, psicoterapia, laudo psicológico — são exclusivos do psicólogo. Política, diagnóstico organizacional e treinamento de líderes não exigem registro no CRP.'
-  },
-  {
-    q: 'Como medir efetividade de programa de saúde mental?',
-    a: 'Combinando três níveis de indicador. Estruturais: cobertura, adesão e investimento. Processos: percepção de apoio, segurança psicológica, qualidade de gestão. Resultado: afastamento por CID F, turnover, eNPS, custo com plano de saúde. Programa que não monitora os três níveis é difícil de defender perante diretoria e órgão regulador.'
-  },
-  {
-    q: 'Saúde mental no trabalho é responsabilidade do empregador ou do trabalhador?',
-    a: 'É compartilhada, mas com proporções desiguais. A NR-1 e a literatura científica deixam claro que fatores organizacionais — carga, autonomia, estilo de liderança, justiça — são determinantes primários. O empregador responde pela arquitetura. O trabalhador responde por uso adequado dos recursos. Atribuir a responsabilidade só ao indivíduo viola tanto a NR-1 quanto a literatura especializada da OMS (WHO/ILO, 2022).'
+    "q": "O nome do curso garante título de especialista?",
+    "a": "Não. Nome comercial e certificado acadêmico não concedem automaticamente registro profissional. Consulte as especialidades reconhecidas e os requisitos no CFP e no CRP."
   }
 ];
-
+const fields = [
+  {
+    "label": "Problema e frente de atuação",
+    "hint": "A questão envolve prevenção, cuidado ou participação no trabalho?"
+  },
+  {
+    "label": "Responsabilidades e fluxo",
+    "hint": "Quem decide e como o trabalhador acessa o recurso?"
+  },
+  {
+    "label": "Proteção das informações",
+    "hint": "O que pode retornar à organização e quais dados devem ficar separados?"
+  },
+  {
+    "label": "Critério de acompanhamento",
+    "hint": "Como verificar implantação e necessidade de ajuste?"
+  }
+];
+const checklist = [
+  "Distingui prevenção organizacional de atendimento clínico.",
+  "Examinei acesso e confidencialidade.",
+  "Defini critérios sem prometer resultados numéricos.",
+  "Conferi o alcance real da formação ou serviço contratado."
+];
+const sources = [
+  {
+    "label": "OMS: diretrizes de saúde mental no trabalho, 2022",
+    "url": "https://www.who.int/publications/i/item/9789240053052"
+  },
+  {
+    "label": "MTE: NR-1 vigente",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-1"
+  },
+  {
+    "label": "MTE: perguntas e respostas GRO/PGR, maio de 2026",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/manuais-e-publicacoes/2026/perguntas-e-respostas-gro-pgr-maio-2026"
+  },
+  {
+    "label": "CFP: Código de Ética Profissional",
+    "url": "https://site.cfp.org.br/wp-content/uploads/2012/07/codigo-de-etica-psicologia.pdf"
+  },
+  {
+    "label": "CFP: registro de especialista",
+    "url": "https://site.cfp.org.br/servicos/titulo-de-especialista/"
+  }
+];
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Saúde Mental nas Organizações: NR-1, burnout e o que funciona',
-  description: 'Análise técnica de saúde mental corporativa: NR-1, modelo de Maslach, níveis de intervenção e o que distingue programa estruturado de selo cosmético.',
-  // E-E-A-T: author Person canônico + publisher Organization via @id (Maio 2026 Core Update).
-  author: alexandreAuthorRef,
-  reviewedBy: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
+  headline: title,
+  description,
+  mainEntityOfPage: 'https://posgraduacaopsicologia.com/areas/saude-mental-organizacoes/',
+  author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
-  datePublished: '2026-05-13',
   inLanguage: 'pt-BR'
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
+    '@type': 'Question', name: f.q,
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
-
-const ldProgram = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Especialização Lato Sensu em Saúde Mental nas Organizações',
-    slug: '/areas/saude-mental-organizacoes',
-    description: 'Formação para psicólogos e gestores de RH que atuam com saúde mental corporativa, NR-1, burnout, riscos psicossociais e programas estruturados de bem-estar nas organizações.',
-    programType: 'Especialização Lato Sensu',
-    timeRequired: 'P360H',
-    occupationalCredentialAwarded: 'Especialista em Saúde Mental nas Organizações',
-    educationalCredentialAwarded: 'Certificado de Especialização Lato Sensu'
-  }),
-  speakable: buildSpeakable(['h1', '.section-h'])
-});
 ---
-
-<Base
-  title="Saúde Mental nas Organizações: NR-1, burnout e o que funciona"
-  description="Guia técnico de saúde mental corporativa: NR-1, modelo de Maslach, níveis de intervenção e o que distingue programa estruturado de selo cosmético.">
-
+<Base title={title} description={description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
-    <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Áreas', href: '/areas' },
-        { label: 'Saúde Mental nas Organizações' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Área · Cluster POT + bem-estar · Regulação {area.regulatoryLevel}</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Saúde Mental nas Organizações: NR-1, burnout e o que funciona</h1>
-          <p class="mt-3 text-ink-700 text-lg">Programa que não toca em carga de trabalho e estilo de liderança é folder caro.</p>
-          <FichaRapida area={area} />
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver cursos no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+    <div class="container-page py-7 md:py-10">
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: "Áreas", href: "/areas" }, { label: "Saúde Mental nas Organizações" }]} />
+      <p class="section-eyebrow mt-4">Áreas · Guia de estudo e decisão</p>
+      <h1 class="section-h text-3xl sm:text-4xl max-w-4xl">{title}</h1>
+      <p class="mt-4 text-lg text-ink-700 max-w-3xl">Uma organização oferece apoio psicológico, mas trabalhadores continuam sem pausas viáveis e recebem instruções contraditórias. O acesso ao cuidado é relevante; também é necessário investigar as condições que continuam produzindo exposição a riscos.</p>
+      <p class="mt-4 text-sm text-ink-600">Atualização editorial: <time datetime="2026-10-06">06/10/2026</time> · Brasil GEO, portal editorial independente.</p>
+      <a class="btn btn-secondary mt-4" href="#ficha-pratica">Preencher a ficha prática</a>
     </div>
   </section>
-
-  <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          Saúde mental nas organizações é o conjunto de políticas, processos e práticas que previnem adoecimento, sustentam bem-estar e endereçam riscos psicossociais no trabalho. Com a NR-1 atualizada, deixou de ser ESG suave e virou exigência regulatória. Funciona quando integra os quatro níveis — individual, gerencial, organizacional e sistêmico. Falha quando vira app de meditação travestido de programa.
-        </p>
-      </div>
-
+  <article class="container-page py-10">
+    <div class="max-w-4xl mx-auto space-y-10">
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">O ponto cego que o mercado evita</h2>
-        <p>
-          Em 2022, OMS e OIT publicaram diretriz conjunta sobre saúde mental no trabalho. A conclusão central foi desconfortável para a indústria de bem-estar corporativo: intervenções de nível individual — apps, palestras motivacionais, programas de mindfulness — têm efeito pequeno quando descoladas de mudança organizacional (WHO/ILO, 2022). O determinante primário do adoecimento mental ocupacional é organizacional, não individual.
-        </p>
-        <p>
-          A Gallup confirmou em escala global: trabalhadores cujo gestor direto demonstra interesse genuíno reportam três vezes mais engajamento e metade do absenteísmo daqueles com gestão neutra (Gallup, 2024). A variável de impacto mais forte sobre saúde mental no trabalho é o estilo do gestor imediato — e isso responde por design organizacional, não por benefício pontual.
-        </p>
-        <p>
-          A tese contraintuitiva é direta: programa de saúde mental que não toca em carga de trabalho e estilo de liderança é folder caro. Saúde mental no trabalho não se resolve com app — se resolve com decisão gerencial sobre demanda, autonomia e justiça.
-        </p>
+<h2>Três frentes que precisam de responsáveis claros</h2>
+<p>Um programa de saúde mental precisa explicitar como prevenção, cuidado e participação no trabalho se articulam. As <a href="https://www.who.int/publications/i/item/9789240053052">diretrizes da OMS de 2022</a> contemplam intervenções organizacionais, formação, apoio individual e retorno ao trabalho. Essa referência ajuda a examinar o alcance de uma proposta, sem garantir eficácia idêntica para qualquer contexto.</p>
+<div class="overflow-x-auto"><table><thead><tr><th>Frente</th><th>Decisão a organizar</th><th>Limite a preservar</th></tr></thead><tbody>
+<tr><td>Prevenção</td><td>Identificar e modificar condições de exposição no trabalho.</td><td>Evitar atribuir a trabalhadores a responsabilidade exclusiva por problemas organizacionais.</td></tr>
+<tr><td>Cuidado</td><td>Oferecer caminhos de acolhimento, avaliação e atendimento adequados.</td><td>Separar informações clínicas dos processos de gestão de desempenho.</td></tr>
+<tr><td>Participação e retorno</td><td>Planejar condições de continuidade ou retomada do trabalho.</td><td>Considerar necessidades individuais e responsabilidades profissionais, sem receitas universais.</td></tr>
+</tbody></table></div>
+<p>Uma palestra pode ter função educativa. Uma rede de atendimento pode ampliar acesso ao cuidado. Para avaliar o programa, pergunte que problema cada ação pretende enfrentar e quem verifica seu funcionamento. Nenhuma dessas iniciativas deve receber crédito por resultados que não foram efetivamente medidos.</p>
+<h2>Como a NR-1 entra nesse mapa</h2>
+<p>Desde 26 de maio de 2026, está vigente a redação do capítulo 1.5 da <a href="https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-1">NR-1</a> que explicita fatores de risco psicossociais relacionados ao trabalho. O gerenciamento exige atenção à atividade e às condições organizacionais. O <a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/manuais-e-publicacoes/2026/perguntas-e-respostas-gro-pgr-maio-2026">MTE esclarece</a> que avaliar esses fatores não equivale a investigar a saúde mental de cada trabalhador.</p>
+<p>Questionários podem compor um método adequado, mas não há instrumento único obrigatório. O cuidado clínico, quando necessário, tem finalidade e regras próprias. A empresa não deve tratar um painel de sintomas como atalho para decidir quem é apto, produtivo ou responsável pelo risco.</p>
+<h2>Sigilo precisa aparecer no desenho do programa</h2>
+<p>Antes de contratar, esclareça quais informações o prestador coleta, quem acessa cada conjunto de dados e o que retorna à organização. A gestão precisa acompanhar a execução do serviço e as medidas institucionais. Isso não significa receber narrativas de sessões, diagnósticos individualizados ou listas de pessoas que buscaram cuidado.</p>
+<p>Mesmo uma informação agregada pode identificar alguém quando o grupo é pequeno ou a situação é singular. Defina critérios de apresentação e limite de acesso considerando esse risco. Se houver atuação psicológica, observe o <a href="https://site.cfp.org.br/wp-content/uploads/2012/07/codigo-de-etica-psicologia.pdf">Código de Ética Profissional</a> e as normas aplicáveis aos registros e documentos.</p>
+<h2>O que pedir a um curso ou fornecedor</h2>
+<ul><li><strong>Delimitação:</strong> quais problemas e públicos são abrangidos, e quais ficam fora do escopo?</li><li><strong>Método:</strong> como as condições de trabalho serão investigadas e como trabalhadores participarão?</li><li><strong>Responsabilidade:</strong> quem decide mudanças, quem presta cuidado e como se evitam conflitos de papéis?</li><li><strong>Acompanhamento:</strong> quais evidências permitem saber se as ações ocorreram e se precisam de revisão?</li><li><strong>Proteção:</strong> como dados clínicos e institucionais serão separados e protegidos?</li></ul>
+<p>O nome “Saúde Mental nas Organizações” pode identificar uma formação temática, mas não deve ser apresentado automaticamente como especialidade reconhecida pelo CFP. Para registro profissional, consulte a <a href="https://site.cfp.org.br/servicos/titulo-de-especialista/">relação de especialidades e os requisitos do Sistema Conselhos</a>. Verifique também público de ingresso, atividades práticas e limites do certificado do curso.</p>
+<h2>Exemplo hipotético: o serviço existe, mas o acesso não funciona</h2>
+<p>Uma organização contrata atendimento, porém disponibiliza horários incompatíveis com os turnos e não explica quem terá acesso às informações. A baixa utilização pode refletir barreiras operacionais e receio de exposição, não ausência de necessidade. A revisão do programa começa por esclarecer o fluxo, facilitar o acesso e verificar a confidencialidade, enquanto a análise das condições de trabalho segue por sua própria frente.</p>
+<h2>Como acompanhar sem prometer uma porcentagem de melhora</h2>
+<ol><li>Escolha a pergunta que cada indicador poderá responder.</li><li>Distingua implantação, acesso e mudança nas condições de exposição.</li><li>Defina período, população e limitações da comparação.</li><li>Combine indicadores com escuta protegida e avaliação técnica.</li><li>Registre decisões de continuidade, ajuste ou interrupção de ações inadequadas.</li></ol>
+<p>Para treinar análise sem usar dados de trabalhadores, o curso <a href="https://alexandrecaramaschi.com/educacao/dados-com-python">Dados com Python, de Alexandre Caramaschi</a>, pode apoiar exercícios com bases públicas ou sintéticas. É aprendizado complementar; não confere competência clínica nem valida um programa de saúde mental.</p>
+<p>Leia também <a href="/areas/psicologia-organizacional-trabalho">Psicologia Organizacional e do Trabalho</a> e o <a href="/guias/implementar-nr1-em-empresa">roteiro de implementação da NR-1</a>. Ao voltar à situação das pausas, a pergunta prática será quem tem autoridade para revisar a organização do trabalho e como essa decisão será acompanhada.</p>
       </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Fundamentação conceitual</h2>
-        <p>
-          O modelo de Maslach e Leiter sobre burnout continua sendo o framework operacional mais robusto. Burnout não decorre apenas de estresse pessoal: decorre de desequilíbrio crônico em seis áreas da vida laboral — carga de trabalho, controle, recompensa, comunidade, justiça e valores (Maslach & Leiter, 2016). Cada área tem indicador próprio. Programa que diagnostica só uma é programa que mira no problema errado.
-        </p>
-        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
-          "Burnout é, fundamentalmente, um problema organizacional. Quando indivíduos saudáveis sofrem em larga escala em uma organização, o local do desequilíbrio é o local de trabalho, não as pessoas." — Christina Maslach e Michael Leiter, Burnout at Work (2016).
-        </blockquote>
-        <p>
-          A NR-1 atualizada formalizou o que a literatura já sustentava. Em sua redação vigente, exige que empresas identifiquem, avaliem e controlem riscos psicossociais como parte integrante do Gerenciamento de Riscos Ocupacionais (MTE, 2025). Sobrecarga crônica, falta de autonomia, assédio, relações tóxicas e ambiguidade de papel passaram a ter o mesmo status técnico de exposição química ou risco ergonômico. Isso muda o jogo: agora há custo regulatório direto em não medir.
-        </p>
-        <p>
-          A diretriz da OMS sobre saúde mental no trabalho, publicada em 2022, organiza intervenções em três categorias: prevenir condições de trabalho que adoeçam, proteger e promover saúde mental, e apoiar trabalhadores com condição existente (WHO/ILO, 2022). A maior parte dos programas brasileiros endereça apenas a terceira categoria — apoio individual — e ignora as duas primeiras, que respondem pela maior parte do efeito.
-        </p>
-        <p>
-          A Gallup observou em 2024 que organizações com gestão direta de qualidade reduzem afastamento por saúde mental em até 70% comparadas a organizações com gestão neutra (Gallup, 2024). O dado deixa claro qual é a alavanca. O gestor imediato é o agente terapêutico ou patogênico mais forte do sistema organizacional. Treinar líderes em saúde mental não é benefício — é prevenção primária.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Quatro níveis de intervenção</h2>
-        <p class="text-ink-700 mt-2">
-          Programa estruturado integra os quatro níveis. Programa que opera apenas em um nível é cosmético — e mensurável como tal.
-        </p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Nível</th>
-                <th class="text-left px-4 py-3">Foco</th>
-                <th class="text-left px-4 py-3">Exemplos típicos</th>
-                <th class="text-left px-4 py-3">Limitação se isolado</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Individual</td>
-                <td class="px-4 py-3 text-ink-700">Trabalhador, recursos pessoais, busca de ajuda.</td>
-                <td class="px-4 py-3 text-ink-700">EAP, app, terapia subsidiada, mindfulness.</td>
-                <td class="px-4 py-3 text-ink-700">Efeito pequeno se causa for organizacional.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Gerencial</td>
-                <td class="px-4 py-3 text-ink-700">Estilo do líder direto, qualidade do feedback.</td>
-                <td class="px-4 py-3 text-ink-700">Treinamento de liderança consciente, mentoring, supervisão.</td>
-                <td class="px-4 py-3 text-ink-700">Sem mudança de processo, líder volta ao padrão.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Organizacional</td>
-                <td class="px-4 py-3 text-ink-700">Política de carga, autonomia, jornada, avaliação.</td>
-                <td class="px-4 py-3 text-ink-700">Revisão de SLAs internos, jornada flexível, política de desconexão.</td>
-                <td class="px-4 py-3 text-ink-700">Caro e demorado, mas com maior efeito.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">Sistêmico</td>
-                <td class="px-4 py-3 text-ink-700">Modelo de negócio, expectativa de cliente, cadeia produtiva.</td>
-                <td class="px-4 py-3 text-ink-700">Revisão de margem, precificação, prazos contratuais.</td>
-                <td class="px-4 py-3 text-ink-700">Fora do alcance de RH, exige diretoria.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Quando reduzir afastamento por burnout exigiu rever política, não adicionar benefício</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Operadora de saúde de médio porte, 2.300 colaboradores, registrou aumento de 64% em afastamento por CID F (transtornos mentais) em 18 meses. Resposta inicial: contratar EAP, instalar sala de descompressão, oferecer assinatura de app de mindfulness. Em três trimestres, sem alteração no indicador. A diretoria solicitou diagnóstico independente.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          O diagnóstico, ancorado nas seis áreas de Maslach, apontou desequilíbrio agudo em carga e justiça: equipes operacionais acumulavam horas extras sistemáticas há dois anos, com política de banco de horas que penalizava recusas. A intervenção foi impopular: ajuste de quadro, revisão de SLA interno e limite rígido de horas extras. Em 12 meses, afastamento por CID F caiu 40%. O EAP continuou — mas como complemento, não como solução. Programa funcionou porque mexeu na arquitetura, não no folder.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Combina ou não combina com a área</h2>
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Combina com você se</p>
-            <ul class="space-y-2 text-sm text-ink-700">
-              <li>Atua em RH, saúde e segurança do trabalho ou medicina ocupacional.</li>
-              <li>Lidera time e quer ler bem-estar como variável estratégica.</li>
-              <li>É psicólogo organizacional ou clínico em transição para corporativo.</li>
-              <li>Vai conduzir avaliação de riscos psicossociais sob a NR-1.</li>
-              <li>Atua em consultoria e precisa de framework defensável diante de clientes.</li>
-            </ul>
-          </div>
-          <div class="card p-6 border-surface-200">
-            <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Pense duas vezes se</p>
-            <ul class="space-y-2 text-sm text-ink-700">
-              <li>Procura "selo de bem-estar" cosmético sem mexer em processos.</li>
-              <li>Acredita que burnout é só problema individual.</li>
-              <li>Espera que app ou benefício isolado resolva problema sistêmico.</li>
-              <li>Não tem disposição para revisar políticas de carga e jornada.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+      <StudyWorksheet id="ficha-pratica" title="Revisão de um programa de saúde mental" description="Planeje a avaliação de uma proposta institucional sem registrar sintomas, diagnósticos ou histórias individuais." fields={fields} checklist={checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="mt-4 divide-y divide-surface-200 rounded-2xl border border-surface-200">
           {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            <details class="p-5">
+              <summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary>
+              <p class="mt-3 leading-relaxed text-ink-700">{f.a}</p>
             </details>
           ))}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">Saúde mental no trabalho é decisão gerencial, não selo cosmético</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Com NR-1 atualizada, o custo de não medir e não agir entrou em planilha. Profissionais que dominam Maslach, diretriz OMS/OIT e desenho multinível de intervenção têm repertório para operar no centro da decisão. O IPOG, com seu MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações em formato Ao Vivo síncrono, é exemplo de instituição com formação correlata. Próximo passo: consultar grade e turma vigente no portal oficial.
-        </p>
-      </div>
-
-    </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">MBA em Saúde Mental e Bem-Estar no IPOG</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          O IPOG oferece MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações em formato Ao Vivo síncrono, com corpo docente nominal. Consulte o portal oficial.
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
-          Ver no IPOG
-        </a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
-          Home IPOG
-        </a>
-      </div>
-
-      {adjacent.length > 0 && (
-        <div class="card p-6">
-          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
-          <ul class="space-y-1">
-            {adjacent.map(a => (
-              <li>
-                <a href={`/areas/${a.id}`} class="mega-link">
-                  <strong class="text-ink-900 text-sm">{a.name}</strong>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
-        </div>
-      )}
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
-          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NR-1 e legislação trabalhista</a></li>
-          <li><a href="https://www.who.int/teams/mental-health-and-substance-use/promotion-prevention/mental-health-in-the-workplace" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — Saúde mental no trabalho</a></li>
-          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC — Reconhecimento de pós lato sensu</a></li>
+      </section>
+      <section aria-labelledby="fontes">
+        <h2 id="fontes" class="section-h text-2xl">Fontes e materiais de consulta</h2>
+        <p class="mt-2 text-sm text-ink-600">Fontes consultadas para esta revisão. Normas orientam obrigações; materiais educacionais apoiam o estudo dentro de seu próprio escopo.</p>
+        <ul class="mt-4 space-y-3">
+          {sources.map(s => <li><a href={s.url} class="text-brand-700 underline underline-offset-4" rel="external noopener">{s.label}</a></li>)}
         </ul>
-      </div>
-    </aside>
-  </section>
-
+      </section>
+    </div>
+  </article>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
-  <script type="application/ld+json" set:html={ldProgram} />
 </Base>
+<style>
+  article p { text-align: justify; }
+  article :global(table) { width: 100%; }
+  article :global(th), article :global(td) { padding: 0.75rem; vertical-align: top; }
+</style>

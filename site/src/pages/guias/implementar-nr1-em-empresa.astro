@@ -1,354 +1,151 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { SITE, MBAS, AREAS } from '@lib/data';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 
-const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
-const mbaPos = MBAS.find(m => m.id === 'mba-positiva')!;
-const areaPot = AREAS.find(a => a.id === 'psicologia-organizacional-trabalho')!;
-const areaSmo = AREAS.find(a => a.id === 'saude-mental-organizacoes')!;
-
-const passos = [
-  {
-    n: 1,
-    titulo: 'Montar comitê técnico de implementação',
-    aplicacao: 'Antes de qualquer instrumento, defina quem decide. O comitê mínimo reúne SESMT, RH, jurídico trabalhista, representação de trabalhadores (CIPA ou equivalente) e, quando houver, psicólogo organizacional ou consultor externo. Sem essa governança, a avaliação de risco psicossocial vira pesquisa de clima — e perde valor regulatório frente ao MTE.',
-    armadilha: 'Delegar a implementação só ao RH. NR-1 (Brasil, 2024) trata risco ocupacional, e o GRO é responsabilidade do empregador documentada pelo SESMT. Sem SESMT a bordo, o documento não fecha.'
-  },
-  {
-    n: 2,
-    titulo: 'Mapear fatores de risco psicossocial principais',
-    aplicacao: 'Os fatores mínimos a mapear seguem a literatura de demanda-controle (Karasek e Theorell, 1990) e esforço-recompensa (Siegrist, 1996), reconhecidos por OMS (2022) e incorporados ao texto da NR-1: sobrecarga de trabalho, baixa autonomia decisória, conflito de papéis, assédio moral e sexual, jornada excessiva, comunicação organizacional disfuncional e exposição a violência. Documente cada fator com critério objetivo de identificação.',
-    armadilha: 'Listar apenas estresse e clima ruim. NR-1 exige fator concreto, com indicador, não percepção vaga.'
-  },
-  {
-    n: 3,
-    titulo: 'Escolher instrumentos validados',
-    aplicacao: 'O protocolo recomenda triangulação: um instrumento quantitativo validado em português, entrevistas estruturadas com líderes e análise documental de absenteísmo, turnover e afastamentos por CID F. Entre os quantitativos com tradução para português brasileiro disponíveis na literatura estão JCQ-22 de Karasek, COPSOQ-III (Pejtersen et al., 2010) e EAVE (Escala de Avaliação de Violência no Trabalho).',
-    armadilha: 'Aplicar pesquisa de clima genérica como se fosse avaliação de risco psicossocial. Clima não é risco; é uma camada de percepção. A NR-1 exige instrumento desenhado para risco ocupacional.'
-  },
-  {
-    n: 4,
-    titulo: 'Aplicar com sigilo e amostragem adequada',
-    aplicacao: 'A coleta deve preservar anonimato, com plataforma que não retorne identificadores individuais. Amostragem mínima recomendada na literatura ocupacional: 50% do quadro em empresas até 200 colaboradores e 30% em empresas acima de 500, estratificada por área e cargo. Resultados devem ser apresentados em agregado, não por pessoa.',
-    armadilha: 'Aplicar via e-mail corporativo nomeado. Quebra anonimato e enviesa resposta. Use plataforma de terceiros ou link público com token.'
-  },
-  {
-    n: 5,
-    titulo: 'Treinar líderes em entrevista de risco e escuta',
-    aplicacao: 'A liderança direta é o filtro primário. Programa mínimo de treinamento: 8 horas, dividido em comunicação não violenta, sinais de adoecimento mental (CID F40-F48 e F30-F39), protocolo de encaminhamento e limites do papel. O líder não diagnostica nem trata — encaminha. Materiais oficiais: OMS mhGAP-IG versão 2.0 e Cartilha CFP de orientação em saúde mental no trabalho.',
-    armadilha: 'Transformar o líder em terapeuta de bolso. É erro técnico e jurídico. Líder identifica e encaminha; o cuidado é de psicólogo ou médico.'
-  },
-  {
-    n: 6,
-    titulo: 'Integrar achados ao GRO formalmente',
-    aplicacao: 'O Programa de Gerenciamento de Riscos (PGR) deve incorporar os riscos psicossociais identificados, com matriz de risco (probabilidade × severidade), medidas de controle e prazo de implementação. O documento é responsabilidade do SESMT, com assinatura técnica e revisão anual mínima.',
-    armadilha: 'Produzir relatório paralelo de RH que não conecta ao GRO. Frente ao MTE, vale o que está no GRO — não documentos satélites.'
-  },
-  {
-    n: 7,
-    titulo: 'Definir plano de ação por nível de risco',
-    aplicacao: 'Para cada fator com risco médio ou alto, defina ação concreta com responsável, indicador e prazo. Exemplos de medidas de controle reconhecidas na literatura: redesenho de jornada, ampliação de autonomia local (Job Crafting, Wrzesniewski e Dutton, 2001), revisão de metas, canal de denúncia funcional para assédio, programa de apoio psicológico, intervalo entre turnos. Cada medida deve ter métrica de eficácia.',
-    armadilha: 'Listar dezenas de medidas sem dono nem indicador. Plano sem responsável é teatro de conformidade.'
-  },
-  {
-    n: 8,
-    titulo: 'Executar e monitorar em ciclo PDCA',
-    aplicacao: 'Frequência mínima: revisão trimestral de indicadores de processo (treinamentos realizados, ações implementadas, denúncias recebidas) e revisão anual de indicadores de resultado (afastamentos CID F, turnover, eNPS, reincidência de assédio). PDCA — Plan, Do, Check, Act — é a estrutura clássica de melhoria contínua que sustenta o ciclo.',
-    armadilha: 'Tratar a implementação como projeto único. NR-1 é ciclo permanente; sem revisão, o documento envelhece.'
-  },
-  {
-    n: 9,
-    titulo: 'Documentar para fiscalização do MTE',
-    aplicacao: 'O dossiê para fiscalização deve incluir: GRO atualizado, relatório de avaliação de riscos psicossociais com método e amostra, evidência de treinamento dos líderes (lista de presença, conteúdo programático), atas do comitê, plano de ação assinado, indicadores de monitoramento. O auditor fiscal do trabalho avalia o ciclo, não apenas o documento final.',
-    armadilha: 'Guardar somente o relatório final. Sem rastro de processo, a fiscalização presume ausência de gestão de risco.'
-  }
-];
-
-const checklist = [
-  { passo: '1 · Comitê técnico', indicador: 'Ata de constituição', quem: 'RH + SESMT + jurídico', quando: 'Semana 1', status: 'Pendente' },
-  { passo: '2 · Fatores de risco', indicador: 'lista principal documentada', quem: 'SESMT + consultor', quando: 'Semana 2', status: 'Pendente' },
-  { passo: '3 · Instrumento', indicador: 'Manual técnico do instrumento', quem: 'Psicólogo organizacional', quando: 'Semana 2-3', status: 'Pendente' },
-  { passo: '4 · Coleta', indicador: 'Taxa de resposta ≥ 50%', quem: 'RH + fornecedor', quando: 'Semana 3-4', status: 'Pendente' },
-  { passo: '5 · Treinamento de líder', indicador: 'Lista de presença assinada', quem: 'RH + T&D', quando: 'Semana 4-5', status: 'Pendente' },
-  { passo: '6 · GRO atualizado', indicador: 'Documento assinado', quem: 'SESMT', quando: 'Semana 6', status: 'Pendente' },
-  { passo: '7 · Plano de ação', indicador: 'Matriz com dono e prazo', quem: 'Comitê', quando: 'Semana 6-7', status: 'Pendente' },
-  { passo: '8 · PDCA', indicador: 'Calendário trimestral', quem: 'Comitê', quando: 'Contínuo', status: 'Pendente' },
-  { passo: '9 · Dossiê fiscalização', indicador: 'Pasta consolidada', quem: 'RH + jurídico', quando: 'Semana 8', status: 'Pendente' }
-];
-
-const erros = [
-  {
-    titulo: 'Confundir pesquisa de clima com avaliação de risco',
-    texto: 'A maioria das empresas reaproveita pesquisa de clima como evidência de NR-1. Frente ao MTE, instrumento sem validação para risco ocupacional não sustenta o GRO. O auditor fiscal pode exigir aplicação correta dentro do prazo de notificação.'
-  },
-  {
-    titulo: 'Aplicar uma única vez e arquivar',
-    texto: 'NR-1 (Brasil, 2024) é ciclo de gestão, não checklist anual. Sem revisão trimestral de indicadores e revisão anual de risco, o documento perde validade técnica e expõe a empresa em fiscalização.'
-  },
-  {
-    titulo: 'Não treinar liderança direta',
-    texto: 'O líder direto é o primeiro elo de identificação de sinal precoce. Sem treinamento estruturado em escuta e encaminhamento, sinais de adoecimento chegam tarde demais à área de saúde ocupacional — e o afastamento CID F vira inevitável.'
-  },
-  {
-    titulo: 'Reduzir o plano de ação a programa de meditação',
-    texto: 'Mindfulness corporativo tem evidência em redução de estresse subclínico (Kabat-Zinn, 1990; NICE guidelines). Mas é intervenção complementar, não substitui revisão estrutural de jornada, metas e autonomia. NR-1 exige ataque ao fator, não maquiagem de sintoma.'
-  }
-];
-
+const title = "Como implementar a gestão de riscos psicossociais na empresa";
+const description = "Roteiro de implementação da NR-1 em 2026: enquadramento, avaliação do trabalho, participação, medidas de prevenção, documentação e revisão.";
 const faqs = [
   {
-    q: 'Empresa de pequeno porte também precisa cumprir NR-1 em risco psicossocial?',
-    a: 'Sim. A NR-1 (Brasil, 2024) aplica-se a todas as organizações empregadoras. A proporcionalidade da exigência varia conforme grau de risco da atividade e número de colaboradores, mas a obrigação de identificar, avaliar e controlar riscos psicossociais é universal. Empresas com até 19 colaboradores em atividades de menor risco têm regime simplificado, mas não isento.'
+    "q": "É obrigatório usar uma plataforma externa?",
+    "a": "Não há exigência geral de plataforma específica. O método deve ser adequado ao trabalho e acompanhado de análise, medidas e documentação aplicáveis. A compra de software, por si, não demonstra conformidade."
   },
   {
-    q: 'Quem pode aplicar instrumentos como JCQ-22 ou COPSOQ-III?',
-    a: 'A aplicação e interpretação técnica de instrumentos psicológicos validados é privativa de psicólogo registrado no CRP, conforme Resolução CFP 31/2022. Profissionais de RH podem coordenar logística e operação, mas o laudo técnico exige psicólogo. Em empresas sem psicólogo interno, a contratação de consultoria técnica é caminho usual.'
+    "q": "Existe amostra mínima universal para a pesquisa?",
+    "a": "Não há, neste roteiro, percentual universal que assegure uma avaliação suficiente. A equipe técnica deve justificar a cobertura, a participação e as limitações do método escolhido."
   },
   {
-    q: 'O que conta como medida de controle aceitável no plano de ação?',
-    a: 'Medidas de controle precisam ser proporcionais ao risco identificado e mensuráveis. Para sobrecarga: redesenho de jornada e revisão de metas. Para baixa autonomia: ampliação de decisão local (Job Crafting, Wrzesniewski e Dutton, 2001). Para assédio: canal de denúncia funcional e investigação independente. Mindfulness e programa de bem-estar são complementares, não medidas primárias.'
-  },
-  {
-    q: 'Como o MBA em POT do IPOG ajuda na implementação?',
-    a: 'O MBA em POT consolida fundamento técnico em diagnóstico organizacional, instrumentos validados, NR-1 e people analytics. Para profissional de RH ou SESMT que vai liderar a implementação, a formação dá lastro defensável frente a fiscalização e diretoria. O programa do IPOG é Ao Vivo síncrono, com corpo docente nominal. Consulte ipog.edu.br para grade vigente.'
+    "q": "O acompanhamento precisa ser sempre trimestral?",
+    "a": "A organização pode definir uma rotina de gestão, mas deve observar os critérios de revisão do texto normativo. Uma frequência editorial fixa não substitui esses critérios nem as necessidades concretas."
   }
 ];
-
-const ldHowTo = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  author: { '@id': 'https://brasilgeo.ai/#organization' },
-  name: 'Como implementar a NR-1 atualizada na empresa',
-  description: 'Guia em 9 passos para integrar riscos psicossociais ao Gerenciamento de Riscos Ocupacionais conforme NR-1 atualizada, com instrumentos validados, treinamento de líder e ciclo PDCA.',
-  totalTime: 'PT22M',
-  inLanguage: 'pt-BR',
-  step: passos.map(p => ({
-    '@type': 'HowToStep',
-    position: p.n,
-    name: p.titulo,
-    text: p.aplicacao
-  }))
-};
-
+const fields = [
+  {
+    "label": "Escopo e enquadramento",
+    "hint": "Que atividade e requisitos precisam ser confirmados?"
+  },
+  {
+    "label": "Situação e método",
+    "hint": "Qual condição será investigada e como?"
+  },
+  {
+    "label": "Medida e responsabilidade",
+    "hint": "Que decisão será tomada, por quem e com quais recursos?"
+  },
+  {
+    "label": "Prazo e evidência de execução",
+    "hint": "Como e quando a implantação será conferida?"
+  },
+  {
+    "label": "Revisão necessária",
+    "hint": "Que mudança ou resultado exigirá reavaliar o plano?"
+  }
+];
+const checklist = [
+  "Conferi o enquadramento no texto vigente.",
+  "Planejei participação e proteção dos dados.",
+  "Relacionei medidas às condições de trabalho.",
+  "Defini responsável e evidência de execução.",
+  "Distingui esta ficha dos registros técnicos formais."
+];
+const sources = [
+  {
+    "label": "MTE: NR-1 vigente, incluindo capítulo 1.5 e tratamento diferenciado",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-1"
+  },
+  {
+    "label": "MTE: perguntas e respostas GRO/PGR, maio de 2026",
+    "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/manuais-e-publicacoes/2026/perguntas-e-respostas-gro-pgr-maio-2026"
+  }
+];
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Como implementar a NR-1 atualizada na empresa: guia passo-a-passo',
-  description: 'Roteiro técnico em 9 passos para implementar a gestão de riscos psicossociais sob NR-1, com instrumentos validados, treinamento de líder e ciclo PDCA.',
+  headline: title,
+  description,
+  mainEntityOfPage: 'https://posgraduacaopsicologia.com/guias/implementar-nr1-em-empresa/',
   author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
   inLanguage: 'pt-BR'
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
+    '@type': 'Question', name: f.q,
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
-
 ---
-
-<Base
-  title="Como implementar a NR-1 atualizada na empresa — guia 9 passos · riscos psicossociais"
-  description="Guia passo-a-passo para implementar a NR-1 atualizada com gestão de riscos psicossociais: comitê, instrumentos validados, treinamento de líder, GRO e ciclo PDCA.">
-
+<Base title={title} description={description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7 md:py-10">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Guias', href: '/guias' },
-        { label: 'Implementar NR-1 na empresa' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Guia · Howto · 9 passos</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Como implementar a NR-1 atualizada na empresa</h1>
-          <p class="mt-3 text-ink-700 text-base sm:text-lg">Roteiro técnico para integrar riscos psicossociais ao Gerenciamento de Riscos Ocupacionais, com instrumentos validados, treinamento de líder e ciclo PDCA defensável em fiscalização.</p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~22 min</span>
-            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · RH, SESMT, líderes</span>
-          </div>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
-          MBA em POT no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: "Guias", href: "/guias" }, { label: "Implementar NR-1" }]} />
+      <p class="section-eyebrow mt-4">Guias · Guia de estudo e decisão</p>
+      <h1 class="section-h text-3xl sm:text-4xl max-w-4xl">{title}</h1>
+      <p class="mt-4 text-lg text-ink-700 max-w-3xl">O contrato está prestes a ser assinado, mas a proposta só entrega um questionário e um relatório automático. Antes da compra, defina quem utilizará os achados, quais decisões serão tomadas e como as mudanças no trabalho serão acompanhadas.</p>
+      <p class="mt-4 text-sm text-ink-600">Atualização editorial: <time datetime="2026-10-06">06/10/2026</time> · Brasil GEO, portal editorial independente.</p>
+      <a class="btn btn-secondary mt-4" href="#ficha-pratica">Preencher a ficha prática</a>
     </div>
   </section>
-
-  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
-          <li><strong>O que você vai aprender:</strong> integrar riscos psicossociais ao GRO conforme NR-1 atualizada, com instrumento validado, comitê, treinamento e plano de ação auditável.</li>
-          <li><strong>Pré-requisitos:</strong> SESMT ativo, área de RH com mandato, acesso a psicólogo organizacional (interno ou consultoria), patrocínio executivo.</li>
-          <li><strong>Resultado esperado:</strong> dossiê NR-1 defensável em fiscalização do MTE em 8 semanas, com ciclo PDCA permanente.</li>
-        </ul>
-      </div>
-
+  <article class="container-page py-10">
+    <div class="max-w-4xl mx-auto space-y-10">
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
-        <p>
-          A tentação é tratar a NR-1 atualizada como projeto pontual de compliance: contratar consultoria, aplicar pesquisa, arquivar relatório. Essa abordagem falha porque NR-1 (Brasil, 2024) é norma de processo, não de evento. O auditor fiscal do trabalho avalia o ciclo de gestão — atas, indicadores, revisão, evidência de treinamento — não somente o documento final. Empresas que entendem a NR-1 como rotina permanente de saúde ocupacional, com indicador trimestral e revisão anual, terminam com custo total menor e proteção jurídica maior do que as que tratam como entrega de projeto.
-        </p>
-        <p>
-          A segunda inversão: o foco operacional do plano de ação não é o programa de bem-estar nem o canal de denúncia. É o redesenho de jornada, autonomia, metas e relações de liderança. A literatura ocupacional é consistente desde Karasek e Theorell (1990) e Demerouti et al. (2001 Job Demands-Resources): risco psicossocial nasce em demanda alta combinada com baixo controle. Sem atacar essa estrutura, o programa de bem-estar vira analgésico sem tratamento.
-        </p>
+<h2>Antes de começar: vigência e escopo</h2>
+<p>O plano de implementação deve ligar cada condição de risco a uma decisão e a um responsável. A redação do capítulo 1.5 da <a href="https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-1">NR-1</a> que explicita os fatores psicossociais relacionados ao trabalho está vigente desde 26 de maio de 2026. Este roteiro ajuda a organizar o projeto; o enquadramento e as decisões técnicas precisam considerar a organização concreta.</p>
+<p>Consulte também as <a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/manuais-e-publicacoes/2026/perguntas-e-respostas-gro-pgr-maio-2026">perguntas e respostas do MTE, de maio de 2026</a>. A orientação oficial vincula a avaliação desses fatores à organização do trabalho e esclarece que não há questionário único nem profissão exclusiva universal para a atividade. Atos reservados a profissões regulamentadas mantêm suas exigências.</p>
+<h2>1. Defina o enquadramento e quem responde pelas decisões</h2>
+<p>Identifique estabelecimentos, atividades, regimes de trabalho e requisitos aplicáveis. Verifique as hipóteses de dispensa e tratamento diferenciado da NR-1, sem presumir que o porte resolva tudo. Designe responsáveis com capacidade técnica adequada e envolva trabalhadores e áreas pertinentes. SESMT e CIPA participam conforme a estrutura e as exigências aplicáveis; sua existência não deve ser presumida em toda empresa.</p>
+<p><strong>Entrega:</strong> escopo escrito, responsabilidades e forma de participação. A organização continua responsável por gerir os riscos, mesmo quando contrata apoio externo.</p>
+<h2>2. Conheça o trabalho antes de escolher a ferramenta</h2>
+<p>Mapeie tarefas, jornadas, metas, recursos, autonomia e relações de trabalho. Consulte registros institucionais pertinentes e escute quem executa as atividades. Uma descrição formal do cargo pode omitir interrupções, conflitos de orientação e exigências que aparecem apenas no cotidiano.</p>
+<p><strong>Entrega:</strong> perguntas de investigação e descrição das situações de exposição. Integre essa etapa à avaliação ergonômica preliminar, conforme a NR-17 e a orientação do MTE.</p>
+<h2>3. Justifique o método e proteja a participação</h2>
+<p>Escolha procedimentos compatíveis com o contexto: observação, entrevistas, discussão coletiva e, quando adequado, instrumentos de pesquisa. Não existe taxa universal de resposta que assegure qualidade. Explique cobertura, limitações, possíveis vieses e o que fará quando houver baixa participação.</p>
+<p>Informe finalidade, acesso e uso dos dados. Em equipes pequenas, agregações podem permitir reidentificação. Não prometa anonimato se o desenho não o sustenta. Evite recolher diagnósticos, narrativas clínicas ou identificadores que não sejam necessários ao objetivo.</p>
+<p><strong>Entrega:</strong> plano de coleta e proteção das informações, com justificativa técnica e limites.</p>
+<h2>4. Avalie os riscos e integre os registros</h2>
+<p>Analise as situações identificadas e os grupos expostos segundo os critérios aplicáveis de avaliação de riscos. Quando exigido, o PGR deve conter inventário de riscos e plano de ação. Um painel de pontuações, sozinho, não substitui a análise nem explica por que uma medida foi priorizada.</p>
+<p><strong>Entrega:</strong> avaliação fundamentada, coerente com os registros de gerenciamento de riscos. Explicite também incertezas e necessidades de aprofundamento.</p>
+<h2>5. Defina medidas com responsável, prazo e critério</h2>
+<p>Relacione cada medida à condição investigada. Revisão de distribuição de tarefas, planejamento de escalas, clareza de responsabilidades e mecanismos de prevenção de violência podem ser pertinentes, conforme os achados. Serviços de cuidado individual podem compor a resposta, com sigilo e responsabilidade próprios.</p>
+<p><strong>Entrega:</strong> plano executável. Uma ação deve dizer quem decide, que recurso será necessário, quando será revista e como a implementação será comprovada.</p>
+<h2>6. Acompanhe mudanças e revise quando necessário</h2>
+<p>Verifique se as medidas ocorreram e se alteraram a exposição. Reavalie diante dos eventos e periodicidades previstos na norma, incluindo mudanças relevantes no trabalho ou insuficiência das medidas. A equipe pode estabelecer rotinas internas de acompanhamento, mas não deve apresentar um calendário trimestral ou anual arbitrário como regra universal da NR-1.</p>
+<p><strong>Entrega:</strong> registros da execução, participação, avaliação de resultados e decisões de revisão, com guarda e acesso apropriados.</p>
+<h2>Exemplo hipotético: uma operação com metas incompatíveis</h2>
+<p>Uma equipe recebe prioridade de rapidez de um gestor e de conferência detalhada de outro, sem critério para resolver o conflito. A investigação descreve a situação e escuta os envolvidos. A medida proposta é pactuar prioridades e condições de escalonamento de dúvidas. O acompanhamento examina se as orientações se tornaram utilizáveis e se a exposição persistiu. Não há promessa de reduzir afastamentos em prazo fixo.</p>
+<h2>Revisão da proposta antes da contratação</h2>
+<p>Peça ao fornecedor os entregáveis de cada etapa, seus limites e a forma de transferência do conhecimento para a organização. Confira se o contrato inclui discussão dos achados e acompanhamento, além da coleta. Recuse conclusões sobre saúde individual baseadas apenas em um questionário corporativo.</p>
+<p>O curso <a href="https://alexandrecaramaschi.com/educacao/letramento-ia-executivos">Letramento em IA para executivos, de Alexandre Caramaschi</a>, pode apoiar a avaliação de fornecedores que usam automação: origem dos dados, riscos e revisão humana. A formação é complementar e não certifica conformidade com a NR-1.</p>
+<p>Consulte o panorama de <a href="/temas/nr1-riscos-psicossociais">riscos psicossociais</a> e a página de <a href="/areas/psicologia-organizacional-trabalho">Psicologia Organizacional e do Trabalho</a>. Use a ficha para preparar a reunião de implementação, com descrições genéricas e sem informações clínicas.</p>
       </div>
-
-      <div class="space-y-5">
-        <h2 class="section-h text-2xl">Os 9 passos</h2>
-        {passos.map(p => (
-          <div class="card p-6 border-surface-200">
-            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
-            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
-            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
-              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
-              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Checklist de execução</h2>
-        <p class="text-ink-700 mt-2">Cronograma típico de 8 semanas. Adapte aos prazos internos e ao porte da empresa.</p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Passo</th>
-                <th class="text-left px-4 py-3">Indicador</th>
-                <th class="text-left px-4 py-3">Quem executa</th>
-                <th class="text-left px-4 py-3">Quando</th>
-                <th class="text-left px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              {checklist.map(c => (
-                <tr>
-                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
-                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
-                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
-                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
-                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Distribuidora logística, 380 colaboradores, 9 semanas até o dossiê</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Em janeiro de 2026, uma distribuidora logística do Centro-Oeste, com 380 colaboradores em três centros de distribuição, recebeu auto de infração preliminar do MTE por ausência de avaliação de riscos psicossociais no GRO. O prazo foi de 60 dias. O comitê inicial reuniu RH, SESMT, jurídico, dois representantes da CIPA e uma consultora externa psicóloga organizacional. Na semana 2, COPSOQ-III adaptado e validado para português brasileiro foi escolhido como instrumento principal, com entrevistas estruturadas com os 18 supervisores como triangulação.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A coleta na semana 4 alcançou 67% de adesão. Os fatores mais críticos foram sobrecarga em pico de demanda noturna e baixa autonomia em escala de turno. O plano de ação combinou três medidas estruturais (revisão de escala com participação de delegados, ampliação de margem decisória local, canal independente de denúncia) e duas medidas complementares (treinamento de oito horas em escuta e encaminhamento para os 18 supervisores, programa de apoio psicológico via convênio). O dossiê final, entregue na semana 9, foi aceito sem ressalva. Em revisão de seis meses, afastamentos por CID F caíram de 14 para 7 e o turnover noturno de 23% para 14%.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Erros frequentes</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-          {erros.map(e => (
-            <div class="card p-5 border-surface-200">
-              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
-              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Recursos principais</h2>
-        <ul class="mt-3 space-y-2 text-sm">
-          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/seguranca-e-saude-no-trabalho/normas-regulamentadoras" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — Normas Regulamentadoras (texto vigente da NR-1)</a></li>
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções sobre atuação do psicólogo em organizações</a></li>
-          <li><a href="https://www.who.int/teams/mental-health-and-substance-use/treatment-care/mental-health-gap-action-programme" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — mhGAP-IG versão 2.0</a></li>
-          <li><a href="https://www.nice.org.uk/guidance/ng212" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG212 — Mental wellbeing at work</a></li>
-          <li><a href="https://www.who.int/publications/i/item/9789240053052" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS — Guidelines on mental health at work (2022)</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+      <StudyWorksheet id="ficha-pratica" title="Plano de implementação e acompanhamento" description="Organize uma etapa do projeto. Esta ficha educativa não substitui os documentos técnicos exigíveis." fields={fields} checklist={checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="mt-4 divide-y divide-surface-200 rounded-2xl border border-surface-200">
           {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            <details class="p-5">
+              <summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary>
+              <p class="mt-3 leading-relaxed text-ink-700">{f.a}</p>
             </details>
           ))}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
-        <h3 class="font-display font-semibold text-xl">NR-1 é processo. Documento sem ciclo é teatro.</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          A implementação defensável combina governança colegiada, instrumento validado, treinamento estruturado de líderes, integração ao GRO e ciclo PDCA permanente. O foco operacional do plano deve atacar demanda, controle e relações de liderança — não apenas o sintoma. Para profissional de RH ou SESMT que vai liderar essa frente, o MBA em POT do IPOG consolida o fundamento técnico em formato Ao Vivo síncrono com corpo docente nominal.
-        </p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
-          Ver MBA em POT no IPOG
-        </a>
-      </div>
-
-    </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 lg:sticky lg:top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot.shortName}</h3>
-        <p class="text-sm text-ink-700 mt-2">{mbaPot.description}</p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
-        <ul class="space-y-2">
-          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
-          <li><a href={`/mbas#${mbaPos.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPos.shortName}</strong></a></li>
+      </section>
+      <section aria-labelledby="fontes">
+        <h2 id="fontes" class="section-h text-2xl">Fontes e materiais de consulta</h2>
+        <p class="mt-2 text-sm text-ink-600">Fontes consultadas para esta revisão. Normas orientam obrigações; materiais educacionais apoiam o estudo dentro de seu próprio escopo.</p>
+        <ul class="mt-4 space-y-3">
+          {sources.map(s => <li><a href={s.url} class="text-brand-700 underline underline-offset-4" rel="external noopener">{s.label}</a></li>)}
         </ul>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
-        <ul class="space-y-1">
-          <li><a href={`/areas/${areaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaPot.name}</strong></a></li>
-          <li><a href={`/areas/${areaSmo.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaSmo.name}</strong></a></li>
-        </ul>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">fonte principal</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MTE — NR-1</a></li>
-          <li><a href="https://www.who.int/publications/i/item/9789240053052" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">OMS 2022 — Mental health at work</a></li>
-          <li><a href="https://www.nice.org.uk/guidance/ng212" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">NICE NG212</a></li>
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
-        </ul>
-        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~22 min</p>
-      </div>
-    </aside>
-  </section>
-
-  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+      </section>
+    </div>
+  </article>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+  article p { text-align: justify; }
+  article :global(table) { width: 100%; }
+  article :global(th), article :global(td) { padding: 0.75rem; vertical-align: top; }
+</style>

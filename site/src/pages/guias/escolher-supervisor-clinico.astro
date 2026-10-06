@@ -1,347 +1,159 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { SITE, MBAS, AREAS } from '@lib/data';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 
-const mbaPot = MBAS.find(m => m.id === 'mba-pot')!;
-const mbaNeuro = MBAS.find(m => m.id === 'mba-neuro')!;
-const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica')!;
-const areaPot = AREAS.find(a => a.id === 'psicologia-organizacional-trabalho')!;
-const areaNeuro = AREAS.find(a => a.id === 'neuropsicologia')!;
-
-const passos = [
-  {
-    n: 1,
-    titulo: 'Definir o objetivo da supervisão antes do nome',
-    aplicacao: 'A escolha começa pela pergunta certa: o que esta supervisão precisa entregar? Há três focos clássicos na literatura — clínico-técnico (manejo de caso), formativo (consolidação de fundamento teórico) e ético (manejo de fronteiras profissionais). A maioria dos profissionais iniciantes precisa combinar os três; profissionais em transição de área priorizam o formativo. Definir o objetivo evita a armadilha de contratar o supervisor mais famoso para uma demanda que não é dele.',
-    armadilha: 'Buscar o nome conhecido antes de definir a necessidade. Reputação não substitui aderência ao seu projeto.'
-  },
-  {
-    n: 2,
-    titulo: 'Verificar registro CRP e situação ética',
-    aplicacao: 'Primeiro filtro objetivo: CRP ativo, sem registro de processo ético ético ou disciplinar com decisão final desfavorável. A consulta ao site do CRP local é pública e leva minutos. Resolução CFP 13/2007 e atualizações posteriores tratam de quem pode supervisionar. Para supervisão clínica formal de estagiário, há requisitos adicionais; para supervisão de profissional já formado, o critério é a habilitação no campo da supervisão.',
-    armadilha: 'Pular essa verificação por confiança em rede de indicação. Indicação não atesta situação ética; CRP, sim.'
-  },
-  {
-    n: 3,
-    titulo: 'Avaliar filiação teórica e coerência metodológica',
-    aplicacao: 'A supervisão funciona melhor quando há alinhamento teórico mínimo entre supervisor e supervisionado. Um clínico que atua em TCC (Beck, 1979; Hofmann, 2008 ACT como terceira onda) supervisionado por psicanalista lacaniano vive tensão metodológica constante que consome a supervisão. Não é exigência de identidade — diversidade enriquece — mas exige acordo explícito de método. Pergunte: qual abordagem o supervisor pratica e ensina? Pergunte caso de manejo concreto.',
-    armadilha: 'Ignorar tensão teórica porque "o supervisor é bom". Conflito de paradigma não resolvido vira impasse de supervisão.'
-  },
-  {
-    n: 4,
-    titulo: 'Verificar especialização específica para o seu campo',
-    aplicacao: 'Supervisão em clínica geral não cobre supervisão em neuropsicologia, psicologia organizacional ou avaliação psicológica. Cada campo tem método, instrumento e ética específicos. Para POT, supervisor com trajetória organizacional é regra. Para neuropsicologia, supervisor com formação específica em avaliação cognitiva (preferencialmente com registro de especialista CFP) é critério forte. Para clínica de DBT (Linehan, 1993), supervisão por profissional formalmente treinado em DBT é praticamente exigência.',
-    armadilha: 'Aceitar supervisão genérica para campo especializado. Você termina aprendendo sozinho exatamente o que veio buscar.'
-  },
-  {
-    n: 5,
-    titulo: 'Negociar contrato escrito desde a primeira sessão',
-    aplicacao: 'Supervisão profissional formal exige contrato escrito que defina: frequência, duração, valor, modalidade (presencial ou remota), formato (individual ou grupo), regras de cancelamento, sigilo (incluindo sigilo cruzado quando o supervisionado traz caso identificado), critérios de encerramento. O contrato protege as duas partes e profissionaliza a relação. Resolução CFP 06/2019 sobre documentos psicológicos é referência útil sobre formalização.',
-    armadilha: 'Tratar supervisão como acordo informal. Sem contrato, qualquer impasse vira conflito pessoal — não desacordo profissional.'
-  },
-  {
-    n: 6,
-    titulo: 'Calibrar frequência e formato à demanda real',
-    aplicacao: 'A literatura de supervisão clínica indica frequência mínima quinzenal para profissional em início de prática, com 60 minutos por sessão. Profissionais experientes em casos de baixa complexidade podem operar em supervisão mensal ou pontual. Em casos complexos (risco suicida, transtornos graves, ato pericial), a frequência sobe para semanal e a abordagem inclui revisão de prontuário. Modalidade remota é equivalente à presencial em maior parte dos contextos (literatura pós-2020), com exceção de supervisão de prática em vivo.',
-    armadilha: 'Adotar frequência menor que a complexidade exige. Casos graves sem suporte suficiente expõem profissional e paciente.'
-  },
-  {
-    n: 7,
-    titulo: 'Garantir sigilo cruzado e gestão de prontuário',
-    aplicacao: 'O Código de Ética Profissional do Psicólogo (CFP, 2005, atualizado) trata sigilo como obrigação central. Em supervisão, o supervisionado pode apresentar caso de paciente com consentimento explícito e identidade preservada. Discutir caso identificado sem consentimento configura quebra de sigilo. A supervisão deve ter regra clara: identificação mascarada, registro mínimo, não compartilhamento de prontuário. Sigilo cruzado obriga supervisor a manter sigilo sobre conteúdo da supervisão.',
-    armadilha: 'Trazer prontuário completo identificado para supervisão. Quebra de sigilo é falta ética grave, com pena prevista no Código de Ética CFP.'
-  },
-  {
-    n: 8,
-    titulo: 'Reavaliar a relação periodicamente',
-    aplicacao: 'A literatura recomenda revisão formal da supervisão a cada 6 a 12 meses, com perguntas estruturadas: a supervisão ainda atende ao objetivo definido? O que mudou? Há novo foco? Há tensão não resolvida? Encerramento profissional é parte do ciclo, sem desconforto pessoal. Trocar supervisor é decisão técnica legítima, não fracasso da relação. Esgotamento da supervisão é sinal de maturação profissional, não defeito.',
-    armadilha: 'Permanecer em supervisão por inércia. Relação sem revisão envelhece e perde valor formativo.'
-  }
-];
-
-const checklist = [
-  { passo: '1 · Objetivo da supervisão', indicador: 'Doc de 1 página', quem: 'Supervisionado', quando: 'Antes da busca', status: 'Pendente' },
-  { passo: '2 · CRP e ética', indicador: 'Consulta pública CRP', quem: 'Supervisionado', quando: 'Pré-contrato', status: 'Pendente' },
-  { passo: '3 · Filiação teórica', indicador: 'Entrevista de alinhamento', quem: 'Supervisionado', quando: 'Pré-contrato', status: 'Pendente' },
-  { passo: '4 · Especialização do campo', indicador: 'CV documentado', quem: 'Supervisionado', quando: 'Pré-contrato', status: 'Pendente' },
-  { passo: '5 · Contrato escrito', indicador: 'Documento assinado', quem: 'Ambos', quando: 'Sessão 1', status: 'Pendente' },
-  { passo: '6 · Frequência calibrada', indicador: 'Cadência registrada', quem: 'Ambos', quando: 'Sessão 1', status: 'Pendente' },
-  { passo: '7 · Sigilo cruzado', indicador: 'Cláusula no contrato', quem: 'Ambos', quando: 'Sessão 1', status: 'Pendente' },
-  { passo: '8 · Revisão periódica', indicador: 'Calendário 6-12 meses', quem: 'Ambos', quando: 'Semestral', status: 'Pendente' }
-];
-
-const erros = [
-  {
-    titulo: 'Escolher pela fama, não pela aderência',
-    texto: 'Supervisor famoso em uma abordagem pode ser supervisor inadequado para outra. Reputação é dado relevante, mas secundário a alinhamento teórico, especialização específica e disponibilidade real para sua agenda.'
-  },
-  {
-    titulo: 'Operar sem contrato escrito',
-    texto: 'Supervisão informal funciona até o primeiro impasse — agenda, valor, sigilo, encerramento. Sem contrato, qualquer divergência vira conflito interpessoal. Contrato escrito é prática profissional padrão, não desconfiança.'
-  },
-  {
-    titulo: 'Subestimar a complexidade dos casos',
-    texto: 'Risco suicida, transtornos graves, perícia judicial exigem supervisão de frequência maior e supervisor com formação específica. Operar em frequência baixa nesses casos expõe profissional e paciente — e infraciona o Código de Ética CFP.'
-  },
-  {
-    titulo: 'Manter supervisão por inércia',
-    texto: 'Supervisão que deixou de movimentar prática esgotou seu valor formativo. Revisão semestral estruturada protege o profissional de relação que virou rotina sem aprendizado — e libera tempo para nova etapa.'
-  }
-];
-
+const title = "Como escolher supervisor clínico e organizar a supervisão";
+const description = "Critérios para avaliar experiência, contrato, sigilo, devolutiva e limites da supervisão clínica, com roteiro de conversa e ficha prática.";
 const faqs = [
   {
-    q: 'Supervisão clínica e análise pessoal são a mesma coisa?',
-    a: 'Não. Análise ou psicoterapia pessoal trata sofrimento próprio do profissional, conduzida por terapeuta da sua escolha em setting clínico. Supervisão profissional trata casos atendidos pelo profissional, com foco técnico, ético e formativo. As duas coisas se complementam, mas têm contratos, objetivos e ética distintos. Não devem ser conduzidas pelo mesmo profissional.'
+    "q": "Existe frequência obrigatória universal de supervisão?",
+    "a": "Não há neste guia fundamento para uma frequência universal aplicável a toda prática clínica. Considere a demanda, a complexidade e as regras específicas de estágio, curso, instituição ou contrato, quando existirem."
   },
   {
-    q: 'Qual a frequência mínima de supervisão para psicólogo recém-formado?',
-    a: 'A literatura de supervisão clínica e a prática consolidada indicam quinzenal como mínimo nos primeiros 24 meses de prática autônoma, com tendência semanal em casos clínicos complexos. Em frequências menores que mensal, o profissional iniciante tende a perder janela de manejo em situações que exigem decisão técnica rápida. Para profissional experiente, a frequência depende da complexidade da prática.'
+    "q": "Supervisão online é sempre equivalente à presencial?",
+    "a": "A adequação depende do objetivo, do método e das condições de privacidade e comunicação. A modalidade não assegura, por si, qualidade ou equivalência para todas as situações."
   },
   {
-    q: 'Supervisão pode ser remota?',
-    a: 'Sim. A literatura pós-2020 (revisões em American Psychologist e Clinical Psychology Review) indica que supervisão remota síncrona é equivalente à presencial em maior parte dos contextos. A exceção é supervisão de prática em vivo (observação direta), que ainda tem ganho relevante quando presencial. Para supervisão de discussão de caso, remota é prática consolidada.'
-  },
-  {
-    q: 'Como o MBA do IPOG conecta a esse guia?',
-    a: 'Os MBAs do IPOG em Psicologia Organizacional, Reabilitação Neuropsicológica, Liderança Positiva e Psicologia Positiva consolidam fundamento que sustenta diálogo de supervisão de qualidade. Profissional que vai conduzir supervisão precisa de lastro técnico no campo específico — e os MBAs do IPOG são exatamente isso. Formato Ao Vivo síncrono com corpo docente nominal. Consulte ipog.edu.br.'
+    "q": "Posso usar ferramentas de IA para organizar o material?",
+    "a": "Para estudo, limite-se a bibliografia pública e exemplos inteiramente fictícios. Não insira registros, gravações, resultados ou dados identificáveis de pacientes em ferramentas sem análise das obrigações profissionais e de proteção de dados."
   }
 ];
-
-const ldHowTo = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  author: { '@id': 'https://brasilgeo.ai/#organization' },
-  name: 'Como escolher supervisor clínico com método',
-  description: 'Guia em 8 passos para escolha técnica de supervisor clínico, POT ou neuropsicológico: filiação teórica, contrato, frequência, sigilo e revisão periódica.',
-  totalTime: 'PT16M',
-  inLanguage: 'pt-BR',
-  step: passos.map(p => ({
-    '@type': 'HowToStep',
-    position: p.n,
-    name: p.titulo,
-    text: p.aplicacao
-  }))
-};
-
+const fields = [
+  {
+    "label": "Objetivo de aprendizagem",
+    "hint": "Qual competência ou dúvida geral precisa ser trabalhada?"
+  },
+  {
+    "label": "Experiência e método a verificar",
+    "hint": "Que perguntas fará sobre público, processo e devolutiva?"
+  },
+  {
+    "label": "Acordos e confidencialidade",
+    "hint": "Quais condições de formato, contato e proteção precisam ficar claras?"
+  },
+  {
+    "label": "Critério de revisão",
+    "hint": "Como avaliar se a supervisão atende ao objetivo?"
+  }
+];
+const checklist = [
+  "Conferi pertinência da experiência ao meu objetivo.",
+  "Planejei o compartilhamento mínimo de informações.",
+  "Combinei limites de contato e responsabilidades.",
+  "Defini uma revisão do processo de aprendizagem."
+];
+const sources = [
+  {
+    "label": "CFP: Código de Ética Profissional",
+    "url": "https://site.cfp.org.br/wp-content/uploads/2012/07/codigo-de-etica-psicologia.pdf"
+  },
+  {
+    "label": "CFP: diretrizes para psicoterapia",
+    "url": "https://site.cfp.org.br/resolucao-sobre-psicoterapia-e-publicada-no-diario-oficial-da-uniao/"
+  },
+  {
+    "label": "CRP-MS: Resolução CFP nº 9/2024 sobre TDIC",
+    "url": "https://crpms.org.br/resolucao-cfp-no-09-2024-regula-o-uso-de-tecnologias-digitais-na-psicologia-e-revoga-a-necessidade-de-cadastro-no-e-psi/"
+  },
+  {
+    "label": "CFP: manual de registros e documentos, 2025",
+    "url": "https://site.cfp.org.br/wp-content/uploads/2025/11/Manual_Orientativo.pdf"
+  },
+  {
+    "label": "CFP: posicionamento sobre inteligência artificial",
+    "url": "https://site.cfp.org.br/cfp-divulga-posicionamento-sobre-inteligencia-artificial-no-contexto-da-pratica-psicologica/"
+  }
+];
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Como escolher supervisor clínico com método: guia passo-a-passo',
-  description: 'Critérios técnicos para escolher supervisor em clínica, POT ou neuropsicologia, com contrato escrito, sigilo e revisão periódica.',
+  headline: title,
+  description,
+  mainEntityOfPage: 'https://posgraduacaopsicologia.com/guias/escolher-supervisor-clinico/',
   author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
   inLanguage: 'pt-BR'
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
+    '@type': 'Question', name: f.q,
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
-
 ---
-
-<Base
-  title="Como escolher supervisor clínico com método — guia 8 passos · CFP, contrato, sigilo"
-  description="Critérios técnicos para escolher supervisor clínico, POT ou neuropsicológico: filiação teórica, contrato escrito, frequência, sigilo cruzado e revisão periódica.">
-
+<Base title={title} description={description} pageType="article">
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7 md:py-10">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Guias', href: '/guias' },
-        { label: 'Escolher supervisor clínico' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Guia · Howto · 8 passos</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Escolher supervisor clínico com método</h1>
-          <p class="mt-3 text-ink-700 text-base sm:text-lg">Critérios técnicos para escolher supervisor em psicologia clínica, organizacional ou neuropsicologia: filiação teórica, contrato escrito, frequência, sigilo cruzado e revisão semestral.</p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-800 px-3 py-1 text-xs font-semibold">Tempo de leitura ~16 min</span>
-            <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 text-ink-700 px-3 py-1 text-xs font-semibold">Persona · Psicólogos em início ou transição</span>
-          </div>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0 h-11">
-          MBAs IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: "Guias", href: "/guias" }, { label: "Escolher supervisor clínico" }]} />
+      <p class="section-eyebrow mt-4">Guias · Guia de estudo e decisão</p>
+      <h1 class="section-h text-3xl sm:text-4xl max-w-4xl">{title}</h1>
+      <p class="mt-4 text-lg text-ink-700 max-w-3xl">Você sai de uma sessão com uma dúvida específica, mas a conversa de supervisão termina em recomendações genéricas. A escolha do supervisor precisa considerar como ele ajuda a examinar decisões, além do currículo e da afinidade teórica.</p>
+      <p class="mt-4 text-sm text-ink-600">Atualização editorial: <time datetime="2026-10-06">06/10/2026</time> · Brasil GEO, portal editorial independente.</p>
+      <a class="btn btn-secondary mt-4" href="#ficha-pratica">Preencher a ficha prática</a>
     </div>
   </section>
-
-  <section class="container-page py-10 md:py-12 grid lg:grid-cols-12 gap-8 lg:gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <ul class="text-ink-900 leading-relaxed space-y-2 list-disc pl-5">
-          <li><strong>O que você vai aprender:</strong> escolher supervisor com método — objetivo, filiação teórica, especialização específica, contrato, frequência, sigilo e revisão.</li>
-          <li><strong>Pré-requisitos:</strong> registro CRP ativo, definição do campo de atuação (clínica, POT, neuro, avaliação), demanda concreta de supervisão.</li>
-          <li><strong>Resultado esperado:</strong> supervisão produtiva em 1 a 3 sessões de calibração, com contrato escrito e revisão semestral programada.</li>
-        </ul>
-      </div>
-
+  <article class="container-page py-10">
+    <div class="max-w-4xl mx-auto space-y-10">
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
-        <p>
-          O caminho usual para escolher supervisor é pelo nome — quem é conhecido, quem aparece em eventos, quem foi indicado por colega admirado. Esse atalho falha com frequência. A literatura de supervisão clínica (Falender e Shafranske, 2017; Watkins e Milne, 2014) mostra que aderência ao projeto profissional, frequência adequada à complexidade e contrato escrito predizem mais o ganho formativo do que renome do supervisor. A escolha é, antes de tudo, técnica.
-        </p>
-        <p>
-          A inversão prática: defina antes o objetivo, valide CRP e ética, verifique filiação teórica, exija especialização específica para seu campo, contrate por escrito, calibre frequência, blinde sigilo, marque revisão. Quem segue esse caminho contrata supervisão que funciona — e troca sem culpa quando o ciclo se esgota.
-        </p>
+<h2>Comece pela dúvida que precisa aprender a trabalhar</h2>
+<p>A supervisão deve produzir perguntas melhores e critérios para rever decisões clínicas. Antes de procurar nomes, defina seu objetivo: aprofundar formulação, discutir limites de competência, revisar comunicação profissional ou estudar a adequação de uma intervenção. Não é necessário expor um caso real para fazer a primeira conversa sobre o serviço.</p>
+<p>Experiência na mesma abordagem pode ser relevante, mas não responde sozinha se o supervisor conhece o público e a situação de atendimento. Uma trajetória extensa em um contexto não comprova domínio de todos os outros. Peça exemplos do tipo de discussão que costuma conduzir, sem solicitar informações de pacientes ou material protegido de terceiros.</p>
+<h2>Oito pontos para a conversa inicial</h2>
+<ol>
+<li><strong>Demanda:</strong> apresente o objetivo de aprendizagem e pergunte se ele está dentro do escopo do serviço.</li>
+<li><strong>Experiência:</strong> confira formação, atuação pertinente e inscrição profissional quando aplicável. A consulta cadastral não prova ausência de todos os processos éticos.</li>
+<li><strong>Método:</strong> pergunte como uma questão é preparada, discutida e retomada no encontro seguinte.</li>
+<li><strong>Devolutiva:</strong> investigue como recebe comentários sobre raciocínio, alternativas e limites das conclusões.</li>
+<li><strong>Sigilo:</strong> combine quais materiais podem ser compartilhados, por qual meio e com quais cuidados de proteção.</li>
+<li><strong>Formato:</strong> avalie modalidade individual ou em grupo, tempo disponível e experiência dos participantes.</li>
+<li><strong>Acordos:</strong> registre honorários, frequência, cancelamentos, limites de contato entre encontros e término.</li>
+<li><strong>Revisão:</strong> defina quando avaliar se o objetivo inicial está sendo atendido.</li>
+</ol>
+<h2>Contrato organiza expectativas; normas orientam responsabilidades</h2>
+<p>Os deveres éticos do exercício profissional permanecem. O <a href="https://site.cfp.org.br/wp-content/uploads/2012/07/codigo-de-etica-psicologia.pdf">Código de Ética</a> orienta competência, responsabilidade e sigilo. A <a href="https://site.cfp.org.br/resolucao-sobre-psicoterapia-e-publicada-no-diario-oficial-da-uniao/">Resolução CFP nº 13/2022</a> trata da psicoterapia por psicólogos; a nº 6/2019 refere-se à produção de documentos escritos. Nenhuma delas deve ser citada como fundamento de uma frequência universal de supervisão que o texto normativo não estabeleça.</p>
+<p>É recomendável deixar os acordos explícitos e acessíveis. Se a supervisão integra estágio, especialização, residência ou vínculo institucional, também existem regras próprias a verificar. Frequência e duração devem considerar objetivos, complexidade, experiência e condições reais, sem transformar uma sugestão editorial em exigência legal para todos.</p>
+<h2>Material clínico exige mais que apagar o nome</h2>
+<p>Uma profissão rara, um episódio singular ou a combinação de datas e relações pode identificar alguém. Compartilhe apenas o necessário ao objetivo e examine a legitimidade do compartilhamento, os cuidados de confidencialidade e as obrigações aplicáveis. Gravações não devem ser tratadas como etapa automática; precisam de análise específica e dos cuidados pertinentes.</p>
+<p>Em grupo, estabeleça regras de participação e proteção desde o início. No meio digital, avalie ambiente, acesso, armazenamento e comunicação. A <a href="https://crpms.org.br/resolucao-cfp-no-09-2024-regula-o-uso-de-tecnologias-digitais-na-psicologia-e-revoga-a-necessidade-de-cadastro-no-e-psi/">Resolução CFP nº 9/2024</a> é a referência para serviços psicológicos mediados por TDIC; um recurso de videoconferência, sozinho, não assegura privacidade.</p>
+<h2>Exemplo hipotético: a dúvida virou plano de estudo</h2>
+<p>Uma psicóloga quer ampliar o atendimento a adultos com demandas que conhece pouco. Na primeira conversa, o supervisor ajuda a delimitar lacunas e recomenda bibliografia, discussão de limites e avaliação de encaminhamentos. Eles combinam reexaminar o objetivo após um período acordado. O valor da supervisão será avaliado pela qualidade do raciocínio e pela clareza das decisões, sem promessa de aumento de renda ou resultado clínico garantido.</p>
+<h2>Como perceber que a relação precisa de revisão</h2>
+<p>Observe se há espaço para discordância fundamentada, reconhecimento de incerteza e encaminhamento de perguntas fora da competência do supervisor. Recomendações que dispensam avaliação do contexto, promessas de acerto garantido ou pedidos de exposição desnecessária de pacientes exigem reconsiderar a relação e buscar orientação profissional apropriada.</p>
+<p>Supervisão e psicoterapia pessoal têm objetivos distintos. Dificuldades emocionais podem aparecer na conversa técnica, mas é importante preservar o objetivo contratado e analisar conflitos de papéis que comprometam o trabalho. Também é necessário planejar quem responde em urgências: o supervisor não deve ser presumido como cobertura permanente do atendimento.</p>
+<h2>Leituras e preparação do próximo encontro</h2>
+<p>Para quem atende adultos autistas ou casais neurodivergentes, a página de <a href="https://larissacaramaschi.com/profissionais/supervisao-clinica">supervisão clínica no portal de Larissa Caramaschi</a> descreve um serviço e seu recorte temático. Ela pode orientar perguntas sobre adequação ao seu objetivo; confirme diretamente condições e disponibilidade.</p>
+<p>O curso <a href="https://alexandrecaramaschi.com/educacao/segundo-cerebro-agentes-pessoais">Segundo cérebro e agentes pessoais, de Alexandre Caramaschi</a>, pode apoiar a organização de bibliografia pública e perguntas de estudo. Use esse recurso educacional sem prontuários, gravações ou informações de pacientes; ele não substitui formação clínica nem supervisão.</p>
+<p>Consulte também as páginas de <a href="/areas/psicologia-clinica">Psicologia Clínica</a> e <a href="/areas/avaliacao-psicologica">Avaliação Psicológica</a>. Para a dúvida da abertura, prepare na ficha uma pergunta de aprendizagem e o critério que mostrará se ela ficou mais clara.</p>
       </div>
-
-      <div class="space-y-5">
-        <h2 class="section-h text-2xl">Os 8 passos</h2>
-        {passos.map(p => (
-          <div class="card p-6 border-surface-200">
-            <h3 class="font-display font-semibold text-lg text-ink-900">Passo {p.n} · {p.titulo}</h3>
-            <p class="mt-3 text-ink-700 leading-relaxed">{p.aplicacao}</p>
-            <div class="mt-4 rounded-xl bg-sun-500/10 border border-sun-500/30 p-4">
-              <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-1">Armadilha comum</p>
-              <p class="text-sm text-ink-700 leading-relaxed">{p.armadilha}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Checklist de execução</h2>
-        <p class="text-ink-700 mt-2">Sequência típica antes e durante a contratação. Cumpra antes da segunda sessão de supervisão.</p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Passo</th>
-                <th class="text-left px-4 py-3">Indicador</th>
-                <th class="text-left px-4 py-3">Quem executa</th>
-                <th class="text-left px-4 py-3">Quando</th>
-                <th class="text-left px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              {checklist.map(c => (
-                <tr>
-                  <td class="px-4 py-3 font-semibold text-ink-900 whitespace-nowrap">{c.passo}</td>
-                  <td class="px-4 py-3 text-ink-700">{c.indicador}</td>
-                  <td class="px-4 py-3 text-ink-700">{c.quem}</td>
-                  <td class="px-4 py-3 text-ink-700 whitespace-nowrap">{c.quando}</td>
-                  <td class="px-4 py-3 text-ink-500">{c.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Mini-caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Psicóloga em transição clínica para POT, escolha em 4 semanas</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Psicóloga com 5 anos de prática clínica em TCC decidiu migrar para POT após oportunidade em consultoria organizacional. A primeira sondagem identificou três supervisores potenciais: um clínico reconhecido em TCC organizacional, uma psicóloga com 20 anos em consultoria e diagnóstico organizacional, e um pesquisador acadêmico de cultura. O objetivo declarado foi formativo: consolidar fundamento de diagnóstico organizacional, intervenção em cultura e leitura de NR-1.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A escolha técnica recaiu sobre a segunda candidata, pela aderência específica ao objetivo. Contrato escrito, quinzenal remoto, 90 minutos por sessão, 12 meses iniciais, revisão semestral. Sigilo cruzado garantido em cláusula explícita. A psicóloga em transição cursou em paralelo o MBA em POT do IPOG, e usou supervisão para discutir aplicação dos conceitos do MBA em casos reais de consultoria. Em 6 meses, transição estava consolidada, com primeira consultoria fechada em NR-1.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Erros frequentes</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-          {erros.map(e => (
-            <div class="card p-5 border-surface-200">
-              <h3 class="font-display font-semibold text-base text-ink-900">{e.titulo}</h3>
-              <p class="text-sm text-ink-700 mt-2 leading-relaxed">{e.texto}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Recursos principais</h2>
-        <ul class="mt-3 space-y-2 text-sm">
-          <li><a href="https://site.cfp.org.br/legislacao/codigo-de-etica-do-psicologo/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Código de Ética Profissional do Psicólogo</a></li>
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Resoluções e consulta pública</a></li>
-          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI — Avaliação de testes psicológicos</a></li>
-          <li><a href="https://www.apa.org/practice/guidelines" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA — Practice Guidelines</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
-        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+      <StudyWorksheet id="ficha-pratica" title="Roteiro para contratar e revisar a supervisão" description="Registre objetivos educacionais e acordos do serviço. Não descreva casos, pessoas ou informações clínicas." fields={fields} checklist={checklist} />
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="mt-4 divide-y divide-surface-200 rounded-2xl border border-surface-200">
           {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
+            <details class="p-5">
+              <summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary>
+              <p class="mt-3 leading-relaxed text-ink-700">{f.a}</p>
             </details>
           ))}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
-        <h3 class="font-display font-semibold text-xl">Supervisão é decisão técnica, não escolha de identidade.</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Objetivo, registro CRP, filiação teórica, especialização específica, contrato escrito, frequência calibrada, sigilo cruzado e revisão semestral. Esse é o método. Para profissional em transição ou consolidação de campo, o MBA correspondente do IPOG sustenta o diálogo de supervisão com fundamento consolidado. Formato Ao Vivo síncrono com corpo docente nominal.
-        </p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 h-11 inline-flex">
-          Ver MBAs no IPOG
-        </a>
-      </div>
-
-    </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 lg:sticky lg:top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">MBAs aplicados no IPOG</h3>
-        <p class="text-sm text-ink-700 mt-2">{mbaPot.description}</p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full h-11">Ver no IPOG</a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full h-11">Home IPOG</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">MBAs correlatos</p>
-        <ul class="space-y-2">
-          <li><a href={`/mbas#${mbaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaPot.shortName}</strong></a></li>
-          <li><a href={`/mbas#${mbaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{mbaNeuro.shortName}</strong></a></li>
+      </section>
+      <section aria-labelledby="fontes">
+        <h2 id="fontes" class="section-h text-2xl">Fontes e materiais de consulta</h2>
+        <p class="mt-2 text-sm text-ink-600">Fontes consultadas para esta revisão. Normas orientam obrigações; materiais educacionais apoiam o estudo dentro de seu próprio escopo.</p>
+        <ul class="mt-4 space-y-3">
+          {sources.map(s => <li><a href={s.url} class="text-brand-700 underline underline-offset-4" rel="external noopener">{s.label}</a></li>)}
         </ul>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
-        <ul class="space-y-1">
-          <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>
-          <li><a href={`/areas/${areaPot.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaPot.name}</strong></a></li>
-          <li><a href={`/areas/${areaNeuro.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaNeuro.name}</strong></a></li>
-        </ul>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">fonte principal</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
-          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI</a></li>
-          <li><a href="https://www.apa.org/practice/guidelines" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA Guidelines</a></li>
-        </ul>
-        <p class="text-xs text-ink-500 mt-3">Tempo de leitura: ~16 min</p>
-      </div>
-    </aside>
-  </section>
-
-  <script type="application/ld+json" set:html={JSON.stringify(ldHowTo)} />
+      </section>
+    </div>
+  </article>
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+  article p { text-align: justify; }
+  article :global(table) { width: 100%; }
+  article :global(th), article :global(td) { padding: 0.75rem; vertical-align: top; }
+</style>

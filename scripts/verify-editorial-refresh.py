@@ -18,6 +18,8 @@ class Page(HTMLParser):
         self.text = []
         self.links = []
         self.h1 = 0
+        self.main = 0
+        self.metadata = {}
         self.worksheets = 0
         self.canonical = []
         self.feed(html)
@@ -26,6 +28,8 @@ class Page(HTMLParser):
         attrs = dict(attrs)
         if tag in ('script', 'style'): self.hidden += 1
         if tag == 'h1': self.h1 += 1
+        if tag == 'main': self.main += 1
+        if tag == 'meta': self.metadata[attrs.get('property', attrs.get('name', ''))] = attrs.get('content', '')
         if tag == 'a': self.links.append(attrs.get('href', ''))
         if 'data-study-worksheet' in attrs: self.worksheets += 1
         if tag == 'link' and attrs.get('rel') == 'canonical': self.canonical.append(attrs.get('href'))
@@ -73,6 +77,9 @@ def main():
         checks = {
             'http200': status == 200,
             'h1Unico': page.h1 == 1,
+            'mainUnico': page.main == 1,
+            'publicacaoOriginalPreservada': page.metadata.get('article:published_time', '')[:10] == previous[route]['published'],
+            'modificacaoCorreta': page.metadata.get('article:modified_time', '')[:10] == '2026-10-06',
             'canonical': page.canonical == [ORIGIN + route],
             'fichaPratica': page.worksheets == 1,
             'portalEducacional': any(link.startswith('https://alexandrecaramaschi.com/educacao/') for link in page.links),

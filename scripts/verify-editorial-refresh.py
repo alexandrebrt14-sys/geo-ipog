@@ -100,7 +100,9 @@ def main():
             results.append(result)
     links = sorted({url for row in results for url in row['larissaLinks']})
     output = {'date':'2026-10-06','mode':'publicado' if args.live else 'build','pages':len(results),'passed':sum(r['ok'] for r in results),'larissaDestinations':links,'results':results}
-    (AUDIT / ('verificacao-publicada.json' if args.live else 'verificacao-build.json')).write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    output_path = ROOT / 'tmp/verificacao-publicada.json' if args.live else AUDIT / 'verificacao-build.json'
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(f"Verificação {'pública' if args.live else 'local'}: {output['passed']}/{len(results)} páginas; {len(links)} destinos de Larissa.")
     for row in results:
         if not row['ok']: print(row['route'] + ': ' + ', '.join(row['failures']))

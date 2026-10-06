@@ -49,8 +49,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/areas/aba-tea-neurodesenvolvimento",
-    "title": "ABA, TEA e Neurodesenvolvimento: o que é, evidência e formação no Brasil",
-    "description": "Guia técnico sobre Análise do Comportamento Aplicada (ABA), transtorno do espectro autista (TEA), neurodesenvolvimento, intervenção precoce e como escolher uma especialização.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -61,12 +61,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/avaliacao-psicologica",
-    "title": "Avaliação Psicológica: o que é, escopo profissional e formação reconhecida",
-    "description": "Guia para psicólogos sobre o escopo da avaliação psicológica, regulamentação do CFP, SATEPSI e como escolher uma especialização técnica reconhecida no Brasil.",
+    "title": "Avaliação Psicológica: demanda, SATEPSI e formação responsável",
+    "description": "Como avaliar uma especialização em Avaliação Psicológica, consultar o SATEPSI e distinguir processo, instrumentos e documentos segundo as normas do CFP.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -76,12 +76,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/ia-people-analytics-psicologia-digital",
-    "title": "IA, People Analytics e Psicologia Digital: pós aplicada ao RH",
-    "description": "Análise técnica de IA aplicada a RH, people analytics, ética LGPD e viés algorítmico. Como integrar psicologia no centro da decisão automatizada.",
+    "title": "IA e people analytics: como escolher uma formação",
+    "description": "Critérios para comparar formações em IA, people analytics e Psicologia Digital: método, proteção de dados, avaliação e limites de atuação.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -93,12 +93,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/neuropsicologia",
-    "title": "Neuropsicologia: escopo, formação e regulamentação",
-    "description": "Guia para psicólogos sobre o escopo da neuropsicologia, avaliação de funções cognitivas, regulamentação do CFP e como escolher a especialização.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -107,12 +107,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-clinica",
-    "title": "Psicologia Clínica: abordagens, ética e como escolher uma especialização",
-    "description": "Guia para psicólogos sobre psicologia clínica, abordagens reconhecidas, regulamentação do CFP, ética profissional e critérios para escolher uma especialização densa.",
+    "title": "Psicologia Clínica: como avaliar a formação e preparar a prática",
+    "description": "Critérios para escolher uma pós em Psicologia Clínica, verificar supervisão, atualizar normas de atendimento online e planejar estudo responsável.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -122,12 +122,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-escolar-educacional",
-    "title": "Psicologia Escolar e Educacional: a maior alavanca está no currículo",
-    "description": "Guia técnico de Psicologia Escolar e Educacional: Lei 13.935, atuação institucional, níveis de intervenção e como escolher pós aplicada.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -138,12 +138,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-esporte",
-    "title": "Psicologia do Esporte: alta performance, ansiedade competitiva e pós aplicada",
-    "description": "Guia técnico de Psicologia do Esporte: alta performance, motivação, ansiedade competitiva, equipes, COB/CPB, mensuração e pós-graduação. Especialidade reconhecida pelo CFP.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -153,12 +153,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-hospitalar",
-    "title": "Psicologia Hospitalar: UTI, oncologia, cuidados paliativos e pós aplicada",
-    "description": "Guia técnico de Psicologia Hospitalar: atuação em UTI, oncologia, transplantes, cuidados paliativos, comunicação difícil, humanização e como escolher uma pós-graduação. Resolução CFP 09/2018.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -168,12 +168,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-juridica-forense",
-    "title": "Psicologia Jurídica e Forense: perícia, documentos psicológicos e formação",
-    "description": "Guia para psicólogos sobre psicologia jurídica e forense, perícia, documentos psicológicos, Resolução CFP 06/2019, escuta especializada e como escolher uma especialização.",
+    "title": "Psicologia Jurídica e Forense: escopo, documentos e formação",
+    "description": "Como distinguir atuação jurídica, perícia e assistência técnica; conferir documentos psicológicos e escolher formação com prática fundamentada.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -184,12 +184,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-organizacional-trabalho",
-    "title": "Psicologia Organizacional e do Trabalho (POT): cultura, NR-1 e pós aplicada",
-    "description": "Guia técnico de POT: cultura, liderança, NR-1 e riscos psicossociais, people analytics e como escolher uma pós-graduação aplicada. Conteúdo independente, fontes oficiais.",
+    "title": "Psicologia Organizacional e do Trabalho: formação, escopo e prática",
+    "description": "Como escolher formação em POT, distinguir gestão de pessoas de atos profissionais e avaliar competências em trabalho, dados e prevenção de riscos.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -200,12 +200,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-positiva",
-    "title": "Psicologia Positiva: PERMA, ciência do florescimento e pós aplicada",
-    "description": "Guia técnico de Psicologia Positiva: modelo PERMA, forças pessoais, segurança psicológica e aplicação organizacional. Conteúdo independente, base científica.",
+    "title": "Psicologia Positiva: avaliar modelos e escolher uma formação",
+    "description": "Como estudar PERMA, distinguir medida de intervenção e comparar formações em Psicologia Positiva sem promessas de felicidade ou eficácia universal.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -215,12 +215,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-saude",
-    "title": "Psicologia em Saúde: SUS, atenção primária e pós aplicada",
-    "description": "Guia técnico de Psicologia em Saúde: SUS, atenção primária, apoio matricial, saúde coletiva, equipe multiprofissional e como escolher uma pós-graduação. PNAB 2017, CFP, RAPS.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -230,12 +230,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-social",
-    "title": "Psicologia Social: campo, métodos e atuação em políticas públicas",
-    "description": "Guia técnico de Psicologia Social: leitura do grupo, métodos, atuação em CRAS, CREAS e gestão pública. Conteúdo independente, base científica.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -245,12 +245,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicologia-transito-trafego",
-    "title": "Psicologia de Trânsito e Tráfego: avaliação CNH, DETRAN e pós aplicada",
-    "description": "Guia técnico de Psicologia do Trânsito: avaliação CNH, DETRAN, CONTRAN, Resoluções CFP 07/2009 e 425/2012, perícia, segurança viária e pós-graduação para credenciamento.",
+    "title": "Psicologia do Trânsito: conferir formação e credenciamento",
+    "description": "Mapa regulatório para estudar Psicologia do Trânsito: CFP 1/2019, SATEPSI, CONTRAN 927/2022 e1.020/2025, título de especialista e requisitos do Detran.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -261,12 +261,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicomotricidade",
-    "title": "Psicomotricidade: corpo, movimento e desenvolvimento — pós interdisciplinar",
-    "description": "Guia técnico de Psicomotricidade: campo interdisciplinar, vertentes educativa, reeducativa e terapêutica, desenvolvimento psicomotor, populações e contextos. Referência SBP, MEC.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -275,12 +275,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/psicopedagogia",
-    "title": "Psicopedagogia: aprendizagem, dificuldades escolares e pós interdisciplinar",
-    "description": "Guia técnico de Psicopedagogia: campo interdisciplinar, atuação institucional e clínica, instrumentos, dificuldades e transtornos de aprendizagem. Referência ABPp, CFP, MEC.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -289,12 +289,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/reabilitacao-neuropsicologica",
-    "title": "Reabilitação Neuropsicológica: o que é, abordagens e formação reconhecida",
-    "description": "Guia para psicólogos sobre reabilitação neuropsicológica, planos de intervenção cognitiva, neuroplasticidade, AVC, TCE e demências, com critérios de escolha de especialização.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -304,12 +304,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/areas/saude-mental-organizacoes",
-    "title": "Saúde Mental nas Organizações: NR-1, burnout e o que funciona",
-    "description": "Guia técnico de saúde mental corporativa: NR-1, modelo de Maslach, níveis de intervenção e o que distingue programa estruturado de selo cosmético.",
+    "title": "Saúde Mental nas Organizações: prevenção, cuidado e formação",
+    "description": "Como avaliar programas e formações em saúde mental no trabalho, articulando prevenção organizacional, cuidado confidencial e acompanhamento.",
     "kind": "Área",
     "persona": null,
     "tags": [
@@ -320,7 +320,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "área"
     ],
     "weight": 1.1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/autismo",
@@ -552,8 +552,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/carreira/avaliacao-psicologica",
-    "title": "Carreira em Avaliação Psicológica — SATEPSI, laudo e ética regulatória",
-    "description": "A trilha mais sensível a ética e contexto. Quem confunde regra com técnica vira processo. Quem domina o conjunto define o padrão da praça. Progressão e formação.",
+    "title": "Carreira em Avaliação Psicológica: competências, custos e limites",
+    "description": "Como planejar formação e atuação em Avaliação Psicológica com SATEPSI, prática acompanhada, documentação e cálculo responsável de custos.",
     "kind": "Carreira",
     "persona": null,
     "tags": [
@@ -562,7 +562,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "psicologica"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/carreira/consultoria-organizacional",
@@ -580,8 +580,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/carreira/neuropsicologia",
-    "title": "Carreira em Neuropsicologia — formação, progressão e MBA combinado",
-    "description": "Trilha técnica mais regulada da Psicologia aplicada. Avaliação neuropsicológica, laudo, integração com equipe médica. Progressão típica e MBA do IPOG.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Carreira",
     "persona": null,
     "tags": [
@@ -589,12 +589,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "neuropsicologia"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/carreira/pericia-psicologica",
-    "title": "Carreira em Perícia Psicológica — contraditório, audiência e laudo defensável",
-    "description": "A trilha forense que exige tolerância a contraditório jurídico. Quem não suporta defesa pública, sofre. Quem domina, vira referência regional. Progressão e formação.",
+    "title": "Carreira em perícia psicológica: preparar competência, cadastro e custos",
+    "description": "Roteiro para estudar perícia, distinguir perito e assistente técnico, conferir exigências do tribunal e planejar honorários sem faixas inventadas.",
     "kind": "Carreira",
     "persona": null,
     "tags": [
@@ -603,12 +603,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "psicologica"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/carreira/psicologia-organizacional",
-    "title": "Carreira em Psicologia Organizacional — do analista de R&S ao VP de Pessoas",
-    "description": "Trilha POT mapeada: progressão de júnior a sênior, faixa salarial, competências e MBA combinado. Por que ler sistema antes de indivíduo decide o teto da carreira.",
+    "title": "Carreira em Psicologia Organizacional: competências e caminhos de atuação",
+    "description": "Planeje uma trajetória em POT por competências, projetos e critérios de formação, sem tabelas salariais sem fonte ou prazos universais de transição.",
     "kind": "Carreira",
     "persona": null,
     "tags": [
@@ -617,12 +617,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "organizacional"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/carreira/saude-mental-corporativa",
-    "title": "Carreira em saúde mental corporativa — NR-1, prevenção e desenho de sistema",
-    "description": "A trilha nascida da NR-1 e da agenda ESG. Não é clínica em escritório — é desenho de sistema de prevenção em escala. Progressão típica e MBA combinado.",
+    "title": "Carreira em saúde mental corporativa: planejar competências e escopo",
+    "description": "Como avaliar uma transição para saúde mental corporativa, distinguir coordenação e atos clínicos e escolher formação sem promessa salarial.",
     "kind": "Carreira",
     "persona": null,
     "tags": [
@@ -632,7 +632,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "corporativa"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/casos",
@@ -3402,8 +3402,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/evidencias/burnout-gen-z",
-    "title": "Burnout e geração Z · evidência atualizada 2024-2026",
-    "description": "Literatura recente sobre burnout em trabalhadores jovens: Maslach, Schaufeli, ICD-11, dados brasileiros e estratégias de intervenção organizacional.",
+    "title": "Burnout em jovens: o que o rótulo geracional não explica",
+    "description": "Como avaliar alegações sobre burnout e geração Z, distinguir idade de condições de trabalho e evitar diagnóstico por questionário.",
     "kind": "Evidência",
     "persona": null,
     "tags": [
@@ -3413,12 +3413,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "evidência"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/evidencias/fadiga-digital",
-    "title": "Fadiga digital e tecnostress · pós-pandemia 2023-2026",
-    "description": "Literatura recente sobre Zoom fatigue, tecnostress, direito à desconexão na União Europeia e estudos brasileiros em trabalhadores híbridos.",
+    "title": "Fadiga digital: evidência e revisão das reuniões",
+    "description": "O que os estudos de fadiga em videochamadas sustentam e como revisar agenda, câmera e canais sem fazer diagnóstico.",
     "kind": "Evidência",
     "persona": null,
     "tags": [
@@ -3428,12 +3428,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "evidência"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/evidencias/ia-generativa-saude-mental",
-    "title": "IA generativa em saúde mental · evidência e alertas 2024-2026",
-    "description": "Literatura recente sobre chatbots terapêuticos, posicionamentos APA e CFP, validade científica e fronteiras éticas no uso de LLMs em saúde mental.",
+    "title": "IA em saúde mental: como avaliar a evidência",
+    "description": "Como interpretar o ensaio Therabot, distinguir pesquisa de produto comercial e conferir segurança, privacidade e limites de chatbots.",
     "kind": "Evidência",
     "persona": null,
     "tags": [
@@ -3444,12 +3444,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "evidência"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/evidencias/mindfulness-corporativo",
-    "title": "Mindfulness corporativo · meta-análises 2023-2025",
-    "description": "Literatura recente sobre eficácia de MBSR e MBCT em ambiente de trabalho, sustentação de efeito, contraindicações e implementações brasileiras.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Evidência",
     "persona": null,
     "tags": [
@@ -3459,7 +3459,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "evidência"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/evidencias/neuromodulacao-emtr-depressao-2026",
@@ -3480,8 +3480,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/evidencias/nr1-riscos-psicossociais-2026",
-    "title": "NR-1 e riscos psicossociais · evidência 2025-2026",
-    "description": "Literatura recente sobre Portaria MTE 1.419/2024, modelos demanda-controle-apoio e instrumentos psicométricos para diagnóstico de risco psicossocial.",
+    "title": "NR-1 em 2026: como ler a norma e avaliar evidências sobre riscos psicossociais",
+    "description": "O que está vigente na NR-1, como distinguir obrigação legal de recomendação e quais perguntas fazer antes de contratar avaliação de riscos psicossociais.",
     "kind": "Evidência",
     "persona": null,
     "tags": [
@@ -3493,7 +3493,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "evidência"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/evidencias/psicodelicos-assistidos-2026",
@@ -3513,8 +3513,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/evidencias/terapias-terceira-onda",
-    "title": "Terapias de terceira onda · evidência comparada 2024-2026",
-    "description": "Literatura recente sobre ACT, DBT, FAP e mindfulness clínico, com comparação de eficácia em ansiedade, depressão e regulação emocional.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Evidência",
     "persona": null,
     "tags": [
@@ -3525,7 +3525,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "evidência"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/faq",
@@ -4392,8 +4392,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/avaliacao-tea-adulto",
-    "title": "Avaliação de TEA em adulto — guia 9 passos · AQ-50, ADOS-2, RAADS-R, RBANS",
-    "description": "Trajeto técnico para avaliação de TEA em adulto: triagem, observação ADOS-2 módulo 4, neuropsicologia, mascaramento, laudo CFP e orientação LBI 13.146/2015.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4404,7 +4404,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/avaliacao-tea-idosos-2026",
@@ -4478,8 +4478,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/construir-programa-bem-estar",
-    "title": "Como construir programa de bem-estar evidence-based — guia 9 passos · PERMA, Job Crafting",
-    "description": "Guia passo-a-passo para desenhar programa de bem-estar corporativo com base em PERMA, Job Crafting, segurança psicológica e mensuração. Portal independente.",
+    "title": "Como construir um programa de bem-estar com objetivos verificáveis",
+    "description": "Roteiro para definir necessidade, selecionar ações, executar um piloto e avaliar bem-estar no trabalho sem questionários obrigatórios ou promessas de eficácia.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4491,7 +4491,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/depressao-pos-parto-paterna-rastreio-2026",
@@ -4568,8 +4568,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/escolher-supervisor-clinico",
-    "title": "Como escolher supervisor clínico com método — guia 8 passos · CFP, contrato, sigilo",
-    "description": "Critérios técnicos para escolher supervisor clínico, POT ou neuropsicológico: filiação teórica, contrato escrito, frequência, sigilo cruzado e revisão periódica.",
+    "title": "Como escolher supervisor clínico e organizar a supervisão",
+    "description": "Critérios para avaliar experiência, contrato, sigilo, devolutiva e limites da supervisão clínica, com roteiro de conversa e ficha prática.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4580,7 +4580,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/haidt-2026-update-evidencia-adolescencia-digital",
@@ -4603,8 +4603,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/implementar-nr1-em-empresa",
-    "title": "Como implementar a NR-1 atualizada na empresa — guia 9 passos · riscos psicossociais",
-    "description": "Guia passo-a-passo para implementar a NR-1 atualizada com gestão de riscos psicossociais: comitê, instrumentos validados, treinamento de líder, GRO e ciclo PDCA.",
+    "title": "Como implementar a gestão de riscos psicossociais na empresa",
+    "description": "Roteiro de implementação da NR-1 em 2026: enquadramento, avaliação do trabalho, participação, medidas de prevenção, documentação e revisão.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4615,7 +4615,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/insonia-cronica-tcc-i-protocolo-2026",
@@ -4832,8 +4832,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/guias/retorno-ao-trabalho-pos-burnout",
-    "title": "Retorno ao trabalho pós-burnout — guia 9 passos · plano escalonado e revisão 90/180 dias",
-    "description": "Protocolo passo-a-passo para retorno gradual ao trabalho após licença por saúde mental: comunicação com líder, ajustes razoáveis, monitoramento e revisão estrutural.",
+    "title": "Retorno ao trabalho após burnout: um plano com ajustes e revisão",
+    "description": "Guia para organizar retorno após afastamento, conferir a NR-7, proteger informações de saúde e pactuar ajustes sem impor carga ou prazos universais.",
     "kind": "Guia",
     "persona": null,
     "tags": [
@@ -4845,7 +4845,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "guia"
     ],
     "weight": 1,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/guias/supervisao-async-ia-2026-protocolo-cfp",
@@ -5436,8 +5436,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/metodos/act",
-    "title": "Terapia de Aceitação e Compromisso (ACT): fundamentos e evidência",
-    "description": "Fundamentação técnica da ACT: hexaflex de flexibilidade psicológica, evidência empírica em dor crônica e ansiedade, formação no Brasil. Conteúdo independente.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Método",
     "persona": null,
     "tags": [
@@ -5446,12 +5446,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "método"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/metodos/dbt",
-    "title": "Terapia Comportamental Dialética (DBT): fundamentos e evidência",
-    "description": "Fundamentação técnica da DBT: origem em Linehan, quatro módulos, programa padrão de 12 meses, evidência gold standard para TPB e formação no Brasil.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Método",
     "persona": null,
     "tags": [
@@ -5460,12 +5460,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "método"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/metodos/emdr",
-    "title": "EMDR (Eye Movement Desensitization and Reprocessing): fundamentos e evidência",
-    "description": "Fundamentação técnica do EMDR: origem em Shapiro, oito fases do protocolo, evidência empírica forte para TEPT, formação no Brasil. Conteúdo independente.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Método",
     "persona": null,
     "tags": [
@@ -5474,7 +5474,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "método"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/metodos/entrevista-motivacional",
@@ -5493,8 +5493,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/metodos/mindfulness",
-    "title": "Mindfulness clínico (MBSR e MBCT): fundamentos, evidência e formação",
-    "description": "Fundamentação técnica do mindfulness clínico: origem em Kabat-Zinn, protocolos MBSR e MBCT, evidência empírica em depressão recorrente. Conteúdo independente.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Método",
     "persona": null,
     "tags": [
@@ -5503,12 +5503,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "método"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/metodos/tcc",
-    "title": "Terapia Cognitivo-Comportamental (TCC): fundamentos, evidência e formação",
-    "description": "Fundamentação técnica da TCC: origem em Beck e Ellis, princípios, evidência empírica em meta-análises e caminho de formação no Brasil. Conteúdo independente.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Método",
     "persona": null,
     "tags": [
@@ -5517,7 +5517,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "método"
     ],
     "weight": 0.95,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/para-quem",
@@ -6239,8 +6239,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/burnout-prevencao",
-    "title": "Burnout e prevenção: as seis áreas de worklife e como evitar o adoecimento estrutural",
-    "description": "Burnout não se previne com massagem corporativa. Análise técnica do modelo de Maslach & Leiter: as seis áreas que decidem se o sistema adoece a pessoa.",
+    "title": "Prevenção de burnout: transformar sinais do trabalho em ações",
+    "description": "Como usar as seis áreas da vida no trabalho, escolher uma mudança organizacional e acompanhar sua execução sem diagnosticar colegas.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6250,7 +6250,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/burnout-profissionais-saude-2026",
@@ -6286,8 +6286,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/cultura-clima-organizacional",
-    "title": "Cultura e clima organizacional: o que se gerencia e o que se cultiva",
-    "description": "Cultura não se gerencia diretamente — se cultiva via decisões gerenciais sobre o que é recompensado e tolerado. Análise técnica de Schein, Cameron & Quinn, McKinsey e MIT Sloan.",
+    "title": "Cultura e clima organizacional: investigar sem reduzir tudo à pesquisa",
+    "description": "Diferenças entre cultura e clima, limites de pesquisas e roteiro para investigar práticas e decisões com apoio de revisão científica publicada em 2026.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6298,12 +6298,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/diversidade-inclusao",
-    "title": "Diversidade e inclusão: diversidade entra, inclusão retém, equidade promove",
-    "description": "Quem confunde os três conceitos faz programa que só contrata e perde. Edmondson, McKinsey, Catalyst, Dobbin & Kalev e o desenho que distingue programa eficaz de teatro corporativo.",
+    "title": "Diversidade e inclusão: revisar acesso, participação e progressão",
+    "description": "Como diferenciar diversidade, inclusão e equidade e transformar uma barreira de trabalho em ação verificável, com acessibilidade e proteção de dados.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6313,7 +6313,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/fadiga-digital",
@@ -6364,8 +6364,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/ia-em-rh",
-    "title": "IA em RH: governança, viés algorítmico e o papel da Psicologia",
-    "description": "IA em RH amplifica viés humano. Análise técnica das aplicações por estágio do funil de pessoas, riscos éticos, LGPD e como construir governança defensável.",
+    "title": "IA em RH: critérios para autorizar cada uso",
+    "description": "Roteiro de governança para IA em RH com critérios de avaliação, proteção de dados, contestação e responsabilidade.",
     "kind": "Tema",
     "persona": "rh",
     "tags": [
@@ -6373,7 +6373,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/ia-generativa-rh",
@@ -6421,8 +6421,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/ia-psicologia-2026/avaliacao-psicologica-ia-satepsi-2026",
-    "title": "Avaliação psicológica com IA e o debate SATEPSI em 2026: o que é defensável, o que é vedado",
-    "description": "IA na avaliação psicológica em 2026 — 4 camadas de uso, Resolução CFP 09/2018, Posicionamento CFP de 03/07/2025, SATEPSI, Resolução CFP 06/2019 e PL 2338/2023.",
+    "title": "IA na avaliação psicológica: conferir tarefa, evidência e responsabilidade",
+    "description": "O que verificar antes de usar IA em avaliação psicológica: CFP 31/2022, SATEPSI, orientações de 2025, documentos e proteção de dados.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6435,7 +6435,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/ia-psicologia-2026/ia-na-formacao-do-psicologo-2026",
@@ -6634,8 +6634,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/neurociencia-aplicada-aprendizagem",
-    "title": "Neurociência aplicada à aprendizagem: critério para separar método de moda",
-    "description": "Neurociência da aprendizagem não vende fórmula. Vende critério para distinguir método efetivo de neuromito. Damásio, Kahneman, Posner & Rothbart e o que sobrevive à evidência.",
+    "title": "{page.title}",
+    "description": "",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6646,7 +6646,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/neurodiversidade-corporativa",
@@ -6683,8 +6683,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/nr1-riscos-psicossociais",
-    "title": "NR-1 e riscos psicossociais: a mudança regulatória que reorganiza saúde mental no trabalho",
-    "description": "A NR-1 atualizada incorpora riscos psicossociais ao GRO. Análise técnica para quem precisa mapear, avaliar e controlar — sem confundir gestão de risco com avaliação clínica.",
+    "title": "NR-1 e riscos psicossociais: o que avaliar no trabalho em 2026",
+    "description": "Entenda a vigência da NR-1, o foco nas condições de trabalho e a diferença entre gestão de riscos, pesquisa de clima e cuidado clínico.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6695,12 +6695,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/people-analytics",
-    "title": "People analytics: dado comportamental sem psicólogo vira vigilância",
-    "description": "People analytics não é dashboard de RH — é análise causal com risco ético. Davenport & Harris, McKinsey, MIT Sloan, LGPD e o que separa análise útil de análise enganadora.",
+    "title": "People analytics: da pergunta ao dado que permite decidir",
+    "description": "Como definir indicadores de RH, diferenciar descrição de previsão e causalidade e organizar uma análise com proteção de dados.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6710,7 +6710,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/pos-graduacao-lato-sensu-psicologia-decreto-12456",
@@ -6768,8 +6768,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/saude-mental-corporativa-nr1-pacote-b2b",
-    "title": "Saúde Mental Corporativa e NR-1: pacote B2B mínimo viável antes da fiscalização punitiva de 2026",
-    "description": "Pacote B2B principal alinhado à NR-1 atualizada — diagnóstico, intervenção e governança. Portaria MTE 1.419/2024 e 765/2025: fiscalização punitiva começa em 26 de maio de 2026.",
+    "title": "NR-1 e saúde mental: como avaliar uma proposta de serviço",
+    "description": "Critérios para contratar apoio à gestão de riscos psicossociais: vigência em 2026, escopo técnico, entregáveis, responsabilidades e limites de questionários.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6783,7 +6783,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/saude-mental-perinatal",
@@ -6803,8 +6803,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/saude-mental-trabalho",
-    "title": "Saúde mental no trabalho: por que programas falham e o que faz diferença",
-    "description": "Programa de saúde mental que não toca em estilo de liderança e desenho do trabalho é folder caro. Análise técnica dos níveis de prevenção, ROI e como medir resultado.",
+    "title": "Saúde mental no trabalho: escolher ações e avaliar seus limites",
+    "description": "Como articular prevenção, apoio e retorno ao trabalho, definir responsabilidades e acompanhar medidas sem transformar indicadores em diagnósticos.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6815,7 +6815,7 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/temas/saude-mental-trabalho-remoto",
@@ -6902,8 +6902,8 @@ export const AUTO_PAGES: AutoPage[] = [
   },
   {
     "route": "/temas/trabalho-hibrido",
-    "title": "Trabalho híbrido: tecnologia social, não meio-termo entre presencial e remoto",
-    "description": "Híbrido não é compromisso preguiçoso. É tecnologia social que precisa de cultura, ritmo e infraestrutura dedicados. Bloom, Gallup, McKinsey e o desenho que separa híbrido eficaz de híbrido caótico.",
+    "title": "Trabalho híbrido: escolher dias a partir das tarefas",
+    "description": "Como interpretar o ensaio de trabalho híbrido e desenhar um acordo de equipe com coordenação, acessibilidade e critérios de revisão.",
     "kind": "Tema",
     "persona": null,
     "tags": [
@@ -6913,12 +6913,12 @@ export const AUTO_PAGES: AutoPage[] = [
       "tema"
     ],
     "weight": 0.9,
-    "pageType": null
+    "pageType": "article"
   },
   {
     "route": "/tipos-de-pos-graduacao",
-    "title": "Tipos de pós-graduação em Psicologia: as 5 modalidades",
-    "description": "Mapa das cinco modalidades no Brasil: Lato Sensu, MBA, Mestrado Profissional, Especialização Clínica e Residência, com carga horária e regulador.",
+    "title": "Pós-graduação em Psicologia: compare os caminhos de formação",
+    "description": "Diferencie especialização, MBA, mestrado, formação clínica e residência. Confira certificado acadêmico, registro no CRP e critérios de escolha.",
     "kind": "Recurso",
     "persona": null,
     "tags": [

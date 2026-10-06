@@ -1,233 +1,117 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import TLDR from '@components/TLDR.astro';
-import { SITE, MBAS, AREAS } from '@lib/data';
-import { alexandrePersonBase, brasilGeoOrganization, alexandreAuthorRef } from '@lib/schemas';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 
-const tarefas = [
+const title = "Supervisão clínica assíncrona e IA: delimitar funções e responsabilidades";
+const description = "Como estruturar a discussão sobre supervisão assíncrona, sigilo, prazos, devolutivas e apoio de IA sem substituir análise profissional.";
+const faqs = [
   {
-    tarefa: 'Sumarizar transcrição de sessão antes do encontro supervisivo',
-    iaPode: 'Resumo estruturado por temas, marcação de momentos críticos, alinhamento com formulação prévia',
-    iaNaoPode: 'Validar formulação clínica, inferir transferência ou contratransferência, autorizar manejo',
-    decisaoFinal: 'Supervisor humano — leitura da transcrição original em pontos selecionados pelo resumo'
+    "q": "A norma de TDIC autoriza especificamente supervisão por IA?",
+    "a": "Não se deve atribuir essa autorização específica à Resolução CFP 9/2024. A atividade concreta precisa ser analisada à luz das regras profissionais, do sigilo e das orientações sobre IA."
   },
   {
-    tarefa: 'Buscar temas recorrentes ao longo de múltiplas sessões',
-    iaPode: 'Identificação de padrões linguísticos, frequência de tópicos, mapeamento de evolução',
-    iaNaoPode: 'Interpretar significado clínico do padrão, diferenciar repetição defensiva de aprofundamento',
-    decisaoFinal: 'Supervisor humano — hipótese clínica baseada em padrão identificado é construída em encontro síncrono'
+    "q": "Retirar nomes torna um caso automaticamente anônimo?",
+    "a": "Não. A combinação de detalhes pode permitir identificação. Necessidade, contexto e risco de reidentificação devem ser considerados."
   },
   {
-    tarefa: 'Alertar para potencial viés cultural, etário ou de gênero na nota do supervisionando',
-    iaPode: 'Detecção de linguagem estereotipada, sinalização de presunção implícita, sugestão de revisão',
-    iaNaoPode: 'Avaliar adequação do manejo culturalmente sensível ao contexto específico do paciente',
-    decisaoFinal: 'Supervisor humano — discussão direta com supervisionando em supervisão dialógica'
-  },
-  {
-    tarefa: 'Indexar literatura clínica para o caso supervisionado',
-    iaPode: 'Recuperação de artigos relevantes, sumarização de abordagem, indicação de instrumento',
-    iaNaoPode: 'Decidir aplicabilidade do achado ao caso, ajustar metodologia ao paciente real',
-    decisaoFinal: 'Supervisor humano — tradução do conhecimento para o caso é ato clínico irredutível'
-  },
-  {
-    tarefa: 'Monitorar carga emocional do supervisionando ao longo do tempo',
-    iaPode: 'Análise de marcadores linguísticos de exaustão, frequência de menção a casos difíceis, padrões de pedido',
-    iaNaoPode: 'Avaliar saúde mental do supervisionando, decidir sobre encaminhamento ou pausa',
-    decisaoFinal: 'Supervisor humano — conversa direta, decisão clínica sobre o profissional em formação'
+    "q": "Um canal assíncrono pode ser usado para urgências?",
+    "a": "Sua janela de resposta não deve ser confundida com disponibilidade imediata. O arranjo precisa definir limites e encaminhamentos humanos adequados para situações que não podem esperar."
   }
 ];
-
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Supervisão clínica assíncrona apoiada por IA: o que a Resolução CFP e a evidência permitem em 2026',
-  description: 'Análise técnica sobre supervisão assíncrona com camada de IA — sumarização, busca temática, alerta de viés. Limites éticos, evidência de Watkins, Carlsson, Bernard e Goodyear, e Posicionamento CFP 03/07/2025.',
-  author: alexandreAuthorRef,
-  publisher: { '@id': brasilGeoOrganization['@id'] },
-  inLanguage: 'pt-BR',
-  datePublished: '2026-05-17',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['.tldr-resposta', '.faq-answer-text']
-  }
+  headline: title,
+  description,
+  author: { '@id': 'https://brasilgeo.ai/#organization' },
+  publisher: { '@id': 'https://brasilgeo.ai/#organization' },
+  inLanguage: 'pt-BR'
 };
-
-const mbaPot = MBAS.find(m => m.id === 'mba-pot');
-const areaClinica = AREAS.find(a => a.id === 'psicologia-clinica');
-const areaIa = AREAS.find(a => a.id === 'ia-people-analytics-psicologia-digital');
+const ldFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question', name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
 ---
-<Base
-  title="Supervisão clínica assíncrona com IA em 2026 — o que CFP e evidência permitem"
-  description="Tese técnica: supervisão assíncrona com camada de IA é viável e ética se preservar presença humana do supervisor. Evidência Watkins 2024-2025, Carlsson 2025, Bernard e Goodyear 2024 e Posicionamento CFP 03/07/2025.">
-
+<Base title={title} description={description} pageType="article" datePublished="2026-05-17">
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Temas', href: '/temas' },
-        { label: 'Supervisão clínica assíncrona com IA' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Tema · Supervisão clínica · 2026</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Supervisão clínica assíncrona apoiada por IA: o que a Resolução CFP e a evidência permitem em 2026.</h1>
-          <TLDR
-            resposta="Supervisão clínica assíncrona com camada de IA é viável e ética em 2026 — desde que a IA opere como apoio (sumarização, busca temática, alerta de viés) e a presença humana do supervisor permaneça intransferível. A literatura de supervisão (Watkins 2024-2025, Carlsson 2025, Bernard e Goodyear 2024) e o Posicionamento CFP de 03/07/2025 convergem: IA aumenta visibilidade do material clínico; não substitui o juízo do supervisor."
-            fontes={['Watkins et al. (2024-2025)', 'Carlsson (2025)', 'Bernard e Goodyear (2024)', 'CFP Posicionamento 03/07/2025', 'CFP Resolução 11/2018']}
-          />
-          <p class="mt-3 text-ink-700 text-lg">Para supervisores clínicos, coordenadores de programa de formação e psicólogos em fase supervisionada.</p>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver cursos no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{label:'Início',href:'/'},{label:"Temas",href:"/temas/"},{label:"Supervisão assíncrona e IA"}]} />
+      <span class="section-eyebrow mt-3">Revisão editorial · 6 de outubro de 2026</span>
+      <h1 class="section-h text-3xl sm:text-4xl">{title}</h1>
+      <p class="mt-3 text-ink-700 text-lg max-w-3xl">O formato assíncrono separa no tempo o envio de uma questão e a devolutiva. Essa organização exige combinados claros; acrescentar IA não resolve, por si só, a qualidade da supervisão nem o cuidado com informações clínicas.</p>
     </div>
   </section>
-
   <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
+    <article class="lg:col-span-8 space-y-8">
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Tese contraintuitiva</h2>
-        <p>
-          A leitura predominante sobre IA em supervisão clínica oscila entre dois polos. De um lado, entusiastas que tratam supervisão assíncrona com IA como solução para escassez de supervisores qualificados — sumariza, classifica, sinaliza, escala. Do outro, conservadores que reagem com bloqueio total — supervisão é encontro humano, e IA dilui o vínculo formativo. Watkins e colaboradores em revisão 2024-2025 sobre evidência em supervisão clínica e Carlsson em estudo de 2025 sobre supervisão híbrida convergem em posição intermediária: supervisão assíncrona com camada de IA é viável e potencialmente útil — desde que a presença humana do supervisor permaneça como núcleo da relação formativa.
-        </p>
-        <p>
-          A inversão prática: IA não substitui supervisão; aumenta visibilidade do material clínico que o supervisor já lê. Bernard e Goodyear, no manual principal Fundamentals of Clinical Supervision (edição atualizada 2024), reforçam que a função do supervisor é tripla — formativa, normativa e restaurativa. A IA pode amplificar a função formativa (acesso a literatura, marcação de padrões) e marginalmente a normativa (sinalização de viés), mas a função restaurativa — sustentação do supervisionando como pessoa em formação — é irredutivelmente humana. Onde a IA substitui o supervisor, o componente restaurativo desaparece. Onde a IA apoia o supervisor, o componente restaurativo ganha tempo.
-        </p>
+<h2>O que precisa ser definido antes do formato?</h2>
+<p>Supervisão clínica envolve discutir prática, hipóteses, limites e decisões profissionais. Uma biblioteca de respostas automáticas não assume essa função. O ponto de partida é definir a demanda de formação, o papel de quem supervisiona, a responsabilidade de quem atua e o que pode ser discutido naquele arranjo.</p>
+<p>Quando há mediação por tecnologias digitais, a <a href="https://www.crprs.org.br/noticias/fique-atenta-o-a-nova-resolucao-para-atendimento-on-line" target="_blank" rel="noopener external">Resolução CFP 9/2024</a> é a referência atual pertinente; ela revogou as normas anteriores sobre serviços por TDIC. Não se deve atribuir a essa resolução uma autorização específica para supervisão clínica por IA. As orientações do <a href="https://site.cfp.org.br/cfp-divulga-posicionamento-sobre-inteligencia-artificial-no-contexto-da-pratica-psicologica/" target="_blank" rel="noopener external">CFP sobre inteligência artificial</a> exigem análise ética e técnica da atividade concreta.</p>
+<h2>Quais combinados tornam o trabalho compreensível?</h2>
+<div class="table-wrap"><table><thead><tr><th>Dimensão</th><th>Questão a combinar</th><th>Falha a prevenir</th></tr></thead><tbody>
+<tr><td>Finalidade</td><td>Qual pergunta será discutida e qual devolutiva é esperada?</td><td>Acumular narrativas sem um objetivo de aprendizagem</td></tr>
+<tr><td>Tempo</td><td>Qual janela de resposta foi acordada?</td><td>Tratar um canal assíncrono como atendimento imediato</td></tr>
+<tr><td>Materiais</td><td>O que é necessário, quem acessa e por quanto tempo?</td><td>Enviar gravações ou documentos integrais sem necessidade demonstrada</td></tr>
+<tr><td>Responsabilidade</td><td>Quem toma decisões e como divergências são discutidas?</td><td>Transferir automaticamente toda responsabilidade ao supervisor ou ao sistema</td></tr>
+<tr><td>Limites</td><td>Que situações exigem outro canal, encontro ou encaminhamento?</td><td>Adiar uma ação necessária aguardando resposta automática</td></tr>
+</tbody></table></div>
+<p>A frequência e a janela de resposta devem ser justificadas pelo contexto e pelo contrato de trabalho formativo. Não há fundamento, nas fontes citadas, para apresentar uma periodicidade universal de encontros como obrigação específica de supervisão apoiada por IA.</p>
+<h2>Onde um recurso de IA pode ser estudado?</h2>
+<p>Um uso educativo delimitado é organizar bibliografia pública ou elaborar uma pauta a partir de uma situação inteiramente inventada. Mesmo aí, referências e resumos precisam ser conferidos. Se o recurso passa a receber informações de atendimento, a análise muda: entram sigilo, necessidade, consentimento, condições do serviço e proteção de dados sensíveis.</p>
+<p>O <a href="https://site.cfp.org.br/wp-content/uploads/2025/12/Cartilha_IA_A5-1.pdf" target="_blank" rel="noopener external">guia do CFP</a> aborda riscos da transcrição e do processamento de informações psicológicas. Trocar nomes por iniciais não garante anonimização: combinações de profissão, lugar, evento e história podem permitir identificação. Não use o formulário desta página para material real de supervisão.</p>
+<h2>Como avaliar uma devolutiva?</h2>
+<p>Uma devolutiva útil explicita a pergunta, distingue observação de inferência e aponta o que ainda falta compreender. Se houver referência, ela precisa existir e sustentar a afirmação. Resumos automáticos podem omitir divergências, reduzir incerteza ou introduzir detalhes que não estavam no material; por isso, não devem ser tratados como registro fiel sem comparação.</p>
+<p>A responsabilidade profissional depende das funções, atos e condições concretas. A existência de supervisão não apaga deveres de quem realiza o atendimento, nem permite atribuir automaticamente ao supervisor toda consequência de uma conduta. Em serviços-escola, há também regras próprias de registro e identificação, contempladas na <a href="https://site.cfp.org.br/wp-content/uploads/2009/04/resolucao2009_01.pdf" target="_blank" rel="noopener external">Resolução CFP 1/2009</a>.</p>
+<h2>Exemplo hipotético: uma pauta de aprendizagem</h2>
+<p>Uma pessoa em formação inventa uma situação em que dois relatos fictícios parecem contraditórios. Em vez de pedir à IA uma conclusão clínica, monta uma pauta: quais informações seriam necessárias, quais hipóteses alternativas existem e que fonte pública ajuda a discutir o raciocínio. O encontro formativo examina essas perguntas e a tendência de concluir cedo demais.</p>
+<p>O exercício desenvolve análise sem produzir recomendação para uma pessoa real. Se uma situação concreta exigir resposta imediata, o fluxo precisa prever cuidado e canais humanos apropriados; não se deve aguardar um lote de devolutivas assíncronas.</p>
+<h2>Como escolher o formato de estudo?</h2>
+<p>A leitura complementar de Larissa sobre <a href="https://larissacaramaschi.com/profissionais/supervisao-clinica" target="_blank" rel="noopener external">supervisão individual, em grupo e interconsulta</a> ajuda a comparar formatos por finalidade. Use-a para preparar perguntas sobre demanda, interação e combinados. As regras profissionais e de proteção de dados devem ser conferidas nas fontes oficiais desta página.</p>
       </div>
-
-      <div>
-        <h2 class="section-h text-2xl">O que a IA pode e não pode em supervisão — 5 tarefas críticas</h2>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Tarefa</th>
-                <th class="text-left px-4 py-3">IA pode</th>
-                <th class="text-left px-4 py-3">IA não pode</th>
-                <th class="text-left px-4 py-3">Decisão final</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              {tarefas.map(t => (
-                <tr>
-                  <td class="px-4 py-3 font-semibold text-ink-900">{t.tarefa}</td>
-                  <td class="px-4 py-3 text-ink-700">{t.iaPode}</td>
-                  <td class="px-4 py-3 text-ink-700">{t.iaNaoPode}</td>
-                  <td class="px-4 py-3 text-ink-700">{t.decisaoFinal}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <StudyWorksheet id="ficha-pratica" title="Acordo fictício de discussão assíncrona" description="Planeje uma atividade de estudo com caso inventado ou bibliografia pública, sem inserir material clínico."
+        fields={[{"label":"Pergunta de aprendizagem","hint":"Qual dúvida conceitual será discutida, sem pedir diagnóstico ou conduta para uma pessoa?"},{"label":"Materiais permitidos","hint":"Liste textos públicos e exemplos fictícios necessários."},{"label":"Formato e devolutiva","hint":"Descreva prazo combinado, responsável e modo de discutir divergências."},{"label":"Limite do canal","hint":"Indique o que exigiria outro formato ou uma ação fora da atividade de estudo."}]} checklist={["Supervisão clínica não foi equiparada a resposta automática.","A janela de resposta é um combinado contextual, não uma regra universal inventada.","Os materiais não contêm informações de pessoas atendidas.","A devolutiva distingue observação, hipótese e fonte."]} />
+      <div class="prose prose-ink max-w-none">
+        <h2 class="section-h text-2xl">Como aprofundar o estudo?</h2>
+        <p>O curso <a href="https://alexandrecaramaschi.com/educacao/segundo-cerebro-agentes-pessoais" target="_blank" rel="noopener external">Segundo cérebro e agentes pessoais</a> pode ajudar a organizar uma biblioteca de referências públicas com origem, data e revisão. Aplique essa organização somente à bibliografia da ficha; não a use como orientação para armazenar prontuários ou relatos identificáveis.</p>
+        <p>O recurso educacional é complementar. Um eventual certificado não equivale a pós-graduação nem concede título profissional; as fontes técnicas e normas desta página devem orientar a conferência dos fatos.</p>
+        <h2 class="section-h text-2xl" id="fontes">Fontes e escopo da revisão</h2>
+        <p>Fontes consultadas em 6 de outubro de 2026. Revisão editorial de conteúdo educativo; não representa avaliação clínica individual nem revisão pessoal atribuída a profissional de saúde.</p>
+        <ul><li><a href="https://www.crprs.org.br/noticias/fique-atenta-o-a-nova-resolucao-para-atendimento-on-line" target="_blank" rel="noopener external">CRPRS: CFP 9/2024 e revogação da CFP 11/2018</a></li>
+<li><a href="https://site.cfp.org.br/cfp-divulga-posicionamento-sobre-inteligencia-artificial-no-contexto-da-pratica-psicologica/" target="_blank" rel="noopener external">CFP: posicionamento sobre IA na prática psicológica, julho de 2025</a></li>
+<li><a href="https://site.cfp.org.br/wp-content/uploads/2025/12/Cartilha_IA_A5-1.pdf" target="_blank" rel="noopener external">CFP: Inteligência Artificial na Psicologia, guia de 2025</a></li>
+<li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank" rel="noopener external">LGPD, Lei 13.709/2018, texto consolidado</a></li>
+<li><a href="https://site.cfp.org.br/wp-content/uploads/2009/04/resolucao2009_01.pdf" target="_blank" rel="noopener external">CFP: Resolução 1/2009, registro documental</a></li></ul>
+      </div>
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
+        <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
+          {faqs.map(f => (<details class="p-5"><summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary><p class="mt-3 text-ink-700 leading-relaxed">{f.a}</p></details>))}
         </div>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">O que a evidência consolidou sobre supervisão clínica</h2>
-        <p>
-          Bernard e Goodyear (2024) sintetizam três décadas de pesquisa em supervisão clínica em quatro pontos. Primeiro, supervisão eficaz produz mudança técnica observável no supervisionando — instrumento de medida válido (Supervisory Working Alliance Inventory e similares) capta essa mudança. Segundo, a aliança supervisiva é preditor robusto de desfecho — supervisionando que sente segurança relata mais erros e dificuldades, ingrediente sem o qual a função formativa é truncada. Terceiro, paralelo de processo entre supervisão e terapia é ativo — o que acontece na supervisão reflete e refrata o que acontece na terapia, e o supervisor que ignora essa camada perde material clínico. Quarto, formato síncrono permanece padrão; assíncrono é complemento, não substituto.
-        </p>
-        <p>
-          Watkins e colaboradores em revisões sucessivas (2024 e 2025) ampliam o quadro com leitura específica sobre formatos digitais. Supervisão por videoconferência síncrona tem evidência comparável à presencial em vários desfechos, com aliança e satisfação preservadas em estudos controlados. Supervisão totalmente assíncrona (apenas troca de textos, áudios gravados) tem evidência mais escassa e resultados mistos — eficácia depende fortemente de frequência, qualidade da resposta do supervisor e ancoragem em encontros síncronos pontuais. Carlsson (2025), em estudo qualitativo com supervisores e supervisionandos em formato híbrido com IA, documentou que IA como sumarizador prévio aumentou tempo dedicado a discussão clínica substantiva no encontro síncrono, sem prejuízo do vínculo.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">O que a Resolução CFP e o Posicionamento permitem em 2026</h2>
-        <p>
-          A Resolução CFP 11/2018 disciplina serviços psicológicos prestados por meios de tecnologia da informação e comunicação, incluindo supervisão. O Posicionamento CFP de 03/07/2025 sobre Inteligência Artificial no Contexto da Prática Psicológica afirma que IA pode ser aliada na sistematização de informações e no apoio a decisões, sem substituir o juízo profissional. A leitura combinada autoriza supervisão assíncrona com IA — desde que três pilares operacionais sejam respeitados. Primeiro, sigilo do conteúdo clínico nas etapas de IA (desidentificação, contrato com fornecedor, hospedagem regulada sob LGPD). Segundo, presença do supervisor no fechamento da decisão clínica — IA não autoriza manejo. Terceiro, registro documental do uso de IA — passível de fiscalização em processo ético.
-        </p>
-        <p>
-          Em termos práticos, três configurações são defensáveis em 2026. Primeira: supervisão majoritariamente síncrona com IA para sumarização prévia das sessões discutidas — formato testado por Carlsson (2025) com aumento de tempo clínico substantivo. Segunda: supervisão híbrida com encontros síncronos quinzenais e fluxo assíncrono entre os encontros, com IA fazendo curadoria temática — útil para programas com grande número de supervisionandos. Terceira: supervisão de pares (peer supervision) com IA como mediador de revisão estruturada — formato emergente em residências e programas de pós-graduação, com supervisor sênior como ponto de fechamento.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Riscos clínicos específicos da supervisão com IA</h2>
-        <p>
-          Três riscos exigem governança escrita. Primeiro, dependência de sumário e perda da escuta primária — supervisor que lê apenas o resumo da IA perde acesso a marcadores linguísticos sutis (uso de termo específico, ritmo do relato, hesitação). A mitigação é leitura amostral periódica do material original em pontos selecionados pelo resumo. Segundo, viés algorítmico do sumarizador — IA tende a privilegiar conteúdo declarativo sobre material implícito, achando os tópicos óbvios e perdendo os significativos. A mitigação é instruir o supervisionando a marcar manualmente momentos clinicamente importantes que a IA pode minimizar. Terceiro, sigilo do supervisionando — em supervisão, o supervisionando é também sujeito que se expõe; sigilo do material do supervisionando (não apenas do paciente) precisa ser explícito no contrato, especialmente quando IA processa conteúdo emocional do profissional em formação.
-        </p>
-        <p>
-          Stade e colaboradores (2024 em JMIR Mental Health) documentam que LLMs aplicados a contextos clínicos produzem viés sistemático em apresentações culturais e socioeconômicas — efeito que se propaga em supervisão se a IA filtra material visto pelo supervisor. Hua e colaboradores (2024) reforçam o padrão. A auditoria semestral do que a IA sumariza versus o que aparece no material original é exigência técnica em programa que adota o formato.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Implementação responsável em programa de formação</h2>
-        <p>
-          Programa de pós-graduação em Psicologia ou residência que adota IA em supervisão precisa de cinco peças. Primeira, política escrita aprovada por colegiado pedagógico e revisada por DPO — define ferramenta, finalidade, dados processados, retenção, base legal LGPD. Segunda, termo de consentimento específico assinado por supervisionando e por paciente, em separado — supervisionando autoriza processamento do próprio material profissional; paciente autoriza processamento do material clínico que entra em supervisão. Terceira, capacitação técnica do supervisor — sem ela, o supervisor terceiriza juízo. Quarta, auditoria semestral de qualidade e viés — comparação amostral entre sumário e material original. Quinta, registro documental de cada caso supervisionado com indicação de uso de IA — exigência implícita para defesa em processo ético.
-        </p>
-        <p>
-          Para profissional que pretende atuar como supervisor em 2026, formação aplicada em supervisão clínica, ética profissional, regulação CFP e IA aplicada constitui repertório técnico necessário. Programas de pós-graduação em Psicologia que integram esses temas em grade aplicada encurtam a curva. O IPOG opera MBAs em Psicologia em formato Ao Vivo síncrono com corpo docente nominal, com módulos sobre ética profissional, tecnologia aplicada e prática supervisionada.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Próximo passo</h2>
-        <p class="text-ink-700 leading-relaxed mt-3">
-          Supervisor que pretende incorporar IA ao fluxo em 2026 começa pela leitura cruzada do Posicionamento CFP de 03/07/2025, da Resolução CFP 11/2018 e da edição atualizada de Bernard e Goodyear (2024). Depois desenha o formato (síncrono majoritário com IA prévia, híbrido quinzenal, ou peer com IA mediador), redige política escrita, contrata ferramenta com governança LGPD, treina supervisionandos no uso responsável, audita semestralmente. A capacidade técnica da IA em 2026 suporta cada uma dessas configurações. A responsabilidade clínica permanece intransferível do supervisor humano.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Cross-links internos</h2>
-        <ul class="mt-3 space-y-2 text-sm">
-          <li><a href="/temas/gpt5-claude47-em-psicoterapia-2026" class="text-brand-700 hover:text-brand-800 font-medium">Tema — GPT-5.4 e Claude 4.7 em psicoterapia em 2026</a></li>
-          <li><a href="/guias/notas-clinicas-ia-implantar-consultorio-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — implantar notas clínicas por IA no consultório</a></li>
-          <li><a href="/guias/uso-etico-ia-generativa-2026" class="text-brand-700 hover:text-brand-800 font-medium">Guia — protocolo em 9 passos para uso ético de IA generativa</a></li>
-          <li><a href="/faq/lgpd-prontuario-ia-pratica-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — LGPD, prontuário e IA na prática clínica</a></li>
-          <li><a href="/faq/regulacao-cfp-faq" class="text-brand-700 hover:text-brand-800 font-medium">FAQ — Regulação CFP, CRP e ética em Psicologia</a></li>
-        </ul>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">IA aumenta visibilidade do material clínico; não substitui o supervisor humano.</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Supervisão assíncrona com camada de IA é viável em 2026 se preservar presença humana do supervisor, sigilo do supervisionando, base legal LGPD e auditoria semestral. A literatura é convergente — IA na função formativa, supervisor na função restaurativa. Para supervisor em formação aplicada, o MBA em POT do IPOG aborda IA, ética e prática supervisionada em formato Ao Vivo síncrono com corpo docente nominal.
-        </p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary mt-4">Ver MBAs no IPOG</a>
-      </div>
-
+      </section>
     </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho aplicado</p>
-        <h3 class="font-display font-semibold text-lg mt-1">{mbaPot ? mbaPot.shortName : 'MBA em POT'}</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          {mbaPot ? mbaPot.description : 'O IPOG opera MBA em Psicologia Organizacional e do Trabalho em formato Ao Vivo síncrono.'}
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas correlatas</p>
-        <ul class="space-y-1">
-          {areaClinica && <li><a href={`/areas/${areaClinica.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaClinica.name}</strong></a></li>}
-          {areaIa && <li><a href={`/areas/${areaIa.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{areaIa.name}</strong></a></li>}
-        </ul>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes citadas</p>
-        <ul class="space-y-2 text-xs text-ink-700">
-          <li>Bernard, J. M. & Goodyear, R. K. (2024). Fundamentals of Clinical Supervision (edição atualizada).</li>
-          <li>Watkins, C. E. et al. (2024-2025). Evidence in clinical supervision.</li>
-          <li>Carlsson, J. (2025). Hybrid supervision with AI scaffolding.</li>
-          <li>Stade et al. (2024). LLM bias in mental health. JMIR Mental Health.</li>
-          <li>Hua et al. (2024). LLMs in mental health — revisão.</li>
-          <li>CFP (2025). Posicionamento sobre IA. 03/07/2025.</li>
-          <li>CFP. Resolução 11/2018 (telessaúde e supervisão).</li>
-        </ul>
+    <aside class="lg:col-span-4">
+      <div class="card p-6 prose prose-ink">
+        <h2 class="font-display font-semibold text-lg">Leituras relacionadas</h2>
+        <ul><li><a href="/temas/gpt5-claude47-em-psicoterapia-2026/">Modelos generativos e psicoterapia</a></li>
+<li><a href="/guias/notas-clinicas-ia-implantar-consultorio-2026/">Notas clínicas e proteção de dados</a></li>
+<li><a href="/guias/uso-etico-ia-generativa-2026/">Governança de IA na clínica</a></li>
+<li><a href="/faq/lgpd-prontuario-ia-pratica-faq/">FAQ — LGPD, prontuário e IA na prática clínica</a></li>
+<li><a href="/faq/regulacao-cfp-faq/">FAQ — Regulação CFP, CRP e ética em Psicologia</a></li></ul>
+        <p class="text-sm">Portal editorial independente. Oferta, grade, preço e turma de qualquer pós-graduação precisam ser conferidos na instituição responsável.</p>
       </div>
     </aside>
   </section>
-
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+  article :global(p), aside :global(p) { text-align: justify; }
+  article :global(table) { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  article :global(th), article :global(td) { padding: .7rem; border: 1px solid var(--color-surface-200, currentColor); text-align: left; vertical-align: top; }
+  article :global(.table-wrap) { overflow-x: auto; }
+</style>

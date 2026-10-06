@@ -1,247 +1,109 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { SITE, MBAS } from '@lib/data';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 
-const mbasCorrelatos = MBAS.filter(m => ['mba-pot','mba-positiva','mba-lideranca-positiva'].includes(m.id));
-
-const papersChave = [
-  { autor: 'Bailenson et al. (2025)', veiculo: 'Technology, Mind and Behavior', achado: 'Atualização do modelo de Zoom fatigue com quatro mecanismos — contato ocular excessivo, autorrepresentação contínua, redução de mobilidade e sobrecarga cognitiva.', cluster: 'Modelo teórico', aplicacao: 'Justifica políticas de pausa, câmera desligada e mistura de canal.' },
-  { autor: 'Riedl (2024)', veiculo: 'Information Systems Research', achado: 'Revisão sobre tecnostress com quatro dimensões — sobrecarga, invasão, complexidade, insegurança — e correlação com saúde mental.', cluster: 'Modelo de tecnostress', aplicacao: 'Base teórica para diagnóstico organizacional.' },
-  { autor: 'Eurofound (2025)', veiculo: 'Relatório direito à desconexão', achado: 'Adoção crescente em países europeus, com benefícios em sintomas de exaustão; variabilidade alta de implementação.', cluster: 'Regulação UE', aplicacao: 'Referência internacional para discussão brasileira.' },
-  { autor: 'Tarafdar et al. (2024)', veiculo: 'Information Systems Journal', achado: 'Tecnostress associado a queda de desempenho percebido e aumento de intenção de rotatividade em estudos longitudinais.', cluster: 'Consequência organizacional', aplicacao: 'Argumento de retorno para investimento em mitigação.' },
-  { autor: 'Sousa-Duarte et al. (2024)', veiculo: 'Revista de Administração de Empresas (RAE-FGV)', achado: 'Estudo brasileiro em trabalhadores híbridos com mediação parcial do tecnostress entre carga digital e exaustão.', cluster: 'Dado BR', aplicacao: 'Base nacional para programa de mitigação.' },
-  { autor: 'Mohr et al. (2024)', veiculo: 'Journal of Occupational Health Psychology', achado: 'Pausas curtas regulares reduzem fadiga em videochamadas e melhoram desempenho atencional em tarefas subsequentes.', cluster: 'Intervenção', aplicacao: 'Suporta política de bloqueio de agenda 5 minutos entre reuniões.' },
-  { autor: 'Wajcman & Rose (2024)', veiculo: 'Sociology of Work and Occupations', achado: 'Análise crítica sobre normalização de disponibilidade contínua no trabalho mediado por tecnologia.', cluster: 'Análise crítica', aplicacao: 'Contexto sociológico para discussão sobre direito à desconexão.' },
-  { autor: 'Carmo & Vasconcelos (2025)', veiculo: 'Revista Psicologia: Organizações e Trabalho (RPOT)', achado: 'Validação brasileira de escala de fadiga em videochamadas com indicadores psicométricos adequados.', cluster: 'Instrumentação BR', aplicacao: 'Instrumento disponível para diagnóstico organizacional.' }
-];
-
+const title = "Fadiga digital: evidência e revisão das reuniões";
+const description = "O que os estudos de fadiga em videochamadas sustentam e como revisar agenda, câmera e canais sem fazer diagnóstico.";
 const faqs = [
   {
-    q: 'Zoom fatigue é o mesmo que tecnostress?',
-    a: 'Não. Zoom fatigue, formulado por Bailenson et al. (2025, Technology, Mind and Behavior), é fenômeno específico de fadiga em videochamadas, com quatro mecanismos identificados. Tecnostress (Riedl, 2024, Information Systems Research) é construto mais amplo, com quatro dimensões — sobrecarga, invasão, complexidade, insegurança — e refere-se ao estresse derivado da relação com tecnologia em geral.'
+    "q": "O modelo de Bailenson foi um experimento?",
+    "a": "O artigo de 2021 é um argumento teórico que formula hipóteses e pede testes. Deve ser distinguido de pesquisas experimentais posteriores."
   },
   {
-    q: 'Política de câmera desligada ajuda?',
-    a: 'A literatura sugere que sim, em parte. Bailenson et al. (2025) identificaram contato ocular excessivo e autorrepresentação contínua como mecanismos de fadiga em videochamadas. Câmera opcional, bloqueio de agenda entre reuniões e mistura de canais (texto, áudio, vídeo) emergem como práticas com lastro empírico. Mohr et al. (2024, JOHP) reforçaram que pausas curtas regulares reduzem fadiga e melhoram desempenho atencional subsequente.'
+    "q": "Toda reunião deve acontecer com a câmera desligada?",
+    "a": "Não existe essa regra universal. Considere finalidade, acessibilidade, necessidades dos participantes e alternativas de canal."
   },
   {
-    q: 'Direito à desconexão tem evidência ou é debate político?',
-    a: 'Tem evidência. Eurofound (2025) reportou adoção crescente em países europeus com benefícios em sintomas de exaustão, embora com variabilidade alta de implementação. Tarafdar et al. (2024, ISJ) mostraram correlação entre tecnostress e queda de desempenho percebido e aumento de intenção de rotatividade. Não é apenas debate político; é também questão de saúde ocupacional com argumento de retorno.'
-  },
-  {
-    q: 'No Brasil existe instrumento validado para fadiga digital?',
-    a: 'Sim. Carmo & Vasconcelos (2025, RPOT) validaram escala brasileira de fadiga em videochamadas com indicadores psicométricos adequados. A escala está disponível para uso em diagnóstico organizacional e pode integrar-se a instrumentos mais amplos de risco psicossocial em conformidade com a NR-1.'
+    "q": "Uma ficha de agenda diagnostica fadiga digital?",
+    "a": "Não. A ficha ajuda a revisar o desenho do trabalho; sintomas persistentes ou incapacitantes merecem avaliação de saúde."
   }
 ];
-
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Fadiga digital e tecnostress · pós-pandemia 2023-2026',
-  description: 'Síntese de literatura recente sobre Zoom fatigue, tecnostress, direito à desconexão e estudos longitudinais em trabalhadores híbridos.',
+  headline: title,
+  description,
   author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
   inLanguage: 'pt-BR'
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
+    '@type': 'Question', name: f.q,
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
-
 ---
-
-<Base
-  title="Fadiga digital e tecnostress · pós-pandemia 2023-2026"
-  description="Literatura recente sobre Zoom fatigue, tecnostress, direito à desconexão na União Europeia e estudos brasileiros em trabalhadores híbridos.">
-
+<Base title={title} description={description}>
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Evidências', href: '/evidencias' },
-        { label: 'Fadiga digital' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Evidência · Organizacional · trabalho remoto</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Fadiga digital e tecnostress · pós-pandemia 2023-2026</h1>
-          <p class="mt-3 text-ink-700 text-lg">Mecanismos de Zoom fatigue, tecnostress como construto amplo, regulação europeia de direito à desconexão e o que diz a literatura brasileira.</p>
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver MBAs no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{label:'Início',href:'/'},{label:"Evidências",href:"/evidencias/"},{label:"Fadiga digital"}]} />
+      <span class="section-eyebrow mt-3">Revisão editorial · 6 de outubro de 2026</span>
+      <h1 class="section-h text-3xl sm:text-4xl">{title}</h1>
+      <p class="mt-3 text-ink-700 text-lg max-w-3xl">Se o dia termina sem espaço entre videochamadas, examine a agenda antes de atribuir o cansaço à motivação. A evidência permite testar ajustes de reunião, mas não oferece um diagnóstico pela quantidade de telas.</p>
     </div>
   </section>
-
   <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          Fadiga digital tem causa identificável e mecanismo explicado. Bailenson et al. (2025, Technology, Mind and Behavior) descreveram quatro mecanismos da Zoom fatigue: contato ocular excessivo, autorrepresentação contínua, redução de mobilidade e sobrecarga cognitiva. A contraintuição: o problema não está na pessoa que se cansa — está no desenho da agenda, no formato da reunião e na cultura de disponibilidade contínua.
-        </p>
-      </div>
-
+    <article class="lg:col-span-8 space-y-8">
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">A pessoa que se cansa não é o problema</h2>
-        <p>
-          A leitura comum culpa o indivíduo: quem se cansa em reunião não tem energia, atenção, propósito. A literatura aponta para mecanismo estrutural. Em videochamada, o cérebro recebe quatro estímulos não-naturais de modo simultâneo — olhar fixo em câmera por horas, presença constante da própria imagem na tela, imobilidade física e demanda cognitiva alta de processamento de múltiplos rostos em grid. Bailenson et al. (2025) modelaram esses mecanismos com base experimental.
-        </p>
-        <p>
-          A consequência prática é clara. Empresas que respondem a fadiga digital com palestra motivacional ou aplicativo de meditação estão errando o alvo. A literatura aponta para ajustes na arquitetura do trabalho — bloqueio de agenda entre reuniões, política de câmera opcional, redução de tempo de reunião como padrão, mistura de canais. Mohr et al. (2024, JOHP) mostraram que pausas curtas regulares reduzem fadiga e melhoram desempenho atencional subsequente.
-        </p>
+<p>Lívia, coordenadora em um exemplo hipotético, recebe queixas de cansaço após reuniões. Sua equipe usa vídeo para avisos, decisões complexas e atualizações que já estão por escrito. Ela prepara um teste de organização da agenda, com uma pergunta mais limitada do que “resolver a fadiga de todos”.</p>
+<h2 class="section-h text-2xl">O que é hipótese e o que foi testado?</h2>
+<p><a href="https://doi.org/10.1037/tmb0000030">Bailenson publicou em 2021</a> um argumento teórico sobre sobrecarga não verbal em videochamadas. Discutiu contato visual, exposição à própria imagem, redução de mobilidade e esforço para produzir e interpretar sinais. O artigo deixa explícita a necessidade de experimentação; não deve ser apresentado como ensaio clínico nem como uma atualização experimental de 2025.</p>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/34423999/">Shockley e colaboradores, também em 2021</a>, realizaram um experimento de campo de quatro semanas, com manipulação do uso da câmera. Em 103 trabalhadores e 1.408 observações diárias, a condição de câmera ligada se relacionou a maior fadiga, com consequências para participação nas reuniões. A amostra e a situação estudada limitam a generalização.</p>
+<p>Esses trabalhos ajudam Lívia a formular um piloto de câmera opcional e melhor escolha de canal. Eles não demonstram que toda reunião com vídeo faz mal, nem que um intervalo universal de minutos resolve qualquer cansaço.</p>
+<h2 class="section-h text-2xl">Como diferenciar fadiga em reuniões de outros problemas?</h2>
+<p>Fadiga após videochamadas descreve uma experiência ligada à atividade; tecnostress é um campo mais amplo sobre demandas relacionadas à tecnologia. Dor, alteração visual, privação de sono, sofrimento emocional e condições de saúde também podem exigir investigação própria. A agenda não permite decidir qual causa explica o caso individual.</p>
+<p>Se os sintomas persistem ou prejudicam o funcionamento, a orientação é procurar avaliação de saúde. No trabalho, a análise deve incluir acessibilidade, ergonomia, jornada e possibilidade de pausas, sem pedir que a pessoa revele seu diagnóstico a colegas.</p>
+<h2 class="section-h text-2xl">Qual ajuste corresponde a cada problema?</h2>
+<div class="table-wrap"><table><thead><tr><th>Situação observável</th><th>Ajuste para testar</th><th>O que conferir depois</th></tr></thead><tbody>
+<tr><td>Reunião repete um informe escrito</td><td>Enviar texto acessível com prazo de leitura</td><td>Se dúvidas são resolvidas sem novo encontro</td></tr>
+<tr><td>Câmera exigida sem finalidade definida</td><td>Permitir escolha quando a tarefa comporta</td><td>Participação, acessibilidade e conforto</td></tr>
+<tr><td>Compromissos consecutivos</td><td>Reservar transições e remover encontros dispensáveis</td><td>Se as pausas acontecem de fato</td></tr>
+<tr><td>Mensagens atravessam a jornada</td><td>Combinar expectativa de resposta e canal de urgência</td><td>Se a chefia respeita o acordo</td></tr>
+</tbody></table></div>
+<h2 class="section-h text-2xl">Como avaliar o piloto sem vigiar pessoas?</h2>
+<ol><li>Escolha um tipo de reunião recorrente e declare sua finalidade.</li><li>Combine um ajuste com quem participa, inclusive necessidades de acessibilidade.</li><li>Registre duração prevista, decisão produzida e dificuldades de coordenação.</li><li>Recolha comentários voluntários de forma compatível com a confidencialidade.</li><li>Decida manter, corrigir ou abandonar o ajuste na data combinada.</li></ol>
+<p>A <a href="https://www.who.int/news-room/fact-sheets/detail/mental-health-at-work">OMS inclui condições e organização do trabalho na proteção da saúde mental</a>. Para este piloto, basta começar pelo desenho da tarefa; não há justificativa para capturar expressões faciais, gravar conversas ou inferir emoção para classificar trabalhadores.</p>
+<p>O piloto de fadiga digital deve mudar a reunião, sem classificar a saúde de cada participante. Lívia poderá comparar a utilidade dos encontros e as dificuldades relatadas, preservando a liberdade de informar que o ajuste não resolveu.</p>
       </div>
-
+      <StudyWorksheet id="ficha-pratica" title="Ficha de revisão de uma reunião recorrente" description="Planeje um ajuste de agenda sem registrar nomes, imagens, diagnósticos ou falas identificáveis."
+        fields={[{"label":"Finalidade do encontro","hint":"Que decisão ou atividade exige esse encontro."},{"label":"Dificuldade observada","hint":"Exemplo: informe repetido ou falta de intervalo."},{"label":"Ajuste combinado","hint":"Canal, câmera, duração ou transição a experimentar."},{"label":"Critério e data de revisão","hint":"Como decidir se o ajuste ajudou a realizar a tarefa."}]} checklist={["A tarefa tem finalidade explícita.","Acessibilidade foi considerada.","O teste evita monitoramento individual.","Existe data para rever o acordo."]} />
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Síntese da literatura</h2>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Mecanismos da Zoom fatigue</h3>
-        <p>
-          Bailenson et al. (2025, Technology, Mind and Behavior) atualizaram o modelo original de Bailenson (2021) com base em estudos experimentais. Os quatro mecanismos: contato ocular excessivo, derivado da proximidade visual da câmera; autorrepresentação contínua, com efeito tipo espelho permanente; redução de mobilidade física, por câmera fixa; sobrecarga cognitiva, do processamento simultâneo de múltiplos rostos e da interpretação de sinais não-verbais reduzidos. Cada mecanismo gera fadiga independente, e o efeito é cumulativo.
-        </p>
-        <p>
-          A consequência para desenho de reunião é direta. Reuniões longas em grid de muitos participantes produzem fadiga superior à mesma quantidade de tempo em interação presencial ou em chamada de áudio. Carmo & Vasconcelos (2025, RPOT) validaram escala brasileira para mensuração de fadiga em videochamadas, com indicadores psicométricos adequados, disponibilizando instrumento em português.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Tecnostress como construto amplo</h3>
-        <p>
-          Riedl (2024, Information Systems Research) revisou o construto de tecnostress em torno de quatro dimensões. Sobrecarga: volume de demanda digital acima da capacidade. Invasão: tecnologia que invade tempo e espaço pessoais. Complexidade: dificuldade de domínio de ferramentas em mudança constante. Insegurança: temor de obsolescência profissional por automação ou substituição. Cada dimensão se correlaciona com indicadores de saúde mental e desempenho.
-        </p>
-        <p>
-          Tarafdar et al. (2024, Information Systems Journal) sintetizaram evidência longitudinal: tecnostress associa-se a queda de desempenho percebido, aumento de intenção de rotatividade e sintomas de exaustão. O argumento de retorno econômico é robusto para programas de mitigação. Em estudo brasileiro, Sousa-Duarte et al. (2024, RAE-FGV) reportaram mediação parcial do tecnostress entre carga digital e exaustão em trabalhadores híbridos brasileiros.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Direito à desconexão na União Europeia</h3>
-        <p>
-          O Eurofound (2025) reportou adoção crescente de legislação ou política empresarial de direito à desconexão em países europeus, com França, Espanha e Portugal entre os pioneiros. O conceito central: trabalhador não está obrigado a responder comunicação fora do horário de trabalho. Os benefícios reportados em estudos de implementação incluem redução de sintomas de exaustão, recuperação melhor entre jornadas e percepção de equilíbrio.
-        </p>
-        <p>
-          A variabilidade de implementação é alta. Empresas que aplicam direito à desconexão como política formal, com comunicação de liderança e bloqueio técnico, reportam melhores indicadores. Empresas que tratam como recomendação informal mantêm cultura de disponibilidade contínua. Wajcman & Rose (2024, Sociology of Work and Occupations) ofereceram análise crítica da normalização dessa disponibilidade no trabalho mediado por tecnologia, apontando para a importância de mudança cultural além da política formal.
-        </p>
-        <p>
-          No Brasil, a CLT não tem dispositivo específico de direito à desconexão, mas a jurisprudência tem reconhecido sobreaviso digital em casos selecionados. A literatura sugere que empresas que adotam política voluntária se antecipam a possível regulação futura e melhoram indicadores de saúde ocupacional.
-        </p>
-        <h3 class="font-display font-semibold text-lg text-ink-900 mt-6">Intervenção: o que funciona</h3>
-        <p>
-          A literatura aponta pacote de práticas com lastro empírico. Bloqueio de agenda de 5 a 10 minutos entre reuniões (Mohr et al., 2024, JOHP); política de câmera opcional em reuniões internas; redução de tempo padrão de reunião — 25 e 50 minutos em vez de 30 e 60; mistura de canais — algumas conversas migrando para texto assíncrono, áudio, telefone; revisão periódica de necessidade de reunião recorrente; política explícita de não-resposta fora do horário.
-        </p>
-        <p>
-          A eficácia depende de adoção por liderança. Líderes que mantêm reuniões longas e respondem mensagens à noite reproduzem norma cultural mesmo quando há política escrita. A literatura é consistente: mudança em fadiga digital exige modelagem por nível hierárquico, não apenas comunicação de política.
-        </p>
+        <h2 class="section-h text-2xl">Como aprofundar o estudo?</h2>
+        <p>Em <a href="https://alexandrecaramaschi.com/educacao/segundo-cerebro-agentes-pessoais">Segundo cérebro com IA, de Alexandre Caramaschi</a>, a organização de informações pode apoiar pautas e registros públicos de decisão. Use o exercício para separar o que precisa de encontro do que pode ficar documentado; não copie conversas pessoais ou prontuários.</p>
+        <p>O recurso educacional é complementar. Seu certificado não equivale a pós-graduação nem concede título profissional; as fontes técnicas e normas desta página devem orientar a conferência dos fatos.</p>
+        <h2 class="section-h text-2xl" id="fontes">Fontes e escopo da revisão</h2>
+        <p>Fontes consultadas em 6 de outubro de 2026. Revisão editorial de conteúdo educativo; não representa avaliação clínica individual nem revisão pessoal atribuída a profissional de saúde.</p>
+        <ul><li><a href="https://doi.org/10.1037/tmb0000030" target="_blank" rel="noopener external">Bailenson: argumento teórico sobre fadiga em videochamadas, 2021</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/34423999/" target="_blank" rel="noopener external">Shockley e colaboradores: experimento de uso de câmera, 2021</a></li>
+<li><a href="https://www.who.int/news-room/fact-sheets/detail/mental-health-at-work" target="_blank" rel="noopener external">OMS: saúde mental no trabalho</a></li></ul>
       </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Papers-chave 2024-2026</h2>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Autor (Ano)</th>
-                <th class="text-left px-4 py-3">Veículo</th>
-                <th class="text-left px-4 py-3">Achado central</th>
-                <th class="text-left px-4 py-3">Cluster</th>
-                <th class="text-left px-4 py-3">Aplicação prática</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              {papersChave.map(p => (
-                <tr>
-                  <td class="px-4 py-3 font-semibold text-ink-900">{p.autor}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.veiculo}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.achado}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.cluster}</td>
-                  <td class="px-4 py-3 text-ink-700">{p.aplicacao}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Consultoria de tecnologia, 900 colaboradores, redesenho de agenda em três meses</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Consultoria de tecnologia em regime híbrido, com indicadores crescentes de exaustão e queda de eNPS, contratou diagnóstico de fadiga digital. A psicóloga organizacional aplicou a escala brasileira de fadiga em videochamadas (Carmo & Vasconcelos, 2025, RPOT) e levantou indicadores de uso digital — número de reuniões semanais por pessoa, tempo médio em videochamada, mensagens fora do horário.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Resultado: trabalhadores em alguns squads passavam 28 horas semanais em videochamada, com bloco de 4 a 5 reuniões consecutivas sem intervalo e mediana de 12 mensagens em chat corporativo depois das 21h. A escala de fadiga indicava níveis elevados em 42% da amostra. O dado deu lastro para apresentação ao comitê executivo.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Plano de ação em três meses. Bloqueio automático de 10 minutos no calendário entre reuniões. Reuniões padrão de 25 e 50 minutos. Política explícita: ninguém é cobrado por não responder mensagem fora do horário, com comunicação direta da diretoria. Revisão de reuniões recorrentes por área. Capacitação de liderança em modelagem de comportamento. Reaplicação da escala em 90 dias mostrou queda de 14 pontos percentuais nos níveis elevados de fadiga e recuperação de 6 pontos no eNPS. O caso ilustra: arquitetura de trabalho responde à intervenção, indivíduo isolado responde menos.
-        </p>
-      </div>
-
-      <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Limites da evidência atual e agenda de pesquisa</h2>
-        <p>
-          A literatura sobre fadiga digital é jovem em estudos longitudinais e em métricas comportamentais objetivas. A maior parte dos achados é auto-reportada e transversal. A agenda de pesquisa para 2026-2027 inclui estudos longitudinais com mensuração objetiva — tempo de tela, padrão de uso, dados fisiológicos — avaliação de intervenções multinível e estudos sobre interação entre fadiga digital, modelo híbrido e desenho de tarefa.
-        </p>
-        <p>
-          A discussão regulatória brasileira sobre direito à desconexão tende a avançar. Profissionais que conduzem programas de saúde ocupacional precisam acompanhar jurisprudência trabalhista e movimento legislativo, especialmente em setores de tecnologia, financeiro e serviços profissionais.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
         <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
-          {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
+          {faqs.map(f => (<details class="p-5"><summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary><p class="mt-3 text-ink-700 leading-relaxed">{f.a}</p></details>))}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese executiva</p>
-        <h3 class="font-display font-semibold text-xl">Fadiga digital responde a desenho de agenda, não a discurso de resiliência</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Bloqueio entre reuniões, política de câmera, redução de tempo padrão e modelagem por liderança: o pacote com lastro empírico. O MBA Online em Psicologia Organizacional e do Trabalho no IPOG estrutura essa abordagem em formato Ao Vivo síncrono. Próximo passo: comparar grade e calendário no portal oficial.
-        </p>
-      </div>
-
+      </section>
     </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">MBAs IPOG correlatos</h3>
-        <ul class="space-y-1 mt-3">
-          {mbasCorrelatos.map(m => (
-            <li><a href={`/mbas/${m.id}`} class="mega-link"><strong class="text-ink-900 text-sm">{m.shortName}</strong></a></li>
-          ))}
-        </ul>
-        <p class="text-xs text-ink-500 mt-3 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">Ver no IPOG</a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">Home IPOG</a>
-      </div>
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://www.eurofound.europa.eu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Eurofound</a></li>
-          <li><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">PubMed</a></li>
-          <li><a href="https://bvs-psi.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">BVS-Psi</a></li>
-          <li><a href="https://www.cochrane.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Cochrane</a></li>
-          <li><a href="https://www.apa.org/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">APA</a></li>
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP</a></li>
-        </ul>
+    <aside class="lg:col-span-4">
+      <div class="card p-6 prose prose-ink">
+        <h2 class="font-display font-semibold text-lg">Leituras relacionadas</h2>
+        <ul><li><a href="/temas/trabalho-hibrido/">Desenho do trabalho híbrido</a></li>
+<li><a href="/temas/burnout-prevencao/">Prevenção de burnout</a></li>
+<li><a href="/areas/psicologia-organizacional-trabalho/">Psicologia Organizacional e do Trabalho</a></li></ul>
+        <p class="text-sm">Portal editorial independente. Oferta, grade, preço e turma de qualquer pós-graduação precisam ser conferidos na instituição responsável.</p>
       </div>
     </aside>
   </section>
-
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
 </Base>
+<style>
+  article :global(p), aside :global(p) { text-align: justify; }
+  article :global(table) { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  article :global(th), article :global(td) { padding: .7rem; border: 1px solid #d6e1dd; text-align: left; vertical-align: top; }
+  article :global(.table-wrap) { overflow-x: auto; }
+</style>

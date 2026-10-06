@@ -1,300 +1,112 @@
 ---
 import Base from '@layouts/Base.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import FichaRapida from '@components/FichaRapida.astro';
-import { SITE, AREAS, MBAS } from '@lib/data';
-import { buildEducationalOccupationalProgram, buildSpeakable, alexandreAuthorRef } from '@lib/schemas';
+import StudyWorksheet from '@components/StudyWorksheet.astro';
 
-const area = AREAS.find(a => a.id === 'psicologia-positiva')!;
-const relatedMbas = MBAS.filter(m => area.relatedCourses.includes(m.id));
-const adjacent = AREAS.filter(a => a.id !== area.id && a.cluster === area.cluster).slice(0, 4);
-
+const title = "Psicologia Positiva: avaliar modelos e escolher uma formação";
+const description = "Como estudar PERMA, distinguir medida de intervenção e comparar formações em Psicologia Positiva sem promessas de felicidade ou eficácia universal.";
 const faqs = [
   {
-    q: 'Psicologia Positiva é a mesma coisa que pensamento positivo?',
-    a: 'Não. Psicologia Positiva é o campo científico fundado por Martin Seligman em 1998 dentro da APA, que estuda condições mensuráveis de florescimento humano: emoções positivas, engajamento, relações, propósito e realização. Pensamento positivo é literatura de autoajuda, sem método nem evidência. Confundir os dois é o erro mais comum na divulgação leiga.'
+    "q": "PERMA é diagnóstico de saúde mental?",
+    "a": "Não. O modelo organiza dimensões de bem-estar; diagnóstico e avaliação clínica exigem processo profissional apropriado."
   },
   {
-    q: 'O modelo PERMA é cientificamente validado?',
-    a: 'O modelo PERMA é o framework operacional mais usado em Psicologia Positiva aplicada, com mais de uma década de estudos de validação em diferentes culturas. Há crítica acadêmica legítima sobre limites do constructo, mas sua aplicação organizacional, com escalas validadas como o PERMA-Profiler, é defensável e amplamente adotada.'
+    "q": "Existe uma divisão fixa da felicidade entre genética e escolhas?",
+    "a": "Não use percentuais fixos como previsão de quanto uma pessoa pode mudar. População, método e contexto precisam acompanhar qualquer estimativa de variância."
   },
   {
-    q: 'Líder de empresa precisa entender de Psicologia Positiva?',
-    a: 'Sim, se quiser gerar performance sustentável. Estudos da Gallup mostram que líderes treinados em forças e bem-estar têm equipes com engajamento 23% maior e turnover 18% menor (Gallup, 2024). A área não substitui competência técnica de gestão — ela qualifica a forma de exercê-la.'
-  },
-  {
-    q: 'Psicologia Positiva combina com Psicologia Organizacional do Trabalho?',
-    a: 'Combina e se complementa. POT diagnostica o sistema organizacional — cultura, processos, estrutura. Psicologia Positiva orienta a intervenção em pessoas e equipes. Em RH maduro, as duas formam o repertório mínimo de quem trabalha com cultura e bem-estar.'
-  },
-  {
-    q: 'Existe MBA em Psicologia Positiva reconhecido pelo MEC?',
-    a: 'Sim. MBA em Psicologia Positiva é categoria de pós lato sensu, regulada pelo MEC, oferecida por instituições credenciadas. O IPOG, por exemplo, oferece MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações, com formato Ao Vivo síncrono.'
+    "q": "Um MBA torna alguém especialista registrado no CFP?",
+    "a": "O certificado acadêmico não concede registro automaticamente. Confira as especialidades e os requisitos do CFP e do CRP."
   }
 ];
-
 const ldArticle = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Psicologia Positiva: PERMA, ciência do florescimento e aplicação organizacional',
-  description: 'Análise técnica de Psicologia Positiva como campo científico: PERMA, forças pessoais, segurança psicológica e aplicação em organizações.',
-  // E-E-A-T: author Person canônico + publisher Organization via @id (Maio 2026 Core Update).
-  author: alexandreAuthorRef,
-  reviewedBy: { '@id': 'https://alexandrecaramaschi.com/#alexandre-caramaschi' },
+  headline: title,
+  description,
+  author: { '@id': 'https://brasilgeo.ai/#organization' },
   publisher: { '@id': 'https://brasilgeo.ai/#organization' },
-  datePublished: '2026-05-13',
   inLanguage: 'pt-BR'
 };
-
 const ldFaq = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faqs.map(f => ({
-    '@type': 'Question',
-    name: f.q,
+    '@type': 'Question', name: f.q,
     acceptedAnswer: { '@type': 'Answer', text: f.a }
   }))
 };
-
-const ldProgram = JSON.stringify({
-  '@context': 'https://schema.org',
-  ...buildEducationalOccupationalProgram({
-    name: 'Especialização Lato Sensu em Psicologia Positiva',
-    slug: '/areas/psicologia-positiva',
-    description: 'Formação em Psicologia Positiva aplicada — PERMA, forças pessoais, segurança psicológica e florescimento em organizações — para psicólogos e profissionais que atuam com bem-estar.',
-    programType: 'Especialização Lato Sensu',
-    timeRequired: 'P360H',
-    occupationalCredentialAwarded: 'Especialista em Psicologia Positiva',
-    educationalCredentialAwarded: 'Certificado de Especialização Lato Sensu'
-  }),
-  speakable: buildSpeakable(['h1', '.section-h'])
-});
 ---
-
-<Base
-  title="Psicologia Positiva: PERMA, ciência do florescimento e pós aplicada"
-  description="Guia técnico de Psicologia Positiva: modelo PERMA, forças pessoais, segurança psicológica e aplicação organizacional. Conteúdo independente, base científica.">
-
+<Base title={title} description={description}>
   <section class="bg-surface-50 border-b border-surface-200">
     <div class="container-page py-7">
-      <Breadcrumbs items={[
-        { label: 'Início', href: '/' },
-        { label: 'Áreas', href: '/areas' },
-        { label: 'Psicologia Positiva' }
-      ]} />
-      <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-        <div class="max-w-3xl">
-          <span class="section-eyebrow">Área · Cluster POT + bem-estar · Regulação {area.regulatoryLevel}</span>
-          <h1 class="section-h text-3xl sm:text-4xl">Psicologia Positiva: PERMA, ciência do florescimento e pós aplicada</h1>
-          <p class="mt-3 text-ink-700 text-lg">A ciência das condições que tornam florescimento possível — não otimismo travestido.</p>
-          <FichaRapida area={area} />
-        </div>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-secondary shrink-0">
-          Ver cursos no IPOG
-          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3h6v6h-2V6.4L8.7 12.7 7.3 11.3 13.6 5H11V3zM5 5h4v2H7v8h8v-2h2v4H5V5z"/></svg>
-        </a>
-      </div>
+      <Breadcrumbs items={[{label:'Início',href:'/'},{label:"Áreas",href:"/areas/"},{label:"Psicologia Positiva"}]} />
+      <span class="section-eyebrow mt-3">Revisão editorial · 6 de outubro de 2026</span>
+      <h1 class="section-h text-3xl sm:text-4xl">{title}</h1>
+      <p class="mt-3 text-ink-700 text-lg max-w-3xl">Quando uma proposta de bem-estar promete melhorar tudo com um único questionário, peça o vínculo entre medida, problema e intervenção. Uma formação útil ensina essa conferência e reconhece as condições reais de vida e trabalho.</p>
     </div>
   </section>
-
   <section class="container-page py-10 grid lg:grid-cols-12 gap-10">
-    <article class="lg:col-span-8 space-y-10">
-
-      <div class="rounded-2xl bg-brand-50 border border-brand-100 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Resposta rápida</p>
-        <p class="text-ink-900 leading-relaxed">
-          Psicologia Positiva é o campo científico que estuda condições mensuráveis de florescimento humano: emoções positivas, engajamento, relações, propósito e realização. Fundada em 1998 por Martin Seligman, é hoje base científica para intervenções em bem-estar, liderança positiva e segurança psicológica em organizações. Não é otimismo. É ciência do funcionamento humano em condições favoráveis.
-        </p>
-      </div>
-
+    <article class="lg:col-span-8 space-y-8">
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">A virada de 1998 e por que ela importa hoje</h2>
-        <p>
-          Quando Martin Seligman assumiu a presidência da American Psychological Association, em 1998, fez uma provocação técnica: a psicologia tinha mapeado em detalhe o sofrimento humano, mas quase nada sobre o que faz a vida valer a pena. A psicologia positiva nasceu dessa lacuna metodológica. Não é correção ideológica — é correção de objeto de estudo (Seligman, 2011).
-        </p>
-        <p>
-          A consequência prática para 2026 é forte. Em pesquisa global publicada pela Gallup em 2024, apenas 23% dos trabalhadores se declararam engajados no trabalho; 62% se declararam "presentes mas desengajados" e 15% ativamente desengajados (Gallup, 2024). O custo estimado em produtividade perdida supera US$ 8,8 trilhões globais ao ano. Esse é o tamanho do problema que Psicologia Positiva aplicada se propõe a tratar — não com discurso, com instrumento.
-        </p>
-        <p>
-          A leitura contraintuitiva: Psicologia Positiva não é otimismo travestido. É a ciência das condições que tornam florescimento possível. A diferença entre as duas é a diferença entre prescrever "pense positivo" e desenhar arquitetura organizacional que sustente sentido, autonomia, relações de qualidade e progresso visível.
-        </p>
+<p>Sofia, profissional de RH em um exemplo hipotético, recebe a sugestão de trocar a revisão de jornada por uma oficina de gratidão. Ela quer estudar Psicologia Positiva, mas precisa distinguir uma atividade opcional de um programa capaz de responder às demandas apresentadas pela equipe.</p>
+<h2 class="section-h text-2xl">O que o campo estuda?</h2>
+<p>A Psicologia Positiva reúne pesquisas sobre bem-estar, forças e condições de funcionamento humano. Esses temas não eliminam o sofrimento nem autorizam responsabilizar alguém por “não pensar positivo”. Ao estudar o campo, confira a pergunta de cada pesquisa, o contexto cultural e o resultado efetivamente medido.</p>
+<p>Na <a href="https://ppc.sas.upenn.edu/learn-more/perma-theory-well-being-and-perma-workshops">apresentação da Universidade da Pensilvânia</a>, o modelo PERMA organiza cinco dimensões: emoções positivas, engajamento, relações, sentido e realização. Ele oferece uma linguagem para formular perguntas sobre bem-estar, sem reduzir toda a vida de uma pessoa a uma nota.</p>
+<h2 class="section-h text-2xl">Como usar PERMA como pergunta, sem produzir diagnóstico?</h2>
+<div class="table-wrap"><table><thead><tr><th>Dimensão</th><th>Pergunta de planejamento</th><th>Cuidado</th></tr></thead><tbody>
+<tr><td>Emoções positivas</td><td>Há espaço para experiências agradáveis escolhidas pelas pessoas?</td><td>Não exigir demonstração de alegria</td></tr>
+<tr><td>Engajamento</td><td>As tarefas permitem participação e concentração?</td><td>Não equiparar absorção a ausência de sobrecarga</td></tr>
+<tr><td>Relações</td><td>Existe apoio e possibilidade de resolver conflitos?</td><td>Não impor exposição íntima</td></tr>
+<tr><td>Sentido</td><td>O trabalho tem significado reconhecido por quem o realiza?</td><td>Não usar propósito para justificar condições inadequadas</td></tr>
+<tr><td>Realização</td><td>Há metas viáveis e retorno sobre o progresso?</td><td>Não transformar o modelo em cobrança permanente</td></tr>
+</tbody></table></div>
+<p>Essas perguntas são um roteiro editorial de estudo, não uma escala validada. A página do <a href="https://ppc.sas.upenn.edu/resources/questionnaires-researchers/perma-profiler">PERMA-Profiler</a> apresenta uma medida multidimensional associada ao modelo. Para usar um instrumento, confira versão, finalidade, evidências na população, licenciamento e requisitos profissionais; uma publicação estrangeira não concede autorização geral de uso no Brasil.</p>
+<h2 class="section-h text-2xl">Por que medir bem-estar não prova que a intervenção funcionou?</h2>
+<p>Um questionário pode organizar a observação sem demonstrar que uma oficina causou mudança. Expectativa, participação seletiva, alterações de liderança e outras condições podem acompanhar os resultados. Exigir uma comparação adequada é parte do trabalho científico, inclusive quando a intervenção parece simples ou agradável.</p>
+<p>No caso de Sofia, a oficina pode ser considerada como atividade voluntária, com finalidade limitada, enquanto a empresa examina jornada e carga. A equipe não precisa provar gratidão para receber melhorias no trabalho. A <a href="https://www.who.int/publications/i/item/9789240053052">diretriz da OMS sobre saúde mental no trabalho</a> ajuda a estudar intervenções organizacionais e apoios individuais sem substituir uma frente pela outra.</p>
+<h2 class="section-h text-2xl">Que critérios usar para comparar cursos?</h2>
+<ol><li>Procure leitura crítica de pesquisas, incluindo limitações e resultados divergentes.</li><li>Peça uma tarefa avaliada que separe definição, medida e intervenção.</li><li>Confira como o curso aborda contexto, diversidade e condições de trabalho.</li><li>Verifique qual prática é permitida ao seu perfil de formação.</li><li>Confirme a instituição, o tipo de certificado e as regras vigentes antes da matrícula.</li></ol>
+<p>MBA integra a pós-graduação lato sensu quando oferecido nas condições da regulação aplicável. O certificado acadêmico não concede automaticamente registro de especialista no CFP; consulte as <a href="https://site.cfp.org.br/servicos/titulo-de-especialista/">regras do Conselho</a>. Conteúdo de curso livre também não autoriza avaliação ou intervenção privativa.</p>
+<p>Uma formação em Psicologia Positiva deve ensinar a questionar a medida de bem-estar. Sofia passa a avaliar propostas pelo que podem entregar e pelo problema que deixam intacto, sem comprar uma promessa universal de felicidade.</p>
       </div>
-
+      <StudyWorksheet id="ficha-pratica" title="Ficha de avaliação de formação em Psicologia Positiva" description="Compare objetivos e evidências de um curso ou proposta, sem preencher escores pessoais."
+        fields={[{"label":"Problema e contexto","hint":"Que necessidade de estudo ou de trabalho será examinada."},{"label":"Modelo e medida","hint":"Qual teoria é usada e o que o instrumento realmente mede."},{"label":"Evidência e limite","hint":"Fonte, população e o que não foi demonstrado."},{"label":"Critério para escolher","hint":"Projeto avaliado, orientação e condições do certificado."}]} checklist={["Diferenciei medida de intervenção.","A proposta respeita sofrimento e contexto.","Não há promessa universal de felicidade.","Conferi limites de habilitação profissional."]} />
       <div class="prose prose-ink max-w-none">
-        <h2 class="section-h text-2xl">Fundamentação conceitual: quatro pilares</h2>
-        <p>
-          O primeiro pilar é o modelo PERMA, proposto por Seligman em Flourish (2011). Cinco elementos mensuráveis: emoção positiva (P), engajamento (E), relações (R), significado (M) e realização (A). Cada elemento tem instrumentos próprios de avaliação e responde a intervenções específicas. PERMA é o framework operacional dominante quando o objetivo é desenhar programa de bem-estar com método.
-        </p>
-        <p>
-          O segundo pilar é a teoria de broaden-and-build de Barbara Fredrickson. Emoções positivas, em vez de apenas se sentirem bem, ampliam o repertório de pensamento e ação e constroem recursos psicológicos duráveis — resiliência, criatividade, conexão (Fredrickson, 2009). Em ambientes de trabalho, isso significa que emoção positiva não é luxo: é insumo para inovação e adaptação.
-        </p>
-        <blockquote class="border-l-4 border-brand-700 pl-4 italic text-ink-700">
-          "Emoções positivas não são apenas o oposto das negativas. Elas têm função evolutiva distinta: ampliam o campo de atenção, constroem recursos duradouros, e mudam a forma como o organismo se relaciona com o ambiente." — Barbara Fredrickson, Positivity (2009).
-        </blockquote>
-        <p>
-          O terceiro pilar é o conceito de flow, desenvolvido por Mihaly Csikszentmihalyi. Estado de absorção completa em uma atividade desafiante, com objetivos claros, feedback imediato e equilíbrio entre habilidade e dificuldade (Csikszentmihalyi, 1990). Em design organizacional, flow é o estado em que produtividade e bem-estar coincidem. Reorganizar trabalho para favorecer flow é tarefa direta de liderança baseada em Psicologia Positiva.
-        </p>
-        <p>
-          O quarto pilar é o trabalho de Sonja Lyubomirsky sobre arquitetura da felicidade. A pesquisa empírica indica que cerca de 40% da variância em bem-estar subjetivo responde a atividades intencionais, contra 50% genético e 10% circunstancial (Lyubomirsky, 2008). É exatamente esse espaço de 40% que intervenções estruturadas — gratidão, conexão social, propósito — endereçam com efeito mensurável.
-        </p>
+        <h2 class="section-h text-2xl">Como aprofundar o estudo?</h2>
+        <p>O curso <a href="https://alexandrecaramaschi.com/educacao/eeat-qualidade">E-E-A-T e Qualidade de Conteúdo, de Alexandre Caramaschi</a>, ajuda a seguir uma afirmação até sua fonte e autoria. Use essa leitura para conferir páginas de cursos; ela trata de qualidade editorial, não de validação clínica do PERMA.</p>
+        <p>O recurso educacional é complementar. Seu certificado não equivale a pós-graduação nem concede título profissional; as fontes técnicas e normas desta página devem orientar a conferência dos fatos.</p>
+        <h2 class="section-h text-2xl" id="fontes">Fontes e escopo da revisão</h2>
+        <p>Fontes consultadas em 6 de outubro de 2026. Revisão editorial de conteúdo educativo; não representa avaliação clínica individual nem revisão pessoal atribuída a profissional de saúde.</p>
+        <ul><li><a href="https://ppc.sas.upenn.edu/learn-more/perma-theory-well-being-and-perma-workshops" target="_blank" rel="noopener external">Universidade da Pensilvânia: teoria PERMA</a></li>
+<li><a href="https://ppc.sas.upenn.edu/resources/questionnaires-researchers/perma-profiler" target="_blank" rel="noopener external">Universidade da Pensilvânia: PERMA-Profiler</a></li>
+<li><a href="https://www.who.int/publications/i/item/9789240053052" target="_blank" rel="noopener external">OMS: diretrizes sobre saúde mental no trabalho, 2022</a></li>
+<li><a href="https://site.cfp.org.br/servicos/titulo-de-especialista/" target="_blank" rel="noopener external">CFP: registro de especialista</a></li>
+<li><a href="https://satepsi.cfp.org.br/faq.cfm" target="_blank" rel="noopener external">CFP/SATEPSI: perguntas frequentes sobre avaliação psicológica</a></li></ul>
       </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Modelo PERMA aplicado em organizações</h2>
-        <p class="text-ink-700 mt-2">
-          Cada letra do PERMA tem instrumento próprio de medição e tipo distinto de intervenção. Confundir os elementos produz programa de bem-estar superficial.
-        </p>
-        <div class="overflow-x-auto mt-4 rounded-2xl border border-surface-200">
-          <table class="min-w-full text-sm">
-            <thead class="bg-surface-50 text-ink-900 font-semibold">
-              <tr>
-                <th class="text-left px-4 py-3">Elemento</th>
-                <th class="text-left px-4 py-3">Definição</th>
-                <th class="text-left px-4 py-3">Aplicação organizacional</th>
-                <th class="text-left px-4 py-3">Indicador típico</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-200">
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">P · Emoção positiva</td>
-                <td class="px-4 py-3 text-ink-700">Frequência de emoções como alegria, gratidão, entusiasmo no trabalho.</td>
-                <td class="px-4 py-3 text-ink-700">Rituais de reconhecimento, clima de equipe, design de espaços.</td>
-                <td class="px-4 py-3 text-ink-700">PERMA-Profiler, escala de afeto positivo.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">E · Engajamento</td>
-                <td class="px-4 py-3 text-ink-700">Imersão e absorção, estado de flow no trabalho.</td>
-                <td class="px-4 py-3 text-ink-700">Job design, calibração de desafio, redução de interrupção.</td>
-                <td class="px-4 py-3 text-ink-700">UWES, Q12 Gallup, mapeamento de flow.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">R · Relações</td>
-                <td class="px-4 py-3 text-ink-700">Qualidade dos vínculos com pares, líderes e clientes internos.</td>
-                <td class="px-4 py-3 text-ink-700">Segurança psicológica, rituais de equipe, gestão de conflito.</td>
-                <td class="px-4 py-3 text-ink-700">Escala de segurança psicológica, eNPS, sociograma.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">M · Significado</td>
-                <td class="px-4 py-3 text-ink-700">Conexão entre trabalho individual e propósito maior.</td>
-                <td class="px-4 py-3 text-ink-700">Job crafting, narrativa de impacto, alinhamento de valores.</td>
-                <td class="px-4 py-3 text-ink-700">Work and Meaning Inventory.</td>
-              </tr>
-              <tr>
-                <td class="px-4 py-3 font-semibold text-ink-900">A · Realização</td>
-                <td class="px-4 py-3 text-ink-700">Sensação de progresso, conquista e domínio.</td>
-                <td class="px-4 py-3 text-ink-700">OKRs visíveis, feedback contínuo, trilhas de desenvolvimento.</td>
-                <td class="px-4 py-3 text-ink-700">Indicadores de progresso, marcos de carreira.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-sun-500/10 border border-sun-500/30 p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-amber-800 mb-2">Caso composto · ilustrativo</p>
-        <h3 class="font-display font-semibold text-lg text-ink-900">Quando engajamento baixo era falta de significado, não de recompensa</h3>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          Time de produto de uma fintech, 40 pessoas, registrava queda contínua em pulse survey de engajamento. A diretoria propôs revisão de bônus e ajuste salarial. O líder de RH, formado em Psicologia Positiva, sugeriu antes uma medição com PERMA-Profiler. Os resultados destoavam da hipótese: P e A estavam médios, R estava bom, mas M — significado — pontuava 2,8 em 10. As pessoas não sentiam conexão entre o produto e propósito alguém.
-        </p>
-        <p class="mt-3 text-ink-700 leading-relaxed">
-          A intervenção foi reformulação da narrativa de produto, com sessões mensais em que clientes reais demonstravam o impacto da ferramenta na vida deles. Sem mexer em remuneração, em três trimestres o pulse de engajamento subiu 19 pontos e o turnover voluntário caiu 31%. O problema não era recompensa. Era ausência de propósito visível. Psicologia Positiva mediu, diagnosticou e endereçou — sem trocar o problema.
-        </p>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Combina ou não combina com Psicologia Positiva</h2>
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-          <div class="card p-6 border-brand-100 bg-brand-50/40">
-            <p class="text-xs uppercase tracking-wider font-semibold text-brand-800 mb-2">Combina com você se</p>
-            <ul class="space-y-2 text-sm text-ink-700">
-              <li>Atua em RH ou liderança e quer instrumental científico para programas de bem-estar.</li>
-              <li>É psicólogo e quer ampliar repertório além de psicopatologia.</li>
-              <li>Consulta em saúde organizacional e precisa de framework defensável.</li>
-              <li>Lidera time e quer ler bem-estar como insumo de performance, não como benefício.</li>
-              <li>Conduz programas de cultura, liderança ou diversidade que precisam de base científica.</li>
-            </ul>
-          </div>
-          <div class="card p-6 border-surface-200">
-            <p class="text-xs uppercase tracking-wider font-semibold text-ink-500 mb-2">Pense duas vezes se</p>
-            <ul class="space-y-2 text-sm text-ink-700">
-              <li>Identifica Psicologia Positiva com "pensamento positivo" ou pop psychology.</li>
-              <li>Procura receita rápida de felicidade ou motivação.</li>
-              <li>Tem aversão a métrica, escala e dado empírico.</li>
-              <li>Espera intervenção que funcione sem mudar estrutura organizacional subjacente.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="section-h text-2xl">Perguntas frequentes</h2>
+      <section aria-labelledby="perguntas-frequentes">
+        <h2 id="perguntas-frequentes" class="section-h text-2xl">Perguntas frequentes</h2>
         <div class="divide-y divide-surface-200 rounded-2xl border border-surface-200 bg-white mt-4">
-          {faqs.map(f => (
-            <details class="group p-5">
-              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-                <span class="font-semibold text-ink-900">{f.q}</span>
-                <svg class="w-5 h-5 text-ink-500 shrink-0 mt-1 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5 10 12l4.5-4.5z"/></svg>
-              </summary>
-              <p class="mt-3 text-sm text-ink-700 leading-relaxed">{f.a}</p>
-            </details>
-          ))}
+          {faqs.map(f => (<details class="p-5"><summary class="cursor-pointer font-semibold text-ink-900">{f.q}</summary><p class="mt-3 text-ink-700 leading-relaxed">{f.a}</p></details>))}
         </div>
-      </div>
-
-      <div class="rounded-2xl bg-brand-900 text-white p-6">
-        <p class="text-xs uppercase tracking-wider font-semibold text-sun-500 mb-2">Síntese</p>
-        <h3 class="font-display font-semibold text-xl">Psicologia Positiva é instrumento, não ideologia</h3>
-        <p class="mt-3 text-white/90 leading-relaxed">
-          Quem domina PERMA, broaden-and-build, flow e arquitetura da felicidade tem repertório para diagnosticar e intervir em bem-estar de forma defensável. O IPOG, com seu MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações em formato Ao Vivo síncrono, é exemplo de instituição que conduz essa formação no ritmo executivo. Próximo passo: consultar grade, docentes e modalidade no portal oficial.
-        </p>
-      </div>
-
+      </section>
     </article>
-
-    <aside class="lg:col-span-4 space-y-5">
-      <div class="card p-6 sticky top-20">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold">Caminho oficial</p>
-        <h3 class="font-display font-semibold text-lg mt-1">MBA em Psicologia Positiva no IPOG</h3>
-        <p class="text-sm text-ink-700 mt-2">
-          O IPOG oferece MBA em Psicologia Positiva, Saúde Mental e Gestão do Bem-Estar nas Organizações, em formato Ao Vivo síncrono com corpo docente nominal. Consulte o portal oficial para grade, valor e turma.
-        </p>
-        <p class="text-xs text-ink-500 mt-2 italic">Portal independente. Não é o site oficial do IPOG.</p>
-        <a href={SITE.ipogPos} target="_blank" rel="noopener external" class="btn btn-primary mt-4 w-full">
-          Ver no IPOG
-        </a>
-        <a href={SITE.ipogOfficial} target="_blank" rel="noopener external" class="btn btn-ghost mt-2 w-full">
-          Home IPOG
-        </a>
-      </div>
-
-      {adjacent.length > 0 && (
-        <div class="card p-6">
-          <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Áreas relacionadas</p>
-          <ul class="space-y-1">
-            {adjacent.map(a => (
-              <li>
-                <a href={`/areas/${a.id}`} class="mega-link">
-                  <strong class="text-ink-900 text-sm">{a.name}</strong>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a href="/areas" class="text-sm text-brand-700 font-semibold mt-3 inline-block hover:text-brand-800">Ver todas as áreas →</a>
-        </div>
-      )}
-
-      <div class="card p-6">
-        <p class="text-xs uppercase tracking-wider text-ink-500 font-semibold mb-3">Fontes oficiais</p>
-        <ul class="space-y-2 text-sm">
-          <li><a href="https://site.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">CFP — Conselho Federal de Psicologia</a></li>
-          <li><a href="https://satepsi.cfp.org.br/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">SATEPSI — Avaliação de testes</a></li>
-          <li><a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">MEC — Reconhecimento de pós lato sensu</a></li>
-          <li><a href="https://www.ppc.sas.upenn.edu/" target="_blank" rel="noopener external" class="text-brand-700 hover:text-brand-800 font-medium">Positive Psychology Center — UPenn</a></li>
-        </ul>
+    <aside class="lg:col-span-4">
+      <div class="card p-6 prose prose-ink">
+        <h2 class="font-display font-semibold text-lg">Leituras relacionadas</h2>
+        <ul><li><a href="/temas/burnout-prevencao/">Prevenção de burnout</a></li>
+<li><a href="/areas/psicologia-organizacional-trabalho/">Psicologia Organizacional e do Trabalho</a></li>
+<li><a href="/temas/lideranca-positiva/">Liderança positiva</a></li></ul>
+        <p class="text-sm">Portal editorial independente. Oferta, grade, preço e turma de qualquer pós-graduação precisam ser conferidos na instituição responsável.</p>
       </div>
     </aside>
   </section>
-
   <script type="application/ld+json" set:html={JSON.stringify(ldArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(ldFaq)} />
-  <script type="application/ld+json" set:html={ldProgram} />
 </Base>
+<style>
+  article :global(p), aside :global(p) { text-align: justify; }
+  article :global(table) { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  article :global(th), article :global(td) { padding: .7rem; border: 1px solid #d6e1dd; text-align: left; vertical-align: top; }
+  article :global(.table-wrap) { overflow-x: auto; }
+</style>

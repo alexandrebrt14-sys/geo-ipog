@@ -14,11 +14,15 @@ Uso:
     python scripts/lint-editorial.py --changed            # só o que mudou vs origin/main
 
 Saída: código 1 quando há violação BLOQUEANTE, 0 quando só há avisos.
+
+Acentuação: até 20 ocorrências sem acento na execução (variável
+PTBR_ACCENT_MAX, padrão 20) saem como aviso; acima disso, todas bloqueiam.
 """
 
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -146,6 +150,29 @@ def linha_de(fonte: str, pos: int) -> int:
 
 
 # --- Cheques -------------------------------------------------------------
+
+
+# Limite de acentuação (decisão do dono, 11/10/2026, a mesma do landing-page-geo
+# no PR #1311): até PTBR_ACCENT_MAX achados da regra "acentuacao" (padrão 20)
+# na execução inteira viram aviso; acima disso, todos bloqueiam como antes. Só
+# o limite mudou: as palavras que contam são as mesmas. "href-com-acento" é
+# regra de endereço e continua sem tolerância.
+def limite_acentuacao() -> int:
+    try:
+        n = int(os.environ.get("PTBR_ACCENT_MAX", "20"))
+    except ValueError:
+        return 20
+    return n if n >= 0 else 20
+
+
+def aplicar_limite_acentuacao(achados: list, campo: str, bloqueia: str, avisa: str) -> None:
+    acento = [a for a in achados if a["regra"] == "acentuacao" and a[campo] == bloqueia]
+    limite = limite_acentuacao()
+    if len(acento) > limite:
+        return
+    for a in acento:
+        a[campo] = avisa
+        a["detalhe"] = f"{a['detalhe']} (tolerado: {len(acento)} de até {limite})"
 
 
 def checar(caminho: Path) -> list[dict]:
@@ -287,6 +314,7 @@ def main() -> int:
     for alvo in alvos:
         achados.extend(checar(alvo))
 
+    aplicar_limite_acentuacao(achados, "nivel", "BLOQUEIA", "AVISA")
     bloqueios = [a for a in achados if a["nivel"] == "BLOQUEIA"]
     avisos = [a for a in achados if a["nivel"] == "AVISA"]
 

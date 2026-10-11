@@ -17,6 +17,10 @@ Uso:
 Severidade:
     ERRO   reprova (exit 1)
     AVISO  relata, não reprova
+
+Acentuação: até 20 ocorrências da regra "acentuacao" na execução (variável
+PTBR_ACCENT_MAX, padrão 20) saem como AVISO; acima disso, todas são ERRO.
+"href-com-acento" continua ERRO sempre.
 """
 from __future__ import annotations
 
@@ -278,6 +282,29 @@ def trecho(texto: str, pos: int, largura: int = 70) -> str:
 # ---------------------------------------------------------------------------
 # Verificações
 # ---------------------------------------------------------------------------
+# Limite de acentuação (decisão do dono, 11/10/2026, a mesma do landing-page-geo
+# no PR #1311): até PTBR_ACCENT_MAX achados da regra "acentuacao" (padrão 20)
+# na execução inteira viram aviso; acima disso, todos bloqueiam como antes. Só
+# o limite mudou: as palavras que contam são as mesmas. "href-com-acento" é
+# regra de endereço e continua sem tolerância.
+def limite_acentuacao() -> int:
+    try:
+        n = int(os.environ.get("PTBR_ACCENT_MAX", "20"))
+    except ValueError:
+        return 20
+    return n if n >= 0 else 20
+
+
+def aplicar_limite_acentuacao(achados: list, campo: str, bloqueia: str, avisa: str) -> None:
+    acento = [a for a in achados if a["regra"] == "acentuacao" and a[campo] == bloqueia]
+    limite = limite_acentuacao()
+    if len(acento) > limite:
+        return
+    for a in acento:
+        a[campo] = avisa
+        a["detalhe"] = f"{a['detalhe']} (tolerado: {len(acento)} de até {limite})"
+
+
 def checar_arquivo(caminho: str, ids_globais: dict) -> list:
     achados = []
     with open(caminho, encoding="utf-8") as f:
@@ -483,6 +510,7 @@ def main() -> int:
                                     "severidade": AVISO, "regra": "rota-nao-encontrada",
                                     "detalhe": alvo})
 
+    aplicar_limite_acentuacao(achados, "severidade", ERRO, AVISO)
     erros = [a for a in achados if a["severidade"] == ERRO]
     avisos = [a for a in achados if a["severidade"] == AVISO]
 

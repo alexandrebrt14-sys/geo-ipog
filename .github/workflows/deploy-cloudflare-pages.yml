@@ -272,9 +272,8 @@ jobs:
       # Painel de marketing em /painel
       #
       # Um HTML e um JSON, copiados depois do sitemap (como o portal) para não
-      # entrarem nele. Nada aqui toca em site/dist/ipog. A atualização de hora
-      # em hora dos dados NÃO passa por este workflow: ver painel-marketing.yml,
-      # que restaura o cache salvo no fim deste job e troca só a pasta painel/.
+      # entrarem nele. Nada aqui toca em site/dist/ipog. A carga de 14/09/2026
+      # é um acervo histórico: copiar os arquivos, sem coleta ou consolidação.
       # ---------------------------------------------------------------------
 
       - name: "Montar o painel de marketing em site/dist/painel"
@@ -349,17 +348,6 @@ jobs:
         run: |
           node scripts/check-published-cache.mjs --self-test
           node scripts/check-published-cache.mjs
-
-      # Guarda o site exatamente como foi publicado em produção. O workflow
-      # painel-marketing.yml restaura este cache, troca só a pasta painel/ e
-      # republica, sem reconstruir nada. O cache do GitHub não conta como
-      # armazenamento cobrado e expira sozinho após 7 dias sem uso.
-      - name: "Guardar o site publicado para o painel de marketing"
-        if: github.event_name == 'push' || github.event.inputs.branch == 'main' || github.event.inputs.branch == ''
-        uses: actions/cache/save@v4
-        with:
-          path: site/dist
-          key: site-dist-producao-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: "IndexNow ping (best-effort)"
         if: success()

@@ -75,17 +75,17 @@ geo-ipog/
   scripts/               # gates editoriais, IndexNow, auditoria de schema, coletores e purga de cache
   docs/                  # marcos, atas, relatórios, governança, runbooks e tech stack
   wiki/                  # base de conhecimento interna: entidades, conceitos, decisões e log
-  .github/workflows/     # deploy, gates SEO/GEO, painel, relatórios e monitoramento
+  .github/workflows/     # deploy, gates SEO/GEO, relatórios e monitoramento
 ```
 
 ## Como rodar, testar e publicar
 
 - **Portal principal (`site/`).** `npm ci` e `npm run dev` para trabalho local. `npm run build` roda antes o `prebuild` (páginas de busca, manifesto de lastmod e termos do glossário) e depois gera o sitemap. `npm run check` executa o `astro check`, e `npm run gate:seo-geo` confere órfão, canonical, JSON-LD mínimo, staleness e paridade de FAQ sobre o build.
 - **Portal GEO IPOG (`portal-institucional/`).** `npm run validar` encadeia typecheck, lint, build e os verificadores de GEO, parágrafos, contraste e endereços. O `README.md` da pasta explica o `basePath` `/ipog` e os helpers `assetPath` e `corDeTextoAcessivel`.
-- **Publicação.** Push na `main` que toque `site/`, `portal-institucional/` ou `dashboards/marketing/` dispara `deploy-cloudflare-pages.yml`: o workflow constrói o Astro, monta o portal Next.js em `/ipog/` e o painel em `/painel/` e publica tudo no mesmo projeto do Cloudflare Pages. `deploy-portal-geo.yml` publica o espelho de conferência em `geo-ipog.pages.dev`.
-- **Operação manual.** Em 14/08/2026 saíram todos os agendamentos de relatório, monitoramento e qualidade, que passaram a rodar por `workflow_dispatch` (o `quality.yml` segue disparando em PR e push de `.md`), e o Dependabot com auto-merge foi retirado. O único agendamento ativo hoje é o do painel de marketing.
-- **Gates de PR.** `gates-seo-geo.yml` constrói o site e roda o gate SEO/GEO quando o PR toca `site/`. `quality.yml` roda lychee e markdownlint nos `.md`, em modo consultivo.
-- **Painel de marketing (`/painel/`).** `painel-marketing.yml` coleta contagens do HubSpot (e do GA4, quando configurado) de hora em hora das 7h às 20h de segunda a sábado, com rodadas extras de madrugada e no domingo, consolida `data/marketing/dashboard.json` e republica só a pasta do painel. A página sai com noindex e o login fica no Cloudflare Access, configurado fora do repositório. Especificação em `dashboards/PAINEL-MARKETING.md`.
+- **Publicação.** Quando habilitado, push na `main` que toque `site/`, `portal-institucional/` ou `dashboards/marketing/` dispara `deploy-cloudflare-pages.yml`: o workflow constrói o Astro, monta o portal Next.js em `/ipog/` e o painel em `/painel/` e publica tudo no mesmo projeto do Cloudflare Pages. `deploy-portal-geo.yml` publica o espelho de conferência em `geo-ipog.pages.dev`.
+- **Operação manual.** Em 14/08/2026 saíram todos os agendamentos de relatório, monitoramento e qualidade, que passaram a rodar por `workflow_dispatch` (o `quality.yml` segue disparando em PR e push de `.md`), e o Dependabot com auto-merge foi retirado. Em 15/10/2026, os workflows estão desabilitados e a coleta automática do painel foi arquivada fora de `.github/workflows/`.
+- **Gates de PR.** Quando habilitado, `gates-seo-geo.yml` constrói o site e roda o gate SEO/GEO quando o PR toca `site/`. `quality.yml` roda lychee e markdownlint nos `.md`, em modo consultivo.
+- **Painel de marketing (`/painel/`).** Acervo histórico público da leitura de 14/09/2026, sem atualização automática. Os dados originais permanecem versionados. O workflow de coleta e seu manual anterior foram arquivados em `dashboards/arquivo-marketing-2026/`. A página mantém noindex e não exige login. Detalhes em `dashboards/PAINEL-MARKETING.md`.
 
 ## Disciplina operacional
 
@@ -193,7 +193,7 @@ O que mudou desde o snapshot de maio, em ordem:
 2. **W25 e W26 (27/08 e 07/09, PRs #158 e #164).** Cinco ondas complementares em cada rodada no menu Conteúdo e social, com o gate mecânico `scripts/lint-conteudo-social.py`.
 3. **Ondas 3 a 6 de SEO (03/09, PR #163).** Lastmod por git, FAQ nos hubs, glossário de autismo estruturado, E-E-A-T por `@id` e o gate bloqueante `gates-seo-geo.yml`.
 4. **Robustez, frontend e layout do portal (08/09, PRs #168 a #173).** Carregamento, acessibilidade, cache HTTP e navegação do `site/`, com a purga restrita de cache em `scripts/cloudflare-purge-url.py`.
-5. **Painel de marketing (PR #174, mesclado em 28/09).** Leads, origem e funil do HubSpot em `/painel/`, com coleta agendada.
+5. **Painel de marketing (PR #174, mesclado em 28/09).** Leads, origem e funil do HubSpot em `/painel/`. Desde 15/10/2026, acervo público da carga de 14/09/2026, sem atualização automática.
 
 O registro sessão a sessão continua em `STATUS.md`.
 ### Snapshot 13-05-2026
